@@ -1,0 +1,43 @@
+<html>
+	<body>
+		<h1>Test Merchant of CBLPG</h1>
+		<h2>Create Order Operation</h2>
+		<form method="post" action="https://www.veestores.com/pay/CreateOrder.php">
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td><p>Merchant :</p></td>
+					<td><input type="text" size="25" name="Merchant" value="11122333" readonly/></td>
+				</tr>
+				<tr>
+					<td><p>Amount :</p></td>
+					<td><input type="text" size="25" name="Amount" value="2"/></td>
+				</tr>
+				<tr>
+					<td><p>Currency :</p></td>
+					<td><input type="text" size="25" name="Currency" value="050" readonly/></td>
+				</tr>
+				<tr>
+					<td><p>Description :</p></td>
+					<td><input type="text" size="25" name="Description" value="Test Product"/></td>
+				</tr>
+				<tr>
+					<td><p>ApproveURL :</p></td>
+					<td><input type="text" size="50" name="ApproveURL" value="https://www.veestores.com/pay/Approved.php" readonly/></td>
+				</tr>
+				<tr>
+					<td><p>CancelURL :</p></td>
+					<td><input type="text" size="50" name="CancelURL" value="https://www.veestores.com/pay/Cancelled.php" readonly/></td>
+				</tr>
+				<tr>
+					<td><p>DeclineURL :</p></td>
+					<td><input type="text" size="50" name="DeclineURL" value="https://www.veestores.com/pay/Declined.php" readonly/></td>
+				</tr>
+			</table>	
+				
+			<br/>
+			<input type="submit" value="Create Order"/>
+		</form>
+		<hr/>
+	</body>
+</html>
+

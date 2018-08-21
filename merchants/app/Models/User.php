@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Models;
+
+//use Laravel\Passport\HasApiTokens;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Zizaco\Entrust\Traits\EntrustUserTrait;
+use Kyslik\ColumnSortable\Sortable;
+
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
+
+    use Authenticatable,
+        EntrustUserTrait,
+        CanResetPassword,
+        Sortable;
+
+    protected $table = 'users';
+    protected $fillable = ['first_name', 'last_name', 'company_name', 'address', 'contact_no', 'alternate_no', 'email', 'password', 'provider_id','status' ,'provider', 'user_name', 'user_type'];
+    protected $hidden = ['password', 'remember_token'];
+    public $sortable = ['email'];
+
+    public function savedlist() {
+        return $this->belongsToMany('App\Models\Product', 'saved_list', 'user_id', 'prod_id');
+    }
+
+    public function addresses() {
+        return $this->hasMany('App\Models\Address', 'user_id', 'id')->orderBy('id', 'desc');
+    }
+
+    public function orders() {
+        return $this->hasMany('App\Models\Order', 'user_id')->whereIn("order_status", [2, 3]);
+    }
+
+    public function loyalty() {
+        return $this->belongsTo('App\Models\Loyalty', 'loyalty_group');
+    }
+
+    public function roles() {
+        return $this->belongsToMany('App\Models\Role', 'role_user', 'user_id', 'role_id');
+    }
+    
+
+    public function wishlist() {
+        return $this->belongsToMany('App\Models\Product', 'wishlist', 'user_id', 'prod_id');
+    }
+
+    public function wish() {
+        return $this->hasMany('App\Models\WishList', 'user_id');
+    }
+
+    function hasOrder() {
+        return $this->hasMany('App\Models\Order', 'user_id')->groupBy('user_id')->count();
+    }
+
+}
