@@ -1,5 +1,10 @@
 <?php
-
+/* Commented Somecode for veestores mall
+ * Line 502, 519
+ * Line 383-387
+ * Line 537
+ * 
+ */
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
@@ -49,33 +54,26 @@ class HomeController extends Controller {
         $viewname = Config('constants.frontendView') . ".index";
         return Helper::returnView($viewname, $data);
     }
-    
-    public function cleardb(){
-         $stores = Store::distinct('prefix')->get(['prefix','id']);
+
+    public function cleardb() {
+        $stores = Store::distinct('prefix')->get(['prefix', 'id']);
         //$stores = ['Mina690392','news230032','Nick288366','Pari390829','Prad855708','Pran329195','Pran329195'];
 
-foreach($stores as $st){
-    //dd($st->prefix);
-        $dropQ = "DROP TABLE Fgy154734_additional_charges,Fgy154734_attribute_sets,Fgy154734_attribute_types,Fgy154734_attribute_values,Fgy154734_attributes,Fgy154734_catalog_images,Fgy154734_categories,Fgy154734_cities,Fgy154734_comments,Fgy154734_contacts,Fgy154734_countries,Fgy154734_coupons,Fgy154734_coupons_categories,Fgy154734_coupons_products,Fgy154734_coupons_users,Fgy154734_couriers,Fgy154734_currencies,Fgy154734_downlodable_prods,Fgy154734_dynamic_layout,Fgy154734_email_template,Fgy154734_flags,Fgy154734_general_setting,Fgy154734_gifts,Fgy154734_has_addresses,Fgy154734_has_attribute_values,Fgy154734_has_attributes,Fgy154734_has_categories,Fgy154734_has_combo_prods,Fgy154734_has_currency,Fgy154734_has_industries,Fgy154734_has_layouts,Fgy154734_has_options,Fgy154734_has_products,Fgy154734_has_related_prods,Fgy154734_has_taxes,Fgy154734_has_upsell_prods,Fgy154734_has_vendors,Fgy154734_kot,Fgy154734,Fgy154734_layout,Fgy154734_loyalty,Fgy154734_newsletter,Fgy154734_notification,Fgy154734_occupancy_status,Fgy154734_offers,Fgy154734_offers_categories,Fgy154734_offers_products,Fgy154734_offers_users,Fgy154734_order_cancelled,Fgy154734_order_flag_history,Fgy154734_order_history,Fgy154734_order_return_action,Fgy154734_order_return_cashback_history,Fgy154734_order_return_open_unopen,Fgy154734_order_return_reason,Fgy154734_order_return_status,Fgy154734_order_status,Fgy154734_order_status_history,Fgy154734_orders,Fgy154734_ordertypes,Fgy154734_password_resets,Fgy154734_payment_method,Fgy154734_payment_status,Fgy154734_permission_role,Fgy154734_permissions,Fgy154734_pincodes,Fgy154734_prod_status,Fgy154734_product_has_taxes,Fgy154734_product_types,Fgy154734_products,Fgy154734_restaurant_tables,Fgy154734_return_order,Fgy154734_role_user,Fgy154734_roles,Fgy154734_saved_list,Fgy154734_sections,Fgy154734_settings,Fgy154734_sizechart,Fgy154734_slider,Fgy154734_slider_master,Fgy154734_sms_subscription,Fgy154734_social_media_links,Fgy154734_states,Fgy154734_static_pages,Fgy154734_stock_update_history,Fgy154734_tagging_tagged,Fgy154734_tagging_tags,Fgy154734_tax,Fgy154734_testimonials,Fgy154734_translation,Fgy154734_unit_measures,Fgy154734_users,Fgy154734_vendors,Fgy154734_wishlist,Fgy154734_zones";
-   $dropQ = str_replace('Fgy154734', $st->prefix, $dropQ);
+        foreach ($stores as $st) {
+            //dd($st->prefix);
+            $dropQ = "DROP TABLE Fgy154734_additional_charges,Fgy154734_attribute_sets,Fgy154734_attribute_types,Fgy154734_attribute_values,Fgy154734_attributes,Fgy154734_catalog_images,Fgy154734_categories,Fgy154734_cities,Fgy154734_comments,Fgy154734_contacts,Fgy154734_countries,Fgy154734_coupons,Fgy154734_coupons_categories,Fgy154734_coupons_products,Fgy154734_coupons_users,Fgy154734_couriers,Fgy154734_currencies,Fgy154734_downlodable_prods,Fgy154734_dynamic_layout,Fgy154734_email_template,Fgy154734_flags,Fgy154734_general_setting,Fgy154734_gifts,Fgy154734_has_addresses,Fgy154734_has_attribute_values,Fgy154734_has_attributes,Fgy154734_has_categories,Fgy154734_has_combo_prods,Fgy154734_has_currency,Fgy154734_has_industries,Fgy154734_has_layouts,Fgy154734_has_options,Fgy154734_has_products,Fgy154734_has_related_prods,Fgy154734_has_taxes,Fgy154734_has_upsell_prods,Fgy154734_has_vendors,Fgy154734_kot,Fgy154734,Fgy154734_layout,Fgy154734_loyalty,Fgy154734_newsletter,Fgy154734_notification,Fgy154734_occupancy_status,Fgy154734_offers,Fgy154734_offers_categories,Fgy154734_offers_products,Fgy154734_offers_users,Fgy154734_order_cancelled,Fgy154734_order_flag_history,Fgy154734_order_history,Fgy154734_order_return_action,Fgy154734_order_return_cashback_history,Fgy154734_order_return_open_unopen,Fgy154734_order_return_reason,Fgy154734_order_return_status,Fgy154734_order_status,Fgy154734_order_status_history,Fgy154734_orders,Fgy154734_ordertypes,Fgy154734_password_resets,Fgy154734_payment_method,Fgy154734_payment_status,Fgy154734_permission_role,Fgy154734_permissions,Fgy154734_pincodes,Fgy154734_prod_status,Fgy154734_product_has_taxes,Fgy154734_product_types,Fgy154734_products,Fgy154734_restaurant_tables,Fgy154734_return_order,Fgy154734_role_user,Fgy154734_roles,Fgy154734_saved_list,Fgy154734_sections,Fgy154734_settings,Fgy154734_sizechart,Fgy154734_slider,Fgy154734_slider_master,Fgy154734_sms_subscription,Fgy154734_social_media_links,Fgy154734_states,Fgy154734_static_pages,Fgy154734_stock_update_history,Fgy154734_tagging_tagged,Fgy154734_tagging_tags,Fgy154734_tax,Fgy154734_testimonials,Fgy154734_translation,Fgy154734_unit_measures,Fgy154734_users,Fgy154734_vendors,Fgy154734_wishlist,Fgy154734_zones";
+            $dropQ = str_replace('Fgy154734', $st->prefix, $dropQ);
 
-    
-    $table =$st->prefix.'_additional_charges';
 
-if(!Schema::hasTable($table)) // No table found, safe to create it.
-{
-     echo "...not found===".$st->prefix.'_additional_charges'."<br>";
-}else{
-      DB::statement($dropQ);
-  $deleteStore="Delete from stores where id=$st"; 
-}
-    
+            $table = $st->prefix . '_additional_charges';
 
-    
-    
-}
-        
-        
+            if (!Schema::hasTable($table)) { // No table found, safe to create it.
+                echo "...not found===" . $st->prefix . '_additional_charges' . "<br>";
+            } else {
+                DB::statement($dropQ);
+                $deleteStore = "Delete from stores where id=$st";
+            }
+        }
     }
 
     public function checkStore() {
@@ -232,13 +230,14 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
     public function checkUser() {
         dd(Input::all());
     }
+
     public function checkFbUserLogin() {
-             $FbUser = Input::get('userData');
+        $FbUser = Input::get('userData');
         Session::put('merchantEmail', $FbUser['email']);
         Session::put('merchantName', $FbUser['first_name']);
         Session::put('fbId', $FbUser['id']);
         $userDetails = Merchant::where("email", "=", $FbUser['email'])->first();
-        if (!empty($userDetails)) { 
+        if (!empty($userDetails)) {
             $store = $userDetails->getstores()->count();
             Session::put('merchantid', $userDetails->id);
             if ($store > 0) {
@@ -252,10 +251,10 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
             } else {
                 $result = ['status' => '0', 'user' => $userDetails];
             }
-        }else{
-             $result = ['status' => '1', 'msg' => "You are not registered with us."];
+        } else {
+            $result = ['status' => '1', 'msg' => "You are not registered with us."];
         }
-        return $result;   
+        return $result;
     }
 
     public function checkFbUser() {
@@ -264,10 +263,10 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
         Session::put('merchantName', $FbUser['first_name']);
         Session::put('fbId', $FbUser['id']);
         $userDetails = Merchant::where("email", "=", $FbUser['email'])->first();
-        if (empty($userDetails)) { 
-        $result = ['status' => '1', 'msg' => 'Merchant not found.'];
-        }else{
-        $result = ['status' => '2', 'msg' => 'You are already register with us.'];  
+        if (empty($userDetails)) {
+            $result = ['status' => '1', 'msg' => 'Merchant not found.'];
+        } else {
+            $result = ['status' => '2', 'msg' => 'You are already register with us.'];
         }
         return $result;
     }
@@ -327,7 +326,7 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
         if ($store->save()) {
             if (empty($themeInput->id)) {
 
-                $this->createInstance($store->id,$store->prefix, $store->url_key, $themeInput->email, $password, $themeInput->storename, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $getMerchat->phone, $firstname, $domainname, $storeVersion, $store->expiry_date);
+                $this->createInstance($store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $themeInput->storename, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $getMerchat->phone, $firstname, $domainname, $storeVersion, $store->expiry_date);
             }
         }
 
@@ -351,7 +350,7 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
         return Helper::returnView($viewname, $dataS);
     }
 
-    public function createInstance($storeId,$prefix, $urlKey, $merchantEamil, $merchantPassword, $storeName, $themeid, $catid, $currency, $phone, $firstname, $domainname, $storeVersion, $expirydate) {
+    public function createInstance($storeId, $prefix, $urlKey, $merchantEamil, $merchantPassword, $storeName, $themeid, $catid, $currency, $phone, $firstname, $domainname, $storeVersion, $expirydate) {
 
 
         ini_set('max_execution_time', 600);
@@ -382,11 +381,11 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
         curl_setopt($ch, CURLOPT_POSTFIELDS, $messagearray);
 
         //finally executing the curl request
-        $result = curl_exec($ch);
-        if ($result === FALSE) {
-            die('Curl failed: ' . curl_error($ch));
-        }
-        curl_close($ch);
+//        $result = curl_exec($ch);
+//        if ($result === FALSE) {
+//            die('Curl failed: ' . curl_error($ch));
+//        }
+//        curl_close($ch);
 //        //stop Curl
 
 
@@ -411,8 +410,8 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
                     $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", $prefix . "_");
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
 
-                   
-                    $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname","store_id"=>"$storeId","prifix"=>"$prefix"];
+
+                    $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prifix" => "$prefix"];
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
@@ -423,8 +422,8 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
                         $provider_id = Session::get("provider_id");
                         $insertArr["provider_id"] = "$provider_id";
                     }
-                    $country_code=$merchantd->country_code;
-                     if ($country_code) {
+                    $country_code = $merchantd->country_code;
+                    if ($country_code) {
                         $insertArr["country_code"] = "$merchantd->country_code";
                     }
 //                    $randno = $merchantPassword;
@@ -501,7 +500,7 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
                             $homePageSlider['sort_order'] = $image['sort_order'];
                             $source = public_path() . '/public/admin/themes/';
                             $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                            copy($source . $file, $destination . $file);
+//                            copy($source . $file, $destination . $file);
                             DB::table($prefix . "_has_layouts")->insert($homePageSlider);
                         }
                     }
@@ -518,12 +517,12 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
                             $homePageSlider['sort_order'] = $image['sort_order'];
                             $source = public_path() . '/public/admin/themes/';
                             $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                            copy($source . $file, $destination . $file);
+//                            copy($source . $file, $destination . $file);
                             DB::table($prefix . "_has_layouts")->insert($homePageSlider);
                         }
                     }
-                     if($phone) {
-                   $msgOrderSucc ="Congrats! Your new Online Store is ready. Download VeeStores Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
+                    if ($phone) {
+                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Download VeeStores Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
                     }
                     // permission_role
@@ -535,7 +534,7 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n";
 
                     if (!empty($merchantEamil)) {
-                      //  Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
+                        //  Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
                     return "Extracted Successfully to $path";
                 } else {
@@ -795,8 +794,8 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
 
         if ($checkStote > 0) {
             $checkStote = Store::where('merchant_id', Session::get('merchantid'))->first();
-            $merchant->my_Store = $checkStote->url_key . '.' .str_replace("www", "", $_SERVER['HTTP_HOST']) ;
-            $merchant->my_Store_admin =  $checkStote->url_key .'.'.str_replace("www", "", $_SERVER['HTTP_HOST']) . '/admin';
+            $merchant->my_Store = $checkStote->url_key . '.' . str_replace("www", "", $_SERVER['HTTP_HOST']);
+            $merchant->my_Store_admin = $checkStote->url_key . '.' . str_replace("www", "", $_SERVER['HTTP_HOST']) . '/admin';
         } else {
             return redirect()->to('/');
         }
@@ -813,8 +812,8 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
         $merchant = Merchant::find(Session::get('merchantid'));
         if (Session::get('merchantid') != '' && Session::get('merchantstorecount') > 0) {
             $checkStote = Store::where('merchant_id', Session::get('merchantid'))->first();
-            $merchant->my_Store = $checkStote->url_key. '.' .str_replace("www", "", $_SERVER['HTTP_HOST']) ;
-            $merchant->my_Store_admin = $checkStote->url_key . '.'.str_replace("www", "", $_SERVER['HTTP_HOST']) . '/admin';
+            $merchant->my_Store = $checkStote->url_key . '.' . str_replace("www", "", $_SERVER['HTTP_HOST']);
+            $merchant->my_Store_admin = $checkStote->url_key . '.' . str_replace("www", "", $_SERVER['HTTP_HOST']) . '/admin';
         }
         $data = ['merchant' => $merchant];
 
@@ -873,8 +872,8 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
         $merchant = Merchant::find(Session::get('merchantid'));
         if (Session::get('merchantid') != '' && Session::get('merchantstorecount') > 0) {
             $checkStote = Store::where('merchant_id', Session::get('merchantid'))->first();
-            $merchant->my_Store = $checkStote->url_key. '.' .str_replace("www", "", $_SERVER['HTTP_HOST']);
-            $merchant->my_Store_admin = $checkStote->url_key. '.' .str_replace("www", "", $_SERVER['HTTP_HOST'])  . '/admin';
+            $merchant->my_Store = $checkStote->url_key . '.' . str_replace("www", "", $_SERVER['HTTP_HOST']);
+            $merchant->my_Store_admin = $checkStote->url_key . '.' . str_replace("www", "", $_SERVER['HTTP_HOST']) . '/admin';
         }
         $data = ['merchant' => $merchant];
 
