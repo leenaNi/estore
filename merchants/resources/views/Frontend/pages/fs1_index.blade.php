@@ -1,9 +1,11 @@
-@extends('Frontend.layouts.default') @section('content')
+@extends('Frontend.layouts.default') 
+@section('content')
 <section id="slider" class="slider-parallax full-screen clearfix">
     <div class="slider-parallax-inner">
         <div class="fslider" data-arrows="true" data-pagi="false">
             <div class="flexslider">
                 <div class="slider-wrap">
+                   
                     @if(count($home_page_slider) > 0) @foreach($home_page_slider as $homeS)
                     <div class="slide">
                         <a href="{{ !empty($homeS->link)?$homeS->link:'javascript:void();'}}" target="_blank"> <img src="{{Config('constants.layoutImgPath').'/'.$homeS->image}}" alt="{{$homeS->alt}}"> 
@@ -36,7 +38,7 @@
                                 </span>
                             </a>
                         </div>
-                        <!-- <div class="updateHomeBanner" id="{{ $homeS->id }}"><a href="#" class="button button-rounded"><span><i class="fa fa-pencil"></i>Manage Slider</span></a></div> -->
+                      
                         @endif
                     </div>
                     @endif

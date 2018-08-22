@@ -95,7 +95,7 @@ class ProductController extends Controller {
         foreach ($product->images as $prdimgs) {
             $prdimgs->img = @Config('constants.productImgPath') .'/'. $prdimgs->filename;
         }
-        // dd($product);
+        
         $nattrs = AttributeSet::find($product->attributeset['id'])->attributes()->where("is_filterable", "=", 0)->get();
 
         $product->related = $product->relatedproducts()->where("status", 1)->get();
