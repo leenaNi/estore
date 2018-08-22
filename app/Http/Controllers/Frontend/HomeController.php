@@ -10,7 +10,7 @@ use App\Models\Bank;
 use App\Models\Country;
 use App\Models\Document;
 use App\Models\Language;
-use App\Models\Order;
+use App\Models\MerchantOrder;
 use App\Models\StoreTheme;
 use App\Models\Templates;
 use App\Models\Currency;
@@ -175,7 +175,7 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
 //        if(empty(Session::get('storename'))){
 //            return redirect()->to("/");
 //        }
-        $themeIds = Order::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("theme_id")->toArray();
+        $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("theme_id")->toArray();
         if (empty(Input::get('firstname')) && empty(Session::get('merchantid'))) {
             $cats = Category::where("status", 1)->get();
 
@@ -278,10 +278,10 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
         $email = $data->email;
         $firstname = $data->firstname;
 
-        Mail::send('Frontend.pages.emails.storeConfirmation', ['firstname' => $firstname], function ($m) use ($email, $firstname) {
-            $m->to($email, $firstname)->subject('Thank you for registering with VeeStores');
-            //$m->cc('madhuri@infiniteit.biz');
-        });
+//        Mail::send('Frontend.pages.emails.storeConfirmation', ['firstname' => $firstname], function ($m) use ($email, $firstname) {
+//            $m->to($email, $firstname)->subject('Thank you for registering with VeeStores');
+//            //$m->cc('madhuri@infiniteit.biz');
+//        });
     }
 
     public function congrats() {
@@ -412,7 +412,7 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
 
                    
-                    $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname"];
+                    $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname","store_id"=>"$storeId","prifix"=>"$prefix"];
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
@@ -535,7 +535,7 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n";
 
                     if (!empty($merchantEamil)) {
-                        Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
+                      //  Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
                     return "Extracted Successfully to $path";
                 } else {

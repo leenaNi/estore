@@ -19,6 +19,7 @@ use App\Models\StaticPage;
 use App\Models\Role;
 use App\Models\Layout;
 use App\Models\Order;
+
 use App\Models\HasLayout;
 use App\Models\ProductType;
 use App\Models\AttributeSet;
@@ -33,6 +34,7 @@ use App\Models\Testimonials;
 use App\Models\Pincode;
 use Config;
 use Cart;
+use DB;
 
 class HomeController extends Controller {
     /* public function statusofnotification()
@@ -49,8 +51,11 @@ class HomeController extends Controller {
     }
 
     public function index() {
-
-        // print_r(Session::get('currency_val')); die;
+//$chkEmail = DB::select(DB::raw("select * from users"));
+//      
+//          $chkEmail = User::get();
+//         dd($chkEmail);
+          // print_r(Session::get('currency_val')); die;
         $testimonial_status = GeneralSetting::where("url_key", 'testimonial')->first();
 //        $saveto= "public/Admin/uploads/slider/default_slider.png";
 //        dd(Helper::saveImage("http://www.techhaking.com/wp-content/uploads/2017/09/default-slider-image-300x150.png",$saveto));

@@ -18,11 +18,12 @@ use App\Http\Controllers\Controller;
 use Session;
 use Crypt;
 use Config;
+use DB;
 
 class LoginController extends Controller {
 
     public function index() {
-
+  
 
         if (Session::get('loggedinAdminId')) {
 
@@ -52,8 +53,11 @@ class LoginController extends Controller {
                 Session::put('loggedin_user_id', $user->id);
                 Session::put('login_user_type', $user->user_type);
                 $roles = $user->roles()->first();
+              
                 $r = Role::find($roles->id);
+                
                 $per = $r->perms()->get()->toArray();
+              
                 if (Auth::user()->user_type == 3) {
                     return redirect()->route('admin.vendors.dashboard');
                 }

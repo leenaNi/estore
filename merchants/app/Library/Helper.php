@@ -263,32 +263,32 @@ class Helper {
             }
         }
 //for referal
-        if ($checkReferral->status == 1) {
-            $detailsR = json_decode($checkReferral->details);
-            foreach ($detailsR as $detRk => $detRv) {
-                if ($detRk == "activate_duration_in_days")
-                    $activate_duration = $detRv;
-                if ($detRk == "bonous_to_referee")
-                    $bonousToReferee = $detRv;
-                if ($detRk == "discount_on_order")
-                    $discountOnOrder = $detRv;
-            }
-            if (!empty($user->referal_code)) {
-                $refUsedOrders = Order::where('referal_code_used', "=", $user->referal_code)
-                                ->where('created_at', '<=', date('Y-m-d', strtotime("now -$activate_duration days")))
-                                ->whereIn('order_status', [2, 3])
-                                ->where('ref_flag', '=', 0)->get();
-
-                $refToAdd = 0;
-                foreach ($refUsedOrders as $refOds) {
-                    $refToAdd += $refOds->user_ref_points;
-                    $refOrders = Order::find($refOds->id);
-                    $refOrders->ref_flag = 1;
-                    $refOrders->update();
-                }
-                $user->cashback = $user->cashback + $refToAdd;
-            }
-        }
+//        if ($checkReferral->status == 1) {
+//            $detailsR = json_decode($checkReferral->details);
+//            foreach ($detailsR as $detRk => $detRv) {
+//                if ($detRk == "activate_duration_in_days")
+//                    $activate_duration = $detRv;
+//                if ($detRk == "bonous_to_referee")
+//                    $bonousToReferee = $detRv;
+//                if ($detRk == "discount_on_order")
+//                    $discountOnOrder = $detRv;
+//            }
+//            if (!empty($user->referal_code)) {
+//                $refUsedOrders = Order::where('referal_code_used', "=", $user->referal_code)
+//                                ->where('created_at', '<=', date('Y-m-d', strtotime("now -$activate_duration days")))
+//                                ->whereIn('order_status', [2, 3])
+//                                ->where('ref_flag', '=', 0)->get();
+//
+//                $refToAdd = 0;
+//                foreach ($refUsedOrders as $refOds) {
+//                    $refToAdd += $refOds->user_ref_points;
+//                    $refOrders = Order::find($refOds->id);
+//                    $refOrders->ref_flag = 1;
+//                    $refOrders->update();
+//                }
+//                $user->cashback = $user->cashback + $refToAdd;
+//            }
+//        }
 
         $user->update();
         Session::put('logged_in_user', $user->email);

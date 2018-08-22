@@ -189,7 +189,7 @@ class LoginController extends Controller {
 
                         $email_templates = str_replace($replace, $replacewith, $email_template);
                         $data1 = ['email_template' => $email_templates];
-                        Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), Input::get('email'), Input::get('firstname') . " " . Input::get('lastname'));
+                       // Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), Input::get('email'), Input::get('firstname') . " " . Input::get('lastname'));
                     }
                     if ($getUserInfo->telephone) {
                         $msgOrderSucc = "Welcome to the " .Session::put('storeName'). " You are successfully registered with us. Happy Shopping!";
