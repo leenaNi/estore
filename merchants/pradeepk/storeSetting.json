@@ -5,6 +5,8 @@
   "btn_color": "8AB34F",
   "sbtn_color": "DF4415",
   "storeName": "Your store",
+  "store_id": "2",
+  "prefix": "prad925285",
   "store_version": 1,
   "standard_delivary_days": "5-7",
   "cod_option": "1",

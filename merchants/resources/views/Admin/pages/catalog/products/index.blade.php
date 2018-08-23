@@ -234,7 +234,7 @@
                         </td>
                         <td>
                             <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw"></i></a>
-<!--                            <a href="{!! route('admin.products.duplicate',['id'=>$product->id]) !!}" class="label label-info active" ui-toggle-class="" onclick="return confirm('Do you want to create duplicate product?')">Duplicate</a><br>-->
+                            <a href="#" prod-id="{{$product->id}}" class="label label-info active shareProductToMall" ui-toggle-class="" onclick="return confirm('Do you want to share this product on veestores mall?')">Shere On Mall</a><br>
 <!--                          <a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
 
                             <a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i></a>
@@ -456,6 +456,10 @@
 
   </div>
 </div>
+
+
+
+
 <div id="addProduct" class="modal fade" role="dialog">
   <div class="modal-dialog addProduct-modal-dialog">
 
@@ -463,6 +467,30 @@
     <div class="modal-content">
     
       @include('Admin.pages.catalog.products.add')
+  
+      
+    </div>
+
+  </div>
+</div>
+
+<div id="addProductToMall" class="modal fade" role="dialog">
+  <div class="modal-dialog addProduct-modal-dialog">
+        <div class="modal-content">
+<div class="modal-header addProduct-modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title">share Product To Mall</h4>
+</div>
+       <form  method="post"  id="shareProductToMall">
+      <div class="box-body" id="selCat">
+         
+      </div>
+           <input type="submit" value="submit" class="submitShare">
+       </form>
+    <!-- Modal content-->
+   
+    
+     
   
       
     </div>
@@ -567,6 +595,63 @@
     {% } %}
 </script>
 <script>
+    $(".shareProductToMall").click(function () {
+          $("#selCat").empty();                //    alert("for ");
+      var prodId=($(this).attr('prod-id'));
+    //  var optionVal='<oprion value="">Please Select Category</option>';
+    var optionVal='<input type="hidden" name="prodId" value="'+prodId+'">';
+       $.ajax({
+           url: "{{ route('admin.product.mall.category') }}",
+             type: "post",
+             data :{prodId:prodId},
+             success: function(data) {
+                    //console.log(data);
+                  
+                   $.each(data, function( index, value ) {
+          optionVal+='<div><label class="custom-check"><input class="catCheck" type="checkbox" name="categories[]" value="'+ value.id +'"><span class="checkmark-custom"></span></label>'+ value.category +'</div>';
+                  
+  
+        });
+$('#addProductToMall').modal({
+    backdrop: 'static',
+    keyboard: false
+})
+ $("#addProductToMall").modal("show");
+$("#selCat").append(optionVal);
+                }
+
+                            
+                 });
+              });  
+            $(function() {
+  
+      $("body").on("submit", "#addProductToMall", function(e){
+            e.preventDefault();
+              var form = $(e.target);
+      
+                                    $.ajax({
+                                        url: "{{ route('admin.product.mall.product.Add') }}",
+                                        type: 'post',
+                                        data: form.serialize(),
+                                       
+                                        beforeSend: function () {
+                                            // $("#barerr" + id).text('Please wait');
+                                        },
+                                        success: function (res) {
+                                            if(res['status']==1){
+                                          $("#addProductToMall").modal("hide");
+                                           window.location.href = "{{ route('admin.products.view') }}";
+                                            }  
+                                            
+                                        }
+                                    });
+                                   
+                                });          
+              
+                        
+                                });  
+              
+              
            $('.prod_type').change(function () {
             var prod_type = $('.prod_type').val();
             if (prod_type == 3) {
@@ -584,6 +669,7 @@
                                     $("#bulkProduct").modal("show");
 
                                 });
+                                
   $(document).ready(function () {
    
     $(".fromDate").datepicker({

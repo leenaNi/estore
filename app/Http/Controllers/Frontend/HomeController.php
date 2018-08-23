@@ -412,7 +412,7 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
 
                    
-                    $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname","store_id"=>"$storeId","prifix"=>"$prefix"];
+                    $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname","store_id"=>"$storeId","prefix"=>"$prefix"];
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
@@ -440,6 +440,8 @@ if(!Schema::hasTable($table)) // No table found, safe to create it.
                     $decodeVal['industry_id'] = $catid;
                     $decodeVal['storeName'] = $storeName;
                     $decodeVal['expiry_date'] = $expirydate;
+                    $decodeVal['store_id'] = $storeId;
+                    $decodeVal['prefix'] = $prefix;
 
 
                     if (!empty($themeid)) {

@@ -124,6 +124,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/admin-product-vendors-save', array('as' => 'admin.product.vendors.save', 'uses' => 'ProductsController@ProductVendorsSave'));
                 Route::get('/admin-product-wishlist', array('as' => 'admin.product.wishlist', 'uses' => 'ProductsController@exportWishlist'));
                 Route::post('/admin-product-vendors-delete', array('as' => 'admin.product.vendors.delete', 'uses' => 'ProductsController@ProductVendorsDelete'));
+                Route::post('/admin-product-mall-category', array('as' => 'admin.product.mall.category', 'uses' => 'ProductsController@getMallCategory'));
+                Route::post('/admin-mall-product-add', array('as' => 'admin.product.mall.product.Add', 'uses' => 'ProductsController@mallProductAdd'));
+                Route::post('/admin-mall-product-update', array('as' => 'admin.product.mall.product.update', 'uses' => 'ProductsController@mallProductUpdate'));
             });
         });
 

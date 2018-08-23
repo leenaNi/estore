@@ -54,7 +54,7 @@ class HomeController extends Controller {
 //$chkEmail = DB::select(DB::raw("select * from users"));
 //      
 //          $chkEmail = User::get();
-//         dd($chkEmail);
+
           // print_r(Session::get('currency_val')); die;
         $testimonial_status = GeneralSetting::where("url_key", 'testimonial')->first();
 //        $saveto= "public/Admin/uploads/slider/default_slider.png";
