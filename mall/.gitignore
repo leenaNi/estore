@@ -1,0 +1,17 @@
+.env
+storage/
+vendor/
+nbproject/
+*.properties
+*.xml
+.env - Copy.example
+public/public/temp/
+tmp/
+public/public/Uploads/
+public/public/Admin/uploads/
+stats/
+server.bat
+composer.lock
+config/database.php
+public/public/Admin/pincodes
+public/public/Reports
