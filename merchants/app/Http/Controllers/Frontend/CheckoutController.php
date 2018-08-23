@@ -12,6 +12,7 @@ use App\Models\Address;
 use App\Models\Zone;
 use App\Models\Coupon;
 use App\Models\User;
+use App\Models\HasProducts;
 use App\Models\Order;
 use App\Library\Helper;
 use App\Models\EmailTemplate;
@@ -150,6 +151,9 @@ class CheckoutController extends Controller {
                 $user->country_code = Input::get('country_code');
                 $user->telephone = Input::get('telephone');
                 $user->lastname = ucfirst(Input::get('lastname'));
+                $jsonString =Helper::getSettings();
+                $user->prefix=$jsonString['prefix'];
+                 $user->store_id=$jsonString['store_id'];
                 $user->save();
                 Helper::newUserInfo($user->id);
                 $getUserInfo = User::find($user->id);
@@ -934,7 +938,7 @@ class CheckoutController extends Controller {
             $suc = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus);
         }
         if (!empty($suc['email']))
-            $this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
+            //$this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
         return redirect()->route('orderSuccess');
 
         // } 
@@ -1738,6 +1742,9 @@ class CheckoutController extends Controller {
         $order->cashback_used = is_null(Session::get('checkbackUsedAmt')) ? 0 : Session::get('checkbackUsedAmt');
         $order->voucher_amt_used = is_null(Session::get('voucherAmount')) ? 0 : Session::get('voucherAmount');
         $order->voucher_used = is_null(Session::get('voucherUsedAmt')) ? 0 : Session::get('voucherUsedAmt');
+        $jsonString =Helper::getSettings();  
+        $order->prefix=$jsonString['prefix'];
+        $order->store_id=$jsonString['store_id'];
         $coupon_id = Session::get('voucherUsedAmt');
         if (isset($coupon_id)) {
             $coupon = Coupon::find($coupon_id);
@@ -1948,7 +1955,8 @@ class CheckoutController extends Controller {
                     $this->AdminStockAlert($prd->id);
                 }
             }
-            // $order->products()->attach($cart_ids);    
+            // $order->products()->attach($cart_ids); 
+          //  HasProducts::on('mysql2');
             $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
         //  $this->orderSuccess();

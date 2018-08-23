@@ -24,6 +24,8 @@ use App\Models\Tax;
 use App\Models\ProductHasTaxes;
 use App\Models\AttributeType;
 use App\Models\HasVendors;
+use App\Models\MallProdCategory;
+use App\Models\MallProducts;
 use DB;
 use Request;
 use Response;
@@ -35,6 +37,7 @@ use Vsmoraes\Pdf\Pdf;
 use DNS1D;
 use DNS2D;
 use Excel;
+use Schema;
 use DOMDocument;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
@@ -54,6 +57,8 @@ class ProductsController extends Controller {
 
         //\Artisan::call("cache:clear");
         //dd("sdfsdf");
+
+
 
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
@@ -136,9 +141,9 @@ class ProductsController extends Controller {
 //             $dd[$prd->product]=  $prd->wishlist;
 //           }
             $getPrdImg = ($prd->catalogimgs()->where("image_mode", 1)->count() > 0) ? $prd->catalogimgs()->where("image_mode", 1)->first()->filename : 'default_product.png';
-            $prd->prodImage = Config('constants.productImgPath') . "/".@$getPrdImg;
+            $prd->prodImage = Config('constants.productImgPath') . "/" . @$getPrdImg;
         }
-       // dd($dd);
+        // dd($dd);
 
         return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets'));
     }
@@ -197,13 +202,13 @@ class ProductsController extends Controller {
             // dd(Input::File('images'));
             $imgValue = Input::File('images');
 
-            $destinationPath =Config('constants.productUploadImgPath')."/";
+            $destinationPath = Config('constants.productUploadImgPath') . "/";
             $data = Input::get('prod_img_url');
             list($type, $data) = explode(';', $data);
-            list(, $data)      = explode(',', $data);
+            list(, $data) = explode(',', $data);
             $data = base64_decode($data);
             $fileName = "prod-" . date("YmdHis") . "." . Input::File('images')->getClientOriginalExtension();
-            file_put_contents($destinationPath.$fileName, $data);
+            file_put_contents($destinationPath . $fileName, $data);
             //$dynamiclayout->image = $fileName;
 
             $saveImgs = CatalogImage::findOrNew(Input::get('id_img'));
@@ -367,8 +372,8 @@ class ProductsController extends Controller {
     public function delImg() {
         $id = Input::get('imgId');
         $del = CatalogImage::find($id);
-        if($del->delete())
-            return 1; 
+        if ($del->delete())
+            return 1;
         else
             return 0;
 
@@ -386,24 +391,23 @@ class ProductsController extends Controller {
                 // if (Input::get('file_upload_status')[$key] == 0) {
                 //     $fileName = Input::get('filename')[$key];
                 // } else {
-                   // dd($value);
-                    if ($value != null) {
-                        // $destinationPath = public_path() . '/public/Admin/uploads/catalog/products/';
-                        // $fileName = "prod-" . $key . date("YmdHis") . "." . $value->getClientOriginalExtension();
-                        // $upload_success = $value->move($destinationPath, $fileName);
+                // dd($value);
+                if ($value != null) {
+                    // $destinationPath = public_path() . '/public/Admin/uploads/catalog/products/';
+                    // $fileName = "prod-" . $key . date("YmdHis") . "." . $value->getClientOriginalExtension();
+                    // $upload_success = $value->move($destinationPath, $fileName);
 
-                        $destinationPath = Config('constants.productUploadImgPath')."/";
-                        $data = Input::get('prod_img_url_'.$key);
-                        list($type, $data) = explode(';', $data);
-                        list(, $data)      = explode(',', $data);
-                        $data = base64_decode($data);
-                        $fileName = "prod-" . $key . date("YmdHis") . "." . $value->getClientOriginalExtension();
-                        file_put_contents($destinationPath.$fileName, $data);
-
-                    } else {
-                        $fileName = '';
-                    }
-               // }
+                    $destinationPath = Config('constants.productUploadImgPath') . "/";
+                    $data = Input::get('prod_img_url_' . $key);
+                    list($type, $data) = explode(';', $data);
+                    list(, $data) = explode(',', $data);
+                    $data = base64_decode($data);
+                    $fileName = "prod-" . $key . date("YmdHis") . "." . $value->getClientOriginalExtension();
+                    file_put_contents($destinationPath . $fileName, $data);
+                } else {
+                    $fileName = '';
+                }
+                // }
                 //dd($fileName);
                 $saveImgs = CatalogImage::findOrNew(Input::get('id_img')[$key]);
                 $saveImgs->catalog_id = Input::get('prod_id');
@@ -412,7 +416,7 @@ class ProductsController extends Controller {
                 $saveImgs->alt_text = Input::get('alt_text')[$key];
                 $saveImgs->image_mode = 1;
                 $saveImgs->sort_order = Input::get('sort_order')[$key];
-               // $saveImgs->imageLink = Input::get('imageLink')[$key];
+                // $saveImgs->imageLink = Input::get('imageLink')[$key];
                 $saveImgs->save();
             }
         } else {
@@ -424,7 +428,7 @@ class ProductsController extends Controller {
                 $saveImgs->alt_text = Input::get('alt_text')[$key];
                 $saveImgs->image_mode = 1;
                 $saveImgs->sort_order = Input::get('sort_order')[$key];
-               // $saveImgs->imageLink = Input::get('imageLink')[$key];
+                // $saveImgs->imageLink = Input::get('imageLink')[$key];
 
                 $saveImgs->save();
             }
@@ -526,7 +530,7 @@ class ProductsController extends Controller {
                 $allAtt = Input::file('attributes');
                 $att = $allAtt[$att_id]['attr_val'];
                 if ($att) {
-                    $destinationPath = Config('constants.productUploadImgPath')."/";
+                    $destinationPath = Config('constants.productUploadImgPath') . "/";
                     $fileName = time() . '.' . $att->getClientOriginalExtension();
                     if ($att->move($destinationPath, $fileName)) {
                         $attributes[$att_id] = array('attr_val' => $fileName, 'attr_type_id' => $attribute['attr_type_id']);
@@ -539,7 +543,7 @@ class ProductsController extends Controller {
                 $att = $allAtt[$att_id]['attr_val'];
                 if ($att) {
                     if (in_array($att->getClientOriginalExtension(), array('jpg', 'JPG', 'png', 'PNG'))) {
-                        $destinationPath = Config('constants.productUploadImgPath')."/";
+                        $destinationPath = Config('constants.productUploadImgPath') . "/";
                         $fileName = time() . '.' . $att->getClientOriginalExtension();
                         if ($att->move($destinationPath, $fileName)) {
                             $attributes[$att_id] = array('attr_val' => $fileName, 'attr_type_id' => $attribute['attr_type_id']);
@@ -558,7 +562,7 @@ class ProductsController extends Controller {
                 if ($att1[0]) {
                     $att_files = array();
                     foreach ($att1 as $key => $att) {
-                        $destinationPath =Config('constants.productUploadImgPath')."/";
+                        $destinationPath = Config('constants.productUploadImgPath') . "/";
                         $fileName = time() . $key . '.' . $att->getClientOriginalExtension();
                         if ($att->move($destinationPath, $fileName)) {
                             array_push($att_files, $fileName);
@@ -577,7 +581,7 @@ class ProductsController extends Controller {
                     $att_files = array();
                     foreach ($att1 as $key => $att) {
                         if (in_array($att->getClientOriginalExtension(), array('jpg', 'JPG', 'png', 'PNG'))) {
-                            $destinationPath = Config('constants.productUploadImgPath')."/";
+                            $destinationPath = Config('constants.productUploadImgPath') . "/";
                             $fileName = time() . $key . '.' . $att->getClientOriginalExtension();
                             if ($att->move($destinationPath, $fileName)) {
                                 array_push($att_files, $fileName);
@@ -1309,7 +1313,7 @@ class ProductsController extends Controller {
         foreach (Input::file('image_d') as $imgK => $imgV) {
 
             if ($imgV != null) {
-                $destinationPath =Config('constants.productUploadImgPath')."/";
+                $destinationPath = Config('constants.productUploadImgPath') . "/";
                 $fileName = "d-" . $imgK . date("YmdHis") . "." . $imgV->getClientOriginalName();
                 $upload_success = $imgV->move($destinationPath, $fileName);
             } else {
@@ -1804,7 +1808,7 @@ class ProductsController extends Controller {
     }
 
     function bulkUpdate() {
-       // dd(Input::all());
+        // dd(Input::all());
         if (Input::get('productId')) {
             $ids = explode(',', Input::get('productId'));
             $pids = [];
@@ -1887,28 +1891,28 @@ class ProductsController extends Controller {
     }
 
     public function exportWishlist() {
-       $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc")->get();
-       foreach($products as $prod)
-           if(count($prod->wishlist) > 0){
-             $dd[$prod->product]=  $prod->wishlist;
-           }
-           $arr = ['FirstName', 'LastName', 'Email', 'Mobile', 'Products'];
+        $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc")->get();
+        foreach ($products as $prod)
+            if (count($prod->wishlist) > 0) {
+                $dd[$prod->product] = $prod->wishlist;
+            }
+        $arr = ['FirstName', 'LastName', 'Email', 'Mobile', 'Products'];
         $sampleProds = [];
         array_push($sampleProds, $arr);
-        foreach($dd as $key=>$d){
-            foreach($d as $user){
-             $details = [
-                 $user->firstname,
-                 $user->lastname,
-                 $user->email,
-                 $user->telephone,
-                 $key
-                 ];
+        foreach ($dd as $key => $d) {
+            foreach ($d as $user) {
+                $details = [
+                    $user->firstname,
+                    $user->lastname,
+                    $user->email,
+                    $user->telephone,
+                    $key
+                ];
             }
-             array_push($sampleProds, $details);
+            array_push($sampleProds, $details);
         }
-       
-         return Helper::getCsv($sampleProds, 'products_wishlist.csv', ',');
+
+        return Helper::getCsv($sampleProds, 'products_wishlist.csv', ',');
     }
 
     function barcodeForm() {
@@ -2171,4 +2175,42 @@ class ProductsController extends Controller {
         return $prod;
     }
 
+    public function getMallCategory() {
+        // $prod = Product::find(Input::get("id"));
+        $prod = MallProdCategory::where("status", 1)->where("is_nav", 1)->get(["id", "category"])->toArray();
+
+//        $prod->vendors()->detach(Input::get("vendor_id"));
+//        Session::flash("message", "Product vendor deleted succesfully.");
+        return $prod;
+    }
+
+    public function mallProductadd() {
+        $prod = Product::where("id", Input::get("prodId"))->get();
+        $jsonString = Helper::getSettings();
+        $tableColumns = Schema::getColumnListing('products');
+        $category = Input::get("categories");
+        $this->saveProduct($prod, $jsonString, $tableColumns,$category,1);
+        if ($prod[0]->prod_type == 3) {
+            $prodConfig = Product::where("parent_prod_id", Input::get("prodId"))->get();
+            $this->saveProduct($prodConfig, $jsonString, $tableColumns);
+        }
+        Session::put('msg',"Product share on mall successfully");
+        return $data=["status"=>"1","msg"=>"product share on mall successfully","prod"=>$prod];
+    }
+
+    public function saveProduct($product, $jsonString, $tableColumns,$category=null,$parent=null) {
+        foreach ($product as $prod) {
+            $prods = new MallProducts();
+            $prods->store_id = $jsonString['store_id'];
+            $prods->prefix = $jsonString['prefix'];
+            $prods->store_prod_id = $prod->$tableColumns[0];
+            for ($i = 1; $i < count($tableColumns); $i++) {
+                $prods->$tableColumns[$i] = $prod->$tableColumns[$i];
+            }
+            $prods->save();
+            if($parent){
+                 $prods->mallcategories()->sync($category);
+            }
+        }  
+    }
 }

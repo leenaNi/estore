@@ -166,6 +166,9 @@ class LoginController extends Controller {
                 $user->lastname = ucfirst(Input::get('lastname'));
                 $user->country_code =Input::get('country_code');
                 $user->telephone = Input::get('telephone');
+                $jsonString =Helper::getSettings();
+                $user->prefix=$jsonString['prefix'];
+                 $user->store_id=$jsonString['store_id'];
                 $user->status = 1;
                 if ($user->save()) {
                     Helper::newUserInfo($user->id);
