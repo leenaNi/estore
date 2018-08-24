@@ -56,10 +56,12 @@ class ProductsController extends Controller {
     public function index() {
 
         //\Artisan::call("cache:clear");
-        //dd("sdfsdf");
+        //dd(Config('constants.productImgPath'));
 
-
-
+//        $products = Product::find(3);
+//          $products->is_share_on_mall=1;
+//          $products->save();
+//dd($products);
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
 
@@ -215,14 +217,18 @@ class ProductsController extends Controller {
             $saveImgs->catalog_id = $prod->id;
             $saveImgs->filename = is_null($fileName) ? $saveImgs->filename : $fileName;
             $saveImgs->image_type = 1;
+            $saveImgs->image_path =Config('constants.productImgPath');
             $saveImgs->image_mode = 1;
             $saveImgs->save();
         }
 
         $prod->added_by = Input::get('added_by');
         if ($prod->prod_type == 1) {
-            $prod->stock = 100;
+           
             $prod->attr_set = "1";
+        }
+        if (Input::get("is_stock")== 1) {
+         $prod->stock = Input::get("stock");
         }
         if (Input::get('selling_price')) {
 
@@ -416,7 +422,7 @@ class ProductsController extends Controller {
                 $saveImgs->alt_text = Input::get('alt_text')[$key];
                 $saveImgs->image_mode = 1;
                 $saveImgs->sort_order = Input::get('sort_order')[$key];
-                // $saveImgs->imageLink = Input::get('imageLink')[$key];
+                $saveImgs->image_path =Config('constants.productImgPath');
                 $saveImgs->save();
             }
         } else {
@@ -428,7 +434,7 @@ class ProductsController extends Controller {
                 $saveImgs->alt_text = Input::get('alt_text')[$key];
                 $saveImgs->image_mode = 1;
                 $saveImgs->sort_order = Input::get('sort_order')[$key];
-                // $saveImgs->imageLink = Input::get('imageLink')[$key];
+                 $saveImgs->image_path =Config('constants.productImgPath');
 
                 $saveImgs->save();
             }
@@ -2185,8 +2191,16 @@ class ProductsController extends Controller {
     }
 
     public function mallProductadd() {
-        $prod = Product::where("id", Input::get("prodId"))->get();
+        
+      
         $jsonString = Helper::getSettings();
+        $products = Product::find(Input::get("prodId"));
+        $mallProd=MallProducts::where("store_prod_id",$products->id)->where("store_id",$jsonString['store_id'])->count();
+        if($mallProd > 0){
+            Session::put('message',"Product alredy exist on mall!");
+         $data=["status"=>"0","msg"=>"Product alredy exist on mall!"]; 
+        }else{
+        $prod = Product::where("id", Input::get("prodId"))->get();
         $tableColumns = Schema::getColumnListing('products');
         $category = Input::get("categories");
         $this->saveProduct($prod, $jsonString, $tableColumns,$category,1);
@@ -2194,8 +2208,13 @@ class ProductsController extends Controller {
             $prodConfig = Product::where("parent_prod_id", Input::get("prodId"))->get();
             $this->saveProduct($prodConfig, $jsonString, $tableColumns);
         }
+         
+          $products->is_share_on_mall=1;
+          $products->save();
         Session::put('msg',"Product share on mall successfully");
-        return $data=["status"=>"1","msg"=>"product share on mall successfully","prod"=>$prod];
+        $data=["status"=>"1","msg"=>"product share on mall successfully","prod"=>$prod];
+        }
+          return $data;
     }
 
     public function saveProduct($product, $jsonString, $tableColumns,$category=null,$parent=null) {

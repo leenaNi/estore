@@ -3,7 +3,7 @@ APP_DEBUG=true
 APP_KEY=base64:h72yf0pBc4XADWMRUrIb2r23mbAoiJwQ/8xON0CinZQ=
 
 DB_HOST=localhost
-DB_DATABASE=cartini
+DB_DATABASE=veestoresmall
 DB_USERNAME=root
 DB_PASSWORD=
 
