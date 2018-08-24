@@ -18,12 +18,11 @@ use Cart;
 use Session;
 
 class CategoriesController extends Controller {
-    public $products = 'mall_products';
     public function index($slug = null) {
         $data['cat_name'] = "";
         if ($slug != null) {
             $cat = Category::where('url_key', $slug)->first();
-            $data['metaTitle'] = @$cat->meta_title == "" ? @$cat->category . " | Cartini " : @$cat->meta_title;
+            $data['metaTitle'] = @$cat->meta_title == "" ? @$cat->category . " | Veestores " : @$cat->meta_title;
             $data['metaDesc'] = @$cat->meta_desc == "" ? @$cat->category : @$cat->meta_desc;
             $data['metaKeys'] = @$cat->meta_keys == "" ? @$cat->category : @$cat->meta_keys;
 
@@ -65,7 +64,7 @@ class CategoriesController extends Controller {
                                         return $query->withAnyTag("$search");
                                     });
                 });
-                $prods = $prods->select(DB::raw('MAX(selling_price) AS max_price'))->first();
+                $prods = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
                 $data['maxp'] = $prods->max_price;
                 //  dd($data);
             }
@@ -109,7 +108,7 @@ class CategoriesController extends Controller {
         $prods = Product::where('is_individual', '=', 1)
                         ->where('is_avail', '=', 1)->where('status', '=', 1); //->with(['mainimg', 'catalogimgs', 'categories']);
         if ($checkVarient == 0) {
-            $prods = $prods->where("$prodcucts.prod_type", 1);
+            $prods = $prods->where("mall_products.prod_type", 1);
         }
 
         if (!empty($cat)) {
@@ -147,26 +146,26 @@ class CategoriesController extends Controller {
 //                        ->orderBy(DB::raw('sum(\'has_products.qty\')'))
 //                        ->select('has_products.prod_id', 'products.*')
 //                        ->groupBy('products.id');
-                $prods = $prods->orderBy("id", "desc");
+                $prods = $prods->orderBy("mall_products.id", "desc");
             }
             if (Input::get('sort') == 2) {
-                $prods = $prods->orderBy("id", "desc");
+                $prods = $prods->orderBy("mall_products.id", "desc");
             }
 
             // if (Input::get('sort') == 3) {
-            //     $prods = $prods->whereRaw("products.spl_price < products.price")->orderBy('products.spl_price', 'asc');
+            //     $prods = $prods->whereRaw("mall_products.spl_price < mall_products.price")->orderBy('mall_products.spl_price', 'asc');
             //     }
             if (Input::get('sort') == 3) {
-                $prods = $prods->orderBy("selling_price", "asc");
+                $prods = $prods->orderBy("mall_products.selling_price", "asc");
             }
             if (Input::get('sort') == 4) {
-                $prods = $prods->orderBy("selling_price", "desc");
+                $prods = $prods->orderBy("mall_products.selling_price", "desc");
             }
             if (Input::get('sort') == 5) {
-                $prods = $prods->orderBy("product", "asc");
+                $prods = $prods->orderBy("mall_products.product", "asc");
             }
             if (Input::get('sort') == 6) {
-                $prods = $prods->orderBy("product", "desc");
+                $prods = $prods->orderBy("mall_products.product", "desc");
             }
         } else {
 //            $prods = $prods->leftjoin('has_products', 'products.id', '=', 'has_products.prod_id')
@@ -184,12 +183,12 @@ class CategoriesController extends Controller {
         if (Input::get('minp')) {
 //            echo Input::get('minp');
             $minp = round((Input::get('minp') / Session::get('currency_val')), 2);
-            $prods = $prods->where('selling_price', '>=', $minp);
+            $prods = $prods->where('mall_products.selling_price', '>=', $minp);
 //            dd($minp);
         }
         if (Input::get('maxp')) {
             $maxp = round((Input::get('maxp') / Session::get('currency_val')), 2);
-            $prods = $prods->where('selling_price', '<=', $maxp);
+            $prods = $prods->where('mall_products.selling_price', '<=', $maxp);
         }
         if (!empty($catzz)) {
             $i = 1;
