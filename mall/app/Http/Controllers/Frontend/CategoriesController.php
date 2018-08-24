@@ -224,7 +224,7 @@ class CategoriesController extends Controller {
             $checkCartPrd = Cart::instance("shopping")->search(array('id' => "$prd->id"));
             $prodImg=DB::table($prd->prefix."_catalog_images")->where("catalog_id",$prd->store_prod_id)->where("image_mode",1)->first();
             $prd->checkExists = $checkCartPrd;
-            $prd->mainImage =$prodImg->image_path . '/' . @$prodImg->filename;
+            $prd->mainImage =  $prodImg->image_path . '/' . @$prodImg->filename;
             $prd->alt_text = @$prodImg->alt_text;
             $prd->getPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? $prd->spl_price : $prd->price;
             $prd->actualPF = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? "spl_price" : "price";

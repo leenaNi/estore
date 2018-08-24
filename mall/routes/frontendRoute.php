@@ -34,17 +34,22 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
 
 
     //PRODUCT LISTING ROUTES
-    ;
+
     Route::any('/check_coupon', ['as' => 'check_coupon', 'uses' => 'CartController@check_coupon']);
     Route::any('/checkout', ['as' => 'checkout', 'uses' => 'CheckoutController@index']);
     Route::any('/new_user_login_new', array('as' => 'new_user_login_new', 'uses' => 'CheckoutController@new_user_login_new'));
     Route::any('/get_exist_user_login_new', array('as' => 'get_exist_user_login_new', 'uses' => 'CheckoutController@get_exist_user_login_new'));
     Route::any('check-pincode-home', ["as" => "checkPincodeHome", "uses" => "HomeController@checkPincode"]);
-     Route::any('/check-pincode', array('as' => 'checkPincode', 'uses' => 'CheckoutController@checkPincode'));
+    Route::any('/check-pincode', array('as' => 'checkPincode', 'uses' => 'CheckoutController@checkPincode'));
     Route::any('/getListingFilter', ['as' => 'getListingFilter', 'uses' => 'CategoriesController@getListingFilter']);
     Route::any('/get-product-listing', ['as' => 'getProductListing', 'uses' => 'CategoriesController@getProductListing']);
+
+    
+    //InofStock Notification
+    Route::any('/notify-mail', ['as' => 'notifyMail', 'uses' => 'ProductController@notify_mail']);
     //Category Listing
 
     Route::get('/explore/{slug?}', ['as' => 'category', 'uses' => 'CategoriesController@index']);
+    Route::get('/{slug}/', ['as' => 'prod', 'uses' => 'ProductController@index']);
 });
 

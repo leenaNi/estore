@@ -5,8 +5,8 @@ namespace App\Http\Controllers\frontend;
 use Route;
 use Input;
 use App\Models\User;
-use App\Models\Product;
-use App\Models\Category;
+use App\Models\MallProdCategory as Category;
+use App\Models\MallProducts as Product;
 use App\Models\AttributeValue;
 use App\Models\AttributeSet;
 use App\Models\Attribute;
@@ -85,21 +85,22 @@ class ProductController extends Controller {
         $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
         $product = Product::find($pId);
         // return $product;
-        $product->prodImage = @Config('constants.productImgPath') .'/'. $product->catalogimgs()->first()->filename;
+
         if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
             $product->wishlist = 1;
         } else {
             $product->wishlist = 0;
         }
-        $product->images = $product->catalogimgs()->get();
+        $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get(); // $product->catalogimgs()->get();
         foreach ($product->images as $prdimgs) {
-            $prdimgs->img = @Config('constants.productImgPath') .'/'. $prdimgs->filename;
+            $prdimgs->img = $prdimgs->image_path . '/' . $prdimgs->filename;
         }
+        $product->prodImage = $product->images[0]->image_path . '/' . $product->images[0]->filename;
         // dd($product);
-        $nattrs = AttributeSet::find($product->attributeset['id'])->attributes()->where("is_filterable", "=", 0)->get();
+        $nattrs = []; //AttributeSet::find($product->attr_set)->attributes()->where("is_filterable", "=", 0)->get();
 
-        $product->related = $product->relatedproducts()->where("status", 1)->get();
-        $product->upsellproduct = $product->upsellproducts()->where("status", 1)->get();
+        $product->related = []; //$product->relatedproducts()->where("status", 1)->get();
+        $product->upsellproduct = []; //$product->upsellproducts()->where("status", 1)->get();
         $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | Cartini " : @$product->meta_title;
         $product->metaDesc = @$product->meta_desc == "" ? @$product->product : @$product->meta_desc;
         $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
@@ -120,7 +121,7 @@ class ProductController extends Controller {
         $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
 
         $producctAttrSetId = $product->attr_set;
-        $product->prodImage = Config('constants.productImgPath') .'/'. $product->catalogimgs()->first()->filename;
+        $product->prodImage = Config('constants.productImgPath') . '/' . $product->catalogimgs()->first()->filename;
         if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
             $product->wishlist = 1;
         } else {
@@ -168,7 +169,7 @@ class ProductController extends Controller {
                                         }]);
                                 }
                                     ])->first();
-                    $product->prodImage = Config('constants.productImgPath') .'/'. $product->catalogimgs()->first()->filename;
+                    $product->prodImage = Config('constants.productImgPath') . '/' . $product->catalogimgs()->first()->filename;
                     $product->shortDesc = html_entity_decode($product->short_desc);
                     $product->longDesc = html_entity_decode($product->long_desc);
                     if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
@@ -180,16 +181,16 @@ class ProductController extends Controller {
 
                     $product->images = $product->catalogimgs()->get();
                     foreach ($product->images as $img) {
-                        $img->img =Config('constants.productImgPath') .'/'. @$img->filename;
+                        $img->img = Config('constants.productImgPath') . '/' . @$img->filename;
                     }
                     $product->related = $product->relatedproducts()->where("status", 1)->get();
 
                     foreach ($product->related as $prodrel) {
                         $related_img = @$prodrel->catalogimgs()->first();
                         if (!empty($related_img)) {
-                            $prodrel->img =Config('constants.productImgPath') .'/'. @$related_img->filename;
+                            $prodrel->img = Config('constants.productImgPath') . '/' . @$related_img->filename;
                         } else {
-                            $prodrel->img =Config('constants.defaultImgPath') . '/default-product.jpg';
+                            $prodrel->img = Config('constants.defaultImgPath') . '/default-product.jpg';
                         }
                     }
 
@@ -197,20 +198,20 @@ class ProductController extends Controller {
                     foreach ($product->upsellproduct as $produpsell) {
                         $upsell_img = @$produpsell->catalogimgs()->first();
                         if (!empty($upsell_img)) {
-                            $produpsell->img = Config('constants.productImgPath') .'/'. @$upsell_img->filename;
+                            $produpsell->img = Config('constants.productImgPath') . '/' . @$upsell_img->filename;
                         } else {
                             $produpsell->img = (Config('constants.defaultImgPath') . '/default-product.jpg');
                         }
                     }
-                    if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                    if ($prod->is_stock == 1 && $this->feature["stock"] == 1) {
                         $subprods = $prod->getsubproducts()->get();
-                    }else{
-                       $subprods = $prod->subproducts()->get();
+                    } else {
+                        $subprods = $prod->subproducts()->get();
                     }
-                   
+
                     foreach ($subprods as $subP) {
-                        $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
-                       //print_r($hasOpt);
+                        $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status", 1)->orderBy("att_sort_order", "asc")->get();
+                        //print_r($hasOpt);
                         foreach ($hasOpt as $prdOpt) {
                             $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
                             $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
@@ -465,7 +466,7 @@ class ProductController extends Controller {
             }
 
             public function getProductQuickView() {
-              
+
                 $prods = Product::where('is_trending', 1)->where('status', 1);
                 if ($this->feature['products-with-variants'] == 0) {
                     $prods = $prods->where('prod_type', 1)->where('stock' > 0)->get();
