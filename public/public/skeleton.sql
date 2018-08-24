@@ -2470,6 +2470,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_products` (
   `is_del` tinyint(4) NOT NULL DEFAULT '0',
    `is_trending` int(11) NOT NULL DEFAULT '0',
   `min_order_quantity` int(11) DEFAULT '1',
+  `is_share_on_mall` tinyint(4) NOT NULL DEFAULT '0',
  `created_at` timestamp NOT NULL DEFAULT NOW(),
    `updated_at` timestamp  DEFAULT  NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -18,6 +18,7 @@ use App\Library\Helper;
 use App\Models\EmailTemplate;
 use App\Models\AttributeValue;
 use App\Models\Pincode;
+use App\Models\MallProducts;
 use Input;
 use App\Http\Controllers\Controller;
 use Cart;
@@ -1865,14 +1866,14 @@ class CheckoutController extends Controller {
                 $subtotal = $cart->subtotal;
             }
             $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal * Session::get('currency_val'), "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax)];
-            $market_place = Helper::generalSetting(35);
-            if (isset($market_place) && $market_place->status == 1) {
-                $prior_vendor = $product->vendorPriority()->first();
-                $vendor['order_status'] = 1;
-                $vendor['tracking_id'] = 1;
-                $vendor['vendor_id'] = is_null($prior_vendor) ? null : $prior_vendor->id;
-                $cart_ids[$cart->id] = array_merge($cart_ids[$cart->id], $vendor);
-            }
+//            $market_place = Helper::generalSetting(35);
+//            if (isset($market_place) && $market_place->status == 1) {
+//                $prior_vendor = $product->vendorPriority()->first();
+//                $vendor['order_status'] = 1;
+//                $vendor['tracking_id'] = 1;
+//                $vendor['vendor_id'] = is_null($prior_vendor) ? null : $prior_vendor->id;
+//                $cart_ids[$cart->id] = array_merge($cart_ids[$cart->id], $vendor);
+//            }
             if ($cart->options->has('sub_prod')) {
                 $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
@@ -1888,16 +1889,19 @@ class CheckoutController extends Controller {
                 $date = $cart->options->eNoOfDaysAllowed;
                 $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
-                $prd = Product::find($cart->options->sub_prod);
-                $prd->stock = $prd->stock - $cart->qty;
-                if ($prd->is_stock == 1) {
-                    $prd->update();
+     
+                if ($prddataS->is_stock == 1) {
+                   $prddataS->stock = $prddataS->stock - $cart->qty;
+                    if($prddataS->is_share_on_mall==1){
+                        $mallProduct = MallProducts::where("store_prod_id",$cart->options->sub_prod)->first(); 
+                        $mallProduct->stock=$prddataS->stock;
+                        $mallProduct->update();
+                    }
+                     $prddataS->update();
                 }
 
-
-
-                if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
-                    $this->AdminStockAlert($prd->id);
+                if ($prddataS->stock <= $stockLimit['stocklimit'] && $prddataS->is_stock == 1) {
+                    $this->AdminStockAlert($prddataS->id);
                 }
             } else if ($cart->options->has('combos')) {
                 $sub_prd_ids = [];

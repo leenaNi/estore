@@ -153,6 +153,8 @@ class HomeController extends Controller {
             $saveImgs->filename = is_null($fileName) ? $saveImgs->filename : $fileName;
             $saveImgs->image_type = 1;
             $saveImgs->image_mode = 1;
+            $saveImgs->alt_text = Input::get('product');;
+            $saveImgs->image_path =Config('constants.productImgPath');
             $saveImgs->save();
         }
 
@@ -169,7 +171,12 @@ class HomeController extends Controller {
                 $prod->selling_price = Input::get('price');
             }
         }
-        $prod->stock = 500;
+        if(Input::get('is_stock')){
+            $prod->stock =20;// Input::get('stock');
+        }else{
+             $prod->stock=10000;  
+        }
+        
         //dd($prod);
         // Session::flash("msg","Product Added succesfully.");
         $prod->update();

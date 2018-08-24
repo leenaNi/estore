@@ -65,7 +65,13 @@
         {!! Form::number('selling_price',null, ["class"=>'form-control priceConvertTextBox','min'=>0 ,"placeholder"=>'Enter Selling Price']) !!}
        
     </div>
-
+ @if($settingStatus['26'] == 1)
+ <div class="form-group col-md-6 stockcheck">
+        <label class="control-label">Stock </label>
+        {!! Form::number('stock',null, ["class"=>'form-control validate[required]','min'=>0 ,"placeholder"=>'Enter stock']) !!}
+       
+    </div>
+ @endif
     <div class="form-group col-md-12">
         <label class="control-label">Select Category </label>
         <select name="category[]" class="selectpicker validate[required] sel-cat-multi-drop col-md-12" multiple>
@@ -92,6 +98,8 @@
 </select>
 
     </div>
+
+
   <div class="form-group col-md-4">
         <label class="control-label">Status </label>
       <label class="switch">

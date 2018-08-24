@@ -57,7 +57,7 @@ class CheckoutController extends Controller {
                 Cart::instance('shopping')->update($k, ["options" => ['wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0]]);
             }
             //Session::forget("shippingCost");
-            $this->revert_cod_charges();
+            ///$this->revert_cod_charges();
             $countries = Country::where("status", "=", 1)->get(['id', 'name']);
             $zoneData = Zone::where("status", "=", 1)->get(['id', 'name']);
             // return view('Frontend.pages.checkout.checkout', compact('countries', 'zoneData'));
