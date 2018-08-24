@@ -2,7 +2,7 @@
 
 namespace App\Library;
 
-use App\Models\Category;
+use App\Models\MallProdCategory;
 use App\Models\Product;
 use App\Models\Loyalty;
 use App\Models\AttributeValue;
@@ -43,7 +43,7 @@ class Helper {
         }
     }
 
-    public static function returnView($viewname = null, $data = null, $url = null, $chkTheme = null) {  
+    public static function returnView($viewname = null, $data = null, $url = null, $chkTheme = null) {
         $themeView = $viewname;
         if (!empty($chkTheme)) {
             if (!empty($viewname) && !empty(config('app.active_theme'))) {
@@ -161,8 +161,8 @@ class Helper {
         $getCart = Cart::get($searchCart[0]);
         $prodChk = Product::find($getCart->id);
         $qty = $getCart->qty;
-        if ($prodChk->is_stock == 1 && $prodChk->status==1) {
-            if ($prodChk->prod_type == 1) {                
+        if ($prodChk->is_stock == 1 && $prodChk->status == 1) {
+            if ($prodChk->prod_type == 1) {
                 $stock = $prodChk->stock;
                 if ($qty <= $stock) {
                     return "In Stock";
@@ -173,7 +173,7 @@ class Helper {
                 $subProd = $getCart->options->sub_prod;
                 $stock = @Product::find($subProd)->stock;
                 $status = @Product::find($subProd)->status;
-                if ($qty <= $stock && $status==1) {
+                if ($qty <= $stock && $status == 1) {
                     return "In Stock";
                 } else {
                     return "Out of Stock";
@@ -184,10 +184,10 @@ class Helper {
                 $chkArr = [];
                 foreach ($comboProds as $cPrdK => $cPrdV) {
                     $chkCombo = Product::find($cPrdK);
-                                         if ($chkCombo->prod_type == 1) {
+                    if ($chkCombo->prod_type == 1) {
                         $stock = $chkCombo->stock;
                         $status = $chkCombo->status;
-                        if ($qty <= $stock && $status==1) {
+                        if ($qty <= $stock && $status == 1) {
                             array_push($chkArr, 1);
                         } else {
                             array_push($chkArr, 0);
@@ -196,7 +196,7 @@ class Helper {
                         $getS = $cPrdV['sub_prod'];
                         $stock = Product::find($getS)->stock;
                         $status = Product::find($getS)->status;
-                        if ($qty <= $stock && $status==1) {
+                        if ($qty <= $stock && $status == 1) {
                             array_push($chkArr, 1);
                         } else {
                             array_push($chkArr, 0);
@@ -209,9 +209,9 @@ class Helper {
                     }
                 }
             }
-        } else if($prodChk->is_stock ==0 && $prodChk->status == 1) {
+        } else if ($prodChk->is_stock == 0 && $prodChk->status == 1) {
             return "In Stock";
-        }else{
+        } else {
             return "Out of Stock";
         }
     }
@@ -340,15 +340,12 @@ class Helper {
     public static function getnewCart() {
         $cart = '<div class="shop-cart">';
         $cart .= '<a href="#" class="cart-control"><img src="' . asset(Config("constants.frontendPublicImgPath") . "assets/icons/cart-black.png") . '" alt="">';
-
         $cart .= '<span class="cart-number number">' . Cart::instance("shopping")->count() . '</span>';
         $cart .= '</a>';
         if (Cart::instance("shopping")->count() > 0) {
-
             $cart .= '<div class="shop-item">';
             $cart .= '<div class="widget_shopping_cart_content">';
             $cart .= '<ul class="cart_list">';
-
             foreach (Cart::instance("shopping")->content() as $c) {
                 $cart .= '<li class="clearfix">';
                 $cart .= '<a class="p-thumb" href="#" style="height: 50px;width: 50px;">';
@@ -389,13 +386,13 @@ class Helper {
                     $message->subject($subject);
                 })) {
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     public static function getmaxPrice() {
         $prod = DB::table('products')->where('price', DB::raw("(select max(`price`) from " . DB::getTablePrefix() . "products)"))->first();
-        //print_r($prod); die;
         if ($prod) {
             return $prod->price;
         } else {
@@ -427,25 +424,20 @@ class Helper {
     }
 
     public static function getSettings() {
-
-        $path = Config("constants.adminStorePath"). "/storeSetting.json";
-        //dd( $path);
+        $path = Config("constants.adminStorePath") . "/storeSetting.json";
         $str = file_get_contents($path);
         $settings = json_decode($str, true);
-        //Session::put('cur', Currency::find($settings->currency_id)->unicode);
         return $settings;
     }
 
-       public static function saveSettings($productconfig) {
-         //  echo Config("constants.adminStorePath");
-         //  dd($productconfig);
-        $path =Config("constants.adminStorePath"). "/storeSetting.json";
+    public static function saveSettings($productconfig) {
+        $path = Config("constants.adminStorePath") . "/storeSetting.json";
         $jsonfile = fopen($path, "w");
-
         fwrite($jsonfile, $productconfig);
         fclose($jsonfile);
-      return 1;
+        return 1;
     }
+
     public static function getRelatedProd($prod) {
         $relatedId = DB::table('has_categories')->where('prod_id', $prod->id)->pluck("cat_id");
         $prod_id = DB::table('has_categories')->Where('cat_id', DB::table('has_categories')->where('prod_id', $prod->id)->pluck("cat_id"))->pluck("prod_id");
@@ -463,19 +455,17 @@ class Helper {
 
     public static function revertTax() {
         $cart = Cart::instance('shopping')->content();
-          foreach ($cart as $k => $c) {
-             $subtotal=0;
-             $tax_amt=0;
-                   Cart::instance('shopping')->update($k, ["options" => ['disc' =>0]]);
-                     if ($c->options->tax_type == 2) {
-                      $tax_amt = round(($c->price *($c->options->taxes / 100)), 2);
-                    $subtotal = $c->price+$tax_amt;
-                    Cart::instance('shopping')->update($k, ["subtotal" =>$subtotal ]);
-                     Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);
-                }
-      
+        foreach ($cart as $k => $c) {
+            $subtotal = 0;
+            $tax_amt = 0;
+            Cart::instance('shopping')->update($k, ["options" => ['disc' => 0]]);
+            if ($c->options->tax_type == 2) {
+                $tax_amt = round(($c->price * ($c->options->taxes / 100)), 2);
+                $subtotal = $c->price + $tax_amt;
+                Cart::instance('shopping')->update($k, ["subtotal" => $subtotal]);
+                Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);
+            }
         }
-     //   dd($cart);
         return $cart;
     }
 
@@ -485,27 +475,22 @@ class Helper {
         $calTax = 0;
         $tax_amt = 0;
         $orderAmt = 0;
-
         foreach ($cart as $k => $c) {
             $getdisc = ($c->options->disc + $c->options->wallet_disc + $c->options->voucher_disc + $c->options->referral_disc + $c->options->user_disc);
             $taxeble_amt = $c->subtotal - $getdisc;
             $orderAmt += $c->subtotal;
             if ($taxStatus == 1) {
                 $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
-
                 if ($c->options->tax_type == 2) {
                     $calTax = $calTax + $tax_amt;
                 }
             }
-
             Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);
         }
 
         $cart_total = $orderAmt;
         $data = [];
-
         $all_coupon_amount = Session::get('couponUsedAmt') + Session::get('checkbackUsedAmt') + Session::get('voucherAmount') + Session::get('referalCodeAmt') + Session::get('lolyatyDis') + Session::get('discAmt');
-
         $subtotal = $calTax + $cart_total;
         $data['cart'] = $cart;
         $data['sub_total'] = $subtotal;
@@ -540,7 +525,6 @@ class Helper {
     public static function getMrpTotal() {
         $cart = Cart::instance('shopping')->content();
         $sub_total = 0;
-
         foreach ($cart as $key => $cItm) {
             $getdisc = ($cItm->options->disc + $cItm->options->wallet_disc + $cItm->options->voucher_disc + $cItm->options->referral_disc + $cItm->options->user_disc);
             $sub_total += $cItm->subtotal - $getdisc;
@@ -574,12 +558,11 @@ class Helper {
     }
 
     public static function saveImage($exturl, $saveto) {
-
         file_put_contents($saveto, file_get_contents($exturl));
     }
 
     public static function getbreadcrumbs($catid, $selslug = null) {
-        $category = Category::find($catid);
+        $category = MallProdCategory::find($catid);
         $arr = [];
         if (isset($category)) {
             $data = $category->ancestorsAndSelf()->get()->toArray();
@@ -602,10 +585,8 @@ class Helper {
     }
 
     public static function array_sort($array, $on, $order = SORT_ASC) {
-
         $new_array = array();
         $sortable_array = array();
-
         if (count($array) > 0) {
             foreach ($array as $k => $v) {
                 if (is_array($v)) {
@@ -637,31 +618,28 @@ class Helper {
     }
 
     public static function maxPriceByCat($catId) {
-
         $allCats = array();
-
-        if (Category::find($catId)->isLeaf()) {
-            array_push($allCats, Category::find($catId)->ancestorsAndSelf()->get(['id']));
+        if (MallProdCategory::find($catId)->isLeaf()) {
+            array_push($allCats, MallProdCategory::find($catId)->ancestorsAndSelf()->get(['id']));
         }
-        if (Category::find($catId)->isRoot()) {
-            array_push($allCats, Category::find($catId)->descendantsAndSelf()->get(['id']));
+        if (MallProdCategory::find($catId)->isRoot()) {
+            array_push($allCats, MallProdCategory::find($catId)->descendantsAndSelf()->get(['id']));
         }
-        if (Category::find($catId)->children()->count() > 0) {
-            array_push($allCats, Category::find($catId)->descendantsAndSelf()->get(['id']));
-            array_push($allCats, Category::find($catId)->ancestors()->get());
+        if (MallProdCategory::find($catId)->children()->count() > 0) {
+            array_push($allCats, MallProdCategory::find($catId)->descendantsAndSelf()->get(['id']));
+            array_push($allCats, MallProdCategory::find($catId)->ancestors()->get());
         }
-
         foreach ($allCats as $cats) {
             foreach ($cats as $cat) {
                 $cat_id[] = $cat->id;
             }
         }
 
-        $prod = DB::table('has_categories')->whereIn('cat_id', $cat_id)->pluck('prod_id');
+//        $prod = DB::table('has_categories')->whereIn('cat_id', $cat_id)->pluck('prod_id');
         //dd($prod);
-        $maxp = DB::table('products')->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
+//        $maxp = DB::table('products')->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
         // dd($maxp);
-        return $maxp->maxp;
+        return 100; //$maxp->maxp;
     }
 
     public static function quickAddtoCart($prods) {
@@ -687,7 +665,7 @@ class Helper {
                                         ])->first();
                         // dd()
                         // $quick->$key= $product;            
-                        $product->prodImage = Config('constants.productImgPath') .'/'. @$product->catalogimgs()->first()->filename;
+                        $product->prodImage = Config('constants.productImgPath') . '/' . @$product->catalogimgs()->first()->filename;
                         $product->shortDesc = html_entity_decode($product->short_desc);
                         $product->longDesc = html_entity_decode($product->long_desc);
 
@@ -712,7 +690,7 @@ class Helper {
                         $product = Product::where('id', $prod->id)->first();
                         // dd()
                         // $quick->$key= $product;            
-                        $product->prodImage =Config('constants.productImgPath') .'/'. @$product->catalogimgs()->first()->filename;
+                        $product->prodImage = Config('constants.productImgPath') . '/' . @$product->catalogimgs()->first()->filename;
                         $product->shortDesc = html_entity_decode($product->short_desc);
                         $product->longDesc = html_entity_decode($product->long_desc);
                         if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
@@ -730,8 +708,8 @@ class Helper {
                 $data['product'] = $quickProduct;
                 $data['currencyVal'] = Session::get('currency_val');
                 $data['stocklimit'] = $stockLimit->stocklimit;
-               // $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
-                $data['curData'] =app('App\Http\Controllers\Frontend\HomeController')->setCurrency();
+                // $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
+                $data['curData'] = app('App\Http\Controllers\Frontend\HomeController')->setCurrency();
                 return $data;
             }
 
@@ -828,7 +806,7 @@ class Helper {
                         $tableContant = $tableContant . '   <tr class="cart_item">
         <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
                         if ($cart['options']['image'] != '') {
-                            $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") ."/". $cart["options"]["image"]) . '" alt="">
+                            $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . "/" . $cart["options"]["image"]) . '" alt="">
           </a>';
                         } else {
                             $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
@@ -919,33 +897,33 @@ class Helper {
                 return $tableContant;
             }
 
-            public static function sendsms($mobile = null, $msg = null,$country = null) {
+            public static function sendsms($mobile = null, $msg = null, $country = null) {
                 $mobile = $mobile;
-                if($mobile){
-                $msg = $msg;
-                $msg = urlencode($msg);
+                if ($mobile) {
+                    $msg = $msg;
+                    $msg = urlencode($msg);
 
 
-                // echo $msg;
-                //if($country=='+91')
-        if($country=='+880'){
-          $urlto =  "http://api.boom-cast.com/boomcast/WebFramework/boomCastWebService/externalApiSendTextMessage.php?masking=NOMASK&userName=IFC&password=6d38103103bb45de1c77e7eece818b1c&MsgType=TEXT&receiver=$mobile&message=$msg";   
-        }else
-        {
-            $urlto = "http://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage&send_to=$mobile&msg=$msg&msg_type=TEXT&userid=2000164017&auth_scheme=plain&password=GClWepNxL&v=1.1&format=text";
-        }
-                $ch = curl_init();
+                    // echo $msg;
+                    //if($country=='+91')
+                    if ($country == '+880') {
+                        $urlto = "http://api.boom-cast.com/boomcast/WebFramework/boomCastWebService/externalApiSendTextMessage.php?masking=NOMASK&userName=IFC&password=6d38103103bb45de1c77e7eece818b1c&MsgType=TEXT&receiver=$mobile&message=$msg";
+                    } else {
+                        $urlto = "http://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage&send_to=$mobile&msg=$msg&msg_type=TEXT&userid=2000164017&auth_scheme=plain&password=GClWepNxL&v=1.1&format=text";
+                    }
+                    $ch = curl_init();
 // set URL and other appropriate options
-                curl_setopt($ch, CURLOPT_URL, $urlto);
-                //curl_setopt($ch, CURLOPT_HEADER, 0);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch, CURLOPT_URL, $urlto);
+                    //curl_setopt($ch, CURLOPT_HEADER, 0);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 // grab URL and pass it to the browser
-                $output = curl_exec($ch);
+                    $output = curl_exec($ch);
 
 // close cURL resource, and free up system resources
-                curl_close($ch);
-              }
+                    curl_close($ch);
+                }
             }
+
             public static function getCurrency($isoCode) {
 //                echo $isoCode;
                 $currencyData = HasCurrency::where('iso_code', $isoCode)->first();
@@ -965,15 +943,15 @@ class Helper {
                 }
             }
 
-            public static function getLogoFromURL($logo)
-            {
+            public static function getLogoFromURL($logo) {
                 $img = str_replace('data:image/png;base64,', '', $logo);
                 $img = str_replace(' ', '+', $img);
                 $data = base64_decode($img);
-                $file = Config("constants.logoUploadImgPath"). 'logo.png';
+                $file = Config("constants.logoUploadImgPath") . 'logo.png';
                 $success = file_put_contents($file, $data);
                 return $file;
             }
 
         }
+
 ?>

@@ -5,7 +5,6 @@ namespace App\Models;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Conner\Tagging\TaggableTrait;
 use Kyslik\ColumnSortable\Sortable;
-use Auth;
 
 class Product extends \Eloquent {
 

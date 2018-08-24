@@ -3,6 +3,9 @@
         <div class="col-md-4">
             <ul>
                 <li>Home</li>
+                @foreach($menu as $getm)
+                {{ App\Library\Helper::getmenu($getm) }}
+                @endforeach
             </ul>
         </div>
         <div class="col-md-4">

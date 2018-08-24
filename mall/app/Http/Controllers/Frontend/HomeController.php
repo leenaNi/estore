@@ -6,7 +6,7 @@ use Socialite;
 use Route;
 use Input;
 use App\Models\User;
-use App\Models\Category;
+use App\Models\MallProdCategory;
 use App\Models\GeneralSetting;
 use App\Library\Helper;
 use App\Models\Slider;
@@ -45,10 +45,22 @@ class HomeController extends Controller {
     public function checkemail() {
         $email = Input::get('email');
         $count = Notification::where('email', $email)->count();
-        return $count;    }
+        return $count;
+    }
 
     public function index() {
         $data = [];
+        $categoryA = MallProdCategory::get(['id', 'category'])->toArray();
+        $rootsS = MallProdCategory::roots()->where("status", 1)->get();
+        $category = [];
+        $attr_sets = [];
+        $prod_types = [];
+        foreach ($categoryA as $val) {
+            $category[$val['id']] = $val['category'];
+        }
+        $data['category'] = $category;
+        $data['rootsS'] = $rootsS;
+
         $viewname = Config('constants.frontendView') . '.index';
         return Helper::returnView($viewname, $data, null, 1);
     }
@@ -66,10 +78,10 @@ class HomeController extends Controller {
             $destinationPath = Config('constants.productUploadImgPath');
             $data = Input::get('prod_img_url');
             list($type, $data) = explode(';', $data);
-            list(, $data)      = explode(',', $data);
+            list(, $data) = explode(',', $data);
             $data = base64_decode($data);
             $fileName = "prod-" . date("YmdHis") . "." . Input::File('images')->getClientOriginalExtension();
-            file_put_contents($destinationPath.$fileName, $data);
+            file_put_contents($destinationPath . $fileName, $data);
 
 
             // $destinationPath = public_path() . '/public/Admin/uploads/catalog/products/';
@@ -224,12 +236,12 @@ class HomeController extends Controller {
         $viewname = Config('constants.frontendView') . '.privacy-policy';
         return Helper::returnView($viewname, $data);
     }
-    
-    public function disclaimer(){
+
+    public function disclaimer() {
         $terms = StaticPage::where('url_key', 'privacy-policy')->first();
         $data = ['terms' => $terms];
         $viewname = Config('constants.frontendView') . '.disclaimer';
-        return Helper::returnView($viewname, $data);  
+        return Helper::returnView($viewname, $data);
     }
 
     public function checkPincode() {
@@ -299,7 +311,7 @@ class HomeController extends Controller {
     }
 
     public function updateHomePage3Boxes() {
-       //dd(Input::all());
+        //dd(Input::all());
         $dynamiclayout = HasLayout::find(Input::get("id"));
         $dynamiclayout->layout_id = 4;
         $dynamiclayout->link = Input::get("link");
@@ -313,10 +325,10 @@ class HomeController extends Controller {
             $destinationPath = Config('constants.layoutUploadPath');
             $data = Input::get('box3_image');
             list($type, $data) = explode(';', $data);
-            list(, $data)      = explode(',', $data);
+            list(, $data) = explode(',', $data);
             $data = base64_decode($data);
             $fileName = $fileName = date("YmdHis") . "." . Input::file('image')->getClientOriginalExtension();
-            file_put_contents($destinationPath.$fileName, $data);
+            file_put_contents($destinationPath . $fileName, $data);
         } else {
             $fileName = Input::get("old_image");
         }
@@ -368,8 +380,8 @@ class HomeController extends Controller {
         //Default Currency
         $currency = GeneralSetting::where('url_key', 'default-currency')->first(['details']);
         $currencySettings = json_decode($currency->details, true);
-        $jsonString =Helper::getSettings();
-        $data = (object)$jsonString;
+        $jsonString = Helper::getSettings();
+        $data = (object) $jsonString;
 
         //Current Session Currency
         $currentCurr = Session::get('currency');

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use App\Models\Category;
+use App\Models\MallProdCategory;
 use App\Models\Product;
 use App\Models\Translation;
 use App\Models\SocialMediaLink;
@@ -56,7 +56,7 @@ abstract class Controller extends BaseController {
         View::share('getAllCategories', $this->getAllCategories());
 
 
-//        View::share('menu', $this->getMenu());
+        View::share('menu', $this->getMenu());
 //        View::share('cart', $this->getCart());
 //        View::share('langs', $this->getTranslations());
         View::share('industry_id', Helper::getSettings()['industry_id']);
@@ -92,10 +92,10 @@ abstract class Controller extends BaseController {
     }
 
     public function getMenu() {
-        $menu = Category::roots()->where("is_nav", "=", "1")->where('status', 1)->orderBy('sort_order', "asc")->with('catimgs')->get();
+        $menu = MallProdCategory::roots()->where("is_nav", "=", "1")->where('status', 1)->orderBy('sort_order', "asc")->get(); //->with('catimgs')
 
         foreach ($menu as $child)
-            $menu->children = $child->descendants()->where("is_nav", "=", "1")->where('status', 1)->orderBy('sort_order', "asc")->with('catimgs')->get();
+            $menu->children = $child->descendants()->where("is_nav", "=", "1")->where('status', 1)->orderBy('sort_order', "asc")->get(); //->with('catimgs')
         return $menu;
     }
 
@@ -104,7 +104,7 @@ abstract class Controller extends BaseController {
     }
 
     public function getAllCategories() {
-        return Category::roots()->where("is_nav", "=", "1")->orderBy('sort_order', "asc")->get();
+        return MallProdCategory::roots()->where("is_nav", "=", "1")->orderBy('sort_order', "asc")->get();
     }
 
     public function prodDetail($id) {
