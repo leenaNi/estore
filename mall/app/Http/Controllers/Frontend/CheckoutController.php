@@ -403,29 +403,29 @@ class CheckoutController extends Controller {
         $toPayment['payamt'] = $cart_amt['total'] * Session::get('currency_val');
         $toPayment['orderId'] = Session::get('orderId');
         $toPayment['email'] = User::find(Session::get('loggedin_user_id'))->email;
-        $toPayment['retUrl'] = route('response') . "?DR={DR}";
-        $toPayment['ebsStatus'] = GeneralSetting::where('url_key', 'ebs')->first()->status;
+        //$toPayment['retUrl'] = route('response') . "?DR={DR}";
+        //$toPayment['ebsStatus'] = GeneralSetting::where('url_key', 'ebs')->first()->status;
         $toPayment['payUmoneyStatus'] = GeneralSetting::where('url_key', 'pay-u-money')->first()->status;
         $toPayment['citrusPayStatus'] = GeneralSetting::where('url_key', 'citrus')->first()->status;
 
         $toPayment['commentDesc'] = $order->description;
-        $dtails = json_decode(GeneralSetting::where('url_key', 'ebs')->first()->details);
-        foreach ($dtails as $detk => $detv) {
-            if ($detk == "mode")
-                $mode = $detv;
-            if ($detk == "key")
-                $ebskey = $detv;
-            if ($detk == "account_id")
-                $account_id = $detv;
-        }
-        $toPayment['ebsMode'] = @$mode;
-        $toPayment['ebsKey'] = @$ebskey;
-        $toPayment['ebsAccountId'] = @$account_id;
-        if (Session::get('pay_amt') > 0)
-            $toPayment['frmAction'] = route('ebs');
-        else
-            $toPayment['frmAction'] = route('order_cash_on_delivery');
-
+//        $dtails = json_decode(GeneralSetting::where('url_key', 'ebs')->first()->details);
+//        foreach ($dtails as $detk => $detv) {
+//            if ($detk == "mode")
+//                $mode = $detv;
+//            if ($detk == "key")
+//                $ebskey = $detv;
+//            if ($detk == "account_id")
+//                $account_id = $detv;
+//        }
+//        $toPayment['ebsMode'] = @$mode;
+//        $toPayment['ebsKey'] = @$ebskey;
+//        $toPayment['ebsAccountId'] = @$account_id;
+//        if (Session::get('pay_amt') > 0)
+//            $toPayment['frmAction'] = route('ebs');
+//        else
+//            $toPayment['frmAction'] = route('order_cash_on_delivery');
+//
 
 
         $ad_charge = AdditionalCharge::ApplyAdditionalCharge($cart_amt['total']);
