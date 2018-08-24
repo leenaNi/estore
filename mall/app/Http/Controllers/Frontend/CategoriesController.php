@@ -229,11 +229,12 @@ class CategoriesController extends Controller {
             $prd->getPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? $prd->spl_price : $prd->price;
             $prd->actualPF = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? "spl_price" : "price";
             $prd->delPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? 1 : 0;
-            if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($prd->id)) {
-                $prd->chkwishlist = 1;
-            } else {
-                $prd->chkwishlist = 0;
-            }
+            $prd->chkwishlist = 0;
+//            if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($prd->id)) {
+//                $prd->chkwishlist = 1;
+//            } else {
+//                $prd->chkwishlist = 0;
+//            }
         }
 
         $filters = [];

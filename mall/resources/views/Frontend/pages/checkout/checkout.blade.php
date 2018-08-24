@@ -497,15 +497,15 @@
                                                         <input  name="paymentMethod" type="radio" ng-model="payOpt" ng-click="paymentmethodChk($event)" class="chk_cod cod codChk" data-method = 'cod' name="radio"  id="radioCod"  value="3"><label for="radioCod"   ><span><span></span></span> CASH ON DELIVERY <span ng-show="toPayment.cod_charges > 0">(<span class="currency-sym"></span> <?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';  ?>[[ toPayment.cod_charges * toPayment.currency_val |number :2 ]])</span></label>
                                                     </li> 
                                                 </div>                                                   
-                                                <li>
+<!--                                                <li>
                                                     <input   name="paymentMethod" type="radio"  data-method = '' class="chk_cod chk_paypal"  ng-model="payOpt" ng-click="paymentmethodChk($event)"  id="radioPaypal"  name="radio" value="4"><label  for="radioPaypal"   for="radio2"><span><span></span></span> PAYPAL</label>
-                                                </li>
-                                                <li>
+                                                </li>-->
+<!--                                                <li>
                                                     <input name="paymentMethod" type="radio"  data-method = '' class="chk_cod chk_razPay"  ng-model="payOpt" ng-click="paymentmethodChk($event)"  id="radioRazpay" name="radio" value="5"><label   for="radioRazpay"  for="radio2"><span><span></span></span> RAZORPAY</label>
-                                                </li>
-                                                <li ng-show="toPayment.citrusPayStatus == 1">
+                                                </li>-->
+<!--                                                <li ng-show="toPayment.citrusPayStatus == 1">
                                                     <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_citrus" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioCitrus"  name="radio" value="6"><label for="radioCitrus"   ><span><span></span></span> Citrus</label>
-                                                </li>
+                                                </li>-->
                                                 <li >
                                                     <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_cit_pay" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioCityPay"  name="radio" value="7"><label for="radioCityPay"   ><span><span></span></span> PayOnline</label>
                                                 </li>
@@ -621,47 +621,8 @@
     }
 
     $(document).ready(function () {
-//        $("html body").on('keyup change keydown', '#pincode_check', function () {
-//            //   $("#pincode_check").keydown(function(){
-//            if ($(this).val().length > 5) {
-//                var pincode = $(this).val();
-//                $.ajax({
-//                    url: "{{ route('checkPincode')}}",
-//                    type: 'POST',
-//                    data: {'pincode': pincode, 'type': '0'},
-//                    cache: false,
-//                    success: function (msg) {
-//                        if (msg == '1') {
-//                            $("#postal_code_checkout_new_add_form").text('COD Available');
-//                        } else {
-//                            $("#postal_code_checkout_new_add_form").text('COD Not Available');
-//                        }
-//                    }
-//                });
-//            } else if ($(this).val().length < 6) {
-//                $("#postal_code_checkout_new_add_form").text('');
-//            }
-//        });
 
-        // $("html body").on('click', '.pincod', function () {
-        //     var pin_status = $("#pincodeStatus").val();
-        //    // if(pin_status == 1){
-        //         var pintype = $(this).attr('data-cod');
-        //         $.ajax({
-        //             url: "{{ route('checkPincode')}}",
-        //             type: 'POST',
-        //             data: {'pintype': pintype, 'type': '1'},
-        //             cache: false,
-        //             success: function (msg) {
-        //                 if (msg == '1') {
-        //                     $("#postal_code_checkout_new_add_form").text('COD Available');
-        //                 } else {
-        //                     $("#postal_code_checkout_new_add_form").text('COD Not Available');
-        //                 }
-        //             }
-        //         });
-        //  //  }
-        // });
+     
         $(".newUserB").click(function () {
             $(".loginF").css("display", "none");
             $(".guestCheckoutFrm").css("display", "none");
@@ -705,80 +666,11 @@
                 return false;
             }
         });
-        $("body").on("click", ".clearRef", function (e) {
-            e.preventDefault();
-            var couponCode = 'mehdfsdjfhskdfjskfjshfkdjfskdjf';
-            $.ajax({
-                url: "{{ route('check_referal_code')}}",
-                type: 'POST',
-                data: {RefCode: couponCode},
-                cache: false,
-                success: function (msg) {
-                    $(".referalMsg").css("display", "block");
-                    var Cmsg = msg.split(":-")[1];
-                    if (msg.split(":-")[1].length > 0) {
-                        var newCartAmt = msg.split(":-")[2];
-                        $(".TotalCartAmt").text(newCartAmt);
+     
 
-                    }
-                    $(".referalCodeClass").removeAttr("disabled");
-                    $(".requireReferal").removeAttr("disabled");
-                    $(".referalDiscount").text(0);
-                    $(".referalMsg").html("Referral Code Removed!");
-                }
-            });
-        });
+       });  
 
-
-        $("body").on("click", ".clearVouch", function (e) {
-            e.preventDefault();
-            var couponCode = '';
-            $.ajax({
-                url: "{{ route('check_voucher') }}",
-                type: 'POST',
-                data: {voucherCode: couponCode},
-                cache: false,
-                success: function (resp) {
-
-                    $(".vMsg").css("display", "block");
-                    //  var newGstCart = JSON.parse(msg.split(":-")[3]);
-                    var Cmsg = resp.msg;
-                    var newCartAmt = resp.finalAmt;
-                    $(".TotalCartAmt").text(newCartAmt.toFixed(2));
-                    // $(".sumgst").text(newGstCart.gstsum);
-                    //}
-                    $("#voucherApply").removeAttr("disabled");
-                    $(".userVoucherCode").removeAttr("disabled");
-                    $(".voucherUsedAmount").text(0);
-                    $(".vMsg").html("Voucher Removed!");
-                }
-
-            });
-        });
-
-        $("body").on("click", ".addL", function () {
-            $(this).parent().children("input[type='radio']").click();
-        });
-
-        //Clear discount 
-        $("body").on("click", ".dMsg #discAmt", function () {
-            //alert("remoive");
-            $.ajax({
-                url: "{{ route('revert_user_level_discount')}}",
-                type: 'POST',
-                cache: false,
-                success: function (msg) {
-                    $("#userlevelDiscApply").attr('disabled', false);
-                    $(".dMsg").html('');
-                    $('input[name="user_level_discount"]').val('');
-                    $(".TotalCartAmt").text(msg['finalAmount'].toFixed(2));
-                    $(".discountUsedAmount").text("0.00");
-                }
-            });
-        });
-
-    });
-
+     
 
     function getAdditionalcharge() {
         var coupon_amt = parseInt($("#coupon_amt_used").val());
