@@ -78,6 +78,22 @@ class Helper {
         echo "</li>";
     }
 
+      public static function getMallMenu($rootm) {
+        
+          foreach($rootm as $node){
+        echo " <ul class='lnt-category list-unstyled'>";
+        echo "<li>";
+        echo "<a href=" . route('category', ['slug' => $node->url_key]) . ">{$node->category}</a>";
+//        if ($node->children()->count() > 0) {
+//            echo "<ul>";
+//            foreach ($node->children as $child)
+//                Helper::getmenu($child);
+//            echo "</ul>";
+//        }
+        echo "</li>";
+        echo "</ul>";
+        }
+    }
     public static function getCsv($input_array, $output_file_name, $delimiter) {
         /** open raw memory as file, no need for temp files */
         $temp_memory = fopen('php://memory', 'w');
