@@ -92,11 +92,12 @@ class ProductController extends Controller {
             $product->wishlist = 0;
         }
         $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get(); // $product->catalogimgs()->get();
+//        dd($product->images);
         foreach ($product->images as $prdimgs) {
             $prdimgs->img = $prdimgs->image_path . '/' . $prdimgs->filename;
+//            dd($prdimgs->img);
         }
         $product->prodImage = $product->images[0]->image_path . '/' . $product->images[0]->filename;
-        // dd($product);
         $nattrs = []; //AttributeSet::find($product->attr_set)->attributes()->where("is_filterable", "=", 0)->get();
 
         $product->related = []; //$product->relatedproducts()->where("status", 1)->get();

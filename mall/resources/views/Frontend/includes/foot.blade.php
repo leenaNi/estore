@@ -25,90 +25,82 @@
 
 <script type="text/javascript">
 
-    $('.prod_type').change(function () {
-        var prod_type = $('.prod_type').val();
-        if (prod_type == 3) {
-            $('#attribute').removeClass("hide");
-        } else if (prod_type == 1 || prod_type == 2 || prod_type == 5) {
-            $('#attribute').addClass("hide");
-        }
-    });
-
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#SelecedImg').removeClass("hide");
-                $('#SelecedImg').attr('src', e.target.result);
-            }
-
-            reader.readAsDataURL(input.files[0]);
-        }
+$('.prod_type').change(function () {
+    var prod_type = $('.prod_type').val();
+    if (prod_type == 3) {
+        $('#attribute').removeClass("hide");
+    } else if (prod_type == 1 || prod_type == 2 || prod_type == 5) {
+        $('#attribute').addClass("hide");
     }
+});
 
-    $(".prodImage").change(function () {
-        readURL(this);
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#SelecedImg').removeClass("hide");
+            $('#SelecedImg').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$(".prodImage").change(function () {
+    readURL(this);
+});
+
+$(document).ready(function () {
+
+    $(".manageCate").on("click", function () {
+        $("#manageCateModal").modal('show');
     });
 
-    $(document).ready(function () {
-
-        $(".manageCate").on("click", function () {
-            $("#manageCateModal").modal('show');
-        });
-
-        $(".homePage3Boxes").on("click", function () {
-            info = jQuery.parseJSON($(this).attr('data-info'));
-            console.log(info);
-            imgsrc = $(this).attr('data-imgSrc');
-            $(".homePageStatus").val(info.is_active);
-            $(".homePageLink").val(info.link);
-            $(".existingImg3Box").attr("src", imgsrc);
-            $(".homePageId").val(info.id);
-            $(".homePageSortOrder").val(info.sort_order);
-            $("#homepage3Boxespopup").modal("show");
-        });
-
-        $(".homePageStatus").on("change", function () {
-            if ($(this).is(":checked")) {
-                $(this).val(1);
-            } else {
-                $(this).val(0);
-            }
-        });
-        $(".catCheck").on("change", function () {
-            if ($(this).is(":checked")) {
-                $(this).val(1);
-            } else {
-                $(this).val(0);
-            }
-        });
-
-        $(".closeTheme").click(function () {
-            $('.applyTheme-stickyHeader').hide();
-            $('#header.transparent-header.full-header #header-wrap').css('top', '0');
-        });
+    $(".homePage3Boxes").on("click", function () {
+        info = jQuery.parseJSON($(this).attr('data-info'));
+        console.log(info);
+        imgsrc = $(this).attr('data-imgSrc');
+        $(".homePageStatus").val(info.is_active);
+        $(".homePageLink").val(info.link);
+        $(".existingImg3Box").attr("src", imgsrc);
+        $(".homePageId").val(info.id);
+        $(".homePageSortOrder").val(info.sort_order);
+        $("#homepage3Boxespopup").modal("show");
     });
+
+    $(".homePageStatus").on("change", function () {
+        if ($(this).is(":checked")) {
+            $(this).val(1);
+        } else {
+            $(this).val(0);
+        }
+    });
+    $(".catCheck").on("change", function () {
+        if ($(this).is(":checked")) {
+            $(this).val(1);
+        } else {
+            $(this).val(0);
+        }
+    });
+
+    $(".closeTheme").click(function () {
+        $('.applyTheme-stickyHeader').hide();
+        $('#header.transparent-header.full-header #header-wrap').css('top', '0');
+    });
+});
 </script>
 <script>
 
     $(document).ready(function () {
         console.log("ready!");
         if ($(window).width() < 768) {
-            // setTimeout(function () {
-            //     $('.zoom-me').elevateZoom({
-            //         zoomType: "inner",
-            //         cursor: "crosshair",
-            //         zoomWindowFadeIn: 500,
-            //         zoomWindowFadeOut: 750
-            //     });
-            // }, 1000)
             $('.zoomContainer').remove();
         } else {
             $('.zoom-me').elevateZoom();
-            
+
         }
-        
+
     });
 </script>
 <!---- Subscription Link ------------->
@@ -323,39 +315,32 @@
             }
             $(".btns").hide();
         });
-    });
-</script>
+    });</script>
 
 <script>
-   var cw = $('#shop .product a img').width();
-jQuery('#shop .product a img').css({'height':cw+'px'}); 
-
-
- $( document ).ready(function() {
-    var pw = $('div#oc-product .owl-stage-outer .owl-stage .owl-item').width();
-jQuery('.boxSizeImage').css({'height':pw+'px'});
-});
-  
-
-$(document).ready(function() { 
-    $('p:empty').remove(); 
-    $('.shortDesc:empty').remove(); 
+    var cw = $('#shop .product a img').width();
+    jQuery('#shop .product a img').css({'height': cw + 'px'});
+    $(document).ready(function () {
+        var pw = $('div#oc-product .owl-stage-outer .owl-stage .owl-item').width();
+        jQuery('.boxSizeImage').css({'height': pw + 'px'});
     });
-</script>
+    $(document).ready(function () {
+        $('p:empty').remove();
+        $('.shortDesc:empty').remove();
+    });</script>
 
 
 <script>
-  
-window.fbAsyncInit = function() {
-    // FB JavaScript SDK configuration and setup
-    FB.init({
-      appId      : '644176742612237', // FB App ID
-      cookie     : true,  // enable cookies to allow the server to access the session
-      xfbml      : true,  // parse social plugins on this page
-      version    : 'v3.0' // use graph api version 2.8
-    });
-    
-    // Check whether the user already logged in
+
+    window.fbAsyncInit = function () {
+        // FB JavaScript SDK configuration and setup
+        FB.init({
+            appId: '644176742612237', // FB App ID
+            cookie: true, // enable cookies to allow the server to access the session
+            xfbml: true, // parse social plugins on this page
+            version: 'v3.0' // use graph api version 2.8
+        });
+        // Check whether the user already logged in
 //    FB.getLoginStatus(function(response) {
 //        if (response.status === 'connected') {
 //            //display user data
@@ -364,61 +349,61 @@ window.fbAsyncInit = function() {
 //            fbLogout();
 //        }
 //    });
-    
-};
-function fbLogout() {
-    FB.logout(function() {
-    });
-}
-// Load the JavaScript SDK asynchronously
-(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
 
-// Facebook login with JavaScript SDK
-function fbLogin() {
-    FB.login(function (response) {
-        if (response.authResponse) {
-            // Get and display the user profile data
-            getFbUserData();
-        } else {
-            document.getElementById('status').innerHTML = 'User cancelled login or did not fully authorize.';
-        }
-    }, {scope: 'email'});
-}
-
-function getFbUserData(){
-    FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email'},
-    function (response) {
-      //  console.log(JSON.stringif(response));
-         $('.errorMessage').empty();
-          if(response){
-            console.log(JSON.stringify(response));
-        $.ajax({
-            type: "POST",
-//            url: "{{route('checkFbUser')}}",
-            data: {userData: response},
-             timeout: 10000,
-            cache: false,
-            success: function (resp) {
-                 console.log("response"+JSON.stringify(resp));
-                 if(resp.status == 1){
-                   window.location=resp.url;
-                 }else if(resp.status == 0){
-                       $('#login-error').show();
-                        $('#login-error').html('Invalid Email or Password');
-                      fbLogout();
-        
-                 }
-            }
+    };
+    function fbLogout() {
+        FB.logout(function () {
         });
     }
-   });
-}
+// Load the JavaScript SDK asynchronously
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id))
+            return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+// Facebook login with JavaScript SDK
+    function fbLogin() {
+        FB.login(function (response) {
+            if (response.authResponse) {
+                // Get and display the user profile data
+                getFbUserData();
+            } else {
+                document.getElementById('status').innerHTML = 'User cancelled login or did not fully authorize.';
+            }
+        }, {scope: 'email'});
+    }
+
+    function getFbUserData() {
+        FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email'},
+                function (response) {
+                    //  console.log(JSON.stringif(response));
+                    $('.errorMessage').empty();
+                    if (response) {
+                        console.log(JSON.stringify(response));
+                        $.ajax({
+                            type: "POST",
+//            url: "{{route('checkFbUser')}}",
+                            data: {userData: response},
+                            timeout: 10000,
+                            cache: false,
+                            success: function (resp) {
+                                console.log("response" + JSON.stringify(resp));
+                                if (resp.status == 1) {
+                                    window.location = resp.url;
+                                } else if (resp.status == 0) {
+                                    $('#login-error').show();
+                                    $('#login-error').html('Invalid Email or Password');
+                                    fbLogout();
+                                }
+                            }
+                        });
+                    }
+                });
+    }
 
 </script>
 

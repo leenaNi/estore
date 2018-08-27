@@ -79,6 +79,7 @@ class CategoriesController extends Controller {
     }
 
     public function getProductListing() {
+//        dd(Session::all());
         $catzz = json_decode(Input::get('filters'), true);
         $slug = Input::get('slug');
         $maxP = 0;
@@ -226,15 +227,10 @@ class CategoriesController extends Controller {
             $prd->checkExists = $checkCartPrd;
             $prd->mainImage =  $prodImg->image_path . '/' . @$prodImg->filename;
             $prd->alt_text = @$prodImg->alt_text;
-            $prd->getPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? $prd->spl_price : $prd->price;
+            $prd->getPrice = (float) (($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? $prd->spl_price : $prd->price);
             $prd->actualPF = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? "spl_price" : "price";
             $prd->delPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? 1 : 0;
             $prd->chkwishlist = 0;
-//            if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($prd->id)) {
-//                $prd->chkwishlist = 1;
-//            } else {
-//                $prd->chkwishlist = 0;
-//            }
         }
 
         $filters = [];
@@ -260,6 +256,8 @@ class CategoriesController extends Controller {
             
         }
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
+        $currencySetting = $currencySetting->setCurrency();
+//        dd(Session::get('currency_val'));
         $data = ['prods' => @$prods,
             'prdCnt' => @$prdCnt,
             'getslug' => @$slug,
@@ -270,10 +268,10 @@ class CategoriesController extends Controller {
             'metaDesc' => @$metaDesc,
             'metaKeys' => @$metaKeys,
             'maxp' => $maxP,
-            'catChild' => $catChild, //tej code
-            'currency_val' => Session::get('currency_val'),
+            'catChild' => $catChild, 
+            'currency_val' => (float) Session::get('currency_val'),
             'breadcrumbs' => $breadcrumbs,
-            'curData' => $currencySetting->setCurrency()
+            'curData' => $currencySetting
         ];
         return $data;
     }

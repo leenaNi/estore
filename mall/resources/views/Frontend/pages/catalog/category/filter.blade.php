@@ -13,11 +13,11 @@
                     </div>
 
                 </div>
-<?php
-$args = [];
-$args['slug']= $getslug;
-$prods->appends($args);
-?>                <a href="javascript:void(0)" data-nexturl="{{$prods->nextPageUrl() }}" class="button black  showmore">Show More </a>
+                <?php
+                $args = [];
+                $args['slug'] = $getslug;
+                $prods->appends($args);
+                ?>                <a href="javascript:void(0)" data-nexturl="{{$prods->nextPageUrl() }}" class="button black  showmore">Show More </a>
                 <div>
             </main><!-- .site-main -->
         </div><!-- .row -->
