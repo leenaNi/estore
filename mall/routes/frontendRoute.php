@@ -8,8 +8,11 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
     Route::any('/sc', ['as' => 'setCurrency', 'uses' => 'HomeController@setCurrency']);
     Route::any('/change-country', array('as' => 'changeCountry', 'uses' => 'HomeController@change_country'));
+    
+    //SUBSCRIPTION MAIL
     Route::any('/subscription-mail', ['as' => 'subscriptionMail', 'uses' => 'HomeController@subscription']);
 
+    //USER REGISTRATION PASSWORD RESET
     Route::post('/check-fb-user', ['as' => 'checkFbUser', 'uses' => 'LoginController@checkFbUser']);
     Route::get('/login-user', ['as' => 'loginUser', 'uses' => 'LoginController@login']);
     Route::get('/logout', ['as' => 'logoutUser', 'uses' => 'LoginController@logout']);
@@ -32,9 +35,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
         Route::any('/delete-cart/', array('as' => 'deleteCart', 'uses' => 'CartController@delete'));
     });
 
-
-    //PRODUCT LISTING ROUTES
-    ;
+    //CART AND CHECKOUT ROUTES
     Route::any('/check_coupon', ['as' => 'check_coupon', 'uses' => 'CartController@check_coupon']);
     Route::any('/checkout', ['as' => 'checkout', 'uses' => 'CheckoutController@index']);
     Route::any('/new_user_login_new', array('as' => 'new_user_login_new', 'uses' => 'CheckoutController@new_user_login_new'));
@@ -49,13 +50,19 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/check_international', array('as' => 'check_international', 'uses' => 'CheckoutController@check_international'));
     Route::any('/back_to_address', array('as' => 'back_to_address', 'uses' => 'CheckoutController@back_to_address'));
     Route::any('/back_to_bill', array('as' => 'back_to_bill', 'uses' => 'CheckoutController@back_to_bill'));
-     Route::any('/getBillSummary', array('as' => 'getBillSummary', 'uses' => 'CheckoutController@getBillSummary'));
-      Route::any('/toPayment', array('as' => 'toPayment', 'uses' => 'CheckoutController@toPayment'));
-      Route::any('/chk-cart-inventory', array('as' => 'chk_cart_inventory', 'uses' => 'CheckoutController@chk_cart_inventory'));
+    Route::any('/getBillSummary', array('as' => 'getBillSummary', 'uses' => 'CheckoutController@getBillSummary'));
+    Route::any('/toPayment', array('as' => 'toPayment', 'uses' => 'CheckoutController@toPayment'));
+    Route::any('/chk-cart-inventory', array('as' => 'chk_cart_inventory', 'uses' => 'CheckoutController@chk_cart_inventory'));
+
+    //PRODUCT LISTING ROUTES
     Route::any('/getListingFilter', ['as' => 'getListingFilter', 'uses' => 'CategoriesController@getListingFilter']);
     Route::any('/get-product-listing', ['as' => 'getProductListing', 'uses' => 'CategoriesController@getProductListing']);
-    //Category Listing
 
+    //InofStock Notification
+    Route::any('/notify-mail', ['as' => 'notifyMail', 'uses' => 'ProductController@notify_mail']);
+
+    //Category Listing
     Route::get('/explore/{slug?}', ['as' => 'category', 'uses' => 'CategoriesController@index']);
+    Route::get('/{slug}/', ['as' => 'prod', 'uses' => 'ProductController@index']);
 });
 
