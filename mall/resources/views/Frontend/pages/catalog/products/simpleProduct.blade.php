@@ -96,14 +96,25 @@
                         <div class="line"></div>
                         <div class="clear"></div>
                         <!-- Product Single - Share ============================================= -->
+                        <div class="shareSociIconBox">
+                                <strong>Share:</strong> 
+                                <?php
+                                $social['url'] = Request::url();
+                                print_r(App\Library\Helper::socialShareIcon($social));
+                                ?>
+                                </div>
                         <div class="si-share noborder clearfix"> <span class="pull-left">Share:</span>
                             <div class="pull-left">
-                                <a href="#" class="social-icon si-borderless si-facebook"> <i class="icon-facebook"></i> <i class="icon-facebook"></i> </a>
+                                 <?php
+                                $social['url'] = Request::url();
+                                print_r(App\Library\Helper::socialShareIcon($social));
+                                ?>
+<!--                                <a href="#" class="social-icon si-borderless si-facebook"> <i class="icon-facebook"></i> <i class="icon-facebook"></i> </a>
                                 <a href="#" class="social-icon si-borderless si-twitter"> <i class="icon-twitter"></i> <i class="icon-twitter"></i> </a>
                                 <a href="#" class="social-icon si-borderless si-pinterest"> <i class="icon-pinterest"></i> <i class="icon-pinterest"></i> </a>
                                 <a href="#" class="social-icon si-borderless si-gplus"> <i class="icon-gplus"></i> <i class="icon-gplus"></i> </a>
                                 <a href="#" class="social-icon si-borderless si-rss"> <i class="icon-rss"></i> <i class="icon-rss"></i> </a>
-                                <a href="#" class="social-icon si-borderless si-email3"> <i class="icon-email3"></i> <i class="icon-email3"></i> </a>
+                                <a href="#" class="social-icon si-borderless si-email3"> <i class="icon-email3"></i> <i class="icon-email3"></i> </a>-->
                             </div>
                         </div>
                         <!-- Product Single - Share End -->

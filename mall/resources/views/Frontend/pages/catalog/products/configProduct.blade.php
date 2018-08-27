@@ -104,91 +104,106 @@
                                 <!-- AddToAny END -->
                                 <!-- Product Single - Share End -->
                             </div>
-                            @if($is_desc->status)
-                            <div class="col_full nobottommargin">
-                                <div class="tabs clearfix nobottommargin" id="tab-1">
-                                    <ul class="tab-nav clearfix">
-                                        <li><a href="#tabs-1"><span>Additional Description</span></a> </li>
-                                        <!-- <li><a href="#tabs-2"><span>Additional Information</span></a> </li> -->
-                                    </ul>
-                                    <div class="tab-container">
-                                        <div class="tab-content tabBox clearfix" id="tabs-1">
-                                            <div ng-bind-html="product.long_desc | toTrust"></div>                                     
-                                        </div>
-                                        <!-- <div class="tab-content tabBox clearfix" id="tabs-2">
-                                            <div ng-bind-html="product.add_desc | toTrust"></div> 
-                                        </div> -->
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
+
                         </div>
                     </div>                   
-                    @if($is_rel_prod->status)
                     <div class="clear"></div>
                     <div class="line"></div>
-                    @if(count($product->relatedproducts()->get()) >0)
-                    <div class="col_full bottommargin" >
-                        <h4>Related Products</h4>
-                        <div id="oc-product"  class="owl-carousel product-carousel carousel-widget" data-margin="30" data-pagi="false" data-autoplay="5000" data-items-xxs="1" data-items-sm="2" data-items-md="3" data-items-lg="4">
-                            @foreach($product->relatedproducts()->with('catalogimgs')->get() as $relProduct)                       
-                            <div class="oc-item">
-                                <div class="product clearfix mobwidth100  relatedProduct" >
-                                    <div class="product-image">
-                                        <a href="{{route('home').'/'.$relProduct - > url_key}}"><img src="{{asset(Config('constants.productImgPath')).'/'.$relProduct - > catalogimgs[0] - > filename}}" alt="{{$relProduct - > product}}" class="boxSizeImage"> </a>
-                                        <!-- <a href="{{route('home').'/'.$relProduct->url_key}}"><img src="{{ asset(Config('constants.defaultImgPath').'default-product.jpg')}}" alt="{{$relProduct->product}}"> </a> -->
-                                        <div class="product-overlay"> <a href="{{route('home').'/'.$relProduct - > url_key}}" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
-                                    </div>
-                                    <div class="product-desc">
-                                        <div class="product-title">
-                                            <h3><a href="">{{$relProduct - > product}}</a></h3> </div>
-                                        <div class="product-price"> 
-                                            @if($relProduct->spl_price >0 && $relProduct->price >$relProduct->spl_price)
-                                            <del><span class="currency-sym"></span>  {{number_format(@$relProduct - > price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relProduct - > spl_price * Session::get('currency_val'), 2, '.', '')}} </ins>
-                                            @else 
-                                            <ins><span class="currency-sym"></span>  {{number_format(@$relProduct - > price * Session::get('currency_val'), 2, '.', '')}}</ins>
-                                            @endif
-                                        </div>                                     
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-                    @endif
-                    @if($is_like_prod->status)
-                    <div class="clear"></div>
-                    @if(count($product->upsellproducts()->get()) >0)
-                    <div class="col_full nobottommargin" >
-                        <h4>You may like also</h4>
+                    <div class="col_full nobottommargin">
+                        <h3>Other Products Sold By {{$product - > store_name}}</h3>
                         <div id="oc-product" class="owl-carousel product-carousel carousel-widget" data-margin="30" data-pagi="false" data-autoplay="5000" data-items-xxs="1" data-items-sm="2" data-items-md="3" data-items-lg="4">
-                            @foreach($product->upsellproducts()->with('catalogimgs')->get() as $upSellProduct)
-                            <div class="oc-item" >
-                                <div class="product clearfix mobwidth100 youmayLikeProduct">
-                                    <div class="product-image">
-                                        <a href="{{route('home').'/'.$upSellProduct - > url_key}}"><img src="{{asset(Config('constants.productImgPath')).'/'.$upSellProduct - > catalogimgs[0] - > filename}}" alt="{{$upSellProduct - > product}}" class="boxSizeImage"> </a>
-                                       <!--  <a href="[[prdr.url_key]]"><img src="[[prdr.img]]" alt="[[prdr.product]]"> </a> -->
-                                        <div class="product-overlay"> <a href="{{route('home').'/'.$upSellProduct - > url_key}}" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                            <div class="oc-item">
+                                <div class="product clearfix mobwidth100 ">
+                                    <div class="product-image producImgBoxSize_4Col">
+                                        <a href="fs1_product_detail.php"><img src="images/products/t-shirt.jpg" alt="">
+                                        </a>
                                     </div>
-                                    <div class="product-desc">
+                                    <div class="product-desc text-center">
                                         <div class="product-title">
-                                            <h3><a href="{{route('home').'/'.$upSellProduct - > url_key}}">{{$upSellProduct - > product}}</a></h3> </div>
-                                        <div class="product-price"> 
-                                            @if($upSellProduct->spl_price >0 && $upSellProduct->price >$upSellProduct->spl_price)
-                                            <del><span class="currency-sym"></span>  {{number_format(@$upSellProduct - > price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span>  {{number_format(@$upSellProduct - > price * Session::get('currency_val'), 2, '.', '')}}</ins>
-                                            @else 
-                                            <ins><span class="currency-sym"></span>  {{number_format(@$upSellProduct - > price * Session::get('currency_val'), 2, '.', '')}}</ins>
-                                            @endif
-                                        </div>                                      
+                                            <h4><a href="#">Men's T-Shirt - White</a>
+                                            <!-- <span class="subtitle">Flat 10% Off*</span> -->
+                                            </h4>
+                                        </div>
+                                        <div class="product-price"><del><i class="icon-rupee"></i> 699</del> <ins><i class="icon-rupee"></i> 599</ins>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
-                            @endforeach
+                            <div class="oc-item">
+                                <div class="product clearfix mobwidth100 ">
+                                    <div class="product-image producImgBoxSize_4Col">
+                                        <a href="fs1_product_detail.php"><img src="images/products/shoe.jpg" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-desc text-center">
+                                        <div class="product-title">
+                                            <h4><a href="#">MEN'S FOOTWEAR</a>
+                                            <!-- <span class="subtitle">Flat 50% Off*</span> -->
+                                            </h4>
+                                        </div>
+                                        <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="oc-item">
+                                <div class="product clearfix mobwidth100 ">
+                                    <div class="product-image producImgBoxSize_4Col">
+                                        <a href="fs1_product_detail.php"><img src="images/products/shirt.jpg" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-desc text-center">
+                                        <div class="product-title">
+                                            <h4><a href="#">Formal Shirts</a>
+                                            <!-- <span class="subtitle">Flat 10% Off*</span> -->
+                                            </h4>
+                                        </div>
+                                        <div class="product-price"><del><i class="icon-rupee"></i> 5999</del> <ins><i class="icon-rupee"></i> 4999</ins>
+                                        </div>
+
+                                    </div>
+                                </div>  
+                            </div>
+                            <div class="oc-item">
+                                <div class="product clearfix mobwidth100 ">
+                                    <div class="product-image producImgBoxSize_4Col">
+                                        <a href="fs1_product_detail.php"><img src="images/products/shoe.jpg" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-desc text-center">
+                                        <div class="product-title">
+                                            <h4><a href="#">MEN'S FOOTWEAR</a>
+                                            <!-- <span class="subtitle">Flat 50% Off*</span> -->
+                                            </h4>
+                                        </div>
+                                        <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="oc-item">
+                                <div class="product clearfix mobwidth100 ">
+                                    <div class="product-image producImgBoxSize_4Col">
+                                        <a href="fs1_product_detail.php"><img src="images/products/t-shirt.jpg" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-desc text-center">
+                                        <div class="product-title">
+                                            <h4><a href="#">Men's T-Shirt - White</a>
+                                            <!-- <span class="subtitle">Flat 10% Off*</span> -->
+                                            </h4>
+                                        </div>
+                                        <div class="product-price"><del><i class="icon-rupee"></i> 699</del> <ins><i class="icon-rupee"></i> 599</ins>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    @endif
-                    @endif
                 </div>
         </section>
     </form>    
@@ -196,52 +211,52 @@
 @stop
 @section('myscripts')
 <script>
-            $(document).ready(function () {
-    $('head').append('<meta property="og:image" content="<?= $product->prodImage ?>" /> ');
+    $(document).ready(function () {
+        $('head').append('<meta property="og:image" content="<?= $product->prodImage ?>" /> ');
     });
-            function isNumber(evt) {
-            evt = (evt) ? evt : window.event;
-                    var charCode = (evt.which) ? evt.which : evt.keyCode;
-                    if (charCode > 31 && (charCode < 49 || charCode > 57)) {
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 49 || charCode > 57)) {
             return false;
-            }
-            return true;
-            }
-    $('.plus').click(function (e) {
-    // Stop acting like a button
-    e.preventDefault();
-            // Get the field name
-            var maxvalue = parseInt($('input[name="quantity"]').attr('max'));
-            // console.log(maxvalue);
-            // Get its current value
-            var currentVal = parseInt($('#quantity').val());
-            //  console.log(currentVal);
-            // If is not undefined
-            if (!isNaN(currentVal) && (currentVal < maxvalue)) {
-    // Increment
-    //$('.plus').css('pointer-events', '');
-    $('#quantity').val(parseInt(currentVal) + 1);
-            // alert(parseInt(currentVal)+ 1);
-    } else if (currentVal >= maxvalue) {
-    // console.log(maxvalue);
-    //$('.plus').css('pointer-events', 'none');
-    $('#quantity').val(parseInt(maxvalue));
-    } else {
-    // Otherwise put a 0 there
-    $('#quantity').val(1);
+        }
+        return true;
     }
+    $('.plus').click(function (e) {
+        // Stop acting like a button
+        e.preventDefault();
+        // Get the field name
+        var maxvalue = parseInt($('input[name="quantity"]').attr('max'));
+        // console.log(maxvalue);
+        // Get its current value
+        var currentVal = parseInt($('#quantity').val());
+        //  console.log(currentVal);
+        // If is not undefined
+        if (!isNaN(currentVal) && (currentVal < maxvalue)) {
+            // Increment
+            //$('.plus').css('pointer-events', '');
+            $('#quantity').val(parseInt(currentVal) + 1);
+            // alert(parseInt(currentVal)+ 1);
+        } else if (currentVal >= maxvalue) {
+            // console.log(maxvalue);
+            //$('.plus').css('pointer-events', 'none');
+            $('#quantity').val(parseInt(maxvalue));
+        } else {
+            // Otherwise put a 0 there
+            $('#quantity').val(1);
+        }
     });
-            $('.minus').click(function (e) {
-    var minvalue = parseInt($('input[name="quantity"]').attr('min'));
-            // Stop acting like a button
-            e.preventDefault();
-            var currentVal = parseInt($('#quantity').val());
-            if (minvalue != currentVal)
+    $('.minus').click(function (e) {
+        var minvalue = parseInt($('input[name="quantity"]').attr('min'));
+        // Stop acting like a button
+        e.preventDefault();
+        var currentVal = parseInt($('#quantity').val());
+        if (minvalue != currentVal)
             $('#quantity').val(parseInt(currentVal) - 1);
     });
-            $('.attrSel').change(function () {
-    alert("sdsf");
-            $(".optError").remove();
+    $('.attrSel').change(function () {
+        alert("sdsf");
+        $(".optError").remove();
     })
 
 
