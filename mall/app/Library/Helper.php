@@ -3,7 +3,7 @@
 namespace App\Library;
 
 use App\Models\MallProdCategory;
-use App\Models\Product;
+use App\Models\MallProducts as Product;
 use App\Models\Loyalty;
 use App\Models\AttributeValue;
 use App\Models\AttributeSet;
