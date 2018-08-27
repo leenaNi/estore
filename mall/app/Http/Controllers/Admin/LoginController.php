@@ -46,14 +46,14 @@ class LoginController extends Controller {
             'password' => Input::get('password'), 'status' => 1];
         if (!empty($userDetails)) {
             if (Auth::attempt($userData, true)) {
-                $user = User::with('roles')->find($userDetails->id);
+                $user = User::find($userDetails->id);
                 Session::put('loggedinAdminId', $userDetails->id);
                 Session::put('profile', $userDetails->profile);
                 Session::put('loggedin_user_id', $user->id);
                 Session::put('login_user_type', $user->user_type);
-                $roles = $user->roles()->first();
-                $r = Role::find($roles->id);
-                $per = $r->perms()->get()->toArray();
+               // $roles = $user->roles()->first();
+               // $r = Role::find($roles->id);
+               // $per = $r->perms()->get()->toArray();
                 if (Auth::user()->user_type == 3) {
                     return redirect()->route('admin.vendors.dashboard');
                 }

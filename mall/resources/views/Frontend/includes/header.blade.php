@@ -13,7 +13,13 @@
                     <li><a href="#">About</a></li>
                     <!-- <li><a href="#">FAQs</a></li> -->
                     <li><a href="#">Contact</a></li>
-                    <li><a href="#">Login / Register</a></li>
+                  
+                     @if(Session::get('loggedin_user_id'))
+                      <li> <a href="{{route('logoutUser')}}" >Logout</a></li>
+                    
+                    @else
+                   <li><a href="{{ route('loginUser') }}">Login / Register</a></li>
+                    @endif
                 </ul> 
             </div><!-- .top-links end -->
 
@@ -64,7 +70,11 @@
                                 <div class="dropdown-menu" role="menu">
                                     <div class="lnt-dropdown-mega-menu">
                                         <!-- List of categories -->
+                                       
+                 
+                   
                                         <ul class="lnt-category list-unstyled">
+                                            
                                             <li class="active"><a href="#subcategory-fashion">Fashion</a></li>
                                             <li><a href="#subcategory-electronics">Electronics</a></li>
                                             <li><a href="#subcategory-restaurant">Restaurants</a></li>
@@ -516,7 +526,7 @@
                         <ul class="nav navbar-nav navbar-right lnt-shopping-cart">
                             <li class="">
                                 <div id="top-cart">
-                                    <a href="#"><i class="icon-shopping-cart"></i><span>5</span></a>
+                                    <a href="{{ route('cart') }}"><i class="icon-shopping-cart"></i><span  class="shop-cart">{{(Cart::instance("shopping")->count())?Cart::instance("shopping")->count():0}}</span></a>
                                 </div>
                             </li>
                         </ul> <!-- /.lnt-shopping-cart -->

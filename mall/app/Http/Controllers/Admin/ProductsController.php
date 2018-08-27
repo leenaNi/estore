@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use Route;
 use Input;
-use App\Models\Product;
+use App\Models\MallProducts as Product;
 use App\Models\HasProducts;
 use App\Models\Finish;
 use App\Models\Fabric;
-use App\Models\Category;
+use App\Models\MallProdCategory as Category;
 use App\Models\ProductType;
 use App\Models\AttributeSet;
 use App\Models\CatalogImage;
@@ -103,44 +103,43 @@ class ProductsController extends Controller {
             $products = $products->where('created_at', '<=', $date);
         }
         if (!empty(Input::get('prdSearch'))) {
-            $products = $products->sortable()->get();
+            $products = $products->get();
             $productCount = $products->count();
         } else {
-            $products = $products->sortable()->paginate(Config('constants.paginateNo'));
+            $products = $products->paginate(Config('constants.paginateNo'));
             $productCount = $products->total();
         }
 
         $prod_types = [];
-        $prodTy = ProductType::where('status', 1)->get(['id', 'type']);
+       // $prodTy = ProductType::where('status', 1)->get(['id', 'type']);
         $setting = GeneralSetting::where('id', 30)->first();
         $is_stockable = GeneralSetting::where('id', 26)->first();
         //  echo $setting->status; die;
-        if ($setting->status == 0) {
-            $prodTy = $prodTy->whereIn('id', array(1, 2, 5))->toArray();
-        } else {
-            $prodTy = $prodTy->whereIn('id', array(1, 2, 3, 5))->toArray();
-        }
-        foreach ($prodTy as $prodT) {
-            $prod_types[$prodT['id']] = $prodT['type'];
-        }
+//        if ($setting->status == 0) {
+//            $prodTy = $prodTy->whereIn('id', array(1, 2, 5))->toArray();
+//        } else {
+//            $prodTy = $prodTy->whereIn('id', array(1, 2, 3, 5))->toArray();
+//        }
+//        foreach ($prodTy as $prodT) {
+//            $prod_types[$prodT['id']] = $prodT['type'];
+//        }
         $is_stockable = GeneralSetting::where('id', 26)->first();
 
-        $attr_sets = [];
-        $attrS = AttributeSet::where('id', '!=', 1)->where('status', 1)->get(['id', 'attr_set'])->toArray();
-        foreach ($attrS as $attr) {
-            $attr_sets[$attr['id']] = $attr['attr_set'];
-        }
+//        $attr_sets = [];
+//        $attrS = AttributeSet::where('id', '!=', 1)->where('status', 1)->get(['id', 'attr_set'])->toArray();
+//        foreach ($attrS as $attr) {
+//            $attr_sets[$attr['id']] = $attr['attr_set'];
+//        }
 
         foreach ($products as $prd) {
-//if(count($prd->wishlist) > 0){
-//             $dd[$prd->product]=  $prd->wishlist;
-//           }
-            $getPrdImg = ($prd->catalogimgs()->where("image_mode", 1)->count() > 0) ? $prd->catalogimgs()->where("image_mode", 1)->first()->filename : 'default_product.png';
-            $prd->prodImage = Config('constants.productImgPath') . "/".@$getPrdImg;
+            $prodImg=DB::table($prd->prefix."_catalog_images")->where("catalog_id",$prd->store_prod_id)->where("image_mode",1)->first();
+         
+            $prd->mainImage =  $prodImg->image_path . '/' . @$prodImg->filename;
+            
         }
        // dd($dd);
 
-        return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets'));
+        return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount'));
     }
 
     public function add() {

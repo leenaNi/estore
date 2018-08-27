@@ -94,8 +94,8 @@ abstract class Controller extends BaseController {
     public function getMenu() {
         $menu = MallProdCategory::roots()->where("is_nav", "=", "1")->where('status', 1)->orderBy('sort_order', "asc")->get(); //->with('catimgs')
 
-        foreach ($menu as $child)
-            $menu->children = $child->descendants()->where("is_nav", "=", "1")->where('status', 1)->orderBy('sort_order', "asc")->get(); //->with('catimgs')
+//        foreach ($menu as $child)
+//            $menu->children = $child->descendants()->where("is_nav", "=", "1")->where('status', 1)->orderBy('sort_order', "asc")->get(); //->with('catimgs')
         return $menu;
     }
 

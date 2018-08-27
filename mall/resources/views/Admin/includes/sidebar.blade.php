@@ -1,4 +1,4 @@
-<?php
+dynamicayout <?php
 $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
 ?>
 
@@ -228,9 +228,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </a>
                 <ul class="treeview-menu">
 
-   @foreach($dynamicayout as $layout)
-                    <li class="{{ preg_match("/admin.dynamic-layout.view/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.dynamic-layout.view',['slug'=>$layout->url_key]) }}"><i class="fa fa-angle-right"></i>{{$layout->name}}</a></li>
-                    @endforeach
+   
 
                     <li class="{{ preg_match("/admin.staticpages/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.staticpages.view') }}"><i class="fa fa-angle-right"></i>Online Pages</a></li>
 

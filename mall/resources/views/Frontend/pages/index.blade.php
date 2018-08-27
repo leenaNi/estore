@@ -2,38 +2,38 @@
 @extends('Frontend.layouts.default')
 @section('content')
 
+   
+  <section id="slider" class="slider-parallax swiper_wrapper clearfix slider-parallax-visible">
 
-<section id="slider" class="slider-parallax swiper_wrapper clearfix slider-parallax-visible">
+			<div class="slider-parallax-inner" style="height: 500px; transform: translateY(0px);">
 
-    <div class="slider-parallax-inner" style="height: 500px; transform: translateY(0px);">
+				<div class="swiper-container swiper-parent swiper-container-horizontal" style="cursor: -webkit-grab;">
+					<div class="swiper-wrapper" style="transform: translate3d(0px, 0px, 0px);">
+            <div class="swiper-slide dark swiper-slide-active slider" 
+            style="background-image: url({{Config('constants.layoutImgPath').'/banner1.jpg'}});">
 
-        <div class="swiper-container swiper-parent swiper-container-horizontal" style="cursor: -webkit-grab;">
-            <div class="swiper-wrapper" style="transform: translate3d(0px, 0px, 0px);">
-                <div class="swiper-slide dark swiper-slide-active slider" 
-                     style="background-image: url({{Config('constants.layoutImgPath').'/banner1.jpg'}});">
-
-                </div>
-                <div class="swiper-slide dark swiper-slide-active slider"
-                     style="background-image: url({{Config('constants.layoutImgPath').'/banner2.jpg'}});">
-
-                </div>
-                <div class="swiper-slide dark swiper-slide-active slider" 
-                     style="background-image: url({{Config('constants.layoutImgPath').'/banner3.jpg'}});">: 
-
-                </div>
-                <div class="swiper-slide dark swiper-slide-active slider" 
-                     style="background-image: url({{Config('constants.layoutImgPath').'/banner4.jpg'}});">
-
-                </div>
+	</div>
+            <div class="swiper-slide dark swiper-slide-active slider"
+             style="background-image: url({{Config('constants.layoutImgPath').'/banner2.jpg'}});">
+						
+						</div>
+            <div class="swiper-slide dark swiper-slide-active slider" 
+            style="background-image: url({{Config('constants.layoutImgPath').'/banner3.jpg'}});">: 
+						
             </div>
-            <div id="slider-arrow-left" class="swiper-button-disabled" style="opacity: 1;"><i class="icon-angle-left"></i></div>
-            <div id="slider-arrow-right" style="opacity: 1;"><i class="icon-angle-right"></i></div>
-            <div id="slide-number"><div id="slide-number-current">1</div><span>/</span><div id="slide-number-total">3</div></div>
-        </div>
+            <div class="swiper-slide dark swiper-slide-active slider" 
+            style="background-image: url({{Config('constants.layoutImgPath').'/banner4.jpg'}});">
+						
+						</div>
+					</div>
+					<div id="slider-arrow-left" class="swiper-button-disabled" style="opacity: 1;"><i class="icon-angle-left"></i></div>
+					<div id="slider-arrow-right" style="opacity: 1;"><i class="icon-angle-right"></i></div>
+					<div id="slide-number"><div id="slide-number-current">1</div><span>/</span><div id="slide-number-total">3</div></div>
+				</div>
 
-    </div>
+			</div>
 
-</section>
+		</section>
 <div class="clearfix"></div>
 <!-- Content
             ============================================= -->
@@ -72,43 +72,43 @@
                     </div>
                 </div>
                 @endforeach
+               
+        
 
-
+                </div>
 
             </div>
 
         </div>
-
-    </div>
-    <div class="container topmargin-sm">          
-        <div id="" class="heading-block title-center page-section">
-            <h2>Shop By Industry</h2>
-        </div>
-    </div>
-</div>
-@endif
-<!-- Portfolio Items
-                          ============================================= -->
-<div id="portfolio" class="portfolio grid-container portfolio-6 portfolio-nomargin portfolio-full clearfix">
-    @foreach($rootsS as $rootcat)
-
-
-    <article class="portfolio-item pf-media pf-icons">
-        <div class="portfolio-image">
-            <a href="portfolio-single.html">
-                <img src="{{Config('constants.catImgPath').'/'.(@$rootcat->catimgs->first()->filename)}}"  alt="Fashion">
-            </a>
-            <div class="portfolio-overlay">
-                <a href="{{route("home")}}/explore/{{$rootcat->url_key}}">{{$rootcat->category}}</a>
+        <div class="container topmargin-sm">          
+            <div id="" class="heading-block title-center page-section">
+                <h2>Shop By Industry</h2>
             </div>
         </div>
-    </article>
-    @endforeach
+    </div>
+    @endif
+    <!-- Portfolio Items
+                              ============================================= -->
+    <div id="portfolio" class="portfolio grid-container portfolio-6 portfolio-nomargin portfolio-full clearfix">
+        @foreach($rootsS as $rootcat)
+       
+      
+        <article class="portfolio-item pf-media pf-icons">
+            <div class="portfolio-image">
+                <a href="portfolio-single.html">
+                    <img src="{{Config('constants.catImgPath').'/'.(@$rootcat->catimgs->first()->filename)}}"  alt="Fashion">
+                </a>
+                <div class="portfolio-overlay">
+                    <a href="{{route("home")}}/explore/{{$rootcat->url_key}}">{{$rootcat->category}}</a>
+                </div>
+            </div>
+        </article>
+  @endforeach
 
 
 
 
-</div><!-- #portfolio end -->
+    </div><!-- #portfolio end -->
 
 </section>
 @stop

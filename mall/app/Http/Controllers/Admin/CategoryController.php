@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Route;
 use Input;
-use App\Models\Category;
+use App\Models\MallProdCategory as Category;
 use App\Library\Helper;
 use App\Classes\UploadHandler;
 use App\Http\Controllers\Controller;
