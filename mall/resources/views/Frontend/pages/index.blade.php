@@ -1,392 +1,114 @@
 
 @extends('Frontend.layouts.default')
 @section('content')
-   <section id="slider" class="slider-parallax full-screen clearfix">
-      <div class="slider-parallax-inner">
-        <div class="fslider" data-arrows="false" data-pagi="true">
-          <div class="flexslider">
-            <div class="slider-wrap">
-              <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/1.jpg" alt="Shop Image"> 
-                <div class="flex-caption">
-                                <h2>Fashions fade, style is eternal</h2>
-                            </div></a>
-              </div>
-              <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/2.jpg" alt="Shop Image"> 
-                <div class="flex-caption">
-                                <h2>Dress Like A Boss</h2>
-                            </div></a>
-              </div>
-              <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/3.jpg" alt="Shop Image"> 
-                <div class="flex-caption">
-                                <h2>Shop It As You Watch It</h2>
-                            </div></a>
-              </div>
+
+
+<section id="slider" class="slider-parallax swiper_wrapper clearfix slider-parallax-visible">
+
+    <div class="slider-parallax-inner" style="height: 500px; transform: translateY(0px);">
+
+        <div class="swiper-container swiper-parent swiper-container-horizontal" style="cursor: -webkit-grab;">
+            <div class="swiper-wrapper" style="transform: translate3d(0px, 0px, 0px);">
+                <div class="swiper-slide dark swiper-slide-active slider" 
+                     style="background-image: url({{Config('constants.layoutImgPath').'/banner1.jpg'}});">
+
+                </div>
+                <div class="swiper-slide dark swiper-slide-active slider"
+                     style="background-image: url({{Config('constants.layoutImgPath').'/banner2.jpg'}});">
+
+                </div>
+                <div class="swiper-slide dark swiper-slide-active slider" 
+                     style="background-image: url({{Config('constants.layoutImgPath').'/banner3.jpg'}});">: 
+
+                </div>
+                <div class="swiper-slide dark swiper-slide-active slider" 
+                     style="background-image: url({{Config('constants.layoutImgPath').'/banner4.jpg'}});">
+
+                </div>
             </div>
-          </div>
+            <div id="slider-arrow-left" class="swiper-button-disabled" style="opacity: 1;"><i class="icon-angle-left"></i></div>
+            <div id="slider-arrow-right" style="opacity: 1;"><i class="icon-angle-right"></i></div>
+            <div id="slide-number"><div id="slide-number-current">1</div><span>/</span><div id="slide-number-total">3</div></div>
         </div>
-      </div>
-    </section>
-    <div class="clearfix"></div>
-    <!-- Content
-		============================================= -->
-    <section id="content">
-      <div class="content-wrap">
+
+    </div>
+
+</section>
+<div class="clearfix"></div>
+<!-- Content
+            ============================================= -->
+<section id="content">
+    @if(count($products) > 0)
+    <div class="content-wrap" >
         <div class="container clearfix topmargin-sm">
-          <div id="" class="heading-block title-center page-section">
-						<h2>Trending Products</h2>
-					</div>
-          <div id="shop" class="shop clearfix">
-            
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/t-shirt.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">Men's T-Shirt - White</a>
-                  <span class="subtitle">Flat 10% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 699</del> <ins><i class="icon-rupee"></i> 599</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
+            <div id="" class="heading-block title-center page-section">
+                <h2>Trending Products</h2>
             </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/headphone.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">Beats Studio3 Wireless</a>
-                  <span class="subtitle">Flat 20% Off*</span>
-                </h4>
+            <div id="shop" class="shop clearfix">
+                @foreach($products as $product)
+                <div class="product clearfix">
+                    <div class="product-image producImgBoxSize_4Col">
+                        <a  href="{{route("home")}}/{{$product->url_key}}"><img src="{{$product->mainImage}}" alt="{{$product->alt_text}}">
+                        </a>
+                    </div>
+                    <div class="product-desc text-center">
+                        <div class="product-title">
+                            <h4><a  href="{{route("home")}}/{{$product->url_key}}">{{$product->product}}</a>
+                                <span class="subtitle">Flat 10% Off*</span>
+                            </h4>
+                        </div>
+                        @if($product->spl_price > 0 && $product->price > $product->spl_price)
+                        <div class="product-price">
+                            <del><i class="icon-rupee"></i> {{$product->price}}</del> 
+                            <ins><i class="icon-rupee"></i>{{$product->selling_price}}</ins>
+                        </div>
+                        @else
+                        <div class="product-price">
+
+                            <ins><i class="icon-rupee"></i>{{$product->selling_price}}</ins>
+                        </div>
+                        @endif
+                        <a href="{{route("home")}}/{{$product->url_key}}" class="btn btn-default">View Detail</a>
+                    </div>
                 </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 1599</del> <ins><i class="icon-rupee"></i> 1499</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
+                @endforeach
+
+
+
             </div>
 
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/home-decor.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">Tree Arcylic 3D Wall Stickers </a>
-                  <span class="subtitle">Flat 40% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/shoe.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">MEN'S FOOTWEAR</a>
-                  <span class="subtitle">Flat 50% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/t-shirt.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">Men's T-Shirt - White</a>
-                  <span class="subtitle">Flat 10% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 699</del> <ins><i class="icon-rupee"></i> 599</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/headphone.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">Beats Studio3 Wireless</a>
-                  <span class="subtitle">Flat 20% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 1599</del> <ins><i class="icon-rupee"></i> 1499</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/home-decor.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">Tree Arcylic 3D Wall Stickers </a>
-                  <span class="subtitle">Flat 40% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/shoe.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">MEN'S FOOTWEAR</a>
-                  <span class="subtitle">Flat 50% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/t-shirt.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">Men's T-Shirt - White</a>
-                  <span class="subtitle">Flat 10% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 699</del> <ins><i class="icon-rupee"></i> 599</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/headphone.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">Beats Studio3 Wireless</a>
-                  <span class="subtitle">Flat 20% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 1599</del> <ins><i class="icon-rupee"></i> 1499</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/home-decor.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">Tree Arcylic 3D Wall Stickers </a>
-                  <span class="subtitle">Flat 40% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/products/shoe.jpg" alt="">
-                </a>
-              </div>
-              <div class="product-desc text-center">
-                <div class="product-title">
-                  <h4><a href="#">MEN'S FOOTWEAR</a>
-                  <span class="subtitle">Flat 50% Off*</span>
-                </h4>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-                <a href="#" class="btn btn-default">View Detail</a>
-              </div>
-            </div>
-                        
-          </div>
-          
         </div>
-        <div class="container topmargin-sm">          
+
+    </div>
+    <div class="container topmargin-sm">          
         <div id="" class="heading-block title-center page-section">
-						<h2>Shop By Industry</h2>
-					</div>
+            <h2>Shop By Industry</h2>
         </div>
-      </div>
-      <!-- Portfolio Items
-				============================================= -->
-				<div id="portfolio" class="portfolio grid-container portfolio-6 portfolio-nomargin portfolio-full clearfix">
+    </div>
+</div>
+@endif
+<!-- Portfolio Items
+                          ============================================= -->
+<div id="portfolio" class="portfolio grid-container portfolio-6 portfolio-nomargin portfolio-full clearfix">
+    @foreach($rootsS as $rootcat)
 
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/t-shirt.jpg" alt="Fashion">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Fashion</a>
-              </div>
-            </div>
-          </article>
 
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/headphone.jpg" alt="Electronics">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Electronics</a>
-              </div>
+    <article class="portfolio-item pf-media pf-icons">
+        <div class="portfolio-image">
+            <a href="portfolio-single.html">
+                <img src="{{Config('constants.catImgPath').'/'.(@$rootcat->catimgs->first()->filename)}}"  alt="Fashion">
+            </a>
+            <div class="portfolio-overlay">
+                <a href="{{route("home")}}/explore/{{$rootcat->url_key}}">{{$rootcat->category}}</a>
             </div>
-          </article>
+        </div>
+    </article>
+    @endforeach
 
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/home-decor.jpg" alt="Home Decor">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Home Decor</a>
-              </div>
-            </div>
-          </article>
 
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/t-shirt.jpg" alt="Fashion">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Fashion</a>
-              </div>
-            </div>
-          </article>
 
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/headphone.jpg" alt="Electronics">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Electronics</a>
-              </div>
-            </div>
-          </article>
 
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/home-decor.jpg" alt="Home Decor">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Home Decor</a>
-              </div>
-            </div>
-          </article>
+</div><!-- #portfolio end -->
 
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/headphone.jpg" alt="Electronics">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Electronics</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/home-decor.jpg" alt="Home Decor">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Home Decor</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/t-shirt.jpg" alt="Fashion">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Fashion</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/headphone.jpg" alt="Electronics">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Electronics</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/home-decor.jpg" alt="Home Decor">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Home Decor</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="portfolio-item pf-media pf-icons">
-            <div class="portfolio-image">
-              <a href="portfolio-single.html">
-                <img src="images/products/t-shirt.jpg" alt="Fashion">
-              </a>
-              <div class="portfolio-overlay">
-                <a href="#">Fashion</a>
-              </div>
-            </div>
-          </article>
-          
-        </div><!-- #portfolio end -->
-        
-    </section>
+</section>
 @stop

@@ -4512,7 +4512,7 @@ body:not(.stretched) .slider-parallax .slider-parallax-inner { left: auto; }
 	position: absolute;
 	cursor: pointer;
 	z-index: 10;
-	top: 50%;
+	top: 40%;
 	left: 0;
 	margin-top: -26px;
 	background-color: rgba(0,0,0,0.3);
@@ -15023,7 +15023,7 @@ body:not(.no-transition) #wrapper,
 	-o-transform: none!important;
 	transform: none!important;
 	margin:0!important;
-	padding:0!important
+	padding:0!important;
 }
 
 
@@ -15043,4 +15043,17 @@ label#widget-subscribe-form-email-error {
 .margleft{
 	margin-left: 600px;
 }
+
+.slider
+{
+    width: 1663px!important;
+/*    height: 80%!important;*/
+
+}
+
+
+
+
+
+
 /*pranali css ends*/

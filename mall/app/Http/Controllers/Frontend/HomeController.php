@@ -28,10 +28,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 use Session;
 use App\Models\DynamicLayout;
-use App\Models\Product;
+use App\Models\MallProducts as Product;
 use App\Models\Testimonials;
 use App\Models\Pincode;
 use Config;
+use DB;
 use Cart;
 
 class HomeController extends Controller {
@@ -51,15 +52,27 @@ class HomeController extends Controller {
     public function index() {
         $data = [];
         $categoryA = MallProdCategory::get(['id', 'category'])->toArray();
-        $rootsS = MallProdCategory::roots()->where("status", 1)->get();
+        $rootsS = MallProdCategory::roots()->with('catimgs')->where("status", 1)->get();
+      
         $category = [];
         $attr_sets = [];
         $prod_types = [];
         foreach ($categoryA as $val) {
             $category[$val['id']] = $val['category'];
         }
+        $prods = Product::where('is_trending', '=', 1)
+                        ->where('is_avail', '=', 1)->where('status', '=', 1)->get();
+        foreach($prods as $prd){
+            $prodImg=DB::table($prd->prefix."_catalog_images")->where("catalog_id",$prd->store_prod_id)->where("image_mode",1)->first();
+         
+            $prd->mainImage =  $prodImg->image_path . '/' . @$prodImg->filename;
+            $prd->alt_text = @$prodImg->alt_text;
+        }
+       
         $data['category'] = $category;
         $data['rootsS'] = $rootsS;
+       
+        $data['products'] = $prods;
 
         $viewname = Config('constants.frontendView') . '.index';
         return Helper::returnView($viewname, $data, null, 1);
