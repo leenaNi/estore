@@ -1239,6 +1239,9 @@ div.logo .updateLogo {
 
 
 @media (max-width: 767px) {
+	.mobwidth100 {
+    width: 100%;
+}
 	.table-responsive > .table-bordered {
     border: 1px solid #ddd;
 }
@@ -1832,7 +1835,8 @@ input.min-price-filter, input.max-price-filter {
     border: 0px !important;}
 	#logo img {
     display: block;
-    max-width: 90%;
+		max-width: 90%;
+		height: 100px;
 }
 	.noMobileMargin{margin:0px !important; margin-bottom:0px !important;}
 	.quantity{margin-bottom: 20px;}
@@ -2046,7 +2050,6 @@ input#couponApply {
 }
 @media (max-width: 320px) {
 	#logo img {
-		max-width: 110px !important;
     padding: 15px 0px;
 }
 	button.add-to-cart.button.nomargin.addToCartB.addToCart {

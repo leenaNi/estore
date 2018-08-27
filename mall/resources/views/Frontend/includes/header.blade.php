@@ -1,98 +1,531 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-4">
-            <ul>
-                <li>Home</li>
-                @foreach($menu as $getm)
-                {{ App\Library\Helper::getmenu($getm) }}
-                @endforeach
-            </ul>
+<!-- Top Bar
+        ============================================= -->
+<div id="top-bar">
+
+    <div class="container clearfix">
+
+        <div class="col_full nobottommargin">
+
+            <!-- Top Links
+            ============================================= -->
+            <div class="top-links fright">
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <!-- <li><a href="#">FAQs</a></li> -->
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Login / Register</a></li>
+                </ul> 
+            </div><!-- .top-links end -->
+
         </div>
-        <div class="col-md-4">
-            <!-- | -->  <?php $currency = App\Library\Helper::get_country(); ?>
-            <?php
-            $currency_id = "32";
-            if (isset($_COOKIE['currency'])) {
-                $currency_id = $_COOKIE['currency'];
-            }
-            App\Library\Helper::set_country_session($currency_id)
-            ?>
-<!--            <select name="currencycheck" id="currencycheck" class="currencycheck ">
-                <option value="">Select Country</option>    
-                @foreach($currency as $cur)
-                <option value="{{ $cur->id}}" <?php
-            if ($cur->id == $currency_id) {
-                echo "selected";
-            }
-            ?>>{{ $cur->currency_code}} ({{ $cur->currency_name}})</option>
-                @endforeach
-            </select>-->
-        </div>
-        <div class="col-md-4">
-            <div class="your-products" id="myCart">
-                <div class="shop-cart">
-                    <a class="cart-control">
-                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'assets/icons/cart-black.png') }}" alt="">
-                        <span class="cart-number number">{{Cart::instance("shopping")->count()}}</span>
-                    </a><!-- .cart-control -->
-                    @if(Cart::instance("shopping")->count() != 0 )
-                    <div class="shop-item">
-                        <div class="widget_shopping_cart_content">
-                            <ul class="cart_list">
-                                @foreach(Cart::instance("shopping")->content() as $c)
-                                <li class="clearfix">
-                                    <a class="p-thumb" href="#" style="height: 50px;width: 50px;">
-                                        <?php if ($c->options->image != '') { ?>
-                                            <img src="{{ asset(Config('constants.productImgPath').$c->options->image) }}" alt="{{$c->options->image}}" >
-                                        <?php } else { ?>
-                                            <img src="{{ asset(Config('constants.productImgPath')) }}/default-image.jpg" alt="" >
-                                        <?php } ?>
-                                    </a>
-                                    <div class="p-info">
-                                        <a class="p-title" href="#">{{ $c->name }}</a><br>
+    </div>
 
-                                        <span class="p-qty">QTY: {{ $c->qty }}</span>
+</div><!-- #top-bar end -->
+<!-- Header
+        ============================================= -->
 
-                                        <span class="price">
-                                            <?php
-                                            if ($c->options->tax_type == 2) {
-                                                $taxeble_amt = $c->subtotal - $c->options->disc;
-                                                $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
-                                                $selling_price = $c->subtotal * Session::get('currency_val') + $tax_amt;
-                                            } else {
-                                                $selling_price = $c->subtotal * Session::get('currency_val');
-                                            }
-                                            ?>
-                                            <ins><span class="amount"><?php echo!empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> {{ number_format($selling_price, 2) }}</span></ins>
-                                        </span>
+<header id="header" class="box-header">
 
-                                        <a data-rowid="{{$c->rowid}}" class="removeShoppingCartProd remove" href="#"><i class="fa fa-times-circle"></i></a>
-                                    </div>
-                                </li>
-                                @endforeach
-                            </ul><!-- end cart_list -->
-                            <?php
-                            $cart_data = App\Library\Helper::calAmtWithTax();
-                            $cart_total = $cart_data['total'] * Session::get("currency_val");
-                            ?>
-                            <p class="total"><strong>Subtotal:</strong> <span class="amount"><?php echo!empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> {{ number_format($cart_total, 2) }}</span></p>
-                            <p class="buttons">
-                                <a class="button cart-button" href="{{ route('cart') }}">View Cart</a>
-                                <a class="button yellow wc-forward" href="{{ route("checkout") }}">Checkout</a>
-                            </p>
-                        </div>
-                    </div><!-- .shop-item -->
-                    @else
-                    <!---- --->
-                    @endif
-                </div><!-- .shop-cart -->
-            </div><!-- .your-products -->
-            @if(Session::get('loggedin_user_id'))
-            <a href="{{ route('logoutUser')  }}" class="">Logout</a>
-            @else
-            <a href="{{ route('loginUser')  }}" class="">Login/Register</a>
-            @endif
+    <div id="header-wrap">
+
+        <div class="container clearfix">
+            <!-- left navbar button -->
+            <button class="lno-btn-toggle hidden">
+                <span class="fa fa-bars"></span>
+            </button>
+            <!-- Line left navbar for secondary navbar on small devices -->
+            <div class="line-navbar-left hidden">
+                <p class="lnl-nav-title">Categories</p>
+                <ul class="lnl-nav">
+                    <!-- The list will be automatically cloned from mega menu via jQuery -->
+                </ul>
+            </div> <!-- /.line-navbar-left -->
+
+            <!-- Logo
+            ============================================= -->
+            <div id="logo">
+                <a href="{{ route('home') }}" class="standard-logo" data-dark-logo="{{ (App\Library\Helper::getSettings()['logo'])?App\Library\Helper::getSettings()['logo']:asset(Config('constants.defaultImgPath').'default-logo.png') }}"><img src="{{ (App\Library\Helper::getSettings()['logo'])?App\Library\Helper::getSettings()['logo']:asset(Config('constants.defaultImgPath').'default-logo.png') }}" alt="{{App\Library\Helper::getSettings()['storeName']}}"></a>
+                <a href="{{ route('home') }}" class="retina-logo" data-dark-logo="{{ (App\Library\Helper::getSettings()['logo'])?App\Library\Helper::getSettings()['logo']:asset(Config('constants.defaultImgPath').'default-logo.png') }}"><img src="{{ (App\Library\Helper::getSettings()['logo'])?App\Library\Helper::getSettings()['logo']:asset(Config('constants.defaultImgPath').'default-logo.png') }}" alt="{{App\Library\Helper::getSettings()['storeName']}} logo">
+                </a>
+            </div><!-- #logo end -->
+
+            <!-- Line secondary navbar -->
+            <nav class="navbar navbar-static-top line-navbar-two">
+                <div class="">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="line-navbar-collapse-2">
+                        <ul class="nav navbar-nav lnt-nav-mega">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                  <!-- <span class="fa fa-dot-circle-o"></span> -->
+                                    Shop by Categories
+                                    <span class="caret"></span>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <div class="lnt-dropdown-mega-menu">
+                                        <!-- List of categories -->
+                                        <ul class="lnt-category list-unstyled">
+                                            <li class="active"><a href="#subcategory-fashion">Fashion</a></li>
+                                            <li><a href="#subcategory-electronics">Electronics</a></li>
+                                            <li><a href="#subcategory-restaurant">Restaurants</a></li>
+                                            <li><a href="#subcategory-arts">Arts & Crafts </a></li>
+                                            <li><a href="#subcategory-beauty">Beauty & Wellness</a></li>
+                                            <li><a href="#subcategory-home">Home Decor</a></li>
+                                            <li><a href="#subcategory-gifts">Gifts & Flowers</a></li>
+                                            <li><a href="#subcategory-toys">Toys & Sports</a></li>
+                                            <li><a href="#subcategory-jewellery">Jewellery</a></li>
+                                            <li><a href="#subcategory-kitchen">Kitchen & Homeware</a></li>
+                                            <li><a href="#subcategory-footwear">Footwear</a></li>
+                                            <li><a href="#subcategory-books">Books & Stationary</a></li>
+                                            <li><a href="#subcategory-others">Others</a></li>
+               
+                                        </ul>
+                                        <!-- Subcategory and carousel wrap -->
+                                        <div class="lnt-subcategroy-carousel-wrap container-fluid">
+                                            <div id="subcategory-fashion" class="active">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Fashion</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a></li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a></li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+                                                    </ul>
+                                                </div>
+                                                <!-- Carousel -->
+                                                <!-- <div class="col-sm-4 col-md-4">
+                                                  <div id="carousel-category-home" class="carousel slide" data-ride="carousel">
+                                                    <ol class="carousel-indicators">
+                                                      <li data-target="#carousel-category-home" data-slide-to="0" class=""></li>
+                                                      <li data-target="#carousel-category-home" data-slide-to="1" class="active"></li>
+                                                      <li data-target="#carousel-category-home" data-slide-to="2" class=""></li>
+                                                    </ol>
+                                                    <div class="carousel-inner" role="listbox">
+                                                      <div class="item active">
+                                                        <img src="http://placehold.it/296x400" alt="Slide image">
+                                                      </div>
+                                                      <div class="item">
+                                                        <img src="http://placehold.it/296x400" alt="Slide image">
+                                                      </div>
+                                                      <div class="item">
+                                                        <img src="http://placehold.it/296x400" alt="Slide image">
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div> -->
+                                            </div> <!-- /.subcategory-fashion -->
+                                            <div id="subcategory-electronics">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Electronics</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-electronics -->
+                                            <div id="subcategory-restaurant">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Restaurants</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-restaurants -->
+                                            <div id="subcategory-arts">
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Arts & Crafts</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-arts & crafts -->
+                                            <div id="subcategory-beauty">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Beauty and Wellness</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-beauty & wellness -->
+                                            <div id="subcategory-home">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Home Decor</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.category-home decor -->
+
+                                            <div id="subcategory-gifts">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Gifts & Flowers</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+                                            </div> <!-- /.subcategory-gifts & flowers -->
+                                            <div id="subcategory-toys">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Toys & Sports</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-toys & sports -->
+
+                                            <div id="subcategory-jewellery">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Jewellery</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-jewellery -->
+
+                                            <div id="subcategory-kitchen">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Kitchen & Homeware</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-kitchen & homeware -->
+
+                                            <div id="subcategory-footwear">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Footwear</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-footwear -->
+
+                                            <div id="subcategory-books">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Books & Stationary</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-books & stationary -->
+                                            <div id="subcategory-others">
+                                                <!-- Sub categories list-->
+                                                <div class="lnt-subcategory col-sm-8 col-md-8">
+                                                    <h3 class="lnt-category-name">Others</h3>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="http://google.com/">Category 1</a></li>
+
+                                                        <li><a href="#">Category 2</a></li>
+                                                        <li><a href="#">Category 3</a></li>
+                                                        <li><a href="#">Category 4</a></li>
+                                                        <li><a href="#">Category 5</a></li>
+                                                        <li><a href="#">Category 6</a> 
+                                                          <!-- <span class="label label-info">Popular</span> -->
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="list-unstyled col-sm-6">
+                                                        <li><a href="#">Category 7</a></li>
+                                                        <li><a href="#">Category 8</a> 
+                                                          <!-- <span class="label label-danger">hot</span> -->
+                                                        </li>
+                                                        <li><a href="#">Category 9</a></li>
+                                                        <li><a href="#">Category 10</a></li>
+                                                        <li><a href="#">Category 11</a></li>
+                                                        <li><a href="#">Category 12</a></li>
+
+                                                    </ul>
+                                                </div>
+
+                                            </div> <!-- /.subcategory-others -->
+
+                                        </div> <!-- /.lnt-subcategroy-carousel-wrap -->
+                                    </div> <!-- /.lnt-dropdown-mega-menu -->
+                                </div> <!-- /.dropdown-menu -->
+                            </li> <!-- /.dropdown -->
+                        </ul> <!-- /.lnt-nav-mega -->
+                        <form class="navbar-form navbar-left lnt-search-form" role="search">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-btn lnt-search-category">
+                                        <button type="button" class="btn btn-default dropdown-toggle selected-category-btn" data-toggle="dropdown" aria-expanded="false">
+                                            <span class="selected-category-text">All </span>
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#">Fashion</a></li>
+                                            <li><a href="#">Electronics</a></li>
+                                            <li><a href="#">Restaurants</a></li>
+                                            <li><a href="#">Arts & Crafts</a></li>
+                                            <li><a href="#">Beauty & Wellness</a></li>
+                                            <li><a href="#">Home Decor</a></li>
+                                            <li><a href="#">Gifts & Flowers</a></li>
+                                            <li><a href="#">Toys & Sports</a></li>
+                                            <li><a href="#">Jewellery</a></li>
+                                            <li><a href="#">Kitchen & Homeware</a></li>
+                                            <li><a href="#">Footwear</a></li>
+                                            <li><a href="#">Books & Stationary</a></li>
+                                            <li><a href="#">Others</a></li>
+                                        </ul>
+                                    </div><!-- /btn-group -->
+                                    <input type="text" class="form-control lnt-search-input" aria-label="Search" placeholder="Search here...">
+                                </div><!-- /input-group -->
+                            </div>
+
+                            <button type="submit" class="btn btn-search"><span class="fa fa-search"></span></button>
+                        </form> <!-- /.lnt-search-form -->
+                        <ul class="nav navbar-nav navbar-right lnt-shopping-cart">
+                            <li class="">
+                                <div id="top-cart">
+                                    <a href="#"><i class="icon-shopping-cart"></i><span>5</span></a>
+                                </div>
+                            </li>
+                        </ul> <!-- /.lnt-shopping-cart -->
+                    </div> <!-- /.navbar-collapse -->
+                </div> <!-- /.container -->
+            </nav> <!-- /.line-navbar-two -->
+
         </div>
 
     </div>
-</div>
+
+</header><!-- #header end --><!-- #header end -->

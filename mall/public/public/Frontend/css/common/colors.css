@@ -133,7 +133,7 @@ input.switch-toggle-flat:checked + label,
 input.switch-toggle-flat:checked + label:after,
 input.switch-toggle-round:checked + label:before,
 .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-themecolor,
-.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-themecolor { background-color: #2e8ece; }
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-themecolor { background-color: #89b24f; }
 
 .bgcolor,
 .button.button-3d:not(.button-white):not(.button-dark):not(.button-border):not(.button-black):not(.button-red):not(.button-teal):not(.button-yellow):not(.button-green):not(.button-brown):not(.button-aqua):not(.button-purple):not(.button-leaf):not(.button-pink):not(.button-blue):not(.button-dirtygreen):not(.button-amber):not(.button-lime):hover,

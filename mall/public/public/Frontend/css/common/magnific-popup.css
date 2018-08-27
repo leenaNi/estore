@@ -90,7 +90,7 @@
 	left: 50%;
 	width: 24px;
 	height: 24px;
-	background: url('/public/Frontend/images/preloader-dark.gif') center center no-repeat;
+	background: url('../images/preloader-dark.gif') center center no-repeat;
 	text-align: center;
 	margin-top: -12px;
 	margin-left: -12px;
@@ -112,7 +112,7 @@ button.mfp-close,
 button.mfp-arrow {
 	overflow: visible;
 	cursor: pointer;
-	background: transparent !important;
+	background: transparent;
 	border: 0;
 	-webkit-appearance: none;
 	display: block;
