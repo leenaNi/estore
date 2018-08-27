@@ -99,7 +99,7 @@ class ProductController extends Controller {
         }
         $product->prodImage = $product->images[0]->image_path . '/' . $product->images[0]->filename;
         $nattrs = []; //AttributeSet::find($product->attr_set)->attributes()->where("is_filterable", "=", 0)->get();
-
+        $product->store_name = DB::table('stores')->where('id', $product->store_id)->first()->store_name;
         $product->related = []; //$product->relatedproducts()->where("status", 1)->get();
         $product->upsellproduct = []; //$product->upsellproducts()->where("status", 1)->get();
         $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | Cartini " : @$product->meta_title;

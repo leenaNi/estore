@@ -13,6 +13,7 @@
 ============================================= -->
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/functions.js' }}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/custom.js' }}"></script>
+<script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'custom-menu.js'}}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/jquery.elevatezoom.js' }}"></script>
 <script src="//connect.facebook.net/en_US/all.js"></script>
 
@@ -91,7 +92,10 @@ $(document).ready(function () {
 });
 </script>
 <script>
-
+    //PRODUCT DETAILS PAGE 
+//    var cw = $('#shop .product a img').width();
+//    console.log("Image width", cw);
+//    jQuery('#shop .product a img').css({'height': cw + 'px'});
     $(document).ready(function () {
         console.log("ready!");
         if ($(window).width() < 768) {
@@ -99,6 +103,23 @@ $(document).ready(function () {
         } else {
             $('.zoom-me').elevateZoom();
 
+        }
+//        var pw = $('div#oc-product .owl-stage-outer .owl-stage .owl-item').width();
+//        jQuery('.boxSizeImage').css({'height': pw + 'px'});
+        $('p:empty').remove();
+        $('.shortDesc:empty').remove();
+
+        if ($(window).width() < 768) {
+            setTimeout(function () {
+                $('.zoom-me').elevateZoom({
+                    zoomType: "inner",
+                    cursor: "crosshair",
+                    zoomWindowFadeIn: 500,
+                    zoomWindowFadeOut: 750
+                });
+            }, 1000)
+        } else {
+            $('.zoom-me').elevateZoom();
         }
 
     });
@@ -172,6 +193,7 @@ $(document).ready(function () {
         } else {
             store({'lasturl': document.referrer});
         }
+        //Currency Chk
         $("#currencycheck").change(function () {
             var id = $(this).val();
             $.ajax({
@@ -187,6 +209,210 @@ $(document).ready(function () {
             });
         });
         getCur();
+        //ADD TO CART addToCart
+        $("body").delegate('.addToCart', 'click', function (e) {
+            console.log('addtocart');
+            e.preventDefault();
+            var getThis = $(this);
+            var formId = $(this).attr("form-id");
+            var qty = $("#form" + formId + ' input[name="quantity"]').val();
+            var attrSel = true;
+            var prod_type = $("#form" + formId + ' input[name="prod_type"]').val();
+            //console.log("product type" +prod_type);
+            if (prod_type != 1) {
+                var sub_prod = $("#form" + formId + ' input[name="sub_prod"]').val();
+                //alert("sub product" +sub_prod);
+            }
+            if (qty == 0 || !qty) {
+                // $('.quantity').addClass('error');
+                $("#form" + formId + ' input[name="quantity"]').val('1');
+                $('.quantity').css({"border-color": "#FF0000", "border-weight": "1px", "border-style": "solid"});
+                return false
+            }
+            $('.quantity').css({"border-color": "", "border-weight": "", "border-style": ""});
+            $("#form" + formId).find(".attrSel").each(function () {
+                $(this).parent().find(".optError").remove();
+//            if ($(this).val() == "") {
+//                $(this).addClass("addCartError");
+//                $(this).parent().append("<p style='color:red' class='optError'>Please select " + $(this).attr('name') + "!</p>");
+//
+//            }
+                if ($(this).is("select")) {
+                    if ($(this).val() == "") {
+                        console.log("lee " + $(this).attr('name') + " ====" + $(this).hasClass("error") + "==");
+                        if ($(this).hasClass("error")) {
+                            $(this).removeClass("error");
+                            $(this).parent().find(".optError").remove();
+                        }
+                        attrSel = false;
+                        //alert('Please select product variant');
+                        $(this).addClass("error");
+                        $(this).parent().append("<p style='color:red' class='optError'>Please select " + $(this).attr('name') + "!</p>");
+                    } else {
+                        attrSel = true;
+                        $(this).removeClass("error");
+                        $(this).parent().find(".optError").remove();
+                    }
+                } else { //if ($(this).is("input:radio")) {
+                    //alert($(this).attr('data-name'));
+                    if ($(this).hasClass("error")) {
+                        $(this).removeClass("error");
+                        $(this).parent().find(".optError").remove();
+                    }
+
+                    $('input.radioAttrs').each(function () {
+                        if ($(this).is(':checked')) {
+                            console.log("Chekced radio");
+                            atLeastOneIsChecked = true;
+                            // Stop .each from processing any more items
+                            return false;
+                        }
+                    });
+                    console.log(atLeastOneIsChecked + " radio cheched");
+                    if (!atLeastOneIsChecked) {
+                        attrSel = false;
+                        //alert('Please select product variant');
+                        $(this).addClass("error");
+                        $(this).append("<p style='color:red' class='optError'>Please select " + $(this).attr('data-name') + "!</p>");
+                    } else {
+                        attrSel = true;
+                        $(this).removeClass("error");
+                        $(this).parent().find(".optError").remove();
+                    }
+                }
+
+            });
+            //var attr1=$("#form" + formId).attr('action');
+            //alert("action "+$("#form" + formId).serialize());
+            $("#form" + formId).find(".attrSel").each(function () {
+                if ($(this).hasClass("addCartError")) {
+                    $(this).removeClass("error");
+                    $(this).parent().find(".optError").remove();
+                }
+            });
+
+            if (!attrSel)
+                return false;
+
+            //console.log(attrSel);
+            $.post($("#form" + formId).attr('action'), $("#form" + formId).serialize(), function (result) {
+                if (result == 1) {
+                    //  alert(result);
+                    alert('Specified quantity is not available');
+                } else {
+//                var cart_cont = result.split("||||||");
+//                $(".cartDiv").replaceWith(cart_cont[0]);
+                    var newCart = result.split("||||||");
+                    var cart = $('.shop-cart');
+                    //alert(html());
+                    // var imgtodrag = $("#form" + formId).find(".fimg").eq(0);
+                    var imgtodrag = $("#form" + formId + " img").eq(0);
+                    console.log(imgtodrag);
+                    if (imgtodrag) {
+                        var imgclone = imgtodrag.clone()
+                                .offset({
+                                    top: imgtodrag.offset().top,
+                                    left: imgtodrag.offset().left
+                                })
+                                .css({
+                                    'opacity': '0.5',
+                                    'position': 'absolute',
+                                    'height': '150px',
+                                    'width': '150px',
+                                    'z-index': '99999999'
+                                })
+                                .appendTo($('body'))
+                                .animate({
+                                    'top': cart.offset().top + 10,
+                                    'left': cart.offset().left + 10,
+                                    'width': 75,
+                                    'height': 75
+                                }, 800, 'easeInOutExpo');
+                        setTimeout(function () {
+                            cart.effect("shake", {
+                                times: 2
+                            }, 200);
+                        }, 1500);
+                        imgclone.animate({
+                            'width': 0,
+                            'height': 0
+                        }, function () {
+                            $(this).detach();
+                        });
+                    }
+                    //  alert(newCart[1]);
+                    $('.shop-cart').text(newCart[1]);
+                    $("#product_viewtest").modal('hide');
+                }
+            });
+        });
+        //Remove Product From Cart
+        $("#myCart").delegate(".removeShoppingCartProd", "click", function () {
+            var rowid = $(this).attr('data-rowid');
+            var thisEle = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{route('deleteCart')}}",
+                data: {rowid: rowid},
+                cache: false,
+                success: function (data) {
+
+                    data = data.split("||||||||||");
+                    $('.shop-cart').replaceWith(data[2]);
+                    thisEle.parent().parent().remove();
+                }
+            });
+        });
+        //ADD TO WISHLIST
+        $("body").delegate('.add-to-wishlist', 'click', function (e) {
+            var ele = $(this);
+            var prodid = ele.attr("data-prodid");
+            console.log('ele ' + ele);
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "{{route('addToWishlist')}}",
+                data: {prodid: ele.attr("data-prodid")},
+                cache: false,
+                success: function (data) {
+                    console.log("data: " + data);
+                    console.log(ele.attr("data-prodid"));
+                    if (data == 'login')
+                        location.href = "{{route('loginUser')}}";
+                    // alert(ele.children());
+                    if (data == 1) {
+                        $('#wish' + prodid).addClass("red-heart");
+                        $('#wish' + prodid).addClass("icon-heart3");
+                        $('#wish' + prodid).removeClass("icon-heart");
+                    } else {
+                        $('#wish' + prodid).removeClass("red-heart");
+                        $('#wish' + prodid).removeClass("icon-heart3");
+                        $('#wish' + prodid).addClass("icon-heart");
+                    }
+
+                }
+            });
+        });
+        $("body").delegate('.add-to-wishlist-page', 'click', function (e) {
+            var ele = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{route('addToWishlist')}}",
+                data: {prodid: ele.attr("data-prodid")},
+                cache: false,
+                success: function (data) {
+                    console.log("data: " + data);
+                    console.log(ele.attr("data-prodid"));
+                    if (data == 'login')
+                        location.href = "{{route('loginUser')}}"
+                    if (data == 1)
+                        ele.addClass("red-heart");
+                    else
+                        ele.removeClass("red-heart");
+                    location.href = window.location.href;
+                }
+            });
+        });
     });
     function store(data) {
         jQuery.each(data, function (k, v) {

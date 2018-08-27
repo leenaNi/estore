@@ -8,7 +8,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
     Route::any('/sc', ['as' => 'setCurrency', 'uses' => 'HomeController@setCurrency']);
     Route::any('/change-country', array('as' => 'changeCountry', 'uses' => 'HomeController@change_country'));
-    
+
     //SUBSCRIPTION MAIL
     Route::any('/subscription-mail', ['as' => 'subscriptionMail', 'uses' => 'HomeController@subscription']);
 
@@ -53,6 +53,10 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/getBillSummary', array('as' => 'getBillSummary', 'uses' => 'CheckoutController@getBillSummary'));
     Route::any('/toPayment', array('as' => 'toPayment', 'uses' => 'CheckoutController@toPayment'));
     Route::any('/chk-cart-inventory', array('as' => 'chk_cart_inventory', 'uses' => 'CheckoutController@chk_cart_inventory'));
+
+    //WISHLIST
+    Route::post('/save-wishlist', ['as' => 'addToWishlist', 'uses' => 'UserController@addToWishlist']);
+    Route::post('/remove-wishlist', ['as' => 'removeWishlist', 'uses' => 'UserController@removeWishlist']);
 
     //PRODUCT LISTING ROUTES
     Route::any('/getListingFilter', ['as' => 'getListingFilter', 'uses' => 'CategoriesController@getListingFilter']);
