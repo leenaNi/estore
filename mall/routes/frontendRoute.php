@@ -53,7 +53,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/getBillSummary', array('as' => 'getBillSummary', 'uses' => 'CheckoutController@getBillSummary'));
     Route::any('/toPayment', array('as' => 'toPayment', 'uses' => 'CheckoutController@toPayment'));
     Route::any('/chk-cart-inventory', array('as' => 'chk_cart_inventory', 'uses' => 'CheckoutController@chk_cart_inventory'));
-
+    Route::post('/order_cash_on_delivery', array('as' => 'order_cash_on_delivery', 'uses' => 'CheckoutController@order_cash_on_delivery'));
     //WISHLIST
     Route::post('/save-wishlist', ['as' => 'addToWishlist', 'uses' => 'UserController@addToWishlist']);
     Route::post('/remove-wishlist', ['as' => 'removeWishlist', 'uses' => 'UserController@removeWishlist']);

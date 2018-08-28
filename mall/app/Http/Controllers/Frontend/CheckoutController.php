@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use Route;
 use App\Models\Category;
-use App\Models\Product;
+use App\Models\MallProducts as Product;
 use App\Models\Country;
 use App\Models\GeneralSetting;
 use App\Models\Loyalty;
@@ -1738,11 +1738,11 @@ $des='';
         $order->voucher_amt_used = is_null(Session::get('voucherAmount')) ? 0 : Session::get('voucherAmount');
         $order->voucher_used = is_null(Session::get('voucherUsedAmt')) ? 0 : Session::get('voucherUsedAmt');
         $coupon_id = Session::get('voucherUsedAmt');
-        if (isset($coupon_id)) {
-            $coupon = Coupon::find($coupon_id);
-            $coupon->initial_coupon_val = Session::get('remainingVoucherAmt');
-            $coupon->update();
-        }
+//        if (isset($coupon_id)) {
+//            $coupon = Coupon::find($coupon_id);
+//            $coupon->initial_coupon_val = Session::get('remainingVoucherAmt');
+//            $coupon->update();
+//        }
 
         //$order->shipping_amt = is_null(Session::get('shippingAmount')) ? 0 : Session::get('shippingAmount');
         if ($chkReferal->status == 1) {
@@ -1755,18 +1755,19 @@ $des='';
         }
         //dd($chkLoyalty->status);
 
-        if ($chkLoyalty->status == 1) {
-            $order->loyalty_cron_status = 1;
-            $loyaltyPercent = $user->loyalty['percent'];
-            $amt = $user->total_purchase_till_now;
-            $loyalty = Loyalty::where("min_order_amt", ">=", $amt)->where("max_order_amt", "<=", $amt)->orderBy("min_order_amt", "desc")->first();
-            if (isset($loyalty->id)) {
-                $user->loyalty_group = $loyalty->id;
-            }
-            $order->cashback_earned = is_null($loyaltyPercent) ? 0 : number_format(((($loyaltyPercent * $payAmt) / 100) * Session::get("currency_val")), 2);
-        } else {
-            $order->loyalty_cron_status = 0;
-        }
+//        if ($chkLoyalty->status == 1) {
+//            $order->loyalty_cron_status = 1;
+//            $loyaltyPercent = $user->loyalty['percent'];
+//            $amt = $user->total_purchase_till_now;
+//            $loyalty = Loyalty::where("min_order_amt", ">=", $amt)->where("max_order_amt", "<=", $amt)->orderBy("min_order_amt", "desc")->first();
+//            if (isset($loyalty->id)) {
+//                $user->loyalty_group = $loyalty->id;
+//            }
+//            $order->cashback_earned = is_null($loyaltyPercent) ? 0 : number_format(((($loyaltyPercent * $payAmt) / 100) * Session::get("currency_val")), 2);
+//        } else {
+//            $order->loyalty_cron_status = 0;
+//        }
+        $order->loyalty_cron_status = 0;
         $user->cashback = $user->cashback - (@Session::get('checkbackUsedAmt') / Session::get('currency_val'));
         $user->update();
         $tempName = Session::get('login_user_first_name');
@@ -1782,7 +1783,7 @@ $des='';
         $order->created_at = $date;
 
         if ($order->Update()) {
-            $this->coupon_count();
+           // $this->coupon_count();
             $this->forget_session_coupon();
             //if ($stock_status == 1) { // commented by bhavana.... 
             $this->updateStock($order->id);
@@ -1834,19 +1835,19 @@ $des='';
         $cart_ids = [];
        // $order->products()->detach();
         foreach ($cartContent as $cart) {
-            $product = Product::where("store_prod_id",$cart->id)->where("store_id",$cart->options->store_id);
+            $product = Product::where("store_prod_id",$cart->id)->where("store_id",$cart->options->store_id)->first();
             $sum = 0;
             $prod_tax = array();
             $total_tax = array();
-            if (count($product->texes) > 0) {
-                foreach ($product->texes as $tax) {
-                    $prod_tax['id'] = $tax->id;
-                    $prod_tax['name'] = $tax->name;
-                    $prod_tax['rate'] = $tax->rate;
-                    $prod_tax['tax_number'] = $tax->tax_number;
-                    $total_tax[] = $prod_tax;
-                }
-            }
+//            if (count($product->texes) > 0) {
+//                foreach ($product->texes as $tax) {
+//                    $prod_tax['id'] = $tax->id;
+//                    $prod_tax['name'] = $tax->name;
+//                    $prod_tax['rate'] = $tax->rate;
+//                    $prod_tax['tax_number'] = $tax->tax_number;
+//                    $total_tax[] = $prod_tax;
+//                }
+//            }
 
             if ($cart->options->tax_type == 2) {
                 $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
@@ -1856,41 +1857,35 @@ $des='';
             } else {
                 $subtotal = $cart->subtotal;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal * Session::get('currency_val'), "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax)];
-            $market_place = Helper::generalSetting(35);
-            if (isset($market_place) && $market_place->status == 1) {
-                $prior_vendor = $product->vendorPriority()->first();
-                $vendor['order_status'] = 1;
-                $vendor['tracking_id'] = 1;
-                $vendor['vendor_id'] = is_null($prior_vendor) ? null : $prior_vendor->id;
-                $cart_ids[$cart->id] = array_merge($cart_ids[$cart->id], $vendor);
-            }
+            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal , "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax)];
+           
+          
             if ($cart->options->has('sub_prod')) {
                 $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
-                $prddataS = Product::find($cart->options->sub_prod);
+                $prddataS =  Product::where("store_prod_id",$cart->id)->where("store_id",$cart->options->store_id)->first();
                 $proddetails['id'] = $prddataS->id;
                 $proddetails['name'] = $prddataS->product;
                 $proddetails['image'] = $cart->options->image;
-                $proddetails['price'] = $cart->sellig_price * Session::get("currency_val");
+                $proddetails['price'] = $cart->sellig_price;
                 $proddetails['qty'] = $cart->qty;
-                $proddetails['subtotal'] = $subtotal * Session::get('currency_val');
+                $proddetails['subtotal'] = $subtotal;
                 $proddetails['is_cod'] = $prddataS->is_cod;
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);
-                $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);             
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
-                $prd = Product::find($cart->options->sub_prod);
-                $prd->stock = $prd->stock - $cart->qty;
-                if ($prd->is_stock == 1) {
-                    $prd->update();
+                if ($prddataS->is_stock == 1) {
+                  $stocks =  DB::table($cart->options->prefix.'_products')->find($cart->id)->stock;
+                  $finalStock= $stocks - $cart->qty;
+                  $prddataS->stock = $finalStock;
+                  $prddataS->update();
+                  DB::table($cart->options->prefix.'_products')->where("id",$cart->id)->update(["stock"=>$finalStock]);
                 }
 
 
 
-                if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
-                    $this->AdminStockAlert($prd->id);
-                }
+//                if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
+//                    $this->AdminStockAlert($prd->id);
+//                }
             } else if ($cart->options->has('combos')) {
                 $sub_prd_ids = [];
                 foreach ($cart->options->combos as $key => $val) {
@@ -1922,33 +1917,39 @@ $des='';
                 $cart_ids[$cart->id]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
-                $prddataSp = Product::find($cart->id);
+                $prddataSp = Product::where("store_prod_id",$cart->id)->where("store_id",$cart->options->store_id)->first();
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
-                $proddetailsp['price'] = $cart->sellig_price * Session::get("currency_val");
+                $proddetailsp['price'] = $cart->sellig_price;
                 $proddetailsp['qty'] = $cart->qty;
-                $proddetailsp['subtotal'] = $subtotal * Session::get('currency_val');
+                $proddetailsp['subtotal'] = $subtotal;
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
 
                 $cart_ids[$cart->id]["product_details"] = json_encode($proddetailsp);
                 //$cart_ids[$cart->id]["eCount"] = $cart->options->eCount;
-                $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+//                $date = $cart->options->eNoOfDaysAllowed;
+//                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
-                $prd = Product::find($cart->id);
-                $prd->stock = $prd->stock - $cart->qty;
-                if ($prd->is_stock == 1) {
-                    $prd->update();
+             
+                
+               if ($prddataS->is_stock == 1) {
+                  $stocks =  DB::table($cart->options->prefix.'_products')->find($cart->id)->stock;
+                  $finalStock= $stocks - $cart->qty;
+                  $prddataS->stock = $finalStock;
+                  $prddataS->update();
+                  DB::table($cart->options->prefix.'_products')->where("id",$cart->id)->update(["stock"=>$finalStock]);
                 }
 
-
-                if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
-                    $this->AdminStockAlert($prd->id);
-                }
+//                if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
+//                    $this->AdminStockAlert($prd->id);
+//                }
             }
-            // $order->products()->attach($cart_ids);    
-            $order->products()->attach($cart->id, $cart_ids[$cart->id]);
+             $cart_ids[$cart->id]["order_id"]=$orderId;
+             $cart_ids[$cart->id]["prod_id"]=$cart->id;
+            // $order->products()->attach($cart_ids); 
+             DB::table($cart->options->prefix.'_has_products')->insert($cart_ids);
+             //$order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
         //  $this->orderSuccess();
     }

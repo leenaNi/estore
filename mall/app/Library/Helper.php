@@ -193,7 +193,7 @@ class Helper {
     public static function checkCartInventoty($rowid) {
         $searchCart = Cart::instance("shopping")->search(array('rowid' => $rowid));
         $getCart = Cart::get($searchCart[0]);
-        $prodChk = Product::find($getCart->id);
+        $prodChk =DB::table($getCart->options->prefix.'_products')->where("id",$getCart->id)->first();
         $qty = $getCart->qty;
         if ($prodChk->is_stock == 1 && $prodChk->status == 1) {
             if ($prodChk->prod_type == 1) {
@@ -205,9 +205,9 @@ class Helper {
                 }
             } else if ($prodChk->prod_type == 3) {
                 $subProd = $getCart->options->sub_prod;
-                $stock = @Product::find($subProd)->stock;
-                $status = @Product::find($subProd)->status;
-                if ($qty <= $stock && $status == 1) {
+                $product =DB::table($getCart->options->prefix.'_products')->where("id",$subProd)->first();
+               
+                if ($qty <= $product->stock && $product->status == 1) {
                     return "In Stock";
                 } else {
                     return "Out of Stock";
