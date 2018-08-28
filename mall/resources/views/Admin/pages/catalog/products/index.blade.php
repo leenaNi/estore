@@ -90,7 +90,7 @@
                                 <td>
                                 <div class="product-name vMiddle">
                                     <span>
-                                    <img src="{{($product->mainImage)? Config('constants.productImgPath')."/".$product->mainImage:'' }}" class="admin-profile-picture" />
+                                    <img src="{{($product->mainImage)?$product->mainImage:'' }}" class="admin-profile-picture" />
                                     </span>
                                     <span class="marginleft10">
                                     {{$product->product }}<br> 

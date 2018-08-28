@@ -84,15 +84,32 @@ class Helper {
         echo " <ul class='lnt-category list-unstyled'>";
         echo "<li>";
         echo "<a href=" . route('category', ['slug' => $node->url_key]) . ">{$node->category}</a>";
-//        if ($node->children()->count() > 0) {
-//            echo "<ul>";
-//            foreach ($node->children as $child)
-//                Helper::getmenu($child);
-//            echo "</ul>";
-//        }
+        if ($node->children()->count() > 0) {
+           
+           
+                
+                Helper::getSubmenu($node);
+            
+        }
         echo "</li>";
         echo "</ul>";
         }
+    }
+    
+     public static function getSubmenu($child) {
+       
+         echo " <div id='subcategory-fashion' class='active'><div class='lnt-subcategory col-sm-8 col-md-8'><h3 class='lnt-category-name'>". $child->category."</h3><ul class='list-unstyled col-sm-6'>";
+                                                    
+                                                   
+          foreach($child->children()->get() as $node1){
+       
+        echo "<li>";
+        echo "<a href=" . route('category', ['slug' => $node1->url_key]) . ">{$node1->category}</a>";
+       
+        echo "</li>";
+      
+        }
+        echo "</div></div></div>";
     }
     public static function getCsv($input_array, $output_file_name, $delimiter) {
         /** open raw memory as file, no need for temp files */

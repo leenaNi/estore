@@ -71,7 +71,7 @@
                                     <div class="lnt-dropdown-mega-menu">
                                         <!-- List of categories -->
                                        
-                 
+             
                    
                                         <ul class="lnt-category list-unstyled">
                                             
@@ -114,27 +114,7 @@
                                                         <li><a href="#">Category 12</a></li>
                                                     </ul>
                                                 </div>
-                                                <!-- Carousel -->
-                                                <!-- <div class="col-sm-4 col-md-4">
-                                                  <div id="carousel-category-home" class="carousel slide" data-ride="carousel">
-                                                    <ol class="carousel-indicators">
-                                                      <li data-target="#carousel-category-home" data-slide-to="0" class=""></li>
-                                                      <li data-target="#carousel-category-home" data-slide-to="1" class="active"></li>
-                                                      <li data-target="#carousel-category-home" data-slide-to="2" class=""></li>
-                                                    </ol>
-                                                    <div class="carousel-inner" role="listbox">
-                                                      <div class="item active">
-                                                        <img src="http://placehold.it/296x400" alt="Slide image">
-                                                      </div>
-                                                      <div class="item">
-                                                        <img src="http://placehold.it/296x400" alt="Slide image">
-                                                      </div>
-                                                      <div class="item">
-                                                        <img src="http://placehold.it/296x400" alt="Slide image">
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                </div> -->
+                                         
                                             </div> <!-- /.subcategory-fashion -->
                                             <div id="subcategory-electronics">
                                                 <!-- Sub categories list-->

@@ -44,7 +44,7 @@ class CheckoutController extends Controller {
         // To remove all discount coupon;
         Session::forget('checkbackUsedAmt');
         Session::forget('voucherAmount');
-        Session::forget('voucherUsedAmt');
+        Session::forget('voucherUsedAmt'); 
         Session::forget('referalCodeAmt');
         Session::forget('discAmt');
 
@@ -1832,9 +1832,9 @@ $des='';
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-        $order->products()->detach();
+       // $order->products()->detach();
         foreach ($cartContent as $cart) {
-            $product = Product::find($cart->id);
+            $product = Product::where("store_prod_id",$cart->id)->where("store_id",$cart->options->store_id);
             $sum = 0;
             $prod_tax = array();
             $total_tax = array();
