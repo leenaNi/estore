@@ -42,7 +42,7 @@ class CartController extends Controller {
             Cart::instance('shopping')->update($k, ["options" => ['wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0]]);
         }
         $lolyatyDis = 0;
-//        dd($cart);
+        dd($cart);
         $cart_amt = Helper::calAmtWithTax();
         // dd($cart_amt['total']);
 //        dd($cart);
@@ -357,19 +357,20 @@ class CartController extends Controller {
                 $subProd = Product::where("id", "=", $sub_prod)->first();
                 $price = $subProd->price + $product->selling_price;
                 $options = [];
-                $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
+                $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
 
                 foreach ($hasOptn as $optn) {
-                    $options[$optn->pivot->attr_id] = $optn->pivot->attr_val;
-
-                    $option_name[] = AttributeValue::find($optn->pivot->attr_id)->option_name;
+                    $options[$optn->attr_id] = $optn->attr_val;
+                    $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
                 }
                 $option_name = json_encode($option_name);
                 $image = isset($images) ? $images : "default.jpg";
 
                 $type = $product->is_tax;
                 $sum = 0;
-                foreach ($product->texes as $tax) {
+                $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
+                                ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
+                foreach ($prodTaxes as $tax) {
                     $sum = $sum + $tax->rate;
                 }
                 $tax_amt = 0;
@@ -377,20 +378,16 @@ class CartController extends Controller {
                     $tax = $product->selling_price * $quantity * $sum / 100;
                     $tax_amt = round($tax, 2);
                 }
-
-
                 Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                     "qty" => $quantity, "price" => $price,
                     "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
                         "options" => $options, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
-                        'cats' => $cats, 'stock' => $subProd->stock, 'store_id' => $product->stock, 'prefix' => $product->prefix, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
+                        'cats' => $cats, 'stock' => $subProd->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
             } else {
                 return 1;
             }
         } else {
-
             $cats = [];
-
             foreach ($product->categories as $cat) {
                 array_push($cats, $cat->id);
             }
@@ -405,7 +402,6 @@ class CartController extends Controller {
             $options = [];
 //            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
             $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
-
             foreach ($hasOptn as $optn) {
                 $options[$optn->attr_id] = $optn->attr_val;
                 $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
@@ -414,21 +410,21 @@ class CartController extends Controller {
             $option_name = json_encode($option_name);
             $type = $product->is_tax;
             $sum = 0;
-//            foreach ($product->texes as $tax) {
-//                $sum = $sum + $tax->rate;
-//            }
+            $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
+                            ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
+            foreach ($prodTaxes as $tax) {
+                $sum = $sum + $tax->rate;
+            }
             $tax_amt = 0;
             if ($type == 1 || $type == 2) {
                 $tax = $product->selling_price * $quantity * $sum / 100;
                 $tax_amt = round($tax, 2);
             }
-
-
             Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                 "qty" => $quantity, "price" => $price,
                 "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
                     "options" => $options, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
-                    'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
+                    'cats' => $cats, 'stock' => $subProd->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
         }
     }
 

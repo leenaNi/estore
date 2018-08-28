@@ -1559,6 +1559,7 @@ app.controller('productListingController', function ($http, $rootScope, $scope, 
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
     $scope.searchTerm = getparameters('searchTerm', $location.absUrl());
+    $scope.searchCat = getparameters('searchCat', $location.absUrl());
     $scope.sel = (get("sort")) ? get("sort") : '1';
     $scope.pdts = [];
     $scope.prodts = {};
@@ -1585,7 +1586,8 @@ app.controller('productListingController', function ($http, $rootScope, $scope, 
                 'maxp': $scope.maxp,
                 'slug': $scope.getslug(),
                 'sort': $scope.sel,
-                'searchTerm': $scope.searchTerm
+                'searchTerm': $scope.searchTerm,
+                'searchCat': $scope.searchCat
                         // 'userId': (window.localStorage.getItem('id') != null ? window.localStorage.getItem('id') : "")
             }
         }).success(function (data, status, headers, config) {
@@ -1636,7 +1638,8 @@ app.controller('productListingController', function ($http, $rootScope, $scope, 
                 'maxp': $scope.maxp,
                 'slug': $scope.getslug(),
                 'sort': $scope.sel,
-                'searchTerm': $scope.searchTerm
+                'searchTerm': $scope.searchTerm,
+                'searchCat': $scope.searchCat
             }
         }).success(function (data) {
             // console.log("pradeep" +data.currency_val);
@@ -1671,7 +1674,8 @@ app.controller('productListingController', function ($http, $rootScope, $scope, 
                 'maxp': $scope.maxp,
                 'slug': $scope.getslug(),
                 'sort': $scope.sel,
-                'searchTerm': $scope.searchTerm
+                'searchTerm': $scope.searchTerm,
+                'searchCat': $scope.searchCat
                         //  'userId': (window.localStorage.getItem('id') != null ? window.localStorage.getItem('id') : "")
             }
         }).success(function (response) {
@@ -1683,7 +1687,7 @@ app.controller('productListingController', function ($http, $rootScope, $scope, 
             setTimeout(function () {
                 $('.currency-sym').html('').html(response.curData.sym);
                 $('.currency-sym-in-braces').html('').html("(" + response.curData.sym + ")");
-                var currentCurrency = response.data.curData.curval;
+                var currentCurrency = response.curData.curval;
 //                $(".priceConvert").each(function (k, v) {
 //                    var filterNumber = $(this).text().trim();
 //                    filterNumber = filterNumber.replace(",", "");
@@ -1883,7 +1887,8 @@ app.controller('productListingController', function ($http, $rootScope, $scope, 
                     'minp': $scope.minp,
                     'maxp': $scope.maxp,
                     'sort': $scope.sel,
-                    'searchTerm': $scope.searchTerm
+                    'searchTerm': $scope.searchTerm,
+                'searchCat': $scope.searchCat
                 }}).then(function (response) {
                 jQuery.each(response.data.prods.data, function (k, v) {
                     $scope.pdts.push(v);
@@ -1930,7 +1935,8 @@ app.controller('productListingController', function ($http, $rootScope, $scope, 
             $http.get(domain + "/get-product-listing", {
                 params: {
                     'slug': $scope.slug,
-                    'searchTerm': $scope.searchTerm
+                    'searchTerm': $scope.searchTerm,
+                'searchCat': $scope.searchCat
                 }}).then(function (response) {
                 //console.log(response.config.url);
                 //console.log(JSON.stringify(response));
