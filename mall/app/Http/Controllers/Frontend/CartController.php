@@ -185,7 +185,7 @@ class CartController extends Controller {
         $quantity = (Input::get('quantity')) ? Input::get('quantity') : $quantity;
 
         $cats = [];
-        foreach ($product->mallcategories as $cat) {
+        foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
         }
         $price = $product->selling_price; //$product->price;
@@ -213,7 +213,7 @@ class CartController extends Controller {
                 if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                     Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
                         "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
-                            'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->stock, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
+                            'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
                             "prod_type" => $prod_type,
                             "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
                 } else {
@@ -222,14 +222,14 @@ class CartController extends Controller {
             } else {
                 Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
                     "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
-                        'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->stock, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
+                        'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
                         "prod_type" => $prod_type,
                         "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
             }
         } else {
             Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
                 "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
-                    'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->stock, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
+                    'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
                     "prod_type" => $prod_type,
                     "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
         }
@@ -346,7 +346,7 @@ class CartController extends Controller {
 
                 $cats = [];
 
-                foreach ($product->mallcategories as $cat) {
+                foreach ($product->categories as $cat) {
                     array_push($cats, $cat->id);
                 }
                 $pname = $product->product;
