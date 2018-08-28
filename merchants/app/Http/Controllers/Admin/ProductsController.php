@@ -57,7 +57,6 @@ class ProductsController extends Controller {
 
         //\Artisan::call("cache:clear");
         //dd(Config('constants.productImgPath'));
-
 //        $products = Product::find(3);
 //          $products->is_share_on_mall=1;
 //          $products->save();
@@ -217,18 +216,18 @@ class ProductsController extends Controller {
             $saveImgs->catalog_id = $prod->id;
             $saveImgs->filename = is_null($fileName) ? $saveImgs->filename : $fileName;
             $saveImgs->image_type = 1;
-            $saveImgs->image_path =Config('constants.productImgPath');
+            $saveImgs->image_path = Config('constants.productImgPath');
             $saveImgs->image_mode = 1;
             $saveImgs->save();
         }
 
         $prod->added_by = Input::get('added_by');
         if ($prod->prod_type == 1) {
-           
+
             $prod->attr_set = "1";
         }
-        if (Input::get("is_stock")== 1) {
-         $prod->stock = Input::get("stock");
+        if (Input::get("is_stock") == 1) {
+            $prod->stock = Input::get("stock");
         }
         if (Input::get('selling_price')) {
 
@@ -382,7 +381,6 @@ class ProductsController extends Controller {
             return 1;
         else
             return 0;
-
         //->with('msg', "Image deleted successfully.");
         //return redirect()->back()->with('msg',"Image deleted successfully.");
         //echo "Successfully deleted";
@@ -393,7 +391,6 @@ class ProductsController extends Controller {
         //  dd(Input::all());  
         if (Input::file('images')) {
             foreach (Input::file('images') as $key => $value) {
-
                 // if (Input::get('file_upload_status')[$key] == 0) {
                 //     $fileName = Input::get('filename')[$key];
                 // } else {
@@ -402,7 +399,6 @@ class ProductsController extends Controller {
                     // $destinationPath = public_path() . '/public/Admin/uploads/catalog/products/';
                     // $fileName = "prod-" . $key . date("YmdHis") . "." . $value->getClientOriginalExtension();
                     // $upload_success = $value->move($destinationPath, $fileName);
-
                     $destinationPath = Config('constants.productUploadImgPath') . "/";
                     $data = Input::get('prod_img_url_' . $key);
                     list($type, $data) = explode(';', $data);
@@ -422,29 +418,25 @@ class ProductsController extends Controller {
                 $saveImgs->alt_text = Input::get('alt_text')[$key];
                 $saveImgs->image_mode = 1;
                 $saveImgs->sort_order = Input::get('sort_order')[$key];
-                $saveImgs->image_path =Config('constants.productImgPath');
+                $saveImgs->image_path = Config('constants.productImgPath');
                 $saveImgs->save();
             }
         } else {
             foreach (Input::get('extimg') as $key => $value) {
                 $saveImgs = CatalogImage::findOrNew(Input::get('id_img')[$key]);
                 $saveImgs->catalog_id = Input::get('prod_id');
-
                 $saveImgs->image_type = 1;
                 $saveImgs->alt_text = Input::get('alt_text')[$key];
                 $saveImgs->image_mode = 1;
                 $saveImgs->sort_order = Input::get('sort_order')[$key];
-                 $saveImgs->image_path =Config('constants.productImgPath');
-
+                $saveImgs->image_path = Config('constants.productImgPath');
                 $saveImgs->save();
             }
         }
-
         $prod = Product::find(Input::get('prod_id'));
         $prod->updated_by = Input::get('updated_by');
         $prod->update();
         $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
-
         $attributes_filter_yes = AttributeSet::find($prod->attributeset['id'])->attributes_filter_yes();
         $attributes_filter_no = AttributeSet::find($prod->attributeset['id'])->attributes_filter_no();
         if (!empty(Input::get('return_url'))) {
@@ -485,7 +477,6 @@ class ProductsController extends Controller {
         $attributes = Attribute::where('is_filterable', 0)->orderBy('att_sort_order', 'asc')->with('attributeoptions')->whereHas('attributesets', function($q)use ($attrset) {
                     $q->where('attribute_sets.id', $attrset);
                 })->get()->toArray();
-
         foreach ($attributes as $key => $attr) {
             foreach ($attributes_values as $key1 => $attr_val) {
                 if ($attr['id'] == $attr_val['id'] && $attr_val['pivot']['attr_val']) {
@@ -499,18 +490,13 @@ class ProductsController extends Controller {
                 }
             }
         }
-
         $attrs = Attribute::where('status', 1)->orderBy("id", "asc");
-        ;
-
         $attrSetsSelected = [];
         $attr_types = array(0 => 'Select Attribute Type');
         $attr_t = AttributeType::all()->toArray();
-
         foreach ($attr_t as $val) {
             $attr_types[$val['id']] = $val['attr_type'];
         }
-
         $action = route('admin.products.attribute.save');
         //Session::flash("msg","Product updated succesfully.");
         return view(Config('constants.adminProductView') . '.attributes', compact('attributes', 'prod', 'action', 'attributes_values', 'attrs', 'attr_types', 'attrSetsSelected'));
@@ -634,9 +620,7 @@ class ProductsController extends Controller {
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $prod = Product::find($prodId);
         $attributes = AttributeSet::find($prod->attributeset['id'])->attributes()->where("is_filterable", 1)->get();
-
         $attrs = [];
-
         foreach ($attributes as $attr) {
             $attrs[$attr->id]['name'] = $attr->attr;
             $attrValues = $attr->attributeoptions()->where('is_active', 1)->get(['id', 'option_name']);
@@ -644,7 +628,6 @@ class ProductsController extends Controller {
                 $attrs[$attr->id]['options'][$val->id] = $val->option_name;
             }
         }
-
         $prodVariants = Product::where("parent_prod_id", "=", $prod->id)->get();
         $action = route('admin.products.configurable.update');
         //  Session::flash("msg","Product updated succesfully.");
@@ -737,9 +720,6 @@ class ProductsController extends Controller {
                 array_push($prods, ["attr_id" => $key, "attr_val" => $v, "price" => Input::get("price")[$key][$i], "is_avail" => Input::get("is_avail")[$key][$i]]);
             }
         }
-
-
-
         foreach ($prods as $key => $prd) {
             $args = ['product' => $prod->product . ' - Variant - ' . (AttributeValue::find($prd['attr_val'])->option_name), 'is_avail' => $prd['is_avail'], 'parent_prod_id' => $prod->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $prod->attr_set, 'price' => $prd['price']];
 
@@ -817,7 +797,6 @@ class ProductsController extends Controller {
         $prod = Product::find($prodId);
         //    $search = !empty(Input::get("relSearch")) ? Input::get("relSearch") : !empty(Input::get("relSearch")) ? Input::get("relSearch") : '';
         //  $search_fields = ['product', 'short_desc', 'long_desc'];
-
         $prods = Product::where('is_individual', '=', '1')
                 ->where("id", "!=", $prod->id)
                 ->orderBy("product", "asc");
@@ -826,19 +805,14 @@ class ProductsController extends Controller {
         //           $query->orWhere($field, "like", "%$search%");
         //       }
         //     });
-
         $relatedProd = Product::with('relatedproducts')->where('id', $prodId)->get();
         if (!empty(Input::get('product_name'))) {
             $prods = $prods->where('product', 'like', "%" . Input::get('product_name') . "%");
         }
-
         if (!empty(Input::get('product_code'))) {
             $prods = $prods->where('product_code', 'like', "%" . Input::get('product_code') . "%");
         }
-
-
         $prods = $prods->get();
-
         $action = route('admin.products.upsell');
         return view(Config('constants.adminProductView') . '.editRelUpsellProd', compact('prod', 'prods', 'action', 'relatedProd'));
     }
@@ -847,7 +821,6 @@ class ProductsController extends Controller {
         $prod = Product::find($prodId);
         //    $search = !empty(Input::get("relSearch")) ? Input::get("relSearch") : !empty(Input::get("relSearch")) ? Input::get("relSearch") : '';
         //  $search_fields = ['product', 'short_desc', 'long_desc'];
-
         $prods = Product::where('is_individual', '=', '1')
                 ->where("id", "!=", $prod->id)
                 ->orderBy("product", "asc");
@@ -855,14 +828,11 @@ class ProductsController extends Controller {
         if (!empty(Input::get('product_name'))) {
             $prods = $prods->where('product', 'like', "%" . Input::get('product_name') . "%");
         }
-
         if (!empty(Input::get('product_code'))) {
             $prods = $prods->where('product_code', 'like', "%" . Input::get('product_code') . "%");
         }
 
-
         $prods = $prods->get();
-
         $action = route('admin.products.upsell');
         //dd($action);
         return view(Config('constants.adminProductView') . '.editUpsellProduct', compact('prod', 'prods', 'action', 'relatedProd'));
@@ -932,12 +902,9 @@ class ProductsController extends Controller {
         $view = !empty(Input::get('return_url')) ? redirect()->to(Input::get('return_url')) : redirect()->route("admin.products.view");
         return $view;
     }
-
     //combo products
 
     public function comboProds($prodId) {
-
-
         $prod = Product::find($prodId);
         $catid = @$prod->categories()->first()->id;
         $cat = Category::find($catid);
@@ -1013,9 +980,7 @@ class ProductsController extends Controller {
         $prod = Product::find(Input::get("id"));
         $prod->comboproducts()->detach(Input::get("prod_id"));
     }
-
     //attr
-
     public function prodAttrs($prodId) {
         $prod = Product::find($prodId);
         $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
@@ -1029,27 +994,16 @@ class ProductsController extends Controller {
         $prods = Product::where('id', '=', $prodId)->get()->toArray();
         $cats = [];
         $cats_prod = Product::find($prods[0]['id'])->categories()->get();
-
         //   $catalogImages = [];
-
         $catalogImages = Product::find($prods[0]['id'])->catalogimgs()->get();
-
         //   dd($catalogImages);
-
-
-
         unset($prods[0]['id'], $prods[0]['created_at'], $prods[0]['updated_at']);
         $prods[0]['product'] = "duplicate-" . $prods[0]['product'];
         $prods[0]['url_key'] = "duplicate-" . $prods[0]['url_key'];
-
         $saveDupProd = Product::create($prods[0]);
-
         //sync categories
-
         $saveDupProd->categories()->sync($cats_prod);
-
         //sync images
-
         foreach ($catalogImages as $catImg) {
             $saveImg = new CatalogImage();
             $saveImg->filename = $catImg->filename;
@@ -1059,16 +1013,12 @@ class ProductsController extends Controller {
             $saveImg->catalog_id = $saveDupProd->id;
             $saveImg->save();
         }
-
-
         //  $saveDupProd->catalogimgs()->sync($catalogImages);
         //varients prods of products
         $chkProdVar = Product::where('parent_prod_id', '=', $prodId)->get()->toArray();
         $prods_varients = [];
-
         if (!empty($chkProdVar)) {
             foreach ($chkProdVar as $prodVar) {
-
                 unset($prodVar['id'], $prodVar['created_at'], $prodVar['updated_at']);
                 $prodVar['product'] = "duplicate-" . $prodVar['product'];
                 $prodVar['parent_prod_id'] = $saveDupProd->id;
@@ -1081,10 +1031,7 @@ class ProductsController extends Controller {
             $saveDupProdVar->attributes()->sync($attributes);
             //    DB::update(DB::raw("update ".DB::getTablePrefix()."has_options set attr_val = '$opt' where attr_id = $op and prod_id = " . $newConfigProduct->id));
         }
-
-
         Session::flash("successDupProd", "Duplicate Product created successfully");
-
         return redirect()->route("admin.products.view");
     }
 
@@ -1222,9 +1169,7 @@ class ProductsController extends Controller {
     }
 
     public function deleteVarient() {
-
         //  return redirect()->back()->with('message', 'You cannot delete this product.');
-
         $count = HasProducts::where("sub_prod_id", Input::get('id'))->count();
         if ($count <= 0) {
             $prod = Product::find(Input::get('id'));
@@ -1248,9 +1193,7 @@ class ProductsController extends Controller {
     public function configProdAttrsWithoutStock($prodId) {
         $prod = Product::find($prodId);
         $attributes = AttributeSet::find($prod->attributeset['id'])->attributes()->get();
-
         $attrs = [];
-
         foreach ($attributes as $attr) {
             $attrs[$attr->id]['name'] = $attr->attr;
             $attrValues = $attr->attributeoptions()->get(['id', 'option_name']);
@@ -1258,66 +1201,46 @@ class ProductsController extends Controller {
                 $attrs[$attr->id]['options'][$val->id] = $val->option_name;
             }
         }
-
-
         $prodVariants = Product::where("parent_prod_id", "=", $prod->id)->get();
         $action = route('admin.products.configurable.update.without.stock');
-
         return view(Config('constants.adminProductView') . '.editCProdWithoutStock', compact('prod', 'action', 'attrs', 'prodVariants'));
     }
 
     public function prodSeo() {
         $prod = Product::find(Input::get('id'));
         $action = route('admin.products.prodSaveSeo');
-
         return view(Config('constants.adminProductView') . '.prod_seo', compact('prod', 'action'));
     }
 
     public function prodSaveSeo() {
-
         $saveS = Product::findOrNew(Input::get('id'));
-
-
-
         $saveS->meta_title = Input::get("meta_title");
         $saveS->meta_keys = Input::get("meta_keys");
         $saveS->meta_desc = Input::get("meta_desc");
-
-
         $saveS->meta_robot = Input::get("meta_robot");
         $saveS->canonical = Input::get("canonical");
-
-
-
         $saveS->og_title = Input::get("og_title");
         $saveS->og_desc = Input::get("og_desc");
         $saveS->og_image = Input::get("og_image");
         $saveS->og_url = Input::get("og_url");
-
-
         $saveS->twitter_url = Input::get("twitter_url");
         $saveS->twitter_title = Input::get("twitter_title");
         $saveS->twitter_desc = Input::get("twitter_desc");
         $saveS->twitter_image = Input::get("twitter_image");
         $saveS->other_meta = Input::get("other_meta");
-
         $saveS->save();
         Session::flash("msg", "Product updated successfully.");
-
         return redirect()->to(Input::get('return_url'));
     }
 
     public function prodUpload() {
         $prod = Product::find(Input::get('id'));
         $action = route('admin.products.prodSaveUpload');
-
         return view(Config('constants.adminProductView') . '.upload_prod', compact('prod', 'action'));
     }
 
     public function prodSaveUpload() {
-
         foreach (Input::file('image_d') as $imgK => $imgV) {
-
             if ($imgV != null) {
                 $destinationPath = Config('constants.productUploadImgPath') . "/";
                 $fileName = "d-" . $imgK . date("YmdHis") . "." . $imgV->getClientOriginalName();
@@ -1325,19 +1248,13 @@ class ProductsController extends Controller {
             } else {
                 $fileName = null;
             }
-
             $saveCImh = DownlodableProd::findorNew(Input::get('id_img')[$imgK]);
             $saveCImh->image_d = is_null($fileName) ? $saveCImh->image_d : $fileName;
             $saveCImh->alt_text = Input::get('alt_text')[$imgK];
             $saveCImh->prod_id = Input::get('id');
             $saveCImh->sort_order_d = Input::get('sort_order_d')[$imgK];
-
             $saveCImh->save();
         }
-
-
-
-
         //Session::flash("msg","Product updated succesfully.");
         return redirect()->to(Input::get('return_url'));
     }
@@ -2182,42 +2099,61 @@ class ProductsController extends Controller {
     }
 
     public function getMallCategory() {
-        // $prod = Product::find(Input::get("id"));
         $prod = MallProdCategory::where("status", 1)->where("is_nav", 1)->get(["id", "category"])->toArray();
+        $roots = MallProdCategory::roots()->where("is_nav", 1)->where("status", 1)->get();
+        $str = '';
+        $str.= "<ul id='catTree' class='tree icheck '>";
+        foreach ($roots as $root)
+            $str.= $this->renderNode($root, $prod);
+        $str.= "</ul>";
+        return ['category' => $str, 'prod_cat' => $prod];
+    }
 
-//        $prod->vendors()->detach(Input::get("vendor_id"));
-//        Session::flash("message", "Product vendor deleted succesfully.");
-        return $prod;
+    function renderNode($node, $prodCats) {
+        $str = '';
+        $str.= "<li class='tree-item fl_left ps_relative_li " . ($node->parent_id == '' ? 'parent' : '') . "'>";
+        $style = (Helper::searchForKey("id", $node->id, $prodCats) ? 'checkbox-highlight' : '');
+        $str.= '<div class="checkbox">
+                                <label class=' . $style . ' class="i-checks checks-sm"><input type="checkbox"  name="category_id[]" value="' . $node->id . '"  ' . (Helper::searchForKey("id", $node->id, $prodCats) ? 'checked' : '') . '  /> <i></i>' . $node->category . '</label>
+                              </div>';
+        if ($node->adminChildren()->count() > 0) {
+            $str.= "<ul class='fl_left treemap'>";
+            foreach ($node->adminChildren as $child)
+                $this->renderNode($child, $prodCats);
+            $str.= "</ul>";
+        }
+        $str.= "</li>";
+        return $str;
     }
 
     public function mallProductadd() {
-        
-      
+
+
         $jsonString = Helper::getSettings();
         $products = Product::find(Input::get("prodId"));
-        $mallProd=MallProducts::where("store_prod_id",$products->id)->where("store_id",$jsonString['store_id'])->count();
-        if($mallProd > 0){
-            Session::put('message',"Product alredy exist on mall!");
-         $data=["status"=>"0","msg"=>"Product alredy exist on mall!"]; 
-        }else{
-        $prod = Product::where("id", Input::get("prodId"))->get();
-        $tableColumns = Schema::getColumnListing('products');
-        $category = Input::get("categories");
-        $this->saveProduct($prod, $jsonString, $tableColumns,$category,1);
-        if ($prod[0]->prod_type == 3) {
-            $prodConfig = Product::where("parent_prod_id", Input::get("prodId"))->get();
-            $this->saveProduct($prodConfig, $jsonString, $tableColumns);
+        $mallProd = MallProducts::where("store_prod_id", $products->id)->where("store_id", $jsonString['store_id'])->count();
+        if ($mallProd > 0) {
+            Session::put('message', "Product alredy exist on mall!");
+            $data = ["status" => "0", "msg" => "Product alredy exist on mall!"];
+        } else {
+            $prod = Product::where("id", Input::get("prodId"))->get();
+            $tableColumns = Schema::getColumnListing('products');
+            $category = Input::get("categories");
+            $this->saveProduct($prod, $jsonString, $tableColumns, $category, 1);
+            if ($prod[0]->prod_type == 3) {
+                $prodConfig = Product::where("parent_prod_id", Input::get("prodId"))->get();
+                $this->saveProduct($prodConfig, $jsonString, $tableColumns);
+            }
+
+            $products->is_share_on_mall = 1;
+            $products->save();
+            Session::put('msg', "Product share on mall successfully");
+            $data = ["status" => "1", "msg" => "product share on mall successfully", "prod" => $prod];
         }
-         
-          $products->is_share_on_mall=1;
-          $products->save();
-        Session::put('msg',"Product share on mall successfully");
-        $data=["status"=>"1","msg"=>"product share on mall successfully","prod"=>$prod];
-        }
-          return $data;
+        return $data;
     }
 
-    public function saveProduct($product, $jsonString, $tableColumns,$category=null,$parent=null) {
+    public function saveProduct($product, $jsonString, $tableColumns, $category = null, $parent = null) {
         foreach ($product as $prod) {
             $prods = new MallProducts();
             $prods->store_id = $jsonString['store_id'];
@@ -2227,9 +2163,10 @@ class ProductsController extends Controller {
                 $prods->$tableColumns[$i] = $prod->$tableColumns[$i];
             }
             $prods->save();
-            if($parent){
-                 $prods->mallcategories()->sync($category);
+            if ($parent) {
+                $prods->mallcategories()->sync($category);
             }
-        }  
+        }
     }
+
 }

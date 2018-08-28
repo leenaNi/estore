@@ -42,7 +42,7 @@ class CartController extends Controller {
             Cart::instance('shopping')->update($k, ["options" => ['wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0]]);
         }
         $lolyatyDis = 0;
-        dd($cart);
+//        dd($cart);
         $cart_amt = Helper::calAmtWithTax();
         // dd($cart_amt['total']);
 //        dd($cart);
@@ -197,15 +197,17 @@ class CartController extends Controller {
         $type = $product->is_tax;
         $sum = 0;
         $storeProdId = $product->store_prod_id;
-//        foreach ($product->texes as $tax) {
-//            $sum = $sum + $tax->rate;
-//        }
+        $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
+                        ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
+        foreach ($prodTaxes as $tax) {
+            $sum = $sum + $tax->rate;
+        }
 
         $tax_amt = 0;
-//        if ($type == 1 || $type == 2) {
-//            $tax = $product->selling_price * $quantity * $sum / 100;
-//            $tax_amt = round($tax, 2);
-//        }
+        if ($type == 1 || $type == 2) {
+            $tax = $product->selling_price * $quantity * $sum / 100;
+            $tax_amt = round($tax, 2);
+        }
 
         if ($product->is_stock == 1) {
             $is_stockable = GeneralSetting::where('id', 26)->first();
