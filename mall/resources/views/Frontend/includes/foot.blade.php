@@ -238,7 +238,8 @@ $(document).ready(function () {
 //
 //            }
                 if ($(this).is("select")) {
-                    if ($(this).val() == "") {
+                    console.log("Is select");
+                    if ($(this).val() === "") {
                         console.log("lee " + $(this).attr('name') + " ====" + $(this).hasClass("error") + "==");
                         if ($(this).hasClass("error")) {
                             $(this).removeClass("error");

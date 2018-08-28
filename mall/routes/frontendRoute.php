@@ -61,6 +61,8 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     //PRODUCT LISTING ROUTES
     Route::any('/getListingFilter', ['as' => 'getListingFilter', 'uses' => 'CategoriesController@getListingFilter']);
     Route::any('/get-product-listing', ['as' => 'getProductListing', 'uses' => 'CategoriesController@getProductListing']);
+    //GET Config Prod Details
+    Route::any('/get-config-prod', ['as' => 'getConfigProd', 'uses' => 'ProductController@getConfigProd']);
 
     //InofStock Notification
     Route::any('/notify-mail', ['as' => 'notifyMail', 'uses' => 'ProductController@notify_mail']);

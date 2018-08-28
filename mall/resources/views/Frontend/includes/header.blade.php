@@ -13,12 +13,12 @@
                     <li><a href="#">About</a></li>
                     <!-- <li><a href="#">FAQs</a></li> -->
                     <li><a href="#">Contact</a></li>
-                  
-                     @if(Session::get('loggedin_user_id'))
-                      <li> <a href="{{route('logoutUser')}}" >Logout</a></li>
-                    
+
+                    @if(Session::get('loggedin_user_id'))
+                    <li> <a href="{{route('logoutUser')}}" >Logout</a></li>
+
                     @else
-                   <li><a href="{{ route('loginUser') }}">Login / Register</a></li>
+                    <li><a href="{{ route('loginUser') }}">Login / Register</a></li>
                     @endif
                 </ul> 
             </div><!-- .top-links end -->
@@ -74,6 +74,10 @@
              
                    
                                         <ul class="lnt-category list-unstyled">
+                                            <?php
+                                           echo App\Library\Helper::getMallMenu($menu);
+                                            
+                                            ?>
                                             
                                             <li class="active"><a href="#subcategory-fashion">Fashion</a></li>
                                             <li><a href="#subcategory-electronics">Electronics</a></li>
@@ -88,7 +92,6 @@
                                             <li><a href="#subcategory-footwear">Footwear</a></li>
                                             <li><a href="#subcategory-books">Books & Stationary</a></li>
                                             <li><a href="#subcategory-others">Others</a></li>
-               
                                         </ul>
                                         <!-- Subcategory and carousel wrap -->
                                         <div class="lnt-subcategroy-carousel-wrap container-fluid">
@@ -98,7 +101,6 @@
                                                     <h3 class="lnt-category-name">Fashion</h3>
                                                     <ul class="list-unstyled col-sm-6">
                                                         <li><a href="http://google.com/">Category 1</a></li>
-
                                                         <li><a href="#">Category 2</a></li>
                                                         <li><a href="#">Category 3</a></li>
                                                         <li><a href="#">Category 4</a></li>
