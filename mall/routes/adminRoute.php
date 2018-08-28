@@ -14,31 +14,31 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
     Route::any('/admin-save-profile', ["as" => "adminSaveProfile", "uses" => "LoginController@admin_save_profile"]);
     Route::any('/check-cur-password', ["as" => "adminCheckCurPassowrd", "uses" => "LoginController@adminCheckCurPassowrd"]);
 
-     Route::get('/productlisting', ['as' => 'adminProductsView', 'uses' => 'ProductsController@index']);
-
+    Route::get('/productlisting', ['as' => 'adminProductsView', 'uses' => 'ProductsController@index']);
+    Route::get('/home', ["as" => "admin.home.view", "uses" => "HomeController@index"]);
 // Route::any('/newsletter',function(){
 //              echo "test";
 //          });
-     Route::group(['prefix' => 'category', 'middlewareGroups' => ['web']], function() {
-                Route::get('/', ['as' => 'admin.category.view', 'test' => 'test', 'uses' => 'CategoryController@index']);
-                Route::get('/add', ['as' => 'admin.category.add', 'uses' => 'CategoryController@add']);
-                Route::post('/save', ['as' => 'admin.category.save', 'uses' => 'CategoryController@save']);
-                Route::get('/edit', ['as' => 'admin.category.edit', 'uses' => 'CategoryController@edit']);
-                Route::any('/delete', ['as' => 'admin.category.delete', 'uses' => 'CategoryController@delete']);
-                Route::get('/cat-seo', ['as' => 'admin.category.catSeo', 'uses' => 'CategoryController@catSeo']);
-                Route::post('/cat-seo-save', ['as' => 'admin.category.saveCatSeo', 'uses' => 'CategoryController@saveCatSeo']);
-                Route::any('/sample-category-download', ['as' => 'admin.category.sampleCategoryDownload', 'uses' => 'CategoryController@sampleCategoryDownload']);
-                Route::any('/sample-bulk-download', ['as' => 'admin.category.sampleBulkDownload', 'uses' => 'CategoryController@sampleBulkDownload']);
-                Route::any('/category-bulk-upload', ['as' => 'admin.category.categoryBulkUpload', 'uses' => 'CategoryController@categoryBulkUpload']);
-                Route::any('/category-bulk-image-upload', ['as' => 'admin.category.catBulkImgUpload', 'uses' => 'CategoryController@catBulkImgUpload']);
-                Route::any('/category-check', ['as' => 'admin.category.checkcat', 'uses' => 'CategoryController@checkCatName']);
-                Route::any('/change-status', ['as' => 'admin.category.changeStatus', 'uses' => 'CategoryController@changeStatus']);
-                Route::any('/size-chart', ['as' => 'admin.category.sizeChart', 'uses' => 'CategoryController@sizeChart']);
-            });
+    Route::group(['prefix' => 'category', 'middlewareGroups' => ['web']], function() {
+        Route::get('/', ['as' => 'admin.category.view', 'test' => 'test', 'uses' => 'CategoryController@index']);
+        Route::get('/add', ['as' => 'admin.category.add', 'uses' => 'CategoryController@add']);
+        Route::post('/save', ['as' => 'admin.category.save', 'uses' => 'CategoryController@save']);
+        Route::get('/edit', ['as' => 'admin.category.edit', 'uses' => 'CategoryController@edit']);
+        Route::any('/delete', ['as' => 'admin.category.delete', 'uses' => 'CategoryController@delete']);
+        Route::get('/cat-seo', ['as' => 'admin.category.catSeo', 'uses' => 'CategoryController@catSeo']);
+        Route::post('/cat-seo-save', ['as' => 'admin.category.saveCatSeo', 'uses' => 'CategoryController@saveCatSeo']);
+        Route::any('/sample-category-download', ['as' => 'admin.category.sampleCategoryDownload', 'uses' => 'CategoryController@sampleCategoryDownload']);
+        Route::any('/sample-bulk-download', ['as' => 'admin.category.sampleBulkDownload', 'uses' => 'CategoryController@sampleBulkDownload']);
+        Route::any('/category-bulk-upload', ['as' => 'admin.category.categoryBulkUpload', 'uses' => 'CategoryController@categoryBulkUpload']);
+        Route::any('/category-bulk-image-upload', ['as' => 'admin.category.catBulkImgUpload', 'uses' => 'CategoryController@catBulkImgUpload']);
+        Route::any('/category-check', ['as' => 'admin.category.checkcat', 'uses' => 'CategoryController@checkCatName']);
+        Route::any('/change-status', ['as' => 'admin.category.changeStatus', 'uses' => 'CategoryController@changeStatus']);
+        Route::any('/size-chart', ['as' => 'admin.category.sizeChart', 'uses' => 'CategoryController@sizeChart']);
+    });
 
-    
-    Route::group(['middleware' => 'CheckUser', 'web'], function() {
-        Route::get('/home', ["as" => "admin.home.view", "uses" => "HomeController@index"]);
+
+//    Route::group(['middleware' => 'CheckUser', 'web'], function() {
+
 //       
         Route::any('/newsletter', ["as" => "admin.home.newsletter", "uses" => "HomeController@newsLetter"]);
         Route::any('/export-newsLetter', ["as" => "admin.home.exportNewsLetter", "uses" => "HomeController@exportNewsLetter"]);
@@ -709,7 +709,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/save-email-temp', ['as' => 'admin.marketing.saveEmailTemp', 'uses' => 'MarketingEmailsController@saveEmailTemp']);
             });
         });
-    });
+//    });
 
     Route::group(['prefix' => 'route-list', 'middlewareGroups' => ['CheckUser', 'web']], function() {
         Route::get('/', ['as' => 'admin.pages.view', 'uses' => 'PagesController@pages']);

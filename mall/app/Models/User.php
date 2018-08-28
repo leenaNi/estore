@@ -45,7 +45,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     
 
     public function wishlist() {
-        return $this->belongsToMany('App\Models\Product', 'wishlist', 'user_id', 'prod_id');
+        return $this->belongsToMany('App\Models\MallProducts', 'wishlist', 'user_id', 'prod_id');
     }
 
     public function wish() {

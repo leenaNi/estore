@@ -173,7 +173,7 @@
                                     <div class="col-md-12 form-group">
 
                                         <?php
-                                        $roots = App\Models\Category::roots()->get();
+                                        $roots = App\Models\MallProdCategory::roots()->get();
                                         echo "<ul id='catTree' class='tree icheck'>";
                                         foreach ($roots as $root)
                         //echo $root."||||||".$category;
