@@ -80,20 +80,15 @@ class Helper {
 
     public static function getMallMenu($rootm) {
         foreach ($rootm as $key => $node) {
-//            echo " <ul class='lnt-category list-unstyled'>";
             echo "<li class='";
             echo ($key == 0) ? 'active' : '';
             echo "'>";
-//            if ($node->children()->count() > 0) {
+            if ($node->children()->count() > 0) {
                 echo "<a href='#subcategory-{$node->url_key}' >{$node->category}</a>"; //href=" . route('category', ['slug' => $node->url_key]) . "
-//            } else {
-//                echo "<a href=" . route('category', ['slug' => $node->url_key]) . " >{$node->category}</a>";
-//            }
-//        if ($node->children()->count() > 0) { 
-//                Helper::getSubmenu($node);
-//        }
+            } else {
+                echo "<a href=" . route('category', ['slug' => $node->url_key]) . " >{$node->category}</a>";
+            }
             echo "</li>";
-//            echo "</ul>";
         }
     }
 
@@ -102,7 +97,7 @@ class Helper {
         echo ($key == 0) ? 'active' : '';
         echo "' >"
         . "<div class='lnt-subcategory col-sm-8 col-md-8'><h3 class='lnt-category-name'>"
-                . "" . $child->category . "</h3>"
+        . "" . $child->category . "</h3>"
         . "<ul class='list-unstyled col-sm-6'>";
         foreach ($child->children()->get() as $node) {
             echo "<li>";
@@ -193,7 +188,7 @@ class Helper {
     public static function checkCartInventoty($rowid) {
         $searchCart = Cart::instance("shopping")->search(array('rowid' => $rowid));
         $getCart = Cart::get($searchCart[0]);
-        $prodChk =DB::table($getCart->options->prefix.'_products')->where("id",$getCart->id)->first();
+        $prodChk = DB::table($getCart->options->prefix . '_products')->where("id", $getCart->id)->first();
         $qty = $getCart->qty;
         if ($prodChk->is_stock == 1 && $prodChk->status == 1) {
             if ($prodChk->prod_type == 1) {
@@ -205,8 +200,8 @@ class Helper {
                 }
             } else if ($prodChk->prod_type == 3) {
                 $subProd = $getCart->options->sub_prod;
-                $product =DB::table($getCart->options->prefix.'_products')->where("id",$subProd)->first();
-               
+                $product = DB::table($getCart->options->prefix . '_products')->where("id", $subProd)->first();
+
                 if ($qty <= $product->stock && $product->status == 1) {
                     return "In Stock";
                 } else {
