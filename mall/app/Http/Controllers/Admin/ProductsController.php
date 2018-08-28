@@ -56,19 +56,22 @@ class ProductsController extends Controller {
         //dd("sdfsdf");
 
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
-        $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
+        $products = Product::with("mallcategories")->where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
 
         $categoryA = Category::get(['id', 'category'])->toArray();
         $rootsS = Category::roots()->where("status", 1)->get();
         $category = [];
+        $category[0] = "Select category";
         foreach ($categoryA as $val) {
             $category[$val['id']] = $val['category'];
         }
+       
         $userA = User::get(['id', 'firstname', 'lastname'])->toArray();
         $user = [];
         foreach ($userA as $val) {
             $user[$val['id']] = $val['firstname'] . ' ' . $val['lastname'];
         }
+        //search by name
         if (!empty(Input::get('product_name'))) {
             $products = $products->where('product', 'like', "%" . Input::get('product_name') . "%");
         }
@@ -81,6 +84,7 @@ class ProductsController extends Controller {
             $products = $products->where('selling_price', '<=', $max_prize);
         }
         if (!empty(Input::get('category'))) {
+            dd(Input::get('category'));
             $products = $products->whereHas('categories', function($q) {
                 $q->where('categories.id', Input::get('category'));
             });
@@ -134,12 +138,12 @@ class ProductsController extends Controller {
         foreach ($products as $prd) {
             $prodImg=DB::table($prd->prefix."_catalog_images")->where("catalog_id",$prd->store_prod_id)->where("image_mode",1)->first();
          
-            $prd->mainImage =  $prodImg->image_path . '/' . @$prodImg->filename;
+            $prd->mainImage =  $prodImg->image_path . '/' .@$prodImg->filename;
             
         }
        // dd($dd);
 
-        return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount'));
+        return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount','category'));
     }
 
     public function add() {
