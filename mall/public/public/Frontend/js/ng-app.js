@@ -125,8 +125,8 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                     required: true,
                     minlength: 5,
                     equalTo: "#password"
-                },country_code: {
-                    required: true                   
+                }, country_code: {
+                    required: true
                 },
                 telephone: {
                     required: true,
@@ -206,7 +206,7 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
         $("#guestCheckoutFrm").validate({
             // Specify the validation rules
             rules: {
-                guestemail:{
+                guestemail: {
                     required: true,
                     emailvalidate: true
                 }
@@ -373,14 +373,12 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 country_id: "required",
                 state: "required",
                 address1: "required",
-                postal_code:{
+                postal_code: {
                     required: true,
                     minlength: 6
                 },
-               
                 city: "required",
                 phone_no: {
-                   
                     phonevalidate: true
                 }
             },
@@ -389,10 +387,10 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 firstname: "Please enter your first name",
                 country_id: "Please select country",
                 state: "Please select state",
-                address1: "Please enter address",             
+                address1: "Please enter address",
                 city: "Please enter city",
                 postal_code: {
-                   required: "Please enter postcode",
+                    required: "Please enter postcode",
                     minlength: "Your pincode must be at least 6 characters long"
                 },
                 phone_no: {
@@ -658,8 +656,8 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                         console.log(JSON.stringify(response));
                         if (response.checkbackUsedAmt > 0) {
                             //$(".curRewPointsOld").hide();
-                           // $(".curRewPointsNew").removeClass("hide");
-                           //alert(response.remainingCashback);
+                            // $(".curRewPointsNew").removeClass("hide");
+                            //alert(response.remainingCashback);
                             $(".curRewPointsOld").text((response.remainingCashback).toFixed(2));
                             var newCartAmt = response.pay_amt;
                         }
@@ -683,9 +681,9 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                     newCartAmt = response.finalamt;
                     $(".TotalCartAmt").text(response.finalamt);
                     $(".cashbackUsedAmount").text(0);
-                   // $(".curRewPointsOld").show();
+                    // $(".curRewPointsOld").show();
                     $(".curRewPointsOld").text(response.cashback.toFixed(2));
-                   // $(".curRewPointsNew").addClass("hide");
+                    // $(".curRewPointsNew").addClass("hide");
                     if (newCartAmt <= 0) {
                         var url = $("#frmTransaction").attr('action');
                         $("#frmTransaction").attr("action", "{{ URL::route('order_cash_on_delivery'); }}");
@@ -1009,7 +1007,7 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
             $scope.codcharges(event);
             $("#frmTransaction").attr("action", domain + "/get-citrus");
         }
-          if ($(".chk_cit_pay").is(':checked')) {
+        if ($(".chk_cit_pay").is(':checked')) {
             $scope.codcharges(event);
             $("#frmTransaction").attr("action", domain + "/get-city-pay");
         }
@@ -1017,20 +1015,20 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
 
     $scope.placeOrder = function ($event) {
         ev = $event;
-       ev.preventDefault();
+        ev.preventDefault();
         $.ajax({
             type: "POST",
             url: domain + "/chk-cart-inventory",
             data: "",
             cache: false,
             success: function (data) {
-               // alert(data);
+                // alert(data);
                 if (data === "valid") {
-                   // alert("valid Data");
+                    // alert("valid Data");
                     console.log("sdfsdfsdfsdfsdf form submit code");
                     $("#frmTransaction").submit();
                 } else {
-                     // alert("else invalid Data");
+                    // alert("else invalid Data");
                     $("#OutofStockPopUp").modal("show");
                 }
             }
@@ -1241,7 +1239,7 @@ app.controller('configProductController', function ($http, $rootScope, $scope, $
                             $(".span2").addClass("hide");
                         }
                         $("#selID" + (getnext - 1)).removeClass('error');
-                       
+
                     });
                 }
             }
@@ -1888,7 +1886,7 @@ app.controller('productListingController', function ($http, $rootScope, $scope, 
                     'maxp': $scope.maxp,
                     'sort': $scope.sel,
                     'searchTerm': $scope.searchTerm,
-                'searchCat': $scope.searchCat
+                    'searchCat': $scope.searchCat
                 }}).then(function (response) {
                 jQuery.each(response.data.prods.data, function (k, v) {
                     $scope.pdts.push(v);
@@ -1936,7 +1934,7 @@ app.controller('productListingController', function ($http, $rootScope, $scope, 
                 params: {
                     'slug': $scope.slug,
                     'searchTerm': $scope.searchTerm,
-                'searchCat': $scope.searchCat
+                    'searchCat': $scope.searchCat
                 }}).then(function (response) {
                 //console.log(response.config.url);
                 //console.log(JSON.stringify(response));
