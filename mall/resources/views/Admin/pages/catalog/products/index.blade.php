@@ -49,30 +49,46 @@
                     {{Session::get('msg')}}
                 </div>
                 @endif
-             
-             
-             
 
-         
-             
+
+                <div class="box-header box-tools filter-box col-md-9 noBorder">
+                    <form action="" method="get" >
+                        <input type="hidden" name="dataSearch" value="dataSearch"/>
+
+                        <div class="form-group col-md-6 noBottomMargin">
+                            <div class="input-group-btn">
+                                <input type="text" name="product_name" class="form-control medium pull-right catSearcH" placeholder="Search Something" value="{{ (!empty(Input::get('product_name'))) ? Input::get('product_name') :''}}">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+
+                            {!! Form::select('category',$category,!empty(Input::get('category'))?Input::get('category'):null, ["class"=>'form-control']) !!}
+                        </div>
+                        <div class="form-group col-md-3 noBottomMargin">
+                            <button type="submit" class="btn btn-primary "> Search</button>
+                        </div>
+                    </form>
+                </div>
+
+                <?php
+//dd($category);
+                ?>
+
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
-             
-                   <div style="clear: both"></div>
+
+                <div style="clear: both"></div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
-                                @if($barcode == 1)   <th><input type="checkbox" id="masterCheck" value="00"/></th>  @endif
-<!--                                <th>@sortablelink ('id', 'Sr No')</th>-->
-                               
+
+                                <th>Image</th>
                                 <th>@sortablelink ('product', 'Product')</th>
-                                <!-- <th>@sortablelink ('product_code', 'SKU')</th> -->
-                                <th>Categories</th>
-                                <th><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : ''; ?>@sortablelink ('price', 'Price') </th>
-                                <!-- <th>@sortablelink ('spl_price', 'Special Price')</th> -->
-                                 <th>Product Type</th>
-                                <!-- <th>Availability</th> -->
+                                <th>Category</th>
+
+                                <th><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';            ?>@sortablelink ('price', 'Price') </th>
+
                                 @if($settingStatus['26'] == 1)
                                 <th>Stock</th>
                                 @endif
@@ -81,75 +97,68 @@
                             </tr>
                         </thead>
                         <tbody>
-                              @if(count($products) >0 )
+
+                            @if(count($products) >0 )
                             @foreach($products as $product)
-                            
+
                             <tr> 
-                          
-<!--                                <td>{{$product->id }}</td>-->
                                 <td>
-                                <div class="product-name vMiddle">
-                                    <span>
-                                    <img src="{{($product->mainImage)? Config('constants.productImgPath')."/".$product->mainImage:'' }}" class="admin-profile-picture" />
-                                    </span>
-                                    <span class="marginleft10">
-                                    {{$product->product }}<br> 
-                                       <span class="breakLine"> 
-                                       @if($product->product_code)
-                                       ({{ $product->product_code }})
-                                        @endif
-                                       </span>    
-                                   </span>                       
-                                </div>
+                                    <div class="product-name vMiddle">
+                                        <span>
+                                            <?php
+//echo $product->mainImage;
+                                            ?>
+                                            <img src="{{($product->mainImage)? $product->mainImage:'' }}" class="admin-profile-picture" />
+                                        </span>
+
+                                    </div>
                                 </td>
                                 <!-- <td>{{$product->product_code }}</td> -->
                                 <td>
-                                    <?php
-                                
-             
-                                    
-                                ?>
-                        </td>
-                        <td>
-                        
-                        @if( $product->spl_price <= 0 )
-                        <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert"> {{ $product->price }} </span>
-                        @else
+                                    <span class="marginleft10">
+                                        {{$product->product }}<br> 
+                                        <span class="breakLine"> 
+                                            @if($product->product_code)
+                                            ({{ $product->product_code }})
+                                            @endif
+                                        </span>    
+                                    </span>  
+                                </td>
+                                <td>  {{($product->mallcategories()->first()->category) }}<br> 
+                                      </td>
+                                <td>
+
+                                    @if( $product->spl_price <= 0 )
+                                    <?php echo!empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert"> {{ $product->price }} </span>
+                                    @else
                         <strike>
-                        <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
-                        <span class="priceConvert">{{$product->price }}</span> </strike><br><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
+                            <?php echo!empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
+                            <span class="priceConvert">{{$product->price }}</span> </strike><br><?php echo!empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
                         <span class="priceConvert"> {{ $product->spl_price }} </span>
                         @endif
                         </td>
-                       
-                        <!-- <td><i class="fa fa-rupee"></i> {{$product->spl_price }}</td> -->
-                        <!-- <td>{{ $product->is_avail ? 'Yes' : 'No'   }}</td> -->
+
                         @if($settingStatus['26'] == 1)
-                         <td>{{ $product->stock }}</td>
+                        <td>{{ $product->stock }}</td>
                         @endif
                         <td>
-                             @if($product->status==1)
+                            @if($product->status==1)
                             <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this product?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn"></i></a>
                             @elseif($product->status==0)
                             <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this product?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn"></i></a>
                             @endif
                         </td>
                         <td>
-                            <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw"></i></a>
-<!--                            <a href="{!! route('admin.products.duplicate',['id'=>$product->id]) !!}" class="label label-info active" ui-toggle-class="" onclick="return confirm('Do you want to create duplicate product?')">Duplicate</a><br>-->
-<!--                          <a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
-
-                            <a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i></a>
-<!--                            
+                            No action
                         </td>
                         </tr>
                         @endforeach
-                         @else
-                            <tr><td colspan=10> No Record Found</td></tr>
-                         @endif
+                        @else
+                        <tr><td colspan=10> No Record Found</td></tr>
+                        @endif
                         </tbody>
                     </table>
-                </div><!-- /.box-body -->
+                </div>
                 <div class="box-footer clearfix">
 
                     <?php
@@ -158,9 +167,9 @@
 
                     !empty(Input::get("product_code")) ? $args["product_code"] = Input::get("product_code") : '';
                     //echo $products->appends(Input::except('page'))->render();
-                    
+
                     if (empty(Input::get('prdSearch'))) {
-                       echo $products->render();
+                        echo $products->render();
                     }
                     ?>
 
@@ -333,42 +342,42 @@
 
 
 
-<!-- Product Add Modal -->
+    <!-- Product Add Modal -->
 
-  <!-- Product Close Modal Open -->
+    <!-- Product Close Modal Open -->
 </section>
 <div id="addProductCat" class="modal fade" role="dialog">
-  <div class="modal-dialog addProduct-modal-dialog">
+    <div class="modal-dialog addProduct-modal-dialog">
         <div class="modal-content">
-<div class="modal-header addProduct-modal-header">
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h4 class="modal-title">Plese Create/Select Category First</h4>
-</div>
-      <div class="box-body">
-          <p>Please select/create minimum one Category before adding a product by clicking on Categories under Product in the left menu.</p>
-      </div>
-    <!-- Modal content-->
-   
-    
-     
-  
-      
-    </div>
+            <div class="modal-header addProduct-modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Plese Create/Select Category First</h4>
+            </div>
+            <div class="box-body">
+                <p>Please select/create minimum one Category before adding a product by clicking on Categories under Product in the left menu.</p>
+            </div>
+            <!-- Modal content-->
 
-  </div>
+
+
+
+
+        </div>
+
+    </div>
 </div>
 <div id="addProduct" class="modal fade" role="dialog">
-  <div class="modal-dialog addProduct-modal-dialog">
+    <div class="modal-dialog addProduct-modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-    
-      
-  
-      
+        <!-- Modal content-->
+        <div class="modal-content">
+
+
+
+
+        </div>
+
     </div>
-
-  </div>
 </div>
 <input type="hidden" id="page_type" value="main"/>
 @stop
