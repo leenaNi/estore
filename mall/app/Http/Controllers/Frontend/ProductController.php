@@ -28,9 +28,8 @@ class ProductController extends Controller {
         if ($setting->status == 0 && count($prod) == 0) {
             abort(404);
         }
-        // dd($prod);
+//         dd($prod);
         if ($prod->prod_type == 1 || $prod->prod_type == 5) {
-
             $view = $this->simpleProduct($prod->id);
         } else if ($prod->prod_type == 2) {
             $view = $this->comboProduct($prod->id);
@@ -117,30 +116,33 @@ class ProductController extends Controller {
         $is_rel_prod = GeneralSetting::where('url_key', 'related-products')->first();
         $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
         $product = Product::find($prodid);
-        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | Cartini " : @$product->meta_title;
+        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | VeestoresMall " : @$product->meta_title;
         $product->metaDesc = @$product->meta_desc == "" ? @$product->product : @$product->meta_desc;
         $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
-
-        $producctAttrSetId = $product->attr_set;
-        $product->prodImage = Config('constants.productImgPath') . '/' . $product->catalogimgs()->first()->filename;
+        $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get();
+        $product->prodImage = $product->images[0]->image_path . '/' . $product->images[0]->filename;
+        $product->store_name = DB::table('stores')->where('id', $product->store_id)->first()->store_name;
         if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
             $product->wishlist = 1;
         } else {
             $product->wishlist = 0;
         }
-        $nattrs = AttributeSet::find($product->attributeset['id'])->attributes()->where("is_filterable", "=", 1)->get()->toArray();
+//        $nattrs = AttributeSet::find($product->attr_set)->attributes()->where("is_filterable", "=", 1)->get()->toArray();
+        $nattrs = DB::select(DB::raw("SELECT attrs.* FROM `" . $product->prefix . "_attribute_sets` as attrs JOIN " . $product->prefix . "_has_attributes ha ON attrs.id = ha.attr_set JOIN " . $product->prefix . "_attributes attr ON ha.attr_id = attr.id WHERE attrs.id=" . $product->attr_set . " AND attr.is_filterable = 1 "));
+//        dd($nattrs);
         $data = ['product' => $product, 'nattrs' => $nattrs, 'is_desc' => $is_desc, 'is_rel_prod' => $is_rel_prod, 'is_like_prod' => $is_like_prod];
 
         $selAttrs = [];
-        $subprods = $product->subproducts()->get();
+        $subprods = DB::table('mall_products')->where('parent_prod_id', $product->store_prod_id)->where('status', 1)->get(); //$product->subproducts()->get();
         foreach ($subprods as $subP) {
-            $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-
+//            $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
+//            $hasOpt = DB::select(DB::raw("SELECT ha.attr_id, ha.prod_id, ha.attr_val, attr.placeholder, attr.attr, attr.slug, attrval.option_name, attrval.option_value FROM ".$product->prefix."_has_options ha JOIN ".$product->prefix."_attributes attr ON ha.attr_id = attr.id JOIN ".$product->prefix."_attribute_values attrval ON ha.attr_val = attrval.id WHERE ha.prod_id = $subP->id AND attr.status = 1 ORDER BY attr.att_sort_order asc"));
+            $hasOpt = DB::table($product->prefix . '_has_options')->where("prod_id", $subP->id)->get();
             foreach ($hasOpt as $prdOpt) {
-                $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
-                $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_name] = AttributeValue::find($prdOpt->pivot->attr_val)->option_value;
-
-                $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                $selAttrs[$prdOpt->attr_id]['placeholder'] = DB::table($product->prefix . '_attributes')->find($prdOpt->attr_id)->placeholder;
+                $selAttrs[$prdOpt->attr_id][DB::table($product->prefix . '_attributes')->find($prdOpt->attr_id)->slug] = DB::table($product->prefix . '_attributes')->find($prdOpt->attr_id)->attr;
+                $selAttrs[$prdOpt->attr_id]['options'][DB::table($product->prefix . '_attribute_values')->find($prdOpt->attr_val)->id] = DB::table($product->prefix . '_attribute_values')->find($prdOpt->attr_val)->option_name;
+                $selAttrs[$prdOpt->attr_id]['attrs'][DB::table($product->prefix . '_attribute_values')->find($prdOpt->attr_val)->id]['prods'][] = $prdOpt->prod_id;
             }
         }
 
@@ -156,177 +158,124 @@ class ProductController extends Controller {
         $stockLimit = json_decode(GeneralSetting::where('url_key', 'stock')->first()->details);
         $prod = Product::where('url_key', Input::get('slug'))->first();
         if (!empty($prod)) {
-            $product = Product::where('id', $prod->id)
-                            ->with([
-                                'subproducts' => function ($query) {
-                                    $query->with(['attributes' => function($q) {
-                                            $q->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
-                                        }])->with('attributevalues');
-                                }, 'catalogimgs' => function ($query) {
-                                    $query->where("image_mode", 1);
-                                }, 'attributeset' => function($qa) {
-                                    $qa->with(["attributes" => function($qattr) {
-                                            $qattr->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
-                                        }]);
-                                }
-                                    ])->first();
-                    $product->prodImage = Config('constants.productImgPath') . '/' . $product->catalogimgs()->first()->filename;
-                    $product->shortDesc = html_entity_decode($product->short_desc);
-                    $product->longDesc = html_entity_decode($product->long_desc);
-                    if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
-                        $product->wishlist = 1;
-                    } else {
-                        $product->wishlist = 0;
-                    }
-                    $selAttrs = [];
+//            $product = Product::where('id', $prod->id)
+//                            ->with([
+//                                'subproducts' => function ($query) {
+//                                    $query->with(['attributes' => function($q) {
+//                                            $q->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
+//                                        }])->with('attributevalues');
+//                                }, 'catalogimgs' => function ($query) {
+//                                    $query->where("image_mode", 1);
+//                                }, 'attributeset' => function($qa) {
+//                                    $qa->with(["attributes" => function($qattr) {
+//                                            $qattr->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
+//                                        }]);
+//                                }
+//                                    ])->first();
 
-                    $product->images = $product->catalogimgs()->get();
-                    foreach ($product->images as $img) {
-                        $img->img = Config('constants.productImgPath') . '/' . @$img->filename;
-                    }
-                    $product->related = $product->relatedproducts()->where("status", 1)->get();
+            $product = Product::where('id', $prod->store_prod_id)
+//                            ->leftjoin($prod->prefix.'products subprod', "p.id", "=", "subprod.parent_prod_id")
+                    ->first();
+            $product->store_name = DB::table('stores')->where('id', $product->store_id)->first()->store_name;
+            $product->shortDesc = html_entity_decode($product->short_desc);
+            $product->longDesc = html_entity_decode($product->long_desc);
+            if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
+                $product->wishlist = 1;
+            } else {
+                $product->wishlist = 0;
+            }
+            $selAttrs = [];
+//                    $product->images = $product->catalogimgs()->get();
+            $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get();
+            foreach ($product->images as $img) {
+                $img->img = $img->image_path . '/' . @$img->filename;
+            }
+            $product->prodImage = $product->images[0]->image_path . '/' . $product->images[0]->filename;
+            if ($prod->is_stock == 1 && $this->feature["stock"] == 1) { //->where("stock",">",0)
+                $subprods = DB::table('mall_products')->where('parent_prod_id', $product->store_prod_id)->where('status', 1)->where("stock", ">", 0)->get();
+            } else {
+                $subprods = DB::table('mall_products')->where('parent_prod_id', $product->store_prod_id)->where('status', 1)->get();
+            }
 
-                    foreach ($product->related as $prodrel) {
-                        $related_img = @$prodrel->catalogimgs()->first();
-                        if (!empty($related_img)) {
-                            $prodrel->img = Config('constants.productImgPath') . '/' . @$related_img->filename;
-                        } else {
-                            $prodrel->img = Config('constants.defaultImgPath') . '/default-product.jpg';
-                        }
-                    }
-
-                    $product->upsellproduct = $product->upsellproducts()->where("status", 1)->get();
-                    foreach ($product->upsellproduct as $produpsell) {
-                        $upsell_img = @$produpsell->catalogimgs()->first();
-                        if (!empty($upsell_img)) {
-                            $produpsell->img = Config('constants.productImgPath') . '/' . @$upsell_img->filename;
-                        } else {
-                            $produpsell->img = (Config('constants.defaultImgPath') . '/default-product.jpg');
-                        }
-                    }
-                    if ($prod->is_stock == 1 && $this->feature["stock"] == 1) {
-                        $subprods = $prod->getsubproducts()->get();
-                    } else {
-                        $subprods = $prod->subproducts()->get();
-                    }
-
-                    foreach ($subprods as $subP) {
-                        $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status", 1)->orderBy("att_sort_order", "asc")->get();
-                        //print_r($hasOpt);
-                        foreach ($hasOpt as $prdOpt) {
-                            $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
-                            $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
-                            $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
-                            $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
-                            $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
-                            $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
-                        }
-                    }
-                    $data['selAttrs'] = $selAttrs;
-                    $data['product'] = $product;
-                    $data['currencyVal'] = Session::get('currency_val');
-                    $data['stocklimit'] = $stockLimit->stocklimit;
-                    $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
-                    $data['curData'] = $currencySetting->setCurrency();
-                    return $data;
-                } else {
-                    abort(404, "File not found");
+            foreach ($subprods as $subP) {
+//                        $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status", 1)->orderBy("att_sort_order", "asc")->get();
+                $hasOpt = DB::table($product->prefix . '_has_options')->where("prod_id", $subP->id)->get();
+                foreach ($hasOpt as $prdOpt) {
+                    $attributes = DB::table($product->prefix . '_attributes')->find($prdOpt->attr_id);
+                    $attrvals = DB::table($product->prefix . '_attribute_values')->find($prdOpt->attr_val);
+                    $selAttrs[$prdOpt->attr_id]['placeholder'] = $attributes->placeholder;
+                    $selAttrs[$prdOpt->attr_id]['name'] = $attributes->attr;
+                    $selAttrs[$prdOpt->attr_id][$attributes->slug] = $attributes->attr;
+                    $selAttrs[$prdOpt->attr_id]['options'][$attrvals->id] = $attrvals->option_name;
+                    $selAttrs[$prdOpt->attr_id]['attrs'][$attrvals->id]['prods'][] = $prdOpt->prod_id;
+                    $selAttrs[$prdOpt->attr_id]['prods'][] = $prdOpt->prod_id;
                 }
             }
+            $data['selAttrs'] = $selAttrs;
+            $data['product'] = $product;
+            $data['currencyVal'] = Session::get('currency_val');
+            $data['stocklimit'] = $stockLimit->stocklimit;
+            $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
+            $data['curData'] = $currencySetting->setCurrency();
+            return $data;
+        } else {
+            abort(404, "File not found");
+        }
+    }
 
-//    public function comboProduct($pId) {
-//        $product = Product::find($pId);
-//        $options = [];
-//        $extraprice = [];
-//        $combos = [];
-//        /* Loop through The Products in the Combo */
-//        foreach ($product->comboproducts as $combo) {
-//            $combos[$combo->id] = ['name' => $combo->product, 'url_key' => $combo->url_key];
-//            if ($combo->prod_type == 3) {
-//                $options[$combo->id] = [];
-//                $extraprice[$combo->id] = [];
-//                /* Loop through The Attributes belonging to the Attribute Set of the Current Product */
-//                $attrs = AttributeSet::find($combo->attributeset['id'])->attributes()->where("is_filterable", "=", 1)->get()->toArray();
-//                foreach ($attrs as $attr) {
-//                    $options[$combo->id][$attr['attr']] = [];
-//                    $attrvals = explode("\n", $attr['attr_values']);
-//                    /* Loop through The Attributes Values */
-//                    foreach ($attrvals as $attrval) {
-//                        $options[$combo->id][$attr['attr']]["options"][trim($attrval)] = [];
-//                        $prods = Attribute::find($attr['id'])->products()->where("parent_prod_id", "=", $combo->id)->wherePivot('attr_val', 'like', trim($attrval) . "%")->get();
-//                        /* Loop through The Products Having Same Value */
-//                        if (!$prods->isEmpty()) {
-//                            foreach ($prods as $pid) {
-//                                $options[$combo->id][$attr['attr']]["options"][trim($attrval)]["products"][] = $pid->id;
-//                                if (!array_key_exists($pid->id, $extraprice)) {
-//                                    $extraprice[$combo->id][$pid->id] = $pid->price;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        $product->prodImage = asset(Config('constants.productImgPath') . $product->catalogimgs()->first()->filename);
-//        $data = ['combos' => $combos, 'product' => $product];
-//        $viewname = Config('constants.frontendCatlogProducts') . '.comboProduct';
-//        return Helper::returnView($viewname, $data);
-//    }
+    public function comboProduct($pId) {
+        $data = [];
+        $viewname = Config('constants.frontendCatlogProducts') . '.comboProduct';
+        return Helper::returnView($viewname, $data);
+    }
 
-
-            public function comboProduct($pId) {
-                $data = [];
-                $viewname = Config('constants.frontendCatlogProducts') . '.comboProduct';
-                return Helper::returnView($viewname, $data);
-            }
-
-            public function getComboProd() {
-                $prod = Product::where('url_key', Input::get('slug'))->first();
-                if (!empty($prod)) {
-                    $prod->prodImage = !empty(@$prod->catalogimgs()->first()->filename) ? asset(Config('constants.productImgPath') . @$prod->catalogimgs()->first()->filename) : asset('public/Admin/images/default_product.png');
-                    // $prod->prodImage = !empty($prod->images) ? asset(Config('constants.productImgPath') . $prod->images) : asset('public/Admin/images/default_product.png');
+    public function getComboProd() {
+        $prod = Product::where('url_key', Input::get('slug'))->first();
+        if (!empty($prod)) {
+            $prod->prodImage = !empty(@$prod->catalogimgs()->first()->filename) ? asset(Config('constants.productImgPath') . @$prod->catalogimgs()->first()->filename) : asset('public/Admin/images/default_product.png');
+            // $prod->prodImage = !empty($prod->images) ? asset(Config('constants.productImgPath') . $prod->images) : asset('public/Admin/images/default_product.png');
 //                    $prod->coverPic = !empty($prod->cover_pic) ? asset(Config('constants.productImgPath') . $prod->cover_pic) : asset('public/Frontend/images/detailsbanner.jpg');
-                    $prod->shortDesc = html_entity_decode($prod->short_desc);
+            $prod->shortDesc = html_entity_decode($prod->short_desc);
 //                    $prod->breadcrumbs = Helper::getbreadcrumbs($prod->categories()->first()->id);
 //                    $prod->token = Helper::generateWebToken();
 //                    $prod->tokenApi = Helper::generateWebTokenApi();
-                    $selAttrs = [];
-                    //   dd($prod);
-                    $comboprod = $prod->comboproducts()->get();
-                    foreach ($comboprod as $cprod) {
-                        if ($cprod->prod_type == 3) {
-                            $subprods = $cprod->subproducts()->get();
-                            foreach ($subprods as $subP) {
-                                $hasOpt = $subP->attributes()->where("is_filterable", 1)->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-                                foreach ($hasOpt as $prdOpt) {
-                                    if (AttributeValue::find($prdOpt->pivot->attr_val)->is_active == 1) {
+            $selAttrs = [];
+            //   dd($prod);
+            $comboprod = $prod->comboproducts()->get();
+            foreach ($comboprod as $cprod) {
+                if ($cprod->prod_type == 3) {
+                    $subprods = $cprod->subproducts()->get();
+                    foreach ($subprods as $subP) {
+                        $hasOpt = $subP->attributes()->where("is_filterable", 1)->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
+                        foreach ($hasOpt as $prdOpt) {
+                            if (AttributeValue::find($prdOpt->pivot->attr_val)->is_active == 1) {
 //                                $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
 //                                $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
 //                                $selAttrs[$prdOpt->pivot->attr_id]['options'][strtolower(AttributeValue::find($prdOpt->pivot->attr_val)->option_name)] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
 //                                $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
 //                                $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
 //                           
-                                        $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
-                                        $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
-                                        $selAttrs[$cprod->id][$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
-                                        $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['options'][strtolower(AttributeValue::find($prdOpt->pivot->attr_val)->option_name)] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
-                                        $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
-                                        $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
-                                    }
-                                }
+                                $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                $selAttrs[$cprod->id][$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['options'][strtolower(AttributeValue::find($prdOpt->pivot->attr_val)->option_name)] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
                             }
                         }
                     }
+                }
+            }
 //dd($selAttrs);
-                    $chaptersCount = 0;
-                    $topicsCount = 0;
-                    $testsCount = 0;
-                    $prod->comboproducts = $prod->comboproducts()->get();
-                    foreach ($prod->comboproducts as $cobSub) {
-                        $cobSub->prodImage = !empty(@$cobSub->catalogimgs()->first()->filename) ? asset(Config('constants.productImgPath') . @$cobSub->catalogimgs()->first()->filename) : asset('public/Admin/images/default_product.png');
-                    }
-                    $prod->catid = @$prod->categories()->first()->id;
-                    $getChildProds = $prod->subproducts()->get()->toArray();
+            $chaptersCount = 0;
+            $topicsCount = 0;
+            $testsCount = 0;
+            $prod->comboproducts = $prod->comboproducts()->get();
+            foreach ($prod->comboproducts as $cobSub) {
+                $cobSub->prodImage = !empty(@$cobSub->catalogimgs()->first()->filename) ? asset(Config('constants.productImgPath') . @$cobSub->catalogimgs()->first()->filename) : asset('public/Admin/images/default_product.png');
+            }
+            $prod->catid = @$prod->categories()->first()->id;
+            $getChildProds = $prod->subproducts()->get()->toArray();
 //                    foreach ($prod->comboproducts as $cprod) {
 //                        if ($cprod->prod_type == 3) {
 //                            $chaptersCount += $cprod->chapterscount();
@@ -347,23 +296,23 @@ class ProductController extends Controller {
 //                    }
 //                    $prod->chaptersCount = $chaptersCount;
 //                    $prod->topicsCount = $topicsCount;
-                    //  dd($selAttrs);
-                    $prod->testsCount = $testsCount;
-                    $data['getChildProds'] = $getChildProds;
-                    $data['selAttrs'] = $selAttrs;
-                    $data['product'] = $prod;
-                    $data['generalSetting'] = DB::table('general_setting')->where('url_key', 'wowza')->where('status', 1)->first();
-                    $data['attrVarients'] = AttributeValue::where('attr_id', 1)->where("is_active", 1)->get()->toArray();
-                    $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
-                    $data['curData'] = $currencySetting->setCurrency();
-                    return $data;
-                } else {
-                    abort(404, "File not found");
-                }
-            }
+            //  dd($selAttrs);
+            $prod->testsCount = $testsCount;
+            $data['getChildProds'] = $getChildProds;
+            $data['selAttrs'] = $selAttrs;
+            $data['product'] = $prod;
+            $data['generalSetting'] = DB::table('general_setting')->where('url_key', 'wowza')->where('status', 1)->first();
+            $data['attrVarients'] = AttributeValue::where('attr_id', 1)->where("is_active", 1)->get()->toArray();
+            $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
+            $data['curData'] = $currencySetting->setCurrency();
+            return $data;
+        } else {
+            abort(404, "File not found");
+        }
+    }
 
-            public function getComboProdInfo() {
-                $prod = Product::find(Input::get('prodid'));
+    public function getComboProdInfo() {
+        $prod = Product::find(Input::get('prodid'));
 
 //        if ($prod->is_unit == 1) {
 //            $chapProd = $prod->chapters()->with('topics', 'tests')->get();
@@ -382,101 +331,100 @@ class ProductController extends Controller {
 //        $prod->prodtopics = @$prod->topics()->get();
 //        $prod->prodtests = @$prod->coursetests()->get();
 //        $prod->testonlytests = @$prod->testsOnlyTests()->get();
-                return $prod;
+        return $prod;
+    }
+
+    public function getAvailProd() {
+        $parentProdId = Input::get('parentprodid');
+        $attributeid = Input::get('attributeid');
+        $nextattrid = Input::get('nextattrid');
+        $prod = Product::find($parentProdId);
+        $arrprod = [];
+        $nextAttrOptions = [];
+        foreach ($prod->subproducts()->get() as $prd) {
+            $arrprod[$prd->id] = [];
+            foreach ($prd->attributevalues()->get() as $prdAttrOPt) {
+                array_push($arrprod[$prd->id], $prdAttrOPt->attr_id . "-" . $prdAttrOPt->option_value);
             }
-
-            public function getAvailProd() {
-                $parentProdId = Input::get('parentprodid');
-                $attributeid = Input::get('attributeid');
-                $nextattrid = Input::get('nextattrid');
-                $prod = Product::find($parentProdId);
-                $arrprod = [];
-                $nextAttrOptions = [];
-                foreach ($prod->subproducts()->get() as $prd) {
-                    $arrprod[$prd->id] = [];
-                    foreach ($prd->attributevalues()->get() as $prdAttrOPt) {
-                        array_push($arrprod[$prd->id], $prdAttrOPt->attr_id . "-" . $prdAttrOPt->option_value);
-                    }
-                    foreach ($prd->attributevalues()->where("has_options.attr_id", $nextattrid)->get() as $prdOpt) {
-                        $nextAttrOptions[$prd->id]['id'] = $prdOpt->id;
-                        $nextAttrOptions[$prd->id]['option_value'] = $prdOpt->option_value;
-                    }
-                }
-                //dd($arrprod);
-                $unique = array_map("unserialize", array_unique(array_map("serialize", $nextAttrOptions)));
-                return $unique;
+            foreach ($prd->attributevalues()->where("has_options.attr_id", $nextattrid)->get() as $prdOpt) {
+                $nextAttrOptions[$prd->id]['id'] = $prdOpt->id;
+                $nextAttrOptions[$prd->id]['option_value'] = $prdOpt->option_value;
             }
-
-            public function getProdVarient() {
-                echo $attrValId = Input::get('attrValId');
-                echo $productId = Input::get('productId');
-                die;
-                $prod = Product::find($productId);
-                $producctAttrSetId = $prod->attr_set;
-                //print_r($producctAttrSetId);
-                $attrOpt = AttributeSet::find($producctAttrSetId)->attributes()->where("is_filterable", "=", 1)->get()->toArray();
-                // print_r($attrOpt);
-
-                $attrVal = DB::table("products")->where("parent_prod_id", "=", $productId)->where("has_options.attr_val", "=", $attrValId)
-                        ->leftJoin('has_options', "has_options.prod_id", "=", "products.id")
-                        ->leftJoin('attribute_values', "has_options.attr_val", "=", "attribute_values.id")
-                        ->select('products.product', 'products.parent_prod_id', 'has_options.attr_id', 'attribute_values.option_name', DB::raw("group_concat(has_options.prod_id) as productId"), DB::raw("group_concat(has_options.attr_val) as attrVal"))
-                        ->groupBy("has_options.attr_val")
-                        ->get();
-                return $attrVal;
-            }
-
-            public function checkStock() {
-                $isStock = GeneralSetting::where('url_key', 'stock')->first()->status;
-                $prodId = Input::get('prodId');
-
-                // $product = Product::find($prodId[0]);
-                $product = Product::find($prodId[0]);
-                $stockLimit = json_decode(GeneralSetting::where('url_key', 'stock')->first()->details);
-                if ($isStock == 1) {
-                    $data['stock'] = $product->stock;
-                } else {
-                    $data['stock'] = '1000000';
-                }
-                if ($stockLimit->stocklimit >= $product->stock) {
-                    $data['product'] = $product;
-                    $data['stockLimit'] = $stockLimit->stocklimit;
-                    return $data;
-                } else if ($stockLimit->stocklimit < $product->stock) {
-                    $data['product'] = $data['product'] = $product;
-                    $data['stockLimit'] = $stockLimit->stocklimit;
-                    return $data;
-                } else {
-
-                    $data['product'] = $product;
-                    $data['stockLimit'] = $stockLimit->stocklimit;
-                    return $data;
-                }
-            }
-
-            function notify_mail() {
-                if (!empty(Input::get('email')) && !empty(Input::get('prod'))) {
-                    $stocknotify = new Stocknotify();
-                    $stocknotify->email_id = Input::get('email');
-                    $stocknotify->prod_id = Input::get('prod');
-                    $stocknotify->save();
-                    echo json_encode(["msg" => "Notification added successfully"]);
-                } else {
-                    echo json_encode([",msg" => "Please type email id"]);
-                }
-            }
-
-            public function getProductQuickView() {
-
-                $prods = Product::where('is_trending', 1)->where('status', 1);
-                if ($this->feature['products-with-variants'] == 0) {
-                    $prods = $prods->where('prod_type', 1)->where('stock' > 0)->get();
-                } else {
-                    $prods = $prods->get();
-                }
-                return Helper::quickAddtoCart($prods);
-                // dd($prods);
-            }
-
         }
-        
+        //dd($arrprod);
+        $unique = array_map("unserialize", array_unique(array_map("serialize", $nextAttrOptions)));
+        return $unique;
+    }
+
+    public function getProdVarient() {
+        echo $attrValId = Input::get('attrValId');
+        echo $productId = Input::get('productId');
+        die;
+        $prod = Product::find($productId);
+        $producctAttrSetId = $prod->attr_set;
+        //print_r($producctAttrSetId);
+        $attrOpt = AttributeSet::find($producctAttrSetId)->attributes()->where("is_filterable", "=", 1)->get()->toArray();
+        // print_r($attrOpt);
+
+        $attrVal = DB::table("products")->where("parent_prod_id", "=", $productId)->where("has_options.attr_val", "=", $attrValId)
+                ->leftJoin('has_options', "has_options.prod_id", "=", "products.id")
+                ->leftJoin('attribute_values', "has_options.attr_val", "=", "attribute_values.id")
+                ->select('products.product', 'products.parent_prod_id', 'has_options.attr_id', 'attribute_values.option_name', DB::raw("group_concat(has_options.prod_id) as productId"), DB::raw("group_concat(has_options.attr_val) as attrVal"))
+                ->groupBy("has_options.attr_val")
+                ->get();
+        return $attrVal;
+    }
+
+    public function checkStock() {
+        $isStock = GeneralSetting::where('url_key', 'stock')->first()->status;
+        $prodId = Input::get('prodId');
+
+        // $product = Product::find($prodId[0]);
+        $product = Product::find($prodId[0]);
+        $stockLimit = json_decode(GeneralSetting::where('url_key', 'stock')->first()->details);
+        if ($isStock == 1) {
+            $data['stock'] = $product->stock;
+        } else {
+            $data['stock'] = '1000000';
+        }
+        if ($stockLimit->stocklimit >= $product->stock) {
+            $data['product'] = $product;
+            $data['stockLimit'] = $stockLimit->stocklimit;
+            return $data;
+        } else if ($stockLimit->stocklimit < $product->stock) {
+            $data['product'] = $data['product'] = $product;
+            $data['stockLimit'] = $stockLimit->stocklimit;
+            return $data;
+        } else {
+
+            $data['product'] = $product;
+            $data['stockLimit'] = $stockLimit->stocklimit;
+            return $data;
+        }
+    }
+
+    function notify_mail() {
+        if (!empty(Input::get('email')) && !empty(Input::get('prod'))) {
+            $stocknotify = new Stocknotify();
+            $stocknotify->email_id = Input::get('email');
+            $stocknotify->prod_id = Input::get('prod');
+            $stocknotify->save();
+            echo json_encode(["msg" => "Notification added successfully"]);
+        } else {
+            echo json_encode([",msg" => "Please type email id"]);
+        }
+    }
+
+    public function getProductQuickView() {
+
+        $prods = Product::where('is_trending', 1)->where('status', 1);
+        if ($this->feature['products-with-variants'] == 0) {
+            $prods = $prods->where('prod_type', 1)->where('stock' > 0)->get();
+        } else {
+            $prods = $prods->get();
+        }
+        return Helper::quickAddtoCart($prods);
+        // dd($prods);
+    }
+
+}

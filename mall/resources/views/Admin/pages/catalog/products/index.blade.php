@@ -103,6 +103,7 @@
 
                             <tr> 
                                 <td>
+<<<<<<< HEAD
                                     <div class="product-name vMiddle">
                                         <span>
                                             <?php
@@ -112,6 +113,21 @@
                                         </span>
 
                                     </div>
+=======
+                                <div class="product-name vMiddle">
+                                    <span>
+                                    <img src="{{($product->mainImage)?$product->mainImage:'' }}" class="admin-profile-picture" />
+                                    </span>
+                                    <span class="marginleft10">
+                                    {{$product->product }}<br> 
+                                       <span class="breakLine"> 
+                                       @if($product->product_code)
+                                       ({{ $product->product_code }})
+                                        @endif
+                                       </span>    
+                                   </span>                       
+                                </div>
+>>>>>>> 36afe72389d1ab6dba1d4fa6438445d7f036a163
                                 </td>
                                 <!-- <td>{{$product->product_code }}</td> -->
                                 <td>

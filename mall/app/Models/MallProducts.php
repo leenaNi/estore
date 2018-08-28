@@ -8,7 +8,7 @@ class MallProducts extends Model {
 
     protected $table = 'mall_products';
 
-    public function mallcategories() {
+    public function categories() {
         return $this->belongsToMany('App\Models\MallProdCategory', 'has_categories', 'prod_id', 'cat_id');
     }
 

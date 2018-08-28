@@ -53,14 +53,22 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/getBillSummary', array('as' => 'getBillSummary', 'uses' => 'CheckoutController@getBillSummary'));
     Route::any('/toPayment', array('as' => 'toPayment', 'uses' => 'CheckoutController@toPayment'));
     Route::any('/chk-cart-inventory', array('as' => 'chk_cart_inventory', 'uses' => 'CheckoutController@chk_cart_inventory'));
-
+    Route::post('/order_cash_on_delivery', array('as' => 'order_cash_on_delivery', 'uses' => 'CheckoutController@order_cash_on_delivery'));
     //WISHLIST
     Route::post('/save-wishlist', ['as' => 'addToWishlist', 'uses' => 'UserController@addToWishlist']);
     Route::post('/remove-wishlist', ['as' => 'removeWishlist', 'uses' => 'UserController@removeWishlist']);
-
+    Route::get('/myacount', array('as' => 'myProfile', 'uses' => 'UserController@my_profile'));
+    Route::post('/update-profile', array('as' => 'updateProfile', 'uses' => 'UserController@updateProfile'));
+    Route::get('/order-details/{id}', array('as' => 'orderDetails', 'uses' => 'UserController@orderDetails'));
+    Route::any('/order-details-json', array('as' => 'orderDetailsJson', 'uses' => 'UserController@orderDetails_json'));
+    Route::any('/order-cancel-status', array('as' => 'statusOrderCancel', 'uses' => 'UserController@statusOrderCancel'));
+     Route::post('/update-profile-image', array('as' => 'updateProfileImage', 'uses' => 'UserController@updateProfileImage'));
+     Route::post('/update-change-password-myacc', array('as' => 'updateMyaccChangePassword', 'uses' => 'UserController@updateMyaccChangePassword'));
     //PRODUCT LISTING ROUTES
     Route::any('/getListingFilter', ['as' => 'getListingFilter', 'uses' => 'CategoriesController@getListingFilter']);
     Route::any('/get-product-listing', ['as' => 'getProductListing', 'uses' => 'CategoriesController@getProductListing']);
+    //GET Config Prod Details
+    Route::any('/get-config-prod', ['as' => 'getConfigProd', 'uses' => 'ProductController@getConfigProd']);
 
     //InofStock Notification
     Route::any('/notify-mail', ['as' => 'notifyMail', 'uses' => 'ProductController@notify_mail']);

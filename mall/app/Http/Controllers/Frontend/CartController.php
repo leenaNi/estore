@@ -151,7 +151,7 @@ class CartController extends Controller {
         $data['subtotal'] = $sub_total * Session::get('currency_val');
         $data['finaltotal'] = $amt['total'] * Session::get('currency_val');
         $data['total'] = $amt['total'] * Session::get('currency_val');
-        $data['tax']=$cartInstance->options->tax_amt;
+        $data['tax'] = $cartInstance->options->tax_amt;
         // $data['subtotal'] = Cart::instance('shopping')->get(Input::get("rowid"))->subtotal * Session::get('currency_val') ;
         // $data['finaltotal'] = Cart::total() * Session::get('currency_val');
         // $data['total'] = Cart::total() * Session::get('currency_val');
@@ -185,35 +185,37 @@ class CartController extends Controller {
         $quantity = (Input::get('quantity')) ? Input::get('quantity') : $quantity;
 
         $cats = [];
-        foreach ($product->mallcategories as $cat) {
+        foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
         }
         $price = $product->selling_price; //$product->price;
         $pname = $product->product;
         $prod_type = $product->prod_type;
-        $prodImg=DB::table($product->prefix."_catalog_images")->where("catalog_id",$product->store_prod_id)->where("image_mode",1)->first();
-        $images =$prodImg->filename;
-        $imagPath=$prodImg->image_path;
+        $prodImg = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->first();
+        $images = $prodImg->filename;
+        $imagPath = $prodImg->image_path;
         $type = $product->is_tax;
         $sum = 0;
-        $storeProdId=$product->store_prod_id;
-//        foreach ($product->texes as $tax) {
-//            $sum = $sum + $tax->rate;
-//        }
-    
+        $storeProdId = $product->store_prod_id;
+        $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
+                        ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
+        foreach ($prodTaxes as $tax) {
+            $sum = $sum + $tax->rate;
+        }
+
         $tax_amt = 0;
-//        if ($type == 1 || $type == 2) {
-//            $tax = $product->selling_price * $quantity * $sum / 100;
-//            $tax_amt = round($tax, 2);
-//        }
+        if ($type == 1 || $type == 2) {
+            $tax = $product->selling_price * $quantity * $sum / 100;
+            $tax_amt = round($tax, 2);
+        }
 
         if ($product->is_stock == 1) {
             $is_stockable = GeneralSetting::where('id', 26)->first();
             if ($is_stockable->status == 1 && $product->prod_type == 1) {
                 if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                     Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
-                        "options" => ["image" => $images,"image_with_path"=>$imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
-                            'cats' => $cats, 'stock' => $product->stock,'store_id' => $product->stock,'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
+                        "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
+                            'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
                             "prod_type" => $prod_type,
                             "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
                 } else {
@@ -221,15 +223,15 @@ class CartController extends Controller {
                 }
             } else {
                 Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
-                    "options" => ["image" => $images,"image_with_path"=>$imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
-                        'cats' => $cats, 'stock' => $product->stock,'store_id' => $product->stock,'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
+                    "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
+                        'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
                         "prod_type" => $prod_type,
                         "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
             }
         } else {
             Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
-                "options" => ["image" => $images,"image_with_path"=>$imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
-                    'cats' => $cats, 'stock' => $product->stock,'store_id' => $product->stock,'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
+                "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
+                    'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
                     "prod_type" => $prod_type,
                     "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
         }
@@ -338,38 +340,39 @@ class CartController extends Controller {
     public function configProduct($prod_id, $quantity, $sub_prod) {
         $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         $product = Product::find($prod_id);
-     
+
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
-          
+
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock") {
                 // $product = Product::find($sub_prod);
 
                 $cats = [];
 
-                foreach ($product->mallcategories as $cat) {
+                foreach ($product->categories as $cat) {
                     array_push($cats, $cat->id);
                 }
                 $pname = $product->product;
                 $prod_type = $product->prod_type;
-                $prodImg=DB::table($prd->prefix."_catalog_images")->where("catalog_id",$prd->store_prod_id)->where("image_mode",1)->first();
-                $images =$prodImg->filename;
-                $imagPath=$prodImg->image_path.'/'.$images;
+                $prodImg = DB::table($prd->prefix . "_catalog_images")->where("catalog_id", $prd->store_prod_id)->where("image_mode", 1)->first();
+                $images = $prodImg->filename;
+                $imagPath = $prodImg->image_path . '/' . $images;
                 $subProd = Product::where("id", "=", $sub_prod)->first();
                 $price = $subProd->price + $product->selling_price;
                 $options = [];
-                $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-               
+                $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
+
                 foreach ($hasOptn as $optn) {
-                    $options[$optn->pivot->attr_id] = $optn->pivot->attr_val;
-                   
-                    $option_name[]=AttributeValue::find($optn->pivot->attr_id)->option_name;
+                    $options[$optn->attr_id] = $optn->attr_val;
+                    $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
                 }
-                 $option_name=json_encode($option_name);
+                $option_name = json_encode($option_name);
                 $image = isset($images) ? $images : "default.jpg";
 
                 $type = $product->is_tax;
                 $sum = 0;
-                foreach ($product->texes as $tax) {
+                $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
+                                ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
+                foreach ($prodTaxes as $tax) {
                     $sum = $sum + $tax->rate;
                 }
                 $tax_amt = 0;
@@ -377,41 +380,41 @@ class CartController extends Controller {
                     $tax = $product->selling_price * $quantity * $sum / 100;
                     $tax_amt = round($tax, 2);
                 }
-
-
                 Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                     "qty" => $quantity, "price" => $price,
-                    "options" => ["image" => $image,"image_with_path"=>$imagPath,"selected_attrs_labels"=>$option_name, "sub_prod" => $subProd->id,
+                    "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
                         "options" => $options, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
-                        'cats' => $cats, 'stock' => $subProd->stock,'store_id' => $product->stock,'prefix' => $product->prefix, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
+                        'cats' => $cats, 'stock' => $subProd->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
             } else {
                 return 1;
             }
         } else {
-
             $cats = [];
-
             foreach ($product->categories as $cat) {
                 array_push($cats, $cat->id);
             }
             $pname = $product->product;
             $prod_type = $product->prod_type;
-            $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
-            $imagPath=Config("constants.productImgPath") .'/'. $images;
+//            $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
+//            $imagPath = Config("constants.productImgPath") . '/' . $images;
+            $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get();
+            $imagPath = $product->images[0]->image_path . '/' . $product->images[0]->filename;
             $subProd = Product::where("id", "=", $sub_prod)->first();
             $price = $subProd->price + $product->selling_price;
             $options = [];
-            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-          
+//            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
+            $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
             foreach ($hasOptn as $optn) {
-                $options[$optn->pivot->attr_id] = $optn->pivot->attr_val;
-                $option_name[]=AttributeValue::find($optn->pivot->attr_id)->option_name;
+                $options[$optn->attr_id] = $optn->attr_val;
+                $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
             }
             $image = isset($images) ? $images : "default.jpg";
-            $option_name=json_encode($option_name);
+            $option_name = json_encode($option_name);
             $type = $product->is_tax;
             $sum = 0;
-            foreach ($product->texes as $tax) {
+            $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
+                            ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
+            foreach ($prodTaxes as $tax) {
                 $sum = $sum + $tax->rate;
             }
             $tax_amt = 0;
@@ -419,13 +422,11 @@ class CartController extends Controller {
                 $tax = $product->selling_price * $quantity * $sum / 100;
                 $tax_amt = round($tax, 2);
             }
-
-
             Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                 "qty" => $quantity, "price" => $price,
-                "options" => ["image" => $image,"image_with_path"=>$imagPath,"selected_attrs_labels"=>$option_name, "sub_prod" => $subProd->id,
+                "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
                     "options" => $options, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
-                    'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
+                    'cats' => $cats, 'stock' => $subProd->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
         }
     }
 
@@ -490,7 +491,6 @@ class CartController extends Controller {
             Cart::update($amt['sid'], ['options' => ['discountedAmount' => $amt['rc']]]);
         }
     }
-
 
     public function check_coupon() {
         Session::get('currency_val');
@@ -702,13 +702,13 @@ class CartController extends Controller {
             $data['orderAmount'] = filter_var($cart_amt['total'] * Session::get('currency_val'), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             return $data;
         } else {
-            $cart_amt = Helper::revertTax(); 
+            $cart_amt = Helper::revertTax();
             $data['remove'] = 1;
             if (empty($msg)) {
                 $msg = "Coupon code invalid";
             }
-         
-             Session::forget('couponUsedAmt');
+
+            Session::forget('couponUsedAmt');
             Session::forget('usedCouponId');
             Session::forget('usedCouponCode');
 //            if (Session::get('individualDiscountPercent')) {
@@ -720,7 +720,7 @@ class CartController extends Controller {
 
             $cart_amt = Helper::calAmtWithTax();
             $data['cmsg'] = @$msg;
-            $data['cart'] =$cart_amt['cart'];// Cart::instance('shopping')->content()->toArray();
+            $data['cart'] = $cart_amt['cart']; // Cart::instance('shopping')->content()->toArray();
             $data['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
             $data['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
             $data['cartCnt'] = Cart::instance('shopping')->count();

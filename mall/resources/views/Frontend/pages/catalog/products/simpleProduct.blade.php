@@ -19,64 +19,61 @@
         <div class="container clearfix topmargin-sm bottommargin-sm">
             <div class="single-product">
                 <div class="product">
-                    <div class="col_half">
-                        <!-- Product Single - Gallery
-                                                                        ============================================= -->
-                        <div class="product-image noborder">
-                            <div class="fslider" data-pagi="false" data-autoplay="false" data-arrows="false" data-thumbs="true">
-                                <div class="flexslider">
-
-                                    <div class="slider-wrap" data-lightbox="gallery" style="width:100% !important;">
-                                        <?php
-                                        if ($isstock == 1) {
-                                            $maxValue = $product->is_stock == 1 ? $product->stock : '1000000';
-                                        } else {
-                                            $maxValue = '1000000';
-                                        }
-                                        if (count($product->images) > 0) {
-                                            foreach ($product->images as $pk => $prdimg) {
-                                                ?>
-                                                <div class="slide" data-thumb="{{$prdimg->img}}">
-                                                    <a href="{{$prdimg->img}}" title="" data-lightbox="gallery-item"><img src="{{$prdimg->img}}" alt="" class="zoom-me zoom-me1" data-zoom-image="{{$prdimg->img}}"> </a>
-                                                </div>
-                                                <?php
+                    <form id="{{"form".$product->id }}" action="{{ route('addToCart') }}">
+                        <div class="col_half">
+                            <!-- Product Single - Gallery               ============================================= -->
+                            <div class="product-image noborder">
+                                <div class="fslider" data-pagi="false" data-autoplay="false" data-arrows="false" data-thumbs="true">
+                                    <div class="flexslider">
+                                        <div class="slider-wrap" data-lightbox="gallery" style="width:100% !important;">
+                                            <?php
+                                            if ($isstock == 1) {
+                                                $maxValue = $product->is_stock == 1 ? $product->stock : '1000000';
+                                            } else {
+                                                $maxValue = '1000000';
                                             }
-                                        } else {
-                                            ?>
-                                            <div class="slide">
-                                                <a href="javascript:void(0);" title="Default" data-lightbox="gallery-item"><img src="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}" alt="default Img" class="zoom-me zoom-me1 fimg " data-zoom-image="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}"> </a>
-                                            </div>
-                                        <?php } ?>
+                                            if (count($product->images) > 0) {
+                                                foreach ($product->images as $pk => $prdimg) {
+                                                    ?>
+                                                    <div class="slide" data-thumb="{{$prdimg->img}}">
+                                                        <a href="{{$prdimg->img}}" title="" data-lightbox="gallery-item"><img src="{{$prdimg->img}}" alt="" class="zoom-me zoom-me1" data-zoom-image="{{$prdimg->img}}"> </a>
+                                                    </div>
+                                                    <?php
+                                                }
+                                            } else {
+                                                ?>
+                                                <div class="slide">
+                                                    <a href="javascript:void(0);" title="Default" data-lightbox="gallery-item"><img src="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}" alt="default Img" class="zoom-me zoom-me1 fimg " data-zoom-image="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}"> </a>
+                                                </div>
+                                            <?php } ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- Product Single - Gallery End -->
                         </div>
-                        <!-- Product Single - Gallery End -->
-                    </div>
-                    <div class="col_last col_half product-desc noborder">
-                        <h2 class="product_title bottommargin-xs">{{$product->product}}</h2>
-                        @if($product->product_code)
-                        <div class="product-code">
-                            <p><strong>Product Code:</strong> {{$product->product_code}}</p>
-                        </div>
-                        @endif
-                        <div class="seller-name">
-                            <h4 style="margin: 0 0 15px 0;">Sold By: {{$product->store_name}}</h4>
-                        </div>
-                        @if($product->spl_price > 0 && $product->spl_price < $product->price)
-                        <div class="product-price"> <span class="currency-sym"></span> {{number_format($product->spl_price * Session::get('currency_val'), 2, '.', '')}} <del> <span class="currency-sym"></span> {{number_format($product->price * Session::get('currency_val'), 2, '.', '')}}</del></div> 
-                        @else
-                        <div class="product-price"> <span class="currency-sym"></span> {{number_format($product->price * Session::get('currency_val'), 2, '.', '')}}  </div> 
-                        @endif
-                        <div class="clear"></div>
-                        @if($product->is_stock == 1 && $isstock==1)
-                        <span class="span2" style="color:red;">@if($product->stock < $stocklimit){{ 'STOCK LEFT : '.$product->stock }} @endif</span>
-                        @endif
-                        <div class="clear"></div>
-                        <div class="line"></div>
-                        <!-- Product Single - Quantity & Cart Button
-                                                                        ============================================= -->
-                        <form id="{{"form".$product->id }}" action="{{ route('addToCart') }}">
+                        <div class="col_last col_half product-desc noborder">
+                            <h2 class="product_title bottommargin-xs">{{$product->product}}</h2>
+                            @if($product->product_code)
+                            <div class="product-code">
+                                <p><strong>Product Code:</strong> {{$product->product_code}}</p>
+                            </div>
+                            @endif
+                            <div class="seller-name">
+                                <h4 style="margin: 0 0 15px 0;">Sold By: {{$product->store_name}}</h4>
+                            </div>
+                            @if($product->spl_price > 0 && $product->spl_price < $product->price)
+                            <div class="product-price"> <span class="currency-sym"></span> {{number_format($product->spl_price * Session::get('currency_val'), 2, '.', '')}} <del> <span class="currency-sym"></span> {{number_format($product->price * Session::get('currency_val'), 2, '.', '')}}</del></div> 
+                            @else
+                            <div class="product-price"> <span class="currency-sym"></span> {{number_format($product->price * Session::get('currency_val'), 2, '.', '')}}  </div> 
+                            @endif
+                            <div class="clear"></div>
+                            @if($product->is_stock == 1 && $isstock==1)
+                            <span class="span2" style="color:red;">@if($product->stock < $stocklimit){{ 'STOCK LEFT : '.$product->stock }} @endif</span>
+                            @endif
+                            <div class="clear"></div>
+                            <div class="line"></div>
+                            <!-- Product Single - Quantity & Cart Button  ============================================= -->                        
                             <input type='hidden' name='prod_id' value='{{$product->id}}' data-parentid = "{{ $product->id }}">
                             <input type='hidden' name='prod_type' value='{{$product->prod_type}}'>
                             <div class="quantity clearfix">
@@ -85,41 +82,41 @@
                                 <input type="button" value="+" class="plus"> </div>
                             <button  form-id='{{ $product->id }}'type="button" class="add-to-cart button nomargin addToCartB addToCart">Add to cart</button>
                             <button type="button"  data-prodid="{{ $product->id }}" class="add-to-wishlist button nomargin">Add To Wishlist<i id="wish{{ $product->id}}" class="{{($product->wishlist == 1) ? 'icon-heart3 red-heart' : 'icon-heart'}}" style="margin-right:0px;"></i></button>
-                        </form>
-                        <!-- Product Single - Quantity & Cart Button End -->
-                        @if($product->short_desc!='')
-                        <div class="clear"></div>
-                        <div class="line"></div>
-                        <!-- Product Single - Short Description ============================================= -->
-                        <p>{{ $product->short_desc}}</p>
-                        @endif
-                        <div class="line"></div>
-                        <div class="clear"></div>
-                        <!-- Product Single - Share ============================================= -->
-                        <div class="shareSociIconBox">
-                                <strong>Share:</strong> 
+                            <!-- Product Single - Quantity & Cart Button End -->
+                            @if($product->short_desc!='')
+                            <div class="clear"></div>
+                            <div class="line"></div>
+                            <!-- Product Single - Short Description ============================================= -->
+                            <p>{{ $product->short_desc}}</p>
+                            @endif
+                            <div class="line"></div>
+                            <div class="clear"></div>
+                            <!-- Product Single - Share ============================================= -->
+                            <div class="shareSociIconBox">
+                                <!--<strong>Share:</strong>--> 
                                 <?php
                                 $social['url'] = Request::url();
-                                print_r(App\Library\Helper::socialShareIcon($social));
+//                                print_r(App\Library\Helper::socialShareIcon($social));
                                 ?>
-                                </div>
-                        <div class="si-share noborder clearfix"> <span class="pull-left">Share:</span>
-                            <div class="pull-left">
-                                 <?php
-                                $social['url'] = Request::url();
-                                print_r(App\Library\Helper::socialShareIcon($social));
-                                ?>
-<!--                                <a href="#" class="social-icon si-borderless si-facebook"> <i class="icon-facebook"></i> <i class="icon-facebook"></i> </a>
-                                <a href="#" class="social-icon si-borderless si-twitter"> <i class="icon-twitter"></i> <i class="icon-twitter"></i> </a>
-                                <a href="#" class="social-icon si-borderless si-pinterest"> <i class="icon-pinterest"></i> <i class="icon-pinterest"></i> </a>
-                                <a href="#" class="social-icon si-borderless si-gplus"> <i class="icon-gplus"></i> <i class="icon-gplus"></i> </a>
-                                <a href="#" class="social-icon si-borderless si-rss"> <i class="icon-rss"></i> <i class="icon-rss"></i> </a>
-                                <a href="#" class="social-icon si-borderless si-email3"> <i class="icon-email3"></i> <i class="icon-email3"></i> </a>-->
                             </div>
+                            <div class="si-share noborder clearfix"> 
+                                <!--<span class="pull-left">Share:</span>-->
+                                <div class="pull-left">
+                                    <?php
+                                    $social['url'] = Request::url();
+//                                    print_r(App\Library\Helper::socialShareIcon($social));
+                                    ?>
+    <!--                                <a href="#" class="social-icon si-borderless si-facebook"> <i class="icon-facebook"></i> <i class="icon-facebook"></i> </a>
+                                    <a href="#" class="social-icon si-borderless si-twitter"> <i class="icon-twitter"></i> <i class="icon-twitter"></i> </a>
+                                    <a href="#" class="social-icon si-borderless si-pinterest"> <i class="icon-pinterest"></i> <i class="icon-pinterest"></i> </a>
+                                    <a href="#" class="social-icon si-borderless si-gplus"> <i class="icon-gplus"></i> <i class="icon-gplus"></i> </a>
+                                    <a href="#" class="social-icon si-borderless si-rss"> <i class="icon-rss"></i> <i class="icon-rss"></i> </a>
+                                    <a href="#" class="social-icon si-borderless si-email3"> <i class="icon-email3"></i> <i class="icon-email3"></i> </a>-->
+                                </div>
+                            </div>
+                            <!-- Product Single - Share End -->
                         </div>
-                        <!-- Product Single - Share End -->
-                    </div>
-
+                    </form>
                 </div>
             </div>
             <div class="clear"></div>
