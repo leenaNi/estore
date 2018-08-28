@@ -42,12 +42,14 @@ class UserController extends Controller {
         //print_r(Session::get('loggedin_user_id'));
         $orderReturnReason=OrderReturnReason::pluck('reason','id');
         $user=User::find(@Session::get('loggedin_user_id'));
-        $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
+       // $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
       //  dd($userWishlist);
+        $userWishlist='';
         $orders = Order::where("user_id", "=", @Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->orderBy('id', 'desc')->get();
         //$ordersCurrency = HasCurrency::where('id',$orders->currency_id)->first();
         $viewname = Config('constants.frontendMyAccView') . '.myaccount';
         $data = ['orders' => $orders,'user'=>$user,'wishlist'=>$userWishlist,'orderReturnReason'=>$orderReturnReason];
+      // dd($data);
         return Helper::returnView($viewname, $data);
     }
 
@@ -78,38 +80,39 @@ class UserController extends Controller {
     }
 
     public function orderDetails($id) {
-        $checkCancelOrder=CancelOrder::where("order_id",$id)->get();
+       // $checkCancelOrder=CancelOrder::where("order_id",$id)->get();
         $returnPolicy = @GeneralSetting::where("type", 6)->first()->details;
         $returnProductStatus=GeneralSetting::where('url_key','return-product')->where('status',1)->get();
          $orderReturnReason=OrderReturnReason::pluck('reason','id');
         $getid = $id;
-        $order = Order::where('id', $getid)->with('currency','orderStatHist')->with(['products'=>function($pro){
-         return $pro->with([
-                                'subproducts' => function ($query) {
-                                    $query->with(['attributes' => function($q) {
-                                            $q->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
-                                        }])->with('attributevalues');
-                                }, 'catalogimgs' => function ($query) {
-                                    $query->where("image_mode", 1);
-                                }, 'attributeset' => function($qa) {
-                                    $qa->with(["attributes" => function($qattr) {
-                                            $qattr->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
-                                        }]);
-                                }
-                                    ]);
-        }])->first();
+//        $order = Order::where('id', $getid)->with('currency')->with(['products'=>function($pro){
+//         return $pro->with([
+//                                'subproducts' => function ($query) {
+//                                    $query->with(['attributes' => function($q) {
+//                                            $q->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
+//                                        }])->with('attributevalues');
+//                                }, 'catalogimgs' => function ($query) {
+//                                    $query->where("image_mode", 1);
+//                                }, 'attributeset' => function($qa) {
+//                                    $qa->with(["attributes" => function($qattr) {
+//                                            $qattr->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
+//                                        }]);
+//                                }
+//                                    ]);
+//        }])->first();
+        $order = Order::where('id', $getid)->first();
         $collectOrderProduct=[];
-        if(isset($order->products) && count($order->products)>0)
-        foreach($order->products as $getProduct):
-            $collectOrderProduct[$getProduct->id]=$getProduct;
-        endforeach;
-        $this->order_id=$getid;
-        $getReturnRequest=ReturnOrder::where("order_id",$getid)->with('return_status_id','exchangeProduct')->get();
-        $getReturnRequestSum=ReturnOrder::select('return_order.*', DB::raw('sum(quantity) as quantityAdd'))->where("order_id",$getid)->groupBy('sub_prod')->pluck('sub_prod','sub_prod');
-        $returnSumqty=ReturnOrder::select('return_order.*', DB::raw('sum(quantity) as quantityAdd'))->where("order_id",$getid)->groupBy('sub_prod')->pluck('quantity','sub_prod');
-   // dd($getReturnRequestSum);
-        $coupon = Coupon::find($order->coupon_used);
-        $data = ['order' => $order, 'coupon' => $coupon,'orderReturnReason'=>$orderReturnReason,'getReturnRequest'=>$getReturnRequest,'getReturnRequestSum'=>$getReturnRequestSum,'returnProductStatus'=>$returnProductStatus,'collectOrderProduct'=>$collectOrderProduct,"checkCancelOrder"=>$checkCancelOrder,'returnSumqty'=>$returnSumqty];
+//        if(isset($order->products) && count($order->products)>0)
+//        foreach($order->products as $getProduct):
+//            $collectOrderProduct[$getProduct->id]=$getProduct;
+//        endforeach;
+//        $this->order_id=$getid;
+//        $getReturnRequest=ReturnOrder::where("order_id",$getid)->with('return_status_id','exchangeProduct')->get();
+//        $getReturnRequestSum=ReturnOrder::select('return_order.*', DB::raw('sum(quantity) as quantityAdd'))->where("order_id",$getid)->groupBy('sub_prod')->pluck('sub_prod','sub_prod');
+//        $returnSumqty=ReturnOrder::select('return_order.*', DB::raw('sum(quantity) as quantityAdd'))->where("order_id",$getid)->groupBy('sub_prod')->pluck('quantity','sub_prod');
+//   // dd($getReturnRequestSum);
+//        $coupon = Coupon::find($order->coupon_used);
+        $data = ['order' => $order];
         $viewname = Config('constants.frontendMyAccView') . '.order_details';
         return Helper::returnView($viewname, $data);
         //return view(Config('constants.frontendMyAccView') . '.order_details', compact('order', 'coupon'));

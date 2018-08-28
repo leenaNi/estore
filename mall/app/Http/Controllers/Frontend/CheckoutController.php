@@ -1873,6 +1873,8 @@ $des='';
                 $proddetails['is_cod'] = $prddataS->is_cod;
                 $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);             
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
+                $prddataS->trending_score= $prddataS->trending_score+$cart->qty;
+                $prddataS->update();
                 if ($prddataS->is_stock == 1) {
                   $stocks =  DB::table($cart->options->prefix.'_products')->find($cart->id)->stock;
                   $finalStock= $stocks - $cart->qty;
@@ -1931,7 +1933,8 @@ $des='';
 //                $date = $cart->options->eNoOfDaysAllowed;
 //                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
-             
+                $prddataS->trending_score= $prddataS->trending_score+$cart->qty;
+                $prddataS->update();
                 
                if ($prddataS->is_stock == 1) {
                   $stocks =  DB::table($cart->options->prefix.'_products')->find($cart->id)->stock;
