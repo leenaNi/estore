@@ -84,11 +84,11 @@ class Helper {
             echo "<li class='";
             echo ($key == 0) ? 'active' : '';
             echo "'>";
-            if ($node->children()->count() > 0) {
+//            if ($node->children()->count() > 0) {
                 echo "<a href='#subcategory-{$node->url_key}' >{$node->category}</a>"; //href=" . route('category', ['slug' => $node->url_key]) . "
-            } else {
-                echo "<a href=" . route('category', ['slug' => $node->url_key]) . " >{$node->category}</a>";
-            }
+//            } else {
+//                echo "<a href=" . route('category', ['slug' => $node->url_key]) . " >{$node->category}</a>";
+//            }
 //        if ($node->children()->count() > 0) { 
 //                Helper::getSubmenu($node);
 //        }
@@ -102,7 +102,7 @@ class Helper {
         echo ($key == 0) ? 'active' : '';
         echo "' >"
         . "<div class='lnt-subcategory col-sm-8 col-md-8'><h3 class='lnt-category-name'>"
-                . "<a href=" . route('category', ['slug' => $child->url_key]) . " >" . $child->category . "</a></h3>"
+                . "" . $child->category . "</h3>"
         . "<ul class='list-unstyled col-sm-6'>";
         foreach ($child->children()->get() as $node) {
             echo "<li>";
@@ -426,7 +426,7 @@ class Helper {
     }
 
     public static function getmaxPrice() {
-        $prod = DB::table('products')->where('price', DB::raw("(select max(`price`) from " . DB::getTablePrefix() . "products)"))->first();
+        $prod = DB::table('mall_products')->where('price', DB::raw("(select max(`price`) from " . DB::getTablePrefix() . "mall_products)"))->first();
         if ($prod) {
             return $prod->price;
         } else {

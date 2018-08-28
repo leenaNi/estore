@@ -7,6 +7,7 @@
     </div>
 </section>
 @endif
+<div class="clearfix"></div>
 <section id="content">
     <div class="content-wrap">
         <div class="container clearfix topmargin-sm bottommargin-sm" ng-controller="productListingController">
@@ -115,7 +116,7 @@
         });
         $("input[name='min_price']").val(minp);
         $("input[name='max_price']").val(maxp);
-        $('#amount').text('Amt. ' + $('#slider-range').slider('values', 0) + ' - Amt. ' + $('#slider-range').slider('values', 1));
+//        $('#amount').text('Amt. ' + $('#slider-range').slider('values', 0) + ' - Amt. ' + $('#slider-range').slider('values', 1));
     });
 </script>
 @stop

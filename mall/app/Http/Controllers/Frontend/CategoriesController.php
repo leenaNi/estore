@@ -18,7 +18,9 @@ use Cart;
 use Session;
 
 class CategoriesController extends Controller {
+
     public function index($slug = null) {
+//        dd(Input::all());
         $data['cat_name'] = "";
         if ($slug != null) {
             $cat = Category::where('url_key', $slug)->first();
@@ -39,35 +41,32 @@ class CategoriesController extends Controller {
             }
         }
         if (!empty(Input::get('searchTerm'))) {
-            $data['cat_name'] = "Search results for " . Input::get('searchTerm');
-            $data['metaTitle'] = "";
-            $data['metaDesc'] = "";
-            $data['metaKeys'] = "";
-            if (!empty(Input::get('searchTerm'))) {
-                $search = Input::get('searchTerm');
-                $data['category'] = array();
-
-                $prods = Product::where('is_individual', '=', 1)
-                                ->where('is_avail', '=', 1)->where('status', '=', 1);
-                $prods = $prods->where(function($query) use ($search) {
-                    return $query
-                                    ->where('product', 'like', "%$search%")
-                                    ->orWhere('short_desc', 'like', "%$search%")
-                                    ->orWhere('long_desc', 'like', "%$search%")
-                                    ->orWhere('meta_title', 'like', "%$search%")
-                                    ->orWhere('meta_desc', 'like', "%$search%")
-                                    ->orWhere('meta_keys', 'like', "%$search%")
-                                    ->orWhereHas('categories', function($query) use ($search) {
-                                        return $query->where('category', 'like', "%$search%");
-                                    })
-                                    ->orWhere(function($query) use ($search) {
-                                        return $query->withAnyTag("$search");
-                                    });
+            $search = Input::get('searchTerm');
+            $cat = Input::get('searchCat');
+            $data['category'] = array();
+            $prods = Product::where('is_individual', '=', 1)
+                            ->where('is_avail', '=', 1)->where('status', '=', 1);
+            $prods = $prods->where(function($query) use ($search, $cat) {
+                return $query
+                                ->where('product', 'like', "%$search%")
+                                ->orWhere('short_desc', 'like', "%$search%")
+                                ->orWhere('long_desc', 'like', "%$search%")
+                                ->orWhere('meta_title', 'like', "%$search%")
+                                ->orWhere('meta_desc', 'like', "%$search%")
+                                ->orWhere('meta_keys', 'like', "%$search%");
+            });
+            if ($cat == '') {
+                $prods = $prods->WhereHas('categories', function($query) use ($search) {
+                    return $query->where('category', 'like', "%$search%");
                 });
-                $prods = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
-                $data['maxp'] = $prods->max_price;
-                //  dd($data);
+            } else {
+                $prods = $prods->WhereHas('categories', function($query) use ($cat) {
+                    return $query->where('url_key', '=', "$cat");
+                });
             }
+            $prods = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
+            $data['maxp'] = $prods->max_price;
+            //  dd($data);
         }
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
         $data['curData'] = $currencySetting->setCurrency();
@@ -125,21 +124,30 @@ class CategoriesController extends Controller {
 
         if (!empty(Input::get('searchTerm'))) {
             $search = Input::get('searchTerm');
-            $prods = $prods->where(function($query) use ($search) {
+            $cat = Input::get('searchCat');
+            $data['category'] = array();
+            $prods = Product::where('is_individual', '=', 1)
+                            ->where('is_avail', '=', 1)->where('status', '=', 1);
+            $prods = $prods->where(function($query) use ($search, $cat) {
                 return $query
                                 ->where('product', 'like', "%$search%")
                                 ->orWhere('short_desc', 'like', "%$search%")
                                 ->orWhere('long_desc', 'like', "%$search%")
                                 ->orWhere('meta_title', 'like', "%$search%")
                                 ->orWhere('meta_desc', 'like', "%$search%")
-                                ->orWhere('meta_keys', 'like', "%$search%")
-//                                ->orWhereHas('categories', function($query) use ($search) {
-//                                    return $query->where('category', 'like', "%$search%");
-//                                })
-                                ->orWhere(function($query) use ($search) {
-                                    return $query->withAnyTag("$search");
-                                });
+                                ->orWhere('meta_keys', 'like', "%$search%");
             });
+            if ($cat == '') {
+                $prods = $prods->WhereHas('categories', function($query) use ($search) {
+                    return $query->where('category', 'like', "%$search%");
+                });
+            } else {
+                $prods = $prods->WhereHas('categories', function($query) use ($cat) {
+                    return $query->where('mall_prod_categories.url_key', '=', "$cat");
+                });
+            }
+//            $prod = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
+//            $data['maxp'] = $prod->max_price;
         }
         if (!empty(Input::get('sort'))) {
             if (Input::get('sort') == 1) {
@@ -203,14 +211,12 @@ class CategoriesController extends Controller {
                 }
                 $cnt = count($cats);
                 $cats = implode(",", $cats);
-
                 $i++;
             }
         }
         $prdCnt = $prods->count();
 
         $prods = $prods->distinct('id')->paginate(9);
-
         foreach ($prods as $prd) {
             $prd->is_stock_status = 1;
             if ($this->feature['stock'] == 1) {
@@ -223,9 +229,10 @@ class CategoriesController extends Controller {
                 }
             }
             $checkCartPrd = Cart::instance("shopping")->search(array('id' => "$prd->id"));
-            $prodImg=DB::table($prd->prefix."_catalog_images")->where("catalog_id",$prd->store_prod_id)->where("image_mode",1)->first();
+//            echo $prd->prefix;
+            $prodImg = DB::table($prd->prefix . "_catalog_images")->where("catalog_id", $prd->store_prod_id)->where("image_mode", 1)->first();
             $prd->checkExists = $checkCartPrd;
-            $prd->mainImage =  $prodImg->image_path . '/' . @$prodImg->filename;
+            $prd->mainImage = @$prodImg->image_path . '/' . @$prodImg->filename;
             $prd->alt_text = @$prodImg->alt_text;
             $prd->getPrice = (float) (($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? $prd->spl_price : $prd->price);
             $prd->actualPF = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? "spl_price" : "price";
@@ -268,7 +275,7 @@ class CategoriesController extends Controller {
             'metaDesc' => @$metaDesc,
             'metaKeys' => @$metaKeys,
             'maxp' => $maxP,
-            'catChild' => $catChild, 
+            'catChild' => $catChild,
             'currency_val' => (float) Session::get('currency_val'),
             'breadcrumbs' => $breadcrumbs,
             'curData' => $currencySetting

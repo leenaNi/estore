@@ -13,7 +13,7 @@
 ============================================= -->
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/functions.js' }}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/custom.js' }}"></script>
-<script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'custom-menu.js'}}"></script>
+<script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/custom-menu.js'}}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/jquery.elevatezoom.js' }}"></script>
 <script src="//connect.facebook.net/en_US/all.js"></script>
 
@@ -25,7 +25,7 @@
 
 
 <script type="text/javascript">
-
+//console.log = function(){};
 $('.prod_type').change(function () {
     var prod_type = $('.prod_type').val();
     if (prod_type == 3) {
@@ -38,12 +38,10 @@ $('.prod_type').change(function () {
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
-
         reader.onload = function (e) {
             $('#SelecedImg').removeClass("hide");
             $('#SelecedImg').attr('src', e.target.result);
         }
-
         reader.readAsDataURL(input.files[0]);
     }
 }
@@ -53,7 +51,9 @@ $(".prodImage").change(function () {
 });
 
 $(document).ready(function () {
-
+    var searchCat = $(" .lnt-search-category ").find(" .dropdown-menu ").find(" li ").find(" a[data-urlkey='<?php echo Input::get('searchCat');?>'] ").text();
+    $(" .selected-category-text ").text(searchCat);
+    console.log("searchcat ", searchCat);
     $(".manageCate").on("click", function () {
         $("#manageCateModal").modal('show');
     });

@@ -89,31 +89,25 @@
                                 </div> <!--/.dropdown-menu -->
                             </li> <!--/.dropdown -->
                         </ul> <!--/.lnt-nav-mega -->
-                        <form class="navbar-form navbar-left lnt-search-form" role="search">
+                        <form class="navbar-form navbar-left lnt-search-form" role="search" action="{{route('category')}}">
                             <div class="form-group">
                                 <div class="input-group">
                                     <div class="input-group-btn lnt-search-category">
-                                        <button type="button" class="btn btn-default dropdown-toggle selected-category-btn" data-toggle="dropdown" aria-expanded="false">
-                                            <span class="selected-category-text">All </span>
+                                        <input type="hidden" name="searchCat" />
+                                        <button type="button" name="category" class="btn btn-default dropdown-toggle selected-category-btn" data-toggle="dropdown" aria-expanded="false">
+                                            <span class="selected-category-text">{{ (Input::get('searchCat'))?Input::get('searchCat'):'All' }} </span>
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Fashion</a></li>
-                                            <li><a href="#">Electronics</a></li>
-                                            <li><a href="#">Restaurants</a></li>
-                                            <li><a href="#">Arts & Crafts</a></li>
-                                            <li><a href="#">Beauty & Wellness</a></li>
-                                            <li><a href="#">Home Decor</a></li>
-                                            <li><a href="#">Gifts & Flowers</a></li>
-                                            <li><a href="#">Toys & Sports</a></li>
-                                            <li><a href="#">Jewellery</a></li>
-                                            <li><a href="#">Kitchen & Homeware</a></li>
-                                            <li><a href="#">Footwear</a></li>
-                                            <li><a href="#">Books & Stationary</a></li>
-                                            <li><a href="#">Others</a></li>
+                                            <li><a href='#' data-urlkey=''>All</a></li>
+                                            <?php
+                                            foreach ($menu as $key => $node) {
+                                                echo "<li><a href='#' data-urlkey='{$node->url_key}'>{$node->category}</a></li>";
+                                            }
+                                            ?>
                                         </ul>
                                     </div><!--/btn-group -->
-                                    <input type="text" class="form-control lnt-search-input" aria-label="Search" placeholder="Search here...">
+                                    <input type="text" class="form-control lnt-search-input" name="searchTerm" aria-label="Search" value="{{ (Input::get('searchTerm'))?Input::get('searchTerm'):'' }}" placeholder="Search here...">
                                 </div><!--/input-group -->
                             </div>
 

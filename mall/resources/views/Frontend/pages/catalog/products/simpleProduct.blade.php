@@ -93,17 +93,18 @@
                             <div class="clear"></div>
                             <!-- Product Single - Share ============================================= -->
                             <div class="shareSociIconBox">
-                                <strong>Share:</strong> 
+                                <!--<strong>Share:</strong>--> 
                                 <?php
                                 $social['url'] = Request::url();
-                                print_r(App\Library\Helper::socialShareIcon($social));
+//                                print_r(App\Library\Helper::socialShareIcon($social));
                                 ?>
                             </div>
-                            <div class="si-share noborder clearfix"> <span class="pull-left">Share:</span>
+                            <div class="si-share noborder clearfix"> 
+                                <!--<span class="pull-left">Share:</span>-->
                                 <div class="pull-left">
                                     <?php
                                     $social['url'] = Request::url();
-                                    print_r(App\Library\Helper::socialShareIcon($social));
+//                                    print_r(App\Library\Helper::socialShareIcon($social));
                                     ?>
     <!--                                <a href="#" class="social-icon si-borderless si-facebook"> <i class="icon-facebook"></i> <i class="icon-facebook"></i> </a>
                                     <a href="#" class="social-icon si-borderless si-twitter"> <i class="icon-twitter"></i> <i class="icon-twitter"></i> </a>
