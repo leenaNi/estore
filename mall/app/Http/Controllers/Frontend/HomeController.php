@@ -60,8 +60,8 @@ class HomeController extends Controller {
         foreach ($categoryA as $val) {
             $category[$val['id']] = $val['category'];
         }
-        $prods = Product::where('is_trending', '=', 1)
-                        ->where('is_avail', '=', 1)->where('status', '=', 1)->get();
+        $prods = Product::where('is_avail', '=', 1)->where('status', '=', 1)->orderBy("trending_score","desc")->take(12)->get();
+                       
         foreach($prods as $prd){
             $prodImg=DB::table($prd->prefix."_catalog_images")->where("catalog_id",$prd->store_prod_id)->where("image_mode",1)->first();
          
