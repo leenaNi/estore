@@ -78,39 +78,40 @@ class Helper {
         echo "</li>";
     }
 
-      public static function getMallMenu($rootm) {
-        
-          foreach($rootm as $node){
-        echo " <ul class='lnt-category list-unstyled'>";
-        echo "<li>";
-        echo "<a href=" . route('category', ['slug' => $node->url_key]) . ">{$node->category}</a>";
-        if ($node->children()->count() > 0) {
-           
-           
-                
-                Helper::getSubmenu($node);
-            
-        }
-        echo "</li>";
-        echo "</ul>";
+    public static function getMallMenu($rootm) {
+        foreach ($rootm as $key => $node) {
+//            echo " <ul class='lnt-category list-unstyled'>";
+            echo "<li class='";
+            echo ($key == 0) ? 'active' : '';
+            echo "'>";
+            if ($node->children()->count() > 0) {
+                echo "<a href='#subcategory-{$node->url_key}' >{$node->category}</a>"; //href=" . route('category', ['slug' => $node->url_key]) . "
+            } else {
+                echo "<a href=" . route('category', ['slug' => $node->url_key]) . " >{$node->category}</a>";
+            }
+//        if ($node->children()->count() > 0) { 
+//                Helper::getSubmenu($node);
+//        }
+            echo "</li>";
+//            echo "</ul>";
         }
     }
-    
-     public static function getSubmenu($child) {
-       
-         echo " <div id='subcategory-fashion' class='active'><div class='lnt-subcategory col-sm-8 col-md-8'><h3 class='lnt-category-name'>". $child->category."</h3><ul class='list-unstyled col-sm-6'>";
-                                                    
-                                                   
-          foreach($child->children()->get() as $node1){
-       
-        echo "<li>";
-        echo "<a href=" . route('category', ['slug' => $node1->url_key]) . ">{$node1->category}</a>";
-       
-        echo "</li>";
-      
+
+    public static function getSubmenu($child, $key) {
+        echo " <div id='subcategory-{$child->url_key}' class='";
+        echo ($key == 0) ? 'active' : '';
+        echo "' >"
+        . "<div class='lnt-subcategory col-sm-8 col-md-8'><h3 class='lnt-category-name'>"
+                . "<a href=" . route('category', ['slug' => $child->url_key]) . " >" . $child->category . "</a></h3>"
+        . "<ul class='list-unstyled col-sm-6'>";
+        foreach ($child->children()->get() as $node) {
+            echo "<li>";
+            echo "<a href=" . route('category', ['slug' => $node->url_key]) . ">{$node->category}</a>";
+            echo "</li>";
         }
-        echo "</div></div></div>";
+        echo "</ul></div></div>";
     }
+
     public static function getCsv($input_array, $output_file_name, $delimiter) {
         /** open raw memory as file, no need for temp files */
         $temp_memory = fopen('php://memory', 'w');
