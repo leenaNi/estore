@@ -2169,5 +2169,13 @@ class ProductsController extends Controller {
             }
         }
     }
+    public function mallProductUpdate() {
+        $prodId = Input::get("prodId");
+        $jsonString = Helper::getSettings();
+        $store_id = $jsonString['store_id'];
+        $prods->prefix = $jsonString['prefix'];
+        MallProducts::where("store_prod_id", $prodId)->where("store_id", $store_id)->update(["status" => 0]);
+        Session::put('msg', "Product unpublish on mall successfully");
+    }
 
 }

@@ -232,7 +232,8 @@
                         </td>
                         <td>
                             <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw"></i></a>
-                            <a prod-id="{{$product->id}}" class="label label-info active shareProductToMall" ui-toggle-class="" >Publish to Mall</a><br>
+                            <a prod-id="{{$product->id}}" class="label label-info active shareProductToMall" ui-toggle-class="" title="Publish To Mall"><i class="fa fa-arrow-up"></i></a><br>
+                            <a prod-id="{{$product->id}}" class="label label-info active unpublishToMall" ui-toggle-class="" title="Unpublish" ><i class="fa fa-arrow-down"></i></a>
 <!--                          <a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
 
                             <a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i></a>
