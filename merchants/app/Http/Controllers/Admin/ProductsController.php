@@ -902,6 +902,7 @@ class ProductsController extends Controller {
         $view = !empty(Input::get('return_url')) ? redirect()->to(Input::get('return_url')) : redirect()->route("admin.products.view");
         return $view;
     }
+
     //combo products
 
     public function comboProds($prodId) {
@@ -980,6 +981,7 @@ class ProductsController extends Controller {
         $prod = Product::find(Input::get("id"));
         $prod->comboproducts()->detach(Input::get("prod_id"));
     }
+
     //attr
     public function prodAttrs($prodId) {
         $prod = Product::find($prodId);
@@ -2100,7 +2102,7 @@ class ProductsController extends Controller {
 
     public function getMallCategory() {
         $prod = MallProdCategory::where("status", 1)->where("is_nav", 1)->get(["id", "category"])->toArray();
-        $roots = MallProdCategory::roots()->where("is_nav", 1)->where("status", 1)->get();
+        $roots = MallProdCategory::roots()->where("status", 1)->get();
         $str = '';
         $str.= "<ul id='catTree' class='tree icheck '>";
         foreach ($roots as $root)
@@ -2112,14 +2114,13 @@ class ProductsController extends Controller {
     function renderNode($node, $prodCats) {
         $str = '';
         $str.= "<li class='tree-item fl_left ps_relative_li " . ($node->parent_id == '' ? 'parent' : '') . "'>";
-        $style = (Helper::searchForKey("id", $node->id, $prodCats) ? 'checkbox-highlight' : '');
         $str.= '<div class="checkbox">
-                                <label class=' . $style . ' class="i-checks checks-sm"><input type="checkbox"  name="category_id[]" value="' . $node->id . '"  ' . (Helper::searchForKey("id", $node->id, $prodCats) ? 'checked' : '') . '  /> <i></i>' . $node->category . '</label>
+                                <label class="i-checks checks-sm"><input type="checkbox"  name="categories[]" value="' . $node->id . '"  /> <i></i>' . $node->category . '</label>
                               </div>';
         if ($node->adminChildren()->count() > 0) {
             $str.= "<ul class='fl_left treemap'>";
             foreach ($node->adminChildren as $child)
-                $this->renderNode($child, $prodCats);
+                $str.=$this->renderNode($child, $prodCats);
             $str.= "</ul>";
         }
         $str.= "</li>";
@@ -2133,8 +2134,8 @@ class ProductsController extends Controller {
         $products = Product::find(Input::get("prodId"));
         $mallProd = MallProducts::where("store_prod_id", $products->id)->where("store_id", $jsonString['store_id'])->count();
         if ($mallProd > 0) {
-            Session::put('message', "Product alredy exist on mall!");
-            $data = ["status" => "0", "msg" => "Product alredy exist on mall!"];
+            Session::put('message', "Product alredy exist!");
+            $data = ["status" => "0", "msg" => "Product alredy exist!"];
         } else {
             $prod = Product::where("id", Input::get("prodId"))->get();
             $tableColumns = Schema::getColumnListing('products');
@@ -2148,7 +2149,7 @@ class ProductsController extends Controller {
             $products->is_share_on_mall = 1;
             $products->save();
             Session::put('msg', "Product share on mall successfully");
-            $data = ["status" => "1", "msg" => "product share on mall successfully", "prod" => $prod];
+            $data = ["status" => "1", "msg" => "Product published to mall successfully", "prod" => $prod];
         }
         return $data;
     }

@@ -161,7 +161,7 @@
                                 <th>@sortablelink ('product', 'Product')</th>
                                 <!-- <th>@sortablelink ('product_code', 'SKU')</th> -->
                                 <th>Categories</th>
-                                <th><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';   ?>@sortablelink ('price', 'Price') </th>
+                                <th><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';               ?>@sortablelink ('price', 'Price') </th>
                                 <!-- <th>@sortablelink ('spl_price', 'Special Price')</th> -->
                                 <th>Product Type</th>
                                <!-- <th>Availability</th> -->
@@ -232,7 +232,7 @@
                         </td>
                         <td>
                             <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw"></i></a>
-                            <a href="#" prod-id="{{$product->id}}" class="label label-info active shareProductToMall" ui-toggle-class="" >Publish to Mall</a><br>
+                            <a prod-id="{{$product->id}}" class="label label-info active shareProductToMall" ui-toggle-class="" >Publish to Mall</a><br>
 <!--                          <a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
 
                             <a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i></a>
@@ -359,7 +359,6 @@
     <!-- Modal --> 
     <div class="modal fade" id="myModalbarcode" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg">
-
             <!-- Modal content-->
             <div class="modal-content">
                 <span id="tempHtml"></span>
@@ -377,22 +376,16 @@
                                     <th>Quantity</th>
                                 </tr>
                             </thead>
-
                             <tbody id="print_loop">
-
                             </tbody>
                         </table>
-
-
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-default" >Submit</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </form>
-
             </div>
-
         </div>
     </div>
     <div class="modal fade" id="modalBulkUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -422,19 +415,13 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </form>
-
             </div>
-
         </div>
     </div>
-
-
-
     <!-- Product Add Modal -->
-
     <!-- Product Close Modal Open -->
 </section>
-<div id="addProductCat" class="modal fade" role="dialog">
+<div id="addProductCat" class="modal fade"tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog addProduct-modal-dialog">
         <div class="modal-content">
             <div class="modal-header addProduct-modal-header">
@@ -445,54 +432,39 @@
                 <p>Please select/create minimum one Category before adding a product by clicking on Categories under Product in the left menu.</p>
             </div>
             <!-- Modal content-->
-
-
-
-
-
         </div>
-
     </div>
 </div>
 
-
-
-
 <div id="addProduct" class="modal fade" role="dialog">
     <div class="modal-dialog addProduct-modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content">
-
             @include('Admin.pages.catalog.products.add')
-
-
         </div>
-
     </div>
 </div>
 
 <div id="addProductToMall" class="modal fade" role="dialog">
-    <div class="modal-dialog addProduct-modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header addProduct-modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">share Product To Mall</h4>
-            </div>
-            <form  method="post"  id="shareProductToMall">
-                <div class="box-body" id="selCat">
-
+            <form class="form-horizontal" method="post" id="shareProductToMall">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Publish Product To Mall</h4>
                 </div>
-                <input type="submit" value="submit" class="submitShare">
+                <div class="modal-body" >
+                    <div class="" id="selCat">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="publish">Publish</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </form>
             <!-- Modal content-->
-
-
-
-
-
         </div>
-
     </div>
 </div>
 <input type="hidden" id="page_type" value="main"/>
@@ -605,49 +577,51 @@
                                             success: function (data) {
                                                 //console.log(data);
                                                 $.each(data.prod_cat, function (index, value) {
-                                                    optionVal += '<div><label class="custom-check"><input class="catCheck" type="checkbox" name="categories[]" value="' + value.id + '"><span class="checkmark-custom"></span></label>' + value.category + '</div>';
-
+//                                                    optionVal += '<div><label class="custom-check"><input class="catCheck" type="checkbox" name="categories[]" value="' + value.id + '"><span class="checkmark-custom"></span></label>' + value.category + '</div>';
                                                 });
                                                 $('#addProductToMall').modal({
                                                     backdrop: 'static',
                                                     keyboard: false
-                                                })
+                                                });
                                                 $("#addProductToMall").modal("show");
-                                                $("#selCat").append(data.category);
-//                                                $("#selCat").append(optionVal);
+                                                $("#selCat").append(optionVal).append(data.category);
+                                                
+                                                //                                                $("#selCat").append(optionVal);
                                             }
-
-
                                         });
                                     });
                                     $(function () {
-
-                                        $("body").on("submit", "#addProductToMall", function (e) {
-                                            e.preventDefault();
-                                            var form = $(e.target);
-
-                                            $.ajax({
-                                                url: "{{ route('admin.product.mall.product.Add') }}",
-                                                type: 'post',
-                                                data: form.serialize(),
-                                                beforeSend: function () {
-                                                    // $("#barerr" + id).text('Please wait');
-                                                },
-                                                success: function (res) {
-                                                    if (res) {
-                                                        $("#addProductToMall").modal("hide");
-                                                        window.location.href = "{{ route('admin.products.view') }}";
-                                                    }
-
-                                                }
+                                        $("body").on("click", "button#publish", function (e) {
+                                            var prodcat = [];
+                                            var ids = jQuery.map($(':checkbox[name=categories\\[\\]]:checked'), function (n, i) {
+                                                prodcat.push(n.value);
                                             });
+                                            console.log("Categories s", prodcat);
+                                            if (prodcat.length > 0) {
+                                                e.preventDefault();
+                                                var form = $("form#shareProductToMall");
+                                                console.log(form.serialize());
+                                                $.ajax({
+                                                    url: "{{ route('admin.product.mall.product.Add') }}",
+                                                    type: 'post',
+                                                    data: form.serialize(),
+                                                    beforeSend: function () {
+                                                        // $("#barerr" + id).text('Please wait');
+                                                    },
+                                                    success: function (res) {
+                                                        if (res) {
+                                                            $("#addProductToMall").modal("hide");
+                                                            window.location.href = "{{ route('admin.products.view') }}";
+                                                        }
+
+                                                    }
+                                                });
+                                            } else {
+                                                alert("Please select atleast one category.");
+                                            }
 
                                         });
-
-
                                     });
-
-
                                     $('.prod_type').change(function () {
                                         var prod_type = $('.prod_type').val();
                                         if (prod_type == 3) {
@@ -656,25 +630,18 @@
                                             $('#attribute').addClass("hide");
                                         }
                                     });
-
-
                                     $(".bulkuploadprod").click(function () {
                                         //    alert("for ");
-
                                         $(".template-download").hide();
                                         $("#bulkProduct").modal("show");
-
                                     });
-
                                     $(document).ready(function () {
-
                                         $(".fromDate").datepicker({
                                             dateFormat: "yy-mm-dd",
                                             onSelect: function (selected) {
                                                 $(".toDate").datepicker("option", "minDate", selected);
                                             }
                                         });
-
                                         $(".toDate").datepicker({
                                             dateFormat: "yy-mm-dd",
                                             onSelect: function (selected) {
@@ -688,8 +655,7 @@
                                             'X-CSRF-Token': $('input[name="csrf-token"]').val()
                                         }
                                     });
-
-//new FormData(this)
+                                    //new FormData(this)
                                     $('html body').on('submit', '#get_quantity', function () {
                                         $.ajax({
                                             url: "{{ route('admin.products.barcodeForm') }}",
@@ -736,7 +702,7 @@
                                             $("#modalBulkUpdate").css("display", "block");
                                             var prod_list = [];
                                             var ids = jQuery.map($(':checkbox[name=singleCheck\\[\\]]:checked'), function (n, i) {
-//                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
+                                                //                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
                                                 prod_list.push(n.value);
                                             });
                                             get_update_form(prod_list, 'modalBulkUpdate', $this.find("option:selected").text(), $this.val());
@@ -745,7 +711,7 @@
                                             $("#modalBulkUpdate").css("display", "block");
                                             var prod_list = [];
                                             var ids = jQuery.map($(':checkbox[name=singleCheck\\[\\]]:checked'), function (n, i) {
-//                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
+                                                //                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
                                                 prod_list.push(n.value);
                                             });
                                             get_update_form(prod_list, 'modalBulkUpdate', $this.find("option:selected").text(), $this.val());
@@ -754,7 +720,7 @@
                                             $("#modalBulkUpdate").css("display", "block");
                                             var prod_list = [];
                                             var ids = jQuery.map($(':checkbox[name=singleCheck\\[\\]]:checked'), function (n, i) {
-//                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
+                                                //                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
                                                 prod_list.push(n.value);
                                             });
                                             get_update_form(prod_list, 'modalBulkUpdate', $this.find("option:selected").text(), $this.val());
@@ -763,7 +729,7 @@
                                             $("#modalBulkUpdate").css("display", "block");
                                             var prod_list = [];
                                             var ids = jQuery.map($(':checkbox[name=singleCheck\\[\\]]:checked'), function (n, i) {
-//                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
+                                                //                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
                                                 prod_list.push(n.value);
                                             });
                                             get_update_form(prod_list, 'modalBulkUpdate', $this.find("option:selected").text(), $this.val());
@@ -771,13 +737,13 @@
                                             var prod_list = [];
                                             var ids = jQuery.map($(':checkbox[name=singleCheck\\[\\]]:checked'), function (n, i) {
                                                 console.log(JSON.stringify(n));
-//                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
+                                                //                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
                                                 prod_list.push(n.value);
                                             });
-//                                        if(prod_list==''){
-//                                           alert("Please select product");
-//                                            return false;
-//                                        }
+                                            //                                        if(prod_list==''){
+                                            //                                           alert("Please select product");
+                                            //                                            return false;
+                                            //                                        }
                                             var str = '<form method="post" action="<?= route('admin.products.export') ?>" id="exportForm">';
                                             str += '<input type="hidden" name="productId" value="' + prod_list + '"/>';
                                             str += '<input type="hidden" name="type" value="' + $this.val() + '"/>';
@@ -790,7 +756,7 @@
                                             $("#modalBulkUpdate").css("display", "block");
                                             var prod_list = [];
                                             var ids = jQuery.map($(':checkbox[name=singleCheck\\[\\]]:checked'), function (n, i) {
-//                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
+                                                //                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
                                                 prod_list.push(n.value);
                                             });
                                             get_update_form(prod_list, 'modalBulkUpdate', $this.find("option:selected").text(), $this.val());
@@ -801,7 +767,7 @@
 
                                                 var prod_list = [];
                                                 var ids = jQuery.map($(':checkbox[name=singleCheck\\[\\]]:checked'), function (n, i) {
-//                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
+                                                    //                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
                                                     prod_list.push(n.value);
                                                 });
                                                 var str = '<form method="post" action="<?= route('admin.products.bulkUpdate') ?>" id="removeForm">';
@@ -819,19 +785,19 @@
                                         $(".priceRow").remove();
                                         $('#' + modal + ' .b-action').show();
                                         var str = '';
-//                                    $.each(prod_list, function (key, val) {
-//                                        str += '<tr>';
-//                                        str += '<td>' + val.product + '</td>';
-//                                        str += '<td>';
-//                                        str += '<input type="hidden" name="product[' + val.product + '][id]" value="' + val.id + '"/>';
-//                                        if (action_val == 'update_stock_status') {
-//                                            str += '<select name="updated_value"><option value="1">In Stock</option><option value="0">Out of Stock</option></select>';
-//                                        } else {
-//                                            str += '<input type="number"  min="1" name="product[' + val.product + '][action]" /></td>';
-//                                        }
-//                                        str += '</tr>';
-//                                    });
-//                                       
+                                        //                                    $.each(prod_list, function (key, val) {
+                                        //                                        str += '<tr>';
+                                        //                                        str += '<td>' + val.product + '</td>';
+                                        //                                        str += '<td>';
+                                        //                                        str += '<input type="hidden" name="product[' + val.product + '][id]" value="' + val.id + '"/>';
+                                        //                                        if (action_val == 'update_stock_status') {
+                                        //                                            str += '<select name="updated_value"><option value="1">In Stock</option><option value="0">Out of Stock</option></select>';
+                                        //                                        } else {
+                                        //                                            str += '<input type="number"  min="1" name="product[' + val.product + '][action]" /></td>';
+                                        //                                        }
+                                        //                                        str += '</tr>';
+                                        //                                    });
+                                        //                                       
                                         str += '<input type="hidden" name="productId" value="' + prod_list + '"/>';
                                         str += '<input type="hidden" name="type" value="' + action_val + '"/>';
                                         if (action_val == 'update_stock_status') {
@@ -882,9 +848,9 @@ function renderNode($node) {
 
                                         $('#' + modal + ' .product_loop').html(str);
                                         $('#' + modal + ' .modal-title').html(action);
-//                                    if (action_val == 'update_stock_status') {
-//                                        
-//                                    }
+                                        //                                    if (action_val == 'update_stock_status') {
+                                        //                                        
+                                        //                                    }
                                     }
 
                                     $('.singleCheck').change(function () {
@@ -980,7 +946,7 @@ function renderNode($node) {
             //save = document.querySelector('#saveSlider'),
             upload = document.querySelector('#chooseImg'),
             cropper = '';
-// on change show image with crop options
+    // on change show image with crop options
     upload.addEventListener('change', function (e) {
         if (e.target.files.length) {
             var reader = new FileReader();
@@ -1006,8 +972,8 @@ function renderNode($node) {
             reader.readAsDataURL(e.target.files[0]);
         }
     });
-// save on click
-//save.addEventListener('click', function (e) {
+    // save on click
+    //save.addEventListener('click', function (e) {
     $(".nextButton , .saveButton").on('click', function (e) {
         e.preventDefault();
         console.log("savebtn");
