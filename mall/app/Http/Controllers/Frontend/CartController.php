@@ -210,7 +210,8 @@ class CartController extends Controller {
         }
 
         if ($product->is_stock == 1) {
-            $is_stockable = GeneralSetting::where('id', 26)->first();
+            $is_stockable = DB::table($product->prefix . '_general_setting')->where('url_key', 'stock')->first();
+//            $is_stockable = GeneralSetting::where('id', 26)->first();
             if ($is_stockable->status == 1 && $product->prod_type == 1) {
                 if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                     Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
@@ -338,16 +339,13 @@ class CartController extends Controller {
     }
 
     public function configProduct($prod_id, $quantity, $sub_prod) {
-        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         $product = Product::find($prod_id);
-
+//        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
+        $is_stockable = DB::table($prd->prefix . '_general_setting')->where('url_key', 'stock')->first();
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
-
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock") {
                 // $product = Product::find($sub_prod);
-
                 $cats = [];
-
                 foreach ($product->categories as $cat) {
                     array_push($cats, $cat->id);
                 }
@@ -360,7 +358,6 @@ class CartController extends Controller {
                 $price = $subProd->price + $product->selling_price;
                 $options = [];
                 $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
-
                 foreach ($hasOptn as $optn) {
                     $options[$optn->attr_id] = $optn->attr_val;
                     $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;

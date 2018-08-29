@@ -9,21 +9,16 @@
 <script src="{{ Config('constants.frontendPublicJsPath').'/jquery.validate.min.js' }}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/plugins.js' }}"></script>	
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/rangeslider.min.js' }}"></script>
-<!-- Footer Scripts
-============================================= -->
+<!-- Footer Scripts============================================= -->
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/functions.js' }}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/custom.js' }}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/custom-menu.js'}}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/jquery.elevatezoom.js' }}"></script>
 <script src="//connect.facebook.net/en_US/all.js"></script>
-
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/jquery-ui.min.js' }}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/jquery.ui.touch-punch.min.js' }}"></script>
 <!--<script async src="https://static.addtoany.com/menu/page.js"></script>-->
-
 <!--<script src="{{Config('constants.adminDistJsPath').'/bootstrap-select.js' }}"></script>-->
-
-
 <script type="text/javascript">
 //console.log = function(){};
 $('.prod_type').change(function () {
