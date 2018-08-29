@@ -144,9 +144,9 @@
         </form>
         <div class="cart-collaterals row">
             @if($chkC == 1)
-            <div class="col-md-6 col-sm-6 col-xs-12 mobMB15">
-                <div class="cal-shipping  mar-bot15">
-                    <h4 class="heading-title">HAVE A COUPON?</h4>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="cal-shipping">
+                    <h4 class="heading-title mb15">HAVE A COUPON?</h4>
                     <form class="checkout_coupon" method="post">
                         <div class="cart-input">
                             <input name="coupon_code" class="userCouponCode sm-form-control" id="" value="" placeholder="Enter Coupon Code "  type="text"> 
@@ -164,9 +164,10 @@
 
 
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
-                <div class="cal-shipping table-responsive">
-                    <h4 class="heading-title ">Cart Total</h4>
-                    <table class="table cart">
+                <div class="cal-shipping">
+                    <h4 class="heading-title mb15 mobMarginTop20">Cart Total</h4>
+                    <div class="table-responsive">
+                    <table class="table table-bordered cart">
 
                         <tr class="cart-subtotal">
                             <th>Sub-Total: <span class="currency-sym-in-braces"></span></th>
@@ -188,6 +189,7 @@
                         </tr>
 
                     </table>
+                </div>
                 </div><!-- .cal-shipping -->
             </div>
             <div class="clearfix"></div>

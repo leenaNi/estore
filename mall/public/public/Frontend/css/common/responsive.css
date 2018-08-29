@@ -6,6 +6,9 @@
 
 
 @media (max-width: 1199px) {
+	form.login_form_btn .form-group a, form.login_form_btn .form-group button {
+    max-width: 129px !important;
+}
 	.minPriceBox, .maxPriceBox {
     width: 100%;
     float: left;
@@ -280,6 +283,9 @@ input.min-price-filter, input.max-price-filter {
 
 
 @media (max-width: 991px) {
+form.login_form_btn .form-group a, form.login_form_btn .form-group button {
+    max-width: 132px !important;
+}
 	.product-price ins {
     font-size: 75%;
 }
@@ -1239,6 +1245,12 @@ div.logo .updateLogo {
 
 
 @media (max-width: 767px) {
+	form.login_form_btn .form-group a, form.login_form_btn .form-group button {
+    max-width: 119px !important;
+}
+	.mobMarginTop20{
+		margin-top: 20px;
+	}
 	.mobwidth100 {
     width: 100%;
 }
@@ -1830,6 +1842,12 @@ input.min-price-filter, input.max-price-filter {
 }
 
 @media (max-width: 479px) {
+	.forgotBox a {
+    margin-bottom: 0px !important;
+}
+	form.login_form_btn .form-group a, form.login_form_btn .form-group button {
+    max-width: 100% !important;
+}
 	.onlyDispUnder479{display: block !important;
     min-height: 10px !important;
     border: 0px !important;}

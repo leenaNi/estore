@@ -15,6 +15,19 @@
 @import url("vmap.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
+button.button.new_user_btn.guestCheckoutBtn.full-width-btn.norightMargin {
+	margin-right: 0px !important;
+}
+button#requireReferalApply {
+	height: 40px;
+	border-radius: 0px;
+	background: #8ab34f;
+	color: #fff;
+}
+form.checkout_coupon {
+	border: 1px solid #ddd;
+	padding: 30px;
+}
 .product-code p, .seller-name p {
 	margin-bottom: 10px;
 }
@@ -355,7 +368,7 @@ a.remove.removeWishlist i {
 }
 .cart-table.cartT tbody tr td {
 	line-height: 15px !important;
-	padding: 0px 8px !important;
+	padding: 10px 8px !important;
 }
 .cart-table.cartT thead tr th {
 	line-height: 20px !important;
@@ -421,9 +434,13 @@ td.cartProductName {
 }
 form.login_form_btn .form-group a, form.login_form_btn .form-group button {
 	float: left;
-	display: inline-block;
-	max-width: 160px;
+    display: inline-block;
+    max-width: 162px;
+    margin: 0 !important;
+		margin-right: 10px !important;
+		margin-bottom: 10px !important;
 }
+
 h4.heading-title {
 	text-transform: uppercase;
 }
@@ -4900,7 +4917,7 @@ body.stretched .container-fullwidth .breadcrumb { right: 60px !important; }
 	position: relative;
 	overflow: hidden;
 	background-color: #FFF;
-	padding: 0px 0px;
+	padding: 30px 0px;
 }
 
 #content p { line-height: 1.8; }
