@@ -14,9 +14,9 @@
                     <!-- <li><a href="#">FAQs</a></li> -->
                     <li><a href="#">Contact</a></li>
 
-                    @if(Session::get('loggedin_user_id'))
-                    <li> <a href="{{route('logoutUser')}}" >Logout</a></li>
-
+                    @if(Session::get('loggedin_user_id'))              
+                    <li> <a href="{{route('myProfile')}}" >Myaccount</a></li>
+                     <li> <a href="{{route('logoutUser')}}" >Logout</a></li>
                     @else
                     <li><a href="{{ route('loginUser') }}">Login / Register</a></li>
                     @endif

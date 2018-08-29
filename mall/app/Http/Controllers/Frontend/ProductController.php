@@ -90,6 +90,7 @@ class ProductController extends Controller {
         } else {
             $product->wishlist = 0;
         }
+       
         $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get(); // $product->catalogimgs()->get();
 //        dd($product->images);
         foreach ($product->images as $prdimgs) {

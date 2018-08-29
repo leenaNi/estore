@@ -56,7 +56,7 @@ class ProductsController extends Controller {
         //dd("sdfsdf");
 
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
-        $products = Product::with("mallcategories")->where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
+        $products = Product::with("categories")->where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
 
         $categoryA = Category::get(['id', 'category'])->toArray();
         $rootsS = Category::roots()->where("status", 1)->get();

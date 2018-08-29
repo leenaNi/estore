@@ -11,5 +11,7 @@ class MallProducts extends Model {
     public function categories() {
         return $this->belongsToMany('App\Models\MallProdCategory', 'has_categories', 'prod_id', 'cat_id');
     }
-
+    public function wishlist() {
+        return $this->belongsToMany('App\Models\User', 'wishlist', 'prod_id', 'user_id');
+    }
 }

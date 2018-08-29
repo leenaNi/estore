@@ -60,7 +60,8 @@
                         </li>
                         <li><a href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-3"> My Orders</a>
                         </li>
-                         
+                        <li><a href="#tabs-3" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-4"> My Wishlist</a>
+                        </li>
                         <li><a href="#tabs-4" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-2"> Change Password</a>
                         </li>
                     </ul>
@@ -167,7 +168,55 @@
                                 </table>
                             </div>
                         </div>
-                       
+                        <div class="tab-content clearfix" id="tabs-3" aria-labelledby="ui-id-3" role="tabpanel" aria-hidden="true" style="display: none;">
+                            <div class="table-responsive">
+                                <table class="table cart">
+                                    <thead>
+                                        <tr bgcolor="#F2F2F2">
+                                            <th class="cart-product-thumbnail">&nbsp;</th>
+                                            <th class="cart-product-name">Product</th>
+                                            <th class="cart-product-price">Price</th>
+                                            <th class="cart-product-quantity">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(count($wishlist) > 0)
+                                        @foreach($wishlist as $prod)
+                                        <tr class="cart_item">
+
+                                            <td class="cart-product-thumbnail">
+                                                @if(($prod->image_path) != '')
+
+                                                <a href="{{route('home').'/'.$prod->url_key}}"><img width="64" height="64" src="{{$prod->image_path }}" alt="img">
+                                                </a>
+                                                @else
+                                                <a href="#"><img width="64" height="64" src="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}" alt="img">
+                                                </a>
+                                                @endif
+                                            </td>
+                                            <td class="cart-product-name"> <a href="{{route('home').'/'.$prod->url_key}}">{{$prod->product}}</a> </td>
+                                            <td class="cart-product-price">
+                                                @if($prod->spl_price > 0 && $prod->spl_price < $prod->price)
+                                                <div class="product-price">
+                                                    <del><span class="currency-sym"></span> {{number_format($prod->price * Session::get('currency_val'), 2, '.', '')}}</del> <span class="currency-sym"></span> {{number_format($prod->spl_price * Session::get('currency_val'), 2, '.', '')}} 
+                                                </div> 
+
+                                                @else
+                                                <div class="product-price">
+                                                    <span class="currency-sym"></span> {{number_format($prod->price * Session::get('currency_val'), 2, '.', '')}}
+                                                </div> 
+                                                @endif
+                                            </td>
+                                            <td class="cart-product-remove"> <a href="javascript:void(0)" data-prodId="{{$prod->id}}" class="remove removeWishlist" title="Remove this item"><i class="icon-trash2 fa-2x"></i></a> </td>
+                                        </tr>
+                                        @endforeach
+                                        @else
+                                        <tr class="cart_item"><td colspan="4">No record found.</td></tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

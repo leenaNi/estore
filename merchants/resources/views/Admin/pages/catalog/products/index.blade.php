@@ -232,8 +232,13 @@
                         </td>
                         <td>
                             <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw"></i></a>
-                            <a prod-id="{{$product->id}}" class="label label-info active shareProductToMall" ui-toggle-class="" >Publish to Mall</a><br>
-<!--                          <a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
+                            @if($product->is_share_on_mall==0)
+                            <a prod-id="{{$product->id}}" class="label label-info active shareProductToMall" ui-toggle-class="" title="Publish To Mall"><i class="fa fa-arrow-up"></i></a>
+                            @else
+                            <a prod-id="{{$product->id}}" class="label label-info active unpublishToMall" ui-toggle-class=""  title="Unpublish" ><i class="fa fa-arrow-down"></i></a>
+                            @endif
+                            <!--                        
+<a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
 
                             <a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i></a>
 <!--                            @if($barcode == 1)  <a class="" data-id="{{ $product->id }}-{{ $product->prod_type }}" data-toggle="tooltip" title="Print"><i class="fa fa-print fa-fw"></i></a>
@@ -589,6 +594,26 @@
                                                 //                                                $("#selCat").append(optionVal);
                                             }
                                         });
+                                    });
+                                      $(".unpublishToMall").click(function () {
+                                                     //    alert("for ");
+                                        var prodId = ($(this).attr('prod-id'));
+                                        //  var optionVal='<oprion value="">Please Select Category</option>';
+                                      var conf=confirm("Are you sure to unpublish the product form mall ?");
+                                      if(conf){
+                                        $.ajax({
+                                            url: "{{ route('admin.product.mall.product.update') }}",
+                                            type: "post",
+                                            data: {prodId: prodId},
+                                            success: function (data) {
+                                            window.location.href = "{{ route('admin.products.view') }}";
+                                                
+                                                //                                                $("#selCat").append(optionVal);
+                                            }
+                                        });
+                                    }else{
+                                        return false;
+                                    }
                                     });
                                     $(function () {
                                         $("body").on("click", "button#publish", function (e) {

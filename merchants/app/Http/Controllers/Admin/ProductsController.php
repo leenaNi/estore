@@ -2132,14 +2132,25 @@ class ProductsController extends Controller {
 
         $jsonString = Helper::getSettings();
         $products = Product::find(Input::get("prodId"));
-        $mallProd = MallProducts::where("store_prod_id", $products->id)->where("store_id", $jsonString['store_id'])->count();
-        if ($mallProd > 0) {
-            Session::put('message', "Product alredy exist!");
+        $category = Input::get("categories");
+        $mallProd = MallProducts::where("store_prod_id", $products->id)->where("store_id", $jsonString['store_id'])->first();
+        if (count($mallProd) > 0) {
+            if($mallProd->status==1){
+            Session::flash('message', "Product alredy exist!");
             $data = ["status" => "0", "msg" => "Product alredy exist!"];
+        }else{
+            $mallProd->status==1;
+            $mallProd->save();
+            $products->is_share_on_mall = 1;
+            $products->save();
+            $mallProd->mallcategories()->sync($category);
+            Session::flash('msg', "Product updated successfully!");
+            $data = ["status" => "1", "msg" => "Product updated successfully!!"];
+        }
         } else {
             $prod = Product::where("id", Input::get("prodId"))->get();
             $tableColumns = Schema::getColumnListing('products');
-            $category = Input::get("categories");
+           
             $this->saveProduct($prod, $jsonString, $tableColumns, $category, 1);
             if ($prod[0]->prod_type == 3) {
                 $prodConfig = Product::where("parent_prod_id", Input::get("prodId"))->get();
@@ -2168,6 +2179,16 @@ class ProductsController extends Controller {
                 $prods->mallcategories()->sync($category);
             }
         }
+    }
+    public function mallProductUpdate() {
+        $prodId = Input::get("prodId");
+        $jsonString = Helper::getSettings();
+        $store_id = $jsonString['store_id'];
+        $products = Product::find(Input::get("prodId"));
+        $products->is_share_on_mall = 0;
+        $products->save();
+        MallProducts::where("store_prod_id", $prodId)->where("store_id", $store_id)->update(["status" => 0]);
+        Session::flash('msg', "Product unpublish on mall successfully");
     }
 
 }

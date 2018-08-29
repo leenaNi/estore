@@ -22,6 +22,7 @@ class HomeController extends Controller {
 
         $general_setting = $general_setting->get();
         $set_popup = GeneralSetting::where('name', 'set_popup')->first();
+       
         return view('Admin.pages.home.index', ['general_setting' => $general_setting, 'set_popup' => $set_popup]);
     }
 

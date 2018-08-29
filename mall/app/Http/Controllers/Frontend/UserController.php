@@ -42,9 +42,16 @@ class UserController extends Controller {
         //print_r(Session::get('loggedin_user_id'));
         $orderReturnReason=OrderReturnReason::pluck('reason','id');
         $user=User::find(@Session::get('loggedin_user_id'));
-       // $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
-      //  dd($userWishlist);
-        $userWishlist='';
+        $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
+       foreach($userWishlist as $wishlist){
+          $images= DB::table($wishlist->prefix . "_catalog_images")->where("catalog_id", $wishlist->store_prod_id)->where("image_mode", 1)->first();
+          if(count($images) > 0){
+            $wishlist->image_path = $images->image_path.'/'.$images->filename;
+          }else{
+          $wishlist->image_path='';    
+          }
+       }
+       // $userWishlist='';
         $orders = Order::where("user_id", "=", @Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->orderBy('id', 'desc')->get();
         //$ordersCurrency = HasCurrency::where('id',$orders->currency_id)->first();
         $viewname = Config('constants.frontendMyAccView') . '.myaccount';
