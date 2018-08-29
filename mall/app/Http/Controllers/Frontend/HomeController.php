@@ -52,7 +52,7 @@ class HomeController extends Controller {
     public function index() {
         $data = [];
         $categoryA = MallProdCategory::get(['id', 'category'])->toArray();
-        $rootsS = MallProdCategory::roots()->with('catimgs')->where("status", 1)->get();
+        $rootsS = MallProdCategory::roots()->where("status", 1)->get();
       
         $category = [];
         $attr_sets = [];

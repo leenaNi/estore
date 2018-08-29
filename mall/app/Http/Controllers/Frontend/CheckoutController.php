@@ -44,7 +44,7 @@ class CheckoutController extends Controller {
         // To remove all discount coupon;
         Session::forget('checkbackUsedAmt');
         Session::forget('voucherAmount');
-        Session::forget('voucherUsedAmt'); 
+        Session::forget('voucherUsedAmt');
         Session::forget('referalCodeAmt');
         Session::forget('discAmt');
 
@@ -153,25 +153,25 @@ class CheckoutController extends Controller {
                 $user->save();
                 Helper::newUserInfo($user->id);
                 $getUserInfo = User::find($user->id);
-                 $referralCode = "Your referral code is " . $getUserInfo->referal_code;
-                 if ($emailStatus == 1 && $getUserInfo->email != '') {
-                        $email_template = EmailTemplate::where('id', 1)->select('content')->get()->toArray()[0]['content'];
-                        if ($referralStatus == 1) {
-                            $replace = ["[first_name]", "[last_name]", "[referralCode]"];
+                $referralCode = "Your referral code is " . $getUserInfo->referal_code;
+                if ($emailStatus == 1 && $getUserInfo->email != '') {
+                    $email_template = EmailTemplate::where('id', 1)->select('content')->get()->toArray()[0]['content'];
+                    if ($referralStatus == 1) {
+                        $replace = ["[first_name]", "[last_name]", "[referralCode]"];
 
-                            $replacewith = [ucfirst(Input::get('firstname')), ucfirst(Input::get('lastname')), $referralCode];
-                        } else {
-                            $replace = ["[first_name]", "[last_name]"];
-                            $replacewith = [ucfirst(Input::get('firstname')), ucfirst(Input::get('lastname'))];
-                        }
-                        $email_templates = str_replace($replace, $replacewith, $email_template);
-                        $data1 = ['email_template' => $email_templates];
-                        Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, 'Successfully registered', Config::get('mail.from.address'), Config::get('mail.from.name'), Input::get('email'), Input::get('firstname') . " " . Input::get('lastname'));
+                        $replacewith = [ucfirst(Input::get('firstname')), ucfirst(Input::get('lastname')), $referralCode];
+                    } else {
+                        $replace = ["[first_name]", "[last_name]"];
+                        $replacewith = [ucfirst(Input::get('firstname')), ucfirst(Input::get('lastname'))];
                     }
-                 if ($getUserInfo->telephone) {
-                        $msgOrderSucc = "you have successfully register with Us. " . $referralCode . ". Contact 1800 3000 2020 for real time support.! Team Cartini";
-                        Helper::sendsms($getUserInfo->telephone, $msgOrderSucc,$getUserInfo->country_code);
-                  }
+                    $email_templates = str_replace($replace, $replacewith, $email_template);
+                    $data1 = ['email_template' => $email_templates];
+                    Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, 'Successfully registered', Config::get('mail.from.address'), Config::get('mail.from.name'), Input::get('email'), Input::get('firstname') . " " . Input::get('lastname'));
+                }
+                if ($getUserInfo->telephone) {
+                    $msgOrderSucc = "you have successfully register with Us. " . $referralCode . ". Contact 1800 3000 2020 for real time support.! Team Cartini";
+                    Helper::sendsms($getUserInfo->telephone, $msgOrderSucc, $getUserInfo->country_code);
+                }
                 $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
                 foreach ($addressesData as $address) {
                     $address->countryname = $address->country['name'];
@@ -599,7 +599,7 @@ class CheckoutController extends Controller {
 
         $toPayment['payamt'] = $cart_amt['total'] * Session::get('currency_val');
         $toPayment['finalAmt'] = $amtT * Session::get('currency_val');
-       
+
         Session::put('codCharges', 0);
         Session::put("pay_amt", $amtT);
         return $toPayment;
@@ -611,14 +611,16 @@ class CheckoutController extends Controller {
     }
 
     public function chk_cart_inventory() {
-        $stock_status = GeneralSetting::where('url_key', 'stock')->first()->status;
+//        $stock_status = GeneralSetting::where('url_key', 'stock')->first()->status;
 //        if ($stock_status == 0)
 //            return "valid";
 
         $getCart = Cart::instance("shopping")->content();
         $cartStockCheck = [];
         foreach ($getCart as $cartProd) {
-            array_push($cartStockCheck, Helper::checkCartInventoty($cartProd->rowid));
+            $stock_status = DB::table($cartProd->options->prefix . '_general_setting')->where('url_key', 'stock')->first()->status;
+            if ($stock_status == 1 && $cartProd->options->is_stock == 1)
+                array_push($cartStockCheck, Helper::checkCartInventoty($cartProd->rowid));
         }
         if (in_array("Out of Stock", $cartStockCheck)) {
             return "invalid";
@@ -902,7 +904,7 @@ class CheckoutController extends Controller {
         $finalamt = $cart_data['total'];
 
         Session::put('pay_amt', $finalamt);
-            $data['cashback'] = User::find(Session::get('loggedin_user_id'))->cashback;
+        $data['cashback'] = User::find(Session::get('loggedin_user_id'))->cashback;
 //        echo number_format(($finalamt * Session::get('currency_val')), 2);
         $data['finalamt'] = number_format(($finalamt * Session::get('currency_val')), 2);
         return $data;
@@ -938,12 +940,12 @@ class CheckoutController extends Controller {
         // } 
     }
 
-      public function getCityPay() {
+    public function getCityPay() {
         define('DS', DIRECTORY_SEPARATOR);
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
         $payAmt = 1; //Helper::getAmt();
-         Session::put('theme_id', Input::get("theme_id"));
-         $server= $_SERVER['HTTP_HOST'];
+        Session::put('theme_id', Input::get("theme_id"));
+        $server = $_SERVER['HTTP_HOST'];
         ?>
 
         <form method="post" action="https://<?php echo $server; ?>/get-city-createOrder" name="cityPayForm">
@@ -951,7 +953,7 @@ class CheckoutController extends Controller {
             <input type="hidden" size="25" name="Amount" value="1"/>
             <input type="hidden" size="25" name="Currency" value="050" readonly/>
             <input type="hidden" size="25" name="Description" value="1520"/>
-         
+
             <input type="hidden" size="50" name="ApproveURL" value="https://<?php echo $server; ?>/get-city-approved" readonly/>
             <input type="hidden" size="50" name="CancelURL" value="https://<?php echo $server; ?>/get-city-cancelled" readonly/>
             <input type="hidden" size="50" name="DeclineURL" value="https://<?php echo $server; ?>/get-city-declined" readonly/>
@@ -963,9 +965,9 @@ class CheckoutController extends Controller {
 
         <?php
     }
-    
-      public function getCityCreateOrder() {
-       // dd(Input::all());
+
+    public function getCityCreateOrder() {
+        // dd(Input::all());
 //        if (Input::get('responseType') == 'json') {
 //            $getAddreses = Address::where("id", "=", Input::get('addid'))->first();
 //            $orderS = Order::find(Input::get('Description'));
@@ -1002,9 +1004,9 @@ class CheckoutController extends Controller {
         $data.="<CancelURL>" . htmlentities(Input::get('CancelURL')) . "</CancelURL>";
         $data.="<DeclineURL>" . htmlentities(Input::get('DeclineURL')) . "</DeclineURL>";
         $data.="</Order></Request></TKKPG>";
- 
+
         $xml = PostQW($data);
-     //  dd($xml);
+        //  dd($xml);
         $OrderID = $xml->Response->Order->OrderID;
         $SessionID = $xml->Response->Order->SessionID;
         $URL = $xml->Response->Order->URL;
@@ -1034,8 +1036,8 @@ class CheckoutController extends Controller {
             header("Location: " . $URL . "?ORDERID=" . $OrderID . "&SESSIONID=" . $SessionID . "");
             exit();
         }
-    } 
-    
+    }
+
     public function getCityApproved() {
 
         //  dd($_REQUEST['xmlmsg']);
@@ -1047,21 +1049,19 @@ class CheckoutController extends Controller {
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
-$des='';
+            $des = '';
             $paymentMethod = 9;
             $paymentStatus = 4;
             $payAmt = $array['PurchaseAmountScr'];
             $trasactionId = $array['MerchantTranID'];
-            $transactionStatus = $array['OrderStatus'];         
+            $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
-            $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus,$des, $transaction_info);
+            $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $des, $transaction_info);
             return redirect()->route('orderSuccess');
-     
-            }
-    } 
-    
-    
-     public function getCityDeclined() {
+        }
+    }
+
+    public function getCityDeclined() {
 
         if (@$_REQUEST['xmlmsg'] != "") {
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
@@ -1075,13 +1075,13 @@ $des='';
             $payAmt = $array['PurchaseAmountScr'];
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
-             $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
+            $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
 
-             return redirect()->route('orderFailure');
+            return redirect()->route('orderFailure');
         }
     }
-    
-       public function getCityCancelled() {
+
+    public function getCityCancelled() {
 
         if (@$_REQUEST['xmlmsg'] != "") {
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
@@ -1095,11 +1095,12 @@ $des='';
             $payAmt = $array['PurchaseAmountScr'];
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
-           $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
-       
-           // return redirect()->route('orderFailure');
+            $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
+
+            // return redirect()->route('orderFailure');
         }
     }
+
     // For ebs
     public function ebs() {
         // $payAmtE = Helper::getAmt();
@@ -1347,7 +1348,7 @@ $des='';
                 $padata = '&TOKEN=' . urlencode($token);
                 $paypal = new MyPayPal();
                 $httpParsedResponseAr = $paypal->PPHttpPost('GetExpressCheckoutDetails', $padata, $PayPalApiUsername, $PayPalApiPassword, $PayPalApiSignature, $PayPalMode);
-               // dd($httpParsedResponseAr);
+                // dd($httpParsedResponseAr);
                 if ("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
                     $cartContent = Cart::instance('shopping')->content();
                     $user = User::find(Session::get('loggedin_user_id'));
@@ -1368,7 +1369,7 @@ $des='';
                     if (!empty(Session::get("ReferalId"))) {
                         $order->referal_code_used = Session::get("ReferalCode");
                         $order->referal_code_amt = Session::get("referalCodeAmt");
-                        $order->user_ref_points =Session::get("userReferalPoints");
+                        $order->user_ref_points = Session::get("userReferalPoints");
                         $order->ref_flag = 0;
                     }
                     $order->shipping_amt = is_null(Session::get('shippingAmount')) ? 0 : Session::get('shippingAmount');
@@ -1688,7 +1689,7 @@ $des='';
 
     // For order success function
 
-    public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $des = null ,$transactioninfo=null) {
+    public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $des = null, $transactioninfo = null) {
         // if (Session::get('individualDiscountPercent')) {
         //     $coupDisc = json_decode(Session::get('individualDiscountPercent'), true);
         //     foreach ($coupDisc as $discK => $discV) {
@@ -1743,7 +1744,6 @@ $des='';
 //            $coupon->initial_coupon_val = Session::get('remainingVoucherAmt');
 //            $coupon->update();
 //        }
-
         //$order->shipping_amt = is_null(Session::get('shippingAmount')) ? 0 : Session::get('shippingAmount');
         if ($chkReferal->status == 1) {
             if (!empty(Session::get("ReferalId"))) {
@@ -1754,7 +1754,6 @@ $des='';
             }
         }
         //dd($chkLoyalty->status);
-
 //        if ($chkLoyalty->status == 1) {
 //            $order->loyalty_cron_status = 1;
 //            $loyaltyPercent = $user->loyalty['percent'];
@@ -1783,20 +1782,20 @@ $des='';
         $order->created_at = $date;
 
         if ($order->Update()) {
-           // $this->coupon_count();
+            // $this->coupon_count();
             $this->forget_session_coupon();
             //if ($stock_status == 1) { // commented by bhavana.... 
             $this->updateStock($order->id);
             //}
             if ($user->telephone) {
-            $msgOrderSucc = "Your order from " .Session::put('storeName'). " with id ".$order->id." has been placed successfully. Thank you!";
+                $msgOrderSucc = "Your order from " . Session::put('storeName') . " with id " . $order->id . " has been placed successfully. Thank you!";
 
-            Helper::sendsms($user->telephone, $msgOrderSucc, $user->country_code);
+                Helper::sendsms($user->telephone, $msgOrderSucc, $user->country_code);
             }
             $messagearray = new stdClass();
             $messagearray->title = "Order Placed";
             $messagearray->type = "order";
-            $messagearray->message = "Hey! You have received a New Order online. Its order id is ".$order->id." & order amount is ".$order->pay_amt * Session::get('currency_val');
+            $messagearray->message = "Hey! You have received a New Order online. Its order id is " . $order->id . " & order amount is " . $order->pay_amt * Session::get('currency_val');
 
             $this->pushNotification($messagearray);
             return $data_email = ['first_name' => $fname, 'orderId' => $orderId, 'email' => $mail_id];
@@ -1805,7 +1804,7 @@ $des='';
 
     // For order Failure function
 
-    public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus,$des=null) {
+    public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $des = null) {
         $failorder = Order::find(Session::get('orderId'));
         $failorder->pay_amt = $payAmt;
         $failorder->payment_method = $paymentMethod;
@@ -1833,9 +1832,9 @@ $des='';
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-       // $order->products()->detach();
+        // $order->products()->detach();
         foreach ($cartContent as $cart) {
-            $product = Product::where("store_prod_id",$cart->id)->where("store_id",$cart->options->store_id)->first();
+            $product = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
             $sum = 0;
             $prod_tax = array();
             $total_tax = array();
@@ -1857,13 +1856,13 @@ $des='';
             } else {
                 $subtotal = $cart->subtotal;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal , "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax)];
-           
-          
+            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax)];
+
+
             if ($cart->options->has('sub_prod')) {
                 $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
-                $prddataS =  Product::where("store_prod_id",$cart->id)->where("store_id",$cart->options->store_id)->first();
+                $prddataS = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
                 $proddetails['id'] = $prddataS->id;
                 $proddetails['name'] = $prddataS->product;
                 $proddetails['image'] = $cart->options->image;
@@ -1871,16 +1870,16 @@ $des='';
                 $proddetails['qty'] = $cart->qty;
                 $proddetails['subtotal'] = $subtotal;
                 $proddetails['is_cod'] = $prddataS->is_cod;
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);             
+                $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
-                $prddataS->trending_score= $prddataS->trending_score+$cart->qty;
+                $prddataS->trending_score = $prddataS->trending_score + $cart->qty;
                 $prddataS->update();
                 if ($prddataS->is_stock == 1) {
-                  $stocks =  DB::table($cart->options->prefix.'_products')->find($cart->id)->stock;
-                  $finalStock= $stocks - $cart->qty;
-                  $prddataS->stock = $finalStock;
-                  $prddataS->update();
-                  DB::table($cart->options->prefix.'_products')->where("id",$cart->id)->update(["stock"=>$finalStock]);
+                    $stocks = DB::table($cart->options->prefix . '_products')->find($cart->id)->stock;
+                    $finalStock = $stocks - $cart->qty;
+                    $prddataS->stock = $finalStock;
+                    $prddataS->update();
+                    DB::table($cart->options->prefix . '_products')->where("id", $cart->id)->update(["stock" => $finalStock]);
                 }
 
 
@@ -1919,7 +1918,7 @@ $des='';
                 $cart_ids[$cart->id]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
-                $prddataSp = Product::where("store_prod_id",$cart->id)->where("store_id",$cart->options->store_id)->first();
+                $prddataSp = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
@@ -1933,26 +1932,26 @@ $des='';
 //                $date = $cart->options->eNoOfDaysAllowed;
 //                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
-                $prddataS->trending_score= $prddataS->trending_score+$cart->qty;
+                $prddataS->trending_score = $prddataS->trending_score + $cart->qty;
                 $prddataS->update();
-                
-               if ($prddataS->is_stock == 1) {
-                  $stocks =  DB::table($cart->options->prefix.'_products')->find($cart->id)->stock;
-                  $finalStock= $stocks - $cart->qty;
-                  $prddataS->stock = $finalStock;
-                  $prddataS->update();
-                  DB::table($cart->options->prefix.'_products')->where("id",$cart->id)->update(["stock"=>$finalStock]);
+
+                if ($prddataS->is_stock == 1) {
+                    $stocks = DB::table($cart->options->prefix . '_products')->find($cart->id)->stock;
+                    $finalStock = $stocks - $cart->qty;
+                    $prddataS->stock = $finalStock;
+                    $prddataS->update();
+                    DB::table($cart->options->prefix . '_products')->where("id", $cart->id)->update(["stock" => $finalStock]);
                 }
 
 //                if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
 //                    $this->AdminStockAlert($prd->id);
 //                }
             }
-             $cart_ids[$cart->id]["order_id"]=$orderId;
-             $cart_ids[$cart->id]["prod_id"]=$cart->id;
+            $cart_ids[$cart->id]["order_id"] = $orderId;
+            $cart_ids[$cart->id]["prod_id"] = $cart->id;
             // $order->products()->attach($cart_ids); 
-             DB::table($cart->options->prefix.'_has_products')->insert($cart_ids);
-             //$order->products()->attach($cart->id, $cart_ids[$cart->id]);
+            DB::table($cart->options->prefix . '_has_products')->insert($cart_ids);
+            //$order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
         //  $this->orderSuccess();
     }
@@ -1983,8 +1982,8 @@ $des='';
         if (Mail::send(Config('constants.frontviewEmailTemplatesPath') . '.stockAlert', $data_email, function($message) use ($contactEmail, $contactName, $email, $fname, $data_email) {
                     $message->from($contactEmail, $contactName);
                     $message->to($email, $fname)->subject("Cartini - Stock Alert");
-                }));
-            
+                }))
+            ;
     }
 
     public function pushNotification($notification) {
@@ -2135,22 +2134,22 @@ $des='';
         $tableContant = Helper::getEmailInvoice($orderId);
         $order = Order::find($orderId);
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
-        $path = Config("constants.adminStorePath"). "/storeSetting.json";
+        $path = Config("constants.adminStorePath") . "/storeSetting.json";
         $str = file_get_contents($path);
-        $logoPath = @asset(Config("constants.logoUploadImgPath"). 'logo.png');
+        $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
         $settings = json_decode($str, true);
         $webUrl = $_SERVER['SERVER_NAME'];
         if ($emailStatus == 1) {
-            $emailContent = EmailTemplate::where('id', 2)->select('content','subject')->get()->toArray();
-                $email_template = $emailContent[0]['content'];
-                $subject = $emailContent[0]['subject'];
-            
-            $replace = array("[orderId]", "[firstName]", "[invoice]","[logoPath]","[web_url]","[primary_color]","[secondary_color]","[storeName]");
-            $replacewith = array($orderId, $firstName, $tableContant,$logoPath,$webUrl,$settings['primary_color'],$settings['secondary_color'],$settings['storeName']);
+            $emailContent = EmailTemplate::where('id', 2)->select('content', 'subject')->get()->toArray();
+            $email_template = $emailContent[0]['content'];
+            $subject = $emailContent[0]['subject'];
+
+            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]");
+            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName']);
             $email_templates = str_replace($replace, $replacewith, $email_template);
             $data_email = ['email_template' => $email_templates];
-            
-            Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email,$subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
+
+            Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
             return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
         }
     }
