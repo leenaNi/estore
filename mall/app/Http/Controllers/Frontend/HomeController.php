@@ -224,7 +224,7 @@ class HomeController extends Controller {
         // $about = StaticPage::where('url_key', 'about-us')->first();
         // $data = ['about' => $about];
         $viewname = Config('constants.frontendView') . '.about-us';
-<<<<<<< HEAD
+
         return Helper::returnView($viewname);
     }
 
@@ -235,7 +235,7 @@ class HomeController extends Controller {
         // $data = ['contact' => $contact];
         $viewname = Config('constants.frontendView') . '.contact-us';
         return Helper::returnView($viewname);
-=======
+
         // return Helper::returnView($viewname, $data);
     }
 
@@ -245,32 +245,20 @@ class HomeController extends Controller {
         $data = '';
         $viewname = Config('constants.frontendView') . '.contact_us';
         return Helper::returnView($viewname, $data);
->>>>>>> d1b0011097691aa68e5a051e5bcc4321fd27c2ae
+
     }
 
     public function termsConditions() {
         //$terms = StaticPage::where('url_key', 'terms-conditions')->first();
-<<<<<<< HEAD
+
         // $data = ['terms' => $terms];
          $viewname = Config('constants.frontendView') . '.terms-conditions';
         return Helper::returnView($viewname);
     }
 
-    public function privacyPolicy() {
-        //$terms = StaticPage::where('url_key', 'privacy-policy')->first();
-        // $data = ['terms' => $terms];
-         $viewname = Config('constants.frontendView') . '.privacy-policy';
-        return Helper::returnView($viewname);
-    }
+  
 
-    public function disclaimer() {
-        //$terms = StaticPage::where('url_key', 'privacy-policy')->first();
-        // $data = ['terms' => $terms];
-=======
-        $data ='';// ['terms' => $terms];
-        $viewname = Config('constants.frontendView') . '.terms-condition';
-        return Helper::returnView($viewname, $data);
-    }
+  
 
     public function privacyPolicy() {
 //        $terms = StaticPage::where('url_key', 'privacy-policy')->first();
@@ -284,7 +272,7 @@ class HomeController extends Controller {
 //        $terms = StaticPage::where('url_key', 'privacy-policy')->first();
 //        $data = ['terms' => $terms];
         $data = '';
->>>>>>> d1b0011097691aa68e5a051e5bcc4321fd27c2ae
+
         $viewname = Config('constants.frontendView') . '.disclaimer';
         return Helper::returnView($viewname);
     }
