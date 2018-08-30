@@ -491,7 +491,15 @@ abbr strong {color: #eee;}
     width: 100%;
     height: 100%;
 }
-    
+ 
+.margin-top-md
+{
+	margin-top: 50px!important;
+}
+
+.border{
+	border: 1px solid #ddd!important;
+}
    .cls_logo {
   margin: 1em auto;
   max-width: 800px;
@@ -10651,7 +10659,7 @@ ul.tab-nav.tab-nav2 li:first-child {
 }
 
 ul.tab-nav.tab-nav2 li a {
-	background-color: #F5F5F5;
+	background-color: #8ab34f;
 	border-radius: 2px;
 	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
@@ -15033,6 +15041,10 @@ label#widget-subscribe-form-email-error {
     display: none !important;
 }
 
+.nopadding
+{
+	padding: 0!important;
+}
 
 /*pranali css starts*/
 .prevnext{
@@ -15051,8 +15063,47 @@ label#widget-subscribe-form-email-error {
 
 }
 
+div#tab-login-register {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0;
+    margin-top: 50px;
+    border: 0;
+    margin-bottom: 50px !important;
+}
 
+div#tab-login-register ul {
+    background: transparent; 
+    padding: 0;
+    border: 0;
+}
 
+div#tab-login-register ul li {
+    width: 49.5% !important;
+    text-align: center;
+}
+div#tab-login-register ul li a {
+    width: 100%;
+    padding: 0;
+}
+div#tab-login-register .tab-container {
+    padding: 0;
+}
+
+div#tab-2 ul {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+div#tab-2 ul li {
+    width: 24.5% !important;
+    text-align: center;
+}
+div#tab-2 ul li a {
+    width: 100%;
+    padding: 0;
+}
 
 
 
