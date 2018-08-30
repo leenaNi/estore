@@ -5,7 +5,6 @@
  * Line 539
  * 
  */
-copy(/var/www/veestoresmall.com/public/public/admin/themes/banner-020180710071434.jpg): failed to open stream: No such file or directory
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
