@@ -154,7 +154,7 @@ class CheckoutController extends Controller {
                 Helper::newUserInfo($user->id);
                 $getUserInfo = User::find($user->id);
                 $referralCode = "Your referral code is " . $getUserInfo->referal_code;
-                if ($emailStatus == 1 && $getUserInfo->email != '') {
+                if ( $getUserInfo->email != '') {
                     $email_template = EmailTemplate::where('id', 1)->select('content')->get()->toArray()[0]['content'];
                     if ($referralStatus == 1) {
                         $replace = ["[first_name]", "[last_name]", "[referralCode]"];
