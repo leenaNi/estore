@@ -2168,7 +2168,7 @@ class ProductsController extends Controller {
             $prods->prefix = $jsonString['prefix'];
             $prods->store_prod_id = $prod->id;
             for ($i = 1; $i < count($tableColumns); $i++) {
-                $prods->$tableColumns[$i] = $prod->$tableColumns[$i];
+                $prods->{$tableColumns[$i]} = $prod->{$tableColumns[$i]};
             }
             $prods->save();
             if ($parent) {
