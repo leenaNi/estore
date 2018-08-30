@@ -2128,35 +2128,31 @@ class ProductsController extends Controller {
     }
 
     public function mallProductadd() {
-
-
         $jsonString = Helper::getSettings();
         $products = Product::find(Input::get("prodId"));
         $category = Input::get("categories");
         $mallProd = MallProducts::where("store_prod_id", $products->id)->where("store_id", $jsonString['store_id'])->first();
         if (count($mallProd) > 0) {
-            if($mallProd->status==1){
-            Session::flash('message', "Product alredy exist!");
-            $data = ["status" => "0", "msg" => "Product alredy exist!"];
-        }else{
-            $mallProd->status==1;
-            $mallProd->save();
-            $products->is_share_on_mall = 1;
-            $products->save();
-            $mallProd->mallcategories()->sync($category);
-            Session::flash('msg', "Product updated successfully!");
-            $data = ["status" => "1", "msg" => "Product updated successfully!!"];
-        }
+            if ($mallProd->status == 1) {
+                Session::flash('message', "Product alredy exist!");
+                $data = ["status" => "0", "msg" => "Product alredy exist!"];
+            } else {
+                $mallProd->status == 1;
+                $mallProd->save();
+                $products->is_share_on_mall = 1;
+                $products->save();
+                $mallProd->mallcategories()->sync($category);
+                Session::flash('msg', "Product updated successfully!");
+                $data = ["status" => "1", "msg" => "Product updated successfully!!"];
+            }
         } else {
             $prod = Product::where("id", Input::get("prodId"))->get();
             $tableColumns = Schema::getColumnListing('products');
-           
             $this->saveProduct($prod, $jsonString, $tableColumns, $category, 1);
             if ($prod[0]->prod_type == 3) {
                 $prodConfig = Product::where("parent_prod_id", Input::get("prodId"))->get();
                 $this->saveProduct($prodConfig, $jsonString, $tableColumns);
             }
-
             $products->is_share_on_mall = 1;
             $products->save();
             Session::put('msg', "Product share on mall successfully");
@@ -2170,9 +2166,9 @@ class ProductsController extends Controller {
             $prods = new MallProducts();
             $prods->store_id = $jsonString['store_id'];
             $prods->prefix = $jsonString['prefix'];
-            $prods->store_prod_id = $prod->$tableColumns[0];
+            $prods->store_prod_id = $prod->id;
             for ($i = 1; $i < count($tableColumns); $i++) {
-                $prods->$tableColumns[$i] = $prod->$tableColumns[$i];
+                $prods->{$tableColumns[$i]} = $prod->{$tableColumns[$i]};
             }
             $prods->save();
             if ($parent) {
@@ -2180,6 +2176,7 @@ class ProductsController extends Controller {
             }
         }
     }
+
     public function mallProductUpdate() {
         $prodId = Input::get("prodId");
         $jsonString = Helper::getSettings();

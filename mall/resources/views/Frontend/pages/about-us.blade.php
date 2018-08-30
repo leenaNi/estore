@@ -22,6 +22,7 @@
 </p>
             </div>
           <div class="col_half nobottommargin">
+<<<<<<< HEAD
           <p>1 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
@@ -55,6 +56,12 @@
           </div>
           <div class="col_half col_last nobottommargin">
             <img src="public\Frontend\images\8.jpg" class="img-responsive wid"/>
+=======
+            fdfdf
+          </div>
+          <div class="col_half col_last nobottommargin">
+            <img src="#" class="img-responsive"/>
+>>>>>>> d1b0011097691aa68e5a051e5bcc4321fd27c2ae
           </div>
         </div>
       </div>

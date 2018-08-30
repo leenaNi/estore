@@ -606,6 +606,7 @@
                                             type: "post",
                                             data: {prodId: prodId},
                                             success: function (data) {
+                                                if(data.status === 1)
                                             window.location.href = "{{ route('admin.products.view') }}";
                                                 
                                                 //                                                $("#selCat").append(optionVal);
@@ -634,7 +635,7 @@
                                                         // $("#barerr" + id).text('Please wait');
                                                     },
                                                     success: function (res) {
-                                                        if (res) {
+                                                        if (res.status===1) {
                                                             $("#addProductToMall").modal("hide");
                                                             window.location.href = "{{ route('admin.products.view') }}";
                                                         }

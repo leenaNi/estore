@@ -183,7 +183,6 @@ class CartController extends Controller {
     public function simpleProduct($prod_id, $quantity) {
         $product = Product::find($prod_id);
         $quantity = (Input::get('quantity')) ? Input::get('quantity') : $quantity;
-
         $cats = [];
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
@@ -202,32 +201,22 @@ class CartController extends Controller {
         foreach ($prodTaxes as $tax) {
             $sum = $sum + $tax->rate;
         }
-
         $tax_amt = 0;
         if ($type == 1 || $type == 2) {
             $tax = $product->selling_price * $quantity * $sum / 100;
             $tax_amt = round($tax, 2);
         }
-
-        if ($product->is_stock == 1) {
-            $is_stockable = DB::table($product->prefix . '_general_setting')->where('url_key', 'stock')->first();
-//            $is_stockable = GeneralSetting::where('id', 26)->first();
-            if ($is_stockable->status == 1 && $product->prod_type == 1) {
-                if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
-                    Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
-                        "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
-                            'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
-                            "prod_type" => $prod_type,
-                            "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
-                } else {
-                    return 1;
-                }
-            } else {
+        //            $is_stockable = GeneralSetting::where('id', 26)->first();
+        $is_stockable = DB::table($product->prefix . '_general_setting')->where('url_key', 'stock')->first();
+        if ($product->is_stock == 1 && $is_stockable->status == 1) {
+            if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                 Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
                     "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $storeProdId, "is_cod" => $product->is_cod, 'url' => $product->url_key,
                         'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'is_stock' => $product->is_stock,
                         "prod_type" => $prod_type,
                         "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
+            } else {
+                return 1;
             }
         } else {
             Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
@@ -341,42 +330,41 @@ class CartController extends Controller {
     public function configProduct($prod_id, $quantity, $sub_prod) {
         $product = Product::find($prod_id);
 //        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        $is_stockable = DB::table($product->prefix . '_general_setting')->where('url_key', 'stock')->first();
+        $is_stockable = DB::table($prd->prefix . '_general_setting')->where('url_key', 'stock')->first();
+        $cats = [];
+        foreach ($product->categories as $cat) {
+            array_push($cats, $cat->id);
+        }
+        $pname = $product->product;
+        $prod_type = $product->prod_type;
+        $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get();
+        $imagPath = $product->images[0]->image_path . '/' . $product->images[0]->filename;
+        $subProd = Product::where("id", "=", $sub_prod)->first();
+        $price = $subProd->price + $product->selling_price;
+        $options = [];
+//            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
+        $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
+        foreach ($hasOptn as $optn) {
+            $options[$optn->attr_id] = $optn->attr_val;
+            $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
+        }
+        $image = isset($images) ? $images : "default.jpg";
+        $option_name = json_encode($option_name);
+        $type = $product->is_tax;
+        $sum = 0;
+        $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
+                        ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
+        foreach ($prodTaxes as $tax) {
+            $sum = $sum + $tax->rate;
+        }
+        $tax_amt = 0;
+        if ($type == 1 || $type == 2) {
+            $tax = $product->selling_price * $quantity * $sum / 100;
+            $tax_amt = round($tax, 2);
+        }
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock") {
                 // $product = Product::find($sub_prod);
-                $cats = [];
-                foreach ($product->categories as $cat) {
-                    array_push($cats, $cat->id);
-                }
-                $pname = $product->product;
-                $prod_type = $product->prod_type;
-                $prodImg = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->first();
-                $images = $prodImg->filename;
-                $imagPath = $prodImg->image_path . '/' . $images;
-                $subProd = Product::where("id", "=", $sub_prod)->first();
-                $price = $subProd->price + $product->selling_price;
-                $options = [];
-                $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
-                foreach ($hasOptn as $optn) {
-                    $options[$optn->attr_id] = $optn->attr_val;
-                    $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
-                }
-                $option_name = json_encode($option_name);
-                $image = isset($images) ? $images : "default.jpg";
-
-                $type = $product->is_tax;
-                $sum = 0;
-                $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
-                                ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
-                foreach ($prodTaxes as $tax) {
-                    $sum = $sum + $tax->rate;
-                }
-                $tax_amt = 0;
-                if ($type == 1 || $type == 2) {
-                    $tax = $product->selling_price * $quantity * $sum / 100;
-                    $tax_amt = round($tax, 2);
-                }
                 Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                     "qty" => $quantity, "price" => $price,
                     "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
@@ -386,39 +374,6 @@ class CartController extends Controller {
                 return 1;
             }
         } else {
-            $cats = [];
-            foreach ($product->categories as $cat) {
-                array_push($cats, $cat->id);
-            }
-            $pname = $product->product;
-            $prod_type = $product->prod_type;
-//            $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
-//            $imagPath = Config("constants.productImgPath") . '/' . $images;
-            $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get();
-            $imagPath = $product->images[0]->image_path . '/' . $product->images[0]->filename;
-            $subProd = Product::where("id", "=", $sub_prod)->first();
-            $price = $subProd->price + $product->selling_price;
-            $options = [];
-//            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-            $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
-            foreach ($hasOptn as $optn) {
-                $options[$optn->attr_id] = $optn->attr_val;
-                $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
-            }
-            $image = isset($images) ? $images : "default.jpg";
-            $option_name = json_encode($option_name);
-            $type = $product->is_tax;
-            $sum = 0;
-            $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
-                            ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
-            foreach ($prodTaxes as $tax) {
-                $sum = $sum + $tax->rate;
-            }
-            $tax_amt = 0;
-            if ($type == 1 || $type == 2) {
-                $tax = $product->selling_price * $quantity * $sum / 100;
-                $tax_amt = round($tax, 2);
-            }
             Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                 "qty" => $quantity, "price" => $price,
                 "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
@@ -495,12 +450,7 @@ class CartController extends Controller {
         $cartContent = Cart::instance('shopping')->content()->toArray();
         $orderAmount = Helper::getAmt("coupon"); // * Session::get('currency_val');
         $msg = '';
-        //print_r($orderAmount);
-        // die;
-
         $couponID = Coupon::where("coupon_code", "=", $couponCode)->first();
-//        print_r($couponID);
-//        echo "<br/>=========================================<br/>";
         @$usedCouponCountOrders = @Order::where('coupon_used', '=', $couponID->id)->where("order_status", "=", 1)->count();
         if (isset($couponID)) {
             if ($couponID->user_specific === 1) {

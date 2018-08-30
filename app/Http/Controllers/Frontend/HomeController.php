@@ -1,8 +1,8 @@
 <?php
 /* Commented Somecode for veestores mall
- * Line 502, 519
+ * Line 505, 522
  * Line 383-387
- * Line 537
+ * Line 539
  * 
  */
 namespace App\Http\Controllers\Frontend;
@@ -381,11 +381,11 @@ class HomeController extends Controller {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $messagearray);
 
         //finally executing the curl request
-//        $result = curl_exec($ch);
-//        if ($result === FALSE) {
-//            die('Curl failed: ' . curl_error($ch));
-//        }
-//        curl_close($ch);
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+        curl_close($ch);
 //        //stop Curl
 
 
@@ -502,7 +502,7 @@ class HomeController extends Controller {
                             $homePageSlider['sort_order'] = $image['sort_order'];
                             $source = public_path() . '/public/admin/themes/';
                             $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-//                            copy($source . $file, $destination . $file);
+                            copy($source . $file, $destination . $file);
                             DB::table($prefix . "_has_layouts")->insert($homePageSlider);
                         }
                     }
@@ -519,7 +519,7 @@ class HomeController extends Controller {
                             $homePageSlider['sort_order'] = $image['sort_order'];
                             $source = public_path() . '/public/admin/themes/';
                             $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-//                            copy($source . $file, $destination . $file);
+                            copy($source . $file, $destination . $file);
                             DB::table($prefix . "_has_layouts")->insert($homePageSlider);
                         }
                     }
@@ -534,9 +534,8 @@ class HomeController extends Controller {
                     $mailcontent = "Find links to your Online Store and its Admin given below:" . "\n";
                     $mailcontent .= "Store Admin Link: https://" . $domainname . '.' . $domain . "/admin" . "\n";
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n";
-
                     if (!empty($merchantEamil)) {
-                        //  Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
+                          Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
                     return "Extracted Successfully to $path";
                 } else {

@@ -78,44 +78,39 @@ class ProductController extends Controller {
     }
 
     public function simpleProduct($pId) {
-        //   return "productdffsf";
         $is_desc = GeneralSetting::where('url_key', 'des')->first();
-        $is_rel_prod = GeneralSetting::where('url_key', 'related-products')->first();
-        $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
         $product = Product::find($pId);
-        // return $product;
-
         if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
             $product->wishlist = 1;
         } else {
             $product->wishlist = 0;
         }
-       
         $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get(); // $product->catalogimgs()->get();
-//        dd($product->images);
         foreach ($product->images as $prdimgs) {
             $prdimgs->img = $prdimgs->image_path . '/' . $prdimgs->filename;
-//            dd($prdimgs->img);
         }
+        $prodCats = $product->categories()->get(['has_categories.cat_id'])->toArray();
+        $prodsByCategories = Product::where('is_individual', 1)->where('status', 1)->where('is_avail', '=', 1)->where('id', '!=', $pId)->with(['categories' => function($q)use($prodCats) {
+                        $q->whereIn('has_categories.cat_id', $prodCats);
+                    }])->get();
+//        dd($prodsByCategories);
         $product->prodImage = $product->images[0]->image_path . '/' . $product->images[0]->filename;
         $nattrs = []; //AttributeSet::find($product->attr_set)->attributes()->where("is_filterable", "=", 0)->get();
         $product->store_name = DB::table('stores')->where('id', $product->store_id)->first()->store_name;
-        $product->related = []; //$product->relatedproducts()->where("status", 1)->get();
+        $product->related = $prodsByCategories; //$product->relatedproducts()->where("status", 1)->get();
         $product->upsellproduct = []; //$product->upsellproducts()->where("status", 1)->get();
         $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | Cartini " : @$product->meta_title;
         $product->metaDesc = @$product->meta_desc == "" ? @$product->product : @$product->meta_desc;
         $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
         $data['curData'] = $currencySetting->setCurrency();
-        $data = ['product' => $product, 'nattrs' => $nattrs, 'is_desc' => $is_desc, 'is_rel_prod' => $is_rel_prod, 'is_like_prod' => $is_like_prod];
+        $data = ['product' => $product, 'nattrs' => $nattrs, 'is_desc' => $is_desc];
         $viewname = Config('constants.frontendCatlogProducts') . '.simpleProduct';
         return Helper::returnView($viewname, $data, null, 1);
     }
 
     public function configProduct($prodid) {
         $is_desc = GeneralSetting::where('url_key', 'des')->first();
-        $is_rel_prod = GeneralSetting::where('url_key', 'related-products')->first();
-        $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
         $product = Product::find($prodid);
         $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | VeestoresMall " : @$product->meta_title;
         $product->metaDesc = @$product->meta_desc == "" ? @$product->product : @$product->meta_desc;
@@ -130,8 +125,7 @@ class ProductController extends Controller {
         }
 //        $nattrs = AttributeSet::find($product->attr_set)->attributes()->where("is_filterable", "=", 1)->get()->toArray();
         $nattrs = DB::select(DB::raw("SELECT attrs.* FROM `" . $product->prefix . "_attribute_sets` as attrs JOIN " . $product->prefix . "_has_attributes ha ON attrs.id = ha.attr_set JOIN " . $product->prefix . "_attributes attr ON ha.attr_id = attr.id WHERE attrs.id=" . $product->attr_set . " AND attr.is_filterable = 1 "));
-//        dd($nattrs);
-        $data = ['product' => $product, 'nattrs' => $nattrs, 'is_desc' => $is_desc, 'is_rel_prod' => $is_rel_prod, 'is_like_prod' => $is_like_prod];
+        $data = ['nattrs' => $nattrs, 'is_desc' => $is_desc];
 
         $selAttrs = [];
         $subprods = DB::table('mall_products')->where('parent_prod_id', $product->store_prod_id)->where('status', 1)->get(); //$product->subproducts()->get();
@@ -146,7 +140,12 @@ class ProductController extends Controller {
                 $selAttrs[$prdOpt->attr_id]['attrs'][DB::table($product->prefix . '_attribute_values')->find($prdOpt->attr_val)->id]['prods'][] = $prdOpt->prod_id;
             }
         }
-
+        $prodCats = $product->categories()->get(['has_categories.cat_id'])->toArray();
+        $prodsByCategories = Product::where('is_individual', 1)->where('status', 1)->where('is_avail', '=', 1)->where('id', '!=', $prodid)->with(['categories' => function($q)use($prodCats) {
+                        $q->whereIn('has_categories.cat_id', $prodCats);
+                    }])->get();
+//        dd($prodsByCategories);
+        $product->related = $prodsByCategories;
         $data['selAttrs'] = $selAttrs;
         $data['product'] = $product;
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
@@ -212,6 +211,12 @@ class ProductController extends Controller {
                     $selAttrs[$prdOpt->attr_id]['prods'][] = $prdOpt->prod_id;
                 }
             }
+            $prodCats = $product->categories()->get(['has_categories.cat_id'])->toArray();
+            $prodsByCategories = Product::where('is_individual', 1)->where('status', 1)->where('is_avail', '=', 1)->where('id', '!=', $product->id)->with(['categories' => function($q)use($prodCats) {
+                            $q->whereIn('has_categories.cat_id', $prodCats);
+                        }])->get();
+//        dd($prodsByCategories);
+            $product->related = $prodsByCategories;
             $data['selAttrs'] = $selAttrs;
             $data['product'] = $product;
             $data['currencyVal'] = Session::get('currency_val');
@@ -249,13 +254,7 @@ class ProductController extends Controller {
                     foreach ($subprods as $subP) {
                         $hasOpt = $subP->attributes()->where("is_filterable", 1)->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
                         foreach ($hasOpt as $prdOpt) {
-                            if (AttributeValue::find($prdOpt->pivot->attr_val)->is_active == 1) {
-//                                $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
-//                                $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
-//                                $selAttrs[$prdOpt->pivot->attr_id]['options'][strtolower(AttributeValue::find($prdOpt->pivot->attr_val)->option_name)] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
-//                                $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
-//                                $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
-//                           
+                            if (AttributeValue::find($prdOpt->pivot->attr_val)->is_active == 1) {//                           
                                 $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
                                 $selAttrs[$cprod->id][$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
                                 $selAttrs[$cprod->id][$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
@@ -277,27 +276,6 @@ class ProductController extends Controller {
             }
             $prod->catid = @$prod->categories()->first()->id;
             $getChildProds = $prod->subproducts()->get()->toArray();
-//                    foreach ($prod->comboproducts as $cprod) {
-//                        if ($cprod->prod_type == 3) {
-//                            $chaptersCount += $cprod->chapterscount();
-//                            $topicsCount += $cprod->topicscount();
-//                            $testsCount += $cprod->testscount();
-//
-//                            if ($cprod->is_unit == 1) {
-//                                $chapProd = $cprod->chapters()->with('topics', 'tests')->get();
-//                                foreach ($chapProd as $k => $cProdC) {
-//                                    $chaptersp[$cProdC->unit_id]['unit_title'] = $cProdC->unit['title'];
-//                                    $chaptersp[$cProdC->unit_id]["chapters"][$k] = $cProdC;
-//                                }
-//                                $cprod->chaptersdata = $chaptersp;
-//                            } else {
-//                                $cprod->chaptersdata = $cprod->chapters()->with('topics', 'tests')->get();
-//                            }
-//                        }
-//                    }
-//                    $prod->chaptersCount = $chaptersCount;
-//                    $prod->topicsCount = $topicsCount;
-            //  dd($selAttrs);
             $prod->testsCount = $testsCount;
             $data['getChildProds'] = $getChildProds;
             $data['selAttrs'] = $selAttrs;
@@ -314,24 +292,6 @@ class ProductController extends Controller {
 
     public function getComboProdInfo() {
         $prod = Product::find(Input::get('prodid'));
-
-//        if ($prod->is_unit == 1) {
-//            $chapProd = $prod->chapters()->with('topics', 'tests')->get();
-//            foreach ($chapProd as $k => $cProd) {
-//                $chaptersp[$cProd->unit_id]['unit_title'] = $cProd->unit['title'];
-//                $chaptersp[$cProd->unit_id]["chapters"][$k] = $cProd;
-//            }
-//            $prod->prodchapters = $chaptersp;
-//        } else {
-//            $prod->prodchapters = $prod->chapters()->with('topics', 'tests')->get();
-//        }
-//
-//        // $prod->prodchapters = @$prod->chapters()->with('topics','tests')->get();
-//
-//
-//        $prod->prodtopics = @$prod->topics()->get();
-//        $prod->prodtests = @$prod->coursetests()->get();
-//        $prod->testonlytests = @$prod->testsOnlyTests()->get();
         return $prod;
     }
 
