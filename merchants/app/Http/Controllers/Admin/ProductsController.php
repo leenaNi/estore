@@ -2148,7 +2148,6 @@ class ProductsController extends Controller {
         } else {
             $prod = Product::where("id", Input::get("prodId"))->get();
             $tableColumns = Schema::getColumnListing('products');
-            dd($tableColumns);
             $this->saveProduct($prod, $jsonString, $tableColumns, $category, 1);
             if ($prod[0]->prod_type == 3) {
                 $prodConfig = Product::where("parent_prod_id", Input::get("prodId"))->get();
@@ -2167,6 +2166,7 @@ class ProductsController extends Controller {
             $prods = new MallProducts();
             $prods->store_id = $jsonString['store_id'];
             $prods->prefix = $jsonString['prefix'];
+            dd($prod->$tableColumns[0]);
             $prods->store_prod_id = $prod->$tableColumns[0];
             for ($i = 1; $i < count($tableColumns); $i++) {
                 $prods->$tableColumns[$i] = $prod->$tableColumns[$i];
