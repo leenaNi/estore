@@ -14,10 +14,10 @@
       <div class="content-wrap">
         <div class="container clearfix">
           <div class="col_half nobottommargin">
-            <?php echo html_entity_decode($about->description) ?>
+            fdfdf
           </div>
           <div class="col_half col_last nobottommargin">
-            <img src="{{ asset(Config('constants.frontendStaticpage').$about->image)}}" class="img-responsive"/>
+            <img src="#" class="img-responsive"/>
           </div>
         </div>
       </div>
