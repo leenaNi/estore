@@ -44,13 +44,13 @@ class OrdersController extends Controller {
 
     public function index() {
         $jsonString = Helper::getSettings();
-        $order_status = OrderStatus::where('status', 1)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->orderBy('order_status', 'asc')->get();
+        $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
 
-        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->with(['orderFlag'])->orderBy("id", "desc");
+        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
         if (!empty(Input::get('order_ids'))) {
