@@ -10772,7 +10772,7 @@ ul.tab-nav li a i {
 .tabs-bordered ul.tab-nav li:first-child { margin-left: 0; }
 
 .tabs-bordered .tab-container {
-	border: 1px solid #DDD;
+	/* border: 1px solid #DDD; */
 	border-top: 0;
 	padding: 20px;
 }
@@ -15105,6 +15105,14 @@ div#tab-login-register ul li a {
 }
 div#tab-login-register .tab-container {
     padding: 0;
+}
+
+div#tab-register {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0;
+    margin-top: 50px;
+    border: 0;
 }
 
 div#tab-2 ul {

@@ -341,7 +341,7 @@ class CartController extends Controller {
     public function configProduct($prod_id, $quantity, $sub_prod) {
         $product = Product::find($prod_id);
 //        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        $is_stockable = DB::table($prd->prefix . '_general_setting')->where('url_key', 'stock')->first();
+        $is_stockable = DB::table($product->prefix . '_general_setting')->where('url_key', 'stock')->first();
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock") {
                 // $product = Product::find($sub_prod);
@@ -351,7 +351,7 @@ class CartController extends Controller {
                 }
                 $pname = $product->product;
                 $prod_type = $product->prod_type;
-                $prodImg = DB::table($prd->prefix . "_catalog_images")->where("catalog_id", $prd->store_prod_id)->where("image_mode", 1)->first();
+                $prodImg = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->first();
                 $images = $prodImg->filename;
                 $imagPath = $prodImg->image_path . '/' . $images;
                 $subProd = Product::where("id", "=", $sub_prod)->first();

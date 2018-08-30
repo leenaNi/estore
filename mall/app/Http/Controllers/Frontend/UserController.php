@@ -34,12 +34,10 @@ class UserController extends Controller {
         $orders = Order::where("user_id", "=", @Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->get();
         $viewname = Config('constants.frontendMyAccView') . '.my_orders';
         $data = ['orders' => $orders];
-        //  dd(Helper::returnView($viewname, $data));
         return Helper::returnView($viewname, $data);
     }
 
     public function my_profile() {
-        //print_r(Session::get('loggedin_user_id'));
         $orderReturnReason=OrderReturnReason::pluck('reason','id');
         $user=User::find(@Session::get('loggedin_user_id'));
         $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
@@ -51,12 +49,11 @@ class UserController extends Controller {
           $wishlist->image_path='';    
           }
        }
-       // $userWishlist='';
+     
         $orders = Order::where("user_id", "=", @Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->orderBy('id', 'desc')->get();
         //$ordersCurrency = HasCurrency::where('id',$orders->currency_id)->first();
         $viewname = Config('constants.frontendMyAccView') . '.myaccount';
         $data = ['orders' => $orders,'user'=>$user,'wishlist'=>$userWishlist,'orderReturnReason'=>$orderReturnReason];
-      // dd($data);
         return Helper::returnView($viewname, $data);
     }
 
