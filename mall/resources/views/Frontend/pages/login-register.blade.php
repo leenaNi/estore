@@ -15,27 +15,27 @@
 <section id="content">
     <div class="content-wrap">
         <div class="container clearfix">
-            <div class="tabs divcenter tabs-justify nobottommargin clearfix" id="tab-login-register" style="max-width: 500px;">
+            <div class="tabs divcenter tabs-justify nobottommargin clearfix" id="tab-login-register">
                 <div class='alert alert-danger login-error' style="display:none;"></div>
                 <ul class="tab-nav tab-nav2 loginTab center clearfix">
-                    <li class="inline-block " aria-selected="true" aria-expanded="true"><a class="tabClass" href="#tab-login">Login</a>
+                    <li class="inline-block add-to-cart button nomargin " aria-selected="true" aria-expanded="true"><a class="tabClass" href="#tab-login">Login</a>
                     </li>
                     <li class="onlyDispUnder479"></li>
-                    <li class="inline-block mobMartop15"><a class="tabClass" href="#tab-register">Register</a>
+                    <li class="inline-block mobMartop15 add-to-cart button nomargin nopadding"><a class="tabClass" href="#tab-register">Register</a>
                     </li>
                 </ul>
                 <div class="tab-container">
                     <div class="alert alert-danger text-center" style="display:none" id="login-error">{{ Session::get("loginError") }}</div>
-                    <div class="tab-content clearfix" id="tab-login">
+                    <div class="tab-content clearfix nopadding margin-top-md" id="tab-login">
                         <div class="panel panel-default nobottommargin">
                             <div class="panel-body pad40">
                                 <form id="login-form" action="{{ route('checkUser') }}" class="nobottommargin"  method="post">
                                     <div class="col_full">
-                                        <input type="text" name="username" value="" id="email" class="sm-form-control" placeholder="Mobile / Email *" /> </div>
+                                        <input type="text" name="username" value="" id="email" class="sm-form-control border" placeholder="Mobile / Email *" /> </div>
                                     <div class="col_full">
-                                        <input type="password" class="sm-form-control" name="password"  placeholder="Password *" /> </div>
+                                        <input type="password" class="sm-form-control border" name="password"  placeholder="Password *" /> </div>
                                     <div class="col_full nobottommargin text-center">
-                                        <button class="button button-black nomargin" type="submit" value="login">Login</button>
+                                        <button class="button nomargin add-to-cart" type="submit" value="login">Login</button>
                                     </div>
                                     <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('forgotPassword') }}" class="">Forgot Password?</a> </div>
                                     <div class="col-md-12 topmargin-sm orDivider-box clearfix">
@@ -59,32 +59,32 @@
                             <div class="panel-body">
                                 <form class="nobottommargin" method="post" id="register-form" action="{{ route('saveRegister') }}">
                                     <div class="col_full">
-                                        <input type="text" required="true" name="firstname" value="" id="firstname" class="sm-form-control" placeholder="First Name *" /> </div>
+                                        <input type="text" required="true" name="firstname" value="" id="firstname" class="sm-form-control border" placeholder="First Name *" /> </div>
                                     <div class="col_full">
-                                        <input type="text"  name="lastname" id="lastname" class="sm-form-control" placeholder="Last Name" />
+                                        <input type="text"  name="lastname" id="lastname" class="sm-form-control border" placeholder="Last Name" />
                                     </div>
                                     <div class="col_full">
-                                        <select class="sm-form-control county_code" required="true" name="country_code">
+                                        <select class="sm-form-control county_code border" required="true" name="country_code">
                                             <option value="">Select Country Code</option>
                                             <option value="+91">(+91) India</option>
                                             <option value="+880">(+880) Bangladesh</option>
                                         </select>
                                     </div>
                                     <div class="col_full">
-                                        <input type="text"  name="telephone" id="telephone"  required="true" class="sm-form-control" placeholder="Mobile *" />
+                                        <input type="text"  name="telephone" id="telephone"  required="true" class="sm-form-control border" placeholder="Mobile *" />
                                         <p id="telephone_exists" style="color:red;margin-bottom:0px;"></p>
                                     </div>
                                     <div class="col_full">
-                                        <input type="email"  name="email" id="user-email1" class="sm-form-control" placeholder="Email " />
+                                        <input type="email"  name="email" id="user-email1" class="sm-form-control border" placeholder="Email " />
                                         <p id="email_exists" style="color:red;margin-bottom:0px;"></p>
                                     </div>
                                     <div class="col_full">
-                                        <input type="password" name ="password" id="password" required="true" class="sm-form-control" placeholder="Password *" /> </div>
+                                        <input type="password" name ="password" id="password" required="true" class="sm-form-control border" placeholder="Password *" /> </div>
                                     <div class="col_full">
-                                        <input type="password" name="cpassword" id="cpassword"  required="true" class="sm-form-control" placeholder="Confirm Password *" /> </div>
+                                        <input type="password" name="cpassword" id="cpassword"  required="true" class="sm-form-control border" placeholder="Confirm Password *" /> </div>
                                     <div class="clearfix"></div>
                                     <div class="col_full nobottommargin text-center">
-                                        <button class="button button-black nomargin w100 registerButton" value="register">
+                                        <button class="button nomargin w100 registerButton" value="register">
                                             Register Now<i class="icon-spinner icon-spin regLoader" style="display:none"></i>
                                         </button>
                                     </div>

@@ -21,7 +21,7 @@
 <section id="content">
     <div class="content-wrap">
         <div class="container clearfix">
-            <div class="col-lg-3">
+            <div class="col-lg-3 margin-top-md">
                 <div class="panel panel-default border-radiusNone">
                     <div class="panel-body">
                         <!-- <div class="testi-image profile-image"> 
@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-9">
+            <div class="col-lg-9 margin-top-md">
                 <div class="tabs tabs-justify tabs-bordered clearfix tabwhite nobottommargin" id="tab-2">
                     <ul class="tab-nav clearfix" role="tablist">
                         <li><a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1"> My Profile</a>
@@ -103,7 +103,12 @@
                             <p class="password-update-fail" style="color:red">  </p>
                             <form class="nobottommargin ng-pristine ng-valid" action="{{ route('updateMyaccChangePassword') }}"  id="resetPasswordAccount" method="post" novalidate="novalidate">
                                 <div class="col_full"> <span id="passUpdate" style="color: #1B2987"></span> </div>
-                                <div class="col_full">
+                                <div class="col_half ">
+                                    <label for="template-contactform-email">Email <small>*</small>
+                                    </label>
+                                    <input type="email" name="email" value="{{$user->email}}" class="email sm-form-control" {{$user->email?'readonly':''}}> 
+                                </div>
+                                <div class="col_half col_last">
                                     <input type="hidden"  name="email" value="{{$user->email}}" readonly="readonly">
                                     <input type="hidden"  name="telephone" value="{{$user->telephone}}" readonly="readonly">
                                     <label for="template-contactform-name">CURRENT PASSWORD <small>*</small>
@@ -111,13 +116,13 @@
                                     <input type="password" name="old_password" placeholder="Current Password" class="sm-form-control required" aria-required="true">
                                     <div id="old_password_validate" style="color:red;"></div>
                                 </div>
-                                <div class="col_full">
+                                <div class="col_half">
                                     <label for="template-contactform-name">NEW PASSWORD <small>*</small>
                                     </label>
                                     <input type="password" id="password" name="password" placeholder="New Password" class="sm-form-control required" aria-required="true">
                                     <div id="password_validate" style="color:red;"></div>
                                 </div>
-                                <div class="col_full">
+                                <div class="col_half col_last">
                                     <label for="template-contactform-email">CONFIRM NEW PASSWORD <small>*</small>
                                     </label>
                                     <input type="password" name="conf_password" id="conf_password" placeholder="Confirm New Password" class="required sm-form-control" aria-required="true">
