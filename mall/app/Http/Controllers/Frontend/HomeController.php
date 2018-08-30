@@ -228,16 +228,7 @@ class HomeController extends Controller {
         return Helper::returnView($viewname);
     }
 
-    public function contactUs() {
-        // $contact = StaticPage::where('url_key', 'contact-us')->first();
-
-
-        // $data = ['contact' => $contact];
-        $viewname = Config('constants.frontendView') . '.contact-us';
-        return Helper::returnView($viewname);
-
-        // return Helper::returnView($viewname, $data);
-    }
+  
 
     public function contactUs() {
        // $contact = StaticPage::where('url_key', 'contact-us')->first();

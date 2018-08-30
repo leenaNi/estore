@@ -25,16 +25,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/forget-password', array('as' => 'chkForgotPasswordEmail', 'uses' => 'LoginController@chkForgotPasswordEmail'));
     Route::get('/reset-password/{link?}', array('as' => 'resetNewPwd', 'uses' => 'HomeController@resetNewPwd'));
     Route::post('/save-reset-password', array('as' => 'saveResetPwd', 'uses' => 'LoginController@saveResetPwd'));
-    Route::any('/home-edit', ['as' => 'updateHomeSettings', 'uses' => 'HomeEditController@updateStoreSettings']);
-    Route::any('/about-us', ['as' => 'about-us', "uses" => 'HomeController@aboutUs']);
-    Route::any('/contact-us', ['as' => 'contact-us', "uses" => 'HomeController@contactUs']);
-    Route::post('/contact-sent', ['as' => 'contact-sent', "uses" => 'HomeController@contactSent']);
-    Route::any('/terms-conditions', ['as' => 'terms-conditions', "uses" => 'HomeController@termsConditions']);
-    Route::any('/privacy-policy', ['as' => 'privacy-policy', "uses" => 'HomeController@privacyPolicy']);
-    Route::any('/disclaimer', ['as' => 'disclaimer', "uses" => 'HomeController@disclaimer']);
-    Route::any('/faqs', ['as' => 'faqs', "uses" => 'HomeController@FAQPage']);
-    Route::any('/careers', ['as' => 'careers', "uses" => 'HomeController@careersPage']);
-    Route::any('/order-success', ['as' => 'order-success', "uses" => 'HomeController@orderSuccess']);
+   Route::any('/home-edit', ['as' => 'updateHomeSettings', 'uses' => 'HomeEditController@updateStoreSettings']);
     //CART ROUTES
     Route::group(array('prefix' => Config('constants.cartSlug'), 'middleware' => ['web']), function() {
         Route::get('/cart', array('as' => 'cart', 'uses' => 'CartController@index'));
@@ -71,8 +62,8 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::get('/order-details/{id}', array('as' => 'orderDetails', 'uses' => 'UserController@orderDetails'));
     Route::any('/order-details-json', array('as' => 'orderDetailsJson', 'uses' => 'UserController@orderDetails_json'));
     Route::any('/order-cancel-status', array('as' => 'statusOrderCancel', 'uses' => 'UserController@statusOrderCancel'));
-    Route::post('/update-profile-image', array('as' => 'updateProfileImage', 'uses' => 'UserController@updateProfileImage'));
-    Route::post('/update-change-password-myacc', array('as' => 'updateMyaccChangePassword', 'uses' => 'UserController@updateMyaccChangePassword'));
+     Route::post('/update-profile-image', array('as' => 'updateProfileImage', 'uses' => 'UserController@updateProfileImage'));
+     Route::post('/update-change-password-myacc', array('as' => 'updateMyaccChangePassword', 'uses' => 'UserController@updateMyaccChangePassword'));
     //PRODUCT LISTING ROUTES
     Route::any('/getListingFilter', ['as' => 'getListingFilter', 'uses' => 'CategoriesController@getListingFilter']);
     Route::any('/get-product-listing', ['as' => 'getProductListing', 'uses' => 'CategoriesController@getProductListing']);
