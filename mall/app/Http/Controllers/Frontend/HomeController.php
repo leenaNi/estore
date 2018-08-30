@@ -219,43 +219,43 @@ class HomeController extends Controller {
         }
     }
 
-    public function aboutUs() {
-        //dd(Input::get('url'));
-        $about = StaticPage::where('url_key', 'about-us')->first();
-        $data = ['about' => $about];
-        $viewname = Config('constants.frontendView') . '.about-us';
-        return Helper::returnView($viewname, $data);
-    }
+    // public function aboutUs() {
+    //     //dd(Input::get('url'));
+    //     $about = StaticPage::where('url_key', 'about-us')->first();
+    //     $data = ['about' => $about];
+    //     $viewname = Config('constants.frontendView') . '.about-us';
+    //     return Helper::returnView($viewname, $data);
+    // }
 
-    public function contactUs() {
-        $contact = StaticPage::where('url_key', 'contact-us')->first();
+    // public function contactUs() {
+    //     $contact = StaticPage::where('url_key', 'contact-us')->first();
 
 
-        $data = ['contact' => $contact];
-        $viewname = Config('constants.frontendView') . '.contact_us';
-        return Helper::returnView($viewname, $data);
-    }
+    //     $data = ['contact' => $contact];
+    //     $viewname = Config('constants.frontendView') . '.contact_us';
+    //     return Helper::returnView($viewname, $data);
+    // }
 
-    public function termsConditions() {
-        $terms = StaticPage::where('url_key', 'terms-conditions')->first();
-        $data = ['terms' => $terms];
-        $viewname = Config('constants.frontendView') . '.terms-condition';
-        return Helper::returnView($viewname, $data);
-    }
+    // public function termsConditions() {
+    //     $terms = StaticPage::where('url_key', 'terms-conditions')->first();
+    //     $data = ['terms' => $terms];
+    //     $viewname = Config('constants.frontendView') . '.terms-condition';
+    //     return Helper::returnView($viewname, $data);
+    // }
 
-    public function privacyPolicy() {
-        $terms = StaticPage::where('url_key', 'privacy-policy')->first();
-        $data = ['terms' => $terms];
-        $viewname = Config('constants.frontendView') . '.privacy-policy';
-        return Helper::returnView($viewname, $data);
-    }
+    // public function privacyPolicy() {
+    //     $terms = StaticPage::where('url_key', 'privacy-policy')->first();
+    //     $data = ['terms' => $terms];
+    //     $viewname = Config('constants.frontendView') . '.privacy-policy';
+    //     return Helper::returnView($viewname, $data);
+    // }
 
-    public function disclaimer() {
-        $terms = StaticPage::where('url_key', 'privacy-policy')->first();
-        $data = ['terms' => $terms];
-        $viewname = Config('constants.frontendView') . '.disclaimer';
-        return Helper::returnView($viewname, $data);
-    }
+    // public function disclaimer() {
+    //     $terms = StaticPage::where('url_key', 'privacy-policy')->first();
+    //     $data = ['terms' => $terms];
+    //     $viewname = Config('constants.frontendView') . '.disclaimer';
+    //     return Helper::returnView($viewname, $data);
+    // }
 
     public function checkPincode() {
         $check = Helper::checkCodPincode(Input::get('pincode'));
