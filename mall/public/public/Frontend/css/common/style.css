@@ -13347,7 +13347,19 @@ button.toast-close-button {
 		padding: 15px 50px 15px 15px;
 	}
 }
-
+@media all and (min-width: 360px) 
+{
+	.product-desc button{
+		margin: 5px !important;
+	}
+	.single-product .line
+	{
+		display: none;
+	}
+	#copyrights a {
+		color: #fff;
+	}
+}
 
 /* ----------------------------------------------------------------
 	32. Footer
@@ -15134,6 +15146,35 @@ div#tab-2 ul li a {
     padding: 0;
 }
 
+<<<<<<< HEAD
+.fullwidth
+{
+	width: 100%!important;
+	margin: 20px!important;
+}
+.wid{
+	width: 675px!important;
+}
+.slider
+{
+	width: 100%!important;
+	height: 350px!important;
+
+}
+/*pranali css ends*/
+
+@media (min-width:320px ) and (max-width:360px )
+{
+	div#tab-login-register ul li {
+		width: 40% !important;
+		margin-top: -10px!important;
+	}
+	div#tab-login-register ul li a
+{
+	font-size: 12px;
+}
+}   
+=======
 .borderright
 {
 border-right: 1px solid #ccc;
@@ -15180,3 +15221,4 @@ div#tab-2 ul li {
 }
 
 }
+>>>>>>> d1b0011097691aa68e5a051e5bcc4321fd27c2ae
