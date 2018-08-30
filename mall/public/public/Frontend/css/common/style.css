@@ -511,7 +511,7 @@ abbr strong {color: #eee;}
  
 .margin-top-md
 {
-	margin-top: 50px!important;
+	margin-top: 30px!important;
 }
 
 .border{
@@ -8653,7 +8653,7 @@ body:not(.device-touch) .button.button-full strong {
 .button-white { background-color: #F9F9F9; }
 .button-3d.button-white:hover,
 .button-reveal.button-white:hover { background-color: #F9F9F9 !important; }
-
+.white{color: #fff!important;}
 
 /* Buttons - No Hover
 -----------------------------------------------------------------*/
@@ -15111,7 +15111,11 @@ div#tab-register {
     max-width: 600px;
     margin: 0 auto;
     padding: 0;
-    margin-top: 50px;
+    margin-top: 30px;
+    border: 0;
+}
+
+div#tab-2 {
     border: 0;
 }
 
@@ -15130,6 +15134,49 @@ div#tab-2 ul li a {
     padding: 0;
 }
 
+.borderright
+{
+border-right: 1px solid #ccc;
+}
 
+.borderall
+{
+	border: 1px solid #ccc;
+}
+
+#copyrights a {
+	color: #fff;
+}
 
 /*pranali css ends*/
+/*media queries*/
+
+@media (min-width: 320px) and (max-width:479px)
+{
+div#tab-2 ul li {
+    width: 100% !important;
+    text-align: center;
+}
+.tabs-bordered .tab-container
+{
+	padding: 0px;
+	
+}
+.tabs-bordered .tab-container .tab-content
+{
+	padding: 0px;
+}
+/* .container .col-lg-3{
+    margin: 0 !important;
+    padding: 0 !important;
+} */
+}
+
+@media (min-width: 480px) and (max-width:767px)
+{
+div#tab-2 ul li {
+    width: 49% !important;
+    text-align: center;
+}
+
+}

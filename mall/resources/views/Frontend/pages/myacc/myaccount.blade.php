@@ -129,7 +129,7 @@
                                     <div id="conf_password_validate" style="color:red;"></div>
                                 </div>
                                 <div class="col_full">
-                                    <button class="button button-3d nomargin changePassword" type="submit" name="template-contactform-submit" value="submit">SAVE</button>
+                                    <button class="button nomargin" type="submit" name="template-contactform-submit" value="submit">SAVE</button>
                                 </div>
                             </form>
                         </div>
@@ -138,10 +138,10 @@
                                 <table class="table cart">
                                     <thead>
                                         <tr bgcolor="#F2F2F2">
-                                            <th class="text-center">Order ID</th>
-                                            <th class="text-center">Order Amount</th>
-                                            <th class="text-center">Date</th>
-                                            <th class="text-center">Action</th>
+                                            <th class="text-center borderright">Order ID</th>
+                                            <th class="text-center borderright">Order Amount</th>
+                                            <th class="text-center borderright">Date</th>
+                                            <th class="text-center borderright">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -155,11 +155,11 @@
                                         }
                                         ?>
                                         <tr>
-                                            <td class="tdfont text-center">{{$ord->id}}</td>
-                                            <td class="tdfont text-center"><span class="currency-sym"></span>  {{number_format(($ord->pay_amt*$ordCurrency->currency_val), 2, '.', '')}}</td>
-                                            <td class="tdfont text-center">{{date("d-M-Y",strtotime($ord->created_at))}} </td>
-                                            <td data-th="Subtotal" class="text-center">
-                                                <a href="{{route('orderDetails',$ord->id)}}" class="button button-3d button-mini button-rounded ">View Detail</a>
+                                            <td class="tdfont text-center borderall">{{$ord->id}}</td>
+                                            <td class="tdfont text-center borderall"><span class="currency-sym"></span>  {{number_format(($ord->pay_amt*$ordCurrency->currency_val), 2, '.', '')}}</td>
+                                            <td class="tdfont text-center borderall">{{date("d-M-Y",strtotime($ord->created_at))}} </td>
+                                            <td data-th="Subtotal" class="text-center borderall">
+                                                <a href="{{route('orderDetails',$ord->id)}}" class="button nomargin white">View Detail</a>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -178,10 +178,10 @@
                                 <table class="table cart">
                                     <thead>
                                         <tr bgcolor="#F2F2F2">
-                                            <th class="cart-product-thumbnail">&nbsp;</th>
-                                            <th class="cart-product-name">Product</th>
-                                            <th class="cart-product-price">Price</th>
-                                            <th class="cart-product-quantity">Action</th>
+                                            <th class="cart-product-thumbnail borderright">&nbsp;</th>
+                                            <th class="cart-product-name borderright">Product</th>
+                                            <th class="cart-product-price borderright">Price</th>
+                                            <th class="cart-product-quantity borderright">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -189,7 +189,7 @@
                                         @foreach($wishlist as $prod)
                                         <tr class="cart_item">
 
-                                            <td class="cart-product-thumbnail">
+                                            <td class="cart-product-thumbnail borderall">
                                                 @if(($prod->image_path) != '')
 
                                                 <a href="{{route('home').'/'.$prod->url_key}}"><img width="64" height="64" src="{{$prod->image_path }}" alt="img">
@@ -199,8 +199,8 @@
                                                 </a>
                                                 @endif
                                             </td>
-                                            <td class="cart-product-name"> <a href="{{route('home').'/'.$prod->url_key}}">{{$prod->product}}</a> </td>
-                                            <td class="cart-product-price">
+                                            <td class="cart-product-name borderall"> <a href="{{route('home').'/'.$prod->url_key}}">{{$prod->product}}</a> </td>
+                                            <td class="cart-product-price borderall">
                                                 @if($prod->spl_price > 0 && $prod->spl_price < $prod->price)
                                                 <div class="product-price">
                                                     <del><span class="currency-sym"></span> {{number_format($prod->price * Session::get('currency_val'), 2, '.', '')}}</del> <span class="currency-sym"></span> {{number_format($prod->spl_price * Session::get('currency_val'), 2, '.', '')}} 
@@ -212,7 +212,7 @@
                                                 </div> 
                                                 @endif
                                             </td>
-                                            <td class="cart-product-remove"> <a href="javascript:void(0)" data-prodId="{{$prod->id}}" class="remove removeWishlist" title="Remove this item"><i class="icon-trash2 fa-2x"></i></a> </td>
+                                            <td class="cart-product-remove borderall"> <a href="javascript:void(0)" data-prodId="{{$prod->id}}" class="remove removeWishlist" title="Remove this item"><i class="icon-trash2 fa-2x"></i></a> </td>
                                         </tr>
                                         @endforeach
                                         @else

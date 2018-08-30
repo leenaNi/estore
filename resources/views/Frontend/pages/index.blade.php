@@ -18,7 +18,7 @@
                         <div class="alert alert-danger"> {{ Session::get('storeadded') }}</div>
                         @endif
                             <h3>Create your online store in just 5 mins</h3>
-                            <span>No technical skills required. All-in-one E-commerce platform.</span>
+                            <span>No technical skills required. All-in-one E-commerce platform.....</span>
                         </div>
                         <div class="line" style="margin: 20px 0 20px;"></div>
 <!--                        <div class="col_half bottommargin-xs">
