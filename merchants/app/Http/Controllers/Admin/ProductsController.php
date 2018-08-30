@@ -2166,7 +2166,7 @@ class ProductsController extends Controller {
             $prods = new MallProducts();
             $prods->store_id = $jsonString['store_id'];
             $prods->prefix = $jsonString['prefix'];
-            dd($prod->$tableColumns[0]);
+            dd($prod->id);
             $prods->store_prod_id = $prod->$tableColumns[0];
             for ($i = 1; $i < count($tableColumns); $i++) {
                 $prods->$tableColumns[$i] = $prod->$tableColumns[$i];
