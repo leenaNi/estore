@@ -2148,6 +2148,7 @@ class ProductsController extends Controller {
         } else {
             $prod = Product::where("id", Input::get("prodId"))->get();
             $tableColumns = Schema::getColumnListing('products');
+            dd($tableColumns);
             $this->saveProduct($prod, $jsonString, $tableColumns, $category, 1);
             if ($prod[0]->prod_type == 3) {
                 $prodConfig = Product::where("parent_prod_id", Input::get("prodId"))->get();
