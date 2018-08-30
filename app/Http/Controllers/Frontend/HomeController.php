@@ -1,10 +1,11 @@
 <?php
 /* Commented Somecode for veestores mall
- * Line 502, 519
+ * Line 505, 522
  * Line 383-387
- * Line 537
+ * Line 539
  * 
  */
+copy(/var/www/veestoresmall.com/public/public/admin/themes/banner-020180710071434.jpg): failed to open stream: No such file or directory
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
@@ -534,7 +535,6 @@ class HomeController extends Controller {
                     $mailcontent = "Find links to your Online Store and its Admin given below:" . "\n";
                     $mailcontent .= "Store Admin Link: https://" . $domainname . '.' . $domain . "/admin" . "\n";
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n";
-
                     if (!empty($merchantEamil)) {
                           Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
