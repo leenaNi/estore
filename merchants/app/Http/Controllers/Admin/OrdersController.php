@@ -43,10 +43,8 @@ class OrdersController extends Controller {
     use OrdersTrait;
 
     public function index() {
-// $tableContant = Helper::getEmailInvoice(91);
-// print_r($tableContant);die;
-        // dd(Order::where("order_status",1)->latest()->first());
-        $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
+        $jsonString = Helper::getSettings();
+        $order_status = OrderStatus::where('status', 1)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
