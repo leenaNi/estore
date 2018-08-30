@@ -113,95 +113,34 @@
             <div class="col_full nobottommargin">
                 <h3>Other Products Sold By [[product.store_name]]</h3>
                 <div id="oc-product" class="owl-carousel product-carousel carousel-widget" data-margin="30" data-pagi="false" data-autoplay="5000" data-items-xxs="1" data-items-sm="2" data-items-md="3" data-items-lg="4">
-                    <div class="oc-item">
-                        <div class="product clearfix mobwidth100 ">
-                            <div class="product-image producImgBoxSize_4Col">
-                                <a href="fs1_product_detail.php"><img src="images/products/t-shirt.jpg" alt="">
-                                </a>
-                            </div>
-                            <div class="product-desc text-center">
-                                <div class="product-title">
-                                    <h4><a href="#">Men's T-Shirt - White</a>
-                                    <!-- <span class="subtitle">Flat 10% Off*</span> -->
-                                    </h4>
+                    <?php foreach ($product->related as $relprd) { ?>
+                        <div class="oc-item">
+                            <div class="product clearfix mobwidth100 relatedProduct">
+                                <div class="product-image">
+                                    <?php
+                                    $relProdImg = DB::table($relprd->prefix . "_catalog_images")->where("catalog_id", $relprd->store_prod_id)->where("image_mode", 1)->first(); //$relprd->catalogimgs()->first();
+                                    ?>
+                                    @if(!empty($relProdImg))
+                                    <a href="{{ $relprd->url_key}}"><img src="{{ $relProdImg->image_path.'/'.$relProdImg->filename}}" alt="{{ $relprd->product}}" class="boxSizeImage"> </a>
+                                    @else
+                                    <a href="{{ $relprd->url_key}}"><img src="{{ $relProdImg->image_path.'/'.'default-product.jpg'}}" alt="" class="boxSizeImage"> </a>
+                                    @endif
+                <!--                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>-->
                                 </div>
-                                <div class="product-price"><del><i class="icon-rupee"></i> 699</del> <ins><i class="icon-rupee"></i> 599</ins>
+                                <div class="product-desc">
+                                    <div class="product-title">
+                                        <h3><a href="{{ $relprd->url_key}}">{{ $relprd->product}}</a></h3> </div>
+                                    <div class="product-price">
+                                        @if($relprd->spl_price > 0 && $relprd->spl_price > $relprd->price)
+                                        <del><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                                        @else
+                                        <ins><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                                        @endif
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
-                    </div>
-                    <div class="oc-item">
-                        <div class="product clearfix mobwidth100 ">
-                            <div class="product-image producImgBoxSize_4Col">
-                                <a href="fs1_product_detail.php"><img src="images/products/shoe.jpg" alt="">
-                                </a>
-                            </div>
-                            <div class="product-desc text-center">
-                                <div class="product-title">
-                                    <h4><a href="#">MEN'S FOOTWEAR</a>
-                                    <!-- <span class="subtitle">Flat 50% Off*</span> -->
-                                    </h4>
-                                </div>
-                                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="oc-item">
-                        <div class="product clearfix mobwidth100 ">
-                            <div class="product-image producImgBoxSize_4Col">
-                                <a href="fs1_product_detail.php"><img src="images/products/shirt.jpg" alt="">
-                                </a>
-                            </div>
-                            <div class="product-desc text-center">
-                                <div class="product-title">
-                                    <h4><a href="#">Formal Shirts</a>
-                                    <!-- <span class="subtitle">Flat 10% Off*</span> -->
-                                    </h4>
-                                </div>
-                                <div class="product-price"><del><i class="icon-rupee"></i> 5999</del> <ins><i class="icon-rupee"></i> 4999</ins>
-                                </div>
-                            </div>
-                        </div>  
-                    </div>
-                    <div class="oc-item">
-                        <div class="product clearfix mobwidth100 ">
-                            <div class="product-image producImgBoxSize_4Col">
-                                <a href="fs1_product_detail.php"><img src="images/products/shoe.jpg" alt="">
-                                </a>
-                            </div>
-                            <div class="product-desc text-center">
-                                <div class="product-title">
-                                    <h4><a href="#">MEN'S FOOTWEAR</a>
-                                    <!-- <span class="subtitle">Flat 50% Off*</span> -->
-                                    </h4>
-                                </div>
-                                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="oc-item">
-                        <div class="product clearfix mobwidth100 ">
-                            <div class="product-image producImgBoxSize_4Col">
-                                <a href="fs1_product_detail.php"><img src="images/products/t-shirt.jpg" alt="">
-                                </a>
-                            </div>
-                            <div class="product-desc text-center">
-                                <div class="product-title">
-                                    <h4><a href="#">Men's T-Shirt - White</a>
-                                    <!-- <span class="subtitle">Flat 10% Off*</span> -->
-                                    </h4>
-                                </div>
-                                <div class="product-price"><del><i class="icon-rupee"></i> 699</del> <ins><i class="icon-rupee"></i> 599</ins>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
