@@ -44,10 +44,10 @@
           <!-- Google Map
 					============================================= -->
           
-          <?php $contact=json_decode($contact->contact_details);  ?>
+          <?php   ?>
           <div class="col_half col_last">
             <section class="gmap" style="height: 500px;">
-              <iframe src="{{@$contact->map_url}}" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+              <iframe src="" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
             </section>
           </div>
           <!-- Google Map End -->
@@ -58,17 +58,17 @@
             <div class="col-md-4 col-sm-6 mobMB15 clearfix">
               <div class="feature-box fbox-center fbox-bg fbox-plain">
                 <div class="fbox-icon"> <a href="#"><i class="icon-map-marker2"></i></a> </div>
-                <h3>Reach Us<span class="subtitle">{{$contact->address_line1}}, {{$contact->address_line2}}</span></h3> </div>
+                <h3>Reach Us<span class="subtitle">Vidyavihar west</span></h3> </div>
             </div>
             <div class="col-md-4 col-sm-6 mobMB15 clearfix">
               <div class="feature-box fbox-center fbox-bg fbox-plain">
                 <div class="fbox-icon"> <a href="#"><i class="icon-phone3"></i></a> </div>
-                <h3>Call Us<span class="subtitle">{{$contact->mobile}}</span></h3> </div>
+                <h3>Call Us<span class="subtitle">0123456789</span></h3> </div>
             </div>
             <div class="col-md-4 col-sm-6 mobMB15 clearfix">
               <div class="feature-box fbox-center fbox-bg fbox-plain">
                 <div class="fbox-icon"> <a href="#"><i class="icon-mail"></i></a> </div>
-                <h3>Mail Us<span class="subtitle">{{$contact->email}}</span></h3> </div>
+                <h3>Mail Us<span class="subtitle">asdf@gmail.com</span></h3> </div>
             </div>
             <div class="clearfix"></div>
           </div>

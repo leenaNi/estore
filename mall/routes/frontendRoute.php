@@ -32,6 +32,9 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/terms-conditions', ['as' => 'terms-conditions', "uses" => 'HomeController@termsConditions']);
     Route::any('/privacy-policy', ['as' => 'privacy-policy', "uses" => 'HomeController@privacyPolicy']);
     Route::any('/disclaimer', ['as' => 'disclaimer', "uses" => 'HomeController@disclaimer']);
+    Route::any('/faqs', ['as' => 'faqs', "uses" => 'HomeController@FAQPage']);
+    Route::any('/careers', ['as' => 'careers', "uses" => 'HomeController@careersPage']);
+    Route::any('/order-success', ['as' => 'order-success', "uses" => 'HomeController@orderSuccess']);
     //CART ROUTES
     Route::group(array('prefix' => Config('constants.cartSlug'), 'middleware' => ['web']), function() {
         Route::get('/cart', array('as' => 'cart', 'uses' => 'CartController@index'));

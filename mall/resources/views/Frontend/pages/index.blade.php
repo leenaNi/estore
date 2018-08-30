@@ -3,9 +3,9 @@
 @section('content')
 
    
-  <section id="slider" class="slider-parallax swiper_wrapper clearfix slider-parallax-visible">
+  <section id="slider" class="slider swiper_wrapper clearfix slider-parallax-visible">
 
-			<div class="slider-parallax-inner" style="height: 500px; transform: translateY(0px);">
+			<div class="" style="transform: translateY(0px);">
 
 				<div class="swiper-container swiper-parent swiper-container-horizontal" style="cursor: -webkit-grab;">
 					<div class="swiper-wrapper" style="transform: translate3d(0px, 0px, 0px);">
@@ -89,7 +89,7 @@
     @endif
     <!-- Portfolio Items
                               ============================================= -->
-    <div id="portfolio" class="portfolio grid-container portfolio-6 portfolio-nomargin portfolio-full clearfix">
+    <div id="portfolio" class="portfolio grid-container portfolio-6 portfolio-nomargin clearfix">
         @foreach($rootsS as $rootcat)
        
       
