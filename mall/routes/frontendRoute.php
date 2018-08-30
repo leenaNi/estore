@@ -34,7 +34,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
         Route::any('/get-cart-count/', array('as' => 'getCartCount', 'uses' => 'CartController@getCartCount'));
         Route::any('/delete-cart/', array('as' => 'deleteCart', 'uses' => 'CartController@delete'));
     });
-
+    Route::any('/faqs', ['as' => 'faqs', "uses" => 'HomeController@FAQPage']);
     //CART AND CHECKOUT ROUTES
     Route::any('/check_coupon', ['as' => 'check_coupon', 'uses' => 'CartController@check_coupon']);
     Route::any('/checkout', ['as' => 'checkout', 'uses' => 'CheckoutController@index']);

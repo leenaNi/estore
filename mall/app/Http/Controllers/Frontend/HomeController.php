@@ -282,6 +282,11 @@ class HomeController extends Controller {
         return Helper::returnView($viewname);
     }
 
+     public function FAQPage() {
+        $viewname = Config('constants.frontendView') . '.faqs';
+        return Helper::returnView($viewname);
+    }
+
     public function checkPincode() {
         $check = Helper::checkCodPincode(Input::get('pincode'));
         if ($check == 1) {

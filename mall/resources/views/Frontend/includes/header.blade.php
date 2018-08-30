@@ -10,9 +10,9 @@
             ============================================= -->
             <div class="top-links fright">
                 <ul>
-                    <li><a href="#">About</a></li>
+                    <li><a href="http://www.veestores.com/about">About</a></li>
                     <!-- <li><a href="#">FAQs</a></li> -->
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="http://www.veestores.com/contact">Contact</a></li>
 
                     @if(Session::get('loggedin_user_id'))              
                     <li> <a href="{{route('myProfile')}}" >Myaccount</a></li>

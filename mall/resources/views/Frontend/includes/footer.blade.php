@@ -15,23 +15,23 @@
 
                             <div class="col-xs-12 col-md-4 col-sm-4 widget_links">
                                 <ul>
-                                    <li><a href="#">About Us</a></li>
+                                    <li><a href="http://www.veestores.com/about">About Us</a></li>
                                     <li><a href="#">Payments Policy</a></li>
-                                    <li><a href="privacy-policy.php?theme=fs1">Privacy Policy</a></li>
+                                    <li><a href="http://www.veestores.com/privacy-policy">Privacy Policy</a></li>
                                 </ul>
                             </div>
 
                             <div class="col-xs-12 col-md-4 col-sm-4 widget_links">
                                 <ul>								
-                                    <li><a href="shipping-policy.php?theme=fs1">Shipping Policy</a></li>
-                                    <li><a href="return-policy.php?theme=fs1">Return Policy</a></li>
+                                    <li><a href="#">Shipping Policy</a></li>
+                                    <li><a href="#">Return Policy</a></li>
                                 </ul>
                             </div>
 
                             <div class="col-xs-12 col-md-4 col-sm-4 widget_links">
                                 <ul>
-                                    <li><a href="terms-condition.php?theme=fs1">Terms & Conditions</a></li>
-                                    <li><a href="faqs.php?theme=fs1">FAQs</a></li>
+                                    <li><a href="http://www.veestores.com/terms-condition">Terms & Conditions</a></li>
+                                    <li><a href="/faqs">FAQs</a></li>
                                 </ul>
                             </div>
 
