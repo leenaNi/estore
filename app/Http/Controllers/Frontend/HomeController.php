@@ -381,11 +381,11 @@ class HomeController extends Controller {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $messagearray);
 
         //finally executing the curl request
-//        $result = curl_exec($ch);
-//        if ($result === FALSE) {
-//            die('Curl failed: ' . curl_error($ch));
-//        }
-//        curl_close($ch);
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+        curl_close($ch);
 //        //stop Curl
 
 
@@ -502,7 +502,7 @@ class HomeController extends Controller {
                             $homePageSlider['sort_order'] = $image['sort_order'];
                             $source = public_path() . '/public/admin/themes/';
                             $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-//                            copy($source . $file, $destination . $file);
+                            copy($source . $file, $destination . $file);
                             DB::table($prefix . "_has_layouts")->insert($homePageSlider);
                         }
                     }
@@ -519,7 +519,7 @@ class HomeController extends Controller {
                             $homePageSlider['sort_order'] = $image['sort_order'];
                             $source = public_path() . '/public/admin/themes/';
                             $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-//                            copy($source . $file, $destination . $file);
+                            copy($source . $file, $destination . $file);
                             DB::table($prefix . "_has_layouts")->insert($homePageSlider);
                         }
                     }
@@ -536,7 +536,7 @@ class HomeController extends Controller {
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n";
 
                     if (!empty($merchantEamil)) {
-                        //  Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
+                          Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
                     return "Extracted Successfully to $path";
                 } else {
