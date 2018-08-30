@@ -31,8 +31,8 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-6 col-sm-8 col-xs-12 login_form_col">
-                                    <form role="form" class="login_form_btn">
-                                        <div class="form-group">
+                                    <form role="form" class="login_form_btn clearfix">
+                                        <div class="form-group col-md-12 clearfix nobottommargin">
                                             
                                                 <a href="#loginEX" class="button login_btn existUserLog full-width-btn marRight-Bottom10">LOGIN</a>
                                             
@@ -46,7 +46,7 @@
                                             <!-- <div class="col-md-1 hidden-xs hidden-sm"><span class="or_small">OR</span></div> -->
                                             @if(isset($checkGuestCheckoutEnabled) && count($checkGuestCheckoutEnabled)>0)
                                             
-                                                <button type="button" class="button new_user_btn guestCheckoutBtn full-width-btn marRight-Bottom10">Guest Checkout</button>
+                                                <button type="button" class="button new_user_btn guestCheckoutBtn full-width-btn norightMargin">Guest Checkout</button>
                                             
                                             @endif
                                             <small class="field_error newUserErr" style="color:red;display: none"></small>                                    
@@ -60,7 +60,7 @@
                                         <small class="existUserError field_error" style="color:red;">[[ newUserError ]]</small>
                                     </div>
                                     <form id="loginEX" method='post' action="{{ route('get_exist_user_login_new')}}">
-                                        <div class="loginF login_form" style="display:none; margin-bottom:20px;">
+                                        <div class="loginF login_form">
                                             <div class="form-group col-md-12">
                                                 <input type="text" name="loginemail" class="form-control ExistEmail"  id="userEmail" placeholder="Mobile / Email *">
                                                 <div id="loginemail_checkout_re_validate" class="newerror"></div>
@@ -73,8 +73,8 @@
                                                 <div class="col-xs-12 continue-cancel-btnbox">
                                                     <input type="submit" ng-click="loginExistingUser()" id="ExistUserCon" class="button new_user_btn ExistUserLogin continueStep" data-continue="loginPanel" value="CONTINUE">
                                                     <button type="button" ng-click="loginExistingCancel()" class="button login_btn">CANCEL</button>
-                                                    <div class="pull-right">
-                                                        <label> <a href="{{ Route('forgotPassword')}}" class="pull-right forgot-link"> Forgot Password ? </a></label>
+                                                    <div class="forgotBox">
+                                                        <a href="{{ Route('forgotPassword')}}" class="pull-right forgot-link"> Forgot Password ? </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -357,8 +357,8 @@
                                                                     <p class="referalMsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p>
                                                                 </div>
                                                                 <label for="email" class="col-md-12">REFERRAL</label>
-                                                                <p class="col-md-8"><input name="require_referal" type="text" class="form-control requireReferal cartinput" placeholder="Enter Referral Code"></p>
-                                                                <p class="col-md-4"><button type="button" class="btn new_user_btn full-width referalCodeClass" ng-model="referalCode" ng-click="applyReferal()" id="requireReferalApply">APPLY</button></p>
+                                                                <p class="col-md-8 mb15"><input name="require_referal" type="text" class="sm-form-control requireReferal cartinput" placeholder="Enter Referral Code"></p>
+                                                                <p class="col-md-4 mb15"><button type="button" class="btn new_user_btn full-width referalCodeClass" ng-model="referalCode" ng-click="applyReferal()" id="requireReferalApply">APPLY</button></p>
 
                                                             </div>
                                                         </div>
@@ -402,8 +402,8 @@
                                                 </div>
                                                 <li>
                                                     <div class="form-group">
-                                                        <p class="col-md-12">
-                                                            <textarea name="commentText" id="commentTT" class="form-control full-width"  style="margin: 0px;width: 352px;height: 99px; resize: none;"  placeholder="Enter additional comment if any."></textarea>
+                                                        <p class="col-md-12 mb15">
+                                                            <textarea name="commentText" id="commentTT" class="sm-form-control full-width"  placeholder="Enter additional comment if any."></textarea>
                                                         </p>
                                                     </div>
                                                 </li>
