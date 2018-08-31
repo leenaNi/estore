@@ -90,7 +90,7 @@ class ProductController extends Controller {
             $prdimgs->img = $prdimgs->image_path . '/' . $prdimgs->filename;
         }
         $prodCats = $product->categories()->get(['has_categories.cat_id'])->toArray();
-        $prodsByCategories = Product::where('is_individual', 1)->where('status', 1)->where('is_avail', '=', 1)->where('id', '!=', $pId)->with(['categories' => function($q)use($prodCats) {
+        $prodsByCategories = Product::where('is_individual', 1)->where('status', 1)->where('is_avail', '=', 1)->where('store_id', $product->store_id)->where('id', '!=', $pId)->with(['categories' => function($q)use($prodCats) {
                         $q->whereIn('has_categories.cat_id', $prodCats);
                     }])->get();
 //        dd($prodsByCategories);
@@ -141,7 +141,7 @@ class ProductController extends Controller {
             }
         }
         $prodCats = $product->categories()->get(['has_categories.cat_id'])->toArray();
-        $prodsByCategories = Product::where('is_individual', 1)->where('status', 1)->where('is_avail', '=', 1)->where('id', '!=', $prodid)->with(['categories' => function($q)use($prodCats) {
+        $prodsByCategories = Product::where('is_individual', 1)->where('status', 1)->where('is_avail', '=', 1)->where('store_id', $product->store_id)->where('id', '!=', $prodid)->with(['categories' => function($q)use($prodCats) {
                         $q->whereIn('has_categories.cat_id', $prodCats);
                     }])->get();
 //        dd($prodsByCategories);
@@ -212,7 +212,7 @@ class ProductController extends Controller {
                 }
             }
             $prodCats = $product->categories()->get(['has_categories.cat_id'])->toArray();
-            $prodsByCategories = Product::where('is_individual', 1)->where('status', 1)->where('is_avail', '=', 1)->where('id', '!=', $product->id)->with(['categories' => function($q)use($prodCats) {
+            $prodsByCategories = Product::where('is_individual', 1)->where('status', 1)->where('is_avail', '=', 1)->where('store_id', $product->store_id)->where('id', '!=', $product->id)->with(['categories' => function($q)use($prodCats) {
                             $q->whereIn('has_categories.cat_id', $prodCats);
                         }])->get();
 //        dd($prodsByCategories);
