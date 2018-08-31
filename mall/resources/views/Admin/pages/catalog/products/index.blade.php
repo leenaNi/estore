@@ -126,7 +126,7 @@
                                         </span>    
                                     </span>  
                                 </td>
-                                {{dd($product->categories()->first())}}
+                               
                                 <td>  {{($product->categories()->first()->category) }}<br> 
                                       </td>
                                 <td>
