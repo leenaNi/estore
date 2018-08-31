@@ -52,9 +52,6 @@ INSERT INTO `tblprfx_additional_charges` (`id`, `name`, `label`, `type`, `rate`,
 --
 
 
-
-
-
 CREATE TABLE IF NOT EXISTS `tblprfx_attributes` (
   `id` bigint(20) unsigned NOT NULL,
   `attr` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -156,17 +153,18 @@ CREATE TABLE IF NOT EXISTS `tblprfx_catalog_images` (
   `image_mode` int(50) NOT NULL,
   `catalog_id` bigint(20) NOT NULL,
   `sort_order` int(11) NOT NULL,
+  `imgage_path` varchar(180) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
    `updated_at` timestamp  DEFAULT  NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `tblprfx_catalog_images` (`id`, `filename`, `alt_text`, `image_type`, `image_mode`, `catalog_id`, `sort_order`) VALUES
-(1, 'prod-20180623103707.jpg', 'Product Image', 1, 1, 1, 1),
-(2, 'prod-120180623103750.jpg', 'Product Image', 1, 1, 1, 2),
-(3, 'prod-420180623103751.jpg', 'Product Image', 1, 1, 1, 3),
-(4, 'prod-320180623103752.jpg', 'Product Image', 1, 1, 1, 4),
-(5, 'prod-220180623103753.jpg', 'Product Image', 1, 1, 1, 5);
+(1, 'prod-20180623103707.jpg', 'Product Image', 1, 1, 1, 1,null),
+(2, 'prod-120180623103750.jpg', 'Product Image', 1, 1, 1, 2,null),
+(3, 'prod-420180623103751.jpg', 'Product Image', 1, 1, 1, 3,null),
+(4, 'prod-320180623103752.jpg', 'Product Image', 1, 1, 1, 4,null),
+(5, 'prod-220180623103753.jpg', 'Product Image', 1, 1, 1, 5,null);
 -- --------------------------------------------------------
 
 --
@@ -869,28 +867,6 @@ CREATE TABLE IF NOT EXISTS `tblprfx_gifts` (
    `updated_at` timestamp  DEFAULT  NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `tblprfx_has_addresses`
---
-
-CREATE TABLE IF NOT EXISTS `tblprfx_has_addresses` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `firstname` varchar(32) NOT NULL,
-  `lastname` varchar(32) NOT NULL,
-  `address3` text NOT NULL,
-  `address1` text NOT NULL,
-  `address2` text NOT NULL,
-  `phone_no` varchar(255) NOT NULL,
-  `city` varchar(128) NOT NULL,
-  `postcode` varchar(10) NOT NULL,
-  `country_id` int(11) NOT NULL DEFAULT '0',
-  `zone_id` int(11) NOT NULL DEFAULT '0',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1190,6 +1166,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_has_products` (
   `sub_prod_id` text NOT NULL,
   `qty` bigint(20) NOT NULL,
   `price` double NOT NULL,
+   `pay_amt` double NOT NULL,
   `amt_after_discount` float(10,2) NOT NULL,
   `disc` double NOT NULL,
   `wallet_disc` double NOT NULL,
@@ -1475,77 +1452,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_offers_users` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `tblprfx_orders`
---
 
-CREATE TABLE IF NOT EXISTS `tblprfx_orders` (
-  `id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `otype` int(11) NOT NULL,
-  `table_id` bigint(20) DEFAULT NULL,
-  `join_tables` text NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `order_amt` double NOT NULL,
-  `pay_amt` double NOT NULL,
-  `cod_charges` int(20) NOT NULL,
-  `gifting_charges` int(20) NOT NULL,
-  `payment_method` int(11) NOT NULL,
-  `payment_status` int(11) NOT NULL,
-  `payment_id` int(11) NOT NULL,
-  `transaction_id` varchar(255) NOT NULL,
-  `transaction_status` text NOT NULL,
-  `description` text NOT NULL,
-  `cart` text NOT NULL,
-  `cashback_used` float NOT NULL,
-  `cashback_earned` float NOT NULL,
-  `cashback_credited` double NOT NULL,
-  `voucher_used` bigint(20) NOT NULL,
-  `coupon_used` bigint(20) NOT NULL,
-  `discount_type` tinyint(4) NOT NULL COMMENT '1-percentage, 2 absolute',
-  `discount_amt` decimal(10,2) NOT NULL,
-  `shipping_amt` int(11) NOT NULL,
-  `voucher_amt_used` bigint(20) NOT NULL,
-  `coupon_amt_used` double NOT NULL,
-  `shiplabel_tracking_id` varchar(255) NOT NULL,
-  `referal_code_used` varchar(255) NOT NULL,
-  `referal_code_amt` float NOT NULL,
-  `user_ref_points` double NOT NULL,
-  `ref_flag` int(11) NOT NULL,
-   `currency_id` int(11) NOT NULL,
-  `order_status` int(20) NOT NULL,
-  `forward_id` int(11) NOT NULL,
-  `ship_date` datetime NOT NULL,
-  `order_comment` varchar(255) NOT NULL,
- 
-  `currency_value` float(10,6) NOT NULL,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `address1` varchar(255) NOT NULL,
-  `address2` varchar(35) NOT NULL,
-  `address3` varchar(35) NOT NULL,
-  `phone_no` varchar(20) NOT NULL,
-  `country_id` text NOT NULL,
-  `zone_id` text NOT NULL,
-  `postal_code` varchar(20) NOT NULL,
-  `city` varchar(255) NOT NULL,
-  `print_invoice` int(11) NOT NULL,
-  `cart_rec_notify1` int(11) NOT NULL,
-  `cart_rec_notify2` int(11) NOT NULL,
-  `incomplete_order` int(11) NOT NULL,
-  `flag_id` int(11) NOT NULL,
-  `flag_remark` varchar(500) NOT NULL,
-  `loyalty_cron_status` enum('2','1','0') NOT NULL DEFAULT '2' COMMENT '2=ready,1=lock,0=completed',
-  `remark` text NOT NULL,
-  `additional_charge` text,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tblprfx_ordertypes`
 --
 
@@ -3063,41 +2970,41 @@ INSERT INTO `tblprfx_unit_measures` (`id`, `unit`, `status`) VALUES
 -- Table structure for table `tblprfx_users`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_users` (
-  `id` int(10) unsigned NOT NULL,
-  `firstname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `lastname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `country_code` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-  `telephone` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `user_type` tinyint(4) NOT NULL,
-  `provider` text COLLATE utf8_unicode_ci NOT NULL,
-  `provider_id` bigint(20) NOT NULL,
-  `profile` text COLLATE utf8_unicode_ci NOT NULL,
-  `cashback` double NOT NULL,
-  `whishlist` bigint(20) NOT NULL,
-  `loyalty_group` int(11) NOT NULL,
-  `is_manually_updated` int(11) NOT NULL,
-  `total_purchase_till_now` float(20,2) NOT NULL,
-  `referal_code` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `cart` text COLLATE utf8_unicode_ci NOT NULL,
-  `sort_order` int(11) NOT NULL,
-  `status` int(11) NOT NULL DEFAULT '1',
-  `newsletter` int(11) NOT NULL,
-  `ip` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
-  `device_id` text COLLATE utf8_unicode_ci NOT NULL,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `tblprfx_users`
---
-
-INSERT INTO `tblprfx_users` (`id`, `firstname`, `lastname`, `email`, `password`,`country_code`, `telephone`, `remember_token`, `user_type`, `provider`, `provider_id`, `profile`, `cashback`, `whishlist`, `loyalty_group`, `is_manually_updated`, `total_purchase_till_now`, `referal_code`, `cart`, `sort_order`, `status`, `newsletter`, `ip`,`device_id`) VALUES
-(1, 'Super', 'Admin', 'admin@inficart.com', '$2y$10$zaosj.mDRRhXdUSi9wpD4OQvzAHWbjnF1CBkyp546l.CP.ZdPY2hm','+91', '9685986589', 'TsY5yucwXJ5niWCohjhLwpqijGslwrGWYLgVXOSDUxRGG6G78gNmeFhlJOQG', 1, '', 0, '', 0, 0, 1, 0, 0.00, '', '', 0, 1, 0, '','');
+-- CREATE TABLE IF NOT EXISTS `tblprfx_users` (
+--   `id` int(10) unsigned NOT NULL,
+--   `firstname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+--   `lastname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+--   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+--   `password` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
+--   `country_code` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+--   `telephone` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+--   `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+--   `user_type` tinyint(4) NOT NULL,
+--   `provider` text COLLATE utf8_unicode_ci NOT NULL,
+--   `provider_id` bigint(20) NOT NULL,
+--   `profile` text COLLATE utf8_unicode_ci NOT NULL,
+--   `cashback` double NOT NULL,
+--   `whishlist` bigint(20) NOT NULL,
+--   `loyalty_group` int(11) NOT NULL,
+--   `is_manually_updated` int(11) NOT NULL,
+--   `total_purchase_till_now` float(20,2) NOT NULL,
+--   `referal_code` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+--   `cart` text COLLATE utf8_unicode_ci NOT NULL,
+--   `sort_order` int(11) NOT NULL,
+--   `status` int(11) NOT NULL DEFAULT '1',
+--   `newsletter` int(11) NOT NULL,
+--   `ip` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+--   `device_id` text COLLATE utf8_unicode_ci NOT NULL,
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+-- 
+-- --
+-- -- Dumping data for table `tblprfx_users`
+-- --
+-- 
+-- INSERT INTO `tblprfx_users` (`id`, `firstname`, `lastname`, `email`, `password`,`country_code`, `telephone`, `remember_token`, `user_type`, `provider`, `provider_id`, `profile`, `cashback`, `whishlist`, `loyalty_group`, `is_manually_updated`, `total_purchase_till_now`, `referal_code`, `cart`, `sort_order`, `status`, `newsletter`, `ip`,`device_id`) VALUES
+-- (1, 'Super', 'Admin', 'admin@inficart.com', '$2y$10$zaosj.mDRRhXdUSi9wpD4OQvzAHWbjnF1CBkyp546l.CP.ZdPY2hm','+91', '9685986589', 'TsY5yucwXJ5niWCohjhLwpqijGslwrGWYLgVXOSDUxRGG6G78gNmeFhlJOQG', 1, '', 0, '', 0, 0, 1, 0, 0.00, '', '', 0, 1, 0, '','');
 
 -- --------------------------------------------------------
 
@@ -7275,14 +7182,7 @@ ALTER TABLE `tblprfx_general_setting`
 ALTER TABLE `tblprfx_gifts`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `tblprfx_has_addresses`
---
-ALTER TABLE `tblprfx_has_addresses`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `customer_id` (`user_id`);
 
---
 -- Indexes for table `tblprfx_has_attributes`
 --
 ALTER TABLE `tblprfx_has_attributes`
@@ -7420,11 +7320,7 @@ ALTER TABLE `tblprfx_offers_products`
 ALTER TABLE `tblprfx_offers_users`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `tblprfx_orders`
---
-ALTER TABLE `tblprfx_orders`
-  ADD PRIMARY KEY (`id`);
+
 
 --
 -- Indexes for table `tblprfx_ordertypes`
@@ -7681,8 +7577,8 @@ ALTER TABLE `tblprfx_unit_measures`
 --
 -- Indexes for table `tblprfx_users`
 --
-ALTER TABLE `tblprfx_users`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_users`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_vendors`
@@ -7817,11 +7713,7 @@ ALTER TABLE `tblprfx_general_setting`
 ALTER TABLE `tblprfx_gifts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `tblprfx_has_addresses`
---
-ALTER TABLE `tblprfx_has_addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=42512;
---
+
 -- AUTO_INCREMENT for table `tblprfx_has_attributes`
 --
 ALTER TABLE `tblprfx_has_attributes`
@@ -7937,10 +7829,7 @@ ALTER TABLE `tblprfx_offers_products`
 ALTER TABLE `tblprfx_offers_users`
   MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `tblprfx_orders`
---
-ALTER TABLE `tblprfx_orders`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `tblprfx_ordertypes`
 --
@@ -8134,8 +8023,8 @@ ALTER TABLE `tblprfx_unit_measures`
 --
 -- AUTO_INCREMENT for table `tblprfx_users`
 --
-ALTER TABLE `tblprfx_users`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+-- ALTER TABLE `tblprfx_users`
+--   MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tblprfx_vendors`
 --

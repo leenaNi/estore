@@ -23,7 +23,7 @@
                             <th></th>
                             <th class="text-left">Product</th>
                             <th>Price <span class="currency-sym-in-braces"></span></th>
-                            <th>Qty</th>
+                            <th>Quantity</th>
 
                             @if(@$feature['coupon'] == 1)
                             <th>Coupon Discount <span class="currency-sym-in-braces"></span></th>

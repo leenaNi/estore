@@ -54,21 +54,21 @@
                     <div class="product-desc text-center">
                         <div class="product-title">
                             <h4><a  href="{{route("home")}}/{{$product->url_key}}">{{$product->product}}</a>
-                                <span class="subtitle">Flat 10% Off*</span>
+<!--                                <span class="subtitle">Flat 10% Off*</span>-->
                             </h4>
                         </div>
                         @if($product->spl_price > 0 && $product->price > $product->spl_price)
                         <div class="product-price">
-                            <del><i class="icon-rupee"></i> {{$product->price}}</del> 
-                            <ins><i class="icon-rupee"></i>{{$product->selling_price}}</ins>
+                            <del><i class="currency-sym"></i> {{number_format($product->price * Session::get('currency_val'),2)}}</del> 
+                            <ins><i class="currency-sym"></i>{{number_format($product->selling_price * Session::get('currency_val'),2)}}</ins>
                         </div>
                         @else
                         <div class="product-price">
 
-                            <ins><i class="icon-rupee"></i>{{$product->selling_price}}</ins>
+                            <ins><i class="currency-sym"></i>{{number_format($product->selling_price * Session::get('currency_val'),2)}}</ins>
                         </div>
                         @endif
-                        <a href="{{route("home")}}/{{$product->url_key}}" class="btn btn-default">View Detail</a>
+                        <!-- <a href="{{route("home")}}/{{$product->url_key}}" class="btn btn-default">View Detail</a> -->
                     </div>
                 </div>
                 @endforeach

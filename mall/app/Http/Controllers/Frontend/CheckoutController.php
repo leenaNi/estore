@@ -154,7 +154,7 @@ class CheckoutController extends Controller {
                 Helper::newUserInfo($user->id);
                 $getUserInfo = User::find($user->id);
                 $referralCode = "Your referral code is " . $getUserInfo->referal_code;
-                if ( $getUserInfo->email != '') {
+                if ($getUserInfo->email != '') {
                     $email_template = EmailTemplate::where('id', 1)->select('content')->get()->toArray()[0]['content'];
                     if ($referralStatus == 1) {
                         $replace = ["[first_name]", "[last_name]", "[referralCode]"];
@@ -1847,16 +1847,18 @@ class CheckoutController extends Controller {
 //                    $total_tax[] = $prod_tax;
 //                }
 //            }
-
+            $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
             if ($cart->options->tax_type == 2) {
                 $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
                 $taxeble_amt = $cart->subtotal - $getdisc;
                 $tax_amt = round($taxeble_amt * $cart->options->taxes / 100, 2);
                 $subtotal = $cart->subtotal + $tax_amt;
+                $payamt = $subtotal - $getdisc;
             } else {
                 $subtotal = $cart->subtotal;
+                $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax)];
+            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax), 'pay_amt' => $payamt];
 
 
             if ($cart->options->has('sub_prod')) {

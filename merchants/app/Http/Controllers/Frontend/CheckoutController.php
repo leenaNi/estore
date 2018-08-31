@@ -152,9 +152,9 @@ class CheckoutController extends Controller {
                 $user->country_code = Input::get('country_code');
                 $user->telephone = Input::get('telephone');
                 $user->lastname = ucfirst(Input::get('lastname'));
-                $jsonString =Helper::getSettings();
-                $user->prefix=$jsonString['prefix'];
-                 $user->store_id=$jsonString['store_id'];
+                $jsonString = Helper::getSettings();
+                $user->prefix = $jsonString['prefix'];
+                $user->store_id = $jsonString['store_id'];
                 $user->save();
                 Helper::newUserInfo($user->id);
                 $getUserInfo = User::find($user->id);
@@ -939,8 +939,8 @@ class CheckoutController extends Controller {
             $suc = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus);
         }
         if (!empty($suc['email']))
-            //$this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
-        return redirect()->route('orderSuccess');
+        //$this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
+            return redirect()->route('orderSuccess');
 
         // } 
     }
@@ -1126,15 +1126,15 @@ class CheckoutController extends Controller {
         $_POST['secure_hash'] = md5($hash);
         ?> 
         <form action='https://secure.ebs.in/pg/ma/sale/pay' method='post' name='frm'>
-        <?php
-        foreach ($_POST as $a => $b) {
-            if (htmlentities($a) == "amount") {
-                echo "<input type='hidden' name='" . htmlentities($a) . "' value='" . htmlentities($payAmtE) . "'>";
-            } else {
-                echo "<input type='hidden' name='" . htmlentities($a) . "' value='" . htmlentities($b) . "'>";
+            <?php
+            foreach ($_POST as $a => $b) {
+                if (htmlentities($a) == "amount") {
+                    echo "<input type='hidden' name='" . htmlentities($a) . "' value='" . htmlentities($payAmtE) . "'>";
+                } else {
+                    echo "<input type='hidden' name='" . htmlentities($a) . "' value='" . htmlentities($b) . "'>";
+                }
             }
-        }
-        ?>
+            ?>
         </form>
         <script language="JavaScript">
             document.frm.submit();
@@ -1743,9 +1743,9 @@ class CheckoutController extends Controller {
         $order->cashback_used = is_null(Session::get('checkbackUsedAmt')) ? 0 : Session::get('checkbackUsedAmt');
         $order->voucher_amt_used = is_null(Session::get('voucherAmount')) ? 0 : Session::get('voucherAmount');
         $order->voucher_used = is_null(Session::get('voucherUsedAmt')) ? 0 : Session::get('voucherUsedAmt');
-        $jsonString =Helper::getSettings();  
-        $order->prefix=$jsonString['prefix'];
-        $order->store_id=$jsonString['store_id'];
+        $jsonString = Helper::getSettings();
+        $order->prefix = $jsonString['prefix'];
+        $order->store_id = $jsonString['store_id'];
         $coupon_id = Session::get('voucherUsedAmt');
         if (isset($coupon_id)) {
             $coupon = Coupon::find($coupon_id);
@@ -1856,16 +1856,18 @@ class CheckoutController extends Controller {
                     $total_tax[] = $prod_tax;
                 }
             }
-
+            $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
             if ($cart->options->tax_type == 2) {
                 $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
                 $taxeble_amt = $cart->subtotal - $getdisc;
                 $tax_amt = round($taxeble_amt * $cart->options->taxes / 100, 2);
                 $subtotal = $cart->subtotal + $tax_amt;
+                $payamt = $subtotal - $getdisc;
             } else {
                 $subtotal = $cart->subtotal;
+                $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal * Session::get('currency_val'), "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax)];
+            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal * Session::get('currency_val'), "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax), 'pay_amt' => $payamt];
 //            $market_place = Helper::generalSetting(35);
 //            if (isset($market_place) && $market_place->status == 1) {
 //                $prior_vendor = $product->vendorPriority()->first();
@@ -1889,15 +1891,15 @@ class CheckoutController extends Controller {
                 $date = $cart->options->eNoOfDaysAllowed;
                 $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
-     
+
                 if ($prddataS->is_stock == 1) {
-                   $prddataS->stock = $prddataS->stock - $cart->qty;
-                    if($prddataS->is_share_on_mall==1){
-                        $mallProduct = MallProducts::where("store_prod_id",$cart->options->sub_prod)->first(); 
-                        $mallProduct->stock=$prddataS->stock;
+                    $prddataS->stock = $prddataS->stock - $cart->qty;
+                    if ($prddataS->is_share_on_mall == 1) {
+                        $mallProduct = MallProducts::where("store_prod_id", $cart->options->sub_prod)->first();
+                        $mallProduct->stock = $prddataS->stock;
                         $mallProduct->update();
                     }
-                     $prddataS->update();
+                    $prddataS->update();
                 }
 
                 if ($prddataS->stock <= $stockLimit['stocklimit'] && $prddataS->is_stock == 1) {
@@ -1960,7 +1962,7 @@ class CheckoutController extends Controller {
                 }
             }
             // $order->products()->attach($cart_ids); 
-          //  HasProducts::on('mysql2');
+            //  HasProducts::on('mysql2');
             $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
         //  $this->orderSuccess();
@@ -2155,8 +2157,8 @@ class CheckoutController extends Controller {
             $email_template = $emailContent[0]['content'];
             $subject = $emailContent[0]['subject'];
 
-            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]","[ordet_id]","[created_at]");
-            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'],$order->id,$order->created_at);
+            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordet_id]", "[created_at]");
+            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $order->id, $order->created_at);
             $email_templates = str_replace($replace, $replacewith, $email_template);
             $data_email = ['email_template' => $email_templates];
 
