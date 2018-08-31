@@ -121,7 +121,7 @@
                     <div class="table-responsive">
                         <table class="table table-bordered cart">
                             <tr class="cart-subtotal">
-                                <th colspan="2">Cart Total</th>
+                                <th colspan="2"><h4 class="heading-title mobMarginTop20">Cart Total</h4></th>
                             </tr>
                             <tr class="cart-subtotal">
                                 <th>Sub-Total: <span class="currency-sym-in-braces"></span></th>
