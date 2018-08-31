@@ -117,16 +117,19 @@
         <div class="cart-collaterals row">
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
                 <div class="cal-shipping">
-                    <h4 class="heading-title mb15 mobMarginTop20">Cart Total</h4>
+                    <!--<h4 class="heading-title mb15 mobMarginTop20">Cart Total</h4>-->
                     <div class="table-responsive">
                         <table class="table table-bordered cart">
                             <tr class="cart-subtotal">
+                                <th colspan="2">Cart Total</th>
+                            </tr>
+                            <tr class="cart-subtotal">
                                 <th>Sub-Total: <span class="currency-sym-in-braces"></span></th>
-                                <td><strong><span class="amount allSubtotal" id="amountallSubtotal">{{ number_format($cart_amt['sub_total'] * Session::get('currency_val'), 2, '.', '') }}</span></strong></td>
+                                <td class="text-right"><strong><span class="amount allSubtotal" id="amountallSubtotal">{{ number_format($cart_amt['sub_total'] * Session::get('currency_val'), 2, '.', '') }}</span></strong></td>
                             </tr>
                             <tr class="order-total">
                                 <th><div class="black-bg">Total:<span class="currency-sym-in-braces"></span> </div></th>
-                                <td><div class="black-bg"><strong><span class="amount finalAmt">{{ number_format($cart_amt['total']* Session::get('currency_val'), 2, '.', '') }}</span></strong></div></td>
+                                <td class="text-right"><strong><span class="amount finalAmt">{{ number_format($cart_amt['total']* Session::get('currency_val'), 2, '.', '') }}</span></strong></td>
                             </tr>
                         </table>
                     </div>
