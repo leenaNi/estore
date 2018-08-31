@@ -161,7 +161,7 @@
                                 <th>@sortablelink ('product', 'Product')</th>
                                 <!-- <th>@sortablelink ('product_code', 'SKU')</th> -->
                                 <th>Categories</th>
-                                <th><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';               ?>@sortablelink ('price', 'Price') </th>
+                                <th><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';                ?>@sortablelink ('price', 'Price') </th>
                                 <!-- <th>@sortablelink ('spl_price', 'Special Price')</th> -->
                                 <th>Product Type</th>
                                <!-- <th>Availability</th> -->
@@ -590,31 +590,31 @@
                                                 });
                                                 $("#addProductToMall").modal("show");
                                                 $("#selCat").append(optionVal).append(data.category);
-                                                
+
                                                 //                                                $("#selCat").append(optionVal);
                                             }
                                         });
                                     });
-                                      $(".unpublishToMall").click(function () {
-                                                     //    alert("for ");
+                                    $(".unpublishToMall").click(function () {
+                                        //    alert("for ");
                                         var prodId = ($(this).attr('prod-id'));
                                         //  var optionVal='<oprion value="">Please Select Category</option>';
-                                      var conf=confirm("Are you sure to unpublish the product form mall ?");
-                                      if(conf){
-                                        $.ajax({
-                                            url: "{{ route('admin.product.mall.product.update') }}",
-                                            type: "post",
-                                            data: {prodId: prodId},
-                                            success: function (data) {
-                                                if(data.status === 1)
-                                            window.location.href = "{{ route('admin.products.view') }}";
-                                                
-                                                //                                                $("#selCat").append(optionVal);
-                                            }
-                                        });
-                                    }else{
-                                        return false;
-                                    }
+                                        var conf = confirm("Are you sure to unpublish the product form mall ?");
+                                        if (conf) {
+                                            $.ajax({
+                                                url: "{{ route('admin.product.mall.product.update') }}",
+                                                type: "post",
+                                                data: {prodId: prodId},
+                                                success: function (data) {
+                                                    if (data.status === "1" || data.status === "0")
+                                                        window.location.href = "{{ route('admin.products.view') }}";
+
+                                                    //                                                $("#selCat").append(optionVal);
+                                                }
+                                            });
+                                        } else {
+                                            return false;
+                                        }
                                     });
                                     $(function () {
                                         $("body").on("click", "button#publish", function (e) {
@@ -635,7 +635,7 @@
                                                         // $("#barerr" + id).text('Please wait');
                                                     },
                                                     success: function (res) {
-                                                        if (res.status===1) {
+                                                        if (res.status == "1" || res.status == "0") {
                                                             $("#addProductToMall").modal("hide");
                                                             window.location.href = "{{ route('admin.products.view') }}";
                                                         }

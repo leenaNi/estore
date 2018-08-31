@@ -2155,7 +2155,7 @@ class ProductsController extends Controller {
             }
             $products->is_share_on_mall = 1;
             $products->save();
-            Session::put('msg', "Product share on mall successfully");
+            Session::flash('msg', "Product published to mall successfully");
             $data = ["status" => "1", "msg" => "Product published to mall successfully", "prod" => $prod];
         }
         return $data;
