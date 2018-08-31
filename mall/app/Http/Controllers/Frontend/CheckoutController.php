@@ -2048,7 +2048,7 @@ class CheckoutController extends Controller {
 
         if (Session::get('orderId')) {
             $order = Order::find(Session::get('orderId'));
-            $coupon = Coupon::find($order->coupon_used);
+            $coupon = []; //Coupon::find($order->coupon_used);
             Session::forget('orderId');
             Session::forget('couponUsedAmt');
             Session::forget('usedCouponId');
