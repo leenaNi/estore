@@ -102,7 +102,7 @@
         maxP = <?php echo (@$maxp) ? $maxp * Session::get('currency_val') : '0'; ?>;
         maxp = <?php echo (@$maxp) ? $maxp * Session::get('currency_val') : '0'; ?>;
         maxp = Math.ceil(maxp);
-        //console.log("Min price => " + minp + "Max price => " + maxp);
+        console.log("Min price => " + minp + "Max price => " + maxp);
 
         $('#slider-range').slider({
             range: true,
@@ -110,8 +110,8 @@
             max: maxp,
             values: [minp, maxp],
             slide: function (event, ui) {
-                $("input[name='min_price']").val(Math.round(ui.values[0] * <?php echo Session::get('currency_val'); ?>));
-                $(".price-rangebox #max_price").val(Math.round(ui.values[1] * <?php echo Session::get('currency_val'); ?>));
+                $("input[name='min_price']").val(Math.round(ui.values[0] ));
+                $("input[name='max_price']").val(Math.round(ui.values[1]));
             }
         });
         $("input[name='min_price']").val(minp);

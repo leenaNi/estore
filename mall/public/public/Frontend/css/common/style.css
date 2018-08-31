@@ -5933,7 +5933,7 @@ body:not(.device-touch):not(.device-xs):not(.device-xxs) .portfolio.portfolio-pa
 	opacity: 0.75;
 	z-index: 2;
 	text-align: center;
-	background-color: rgba(0,0,0,0.5);
+	background-color: rgba(0,0,0,0.9);
 }
 
 body:not(.device-touch):not(.device-xs):not(.device-xxs) .portfolio-overlay {
@@ -15146,7 +15146,7 @@ div#tab-2 ul li a {
     padding: 0;
 }
 
-<<<<<<< HEAD
+
 .fullwidth
 {
 	width: 100%!important;
@@ -15174,7 +15174,7 @@ div#tab-2 ul li a {
 	font-size: 12px;
 }
 }   
-=======
+
 .borderright
 {
 border-right: 1px solid #ccc;
@@ -15189,6 +15189,16 @@ border-right: 1px solid #ccc;
 	color: #fff;
 }
 
+.limit-txt
+{ 
+overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+}
+
+div#slide-number {
+	display: none;
+	}
 /*pranali css ends*/
 /*media queries*/
 
@@ -15221,4 +15231,3 @@ div#tab-2 ul li {
 }
 
 }
->>>>>>> d1b0011097691aa68e5a051e5bcc4321fd27c2ae

@@ -52,7 +52,7 @@
                         </a>
                     </div>
                     <div class="product-desc text-center">
-                        <div class="product-title">
+                        <div class="product-title limit-txt">
                             <h4><a  href="{{route("home")}}/{{$product->url_key}}">{{$product->product}}</a>
 <!--                                <span class="subtitle">Flat 10% Off*</span>-->
                             </h4>

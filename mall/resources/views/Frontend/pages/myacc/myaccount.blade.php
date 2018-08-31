@@ -56,7 +56,7 @@
             <div class="col-lg-9 margin-top-md">
                 <div class="tabs tabs-justify tabs-bordered clearfix tabwhite nobottommargin" id="tab-2">
                     <ul class="tab-nav clearfix" role="tablist">
-                        <li><a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1"> My Profile</a>
+                        <li><a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1"> Edit Profile</a>
                         </li>
                         <li><a href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-3"> My Orders</a>
                         </li>

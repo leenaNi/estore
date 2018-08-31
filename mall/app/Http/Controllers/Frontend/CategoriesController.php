@@ -260,7 +260,7 @@ class CategoriesController extends Controller {
                 $maxP = 0;
             }
         } else {
-            
+            $maxP = @Helper::maxPriceByCat(@$cat->id); 
         }
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
         $currencySetting = $currencySetting->setCurrency();
