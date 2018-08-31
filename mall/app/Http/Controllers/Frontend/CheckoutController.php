@@ -1788,7 +1788,7 @@ class CheckoutController extends Controller {
             $this->updateStock($order->id);
             //}
             if ($user->telephone) {
-                $msgOrderSucc = "Your order from " . Session::put('storeName') . " with id " . $order->id . " has been placed successfully. Thank you!";
+                $msgOrderSucc = "Your order from Veestores Mall with id " . $order->id . " has been placed successfully. Thank you!";
 
                 Helper::sendsms($user->telephone, $msgOrderSucc, $user->country_code);
             }
@@ -2048,7 +2048,7 @@ class CheckoutController extends Controller {
 
         if (Session::get('orderId')) {
             $order = Order::find(Session::get('orderId'));
-            $coupon = Coupon::find($order->coupon_used);
+            $coupon = []; //Coupon::find($order->coupon_used);
             Session::forget('orderId');
             Session::forget('couponUsedAmt');
             Session::forget('usedCouponId');

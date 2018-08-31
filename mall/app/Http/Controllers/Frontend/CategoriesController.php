@@ -112,9 +112,9 @@ class CategoriesController extends Controller {
         }
 
         if (!empty($cat)) {
-//            $prods = $prods->whereHas('categories', function($query) use ($cats) {
-//                return $query->whereIn('cat_id', $cats);
-//            });
+            $prods = $prods->whereHas('categories', function($query) use ($cats) {
+                return $query->whereIn('cat_id', $cats);
+            });
         }
         $prods = $prods->where(function($query) {
             if (!empty(Input::get('tags'))) {

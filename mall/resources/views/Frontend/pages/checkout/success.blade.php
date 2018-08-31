@@ -8,6 +8,7 @@
         #printcontent { position: absolute; top: 40px; left: 30px; }
     }
 </style>
+<div class="clearfix"></div>
 <!-- Content
             ============================================= -->
 <section id="content">
