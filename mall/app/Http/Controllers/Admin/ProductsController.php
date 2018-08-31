@@ -141,7 +141,7 @@ class ProductsController extends Controller {
             $prd->mainImage =  $prodImg->image_path . '/' .@$prodImg->filename;
             
         }
-       dd($products);
+      
 
         return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount','category'));
     }
