@@ -11,8 +11,6 @@
     </div>
 </section>
 <div id="content" class="site-content single-product">
-
-
     <div class="container">
         @if(!empty($cart->toArray()))
         <form class="cart-form" action="#">
@@ -24,14 +22,12 @@
                             <th class="text-left">Product</th>
                             <th>Price <span class="currency-sym-in-braces"></span></th>
                             <th>Quantity</th>
-
                             @if(@$feature['coupon'] == 1)
                             <th>Coupon Discount <span class="currency-sym-in-braces"></span></th>
                             @endif
                             @if(@$feature['tax'] == 1)
                             <th>Tax <span class="currency-sym-in-braces"></span></th>
                             @endif
-
                             <th>Subtotal <span class="currency-sym-in-braces"></span></th>
                         </tr>
                     </thead>
@@ -46,40 +42,40 @@
                             ?>
                             <td class="cartProductName" valign="top">
                                 <div class="CPN-Box">
-                                <div class="CPN-BoxLeft">
-                                <?php if ($item->options->image != "") { ?>
-                                    <img src="{{ config('constants.productImgPath').'/'.$item->options->image }}" class="cart-prodimg"/>
-                                <?php } else { ?>
-                                    <img src="{{ (Config('constants.defaultImgPath').'/default-product.jpg') }}" class="cart-prodimg"/>
-                                <?php } ?>
-                                </div>
-                                <div class="CPN-BoxRight">
-                                <div>{{ $item->name }}
-                                <div class="clearfix"></div></div>
-                                <?php
-                                if ($item->options->CatType != '') {
-                                    echo "(" . $item->options->CatType . ")";
-                                }
-                                ?>
-                                <div class="cart-quanitiy">
-                                    <?php
-                                    if ($item->options->options) {
-                                        foreach ($item->options->options as $key => $value) {
-                                            echo @App\Models\AttributeValue::find($value)->option_name . " ";
+                                    <div class="CPN-BoxLeft">
+                                        <?php if ($item->options->image != "") { ?>
+                                            <img src="{{ $item->options->image_with_path.'/'.$item->options->image }}" class="cart-prodimg"/>
+                                        <?php } else { ?>
+                                            <img src="{{ $item->options->image_with_path.'/default-product.jpg' }}" class="cart-prodimg"/>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="CPN-BoxRight">
+                                        <div>{{ $item->name }}
+                                            <div class="clearfix"></div></div>
+                                        <?php
+                                        if ($item->options->CatType != '') {
+                                            echo "(" . $item->options->CatType . ")";
                                         }
-                                    }
-                                    if ($item->options->options) {
-                                        foreach ($item->options->options as $key => $value) {
-                                            if (!empty($value->options)) {
-                                                foreach ($value->options as $opt => $optval) {
-                                                    echo @App\Models\AttributeValue::find($optval)->option_name . " ";
+                                        ?>
+                                        <div class="cart-quanitiy">
+                                            <?php
+                                            if ($item->options->options) {
+                                                foreach ($item->options->options as $key => $value) {
+                                                    echo @App\Models\AttributeValue::find($value)->option_name . " ";
                                                 }
                                             }
-                                        }
-                                    }
-                                    ?>
-                                </div>
-                                </div>
+                                            if ($item->options->options) {
+                                                foreach ($item->options->options as $key => $value) {
+                                                    if (!empty($value->options)) {
+                                                        foreach ($value->options as $opt => $optval) {
+                                                            echo @App\Models\AttributeValue::find($optval)->option_name . " ";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                             <td>{{ number_format($item->price * Session::get('currency_val'), 2, '.', '') }}<br/>
@@ -99,7 +95,6 @@
                                     $max = '1000000';
                                 }
                                 ?>
-
                                 <div class="quantity cart-quantity-box">
                                     <input type="button" value="-" class="minus" field="quantity">
                                     <input  type="text" name="quantity" id="quantity" value="{{ $item->qty}}" data-productid="{{ $item->options->sub_prod}}" data-rowid ="{{$item->rowid}}"  onkeypress="return isNumber(event);"  class="qty qty{{$k}} cddd realquntity{{$item->options->sub_prod}}" min="1" max="{{$max}}"/>
@@ -107,29 +102,15 @@
                                     <input type="button" value="+" class="plus" field="quantity">
                                 </div>
                             </td>
-
                             @if(@$feature['coupon'] == 1)
                             <td>
                                 <span class="disc_indv{{$item->rowid}} disc_indv" rowid='{{$item->rowid}}'> 0.00</span>
-
                             </td>
                             @endif
-
-
                             @if(@$feature['tax'] == 1)
                             <td>
                                 <span class="tax_{{$item->rowid}} tax_amt" rowid='{{$item->rowid}}'> {{  number_format($item->options->tax_amt * Session::get('currency_val'), 2, '.', '')}}</span>
-
                             </td>
-                            <!-- <td>
-                                @if($item->options->tax_type == 2)
-                                Exclusive of Tax
-                                @elseif($item->options->tax_type == 1)
-                                Inclusive of Tax
-                                @else
-                                No Tax
-                                @endif
-                            </td> -->
                             @endif
                             <td>
                                 <?php $subTotalAmt = ($item->options->tax_type == 2 ) ? $item->subtotal + $item->options->tax_amt : $item->subtotal; ?>
@@ -143,53 +124,22 @@
             </div>
         </form>
         <div class="cart-collaterals row">
-            @if($chkC == 1)
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="cal-shipping">
-                    <h4 class="heading-title mb15">HAVE A COUPON?</h4>
-                    <form class="checkout_coupon" method="post">
-                        <div class="cart-input">
-                            <input name="coupon_code" class="userCouponCode sm-form-control" id="" value="" placeholder="Enter Coupon Code "  type="text"> 
-                        </div>
-                        <div class="">
-                            <input class="button applycoupenbtn bold default" name="apply_coupon" id="couponApply" value="Apply Coupon" type="submit">
-                        </div>
-                    </form>
-                    <div class="col-md-12 col-xs-12 space3">
-                        <span class="cmsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></span>
-                    </div>
-                </div><!-- .cal-shipping -->
-            </div>
-            @endif
-
-
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
                 <div class="cal-shipping">
                     <h4 class="heading-title mb15 mobMarginTop20">Cart Total</h4>
                     <div class="table-responsive">
-                    <table class="table table-bordered cart">
+                        <table class="table table-bordered cart">
+                            <tr class="cart-subtotal">
+                                <th>Sub-Total: <span class="currency-sym-in-braces"></span></th>
+                                <td><strong><span class="amount allSubtotal" id="amountallSubtotal">{{ number_format($cart_amt['sub_total'] * Session::get('currency_val'), 2, '.', '') }}</span></strong></td>
+                            </tr>
+                            <tr class="order-total">
+                                <th><div class="black-bg">Total:<span class="currency-sym-in-braces"></span> </div></th>
+                                <td><div class="black-bg"><strong><span class="amount finalAmt">{{ number_format($cart_amt['total']* Session::get('currency_val'), 2, '.', '') }}</span></strong></div></td>
+                            </tr>
 
-                        <tr class="cart-subtotal">
-                            <th>Sub-Total: <span class="currency-sym-in-braces"></span></th>
-                            <td><strong><span class="amount allSubtotal" id="amountallSubtotal">{{ number_format($cart_amt['sub_total'] * Session::get('currency_val'), 2, '.', '') }}</span></strong></td>
-                        </tr>
-
-                        @if($chkC == 1)
-                        <tr class="shipping">
-                            <th>Coupon<span class="coupCode"></span>:<span class="currency-sym-in-braces"></span> </th>
-                            <td>
-                            <strong><span class="couponUsedAmount" id="couponUsedAmount">{{ number_format(Session::get('couponUsedAmt')* Session::get('currency_val'), 2, '.', '') }}</span></strong>
-                            </td>
-                        </tr>
-                        @endif
-
-                        <tr class="order-total">
-                            <th><div class="black-bg">Total:<span class="currency-sym-in-braces"></span> </div></th>
-                            <td><div class="black-bg"><strong><span class="amount finalAmt">{{ number_format($cart_amt['total']* Session::get('currency_val'), 2, '.', '') }}</span></strong></div></td>
-                        </tr>
-
-                    </table>
-                </div>
+                        </table>
+                    </div>
                 </div><!-- .cal-shipping -->
             </div>
             <div class="clearfix"></div>
@@ -344,12 +294,6 @@
                 }
             });
         });
-//        $('.plus').click(function () {
-//            // Stop acting like a button
-//            // Get the field name
-//            var thisQty = $(this).parent().find(".qty");
-//            calc(thisQty);
-//        });
     });
 
     $("#couponApply").click(function () {
