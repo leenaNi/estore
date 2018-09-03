@@ -1832,7 +1832,7 @@ class CheckoutController extends Controller {
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-        // $order->products()->detach();
+        $order->products()->detach();
         foreach ($cartContent as $cart) {
             $product = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
             $sum = 0;
@@ -1858,7 +1858,8 @@ class CheckoutController extends Controller {
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax), 'pay_amt' => $payamt];
+            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc,
+                'tax' => json_encode($total_tax), 'pay_amt' => $payamt, 'store_id' => $cart->options->store_id, 'prefix' => $cart->options->prefix];
 
 
             if ($cart->options->has('sub_prod')) {
@@ -1949,11 +1950,10 @@ class CheckoutController extends Controller {
 //                    $this->AdminStockAlert($prd->id);
 //                }
             }
-            $cart_ids[$cart->id]["order_id"] = $orderId;
-            $cart_ids[$cart->id]["prod_id"] = $cart->id;
+            $cart_ids[$cart->id]["order_status"] = 1;
             // $order->products()->attach($cart_ids); 
-            DB::table($cart->options->prefix . '_has_products')->insert($cart_ids);
-            //$order->products()->attach($cart->id, $cart_ids[$cart->id]);
+            // DB::table($cart->options->prefix . '_has_products')->insert($cart_ids);
+            $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
         //  $this->orderSuccess();
     }

@@ -50,6 +50,79 @@ class OrdersController extends Controller {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
 
+        $orders = HasProducts::where("order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->orderBy("id", "desc");
+        $payment_method = PaymentMethod::all();
+        $payment_stuatus = PaymentStatus::all();
+        if (!empty(Input::get('order_ids'))) {
+            $mulIds = explode(",", Input::get('order_ids'));
+            $orders = $orders->whereIn("id", $mulIds);
+        }
+        if (!empty(Input::get('order_number_from'))) {
+            $orders = $orders->where('id', '>=', Input::get('order_number_from'));
+        }
+        if (!empty(Input::get('order_number_to'))) {
+            $orders = $orders->where('id', '<=', Input::get('order_number_to'));
+        }
+        if (!empty(Input::get('pricemin'))) {
+            $orders = $orders->where('pay_amt', '>=', Input::get('pricemin'));
+        }
+        if (!empty(Input::get('pricemax'))) {
+            $orders = $orders->where('pay_amt', '<=', Input::get('pricemax'));
+        }
+        if (!empty(Input::get('search'))) {
+            //get user id
+            $users = User::whereRaw("(CONCAT(firstname,' ',lastname) like ?)", ['%' . Input::get('search') . '%'])->orwhere('email', "like", "%" . Input::get('search') . "%")->orwhere('telephone', "like", "%" . Input::get('search') . "%")->select('id')->get()->toArray();
+
+            if (!empty($users)) {
+                $orders = $orders->whereIn('user_id', $users);
+            }
+        }
+        if (!empty(Input::get('date'))) {
+            $dates = explode(' - ', Input::get('date'));
+            $dates[0] = date("Y-m-d", strtotime($dates[0]));
+            $dates[1] = date("Y-m-d 23:59:00", strtotime($dates[1]));
+            $orders = $orders->whereBetween('created_at', $dates);
+        }
+        /* if (!empty(Input::get('dateto'))) {
+          $date = date("Y-m-d", strtotime(Input::get('dateto')));
+          $orders = $orders->where('created_at', '<=', $date);
+          } */
+//        if (!empty(Input::get('searchFlag'))) {
+//            $chk = Flags::find(Input::get('searchFlag'))->flag;
+//            if (strpos($chk, 'No Flag') !== false) {
+//                $orders = $orders->where('flag_id', 0);
+//            } else {
+//                $orders = $orders->WhereHas('orderFlag', function($q) {
+//                    $q->where('flag_id', '=', Input::get('searchFlag'));
+//                });
+//            }
+//        }
+        if (Input::get('searchStatus') !== null) {
+            if (!empty(Input::get('searchStatus'))) {
+                $order_options = '';
+                foreach ($order_status as $status) {
+                    $order_options .= '<option  value="' . $status->id . '" ' . (in_array($status->id, Input::get('searchStatus')) ? 'selected' : '') . '>' . $status->order_status . '</option>';
+                }
+                $orders = $orders->whereIn('order_status', Input::get('searchStatus'));
+            }
+        }
+
+        $orders = $orders->paginate(Config('constants.paginateNo'));
+        $ordersCount = $orders->total();
+        $flags = Flags::all();
+
+        $viewname = Config('constants.adminOrderView') . '.index1';
+        $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
+        return Helper::returnView($viewname, $data);
+    }
+  public function indexold() {
+        $jsonString = Helper::getSettings();
+        $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
+        $order_options = '';
+        foreach ($order_status as $status) {
+            $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
+        }
+
         $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
@@ -111,11 +184,10 @@ class OrdersController extends Controller {
         $ordersCount = $orders->total();
         $flags = Flags::all();
 
-        $viewname = Config('constants.adminOrderView') . '.index';
+        $viewname = Config('constants.adminOrderView') . '.index1';
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
         return Helper::returnView($viewname, $data);
     }
-
     public function add() {
         $order = new Order();
         $action = route("admin.order.save");
