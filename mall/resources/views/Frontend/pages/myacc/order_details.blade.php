@@ -19,10 +19,7 @@ $currency_code = "inr";
         <div class="sidebar-position-left">
             <div class="row">
                 <div class="col-md-1">
-
                 </div>
-
-
                 <div class="col-md-10 col-xs-12 margin-top-5">
                     @if(Session::get('successMsg'))
                     <div class="alert alert-success">{{ Session::get('successMsg') }}</div>
@@ -42,15 +39,13 @@ $currency_code = "inr";
                                         <table class=".table-condensed table-bordered mb-mb0 orderdetail-steps" cellspacing="0">
                                             <thead>
                                                 <tr>
-
                                                     <th class="product-name text-center">ORDER ID: <span class="cart-item-details">{{ $order->id }}</span></th>
                                                     <th class=" text-center">Date: <span class="cart-item-details"> {{ date("d-M-Y",strtotime($order->created_at)) }}</span></th>
-                                                    <th class="product-quantity text-center">Status: <span class="cart-item-details">Status </span></th>
+                                                    <th class="product-quantity text-center"><!---Status: <span class="cart-item-details">Status </span>---></th>
                                                 </tr>
                                             </thead>
                                         </table>
                                     </div>
-
                             </div>
                         </div>
                     </div>
@@ -60,16 +55,12 @@ $currency_code = "inr";
                                 <div class="wpb_wrapper">
                                     <form action="#" method="post">                                    
                                         <div class="table-responsive shop-table">
-
                                             <table class="shop_table cart table table-bordered" cellspacing="0">
                                                 <thead>
                                                     <tr>
                                                         <th class="product-name text-center" style="width:20%;">Product Details</th>
                                                         <th class="product-price text-center" style="width:15%;">Price</th>
                                                         <th class="product-quantity text-center" style="width:12%;">Qty</th>
-                                                        @if(@$feature['coupon'] == 1)
-                                                        <th>Coupon Discount</th>
-                                                        @endif
                                                         @if(@$feature['tax'] == 1)
                                                         <th>Tax </th>
                                                         @endif
@@ -80,12 +71,9 @@ $currency_code = "inr";
                                                 <tbody>
                                                     <?php
                                                     $cartData = json_decode($order->cart, true);
-                                               
                                                     $gettotal = 0;
-//                                               
                                                     ?> 
-                                                    @foreach($cartData as $key => $prd)  
-                                                    
+                                                    @foreach($cartData as $key => $prd)                                                     
                                                     <tr class="cart_item">
                                                 <input type="hidden" id="oid" value="{{ $order->id }}" />
                                                 <td class="text-center">
@@ -93,29 +81,23 @@ $currency_code = "inr";
                                                         <?php if ($prd['options']['image'] != '') { ?>
                                                             <img src="{{$prd['options']['image_with_path']."/".@$prd['options']['image'] }}" height="50px" width="50px">
                                                         <?php } else { ?>
-                                                            <img src="{{ @asset(Config('constants.productImgPath'))}}/default-image.jpg" height="50px" width="50px">
+                                                            <img src="{{ $prd['options']['image_with_path']}}/default-image.jpg" height="50px" width="50px">
                                                         <?php } ?>
-
                                                         <br>
-
                                                         <span class="customer-name">{{ $prd['name'] }}</span><br>
                                                         <?php
                                                         $descript = '';
                                                         if (!empty($prd['options']['options'])) {
-
                                                             $descript = "";
                                                             foreach ($prd['options']['options'] as $key => $value) {
-
                                                                 $descript .= App\Models\AttributeValue::find($value)->option_name . ",";
                                                             }
                                                         }
-
                                                         if (!empty($prd['options']['combos'])) {
                                                             foreach ($prd['options']['combos'] as $key => $value) {
                                                                 //  echo $key['options']."<br/>";
                                                                 if (!empty($value['options'])) {
                                                                     foreach ($value['options'] as $opt => $optval) {
-
                                                                         echo "<span class='product-size'>" . @App\Models\AttributeValue::find($optval)->option_name . "</span> ";
                                                                     }
                                                                 }
@@ -124,8 +106,6 @@ $currency_code = "inr";
                                                         @$descript = rtrim(@$descript, ",");
                                                         echo "<span class='product-size'>" . @$descript . "</span>";
                                                         ?>   
-
-
                                                         <?php if ($order->payment_status === 4 && isset($prd['options']['prod_type']) && $prd['options']['prod_type'] == 5) { ?> <button type="button" class="downloadid" value="{{ $prd['id'] }}">Download</button><span class="d{{$prd['id']}}"></span><?php } ?>
                                                     </div>
                                                 </td>
@@ -157,32 +137,21 @@ $currency_code = "inr";
                                                 <td class="text-center" align="center">
                                                     <div class="product-quntity">{{$prd['qty'] }}</div>
                                                 </td>
-                                                @if(@$feature['coupon'] == 1)
-                                                <td>
-                                                    <span class="currency-sym"></span>  <span class="disc_indv{{$prd['rowid']}} disc_indv" rowid='{{$prd["rowid"]}}'> {{ number_format($prd['options']['disc'] * Session::get('currency_val'), 2 )}}</span>
-
-                                                </td>
-                                                @endif
                                                 @if(@$feature['tax'] == 1)
                                                 <td>
                                                     <span class="currency-sym"></span>  <span class="tax_{{$prd['rowid']}} tax_amt" rowid='{{$prd['rowid']}}'> {{  number_format($prd['options']['tax_amt'] * Session::get('currency_val'), 2 )}}</span>
                                                 </td>
                                                 @endif
-
-
                                                 <?php
                                                 $subTotal = ($prd['options']['tax_type'] == 2 ) ? $prd['subtotal'] + $prd['options']['tax_amt'] : $prd['subtotal'];
                                                 $gettotal += $subTotal;
-                                                ?> 
-
+                                                ?>
                                                 <td class="product-subtotal text-right">
                                                     <span class="cart-item-details"><span class="product-total"><span class="currency-sym"></span> {{ number_format($subTotal * Session::get('currency_val'), 2, '.', '' )}}</span></span>                   
                                                 </td>
-
                                                 </tr>
                                                 @endforeach
                                                 <tr class="cart_item">
-
                                                     <td class="text-right" colspan="{{$cols}}">
                                                         <div class="product-quntity"><strong>Sub-Total</strong></div>
                                                     </td>
@@ -193,7 +162,6 @@ $currency_code = "inr";
                                                 </tr>
                                                 @if($order->coupon_used)
                                                 <tr class="cart_item">
-
                                                     <td class="text-right" colspan="{{$cols}}">
                                                         <div class="product-quntity"> <strong>Coupon Used ({{ $order->coupon['coupon_code'] }}):</strong></div>
                                                     </td>
@@ -203,7 +171,6 @@ $currency_code = "inr";
                                                 </tr>
                                                 @else
                                                 <tr class="cart_item">
-
                                                     <td class="text-right" colspan="{{$cols}}">
                                                         <div class="product-quntity"> <strong>Coupon Used</strong> </div>
                                                     </td>
@@ -214,7 +181,6 @@ $currency_code = "inr";
                                                 @endif
                                                 @if($order->cod_charges > 0)
                                                 <tr class="cart_item">
-
                                                     <td class="text-right" colspan="{{$cols}}">
                                                         <div class="product-quntity"> <strong>COD Charges</strong></div>
                                                     </td>
@@ -230,7 +196,6 @@ $currency_code = "inr";
                                                         foreach ($addcharge['details'] as $addC) {
                                                             ?>
                                                             <tr class="cart_item">
-
                                                                 <td class="text-right" colspan="{{$cols}}">
                                                                     <div class="product-quntity"> <strong>{{ucfirst($addC['label'])}}</strong></div>
                                                                 </td>
@@ -245,7 +210,6 @@ $currency_code = "inr";
                                                 ?>
                                                 @if($feature['manual-discount'] == 1)
                                                 <tr class="cart_item">
-
                                                     <td class="text-right" colspan="{{$cols}}">
                                                         <div class="product-quntity"> <strong>Discount</strong></div>
                                                     </td>
@@ -255,7 +219,6 @@ $currency_code = "inr";
                                                 </tr>
                                                 @endif
                                                 <tr class="cart_item">
-
                                                     <td class="text-right" colspan="{{$cols}}">
                                                         <div class="product-quntity"><strong>Total</strong></div>
                                                     </td>
@@ -271,46 +234,37 @@ $currency_code = "inr";
                                                     </tr>
                                                     <?php
                                                 }
-                                                if ($order->order_status == 1) {
+                                                //Cancel Order Row
+                                                //if ($order->order_status == 1) {
                                                     ?>
-
-                                                    <tr class="cart_item ">
+<!--                                                    <tr class="cart_item ">
                                                         <td colspan="6" class="product-subtotal text-right">
                                                             <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
                                                         </td>
-                                                    </tr>
-
+                                                    </tr>-->
                                                     <?php
-                                                }
+                                                //}
                                                 ?>
                                                 </tbody>
                                             </table>
                                             <div id='cancelMsg'></div>
                                         </div>
-
                                         <div class="clearfix"> </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
                 <div class="col-md-1">
                 </div>
-
-
             </div>
         </div>
     </div>
 </div>
 <!-- Modal -->
-
-
 <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content modal-lg">
             <div class="modal-header">
@@ -323,10 +277,8 @@ $currency_code = "inr";
                     {{Form::hidden("returnAmount",$order->pay_amt,[])}}
                     <div class="row">
                         <div class="col-md-12">
-
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -345,7 +297,6 @@ $currency_code = "inr";
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
-
     </div>
 </div>
 <script  src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" ></script>
@@ -362,24 +313,6 @@ $(document).on("click", ".cancelSubmit", function () {
     }
     $("#cancelForm").submit();
 });
-//function validate(event) {
-//$(".orderReturnForm").validate();
-//if (!$(".orderReturnForm").valid()) {
-//    return false;
-//}
-//console.log(" return " +JSON.stringify(event));
-//alert(" return " +event.find(".returnProduct").val());
-// 
-//var getVal = parseInt($('.returnProduct').val());
-//var getMin = parseInt($('.returnProduct').attr("min"));
-//var getMax = parseInt($('.returnProduct').attr("max"));
-//if (getVal >= getMin && getVal <= getMax) {
-//    return false
-//} else {
-//    alert("Value must be less than or equal to " + getMax);
-//    return false
-//}
-//}
 
 function validate(id) {
     $(".orderReturnForm").validate();
@@ -440,9 +373,6 @@ $(document).on("click", ".returnProduct", function () {
     $(".returnProduct").select();
 })
 $(document).ready(function () {
-
-
-
     $("html body").on('click', '.tooglelist', function () {
         var d = $(this).attr('data-fid');
         $("#" + d).slideToggle();
@@ -460,10 +390,6 @@ $(document).ready(function () {
             $("#" + id).css("height", "0px");
         }
     });
-
-
-
-
     $("html body").on('click', '.returnprod', function () {
         var d = $(this).attr("data-oid");
         var df = "{{ route('orderDetailsJson') }}";
@@ -485,13 +411,8 @@ $(document).ready(function () {
             }
         });
     });
-
-
-
     $(".cancelprod").click(function () {
-
         var ordId = $(this).attr("data-oid");
-
         $.ajax({
             data: {'ordId': ordId},
             url: "{{ route('cancel-order') }}",

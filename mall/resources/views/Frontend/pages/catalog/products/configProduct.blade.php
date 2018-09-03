@@ -107,10 +107,11 @@
                         </div>
                     </form>
                 </div>
-            </div>                   
+            </div>
+            @if(count($product->related)>0)
             <div class="clear"></div>
             <div class="line"></div>
-            <div class="col_full nobottommargin">
+            <div class="col_full nobottommargin">                
                 <h3>Other Products Sold By [[product.store_name]]</h3>
                 <div id="oc-product" class="owl-carousel product-carousel carousel-widget" data-margin="30" data-pagi="false" data-autoplay="5000" data-items-xxs="1" data-items-sm="2" data-items-md="3" data-items-lg="4">
                     <?php foreach ($product->related as $relprd) { ?>
@@ -143,6 +144,7 @@
                     <?php } ?>
                 </div>
             </div>
+            @endif
         </div>
 </section>
 @stop

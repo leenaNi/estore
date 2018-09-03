@@ -35,8 +35,11 @@
                                             if (count($product->images) > 0) {
                                                 foreach ($product->images as $pk => $prdimg) {
                                                     ?>
-                                                    <div class="slide" data-thumb="{{$prdimg->img}}">
-                                                        <a href="{{$prdimg->img}}" title="" data-lightbox="gallery-item"><img src="{{$prdimg->img}}" alt="" class="zoom-me zoom-me1" data-zoom-image="{{$prdimg->img}}"> </a>
+                                                    
+                                            <div class="slide" data-thumb="{{$prdimg->img}}">
+                                                        <a href="{{$prdimg->img}}" title="{{$product->product}}" data-lightbox="gallery-item">
+                                                            <img src="{{$prdimg->img}}" alt="{{ $product->product }}" class="zoom-me zoom-me1 {{ ($pk == 0)?'fimg':''  }} " data-zoom-image="{{$prdimg->img}}">
+                                                        </a>
                                                     </div>
                                                     <?php
                                                 }
@@ -119,41 +122,43 @@
                     </form>
                 </div>
             </div>
+            @if(count($product->related)>0)
             <div class="clear"></div>
             <div class="line"></div>
             <div class="col_full nobottommargin">
                 <h3>Other Products Sold By {{$product->store_name}}</h3>
                 <div id="oc-product" class="owl-carousel product-carousel carousel-widget" data-margin="30" data-pagi="false" data-autoplay="5000" data-items-xxs="1" data-items-sm="2" data-items-md="3" data-items-lg="4">
-                    <?php foreach($product->related as $relprd) { ?>
-                    <div class="oc-item">
-                        <div class="product clearfix mobwidth100 relatedProduct">
-                            <div class="product-image">
-                                <?php
-                                $relProdImg = DB::table($relprd->prefix . "_catalog_images")->where("catalog_id", $relprd->store_prod_id)->where("image_mode", 1)->first();//$relprd->catalogimgs()->first();
-                                ?>
-                                @if(!empty($relProdImg))
-                                <a href="{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. $relProdImg->filename }}" alt="{{ $relprd->product }}" class="boxSizeImage"> </a>
-                                @else
-                                <a href="{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. 'default-product.jpg' }}" alt="" class="boxSizeImage"> </a>
-                                @endif
-            <!--                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>-->
-                            </div>
-                            <div class="product-desc">
-                                <div class="product-title">
-                                    <h3><a href="{{ $relprd->url_key }}">{{ $relprd->product }}</a></h3> </div>
-                                <div class="product-price">
-                                    @if($relprd->spl_price > 0 && $relprd->spl_price > $relprd->price)
-                                    <del><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                    <?php foreach ($product->related as $relprd) { ?>
+                        <div class="oc-item">
+                            <div class="product clearfix mobwidth100 relatedProduct">
+                                <div class="product-image">
+                                    <?php
+                                    $relProdImg = DB::table($relprd->prefix . "_catalog_images")->where("catalog_id", $relprd->store_prod_id)->where("image_mode", 1)->first(); //$relprd->catalogimgs()->first();
+                                    ?>
+                                    @if(!empty($relProdImg))
+                                    <a href="{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. $relProdImg->filename }}" alt="{{ $relprd->product }}" class="boxSizeImage"> </a>
                                     @else
-                                    <ins><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                                    <a href="{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. 'default-product.jpg' }}" alt="" class="boxSizeImage"> </a>
                                     @endif
+                <!--                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>-->
+                                </div>
+                                <div class="product-desc">
+                                    <div class="product-title">
+                                        <h3><a href="{{ $relprd->url_key }}">{{ $relprd->product }}</a></h3> </div>
+                                    <div class="product-price">
+                                        @if($relprd->spl_price > 0 && $relprd->spl_price > $relprd->price)
+                                        <del><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                                        @else
+                                        <ins><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     <?php } ?>
                 </div>
             </div>
+            @endif
         </div>
 </section>
 <!-- #content end -->

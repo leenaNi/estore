@@ -100,12 +100,13 @@ $(document).ready(function () {
 
         if ($(window).width() < 768) {
             setTimeout(function () {
-                $('.zoom-me').elevateZoom({
-                    zoomType: "inner",
-                    cursor: "crosshair",
-                    zoomWindowFadeIn: 500,
-                    zoomWindowFadeOut: 750
-                });
+//                $('.zoom-me').elevateZoom({
+//                    zoomType: "inner",
+//                    cursor: "crosshair",
+//                    zoomWindowFadeIn: 500,
+//                    zoomWindowFadeOut: 750
+//                });
+                $('.zoomContainer').remove();
             }, 2000);
         } else {
             setTimeout(function () {
