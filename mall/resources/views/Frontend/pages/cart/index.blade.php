@@ -22,6 +22,7 @@
                             <th class="text-left">Product</th>
                             <th>Price <span class="currency-sym-in-braces"></span></th>
                             <th>Quantity</th>
+                            <th>Sold By</th>
                             @if(@$feature['tax'] == 1)
                             <th>Tax <span class="currency-sym-in-braces"></span></th>
                             @endif
@@ -98,6 +99,9 @@
 <!--                                    <input  type="number" name="quantity" id="quantity" value="{{ $item->qty }}" data-productid="{{ $item->id }}" data-rowid ="{{$item->rowid  }}"  onkeypress="return isNumber(event);"  class="qty" min="1" max="{{ $item->options['stock'] }}" />-->
                                     <input type="button" value="+" class="plus" field="quantity">
                                 </div>
+                            </td>
+                            <td>
+                                {{$item->options->store_name }}
                             </td>
                             @if(@$feature['tax'] == 1)
                             <td>
