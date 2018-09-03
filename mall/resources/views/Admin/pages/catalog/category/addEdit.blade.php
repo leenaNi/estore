@@ -368,7 +368,7 @@
         $.ajax({
             type: "POST",
             url: "{{ route('admin.category.checkcat') }}",
-            data: {catname: catname},
+            data: {catname: catname, parentId: <?php echo Input::get("parent_id")?>},
             cache: false,
             success: function (response) {
                

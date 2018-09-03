@@ -24,8 +24,8 @@ class CategoryController extends Controller {
         $categories = Category::whereIn("status", [1, 0])->orderBy("id", "asc");
         $categories = $categories->get();
         $roots = Category::roots()->get();
-        
-      //  dd($categories);
+
+        //  dd($categories);
         //dd($roots);
         //return view(Config('constants.adminCategoryView') . '.index', compact('categories', 'roots'));
 
@@ -60,7 +60,7 @@ class CategoryController extends Controller {
         $category->is_home = 0; //Input::get('is_home');
         $category->is_nav = Input::get('is_nav');
         $category->sort_order = Input::get('sort_order');
-        $category->url_key = strtolower(str_replace(" ","-",Input::get('category')));
+        $category->url_key = strtolower(str_replace(" ", "-", Input::get('category')));
         $category->status = Input::get('status');
         $category->short_desc = Input::get('short_desc');
         //$category->long_desc = Input::get('long_desc');
@@ -73,7 +73,7 @@ class CategoryController extends Controller {
         if (Input::hasFile('images')) {
             foreach (Input::file('images') as $imgK => $imgV) {
                 if ($imgV != null) {
-                    $destinationPath = Config('constants.catImgUploadPath')."/";
+                    $destinationPath = Config('constants.catImgUploadPath') . "/";
                     $fileName = "cat-" . $imgK . date("YmdHis") . "." . $imgV->getClientOriginalExtension();
                     $upload_success = $imgV->move($destinationPath, $fileName);
                 } else {
@@ -93,7 +93,7 @@ class CategoryController extends Controller {
             if (count(Input::file('images')) > 0) {
                 foreach (Input::file('images') as $imgK => $imgV) {
                     if ($imgV != null) {
-                        $destinationPath = Config('constants.catImgUploadPath')."/";
+                        $destinationPath = Config('constants.catImgUploadPath') . "/";
                         $fileName = "cat-" . $imgK . date("YmdHis") . "." . $imgV->getClientOriginalExtension();
                         $upload_success = $imgV->move($destinationPath, $fileName);
                     } else {
@@ -234,8 +234,8 @@ class CategoryController extends Controller {
 
     public function sampleBulkDownload() {
         $details = [];
-        $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key','status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
-        $category = Category::get(['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'status','meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta']);
+        $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
+        $category = Category::get(['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta']);
         $sampleCat = [];
         array_push($sampleCat, $arr);
         $arrP = [];
@@ -287,7 +287,7 @@ class CategoryController extends Controller {
         if (Input::hasFile('file')) {
             $file = Input::file('file');
             $name = time() . '-' . $file->getClientOriginalName();
-            $path = Config('constants.catImgUploadPath')."/";
+            $path = Config('constants.catImgUploadPath') . "/";
             $file->move($path, $name);
             return $this->category_import_csv($path, $name);
             //  echo "Success";       
@@ -299,7 +299,7 @@ class CategoryController extends Controller {
 
     private function category_import_csv($path, $filename) {
 //        dd($path);
-        $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key','status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
+        $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
 
         $csv_file = $path . $filename;
         if (($handle = fopen($csv_file, "r")) !== FALSE) {
@@ -435,7 +435,12 @@ class CategoryController extends Controller {
 
     public function checkCatName() {
         $catname = Input::get('catname');
-        $catname = Category::where('category', $catname)->whereIn('status', [0, 1])->get();
+        $parentId = Input::get('parentId');
+        $catname = Category::where('category', $catname)->whereIn('status', [0, 1]);
+        if ($parentId) {
+            $catname = $catname->where('parent_id', $parentId);
+        }
+        $catname = $catname->get();
         if (count($catname) > 0) {
             return $data['msg'] = ['status' => 'success', 'msg' => 'category name already exist'];
         } else {
