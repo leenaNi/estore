@@ -78,16 +78,16 @@ class LoginController extends Controller {
             $and
             group by s.id");
         //  dd($stores);
-        $allStoreOperatores = 0;
-        foreach ($stores as $sA) {
-            // dd($sA->prefix . "_users");
-            $allStoreOperatores += DB::table("users")->where("user_type", 1)->count();
-        }
-        //  dd($allStoreOperatores);
-        $happyCustomers = 0;
-        foreach ($stores as $sA) {
-            $happyCustomers += DB::table("users")->where("user_type", 2)->count();
-        }
+      
+      
+           
+            $allStoreOperatores = DB::table("users")->where("user_type", 1)->count();
+  
+      
+      
+      
+            $happyCustomers = DB::table("users")->where("user_type", 2)->count();
+    
 
         $totalOrders = 0;
         foreach ($stores as $sA) {
