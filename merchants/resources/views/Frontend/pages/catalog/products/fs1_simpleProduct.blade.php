@@ -25,12 +25,14 @@
                                 <div class="fslider" data-pagi="false" data-autoplay="false" data-arrows="false" data-thumbs="true">
                                     <div class="flexslider">
                                         <div class="slider-wrap" data-lightbox="gallery" style="width:100% !important;">
-                                            <?php 
+                                            <?php
                                             if (count($product->images) > 0) {
                                                 foreach ($product->images as $pk => $prdimg) {
                                                     ?>
                                                     <div class="slide" data-thumb="{{$prdimg->img}}">
-                                                        <a href="{{$prdimg->img}}" title="{{$prdimg->product}}" data-lightbox="gallery-item"><img src="{{$prdimg->img}}" alt="{{ $prdimg->product }}" class="zoom-me zoom-me1 {{ ($pk == 0)?'fimg':''  }} " data-zoom-image="{{$prdimg->img}}"> </a>
+                                                        <a href="{{$prdimg->img}}" title="{{$prdimg->product}}" data-lightbox="gallery-item">
+                                                            <img src="{{$prdimg->img}}" alt="{{ $prdimg->product }}" class="zoom-me zoom-me1 {{ ($pk == 0)?'fimg':''  }} " data-zoom-image="{{$prdimg->img}}">
+                                                        </a>
                                                     </div>
 
                                                     <?php
@@ -56,16 +58,16 @@
                             @endif
                             @if($product->spl_price > 0 && $product->spl_price < $product->price)
                             <div class="product-price"> <del><span class="currency-sym"></span> {{number_format(@$product->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span>  {{number_format(@$product->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins></div>   
-                            
+
                             @else 
                             <div class="product-price"> <ins><span class="currency-sym"></span> {{number_format(@$product->price * Session::get('currency_val'), 2, '.', '')}}</ins></div>
-                             @endif
+                            @endif
                             @if($product->is_stock == 1 && $isstock==1)
-                          
+
                             <span class="stockL span2 " style="color: red;">   @if($product->stock < $stocklimit) <b class="stockChk">{{ 'STOCK LEFT : '.$product->stock }}</b>@endif</span>
                             @endif
 
-                          
+
 
                             <div class="clear"></div>
                             <div class="line"></div>
@@ -73,13 +75,13 @@
                             <input type='hidden' name='prod_id' value='{{$product->id}}' data-parentid = "{{ $product->id }}">
                             <input type='hidden' name='prod_type' value='{{$product->prod_type}}'>
                             <div class="quantity clearfix mobMB15">
-                                 <?php 
-                                 if($isstock==1){
-                                      $maxValue= $product->is_stock == 1?$product->stock:'1000000';
-                                 }else{
-                                      $maxValue='1000000'; 
-                                 }
-                             ?>
+                                <?php
+                                if ($isstock == 1) {
+                                    $maxValue = $product->is_stock == 1 ? $product->stock : '1000000';
+                                } else {
+                                    $maxValue = '1000000';
+                                }
+                                ?>
                                 <input type="button" value="-" class="minus">
                                 <input type="number" id="quantity" step="1" min="1" name="quantity" value="1" title="Qty" max="{{$maxValue}}" class="qty" size="4" onkeypress="return isNumber(event);" onkeypress="return isNumber(event);" style="text-align: center;" />
                                 <input type="button" value="+" class="plus">
@@ -93,15 +95,15 @@
 
                             <div class="shortDesc"><?php echo html_entity_decode($product->short_desc) ?></div>
 
-<!-- AddToAny BEGIN -->
-<div class="shareSociIconBox">
-    <strong>Share:</strong> 
-<?php
-$social['url']=Request::url();
-print_r(App\Library\Helper::socialShareIcon($social));
-?>
-</div>
-<!-- AddToAny END -->
+                            <!-- AddToAny BEGIN -->
+                            <div class="shareSociIconBox">
+                                <strong>Share:</strong> 
+                                <?php
+                                $social['url'] = Request::url();
+                                print_r(App\Library\Helper::socialShareIcon($social));
+                                ?>
+                            </div>
+                            <!-- AddToAny END -->
                             <!-- Product Single - Share End -->
                         </div>
                         @if(@$is_desc->status)
@@ -113,10 +115,14 @@ print_r(App\Library\Helper::socialShareIcon($social));
                                 </ul>
                                 <div class="tab-container">
                                     <div class="tab-content tabBox clearfix" id="tabs-1">
-                                      <?php if(!empty($product->long_desc)) { echo html_entity_decode($product->long_desc); } else { echo "No data found";} ?>
+                                        <?php if (!empty($product->long_desc)) {
+                                            echo html_entity_decode($product->long_desc);
+                                        } else {
+                                            echo "No data found";
+                                        } ?>
                                     </div>
                                     <!-- <div class="tab-content tabBox clearfix" id="tabs-2">
-                                          <?php// if(!empty($product->add_desc)) { echo html_entity_decode($product->add_desc); } else { echo "No data found";} ?>
+<?php // if(!empty($product->add_desc)) { echo html_entity_decode($product->add_desc); } else { echo "No data found";}  ?>
                     
                                      </div> -->
                                 </div>
@@ -127,7 +133,7 @@ print_r(App\Library\Helper::socialShareIcon($social));
                 </div>
 
             </div>
-            
+
             @if($is_rel_prod->status && !$product->related->isEmpty())
             <div class="clear"></div>
             <div class="line"></div>
@@ -167,7 +173,7 @@ print_r(App\Library\Helper::socialShareIcon($social));
             @endif
 
             <!-- you may like also product open -->
-             @if($is_like_prod->status && !$product->upsellproduct->isEmpty())
+            @if($is_like_prod->status && !$product->upsellproduct->isEmpty())
             <div class="clear"></div>
             <div class="line"></div>
             <div class="col_full nobottommargin">
@@ -184,7 +190,7 @@ print_r(App\Library\Helper::socialShareIcon($social));
                                 <a href="{{ $upsellprd->url_key }}"><img src="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}" alt="" class="boxSizeImage"> </a>
                                 @endif
                                 <!--                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>-->
-            
+
                             </div>
                             <div class="product-desc product-desc-youMayLike">
                                 <div class="product-title">
@@ -211,7 +217,7 @@ print_r(App\Library\Helper::socialShareIcon($social));
 
         </div>
     </div>
-        
+
 
 
 
@@ -222,7 +228,7 @@ print_r(App\Library\Helper::socialShareIcon($social));
 @section('myscripts')
 
 <script>
-    
+
 
     function isNumber(evt) {
         evt = (evt) ? evt : window.event;
