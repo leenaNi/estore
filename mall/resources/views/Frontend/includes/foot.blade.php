@@ -111,7 +111,7 @@ $(document).ready(function () {
         } else {
             setTimeout(function () {
                 $('.zoom-me').elevateZoom();
-            }, 2000);
+            }, 1000);
         }
 
     });
