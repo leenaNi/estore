@@ -44,10 +44,10 @@
                             <tr class="cart_item">
                                 <td class="cart-product-thumbnail">
                                     @if($cart['options']['image']!='')
-                                    <a href="#"><img width="64" height="64" src="{{ @asset(Config('constants.productImgPath').'/'.$cart['options']['image'] )}}" alt="">
+                                    <a href="#"><img width="64" height="64" src="{{ $cart['options']['image_with_path'].'/'.$cart['options']['image'] )}}" alt="">
                                     </a>
                                     @else 
-                                    <img width="64" height="64" src="{{ @asset(Config('constants.productImgPath'))}}/default-image.jpg" alt="">
+                                    <img width="64" height="64" src="{{ $cart['options']['image_with_path']}}/default-image.jpg" alt="">
                                     @endif
                                 </td>
                                 <td class="cart-product-name"> {{$cart['name']}}
@@ -106,43 +106,12 @@
                         $addcharge = json_decode($order->additional_charge);
                         ?>
                         @foreach($addcharge->details as $addC)
-
                         <tr>
                             <td colspan="4" class="text-right"><b> {{ucfirst($addC->label) }}</b></td>
                             <td colspan="2" class="text-right"><span class="currency-sym"></span>{{ number_format(($addC->applied *Session::get('currency_val') ), 2, '.', '') }}</td>
                         </tr>
-
                         @endforeach
                         @endif
-                        @if($order->coupon_amt_used)
-                        <tr>
-                            <td colspan="4" class="text-right"><b>Coupon</b></td>
-                            <td colspan="2"class="text-right"><span class="currency-sym"></span> {{ number_format(($order->coupon_amt_used * Session::get('currency_val')), 2, '.', '') }}</td>
-                        </tr>
-                        @endif
-                        @if($order->cashback_used)
-                        <tr>
-                            <td colspan="4" class="text-right"><b>Cashback Used</b></td>
-                            <td colspan="2"class="text-right"><span class="currency-sym"></span> {{ number_format(($order->cashback_used * Session::get('currency_val')), 2, '.', '') }}</td>
-                        </tr>
-                        @endif
-                        @if($order->referal_code_amt)
-                        <tr>
-                            <td colspan="4" class="text-right"><b>Referral Point</b></td>
-                            <td colspan="2"class="text-right"><span class="currency-sym"></span> {{ number_format(($order->referal_code_amt * Session::get('currency_val')), 2, '.', '') }}</td>
-                        </tr>
-                        @endif
-
-                        @if($feature['manual-discount'] == 1)
-                        <tr>
-                            <td colspan="4" class="text-right"><b>Discount</b> </td>
-                            <td colspan="2" class="text-right"><span class="currency-sym"></span> {{ number_format(($order->discount_amt * Session::get('currency_val')), 2, '.', '') }}</td>
-                        </tr>
-                        @endif
-
-
-
-
                         <tr>
                             <td colspan="4" class="text-right"><b>Total</b></td>
                             <td colspan="2"class="text-right"><span class="currency-sym"></span> {{number_format( $order->pay_amt* Session::get('currency_val'), 2, '.', '')}}</td>
@@ -162,24 +131,15 @@
     </div>
 </section>
 @stop
-
-
-
-
 <!--<a href="{{ route('home') }}">Home</a>
 <div class="container">
-
     <h2 style="text-align: center;">Thank You. Order has been placed successfully.</h2>
 </div>
 {{ Cart::instance("shopping")->destroy() }}-->
-
-
 <!--{{Session::forget('orderId')}}
-
 {{Session::forget('couponUsedAmt')}}
 {{Session::forget('usedCouponId')}}
 {{Session::forget('usedCouponCode')}}
-
 {{Session::forget('ReferalId')}}
 {{Session::forget('ReferalCode')}}
 {{Session::forget('referalCodeAmt')}}
