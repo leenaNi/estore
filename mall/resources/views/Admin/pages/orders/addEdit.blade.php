@@ -521,45 +521,8 @@
 
                     <div class="col-md-12">
                         <div class="cal-shipping  mar-bot15">
-                            @if($feature['coupon'] == 1)
-                            <h4 class="heading-title">HAVE A COUPON?</h4>
-                            <div class="list-group horizontal-list-group">
-                                <div class="list-group-item">
-                                    <label class="ui-radio-inline">
-                                        <input type="radio" checked name="radioEg" checked value="none"> 
-                                        <span>None</span>
-                                    </label>
-                                    <p class="list-group-item-text">No coupon applicable</p>
-                                </div>
-                                <?php $coupon_id = $coupon ? $coupon->id : null; ?>
-                                @if(!$coupons->isEmpty())
-                                @foreach($coupons as $coupon)
-                                <div class="list-group-item">
-                                    <label class="ui-radio-inline">
-                                        <input type="radio" name="radioEg" <?php echo $coupon_id == $coupon->id ? 'checked' : ''; ?> value="{{ $coupon->coupon_code }}" > 
-                                        <span>{{ $coupon->coupon_code }}</span>
-                                    </label>
-                                    <p class="list-group-item-text">{{ $coupon->coupon_name }}</p>
-                                </div>
-                                @endforeach
-                                @endif
-                            </div>
-                            @endif
-                            <!-- <form class="checkout_coupon" method="post">
-                              <div class="cart-input">
-                              <input name="coupon_code" class="userCouponCode" id="" value="" placeholder="Coupon code"  type="text"> 
-                               </div>
-                            <div class="input-submit">
-                           <input class="button bold default" name="apply_coupon" id="couponApply" value="Apply Coupon" type="button">
-                            </div>
-                           </form> -->
-                            <!-- <div class="col-md-12 col-xs-12 space3">
-                           <p class="cmsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p>
-                             </div>
-                           </div> -->
-                            <!-- .cal-shipping -->
-
-                            <!-- Start voucher refferel Cashback Discount -->
+                            
+             
 
                             <div class="summry_col">
                                 @if($feature['loyalty'] == 1)

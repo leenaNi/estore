@@ -17,6 +17,31 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <i class="fa fa-bar-chart"></i><span>Dashboard</span> <i class=""></i>
                 </a>
             </li>
+             <li class="treeview {{ preg_match("/admin.orders|admin.orders.OrderReturn|admin.miscellaneous.flags|admin.order_status|additional-charges/",Route::currentRouteName()) ? 'active' : '' }}">
+                <a href="">
+                    <i class="fa fa-shopping-cart"></i><span>Orders</span>
+                    <i class="fa fa-angle-down pull-right"></i>
+                </a>
+
+                <ul class="treeview-menu">
+                    <li class="{{ preg_match("/admin.orders.view/",Route::currentRouteName()) ? 'active' : '' }}">
+                        <a  href="{{ route('admin.orders.view') }}"><i class="fa fa-angle-right"></i>All Orders</a>
+                    </li>
+                    <li class="{{ preg_match("/admin.orders.OrderReturn/",Route::currentRouteName()) ? 'active' : '' }}">
+                        <a  href="{{ route('admin.orders.OrderReturn') }}"><i class="fa fa-angle-right"></i>Return Orders</a>
+                    </li>
+                    <li class="{{ preg_match("/admin.orders.cancelOrder/",Route::currentRouteName()) ? 'active' : '' }}">
+                        <a  href="{{ route('admin.orders.cancelOrder') }}"><i class="fa fa-angle-right"></i>Cancel Orders</a>
+                    </li>
+                   
+                    <li class="{{ preg_match("/admin.order_status.view/",Route::currentRouteName()) ? 'active' : '' }}">
+                        <a  href="{{ route('admin.order_status.view') }}"><i class="fa fa-angle-right"></i>Order Status</a></li>
+                    @if($feature['additional-charge'] == 1)
+                    <li class="{{ preg_match("/admin.additional-charges.view/",Route::currentRouteName()) ? 'active' : '' }}">
+                        <a  href="{{ route('admin.additional-charges.view') }}"><i class="fa fa-angle-right"></i>Additional Charges</a></li> 
+                    @endif                          
+                </ul>
+            </li>
              <li class="{{ Route::currentRouteName() == 'admin.products' ? 'active' : '' }}">
                 <a href="{{ route('admin.products.view') }}">
                     <i class="fa fa-folder-open"></i><span>Product</span> <i class=""></i>
@@ -27,11 +52,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <i class="fa fa-folder-open"></i><span>Category</span> <i class=""></i>
                 </a>
             </li>
-             <li class="{{ Route::currentRouteName() == 'admin.additional-charges' ? 'active' : '' }}">
-                <a href="{{ route('admin.additional-charges.view') }}">
-                    <i class="fa fa-folder-open"></i><span>Additional Charges</span> <i class=""></i>
-                </a>
-            </li>
+             
              <li class="{{ Route::currentRouteName() == 'admin.pincodes' ? 'active' : '' }}">
                 <a href="{{ route('admin.pincodes.view') }}">
                     <i class="fa fa-folder-open"></i><span>Pincodes</span> <i class=""></i>

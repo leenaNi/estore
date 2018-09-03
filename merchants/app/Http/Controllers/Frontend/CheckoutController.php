@@ -36,7 +36,7 @@ use stdClass;
 use App\Models\AdditionalCharge;
 
 class CheckoutController extends Controller {
-
+ 
     public function index() {
         $checkGuestCheckoutEnabled = GeneralSetting::where("url_key", "guest-checkout")->where("status", 1)->get();
 
@@ -1834,14 +1834,16 @@ class CheckoutController extends Controller {
 
     // For order Update stock
     public function updateStock($orderId) {
-
+      
+    $jsonString = Helper::getSettings();
         // $is_stockable = GeneralSetting::where('id', 26)->first();
         $stock_limit = GeneralSetting::where('url_key', 'stock')->first();
         $stockLimit = json_decode($stock_limit->details, TRUE);
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-        $order->products()->detach();
+        
+        HasProducts::where("order_id",$orderId)->delete();
         foreach ($cartContent as $cart) {
             $product = Product::find($cart->id);
             $sum = 0;
@@ -1867,7 +1869,8 @@ class CheckoutController extends Controller {
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal * Session::get('currency_val'), "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax), 'pay_amt' => $payamt];
+            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
+                'pay_amt' => $payamt,'store_id'=>$jsonString['store_id'],'prefix'=>$jsonString['prefix']];
 //            $market_place = Helper::generalSetting(35);
 //            if (isset($market_place) && $market_place->status == 1) {
 //                $prior_vendor = $product->vendorPriority()->first();
@@ -1883,9 +1886,9 @@ class CheckoutController extends Controller {
                 $proddetails['id'] = $prddataS->id;
                 $proddetails['name'] = $prddataS->product;
                 $proddetails['image'] = $cart->options->image;
-                $proddetails['price'] = $cart->sellig_price * Session::get("currency_val");
+                $proddetails['price'] = $cart->price;
                 $proddetails['qty'] = $cart->qty;
-                $proddetails['subtotal'] = $subtotal * Session::get('currency_val');
+                $proddetails['subtotal'] = $subtotal;
                 $proddetails['is_cod'] = $prddataS->is_cod;
                 $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);
                 $date = $cart->options->eNoOfDaysAllowed;
@@ -1940,7 +1943,7 @@ class CheckoutController extends Controller {
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
-                $proddetailsp['price'] = $cart->sellig_price * Session::get("currency_val");
+                $proddetailsp['price'] = $cart->price;
                 $proddetailsp['qty'] = $cart->qty;
                 $proddetailsp['subtotal'] = $subtotal * Session::get('currency_val');
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
@@ -1963,7 +1966,12 @@ class CheckoutController extends Controller {
             }
             // $order->products()->attach($cart_ids); 
             //  HasProducts::on('mysql2');
-            $order->products()->attach($cart->id, $cart_ids[$cart->id]);
+            $cart_ids[$cart->id]["order_id"] = $orderId;
+            $cart_ids[$cart->id]["prod_id"] = $cart->id;
+            $cart_ids[$cart->id]["order_status"] = 1;
+            HasProducts::insert($cart_ids);
+         // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
+          //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
         //  $this->orderSuccess();
     }
