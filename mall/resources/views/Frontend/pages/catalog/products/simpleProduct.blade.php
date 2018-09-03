@@ -6,11 +6,6 @@
 @section('content')
 <?php
 //dd($product);
-if ($isstock == 1) {
-    $maxValue = $product->is_stock == 1 ? $product->stock : '1000000';
-} else {
-    $maxValue = '1000000';
-}
 ?>
 <div class="clearfix"></div>
 <!-- Content
@@ -32,20 +27,22 @@ if ($isstock == 1) {
                                     <div class="flexslider">
                                         <div class="slider-wrap" data-lightbox="gallery" style="width:100% !important;">
                                             <?php
+                                            if ($isstock == 1) {
+                                                $maxValue = $product->is_stock == 1 ? $product->stock : '1000000';
+                                            } else {
+                                                $maxValue = '1000000';
+                                            }
                                             if (count($product->images) > 0) {
                                                 foreach ($product->images as $pk => $prdimg) {
                                                     ?>
                                                     <div class="slide" data-thumb="{{$prdimg->img}}">
-                                                        <a href="{{$prdimg->img}}" title="{{$prdimg->product}}" data-lightbox="gallery-item">
-                                                            <img src="{{$prdimg->img}}" alt="{{ $prdimg->product }}" class="zoom-me zoom-me1 {{ ($pk == 0)?'fimg':''  }} " data-zoom-image="{{$prdimg->img}}">
-                                                        </a>
+                                                        <a href="{{$prdimg->img}}" title="" data-lightbox="gallery-item"><img src="{{$prdimg->img}}" alt="" class="zoom-me zoom-me1" data-zoom-image="{{$prdimg->img}}"> </a>
                                                     </div>
-
                                                     <?php
                                                 }
                                             } else {
                                                 ?>
-                                                <div class="slide" >
+                                                <div class="slide">
                                                     <a href="javascript:void(0);" title="Default" data-lightbox="gallery-item"><img src="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}" alt="default Img" class="zoom-me zoom-me1 fimg " data-zoom-image="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}"> </a>
                                                 </div>
                                             <?php } ?>
