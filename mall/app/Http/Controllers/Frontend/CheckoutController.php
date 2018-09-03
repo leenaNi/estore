@@ -1798,7 +1798,7 @@ class CheckoutController extends Controller {
             $messagearray->message = "Hey! You have received a New Order online. Its order id is " . $order->id . " & order amount is " . $order->pay_amt * Session::get('currency_val');
 
             $this->pushNotification($messagearray);
-            return $data_email = ['first_name' => $fname, 'orderId' => $orderId, 'email' => $mail_id];
+            return $data_email = ['first_name' => $fname, 'orderId' => $order->id, 'email' => $mail_id];
         }
     }
 
@@ -1899,9 +1899,7 @@ class CheckoutController extends Controller {
                         $prd->stock = $prd->stock - $cart->qty;
                         if ($prd->is_stock == 1) {
                             $prd->update();
-                        };
-
-
+                        }
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             $this->AdminStockAlert($prd->id);
                         }
@@ -1911,8 +1909,6 @@ class CheckoutController extends Controller {
                         if ($prd->is_stock == 1) {
                             $prd->update();
                         }
-
-
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             $this->AdminStockAlert($prd->id);
                         }
@@ -1991,7 +1987,6 @@ class CheckoutController extends Controller {
     public function pushNotification($notification) {
         $userMobile = User::where("user_type", 1)->where("device_id", '!=', '')->pluck("device_id");
         $gcmRegIds = $userMobile;
-
         $fields = array(
             'registration_ids' => $gcmRegIds,
             'data' => $notification
@@ -2001,26 +1996,19 @@ class CheckoutController extends Controller {
             'Authorization: key=' . 'AAAAZeeZoaQ:APA91bHR9lt8JdJDhAzH1dUh9oUOUs3F6GM4BdMzK1uVqQLcMv1NUVc-twlw7hklrRHOvj8Ada-UhiggbrxXiUldSH1KuxG0kcroiah_4bLylwt9LSBcjihdxweKtvEhrUrHLtUbuYOj',
             'Content-Type: application/json'
         );
-
-
         $ch = curl_init();
-
         //Setting the curl url
         curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-
         //setting the method as post
         curl_setopt($ch, CURLOPT_POST, true);
-
         //adding headers 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
         //disabling ssl support
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         //adding the fields in json format 
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-
         //finally executing the curl request 
         $result = curl_exec($ch);
         if ($result === FALSE) {
@@ -2038,7 +2026,6 @@ class CheckoutController extends Controller {
 //           // $pushNotification->user_type = $userType;
 //            $pushNotification->save();
         }
-
         curl_close($ch);
         return 1;
     }
@@ -2138,19 +2125,17 @@ class CheckoutController extends Controller {
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
         $path = Config("constants.adminStorePath") . "/storeSetting.json";
         $str = file_get_contents($path);
-        $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
+        $logoPath = (App\Library\Helper::getSettings()['logo']) ? App\Library\Helper::getSettings()['logo'] : asset(Config('constants.defaultImgPath') . 'default-logo.png'); // @asset(Config("constants.logoUploadImgPath") . 'logo.png');
         $settings = json_decode($str, true);
         $webUrl = $_SERVER['SERVER_NAME'];
         if ($emailStatus == 1) {
             $emailContent = EmailTemplate::where('id', 2)->select('content', 'subject')->get()->toArray();
             $email_template = $emailContent[0]['content'];
             $subject = $emailContent[0]['subject'];
-
-            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]");
-            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName']);
+            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[created_at]", "[primary_color]", "[secondary_color]", "[storeName]");
+            $replacewith = array($order->id, $firstName, $tableContant, $logoPath, $webUrl, $order->created_at, $settings['primary_color'], $settings['secondary_color'], $settings['storeName']);
             $email_templates = str_replace($replace, $replacewith, $email_template);
             $data_email = ['email_template' => $email_templates];
-
             Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
             return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
         }
