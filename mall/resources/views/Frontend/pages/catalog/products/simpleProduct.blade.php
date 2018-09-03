@@ -36,7 +36,9 @@
                                                 foreach ($product->images as $pk => $prdimg) {
                                                     ?>
                                                     <div class="slide" data-thumb="{{$prdimg->img}}">
-                                                        <a href="{{$prdimg->img}}" title="" data-lightbox="gallery-item"><img src="{{$prdimg->img}}" alt="" class="zoom-me zoom-me1" data-zoom-image="{{$prdimg->img}}"> </a>
+                                                        <a href="{{$prdimg->img}}" title="{{$prdimg->product}}" data-lightbox="gallery-item">
+                                                            <img src="{{$prdimg->img}}" alt="{{ $prdimg->product }}" class="zoom-me zoom-me1 {{ ($pk == 0)?'fimg':''  }} " data-zoom-image="{{$prdimg->img}}">
+                                                        </a>
                                                     </div>
                                                     <?php
                                                 }
