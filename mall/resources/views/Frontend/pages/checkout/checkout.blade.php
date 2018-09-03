@@ -314,20 +314,6 @@
 <!--                                                <li>Shipping: <span class="pull-right">[[(billSummary.shipping)?billSummary.shipping:'-' ]]</span></li>-->
                                                 <!--<li>Voucher: <span class="pull-right voucherUsedAmount">0</span></li>-->
 
-                                                @if(@$feature['coupon'] == 1)
-                                                <li>Coupon: <span class="pull-right">[[billSummary.coupon* billSummary.currency_val | number: 2]]</span></li>
-                                                @endif
-
-                                                @if(@$feature['manual-discount'] == 1)
-<!--                                                <li>Discount: <span class="pull-right discountUsedAmount">[[billSummary.discount * billSummary.currency_val| number: 2]]</span></li>-->
-                                                @endif                                             
-                                                @if(@$feature['loyalty'] == 1)
-                                                <li>Reward Points: <span class="pull-right  cashbackUsedAmount">0.00</span></li>
-                                                @endif
-                                                <!-- <li>Gifting Charges: <span class="pull-right">[[billSummary.gifting ]]</span></li> -->
-                                                @if(@$feature['referral'] == 1)
-                                                <li>Referral Code: <span class="pull-right referalDiscount">0.00</span></li>
-                                                @endif
                                             </ul>
                                             <h2>Total <span class="currency-sym-in-braces">(<?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';   ?>)</span><span class="pull-right TotalCartAmt">[[billSummary.finaltotal * billSummary.currency_val| number:2 ]]</span></h2>
                                         </div>
