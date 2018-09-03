@@ -84,7 +84,7 @@ class Helper {
             echo ($key == 0) ? 'active' : '';
             echo "'>";
             if ($node->children()->count() > 0) {
-                echo "<a href='#subcategory-{$node->url_key}' >{$node->category}</a>"; //href=" . route('category', ['slug' => $node->url_key]) . "
+                echo "<a href='#subcategory-{$node->id}' >{$node->category}</a>"; //href=" . route('category', ['slug' => $node->url_key]) . "
             } else {
                 echo "<a href=" . route('category', ['slug' => $node->url_key]) . " >{$node->category}</a>";
             }
@@ -93,7 +93,7 @@ class Helper {
     }
 
     public static function getSubmenu($child, $key) {
-        echo " <div id='subcategory-{$child->url_key}' class='";
+        echo " <div id='subcategory-{$child->id}' class='";
         echo ($key == 0) ? 'active' : '';
         echo "' >"
         . "<div class='lnt-subcategory col-sm-8 col-md-8'><h3 class='lnt-category-name'>"
