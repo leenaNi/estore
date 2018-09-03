@@ -835,10 +835,10 @@ class Helper {
                         $tableContant = $tableContant . '   <tr class="cart_item">
         <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
                         if ($cart['options']['image'] != '') {
-                            $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . "/" . $cart["options"]["image"]) . '" alt="">
+                            $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . $cart["options"]["image_with_path"] . "/" . $cart["options"]["image"] . '" alt="">
           </a>';
                         } else {
-                            $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
+                            $tableContant = $tableContant . '  <img width="64" height="64" src="' . $cart["options"]["image_with_path"] . '/default-image.jpg" alt="">';
                         }
                         $tableContant = $tableContant . '</td>
         <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
