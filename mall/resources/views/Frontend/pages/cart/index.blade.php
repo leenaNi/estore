@@ -12,7 +12,7 @@
 </section>
 <div id="content" class="site-content single-product">
     <div class="container">
-        {{dd($cart);}}
+        {{print_r($cart)}}
         @if(!empty($cart->toArray()))
         <form class="cart-form" action="#">
             <div class="table-responsive">
