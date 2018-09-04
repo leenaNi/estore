@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Session;
 use App\Models\User;
 use App\Models\Order;
-use App\Models\Product;
+use App\Models\MallProducts as Product;
 use App\Models\HasProducts;
 use DB;
 use Route;
@@ -56,7 +56,7 @@ class PagesController extends Controller {
             $prod = DB::table($prd->prefix . '_products')->where('id', $prd->prod_id)->first();
             $prd->product = $prod;
             if (!empty($prod->product)) {
-                $catImg = DB::table($prd->prefix . '_catalog_images')->where("image_mode", 1)->first();
+                $catImg = DB::table($prd->prefix . '_catalog_images')->where('catalog_id', $prd->id)->where("image_mode", 1)->first();
                 if ($catImg) {
                     $prd->product->prodImage = ($catImg->image_path . '/' . $catImg->filename);
                 } else {
@@ -66,18 +66,20 @@ class PagesController extends Controller {
         }
 
         $topUsers = Order::whereNotIn("order_status", [0, 4, 6, 10])->with('users')->limit(10)->groupBy('user_id')->orderBy('total_amount', 'desc')->get(['user_id', DB::raw('count(user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
-        $latestOrders = Order::whereNotIn('order_status', [3, 4, 5, 6, 10])->limit(10)->orderBy('created_at', 'desc')->get();
+        $latestOrders = Order::whereNotIn('order_status', [3, 4, 5, 6, 10])->where('prefix', '')->limit(10)->orderBy('created_at', 'desc')->get();
         $latestUsers = User::where('user_type', 2)->limit(10)->orderBy('created_at', 'desc')->get();
         $latestProducts = Product::where('is_individual', '1')->limit(5)->orderBy('created_at', 'desc')->get();
         foreach ($latestProducts as $prd) {
-            if (@$prd->catalogimgs()->where("image_mode", 1)->first()->filename) {
-                $prd->prodImage = (Config('constants.productImgPath') . '/' . @$prd->catalogimgs()->where("image_mode", 1)->first()->filename);
+            $catImg = DB::table($prd->prefix . '_catalog_images')->where('catalog_id', $prd->store_prod_id)->where("image_mode", 1)->first();
+            
+            if ($catImg) {
+                $prd->prodImage = ($catImg->image_path . '/' . $catImg->filename);
             } else {
-                $prd->prodImage = Config('constants.defaultImgPath') . '/default-product.jpg';
+                $prd->prodImage = DB::table('stores')->where('id', $prd->store_id)->first()->store_domain . '/uploads/catalog/products/default-product.jpg';
             }
         }
-        $salesGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
-        $orderGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
+        $salesGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
+        $orderGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
         $weekDate = date('Y-m-d', strtotime("-7 day"));
         $salesGraph = array();
         $orderGraph = array();
