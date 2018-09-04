@@ -64,7 +64,7 @@ $currency_code = "inr";
                                                         <th class="product-price text-center" style="width:15%;">Price</th>
                                                         <th class="product-quantity text-center" style="width:12%;">Qty</th>
                                                         @if(@$feature['tax'] == 1)
-                                                        <th>Tax </th>
+                                                        <th class="text-center">Tax </th>
                                                         <th class="product-quantity text-center" style="width:12%;">Status</th>
                                                         @endif
                                                         <th class="product-subtotal text-center"  style="width:15%;">Subtotal</th>
@@ -116,7 +116,7 @@ $currency_code = "inr";
                                                         <?php if ($order->payment_status === 4 && isset($prd['options']['prod_type']) && $prd['options']['prod_type'] == 5) { ?> <button type="button" class="downloadid" value="{{ $prd['id'] }}">Download</button><span class="d{{$prd['id']}}"></span><?php } ?>
                                                     </div>
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="text-right">
                                                     <?php
                                                     $currency_val = 1;
                                                     $currency_code = "inr";
