@@ -158,9 +158,9 @@
                                     @foreach($latestOrders as $order)
                                     <tr>
                                         <td>{{ @$order->id }}</td>
-                                        <td>{{ ucfirst(@$order->users->firstname) }} {{ @$order->users->lastname }} </td>
-                                        <td>{{ @$order->users->email }}  </td>
-                                        <td>{{ @$order->users->telephone }}</td>
+                                        <td>{{ ucfirst(@$order->orderDetails->users->firstname) }} {{ @$order->orderDetails->users->lastname }} </td>
+                                        <td>{{ @$order->orderDetails->users->email }}  </td>
+                                        <td>{{ @$order->orderDetails->users->telephone }}</td>
                                         <td>{{ @$order->orderstatus['order_status'] }}</td>  
                                         <td>{{ @$order->paymentstatus['payment_status'] }}</td>
                                         <td>{{ @$order->paymentmethod['name'] }}</td>
