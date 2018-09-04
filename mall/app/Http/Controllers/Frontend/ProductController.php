@@ -199,7 +199,7 @@ class ProductController extends Controller {
 
             foreach ($subprods as $subP) {
 //                        $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status", 1)->orderBy("att_sort_order", "asc")->get();
-                $hasOpt = DB::table($product->prefix . '_has_options')->where("prod_id", $subP->id)->get();
+                $hasOpt = DB::table($product->prefix . '_has_option')->where("prod_id", $subP->id)->get();
                 dd($hasOpt);
                 foreach ($hasOpt as $prdOpt) {
                     $attributes = DB::table($product->prefix . '_attributes')->find($prdOpt->attr_id);
