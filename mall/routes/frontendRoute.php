@@ -40,6 +40,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/checkout', ['as' => 'checkout', 'uses' => 'CheckoutController@index']);
     Route::any('/new_user_login_new', array('as' => 'new_user_login_new', 'uses' => 'CheckoutController@new_user_login_new'));
     Route::any('/get_exist_user_login_new', array('as' => 'get_exist_user_login_new', 'uses' => 'CheckoutController@get_exist_user_login_new'));
+    Route::any('/guest_checkout', array('as' => 'guestCheckout', 'uses' => 'CheckoutController@guestCheckout'));
     Route::any('check-pincode-home', ["as" => "checkPincodeHome", "uses" => "HomeController@checkPincode"]);
     Route::any('/check-pincode', array('as' => 'checkPincode', 'uses' => 'CheckoutController@checkPincode'));
     Route::any('/get_loggedindata', array('as' => 'get_loggedindata', 'uses' => 'CheckoutController@get_loggedindata'));
