@@ -97,7 +97,7 @@ $currency_code = "inr";
                                                         if (!empty($prd['options']['options'])) {
                                                             $descript = "";
                                                             foreach ($prd['options']['options'] as $key => $value) {
-                                                                $descript .= DB::table($cart['options']['prefix'] .'_attribute_values')->where('id', $value)->first()->option_name . ",";
+                                                                $descript .= DB::table($prd['options']['prefix'] .'_attribute_values')->where('id', $value)->first()->option_name . ",";
                                                             }
                                                         }
                                                         if (!empty($prd['options']['combos'])) {
@@ -105,7 +105,7 @@ $currency_code = "inr";
                                                                 //  echo $key['options']."<br/>";
                                                                 if (!empty($value['options'])) {
                                                                     foreach ($value['options'] as $opt => $optval) {
-                                                                        echo "<span class='product-size'>" . @DB::table($cart['options']['prefix'] .'_attribute_values')->where('id', $optval)->first()->option_name . "</span> ";
+                                                                        echo "<span class='product-size'>" . @DB::table($prd['options']['prefix'] .'_attribute_values')->where('id', $optval)->first()->option_name . "</span> ";
                                                                     }
                                                                 }
                                                             }
