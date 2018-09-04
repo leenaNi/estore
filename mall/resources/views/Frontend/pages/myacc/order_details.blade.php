@@ -149,7 +149,7 @@ $currency_code = "inr";
                                                 </td>
                                                 @endif
                                                 <td>
-                                                    {{$ordProd->orderstatus}}
+                                                    {{$ordProd->orderstatus->order_status}}
                                                 </td>
                                                 <?php
                                                 $subTotal = ($prd['options']['tax_type'] == 2 ) ? $prd['subtotal'] + $prd['options']['tax_amt'] : $prd['subtotal'];
