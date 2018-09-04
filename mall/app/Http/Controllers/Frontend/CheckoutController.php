@@ -2127,7 +2127,7 @@ class CheckoutController extends Controller {
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
         $path = Config("constants.adminStorePath") . "/storeSetting.json";
         $str = file_get_contents($path);
-        $logoPath = (App\Library\Helper::getSettings()['logo']) ? App\Library\Helper::getSettings()['logo'] : asset(Config('constants.defaultImgPath') . 'default-logo.png'); // @asset(Config("constants.logoUploadImgPath") . 'logo.png');
+        $logoPath = (Helper::getSettings()['logo']) ? Helper::getSettings()['logo'] : asset(Config('constants.defaultImgPath') . 'default-logo.png'); // @asset(Config("constants.logoUploadImgPath") . 'logo.png');
         $settings = json_decode($str, true);
         $webUrl = $_SERVER['SERVER_NAME'];
         if ($emailStatus == 1) {
