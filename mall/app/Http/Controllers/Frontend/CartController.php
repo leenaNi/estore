@@ -331,7 +331,7 @@ class CartController extends Controller {
     public function configProduct($prod_id, $quantity, $sub_prod) {
         $product = Product::find($prod_id);
 //        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        $is_stockable = DB::table($prd->prefix . '_general_setting')->where('url_key', 'stock')->first();
+        $is_stockable = DB::table($product->prefix . '_general_setting')->where('url_key', 'stock')->first();
         $cats = [];
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
@@ -339,7 +339,7 @@ class CartController extends Controller {
         $pname = $product->product;
         $prod_type = $product->prod_type;
         $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get();
-        $imagPath = $product->images[0]->image_path . '/' . $product->images[0]->filename;
+        $imagPath = $product->images[0]->image_path;
         $subProd = Product::where("id", "=", $sub_prod)->first();
         $price = $subProd->price + $product->selling_price;
         $options = [];
@@ -349,7 +349,7 @@ class CartController extends Controller {
             $options[$optn->attr_id] = $optn->attr_val;
             $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
         }
-        $image = isset($images) ? $images : "default.jpg";
+        $image = (count($product->images)>0) ? $product->images[0]->filename : "default.jpg";
         $option_name = json_encode($option_name);
         $type = $product->is_tax;
         $sum = 0;

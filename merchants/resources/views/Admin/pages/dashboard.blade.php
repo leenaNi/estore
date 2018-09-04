@@ -161,9 +161,9 @@
                                         <td>{{ ucfirst(@$order->orderDetails->users->firstname) }} {{ @$order->orderDetails->users->lastname }} </td>
                                         <td>{{ @$order->orderDetails->users->email }}  </td>
                                         <td>{{ @$order->orderDetails->users->telephone }}</td>
-                                        <td>{{ @$order->orderstatus['order_status'] }}</td>  
-                                        <td>{{ @$order->paymentstatus['payment_status'] }}</td>
-                                        <td>{{ @$order->paymentmethod['name'] }}</td>
+                                        <td>{{ @$order->orderDetails->orderstatus['order_status'] }}</td>  
+                                        <td>{{ @$order->orderDetails->paymentstatus['payment_status'] }}</td>
+                                        <td>{{ @$order->orderDetails->paymentmethod['name'] }}</td>
                                         <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{ number_format((@$order->pay_amt * Session::get('currency_val')), 2, '.', '')}}</td>
                                     </tr>
                                     @endforeach

@@ -53,27 +53,23 @@ class HomeController extends Controller {
         $data = [];
         $categoryA = MallProdCategory::get(['id', 'category'])->toArray();
         $rootsS = MallProdCategory::roots()->with('catimgs')->where("status", 1)->get();
-      
         $category = [];
         $attr_sets = [];
         $prod_types = [];
         foreach ($categoryA as $val) {
             $category[$val['id']] = $val['category'];
         }
-        $prods = Product::where('is_avail', '=', 1)->where('status', '=', 1)->orderBy("trending_score","desc")->take(12)->get();
-                       
-        foreach($prods as $prd){
-            $prodImg=DB::table($prd->prefix."_catalog_images")->where("catalog_id",$prd->store_prod_id)->where("image_mode",1)->first();
-         
-            $prd->mainImage =  $prodImg->image_path . '/' . @$prodImg->filename;
+        $prods = Product::where('is_avail', '=', 1)->where('is_individual', 1)->where('status', '=', 1)->orderBy("trending_score", "desc")->take(12)->get();
+        foreach ($prods as $prd) {
+//            echo $prd->prefix . $prd->store_prod_id;
+            $prodImg = DB::table($prd->prefix . "_catalog_images")->where("catalog_id", $prd->store_prod_id)->where("image_mode", 1)->first();
+            $prd->mainImage = @$prodImg->image_path . '/' . @$prodImg->filename;
             $prd->alt_text = @$prodImg->alt_text;
         }
-       
+
         $data['category'] = $category;
         $data['rootsS'] = $rootsS;
-       
         $data['products'] = $prods;
-
         $viewname = Config('constants.frontendView') . '.index';
         return Helper::returnView($viewname, $data, null, 1);
     }
@@ -228,28 +224,20 @@ class HomeController extends Controller {
         return Helper::returnView($viewname);
     }
 
-  
-
     public function contactUs() {
-       // $contact = StaticPage::where('url_key', 'contact-us')->first();
+        // $contact = StaticPage::where('url_key', 'contact-us')->first();
 
         $data = '';
         $viewname = Config('constants.frontendView') . '.contact_us';
         return Helper::returnView($viewname, $data);
-
     }
 
     public function termsConditions() {
         //$terms = StaticPage::where('url_key', 'terms-conditions')->first();
-
         // $data = ['terms' => $terms];
-         $viewname = Config('constants.frontendView') . '.terms-conditions';
+        $viewname = Config('constants.frontendView') . '.terms-conditions';
         return Helper::returnView($viewname);
     }
-
-  
-
-  
 
     public function privacyPolicy() {
 //        $terms = StaticPage::where('url_key', 'privacy-policy')->first();
@@ -282,7 +270,7 @@ class HomeController extends Controller {
         return Helper::returnView($viewname);
     }
 
-     public function FAQPage() {
+    public function FAQPage() {
         $viewname = Config('constants.frontendView') . '.faqs';
         return Helper::returnView($viewname);
     }
