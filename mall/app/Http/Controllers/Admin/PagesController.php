@@ -70,7 +70,7 @@ class PagesController extends Controller {
         $latestUsers = User::where('user_type', 2)->limit(10)->orderBy('created_at', 'desc')->get();
         $latestProducts = Product::where('is_individual', '1')->limit(5)->orderBy('created_at', 'desc')->get();
         foreach ($latestProducts as $prd) {
-            $catImg = DB::table($prd->prefix . '_catalog_image')->where('catalog_id', $prd->id)->where("image_mode", 1)->first();
+            $catImg = DB::table($prd->prefix . '_catalog_images')->where('catalog_id', $prd->store_prod_id)->where("image_mode", 1)->first();
             
             if ($catImg) {
                 $prd->prodImage = ($catImg->image_path . '/' . $catImg->filename);
