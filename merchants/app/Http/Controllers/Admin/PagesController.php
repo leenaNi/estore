@@ -28,30 +28,38 @@ class PagesController extends Controller {
         $todaysSales = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->sum('pay_amt');
-//        $weeklySales = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
+
         $weeklySales = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->sum('pay_amt');
-        $monthlySales = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")
+
+        $monthlySales = HasProducts::whereRaw("MONTH(created_at) = '" . date('m') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->sum('pay_amt');
-        $yearlySales = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'")
+
+        $yearlySales = HasProducts::whereRaw("YEAR(created_at) = '" . date('Y') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->sum('pay_amt');
-        $totalSales = Order::whereNotIn("order_status", [0, 4, 6, 10])->sum('pay_amt');
-        $todaysOrders = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'")
+
+        $totalSales = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->sum('pay_amt');
+
+        $todaysOrders = HasProducts::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->count();
-        $weeklyOrders = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
+
+        $weeklyOrders = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->count();
-        $monthlyOrders = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")
+
+        $monthlyOrders = HasProducts::whereRaw("MONTH(created_at) = '" . date('m') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->count();
-        $yearlyOrders = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'")
+
+        $yearlyOrders = HasProducts::whereRaw("YEAR(created_at) = '" . date('Y') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->count();
-        $totalOrders = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->count();
+
+        $totalOrders = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->count();
         $topProducts = HasProducts::where('prefix', $this->jsonString['prefix'])->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
         foreach ($topProducts as $prd) {
             $prod = DB::table('products')->where('id', $prd->prod_id)->first();
@@ -66,7 +74,10 @@ class PagesController extends Controller {
             }
         }
 
-        $topUsers = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->with('users')->limit(10)->groupBy('user_id')->orderBy('total_amount', 'desc')->get(['user_id', DB::raw('count(user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
+        $topUsers = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->with(['orderDetails', function($q) {
+                        $q->with('users');
+                    }])->limit(10)->groupBy('user_id')->orderBy('total_amount', 'desc')->get(['user_id', DB::raw('count(user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
+                    dd($topUsers);
         $latestOrders = Order::whereNotIn('order_status', [3, 4, 5, 6, 10])->where('prefix', $this->jsonString['prefix'])->limit(10)->orderBy('created_at', 'desc')->get();
         $latestUsers = User::where('user_type', 2)->limit(10)->orderBy('created_at', 'desc')->get();
         $latestProducts = Product::where('is_individual', '1')->limit(5)->orderBy('created_at', 'desc')->get();
