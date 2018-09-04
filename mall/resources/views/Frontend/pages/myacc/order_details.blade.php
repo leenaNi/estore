@@ -144,7 +144,7 @@ $currency_code = "inr";
                                                     <div class="product-quntity">{{$prd['qty'] }}</div>
                                                 </td>
                                                 @if(@$feature['tax'] == 1)
-                                                <td>
+                                                <td class="text-right">
                                                     <span class="currency-sym"></span>  <span class="tax_{{$prd['rowid']}} tax_amt" rowid='{{$prd['rowid']}}'> {{  number_format($prd['options']['tax_amt'] * Session::get('currency_val'), 2 )}}</span>
                                                 </td>
                                                 @endif
