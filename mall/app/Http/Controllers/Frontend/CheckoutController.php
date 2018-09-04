@@ -1835,7 +1835,7 @@ class CheckoutController extends Controller {
         $order->products()->detach();
         foreach ($cartContent as $cart) {
             dd($cart);
-            $product = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
+            $product = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
             $sum = 0;
             $prod_tax = array();
             $total_tax = array();
@@ -1866,7 +1866,7 @@ class CheckoutController extends Controller {
             if ($cart->options->has('sub_prod')) {
                 $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
-                $prddataS = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
+                $prddataS = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
                 $proddetails['id'] = $prddataS->id;
                 $proddetails['name'] = $prddataS->product;
                 $proddetails['image'] = $cart->options->image;
@@ -1879,11 +1879,11 @@ class CheckoutController extends Controller {
                 $prddataS->trending_score = $prddataS->trending_score + $cart->qty;
                 $prddataS->update();
                 if ($prddataS->is_stock == 1) {
-                    $stocks = DB::table($cart->options->prefix . '_products')->find($cart->id)->stock;
+                    $stocks = DB::table($cart->options->prefix . '_products')->find($prddataS->store_prod_id)->stock;
                     $finalStock = $stocks - $cart->qty;
                     $prddataS->stock = $finalStock;
                     $prddataS->update();
-                    DB::table($cart->options->prefix . '_products')->where("id", $cart->id)->update(["stock" => $finalStock]);
+                    DB::table($cart->options->prefix . '_products')->where("id", $prddataS->store_prod_id)->update(["stock" => $finalStock]);
                 }
 
 
@@ -1918,7 +1918,7 @@ class CheckoutController extends Controller {
                 $cart_ids[$cart->id]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
-                $prddataSp = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
+                $prddataSp = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
@@ -1936,11 +1936,11 @@ class CheckoutController extends Controller {
                 $prddataS->update();
 
                 if ($prddataS->is_stock == 1) {
-                    $stocks = DB::table($cart->options->prefix . '_products')->find($cart->id)->stock;
+                    $stocks = DB::table($cart->options->prefix . '_products')->find($prddataS->store_prod_id)->stock;
                     $finalStock = $stocks - $cart->qty;
                     $prddataS->stock = $finalStock;
                     $prddataS->update();
-                    DB::table($cart->options->prefix . '_products')->where("id", $cart->id)->update(["stock" => $finalStock]);
+                    DB::table($cart->options->prefix . '_products')->where("id", $prddataS->store_prod_id)->update(["stock" => $finalStock]);
                 }
 
 //                if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
