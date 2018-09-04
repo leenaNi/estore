@@ -51,8 +51,10 @@ class PagesController extends Controller {
                 ->whereNotIn("order_status", [0, 4, 6, 10])
                 ->count();
         $totalOrders = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->count();
-        $topProducts = HasProducts::with('product')->where('prefix', $this->jsonString['prefix'])->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+        $topProducts = HasProducts::where('prefix', $this->jsonString['prefix'])->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
         foreach ($topProducts as $prd) {
+            $prod = DB::table($prd->prefix . '_products')->where('id', $prd->prod_id)->first();
+            $prd->product = $prod;
             if (!empty($prd->product)) {
                 $catImg = $prd->product->catalogimgs()->where("image_mode", 1)->first();
                 if ($catImg) {
@@ -68,7 +70,7 @@ class PagesController extends Controller {
         $latestUsers = User::where('user_type', 2)->limit(10)->orderBy('created_at', 'desc')->get();
         $latestProducts = Product::where('is_individual', '1')->limit(5)->orderBy('created_at', 'desc')->get();
         foreach ($latestProducts as $prd) {
-            $catImg = $prd->product->catalogimgs()->where("image_mode", 1)->first();
+            $catImg = $prd->catalogimgs()->where("image_mode", 1)->first();
             if ($catImg) {
                 $prd->prodImage = (Config('constants.productImgPath') . '/' . $catImg->filename);
             } else {
