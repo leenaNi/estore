@@ -68,7 +68,7 @@
                                     Shop by Categories
                                     <span class="caret"></span>
                                 </a>
-                                <div class="dropdown-menu menu-wid" role="menu">
+                                <div class="dropdown-menu" role="menu">
                                     <div class="lnt-dropdown-mega-menu">
                                         <!-- List of categories -->
                                         <ul class="lnt-category list-unstyled">
@@ -85,6 +85,9 @@
                                                 }
                                             }
                                             ?>
+                                            <div class="col-sm-4 col-md-4 display-img">
+                                                <img src="public/Frontend/images/dummy image.jpg">
+                                            </div>
                                         </div> <!--/.lnt-subcategroy-carousel-wrap -->
                                     </div> <!--/.lnt-dropdown-mega-menu -->
                                 </div> <!--/.dropdown-menu -->

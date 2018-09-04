@@ -7230,8 +7230,8 @@ ALTER TABLE `tblprfx_has_options`
 --
 -- Indexes for table `tblprfx_has_products`
 --
-ALTER TABLE `tblprfx_has_products`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_has_products`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_has_related_prods`
@@ -7754,8 +7754,8 @@ ALTER TABLE `tblprfx_has_options`
 --
 -- AUTO_INCREMENT for table `tblprfx_has_products`
 --
-ALTER TABLE `tblprfx_has_products`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+-- ALTER TABLE `tblprfx_has_products`
+--   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tblprfx_has_related_prods`
 --
@@ -7871,13 +7871,13 @@ ALTER TABLE `tblprfx_order_return_reason`
 --
 -- AUTO_INCREMENT for table `tblprfx_order_return_status`
 --
-ALTER TABLE `tblprfx_order_return_status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+-- ALTER TABLE `tblprfx_order_return_status`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `tblprfx_order_status`
 --
-ALTER TABLE `tblprfx_order_status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+-- ALTER TABLE `tblprfx_order_status`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `tblprfx_order_status_history`
 --
