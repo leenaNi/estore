@@ -340,7 +340,7 @@ class CartController extends Controller {
         $prod_type = $product->prod_type;
         $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get();
         $imagPath = $product->images[0]->image_path;
-        $subProd = Product::where("id", "=", $sub_prod)->first();
+        $subProd = Product::where("store_prod_id", "=", $sub_prod)->first();
         $price = $subProd->price + $product->selling_price;
         $options = [];
 //            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
