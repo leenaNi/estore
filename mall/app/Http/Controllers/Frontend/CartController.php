@@ -338,8 +338,7 @@ class CartController extends Controller {
         }
         $pname = $product->product;
         $prod_type = $product->prod_type;
-        $images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get();
-        $product->images = $images;
+        $product->images = DB::table($product->prefix . "_catalog_images")->where("catalog_id", $product->store_prod_id)->where("image_mode", 1)->get();
         $imagPath = $product->images[0]->image_path;
         $subProd = Product::where("id", "=", $sub_prod)->first();
         $price = $subProd->price + $product->selling_price;
@@ -350,7 +349,7 @@ class CartController extends Controller {
             $options[$optn->attr_id] = $optn->attr_val;
             $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
         }
-        $image = ($images) ? $images : "default.jpg";
+        $image = (count($product->images)>0) ? $product->images[0]->filename : "default.jpg";
         $option_name = json_encode($option_name);
         $type = $product->is_tax;
         $sum = 0;
