@@ -984,7 +984,7 @@ class Helper {
             public static function getCartProd($cart, $prodId, $subProdId) {
                 $prod = [];
                 foreach ($cart as $key => $cartProd) {
-                    if ($subProdId > 0 && $prd['options']['prod_type'] == 3) {
+                    if ($subProdId > 0 && $cartProd['options']['prod_type'] == 3) {
                         if ($cartProd['options']['sub_prod'] == $subProdId) {
                             $prod = $cartProd;
                         }
