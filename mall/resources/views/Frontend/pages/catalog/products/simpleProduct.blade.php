@@ -136,15 +136,15 @@
                                     $relProdImg = DB::table($relprd->prefix . "_catalog_images")->where("catalog_id", $relprd->store_prod_id)->where("image_mode", 1)->first(); //$relprd->catalogimgs()->first();
                                     ?>
                                     @if(!empty($relProdImg))
-                                    <a href="{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. $relProdImg->filename }}" alt="{{ $relprd->product }}" class="boxSizeImage"> </a>
+                                    <a href="{{route('home')}}/{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. $relProdImg->filename }}" alt="{{ $relprd->product }}" class="boxSizeImage"> </a>
                                     @else
-                                    <a href="{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. 'default-product.jpg' }}" alt="" class="boxSizeImage"> </a>
+                                    <a href="{{route('home')}}/{{$relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. 'default-product.jpg' }}" alt="" class="boxSizeImage"> </a>
                                     @endif
                 <!--                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>-->
                                 </div>
                                 <div class="product-desc">
                                     <div class="product-title">
-                                        <h3><a href="{{ $relprd->url_key }}">{{ $relprd->product }}</a></h3> </div>
+                                        <h3><a href="{{route('home')}}/{{ $relprd->url_key }}">{{ $relprd->product }}</a></h3> </div>
                                     <div class="product-price">
                                         @if($relprd->spl_price > 0 && $relprd->spl_price > $relprd->price)
                                         <del><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 

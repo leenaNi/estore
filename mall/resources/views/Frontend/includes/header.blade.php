@@ -68,7 +68,7 @@
                                     Shop by Categories
                                     <span class="caret"></span>
                                 </a>
-                                <div class="dropdown-menu" role="menu">
+                                <div class="dropdown-menu menu-wid" role="menu">
                                     <div class="lnt-dropdown-mega-menu">
                                         <!-- List of categories -->
                                         <ul class="lnt-category list-unstyled">
