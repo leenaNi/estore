@@ -15165,6 +15165,10 @@ div#tab-2 ul li a {
 	height: 350px!important;
 
 }
+.menu-wid
+{
+    width: 50%!important;
+}
 /*pranali css ends*/
 
 @media (min-width:319px ) and (max-width:360px )
