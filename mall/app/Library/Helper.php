@@ -664,9 +664,9 @@ class Helper {
             }
         }
 
-      $prod = DB::table('has_categories')->whereIn('cat_id', $cat_id)->pluck('prod_id');
+        $prod = DB::table('has_categories')->whereIn('cat_id', $cat_id)->pluck('prod_id');
         //dd($prod);
-      $maxp = DB::table('mall_products')->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
+        $maxp = DB::table('mall_products')->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
         // dd($maxp);
         return $maxp->maxp;
     }
@@ -979,6 +979,22 @@ class Helper {
                 $file = Config("constants.logoUploadImgPath") . 'logo.png';
                 $success = file_put_contents($file, $data);
                 return $file;
+            }
+
+            public static function getCartProd($cart, $prodId, $subProdId) {
+                $prod = [];
+                foreach ($cart as $key => $cartProd) {
+                    if ($subProdId > 0 && $prd['options']['prod_type'] == 3) {
+                        if ($cartProd['options']['sub_prod'] == $subProdId) {
+                            $prod = $cartProd;
+                        }
+                    } else if ($cartProd['options']['prod_type'] == 1) {
+                        if ($cartProd['id'] == $prodId) {
+                            $prod = $cartProd;
+                        }
+                    }
+                }
+                return $prod;
             }
 
         }

@@ -76,7 +76,11 @@ $currency_code = "inr";
                                                     $cartData = json_decode($order->cart, true);
                                                     $gettotal = 0;
                                                     ?> 
-                                                    @foreach($cartData as $key => $prd)                                                     
+                                                    @foreach($orderProds as $key => $ordProd) 
+                                                    <?php
+                                                    $prd = Helper::getCartProd($cartData, $ordProd->prod_id, $ordProd->sub_prod_id);
+                                                    dd($prd);
+                                                    ?>
                                                     <tr class="cart_item">
                                                 <input type="hidden" id="oid" value="{{ $order->id }}" />
                                                 <td class="text-center">
@@ -126,7 +130,6 @@ $currency_code = "inr";
                                                     //at
                                                     ?>
                                                     <span class="cart-item-details"><span class=""><span class="currency-sym"></span>
-
                                                             {{ number_format($prd['price'] * Session::get('currency_val'), 2) }}<br/>
                                                             @if(@$feature['tax'] == 1)
                                                             @if($prd['options']['tax_type'] == 2)
@@ -146,7 +149,7 @@ $currency_code = "inr";
                                                 </td>
                                                 @endif
                                                 <td>
-                                                    --
+                                                    {{$ordProd->orderstatus}}
                                                 </td>
                                                 <?php
                                                 $subTotal = ($prd['options']['tax_type'] == 2 ) ? $prd['subtotal'] + $prd['options']['tax_amt'] : $prd['subtotal'];
@@ -235,10 +238,10 @@ $currency_code = "inr";
                                                 //if ($order->order_status == 1) {
                                                 ?>
 <!--                                                    <tr class="cart_item ">
-                                                <td colspan="6" class="product-subtotal text-right">
-                                                    <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
-                                                </td>
-                                            </tr>-->
+                                        <td colspan="6" class="product-subtotal text-right">
+                                            <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
+                                        </td>
+                                    </tr>-->
                                                 <?php
                                                 //}
                                                 ?>
