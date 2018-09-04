@@ -74,7 +74,7 @@ class PagesController extends Controller {
             }
         }
 
-        $topUsers = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->with(['orderDetails', function($q) {
+        $topUsers = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->with(['orderDetails' => function($q) {
                         return $q->with('users');
                     }]);
 //        ->limit(10)->groupBy('user_id')->orderBy('total_amount', 'desc')->get(['orders.user_id', DB::raw('count(orders.user_id) as top'), DB::raw('sum(has_products.pay_amt) as total_amount')]);
