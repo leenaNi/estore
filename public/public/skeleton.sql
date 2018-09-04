@@ -1158,35 +1158,35 @@ INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`)
 -- Table structure for table `tblprfx_has_products`
 --
 
--- CREATE TABLE IF NOT EXISTS `tblprfx_has_products` (
---   `id` bigint(20) NOT NULL,
---   `order_id` bigint(20) NOT NULL,
---   `kot` bigint(20) NOT NULL,
---   `prod_id` bigint(20) NOT NULL,
---   `sub_prod_id` text NOT NULL,
---   `qty` bigint(20) NOT NULL,
---   `price` double NOT NULL,
---    `pay_amt` double NOT NULL,
---   `amt_after_discount` float(10,2) NOT NULL,
---   `disc` double NOT NULL,
---   `wallet_disc` double NOT NULL,
---   `voucher_disc` double NOT NULL,
---   `referral_disc` double NOT NULL,
---   `user_disc` double NOT NULL,
---   `product_details` text NOT NULL,
---   `qty_returned` int(10) NOT NULL,
---   `eCount` int(11) NOT NULL,
---   `eTillDownload` date NOT NULL,
---   `prod_type` int(11) DEFAULT '0',
---   `remark` text NOT NULL,
---   `tax` text,
---   `order_status` int(11) DEFAULT NULL,
---   `tracking_id` int(11) DEFAULT NULL,
---   `vendor_id` int(11) DEFAULT NULL,
--- `qty_exchange` int(11) DEFAULT NULL,
---  `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
--- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS `tblprfx_has_products` (
+  `id` bigint(20) NOT NULL,
+  `order_id` bigint(20) NOT NULL,
+  `kot` bigint(20) NOT NULL,
+  `prod_id` bigint(20) NOT NULL,
+  `sub_prod_id` text NOT NULL,
+  `qty` bigint(20) NOT NULL,
+  `price` double NOT NULL,
+   `pay_amt` double NOT NULL,
+  `amt_after_discount` float(10,2) NOT NULL,
+  `disc` double NOT NULL,
+  `wallet_disc` double NOT NULL,
+  `voucher_disc` double NOT NULL,
+  `referral_disc` double NOT NULL,
+  `user_disc` double NOT NULL,
+  `product_details` text NOT NULL,
+  `qty_returned` int(10) NOT NULL,
+  `eCount` int(11) NOT NULL,
+  `eTillDownload` date NOT NULL,
+  `prod_type` int(11) DEFAULT '0',
+  `remark` text NOT NULL,
+  `tax` text,
+  `order_status` int(11) DEFAULT NULL,
+  `tracking_id` int(11) DEFAULT NULL,
+  `vendor_id` int(11) DEFAULT NULL,
+`qty_exchange` int(11) DEFAULT NULL,
+ `created_at` timestamp NOT NULL DEFAULT NOW(),
+   `updated_at` timestamp  DEFAULT  NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1627,41 +1627,41 @@ CREATE TABLE IF NOT EXISTS `tblprfx_order_return_status` (
 -- Dumping data for table `tblprfx_order_return_status`
 --
 
--- INSERT INTO `tblprfx_order_return_status` (`id`, `status`) VALUES
--- (1, 'Awaiting Products'),
--- (2, 'Complete'),
--- (3, 'Pending'),
--- (4, 'No Status');
+INSERT INTO `tblprfx_order_return_status` (`id`, `status`) VALUES
+(1, 'Awaiting Products'),
+(2, 'Complete'),
+(3, 'Pending'),
+(4, 'No Status');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tblprfx_order_status`
 --
--- 
--- CREATE TABLE IF NOT EXISTS `tblprfx_order_status` (
---   `id` int(11) NOT NULL,
---   `order_status` varchar(255) NOT NULL,
---   `status` tinyint(4) NOT NULL DEFAULT '1',
---  `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
--- ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
--- 
--- --
--- -- Dumping data for table `tblprfx_order_status`
--- --
--- 
--- INSERT INTO `tblprfx_order_status` (`id`, `order_status`, `status`) VALUES
--- (1, 'Processing ', 1),
--- (2, 'Shipped', 1),
--- (3, 'Delivered', 1),
--- (4, 'Cancelled', 1),
--- (5, 'Exchanged', 1),
--- (6, 'Returned', 1),
--- (7, 'Undelivered', 1),
--- (8, 'Delayed', 1),
--- (9, 'Partially Shipped', 1),
--- (10, 'Refunded', 1);
+
+CREATE TABLE IF NOT EXISTS `tblprfx_order_status` (
+  `id` int(11) NOT NULL,
+  `order_status` varchar(255) NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+ `created_at` timestamp NOT NULL DEFAULT NOW(),
+   `updated_at` timestamp  DEFAULT  NULL
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tblprfx_order_status`
+--
+
+INSERT INTO `tblprfx_order_status` (`id`, `order_status`, `status`) VALUES
+(1, 'Processing ', 1),
+(2, 'Shipped', 1),
+(3, 'Delivered', 1),
+(4, 'Cancelled', 1),
+(5, 'Exchanged', 1),
+(6, 'Returned', 1),
+(7, 'Undelivered', 1),
+(8, 'Delayed', 1),
+(9, 'Partially Shipped', 1),
+(10, 'Refunded', 1);
 
 -- --------------------------------------------------------
 
@@ -1722,23 +1722,23 @@ INSERT INTO `tblprfx_payment_method` (`id`, `name`) VALUES
 --
 -- Table structure for table `tblprfx_payment_status`
 --
--- 
--- CREATE TABLE IF NOT EXISTS `tblprfx_payment_status` (
---   `id` int(11) NOT NULL,
---   `payment_status` varchar(255) NOT NULL,
---  `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
--- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
--- 
--- --
--- -- Dumping data for table `tblprfx_payment_status`
--- --
--- 
--- INSERT INTO `tblprfx_payment_status` (`id`, `payment_status`) VALUES
--- (1, 'Pending'),
--- (2, 'Cancelled'),
--- (3, 'Partially Paid'),
--- (4, 'Paid');
+
+CREATE TABLE IF NOT EXISTS `tblprfx_payment_status` (
+  `id` int(11) NOT NULL,
+  `payment_status` varchar(255) NOT NULL,
+ `created_at` timestamp NOT NULL DEFAULT NOW(),
+   `updated_at` timestamp  DEFAULT  NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tblprfx_payment_status`
+--
+
+INSERT INTO `tblprfx_payment_status` (`id`, `payment_status`) VALUES
+(1, 'Pending'),
+(2, 'Cancelled'),
+(3, 'Partially Paid'),
+(4, 'Paid');
 
 -- --------------------------------------------------------
 
@@ -2175,74 +2175,74 @@ INSERT INTO `tblprfx_permissions` (`id`, `name`, `display_name`, `description`, 
 (415, 'admin.product.vendors', 'Product Vendors', NULL, 5, 0, 0),
 (416, 'admin.product.vendors.search', 'Product Vendors Search', NULL, 5, 0, 0),
 (417, 'admin.vendors.dashboard', 'Vendors Dashboard', NULL, 48, 0, 0),
-(418, 'admin.vendors.orders', 'Vendors Orders', NULL, 48, 0, 0),
-(419, 'admin.vendors.rejectOrders', 'Vendors Rejectorders', NULL, 48, 0, 0),
-(420, 'admin.vendors.product', 'Vendors Product', NULL, 48, 0, 0),
-(421, 'admin.vendors.productStatus', 'Vendors Productstatus', NULL, 48, 0, 0),
-(422, 'admin.vendors.productBulkAction', 'Vendors Productbulkaction', NULL, 48, 0, 0),
-(423, 'admin.vendors.saleByOrder', 'Vendors Salebyorder', NULL, 48, 0, 0),
-(424, 'admin.vendors.saleByProduct', 'Vendors Salebyproduct', NULL, 48, 0, 0),
-(425, 'admin.vendor.export.order', 'Vendor Export Order', NULL, 48, 0, 0),
-(426, 'admin.vendor.order.status', 'Vendor Order Status', NULL, 48, 0, 0),
-(427, 'admin.product.vendors.save', 'Product Vendors Save', NULL, 5, 18, 0),
-(428, 'admin.product.vendors.delete', 'Product Vendors Delete', NULL, 5, 17, 0),
-(429, 'admin.section.view', 'Section View', NULL, 51, 0, 0);
+(540, 'admin.vendors.orders', 'Vendors Orders', NULL, 48, 0, 0),
+(541, 'admin.vendors.rejectOrders', 'Vendors Rejectorders', NULL, 48, 0, 0),
+(542, 'admin.vendors.product', 'Vendors Product', NULL, 48, 0, 0),
+(543, 'admin.vendors.productStatus', 'Vendors Productstatus', NULL, 48, 0, 0),
+(544, 'admin.vendors.productBulkAction', 'Vendors Productbulkaction', NULL, 48, 0, 0),
+(545, 'admin.vendors.saleByOrder', 'Vendors Salebyorder', NULL, 48, 0, 0),
+(546, 'admin.vendors.saleByProduct', 'Vendors Salebyproduct', NULL, 48, 0, 0),
+(547, 'admin.vendor.export.order', 'Vendor Export Order', NULL, 48, 0, 0),
+(548, 'admin.vendor.order.status', 'Vendor Order Status', NULL, 48, 0, 0),
+(580, 'admin.product.vendors.save', 'Product Vendors Save', NULL, 5, 18, 0),
+(581, 'admin.product.vendors.delete', 'Product Vendors Delete', NULL, 5, 17, 0),
+(682, 'admin.section.view', 'Section View', NULL, 51, 0, 0);
 INSERT INTO `tblprfx_permissions` (`id`, `name`, `display_name`, `description`, `section_id`, `parent_id`, `status`) VALUES
-(430, 'admin.section.add', 'Section Add', NULL, 51, 0, 0),
-(431, 'admin.section.save', 'Section Save', NULL, 51, 0, 0),
-(432, 'admin.section.update', 'Section Update', NULL, 51, 0, 0),
-(433, 'admin.section.edit', 'Section Edit', NULL, 51, 0, 0),
-(434, 'admin.section.delete', 'Section Delete', NULL, 51, 0, 0),
-(435, 'admin.traits.orders', 'Traits Orders', NULL, 55, 0, 0),
-(436, 'admin.vendors.ordersDetails', 'Vendors Ordersdetails', NULL, 0, 0, 0),
-(437, 'admin.dynamic-layout.addEdit', 'Dynamic-layout Addedit', NULL, 24, 0, 0),
-(438, 'admin.dynamic-layout.save', 'Dynamic-layout Save', NULL, 24, 0, 0),
-(439, 'admin.dynamic-layout.edit', 'Dynamic-layout Edit', NULL, 24, 0, 0),
-(440, 'admin.dynamic-layout.saveEdit', 'Dynamic-layout Saveedit', NULL, 24, 0, 0),
-(441, 'admin.dynamic-layout.changeStatus', 'Dynamic-layout Changestatus', NULL, 24, 0, 0),
-(442, 'admin.dynamic-layout.view', 'Dynamic-layout View', NULL, 24, 0, 0),
-(443, 'adminLogin', 'Adminlogin', NULL, 0, 0, 0),
-(444, 'unauthorized', 'Unauthorized', NULL, 0, 0, 0),
-(445, 'check_admin_user', 'Check_admin_user', NULL, 0, 0, 0),
-(446, 'adminLogout', 'Adminlogout', NULL, 0, 0, 0),
-(447, 'adminEditProfile', 'Admineditprofile', NULL, 0, 0, 0),
-(448, 'adminSaveProfile', 'Adminsaveprofile', NULL, 0, 0, 0),
-(449, 'chk_existing_username', 'Chk_existing_username', NULL, 0, 0, 0),
-(450, 'admin.courier.view', 'Courier View', NULL, 56, 0, 0),
-(451, 'admin.courier.add', 'Courier Add', NULL, 56, 0, 0),
-(452, 'admin.courier.save', 'Courier Save', NULL, 56, 0, 0),
-(453, 'admin.courier.update', 'Courier Update', NULL, 56, 0, 0),
-(454, 'admin.courier.edit', 'Courier Edit', NULL, 56, 0, 0),
-(455, 'admin.courier.delete', 'Courier Delete', NULL, 56, 0, 0),
-(456, 'admin.pincodes.sampleBulkDownload', 'Pincodes Samplebulkdownload', NULL, 26, 0, 0),
-(457, 'admin.raw-material.checkStatus', 'Raw-material Checkstatus', NULL, 0, 49, 0),
-(458, 'admin.pages.view', 'Pages View', NULL, 0, 0, 0),
-(459, 'admin.paymentSetting.changeStatus', 'Paymentsetting Changestatus', NULL, 36, 0, 0),
-(460, 'admin.country.countryStatus', 'Country Countrystatus', NULL, 18, 0, 0),
-(461, 'admin.courier.changeStatus', 'Courier Changestatus', NULL, 56, 0, 0),
-(462, 'admin.tables.checkCoupon', 'Tables Checkcoupon', NULL, 10, 0, 0),
-(463, 'admin.tables.getAdditionalcharge', 'Tables Getadditionalcharge', NULL, 10, 0, 0),
-(464, 'admin.returnPolicy.changeStatus', 'Returnpolicy Changestatus', NULL, 35, 0, 0),
-(465, 'admin.tables.reqloyalty', 'Tables Reqloyalty', NULL, 10, 0, 0),
-(466, 'admin.tables.revloyalty', 'Tables Revloyalty', NULL, 10, 0, 0),
-(467, 'admin.tables.tableCod', 'Tables Tablecod', NULL, 10, 0, 0),
-(468, 'admin.order.getbill', 'Order Getbill', NULL, 57, 0, 0),
-(469, 'admin.orders.cancelOrder', 'Orders Cancelorder', NULL, 13, 0, 0),
-(470, 'admin.orders.cancelOrderEdit', 'Orders Cancelorderedit', NULL, 13, 0, 0),
-(471, 'admin.orders.cancelOrderUpdate', 'Orders Cancelorderupdate', NULL, 13, 0, 0),
-(472, 'admin.email.status', 'Email Status', NULL, 57, 0, 0),
-(473, 'adminForgotPassword', 'Adminforgotpassword', NULL, 57, 0, 0),
-(474, 'adminChkForgotPasswordEmail', 'Adminchkforgotpasswordemail', NULL, 57, 0, 0),
-(475, 'adminResetPassword', 'Adminresetpassword', NULL, 57, 0, 0),
-(476, 'adminSaveResetPwd', 'Adminsaveresetpwd', NULL, 57, 0, 0),
-(477, 'admin.home.newsletter', 'Home Newsletter', NULL, 57, 0, 0),
-(478, 'admin.contact.getState', 'Contact Getstate', NULL, 57, 0, 0),
-(479, 'adminCheckCurPassowrd', 'Admincheckcurpassowrd', NULL, 57, 0, 0),
-(480, 'admin.domains.view', 'Domains View', NULL, 57, 0, 0),
-(481, 'admin.marketing.emails', 'Marketing Emails', NULL, 57, 0, 0),
-(482, 'admin.marketing.addGroup', 'Marketing Addgroup', NULL, 57, 0, 0),
-(483, 'admin.marketing.editGroup', 'Marketing Editgroup', NULL, 57, 0, 0),
-(484, 'admin.marketing.saveGroup', 'Marketing Savegroup', NULL, 57, 0, 0),
+(683, 'admin.section.add', 'Section Add', NULL, 51, 0, 0),
+(684, 'admin.section.save', 'Section Save', NULL, 51, 0, 0),
+(685, 'admin.section.update', 'Section Update', NULL, 51, 0, 0),
+(686, 'admin.section.edit', 'Section Edit', NULL, 51, 0, 0),
+(687, 'admin.section.delete', 'Section Delete', NULL, 51, 0, 0),
+(688, 'admin.traits.orders', 'Traits Orders', NULL, 55, 0, 0),
+(966, 'admin.vendors.ordersDetails', 'Vendors Ordersdetails', NULL, 0, 0, 0),
+(925, 'admin.dynamic-layout.addEdit', 'Dynamic-layout Addedit', NULL, 24, 0, 0),
+(926, 'admin.dynamic-layout.save', 'Dynamic-layout Save', NULL, 24, 0, 0),
+(927, 'admin.dynamic-layout.edit', 'Dynamic-layout Edit', NULL, 24, 0, 0),
+(2928, 'admin.dynamic-layout.saveEdit', 'Dynamic-layout Saveedit', NULL, 24, 0, 0),
+(2929, 'admin.dynamic-layout.changeStatus', 'Dynamic-layout Changestatus', NULL, 24, 0, 0),
+(2930, 'admin.dynamic-layout.view', 'Dynamic-layout View', NULL, 24, 0, 0),
+(3393, 'adminLogin', 'Adminlogin', NULL, 0, 0, 0),
+(3394, 'unauthorized', 'Unauthorized', NULL, 0, 0, 0),
+(3395, 'check_admin_user', 'Check_admin_user', NULL, 0, 0, 0),
+(3396, 'adminLogout', 'Adminlogout', NULL, 0, 0, 0),
+(3397, 'adminEditProfile', 'Admineditprofile', NULL, 0, 0, 0),
+(3398, 'adminSaveProfile', 'Adminsaveprofile', NULL, 0, 0, 0),
+(3399, 'chk_existing_username', 'Chk_existing_username', NULL, 0, 0, 0),
+(3300, 'admin.courier.view', 'Courier View', NULL, 56, 0, 0),
+(3301, 'admin.courier.add', 'Courier Add', NULL, 56, 0, 0),
+(3302, 'admin.courier.save', 'Courier Save', NULL, 56, 0, 0),
+(3303, 'admin.courier.update', 'Courier Update', NULL, 56, 0, 0),
+(3304, 'admin.courier.edit', 'Courier Edit', NULL, 56, 0, 0),
+(3305, 'admin.courier.delete', 'Courier Delete', NULL, 56, 0, 0),
+(3306, 'admin.pincodes.sampleBulkDownload', 'Pincodes Samplebulkdownload', NULL, 26, 0, 0),
+(3307, 'admin.raw-material.checkStatus', 'Raw-material Checkstatus', NULL, 0, 49, 0),
+(3308, 'admin.pages.view', 'Pages View', NULL, 0, 0, 0),
+(3309, 'admin.paymentSetting.changeStatus', 'Paymentsetting Changestatus', NULL, 36, 0, 0),
+(3310, 'admin.country.countryStatus', 'Country Countrystatus', NULL, 18, 0, 0),
+(3311, 'admin.courier.changeStatus', 'Courier Changestatus', NULL, 56, 0, 0),
+(3312, 'admin.tables.checkCoupon', 'Tables Checkcoupon', NULL, 10, 0, 0),
+(3313, 'admin.tables.getAdditionalcharge', 'Tables Getadditionalcharge', NULL, 10, 0, 0),
+(3314, 'admin.returnPolicy.changeStatus', 'Returnpolicy Changestatus', NULL, 35, 0, 0),
+(3315, 'admin.tables.reqloyalty', 'Tables Reqloyalty', NULL, 10, 0, 0),
+(3316, 'admin.tables.revloyalty', 'Tables Revloyalty', NULL, 10, 0, 0),
+(3317, 'admin.tables.tableCod', 'Tables Tablecod', NULL, 10, 0, 0),
+(3318, 'admin.order.getbill', 'Order Getbill', NULL, 57, 0, 0),
+(3319, 'admin.orders.cancelOrder', 'Orders Cancelorder', NULL, 13, 0, 0),
+(3320, 'admin.orders.cancelOrderEdit', 'Orders Cancelorderedit', NULL, 13, 0, 0),
+(3321, 'admin.orders.cancelOrderUpdate', 'Orders Cancelorderupdate', NULL, 13, 0, 0),
+(3322, 'admin.email.status', 'Email Status', NULL, 57, 0, 0),
+(3323, 'adminForgotPassword', 'Adminforgotpassword', NULL, 57, 0, 0),
+(3324, 'adminChkForgotPasswordEmail', 'Adminchkforgotpasswordemail', NULL, 57, 0, 0),
+(3325, 'adminResetPassword', 'Adminresetpassword', NULL, 57, 0, 0),
+(3326, 'adminSaveResetPwd', 'Adminsaveresetpwd', NULL, 57, 0, 0),
+(3327, 'admin.home.newsletter', 'Home Newsletter', NULL, 57, 0, 0),
+(3328, 'admin.contact.getState', 'Contact Getstate', NULL, 57, 0, 0),
+(3329, 'adminCheckCurPassowrd', 'Admincheckcurpassowrd', NULL, 57, 0, 0),
+(3330, 'admin.domains.view', 'Domains View', NULL, 57, 0, 0),
+(3331, 'admin.marketing.emails', 'Marketing Emails', NULL, 57, 0, 0),
+(3332, 'admin.marketing.addGroup', 'Marketing Addgroup', NULL, 57, 0, 0),
+(3333, 'admin.marketing.editGroup', 'Marketing Editgroup', NULL, 57, 0, 0),
+(3334, 'admin.marketing.saveGroup', 'Marketing Savegroup', NULL, 57, 0, 0),
 (3335, 'admin.marketing.changeStatus', 'Marketing Changestatus', NULL, 57, 0, 0),
 (3336, 'admin.marketing.groups', 'Marketing Groups', NULL, 57, 0, 0),
 (3337, 'admin.marketing.emailTemplates', 'Marketing Emailtemplates', NULL, 57, 0, 0),
@@ -7230,8 +7230,8 @@ ALTER TABLE `tblprfx_has_options`
 --
 -- Indexes for table `tblprfx_has_products`
 --
--- ALTER TABLE `tblprfx_has_products`
---   ADD PRIMARY KEY (`id`);
+ALTER TABLE `tblprfx_has_products`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_has_related_prods`
@@ -7370,14 +7370,14 @@ ALTER TABLE `tblprfx_order_return_reason`
 --
 -- Indexes for table `tblprfx_order_return_status`
 --
--- ALTER TABLE `tblprfx_order_return_status`
---   ADD PRIMARY KEY (`id`);
+ALTER TABLE `tblprfx_order_return_status`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_order_status`
 --
--- ALTER TABLE `tblprfx_order_status`
---   ADD PRIMARY KEY (`id`);
+ALTER TABLE `tblprfx_order_status`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_order_status_history`
@@ -7754,8 +7754,8 @@ ALTER TABLE `tblprfx_has_options`
 --
 -- AUTO_INCREMENT for table `tblprfx_has_products`
 --
--- ALTER TABLE `tblprfx_has_products`
---   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `tblprfx_has_products`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tblprfx_has_related_prods`
 --
@@ -7871,13 +7871,13 @@ ALTER TABLE `tblprfx_order_return_reason`
 --
 -- AUTO_INCREMENT for table `tblprfx_order_return_status`
 --
--- ALTER TABLE `tblprfx_order_return_status`
---   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+ALTER TABLE `tblprfx_order_return_status`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `tblprfx_order_status`
 --
--- ALTER TABLE `tblprfx_order_status`
---   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+ALTER TABLE `tblprfx_order_status`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `tblprfx_order_status_history`
 --
@@ -7891,8 +7891,8 @@ ALTER TABLE `tblprfx_payment_method`
 --
 -- AUTO_INCREMENT for table `tblprfx_payment_status`
 --
--- ALTER TABLE `tblprfx_payment_status`
---   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+ALTER TABLE `tblprfx_payment_status`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `tblprfx_permissions`
 --
