@@ -169,6 +169,7 @@
                                 <th>Stock</th>
                                 @endif
                                 <th>Status</th>
+                                <th>Sell On Veestores Mall</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -225,18 +226,22 @@
                         @endif
                         <td>
                             @if($product->status==1)
-                            <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this product?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn"></i></a>
+                            <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this product?')" data-toggle="tooltip" title="Enabled">
+                                <i class="fa fa-check btn-plen btn"></i></a>
                             @elseif($product->status==0)
                             <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this product?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn"></i></a>
                             @endif
                         </td>
+                          <td>
+                           @if($product->is_share_on_mall==0)
+                            <a prod-id="{{$product->id}}" class="   shareProductToMall" ui-toggle-class="" title="Publish To Mall"> <i class="fa fa-check btn-plen btn"></i></a>
+                            @else
+                            <a prod-id="{{$product->id}}" class="  unpublishToMall" ui-toggle-class=""  title="Unpublish" ><i class="fa fa-times  btn-plen btn"></i></a>
+                            @endif
+                        </td>
                         <td>
                             <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw"></i></a>
-                            @if($product->is_share_on_mall==0)
-                            <a prod-id="{{$product->id}}" class="label label-info active shareProductToMall" ui-toggle-class="" title="Publish To Mall"><i class="fa fa-arrow-up"></i></a>
-                            @else
-                            <a prod-id="{{$product->id}}" class="label label-info active unpublishToMall" ui-toggle-class=""  title="Unpublish" ><i class="fa fa-arrow-down"></i></a>
-                            @endif
+                           
                             <!--                        
 <a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
 

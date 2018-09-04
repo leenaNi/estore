@@ -53,7 +53,7 @@
         <div class="container clearfix">
 
             <div class="col_half">
-                Copyright Â© <?php echo date("Y"); ?>. <a href="#">Veestores Mall</a>.  All Rights Reserved. Developed by <a href="http://infinisystem.com/" target="_blank">Infini Systems</a>
+                Copyright © <?php echo date("Y"); ?>. <a href="#">Veestores Mall</a>.  All Rights Reserved. Developed by <a href="http://infinisystem.com/" target="_blank">Infini Systems</a>
             </div>
 
             <div class="col_half col_last tright">

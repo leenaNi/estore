@@ -15107,10 +15107,14 @@ div#tab-login-register ul {
     border: 0;
 }
 
-div#tab-login-register ul li {
+@media (min-width:768px )
+{
+    div#tab-login-register ul li {
     width: 49.5% !important;
     text-align: center;
 }
+}
+
 div#tab-login-register ul li a {
     width: 100%;
     padding: 0;
@@ -15163,7 +15167,7 @@ div#tab-2 ul li a {
 }
 /*pranali css ends*/
 
-@media (min-width:320px ) and (max-width:360px )
+@media (min-width:319px ) and (max-width:360px )
 {
 	div#tab-login-register ul li {
 		width: 40% !important;
