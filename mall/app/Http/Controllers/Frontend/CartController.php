@@ -331,7 +331,7 @@ class CartController extends Controller {
     public function configProduct($prod_id, $quantity, $sub_prod) {
         $product = Product::find($prod_id);
 //        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        $is_stockable = DB::table($prd->prefix . '_general_setting')->where('url_key', 'stock')->first();
+        $is_stockable = DB::table($product->prefix . '_general_setting')->where('url_key', 'stock')->first();
         $cats = [];
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
