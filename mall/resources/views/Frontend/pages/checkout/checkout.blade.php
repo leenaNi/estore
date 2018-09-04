@@ -146,7 +146,7 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-md-1 col-sm-1 col-xs-12 hidden-xs">
+                               <!--  <div class="col-md-1 col-sm-1 col-xs-12 hidden-xs">
                                     <div class="or-vertical"></div>
                                     <div class="or-text-vertical text-center">OR</div>
                                 </div>
@@ -164,7 +164,7 @@
                                         </a>
                                         <div class="clearfix"></div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -322,20 +322,20 @@
                                         <div class="summry_col">
                                             <h4 class="heading-title" ng-show="billSummary.cashback > 0">
                                                 @if(@$feature['loyalty'] == 1)
-                                                <span class="pull-left summry_title">Current Reward Points</span>
+<!--                                                <span class="pull-left summry_title">Current Reward Points</span>
                                                 <span class="pull-right rwd_pont curRewPointsOld">[[billSummary.cashback * billSummary.currency_val| number: 2   ]]</span>
-                                                <span class="pull-right rwd_pont curRewPointsNew hide" style=""></span>
+                                                <span class="pull-right rwd_pont curRewPointsNew hide" style=""></span>-->
                                                 @endif
                                             </h4>
                                             <ul class="sumcol-rightlist"> 
                                                 @if(@$feature['loyalty'] == 1)
-                                                <li ng-if="[[billSummary.cashback]] > 0"><div class="cashbackAmt"><input id="checkbox1" ng-model="cashback" ng-change="reqCashback()" class="requireCashback" type="checkbox" name="requireCashback" value="1" > <label for="checkbox1"><p><a href="" target="_blank" class="blue_text">Check Reward Points</a></p></label>
+<!--                                                <li ng-if="[[billSummary.cashback]] > 0"><div class="cashbackAmt"><input id="checkbox1" ng-model="cashback" ng-change="reqCashback()" class="requireCashback" type="checkbox" name="requireCashback" value="1" > <label for="checkbox1"><p><a href="" target="_blank" class="blue_text">Check Reward Points</a></p></label>
                                                         <p class="cashbackMsg" style="display:none;" ></p></div>
-                                                </li>
+                                                </li>-->
                                                 @endif
                                                 <div ng-if="[[billSummary.address.country_id]] == 99">
                                                     @if(@$feature['referral'] == 1)
-                                                    <li ng-if="billSummary.orderCount <= 0">
+<!--                                                    <li ng-if="billSummary.orderCount <= 0">
                                                         <div ng-if="billSummary.checkReferral == 1" >
 
                                                             <div class="form-group"  >
@@ -349,7 +349,7 @@
 
                                                             </div>
                                                         </div>
-                                                    </li>
+                                                    </li>-->
                                                     @endif
                                                     <div ng-if="billSummary.checkVoucher == 1">
                                                         @if(@$feature['des'] == 1)
