@@ -1834,7 +1834,7 @@ class CheckoutController extends Controller {
         $cart_ids = [];
         $order->products()->detach();
         foreach ($cartContent as $cart) {
-            dd($cart);
+//            dd($cart);
             $product = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
             $sum = 0;
             $prod_tax = array();
