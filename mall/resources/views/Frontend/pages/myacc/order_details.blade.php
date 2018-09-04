@@ -41,7 +41,9 @@ $currency_code = "inr";
                                                 <tr>
                                                     <th class="product-name text-center">ORDER ID: <span class="cart-item-details">{{ $order->id }}</span></th>
                                                     <th class=" text-center">Date: <span class="cart-item-details"> {{ date("d-M-Y",strtotime($order->created_at)) }}</span></th>
-                                                    <th class="product-quantity text-center"><!---Status: <span class="cart-item-details">Status </span>---></th>
+                                                    <!--<th class="product-quantity text-center">-->
+                                                        <!---Status: <span class="cart-item-details">Status </span>--->
+                                                    <!--</th>-->
                                                 </tr>
                                             </thead>
                                         </table>
@@ -63,6 +65,7 @@ $currency_code = "inr";
                                                         <th class="product-quantity text-center" style="width:12%;">Qty</th>
                                                         @if(@$feature['tax'] == 1)
                                                         <th>Tax </th>
+                                                        <th class="product-quantity text-center" style="width:12%;">Status</th>
                                                         @endif
                                                         <th class="product-subtotal text-center"  style="width:15%;">Subtotal</th>
                                                         <?php $cols = 5; ?>
@@ -142,6 +145,9 @@ $currency_code = "inr";
                                                     <span class="currency-sym"></span>  <span class="tax_{{$prd['rowid']}} tax_amt" rowid='{{$prd['rowid']}}'> {{  number_format($prd['options']['tax_amt'] * Session::get('currency_val'), 2 )}}</span>
                                                 </td>
                                                 @endif
+                                                <td>
+                                                    --
+                                                </td>
                                                 <?php
                                                 $subTotal = ($prd['options']['tax_type'] == 2 ) ? $prd['subtotal'] + $prd['options']['tax_amt'] : $prd['subtotal'];
                                                 $gettotal += $subTotal;
@@ -236,13 +242,13 @@ $currency_code = "inr";
                                                 }
                                                 //Cancel Order Row
                                                 //if ($order->order_status == 1) {
-                                                    ?>
+                                                ?>
 <!--                                                    <tr class="cart_item ">
-                                                        <td colspan="6" class="product-subtotal text-right">
-                                                            <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
-                                                        </td>
-                                                    </tr>-->
-                                                    <?php
+                                                    <td colspan="6" class="product-subtotal text-right">
+                                                        <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
+                                                    </td>
+                                                </tr>-->
+                                                <?php
                                                 //}
                                                 ?>
                                                 </tbody>
