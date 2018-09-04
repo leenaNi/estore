@@ -350,7 +350,7 @@ class CartController extends Controller {
             $options[$optn->attr_id] = $optn->attr_val;
             $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
         }
-        $image = isset($images) ? $images : "default.jpg";
+        $image = ($images) ? $images : "default.jpg";
         $option_name = json_encode($option_name);
         $type = $product->is_tax;
         $sum = 0;
