@@ -49,7 +49,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
             </li>
              <li class="{{ Route::currentRouteName() == 'admin.category' ? 'active' : '' }}">
                 <a href="{{ route('admin.category.view') }}">
-                    <i class="fa fa-folder-open"></i><span>Category</span> <i class=""></i>
+                    <i class="fa fa-industry"></i><span>Category</span> <i class=""></i>
                 </a>
             </li>
              

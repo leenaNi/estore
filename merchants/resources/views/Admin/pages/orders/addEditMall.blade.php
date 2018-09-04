@@ -173,10 +173,7 @@
                     {{ Form::model($order, ['method' => 'post', 'url' => $action , 'class' => 'bucket-form rtForm', 'id' => 'updateReturnQty', ]) }}
                     {!! Form::hidden('user_id',$order->user_id) !!}
                     <div class="clear clear_fix clearfix"> </div>
-                   
-                   
-                  
-                   
+            
                     {{ Form::hidden('ordereditCal',null) }}
                      {!! Form::hidden('order_id',$order->id) !!}
                     {{ Form::hidden('cashback_to_add',0) }}
@@ -293,13 +290,10 @@
                                 @if($feature['loyalty']==1)
                                 <td><b class="cashbackDisc">{{ number_format((@$fixedCashbackUsed * Session::get('currency_val')), 2)  }}</b></td>
                                 @endif
-  
-                                
-                             
+                      
                                 <td><a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;"></i></a></td>
                             </tr>
-                            
-                            
+                         
                         </tbody>
                     </table>
                                 </div>

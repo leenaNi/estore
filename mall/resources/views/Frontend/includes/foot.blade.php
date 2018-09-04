@@ -86,8 +86,8 @@ $(document).ready(function () {
     });
 });
 </script>
-<script>
-    //PRODUCT DETAILS PAGE 
+<!-- <script>
+    //PRODUCT DETAILS PAGE - zoom effect  
     var cw = $('#shop .product a img').width();
     console.log("Image width", cw);
     jQuery('#shop .product a img').css({'height': cw + 'px'});
@@ -115,7 +115,7 @@ $(document).ready(function () {
         }
 
     });
-</script>
+</script> -->
 <!---- Subscription Link ------------->
 <script type="text/javascript">
 //    $("#btn-subscribe").click(function () {
