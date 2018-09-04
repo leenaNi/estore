@@ -26,39 +26,42 @@ class PagesController extends Controller {
         $userThisYearCount = User::where("user_type", "=", 2)->where('created_at', '>=', $current_year['start'])->where('created_at', '<=', $current_year['end'])->count();
 
         $todaysSales = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'")
-                ->whereNotIn("order_status", [0, 4, 6, 10])
+                ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')
                 ->sum('pay_amt');
         $weeklySales = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
-                ->whereNotIn("order_status", [0, 4, 6, 10])
+                ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')
                 ->sum('pay_amt');
         $monthlySales = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")
-                ->whereNotIn("order_status", [0, 4, 6, 10])
+                ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')
                 ->sum('pay_amt');
         $yearlySales = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'")
-                ->whereNotIn("order_status", [0, 4, 6, 10])
+                ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')
                 ->sum('pay_amt');
-        $totalSales = Order::whereNotIn("order_status", [0, 4, 6, 10])->sum('pay_amt');
+        $totalSales = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')->sum('pay_amt');
         $todaysOrders = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'")
-                ->whereNotIn("order_status", [0, 4, 6, 10])
+                ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')
                 ->count();
         $weeklyOrders = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
-                ->whereNotIn("order_status", [0, 4, 6, 10])
+                ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')
                 ->count();
         $monthlyOrders = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")
-                ->whereNotIn("order_status", [0, 4, 6, 10])
+                ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')
                 ->count();
         $yearlyOrders = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'")
-                ->whereNotIn("order_status", [0, 4, 6, 10])
+                ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')
                 ->count();
-        $totalOrders = Order::whereNotIn("order_status", [0, 4, 6, 10])->count();
-        $topProducts = HasProducts::with('product')->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+        $totalOrders = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')->count();
+        $topProducts = HasProducts::where('prefix', '')->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
         foreach ($topProducts as $prd) {
-            if (!empty($prd->product)) {
-                if(@$prd->product->catalogimgs()->where("image_mode", 1)->first()->filename){
-                $prd->product->prodImage =(Config('constants.productImgPath') .'/'. @$prd->product->catalogimgs()->where("image_mode", 1)->first()->filename);
-            }else{
-               $prd->product->prodImage =Config('constants.defaultImgPath').'/default-product.jpg';  
-            }
+            $prod = DB::table($prd->prefix . '_products')->where('id', $prd->prod_id)->first();
+            $prd->product = $prod;
+            if (!empty($prod->product)) {
+                $catImg = DB::table($prd->prefix . '_catalog_images')->where("image_mode", 1)->first();
+                if ($catImg) {
+                    $prd->product->prodImage = ($catImg->image_path . '/' . $catImg->filename);
+                } else {
+                    $prd->product->prodImage = DB::table('stores')->where('id', $prd->store_id)->first()->store_domain . '/uploads/catalog/products/default-product.jpg';
+                }
             }
         }
 
@@ -67,11 +70,11 @@ class PagesController extends Controller {
         $latestUsers = User::where('user_type', 2)->limit(10)->orderBy('created_at', 'desc')->get();
         $latestProducts = Product::where('is_individual', '1')->limit(5)->orderBy('created_at', 'desc')->get();
         foreach ($latestProducts as $prd) {
-             if(@$prd->catalogimgs()->where("image_mode", 1)->first()->filename){
-            $prd->prodImage = (Config('constants.productImgPath') .'/'. @$prd->catalogimgs()->where("image_mode", 1)->first()->filename);
-        }else{          
-            $prd->prodImage=Config('constants.defaultImgPath').'/default-product.jpg';
-        }
+            if (@$prd->catalogimgs()->where("image_mode", 1)->first()->filename) {
+                $prd->prodImage = (Config('constants.productImgPath') . '/' . @$prd->catalogimgs()->where("image_mode", 1)->first()->filename);
+            } else {
+                $prd->prodImage = Config('constants.defaultImgPath') . '/default-product.jpg';
+            }
         }
         $salesGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
         $orderGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();

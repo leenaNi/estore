@@ -44,7 +44,7 @@
                             <tr class="cart_item">
                                 <td class="cart-product-thumbnail">
                                     @if($cart['options']['image']!='')
-                                    <a href="#"><img width="64" height="64" src="{{ $cart['options']['image_with_path'].'/'.$cart['options']['image'] )}}" alt="">
+                                    <a href="#"><img width="64" height="64" src="{{ $cart['options']['image_with_path'].'/'.$cart['options']['image'] }}" alt="">
                                     </a>
                                     @else 
                                     <img width="64" height="64" src="{{ $cart['options']['image_with_path']}}/default-image.jpg" alt="">

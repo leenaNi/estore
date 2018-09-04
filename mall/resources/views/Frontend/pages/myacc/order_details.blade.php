@@ -41,7 +41,9 @@ $currency_code = "inr";
                                                 <tr>
                                                     <th class="product-name text-center">ORDER ID: <span class="cart-item-details">{{ $order->id }}</span></th>
                                                     <th class=" text-center">Date: <span class="cart-item-details"> {{ date("d-M-Y",strtotime($order->created_at)) }}</span></th>
-                                                    <th class="product-quantity text-center"><!---Status: <span class="cart-item-details">Status </span>---></th>
+                                                    <!--<th class="product-quantity text-center">-->
+                                                        <!---Status: <span class="cart-item-details">Status </span>--->
+                                                    <!--</th>-->
                                                 </tr>
                                             </thead>
                                         </table>
@@ -62,7 +64,8 @@ $currency_code = "inr";
                                                         <th class="product-price text-center" style="width:15%;">Price</th>
                                                         <th class="product-quantity text-center" style="width:12%;">Qty</th>
                                                         @if(@$feature['tax'] == 1)
-                                                        <th>Tax </th>
+                                                        <th class="text-center">Tax </th>
+                                                        <th class="product-quantity text-center" style="width:12%;">Status</th>
                                                         @endif
                                                         <th class="product-subtotal text-center"  style="width:15%;">Subtotal</th>
                                                         <?php $cols = 5; ?>
@@ -73,7 +76,11 @@ $currency_code = "inr";
                                                     $cartData = json_decode($order->cart, true);
                                                     $gettotal = 0;
                                                     ?> 
-                                                    @foreach($cartData as $key => $prd)                                                     
+                                                    @foreach($orderProds as $key => $ordProd) 
+                                                    <?php
+                                                    $prd = App\Library\Helper::getCartProd($cartData, $ordProd->prod_id, $ordProd->sub_prod_id);
+//                                                    dd($prd);
+                                                    ?>
                                                     <tr class="cart_item">
                                                 <input type="hidden" id="oid" value="{{ $order->id }}" />
                                                 <td class="text-center">
@@ -109,7 +116,7 @@ $currency_code = "inr";
                                                         <?php if ($order->payment_status === 4 && isset($prd['options']['prod_type']) && $prd['options']['prod_type'] == 5) { ?> <button type="button" class="downloadid" value="{{ $prd['id'] }}">Download</button><span class="d{{$prd['id']}}"></span><?php } ?>
                                                     </div>
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="text-right">
                                                     <?php
                                                     $currency_val = 1;
                                                     $currency_code = "inr";
@@ -123,7 +130,6 @@ $currency_code = "inr";
                                                     //at
                                                     ?>
                                                     <span class="cart-item-details"><span class=""><span class="currency-sym"></span>
-
                                                             {{ number_format($prd['price'] * Session::get('currency_val'), 2) }}<br/>
                                                             @if(@$feature['tax'] == 1)
                                                             @if($prd['options']['tax_type'] == 2)
@@ -138,10 +144,13 @@ $currency_code = "inr";
                                                     <div class="product-quntity">{{$prd['qty'] }}</div>
                                                 </td>
                                                 @if(@$feature['tax'] == 1)
-                                                <td>
+                                                <td class="text-right">
                                                     <span class="currency-sym"></span>  <span class="tax_{{$prd['rowid']}} tax_amt" rowid='{{$prd['rowid']}}'> {{  number_format($prd['options']['tax_amt'] * Session::get('currency_val'), 2 )}}</span>
                                                 </td>
                                                 @endif
+                                                <td>
+                                                    {{$ordProd->orderstatus->order_status}}
+                                                </td>
                                                 <?php
                                                 $subTotal = ($prd['options']['tax_type'] == 2 ) ? $prd['subtotal'] + $prd['options']['tax_amt'] : $prd['subtotal'];
                                                 $gettotal += $subTotal;
@@ -168,15 +177,6 @@ $currency_code = "inr";
                                                     <td class="product-subtotal text-right">
                                                         <span class="cart-item-details"><span class="product-total"><span class="currency-sym"></span> {{ number_format(($order->coupon_amt_used * $currency_val),2) }} </span></span>                   
                                                     </td>
-                                                </tr>
-                                                @else
-                                                <tr class="cart_item">
-                                                    <td class="text-right" colspan="{{$cols}}">
-                                                        <div class="product-quntity"> <strong>Coupon Used</strong> </div>
-                                                    </td>
-                                                    <td class="product-subtotal text-right">
-                                                        <span class="cart-item-details"><span class="product-total"><span class="currency-sym"></span> 0.00</span></span>                   
-                                                    </td> 
                                                 </tr>
                                                 @endif
                                                 @if($order->cod_charges > 0)
@@ -208,7 +208,7 @@ $currency_code = "inr";
                                                     }
                                                 }
                                                 ?>
-                                                @if($feature['manual-discount'] == 1)
+                                                @if($feature['manual-discount'] == 1 && $order->discount_amt>0)
                                                 <tr class="cart_item">
                                                     <td class="text-right" colspan="{{$cols}}">
                                                         <div class="product-quntity"> <strong>Discount</strong></div>
@@ -236,13 +236,13 @@ $currency_code = "inr";
                                                 }
                                                 //Cancel Order Row
                                                 //if ($order->order_status == 1) {
-                                                    ?>
+                                                ?>
 <!--                                                    <tr class="cart_item ">
-                                                        <td colspan="6" class="product-subtotal text-right">
-                                                            <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
-                                                        </td>
-                                                    </tr>-->
-                                                    <?php
+                                        <td colspan="6" class="product-subtotal text-right">
+                                            <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
+                                        </td>
+                                    </tr>-->
+                                                <?php
                                                 //}
                                                 ?>
                                                 </tbody>
