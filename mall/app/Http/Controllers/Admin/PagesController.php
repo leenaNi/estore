@@ -77,8 +77,8 @@ class PagesController extends Controller {
                 $prd->prodImage = DB::table('stores')->where('id', $prd->store_id)->first()->store_domain . '/uploads/catalog/products/default-product.jpg';
             }
         }
-        $salesGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
-        $orderGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
+        $salesGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
+        $orderGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
         $weekDate = date('Y-m-d', strtotime("-7 day"));
         $salesGraph = array();
         $orderGraph = array();
