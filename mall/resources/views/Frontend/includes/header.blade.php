@@ -10,6 +10,7 @@
             ============================================= -->
             <div class="top-links fright">
                 <ul>
+                    <li><a href="https://www.veestores.com/">Create Store</a></li>
                     <li><a href="http://www.veestores.com/about">About</a></li>
                     <!-- <li><a href="#">FAQs</a></li> -->
                     <li><a href="http://www.veestores.com/contact">Contact</a></li>

@@ -15,14 +15,17 @@ use Session;
 
 class CancelOrderController extends Controller {
 
-    //
+//
     public function index() {
-        $getData = CancelOrder::with('getorders', 'getorders.users')->get();
+        //dd($this->jsonString);
+      //  $jsonString = Helper::getSettings();
+        $getData = CancelOrder::with('getorders', 'getorders.users')->where("prefix",$this->jsonString['prefix'])->get();
         return Helper::returnView(Config('constants.adminOrderView') . '.cancel-order.index', ["data" => $getData]);
     }
 
     public function edit($id) {
-        $getData = CancelOrder::with('getorders', 'getorders.users', "reason")->where("id", $id)->first();
+        //$jsonString = Helper::getSettings();
+        $getData = CancelOrder::with('getorders', 'getorders.users', "reason")->where("prefix",$this->jsonString['prefix'])->where("id", $id)->first();
         return Helper::returnView(Config('constants.adminOrderView') . '.cancel-order.edit', ["data" => $getData]);
     }
 

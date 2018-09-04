@@ -1158,35 +1158,35 @@ INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`)
 -- Table structure for table `tblprfx_has_products`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_has_products` (
-  `id` bigint(20) NOT NULL,
-  `order_id` bigint(20) NOT NULL,
-  `kot` bigint(20) NOT NULL,
-  `prod_id` bigint(20) NOT NULL,
-  `sub_prod_id` text NOT NULL,
-  `qty` bigint(20) NOT NULL,
-  `price` double NOT NULL,
-   `pay_amt` double NOT NULL,
-  `amt_after_discount` float(10,2) NOT NULL,
-  `disc` double NOT NULL,
-  `wallet_disc` double NOT NULL,
-  `voucher_disc` double NOT NULL,
-  `referral_disc` double NOT NULL,
-  `user_disc` double NOT NULL,
-  `product_details` text NOT NULL,
-  `qty_returned` int(10) NOT NULL,
-  `eCount` int(11) NOT NULL,
-  `eTillDownload` date NOT NULL,
-  `prod_type` int(11) DEFAULT '0',
-  `remark` text NOT NULL,
-  `tax` text,
-  `order_status` int(11) DEFAULT NULL,
-  `tracking_id` int(11) DEFAULT NULL,
-  `vendor_id` int(11) DEFAULT NULL,
-`qty_exchange` int(11) DEFAULT NULL,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_has_products` (
+--   `id` bigint(20) NOT NULL,
+--   `order_id` bigint(20) NOT NULL,
+--   `kot` bigint(20) NOT NULL,
+--   `prod_id` bigint(20) NOT NULL,
+--   `sub_prod_id` text NOT NULL,
+--   `qty` bigint(20) NOT NULL,
+--   `price` double NOT NULL,
+--    `pay_amt` double NOT NULL,
+--   `amt_after_discount` float(10,2) NOT NULL,
+--   `disc` double NOT NULL,
+--   `wallet_disc` double NOT NULL,
+--   `voucher_disc` double NOT NULL,
+--   `referral_disc` double NOT NULL,
+--   `user_disc` double NOT NULL,
+--   `product_details` text NOT NULL,
+--   `qty_returned` int(10) NOT NULL,
+--   `eCount` int(11) NOT NULL,
+--   `eTillDownload` date NOT NULL,
+--   `prod_type` int(11) DEFAULT '0',
+--   `remark` text NOT NULL,
+--   `tax` text,
+--   `order_status` int(11) DEFAULT NULL,
+--   `tracking_id` int(11) DEFAULT NULL,
+--   `vendor_id` int(11) DEFAULT NULL,
+-- `qty_exchange` int(11) DEFAULT NULL,
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1627,41 +1627,41 @@ CREATE TABLE IF NOT EXISTS `tblprfx_order_return_status` (
 -- Dumping data for table `tblprfx_order_return_status`
 --
 
-INSERT INTO `tblprfx_order_return_status` (`id`, `status`) VALUES
-(1, 'Awaiting Products'),
-(2, 'Complete'),
-(3, 'Pending'),
-(4, 'No Status');
+-- INSERT INTO `tblprfx_order_return_status` (`id`, `status`) VALUES
+-- (1, 'Awaiting Products'),
+-- (2, 'Complete'),
+-- (3, 'Pending'),
+-- (4, 'No Status');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tblprfx_order_status`
 --
-
-CREATE TABLE IF NOT EXISTS `tblprfx_order_status` (
-  `id` int(11) NOT NULL,
-  `order_status` varchar(255) NOT NULL,
-  `status` tinyint(4) NOT NULL DEFAULT '1',
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tblprfx_order_status`
---
-
-INSERT INTO `tblprfx_order_status` (`id`, `order_status`, `status`) VALUES
-(1, 'Processing ', 1),
-(2, 'Shipped', 1),
-(3, 'Delivered', 1),
-(4, 'Cancelled', 1),
-(5, 'Exchanged', 1),
-(6, 'Returned', 1),
-(7, 'Undelivered', 1),
-(8, 'Delayed', 1),
-(9, 'Partially Shipped', 1),
-(10, 'Refunded', 1);
+-- 
+-- CREATE TABLE IF NOT EXISTS `tblprfx_order_status` (
+--   `id` int(11) NOT NULL,
+--   `order_status` varchar(255) NOT NULL,
+--   `status` tinyint(4) NOT NULL DEFAULT '1',
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+-- 
+-- --
+-- -- Dumping data for table `tblprfx_order_status`
+-- --
+-- 
+-- INSERT INTO `tblprfx_order_status` (`id`, `order_status`, `status`) VALUES
+-- (1, 'Processing ', 1),
+-- (2, 'Shipped', 1),
+-- (3, 'Delivered', 1),
+-- (4, 'Cancelled', 1),
+-- (5, 'Exchanged', 1),
+-- (6, 'Returned', 1),
+-- (7, 'Undelivered', 1),
+-- (8, 'Delayed', 1),
+-- (9, 'Partially Shipped', 1),
+-- (10, 'Refunded', 1);
 
 -- --------------------------------------------------------
 
@@ -1722,23 +1722,23 @@ INSERT INTO `tblprfx_payment_method` (`id`, `name`) VALUES
 --
 -- Table structure for table `tblprfx_payment_status`
 --
-
-CREATE TABLE IF NOT EXISTS `tblprfx_payment_status` (
-  `id` int(11) NOT NULL,
-  `payment_status` varchar(255) NOT NULL,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tblprfx_payment_status`
---
-
-INSERT INTO `tblprfx_payment_status` (`id`, `payment_status`) VALUES
-(1, 'Pending'),
-(2, 'Cancelled'),
-(3, 'Partially Paid'),
-(4, 'Paid');
+-- 
+-- CREATE TABLE IF NOT EXISTS `tblprfx_payment_status` (
+--   `id` int(11) NOT NULL,
+--   `payment_status` varchar(255) NOT NULL,
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+-- 
+-- --
+-- -- Dumping data for table `tblprfx_payment_status`
+-- --
+-- 
+-- INSERT INTO `tblprfx_payment_status` (`id`, `payment_status`) VALUES
+-- (1, 'Pending'),
+-- (2, 'Cancelled'),
+-- (3, 'Partially Paid'),
+-- (4, 'Paid');
 
 -- --------------------------------------------------------
 
@@ -7370,14 +7370,14 @@ ALTER TABLE `tblprfx_order_return_reason`
 --
 -- Indexes for table `tblprfx_order_return_status`
 --
-ALTER TABLE `tblprfx_order_return_status`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_order_return_status`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_order_status`
 --
-ALTER TABLE `tblprfx_order_status`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_order_status`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_order_status_history`
@@ -7891,8 +7891,8 @@ ALTER TABLE `tblprfx_payment_method`
 --
 -- AUTO_INCREMENT for table `tblprfx_payment_status`
 --
-ALTER TABLE `tblprfx_payment_status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+-- ALTER TABLE `tblprfx_payment_status`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `tblprfx_permissions`
 --

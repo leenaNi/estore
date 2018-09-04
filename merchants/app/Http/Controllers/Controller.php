@@ -35,7 +35,7 @@ abstract class Controller extends BaseController {
     public $pincodeStatus;
     public $feature;
     public $storeViesion;
-
+    public $jsonString;
     public function __construct() {  
         
      
@@ -45,6 +45,7 @@ abstract class Controller extends BaseController {
         Session::forget('currency_val');
 
         $this->setGlobalCurrency();
+        $this->jsonString = Helper::getSettings();
 //        $currencyId ='IND';
 //        //$currency = HasCurrency::find($currencyId);
 //        $currency = HasCurrency::where('iso_code',$currencyId)->first();

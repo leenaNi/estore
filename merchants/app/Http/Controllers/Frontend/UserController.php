@@ -82,6 +82,7 @@ class UserController extends Controller {
         $returnPolicy = @GeneralSetting::where("type", 6)->first()->details;
         $returnProductStatus=GeneralSetting::where('url_key','return-product')->where('status',1)->get();
          $orderReturnReason=OrderReturnReason::pluck('reason','id');
+        
         $getid = $id;
         $order = Order::where('id', $getid)->with('currency','orderStatHist')->with(['products'=>function($pro){
          return $pro->with([
