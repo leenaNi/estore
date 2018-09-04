@@ -81,7 +81,7 @@
                             <input type='hidden' name='prod_type' value='{{$product->prod_type}}'>
                             <div class="quantity clearfix">
                                 <input type="button" value="-" class="minus">
-                                <input type="text" step="1" min="1" name="quantity" value="1" title="Qty" class="qty"  onkeypress="return isNumber(event);" onkeypress="return isNumber(event);" max="{{$maxValue }}"size="4" />
+                                <input type="text" step="1" min="1" id="quantity" name="quantity" value="1" title="Qty" class="qty"  onkeypress="return isNumber(event);" onkeypress="return isNumber(event);" max="{{$maxValue }}" size="4" />
                                 <input type="button" value="+" class="plus"> </div>
                             <button  form-id='{{ $product->id }}'type="button" class="add-to-cart button nomargin addToCartB addToCart">Add to cart</button>
                             <button type="button"  data-prodid="{{ $product->id }}" class="add-to-wishlist button nomargin">Add To Wishlist<i id="wish{{ $product->id}}" class="" style="margin-right:0px;"></i></button>
@@ -176,18 +176,22 @@
     }
     $('.plus').click(function (e) {
         // Stop acting like a button
+       
         e.preventDefault();
         // Get the field name
         var maxvalue = parseInt($('input[name="quantity"]').attr('max'));
         // console.log(maxvalue);
         // Get its current value
-        var currentVal = parseInt($('#quantity').val());
+      
+        var currentVal = parseInt($('input[name="quantity"]').val());
         //  console.log(currentVal);
         // If is not undefined
+        
         if (!isNaN(currentVal) && (currentVal < maxvalue)) {
             // Increment
             //$('.plus').css('pointer-events', '');
-            $('#quantity').val(parseInt(currentVal) + 1);
+            $('input[name="quantity"]').val(parseInt(currentVal) + 1);
+              
             // alert(parseInt(currentVal)+ 1);
         } else if (currentVal >= maxvalue) {
             // console.log(maxvalue);

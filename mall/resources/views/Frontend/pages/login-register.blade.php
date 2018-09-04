@@ -38,19 +38,19 @@
                                         <button class="button nomargin add-to-cart" type="submit" value="login">Login</button>
                                     </div>
                                     <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('forgotPassword') }}" class="">Forgot Password?</a> </div>
-                                    <div class="col-md-12 topmargin-sm orDivider-box clearfix">
+                                    <!-- <div class="col-md-12 topmargin-sm orDivider-box clearfix">
                                         <div class="orDivider">or</div>
-                                    </div>
+                                    </div> -->
                                     <div class="clearfix"></div>
                                 </form>
-                                <div class="social_media text-center topmargin-sm">
+                               <!--  <div class="social_media text-center topmargin-sm">
                                     <a id="fbLink" class="col-sm-6 col-xs-12 fb_login_btn" style="margin-bottom:11px;">
                                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/fb_login.jpg')}}" onclick="fbLogin()"  class="fb_login_btn"></img>
                                     </a>
                                     <a class="col-sm-6 col-xs-12">
                                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/g_login.jpg')}}" class="g_login_btn"></img>
                                     </a>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
