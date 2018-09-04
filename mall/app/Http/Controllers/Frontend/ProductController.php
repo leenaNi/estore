@@ -173,7 +173,7 @@ class ProductController extends Controller {
 //                                }
 //                                    ])->first();
 
-            $product = Product::where('id', $prod->store_prod_id)
+            $product = Product::where('id', $prod->id)
 //                            ->leftjoin($prod->prefix.'products subprod', "p.id", "=", "subprod.parent_prod_id")
                     ->first();
             $product->store_name = DB::table('stores')->where('id', $product->store_id)->first()->store_name;
