@@ -115,7 +115,8 @@ class OrdersController extends Controller {
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
         return Helper::returnView($viewname, $data);
     }
-  public function indexold() {
+
+    public function indexold() {
         $jsonString = Helper::getSettings();
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
@@ -188,6 +189,7 @@ class OrdersController extends Controller {
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
         return Helper::returnView($viewname, $data);
     }
+
     public function add() {
         $order = new Order();
         $action = route("admin.order.save");
@@ -206,14 +208,8 @@ class OrdersController extends Controller {
         Session::forget("referalCodeAmt");
         Session::forget("codCharges");
         Session::forget('shippingCost');
+         $jsonString = Helper::getSettings();
         $order = Order::findOrFail(Input::get('id'));
-//        $usersA = User::get()->toArray();
-//        $users = [];
-//        foreach ($usersA as $val) {
-//            $users[$val['id']] = $val['firstname'] . $val['lastname'];
-//        }
-        Cart::instance("shopping")->destroy();
-        $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
         $payment_method = PaymentMethod::get()->toArray();
         $payment_methods = [];
         foreach ($payment_method as $val) {
@@ -249,14 +245,31 @@ class OrdersController extends Controller {
         foreach ($courier as $val) {
             $courier_status[$val['id']] = $val['name'];
         }
-        $additional = json_decode($order->additional_charge, true);
-        $products = $order->products;
-        $coupon = Coupon::find($order->coupon_used);
-        $action = route("admin.orders.save");
-        // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users', 
-        $viewname = Config('constants.adminOrderView') . '.addEdit';
-        $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'coupon' => $coupon, 'coupons' => $coupons, 'flags' => $flag_status, 'courier' => $courier_status, 'additional' => $additional];
-        return Helper::returnView($viewname, $data);
+        if ($order->prefix == Helper::getSettings()['prefix']) {
+
+            Cart::instance("shopping")->destroy();
+            $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
+
+            $additional = json_decode($order->additional_charge, true);
+            $products = $order->products;
+            $coupon = Coupon::find($order->coupon_used);
+            $action = route("admin.orders.save");
+            // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users', 
+            $viewname = Config('constants.adminOrderView') . '.addEdit';
+            $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'coupon' => $coupon, 'coupons' => $coupons, 'flags' => $flag_status, 'courier' => $courier_status, 'additional' => $additional];
+            return Helper::returnView($viewname, $data);
+        } else {
+
+            $orders = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->first();
+            $products = $orders->product;
+            //dd($products);
+            $action = route("admin.orders.mallOrderSave");        
+            $viewname = Config('constants.adminOrderView') . '.addEditMall';
+           // dd($orders);
+            $data = ['order' => $orders, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 
+                'products' => $products, 'courier' => $courier_status];
+             return Helper::returnView($viewname, $data);
+        }
     }
 
     public function save() {
@@ -401,7 +414,7 @@ class OrdersController extends Controller {
             }
 
             $newcart = $newCartData;
-            $orderUpdateCart->products()->detach();
+          HasProducts::where("order_id",Input::get('id'))->delete();
             // dd($newcart);
             foreach ($newcart as $cart) {
                 $checkPrd = Product::find($cart->id);
@@ -460,7 +473,12 @@ class OrdersController extends Controller {
                     $prd->stock = $prd->stock - $cart->qty;
                     $prd->update();
                 }
-                $orderUpdateCart->products()->attach($cart->id, $cart_ids[$cart->id]);
+            $cart_ids[$cart->id]["order_id"] =Input::get('id');
+            $cart_ids[$cart->id]["prod_id"] = $prd->id;
+            $cart_ids[$cart->id]["order_status"] = 1;
+            $cart_ids[$cart->id]["order_source"] = $this->$jsonString['store_name'];
+            HasProducts::insert($cart_ids);
+                //$orderUpdateCart->products()->attach($cart->id, $cart_ids[$cart->id]);
             }
 
 
@@ -473,7 +491,7 @@ class OrdersController extends Controller {
             $order = Order::findOrNew(Input::get('id'));
             $orderStatus = $order->order_status;
             $updateOrder = $order->fill(Input::except('not_in_use'))->save();
-
+            HasProducts::where("order_id",Input::get('id'))->update(["order_status"=> $order->order_status]);
             if (Input::get('order_status') && $updateOrder == TRUE && $orderStatus != Input::get('order_status')) {
                 OrderStatusHistory::create([
                     'order_id' => Input::get('id'),
@@ -492,7 +510,16 @@ class OrdersController extends Controller {
     public function addCartForCoupon() {
         $cartdata = Input::get('cartdata');
     }
-
+public function mallOrderSave(){
+  
+    $orders=HasProducts::find(Input::get("order_id"));
+    if(Input::get("order_status")){
+    $orders->order_status=Input::get("order_status");
+    }
+    $orders->save();
+    return redirect()->route('admin.orders.view');
+    
+}
     public function updateRetutnQty() {
 
         $orderEdit = Order::find(Input::get('id'));
@@ -1144,7 +1171,7 @@ class OrdersController extends Controller {
     function update_return_order_status() {
         $checkStockEnabled = GeneralSetting::where('url_key', 'stock')->where('is_active', 1)->get();
         $returnorder = ReturnOrder::find(Input::get('id'));
-        
+
         $returnorder->return_status = Input::get('return_status');
         $returnorder->save();
         if (Input::get('return_status') == 2) {
@@ -1187,7 +1214,7 @@ class OrdersController extends Controller {
             $cashbackhistory->cashback = $returnorder->return_amount * $returnorder->quantity;
             $cashbackhistory->qty = $returnorder->quantity;
             $cashbackhistory->save();
-          //  $this->sendReturnOrderMail($returnorder);
+            //  $this->sendReturnOrderMail($returnorder);
             echo 3;
         } else {
             echo "Status Updated";
@@ -1196,20 +1223,21 @@ class OrdersController extends Controller {
     }
 
     public function sendReturnOrderMail($returnorder) {
-          //  $path = Config("constants.adminStorePath") . "/storeSetting.json";
-           // $str = file_get_contents($path);
-        $order=Order::find($returnorder->order_id);
-            $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
-            $settings = Helper::getSettings();;
-            $webUrl = $_SERVER['SERVER_NAME'];
+        //  $path = Config("constants.adminStorePath") . "/storeSetting.json";
+        // $str = file_get_contents($path);
+        $order = Order::find($returnorder->order_id);
+        $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
+        $settings = Helper::getSettings();
+        ;
+        $webUrl = $_SERVER['SERVER_NAME'];
 
-            $name = "pradeep";
-            $email_id = "pradeep@infiniteit.biz";
-         if($returnorder->order_status==3){
-         $emailContent = EmailTemplate::where('id', 7)->select('content', 'subject')->get()->toArray(); 
-         }else if($returnorder->order_status==2){
-        $emailContent = EmailTemplate::where('id', 9)->select('content', 'subject')->get()->toArray();
-         }
+        $name = "pradeep";
+        $email_id = "pradeep@infiniteit.biz";
+        if ($returnorder->order_status == 3) {
+            $emailContent = EmailTemplate::where('id', 7)->select('content', 'subject')->get()->toArray();
+        } else if ($returnorder->order_status == 2) {
+            $emailContent = EmailTemplate::where('id', 9)->select('content', 'subject')->get()->toArray();
+        }
         $email_template = $emailContent[0]['content'];
         $subject = $emailContent[0]['subject'];
         $tableContant = Helper::getEmailInvoice($orderid);

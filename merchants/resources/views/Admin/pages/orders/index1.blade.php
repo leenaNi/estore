@@ -164,6 +164,7 @@
                                 @if($feature['courier-services'] == 1)  
 <!--                                <th>Courier Service</th>-->
                                 @endif
+                                <th>Order Source</th>
                                 <th width="6%">Action</th>
                             </tr>
                         </thead>
@@ -206,11 +207,12 @@
                                 @if($feature['courier-services'] == 1)  
 <!--                                   <td>{{ ($order->courier != 0)?$order->getcourier['name']:'-' }}</td>-->
                                 @endif
+                                  <td>{{ @$order->order_source }}</td>
                                 <td>
                                     <!--                                    <a href="{!! route('admin.orders.editReOrder',['id'=>$order->id]) !!}"  class="label label-success active ereorder" ui-toggle-class="">Edit / Update Order</a>-->
-                                    <a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
-                                      <a href="#" data-ordId ="{{ $order->id }}"  class="flage"  ui-toggle-class="" data-toggle="tooltip" title="Flag"><i class="fa fa-flag-o btn-plen"></i></a>
-                                    <a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this order?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash "></i></a>
+                                    <a href="{!! route('admin.orders.edit',['id'=>$order->order_id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
+                                      <a href="#" data-ordId ="{{ $order->order_id }}"  class="flage"  ui-toggle-class="" data-toggle="tooltip" title="Flag"><i class="fa fa-flag-o btn-plen"></i></a>
+                                    <a href="{!! route('admin.orders.delete',['id'=>$order->order_id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this order?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash "></i></a>
                        <!--                                    <a href="{!! route('admin.orders.orderHistory') !!}?id={{$order->id}}" target="_blank" class="viewHistory"><span class="label label-info label-mini">History</span></a>-->
                                 
                                    <!--  <a href="#" data-ordId ="{{ $order->id }}"  class="" ui-toggle-class="" data-toggle="tooltip" title="History"><i class="fa fa-history"></i></a> -->
