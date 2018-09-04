@@ -74,18 +74,16 @@ class PagesController extends Controller {
             }
         }
 
-//        $topUsers = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->with(['orderDetails' => function($q) {
-//                                return $q->with('users');
-//                            }])
+//        $topUsers = Orders::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->with('users')
 //                        ->limit(10)->groupBy('orders.user_id')->orderBy('total_amount', 'desc')->get(['orders.user_id', DB::raw('count(orders.user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
-//                    dd($topUsers);
+
         $topUsers = DB::connection('mysql2')->table('has_products')->join('orders', 'has_products.order_id', '=', 'orders.id')
                         ->join('users', 'orders.user_id', '=', 'users.id')
                         ->whereNotIn("has_products.order_status", [0, 4, 6, 10])->where('has_products.prefix', $this->jsonString['prefix'])
                         ->limit(10)->groupBy('orders.user_id')
                         ->orderBy('total_amount', 'desc')->get(['orders.user_id', DB::raw('count(orders.user_id) as top'), DB::raw('sum(has_products.pay_amt) as total_amount')]);
-        dd($topUsers);
-        $latestOrders = Order::whereNotIn('order_status', [3, 4, 5, 6, 10])->where('prefix', $this->jsonString['prefix'])->limit(10)->orderBy('created_at', 'desc')->get();
+
+        $latestOrders = HasProducts::whereNotIn('order_status', [3, 4, 5, 6, 10])->where('prefix', $this->jsonString['prefix'])->limit(10)->orderBy('created_at', 'desc')->get();
         $latestUsers = User::where('user_type', 2)->limit(10)->orderBy('created_at', 'desc')->get();
         $latestProducts = Product::where('is_individual', '1')->limit(5)->orderBy('created_at', 'desc')->get();
         foreach ($latestProducts as $prd) {
@@ -96,8 +94,8 @@ class PagesController extends Controller {
                 $prd->prodImage = Config('constants.defaultImgPath') . '/default-product.jpg';
             }
         }
-        $salesGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
-        $orderGraph0 = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
+        $salesGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
+        $orderGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(distinct(order_id)) as total_order')])->toArray();
         $weekDate = date('Y-m-d', strtotime("-7 day"));
         $salesGraph = array();
         $orderGraph = array();
