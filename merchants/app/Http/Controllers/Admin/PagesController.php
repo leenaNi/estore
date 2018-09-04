@@ -53,7 +53,7 @@ class PagesController extends Controller {
         $totalOrders = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->count();
         $topProducts = HasProducts::where('prefix', $this->jsonString['prefix'])->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
         foreach ($topProducts as $prd) {
-            $prod = DB::table($this->jsonString['prefix'] . '_products')->where('id', $prd->prod_id)->first();
+            $prod = DB::table('products')->where('id', $prd->prod_id)->first();
             $prd->product = $prod;
             if (!empty($prd->product)) {
                 $catImg = $prd->product->catalogimgs()->where("image_mode", 1)->first();
