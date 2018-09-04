@@ -78,7 +78,7 @@ $currency_code = "inr";
                                                     ?> 
                                                     @foreach($orderProds as $key => $ordProd) 
                                                     <?php
-                                                    $prd = App\Models\Helper::getCartProd($cartData, $ordProd->prod_id, $ordProd->sub_prod_id);
+                                                    $prd = App\Library\Helper::getCartProd($cartData, $ordProd->prod_id, $ordProd->sub_prod_id);
                                                     dd($prd);
                                                     ?>
                                                     <tr class="cart_item">
