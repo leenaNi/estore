@@ -56,7 +56,7 @@ class PagesController extends Controller {
             $prod = DB::table('products')->where('id', $prd->prod_id)->first();
             $prd->product = $prod;
             if (!empty($prod)) {
-                $catImg = DB::table('catalog_images')->where('calalog_id', $prod->id)->where("image_mode", 1)->first();
+                $catImg = DB::table('catalog_images')->where('catalog_id', $prod->id)->where("image_mode", 1)->first();
                 if ($catImg) {
                     $prd->product->prodImage = (Config('constants.productImgPath') . '/' . $catImg->filename);
                 } else {
