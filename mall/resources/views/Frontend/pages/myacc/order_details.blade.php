@@ -175,15 +175,6 @@ $currency_code = "inr";
                                                         <span class="cart-item-details"><span class="product-total"><span class="currency-sym"></span> {{ number_format(($order->coupon_amt_used * $currency_val),2) }} </span></span>                   
                                                     </td>
                                                 </tr>
-                                                @else
-                                                <tr class="cart_item">
-                                                    <td class="text-right" colspan="{{$cols}}">
-                                                        <div class="product-quntity"> <strong>Coupon Used</strong> </div>
-                                                    </td>
-                                                    <td class="product-subtotal text-right">
-                                                        <span class="cart-item-details"><span class="product-total"><span class="currency-sym"></span> 0.00</span></span>                   
-                                                    </td> 
-                                                </tr>
                                                 @endif
                                                 @if($order->cod_charges > 0)
                                                 <tr class="cart_item">
@@ -214,7 +205,7 @@ $currency_code = "inr";
                                                     }
                                                 }
                                                 ?>
-                                                @if($feature['manual-discount'] == 1)
+                                                @if($feature['manual-discount'] == 1 && $order->discount_amt>0)
                                                 <tr class="cart_item">
                                                     <td class="text-right" colspan="{{$cols}}">
                                                         <div class="product-quntity"> <strong>Discount</strong></div>
@@ -244,10 +235,10 @@ $currency_code = "inr";
                                                 //if ($order->order_status == 1) {
                                                 ?>
 <!--                                                    <tr class="cart_item ">
-                                                    <td colspan="6" class="product-subtotal text-right">
-                                                        <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
-                                                    </td>
-                                                </tr>-->
+                                                <td colspan="6" class="product-subtotal text-right">
+                                                    <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
+                                                </td>
+                                            </tr>-->
                                                 <?php
                                                 //}
                                                 ?>
