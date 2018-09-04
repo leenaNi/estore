@@ -79,7 +79,7 @@ class PagesController extends Controller {
 //                            }])
 //                        ->limit(10)->groupBy('orders.user_id')->orderBy('total_amount', 'desc')->get(['orders.user_id', DB::raw('count(orders.user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
 //                    dd($topUsers);
-        $topUsers = DB::table('has_products')->join('orders', 'has_products.order_id', '=', 'orders.id')
+        $topUsers = DB::connection('mysql2')->table('has_products')->join('orders', 'has_products.order_id', '=', 'orders.id')
                         ->join('users', 'orders.user_id', '=', 'users.id')
                         ->whereNotIn("has_products.order_status", [0, 4, 6, 10])->where('has_products.prefix', $this->jsonString['prefix'])
                         ->limit(10)->groupBy('orders.user_id')
