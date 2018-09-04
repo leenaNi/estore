@@ -847,7 +847,7 @@ class Helper {
                         if (!empty($cart['options']['options'])) {
 
                             foreach ($cart['options']['options'] as $key => $value) {
-                                $option = AttributeValue::find($value)->option_name;
+                                $option = DB::table($cart['options']['prefix'] .'_attribute_values')->where('id', $value)->first()->option_name;
                             }
                         }
                         $tableContant = $tableContant . @$option . ' </a></small></td>
