@@ -105,7 +105,7 @@ class UserController extends Controller {
 //                                    ]);
 //        }])->first();
         $order = Order::where('id', $getid)->first();
-        $orderProds = HasProducts::where('order_id', $order->id)->with('orderstatus')->get();
+        $orderProds = HasProducts::where('order_id', $order->id)->get();
         $collectOrderProduct=[];
 //        if(isset($order->products) && count($order->products)>0)
 //        foreach($order->products as $getProduct):
