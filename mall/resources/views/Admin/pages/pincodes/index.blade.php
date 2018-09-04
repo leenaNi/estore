@@ -89,9 +89,7 @@
                                  @if($feature['cod'] == 1)  
                                 <th>COD Applicable</th>
                                 @endif
-                                @if($feature['courier-services'] == 1)  
-                                <th>Service Provider</th>
-                                @endif
+                            
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -110,9 +108,7 @@
                                     <a href="{{route('admin.pincodes.codStatusChange',['id'=>$pin->id])}}" >Not Applicable</a>
                                     @endif</td>
                                  @endif
-                                @if($feature['courier-services'] == 1)  
-                                <td>{{ ucwords(@$pin->seviceProvider->name) }}</td>
-                                @endif
+                               
                                  <td>  @if($pin->status==1)
                                         <a href="{{route('admin.pincodes.changeStatus',['id'=>$pin->id])}}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this pincode?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn btnNo-margn-padd"</a>
                                         @elseif($pin->status==0)

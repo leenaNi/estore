@@ -160,6 +160,7 @@
             </div>
             @endif
         </div>
+        </div>
 </section>
 <!-- #content end -->
 @stop
