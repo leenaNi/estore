@@ -53,7 +53,6 @@ class HomeController extends Controller {
         $data = [];
         $categoryA = MallProdCategory::get(['id', 'category'])->toArray();
         $rootsS = MallProdCategory::roots()->with('catimgs')->where("status", 1)->get();
-
         $category = [];
         $attr_sets = [];
         $prod_types = [];
@@ -70,9 +69,7 @@ class HomeController extends Controller {
 
         $data['category'] = $category;
         $data['rootsS'] = $rootsS;
-
         $data['products'] = $prods;
-
         $viewname = Config('constants.frontendView') . '.index';
         return Helper::returnView($viewname, $data, null, 1);
     }
