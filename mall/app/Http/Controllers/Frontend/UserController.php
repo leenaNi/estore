@@ -13,7 +13,6 @@ use App\Models\Order;
 use App\Models\HasProducts;
 use App\Models\Product;
 use App\Library\Helper;
-use App\Models\HasProducts;
 use App\Models\DownlodableProd;
 use App\Models\TempDownload;
 use App\Models\GeneralSetting;
