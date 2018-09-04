@@ -84,6 +84,7 @@ class PagesController extends Controller {
                         ->orderBy('total_amount', 'desc')->get(['orders.user_id', 'users.firstname', 'users.lastname', 'users.email', DB::raw('count(orders.user_id) as top'), DB::raw('sum(has_products.pay_amt) as total_amount')]);
 
         $latestOrders = HasProducts::whereNotIn('order_status', [3, 4, 5, 6, 10])->where('prefix', $this->jsonString['prefix'])->with(['orderDetails' => function($q) { return $q->with(['users', 'paymentstatus']); } ])->limit(10)->orderBy('created_at', 'desc')->get();
+        dd($latestOrders);
         $latestUsers = User::where('user_type', 2)->limit(10)->orderBy('created_at', 'desc')->get();
         $latestProducts = Product::where('is_individual', '1')->limit(5)->orderBy('created_at', 'desc')->get();
         foreach ($latestProducts as $prd) {
