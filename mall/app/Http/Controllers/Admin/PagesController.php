@@ -66,11 +66,12 @@ class PagesController extends Controller {
         }
 
         $topUsers = Order::whereNotIn("order_status", [0, 4, 6, 10])->with('users')->limit(10)->groupBy('user_id')->orderBy('total_amount', 'desc')->get(['user_id', DB::raw('count(user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
-        $latestOrders = Order::whereNotIn('order_status', [3, 4, 5, 6, 10])->limit(10)->orderBy('created_at', 'desc')->get();
+        $latestOrders = Order::whereNotIn('order_status', [3, 4, 5, 6, 10])->where('prefix', '')->limit(10)->orderBy('created_at', 'desc')->get();
         $latestUsers = User::where('user_type', 2)->limit(10)->orderBy('created_at', 'desc')->get();
         $latestProducts = Product::where('is_individual', '1')->limit(5)->orderBy('created_at', 'desc')->get();
         foreach ($latestProducts as $prd) {
-            $catImg = DB::table($prd->prefix . '_catalog_images')->where('catalog_id', $prd->id)->where("image_mode", 1)->first();
+            $catImg = DB::table($prd->prefix . '_catalog_image')->where('catalog_id', $prd->id)->where("image_mode", 1)->first();
+            
             if ($catImg) {
                 $prd->prodImage = ($catImg->image_path . '/' . $catImg->filename);
             } else {
