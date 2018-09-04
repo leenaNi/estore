@@ -847,7 +847,8 @@ class Helper {
                         if (!empty($cart['options']['options'])) {
 
                             foreach ($cart['options']['options'] as $key => $value) {
-                                $option = DB::table($cart['options']['prefix'] .'_attribute_values')->where('id', $value)->first()->option_name;
+                                $optVal = DB::table($cart['options']['prefix'] .'_attribute_values')->where('id', $value)->first();
+                                $option = ($optVal)? $optVal->option_name: '';
                             }
                         }
                         $tableContant = $tableContant . @$option . ' </a></small></td>
