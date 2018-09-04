@@ -28,7 +28,8 @@ class PagesController extends Controller {
         $todaysSales = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->sum('pay_amt');
-        $weeklySales = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
+//        $weeklySales = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
+        $weeklySales = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
                 ->sum('pay_amt');
         $monthlySales = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")
