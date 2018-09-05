@@ -35,10 +35,10 @@
                     </div>
                   
                 </div>
-         <div class="col-md-12 fbBTN" >
+        <!--  <div class="col-md-12 fbBTN" >
              <div class="fbBtnfull">
             <img src="{{ Config('constants.frontendPublicImgPath').'/fb_login.jpg'}}" onclick="fbLogin()" id="fbLink" class="fb_login_btn"></div>
-        </div>
+        </div> -->
          <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('adminForgotPassword') }}" class="">Forgot Password?</a> </div>
                 <!--        <div class="social-auth-links text-center">
                           <p>- OR -</p>
