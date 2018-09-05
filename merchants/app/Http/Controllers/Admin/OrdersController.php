@@ -262,7 +262,7 @@ class OrdersController extends Controller {
             $action = route("admin.orders.mallOrderSave");
             $viewname = Config('constants.adminOrderView') . '.addEditMall';
             // dd($orders);
-            $data = ['order' => $orders, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones,
+            $data = ['order' => $order, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones,
                 'products' => $products, 'courier' => $courier_status];
             return Helper::returnView($viewname, $data);
         }
