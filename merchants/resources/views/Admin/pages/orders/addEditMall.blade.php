@@ -35,7 +35,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('payamount', "Order Amount $currencySym",['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('pay_amt', number_format((@$prd->price * Session::get("currency_val")), 2), ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Customer Payable Amount']) !!}
+                        {!! Form::text('pay_amt', number_format((@$prd->price * Session::get('currency_val')), 2), ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Customer Payable Amount']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -166,7 +166,7 @@
             <!-- Product Deatails form open -->
             <div class="tab-pane" id="product-detail">
                 <div class="panel-body">
-                    <? print_r($products); ?>
+                    <? // print_r($products); ?>
                     <!-- {{ Form::model($order, ['method' => 'post', 'route' => 'admin.orders.update.return' ,'id' => 'updateReturnQty', 'class' => 'bucket-form rtForm' ]) }} -->
 
 
