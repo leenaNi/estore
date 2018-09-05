@@ -134,7 +134,7 @@ class CategoriesController extends Controller {
                     $q->whereIn('cat_id', $comCats);
                 });
             } else {
-                dd($cats);
+//                dd($cats);
                 $prods = $prods->whereHas('categories', function($query) use ($cats) {
                     return $query->whereIn('cat_id', $cats);
                 });
