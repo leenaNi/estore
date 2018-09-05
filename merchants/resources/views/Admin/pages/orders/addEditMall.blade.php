@@ -43,7 +43,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('order_status', 'Order Status ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::select('order_status',$products->order_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status']) !!}
+                        {!! Form::select('order_status',$order_status,$products->order_status, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status']) !!}
                     </div>
                 </div>
 
@@ -518,7 +518,7 @@ $seldel = '<a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;
         newtd += '<td><?php echo $cashbackDisc; ?></td>';
 //    newtd += '<td><?php echo $voucherDisc; ?></td>';
         newtd += '<td><?php echo $referalDisc; ?></td>';
-        //  newtd += '<td><?php // echo $finalSubTotDiv;     ?></td>';
+        //  newtd += '<td><?php // echo $finalSubTotDiv;      ?></td>';
         newtd += '<td><?php echo $seldel; ?></td>';
         var newtr = '<tr>' + newtd + '</tr>';
         $("#tableProd tr:last").after(newtr);
