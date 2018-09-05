@@ -55,7 +55,7 @@ class CategoriesController extends Controller {
                     array_push($allCats, $cat->id);
                 }
             }
-            dd($allCats);
+//            dd($allCats);
             $data['category'] = array();
             $prods = Product::where('is_individual', '=', 1)
                             ->where('is_avail', '=', 1)->where('status', '=', 1);
