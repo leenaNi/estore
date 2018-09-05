@@ -128,7 +128,7 @@ class CategoriesController extends Controller {
         }
 
         if (!empty($category)) {
-            if (!empty($catzz)) {
+            if (count($catzz) > 0) {
                 $comCats = array_intersect($catzz['cat'], $cats);
                 $prods = $prods->whereHas('categories', function($q) use($comCats) {
                     $q->whereIn('cat_id', $comCats);
@@ -139,7 +139,7 @@ class CategoriesController extends Controller {
                 });
             }
         } else {
-            if (!empty($catzz)) {
+            if (count($catzz) > 0) {
                 $comCats = array_intersect($catzz['cat'], $cats);
                 $prods = $prods->whereHas('categories', function($q) use($comCats) {
                     $q->whereIn('cat_id', $comCats);
