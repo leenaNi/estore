@@ -476,7 +476,7 @@ class OrdersController extends Controller {
             $cart_ids[$cart->id]["order_id"] =Input::get('id');
             $cart_ids[$cart->id]["prod_id"] = $prd->id;
             $cart_ids[$cart->id]["order_status"] = 1;
-            $cart_ids[$cart->id]["order_source"] = $this->$jsonString['store_name'];
+            $cart_ids[$cart->id]["order_source"] = $this->$jsonString['storeName'];
             HasProducts::insert($cart_ids);
                 //$orderUpdateCart->products()->attach($cart->id, $cart_ids[$cart->id]);
             }
