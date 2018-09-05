@@ -14,8 +14,8 @@
             <div class="sidebar nobottommargin col-md-2">
                 <div class="sidebar-widgets-wrap">
                     <div class="widget clearfix">
-                        <h5 class="widget-title">Price</h5>
-                        <div class="f-price price-rangebox">
+                        <h5 class="widget-title price-wid" ng-show="pdts.length > 0">Price</h5>
+                        <div class="f-price price-rangebox price-wid" ng-show="pdts.length > 0">
                             <span> <strong id="amount" ></strong></span>
                             <div class="minPriceBox"><span class="currency-sym"></span>
                                 <input type="text" id="min_price" name="min_price" min="0" placeholder="Min price" class="min-price-filter"></div><div class="priceHypen">-</div>
