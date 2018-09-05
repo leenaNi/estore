@@ -193,8 +193,9 @@ class CategoriesController extends Controller {
                     return $query->whereIn('mall_prod_categories.id', $allCats);
                 });
             }
-            $prods = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
-            $data['maxp'] = $prods->max_price;
+            $prodMax = $prods;
+            $prodMax = $prodMax->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
+            $data['maxp'] = $prodMax->max_price;
         }
         if (!empty(Input::get('sort'))) {
             if (Input::get('sort') == 1) {
