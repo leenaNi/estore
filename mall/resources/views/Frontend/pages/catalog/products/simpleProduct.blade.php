@@ -35,8 +35,8 @@
                                             if (count($product->images) > 0) {
                                                 foreach ($product->images as $pk => $prdimg) {
                                                     ?>
-                                                    
-                                            <div class="slide" data-thumb="{{$prdimg->img}}">
+
+                                                    <div class="slide" data-thumb="{{$prdimg->img}}">
                                                         <a href="{{$prdimg->img}}" title="{{$product->product}}" data-lightbox="gallery-item">
                                                             <img src="{{$prdimg->img}}" alt="{{ $product->product }}" class="zoom-me zoom-me1 {{ ($pk == 0)?'fimg':''  }} " data-zoom-image="{{$prdimg->img}}">
                                                         </a>
@@ -136,15 +136,15 @@
                                     $relProdImg = DB::table($relprd->prefix . "_catalog_images")->where("catalog_id", $relprd->store_prod_id)->where("image_mode", 1)->first(); //$relprd->catalogimgs()->first();
                                     ?>
                                     @if(!empty($relProdImg))
-                                    <a href="{{route('home')}}/{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. $relProdImg->filename }}" alt="{{ $relprd->product }}" class="boxSizeImage"> </a>
+                                    <a href="{{route('home')}}/{{ $relprd->prefix.'/'.$relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. $relProdImg->filename }}" alt="{{ $relprd->product }}" class="boxSizeImage"> </a>
                                     @else
-                                    <a href="{{route('home')}}/{{$relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. 'default-product.jpg' }}" alt="" class="boxSizeImage"> </a>
+                                    <a href="{{route('home')}}/{{$relprd->prefix.'/'.$relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. 'default-product.jpg' }}" alt="" class="boxSizeImage"> </a>
                                     @endif
                 <!--                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>-->
                                 </div>
                                 <div class="product-desc">
                                     <div class="product-title">
-                                        <h3><a href="{{route('home')}}/{{ $relprd->url_key }}">{{ $relprd->product }}</a></h3> </div>
+                                        <h3><a href="{{route('home')}}/{{ $relprd->prefix.'/'.$relprd->url_key }}">{{ $relprd->product }}</a></h3> </div>
                                     <div class="product-price">
                                         @if($relprd->spl_price > 0 && $relprd->spl_price > $relprd->price)
                                         <del><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 
@@ -160,7 +160,7 @@
             </div>
             @endif
         </div>
-        </div>
+    </div>
 </section>
 <!-- #content end -->
 @stop
@@ -176,22 +176,22 @@
     }
     $('.plus').click(function (e) {
         // Stop acting like a button
-       
+
         e.preventDefault();
         // Get the field name
         var maxvalue = parseInt($('input[name="quantity"]').attr('max'));
         // console.log(maxvalue);
         // Get its current value
-      
+
         var currentVal = parseInt($('input[name="quantity"]').val());
         //  console.log(currentVal);
         // If is not undefined
-        
+
         if (!isNaN(currentVal) && (currentVal < maxvalue)) {
             // Increment
             //$('.plus').css('pointer-events', '');
             $('input[name="quantity"]').val(parseInt(currentVal) + 1);
-              
+
             // alert(parseInt(currentVal)+ 1);
         } else if (currentVal >= maxvalue) {
             // console.log(maxvalue);
