@@ -27,7 +27,7 @@
                             <div class="filterbtn-box"><button class="btn btn-dashed textup themebtn-color" ng-click="applyFilters()" type="button">Apply</button></div>
                         </div>
 
-                        <div class="widget clearfix" ng-if="catChild.length > 0">
+                        <div class="widget clearfix" ng-if="catChild.length > 0 && pdts.length > 0">
                             <h5 class="widget-title">Categories</h5>
                             <ul class="cat-list">
                                 <li ng-repeat="cat in catChild" ><a href="javascript:void(0)">
