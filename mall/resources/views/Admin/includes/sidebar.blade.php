@@ -1,4 +1,4 @@
-dynamicayout <?php
+<?php
 $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
 ?>
 

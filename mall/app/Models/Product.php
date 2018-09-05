@@ -24,7 +24,7 @@ class Product extends \Eloquent {
 
     public $sortable = ['id','product','product_code','price','prod_type', 'spl_price', 'stock'];
     public function categories() {
-        return $this->belongsToMany('App\Models\Category', 'has_categories', 'prod_id', 'cat_id');
+        return $this->belongsToMany('App\Models\MallProdCategory', 'has_categories', 'prod_id', 'cat_id');
     }
 
     public function attributeset() {

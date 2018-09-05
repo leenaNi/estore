@@ -84,9 +84,9 @@ class ProductsController extends Controller {
             $products = $products->where('selling_price', '<=', $max_prize);
         }
         if (!empty(Input::get('category'))) {
-            dd(Input::get('category'));
+         
             $products = $products->whereHas('categories', function($q) {
-                $q->where('categories.id', Input::get('category'));
+                $q->where('mall_prod_categories.id', Input::get('category'));
             });
         }
         if (Input::get('status') == '0' || Input::get('status') == '1') {
