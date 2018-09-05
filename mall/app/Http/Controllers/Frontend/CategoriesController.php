@@ -246,6 +246,7 @@ class CategoriesController extends Controller {
                 $i++;
             }
         }
+        dd($cats);
         $prdCnt = $prods->count();
 
         $prods = $prods->distinct('id')->paginate(9);
@@ -271,7 +272,6 @@ class CategoriesController extends Controller {
             $prd->delPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? 1 : 0;
             $prd->chkwishlist = 0;
         }
-
         $filters = [];
         if (Category::where('url_key', 'is-filter')->count() > 0) {
             $getfilters = Category::where('url_key', 'is-filter')->first()->getImmediateDescendants();
