@@ -37,6 +37,7 @@ use Crypt;
 use App\Traits\Admin\OrdersTrait;
 use Form;
 use Request;
+use App\Models\MallProducts;
 
 class OrdersController extends Controller {
 
@@ -264,7 +265,7 @@ class OrdersController extends Controller {
 //            $products = $orders->product;
             $products = [];
             foreach ($orders as $key => $ord) {
-                $mallProd = App\Models\MallProducts::find($orders->prod_id);
+                $mallProd = MallProducts::find($orders->prod_id);
                 $prod = Product::find($mallProd->store_prod_id);
                 $prod->options = $ord->options;
                 array_push($products, $prod);
