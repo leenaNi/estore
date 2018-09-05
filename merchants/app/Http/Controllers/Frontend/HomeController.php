@@ -134,7 +134,7 @@ class HomeController extends Controller {
             // dd(Input::File('images'));
             $imgValue = Input::File('images');
 
-            $destinationPath = Config('constants.productUploadImgPath');
+            $destinationPath = Config('constants.productUploadImgPath') . "/";
             $data = Input::get('prod_img_url');
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
