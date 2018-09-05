@@ -167,12 +167,12 @@ class CategoriesController extends Controller {
                                 ->orWhere('meta_keys', 'like', "%$search%");
             });
             if ($cat == '') {
-                dd("Blank");
+//                dd("Blank");
                 $prods = $prods->WhereHas('categories', function($query) use ($search) {
                     return $query->where('category', 'like', "%$search%");
                 });
             } else {
-                dd("NotBlank");
+//                dd("NotBlank");
                 $prods = $prods->WhereHas('categories', function($query) use ($allCats) {
                     return $query->whereIn('mall_prod_categories.id', $allCats);
                 });
