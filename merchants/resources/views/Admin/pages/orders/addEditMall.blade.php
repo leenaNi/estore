@@ -35,7 +35,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('payamount', "Order Amount $currencySym",['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('pay_amt', number_format((@$prd->price * Session::get('currency_val')), 2), ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Customer Payable Amount']) !!}
+                        {!! Form::text('pay_amt', number_format((@$prd->pay_amt * Session::get('currency_val')), 2), ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Customer Payable Amount']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
