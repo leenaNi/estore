@@ -1866,7 +1866,7 @@ class CheckoutController extends Controller {
             if ($cart->options->has('sub_prod')) {
                 $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
-                $prddataS = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
+                $prddataS = Product::where("id", $cart->id)->where("store_i", $cart->options->store_id)->first();
                 $proddetails['id'] = $prddataS->id;
                 $proddetails['name'] = $prddataS->product;
                 $proddetails['image'] = $cart->options->image;
