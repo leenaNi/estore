@@ -2204,7 +2204,7 @@ class ProductsController extends Controller {
         $products->save();
         MallProducts::where("store_prod_id", $prodId)->where("store_id", $store_id)->update(["status" => 0]);
         Session::flash('msg', "Product unpublished from mall successfully");
-        $data = ["status" => "1", "msg" => "Product Unpublished from mall successfully", "prod" => $prod];
+        return $data = ["status" => "1", "msg" => "Product Unpublished from mall successfully", "prod" => $products];
     }
 
 }
