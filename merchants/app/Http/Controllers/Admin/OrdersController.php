@@ -247,10 +247,8 @@ class OrdersController extends Controller {
             $courier_status[$val['id']] = $val['name'];
         }
         if ($order->prefix == Helper::getSettings()['prefix']) {
-
             Cart::instance("shopping")->destroy();
             $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
-
             $additional = json_decode($order->additional_charge, true);
             $products = $order->products;
             $coupon = Coupon::find($order->coupon_used);
@@ -260,22 +258,12 @@ class OrdersController extends Controller {
             $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'coupon' => $coupon, 'coupons' => $coupons, 'flags' => $flag_status, 'courier' => $courier_status, 'additional' => $additional];
             return Helper::returnView($viewname, $data);
         } else {
-
             $orders = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->get();
-//            $products = $orders->product;
-            $products = [];
-            foreach ($orders as $key => $ord) {
-                $mallProd = MallProducts::find($ord->prod_id);
-                $prod = Product::find($mallProd->store_prod_id);
-                $prod->options = $ord->options;
-                array_push($products, $prod);
-            }
-            dd($products);
             $action = route("admin.orders.mallOrderSave");
             $viewname = Config('constants.adminOrderView') . '.addEditMall';
             // dd($orders);
             $data = ['order' => $orders, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones,
-                'products' => $products, 'courier' => $courier_status];
+                'products' => $orders, 'courier' => $courier_status];
             return Helper::returnView($viewname, $data);
         }
     }
