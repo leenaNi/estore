@@ -337,7 +337,7 @@ class CartController extends Controller {
         $price = $subProd->price + $product->selling_price;
         $options = [];
 //            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-        $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
+        $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->store_prod_id)->get();
         print_r($hasOptn);
         foreach ($hasOptn as $optn) {
             $options[$optn->attr_id] = $optn->attr_val;
@@ -348,7 +348,7 @@ class CartController extends Controller {
         $option_name = json_encode($option_name);
         $type = $product->is_tax;
         $sum = 0;
-        $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->id)
+        $prodTaxes = DB::table($product->prefix . '_product_has_taxes')->where('product_id', $product->store_prod_id)
                         ->join($product->prefix . '_tax', $product->prefix . '_product_has_taxes.tax_id', "=", $product->prefix . '_tax.id')->select([$product->prefix . '_tax.rate'])->get();
         foreach ($prodTaxes as $tax) {
             $sum = $sum + $tax->rate;
