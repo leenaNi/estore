@@ -507,7 +507,7 @@ class HomeController extends Controller {
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         echo 'HTTP code: ' . $httpcode;
-        return $output
+        return $output;
     }
 
 }
