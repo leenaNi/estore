@@ -845,10 +845,10 @@ class Helper {
             <br>
           <small><a href="#"> ';
                         if (!empty($cart['options']['options'])) {
-
+                            $option = '';
                             foreach ($cart['options']['options'] as $key => $value) {
                                 $optVal = DB::table($cart['options']['prefix'] .'_attribute_values')->where('id', $value)->first();
-                                $option = ($optVal)? $optVal->option_name: '';
+                                $option += ($optVal)? $optVal->option_name: '';
                             }
                         }
                         $tableContant = $tableContant . @$option . ' </a></small></td>

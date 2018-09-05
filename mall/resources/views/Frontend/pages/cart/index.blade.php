@@ -31,7 +31,6 @@
                         </tr>
                     </thead>
                     <tbody>
-
                         @foreach($cart as $k => $item)
                         <tr>
                             <td class="product-remove">

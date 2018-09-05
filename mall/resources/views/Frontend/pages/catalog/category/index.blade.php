@@ -14,8 +14,8 @@
             <div class="sidebar nobottommargin col-md-2">
                 <div class="sidebar-widgets-wrap">
                     <div class="widget clearfix">
-                        <h5 class="widget-title">Price</h5>
-                        <div class="f-price price-rangebox">
+                        <h5 class="widget-title price-wid" ng-show="pdts.length > 0">Price</h5>
+                        <div class="f-price price-rangebox price-wid" ng-show="pdts.length > 0">
                             <span> <strong id="amount" ></strong></span>
                             <div class="minPriceBox"><span class="currency-sym"></span>
                                 <input type="text" id="min_price" name="min_price" min="0" placeholder="Min price" class="min-price-filter"></div><div class="priceHypen">-</div>
@@ -48,14 +48,14 @@
                     <form id="form[[prd.id]]" action="{{ route('addToCart')}}">
                         <div class="product-image producImgBoxSize_4Col">
                             <img src="images/products/t-shirt.jpg" alt="">
-                            <a href="{{ route('home')}}/[[prd.url_key]]">
+                            <a href="{{ route('home')}}/[[prd.prefix]]/[[prd.url_key]]">
                                 <img ng-if="prd.catalogimgs != ''" src="[[prd.mainImage]]" alt="[[prd.alt_text]]">
                                 <img ng-if="prd.catalogimgs == ''" src="{{ @asset(Config('constants.productImgPath'))}}/default-image.jpg" alt="default-image">
                             </a>
                         </div>
                         <div class="product-desc text-center">
                             <div class="product-title">
-                                <h4><a href="[[prd.url_key]]">[[prd.product]]</a>
+                                <h4><a href="[[prd.prefix]]/[[prd.url_key]]">[[prd.product]]</a>
                                 <!-- <span class="subtitle">Flat 10% Off*</span> -->
                                 </h4>
                             </div>
