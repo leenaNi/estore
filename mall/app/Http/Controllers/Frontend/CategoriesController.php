@@ -71,7 +71,7 @@ class CategoriesController extends Controller {
                 });
             } else {
                 $prods = $prods->WhereHas('categories', function($query) use ($allCats) {
-                    return $query->whereIn('id', "$allCats");
+                    return $query->whereIn('id', $allCats);
                 });
             }
             $prods = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
@@ -163,7 +163,7 @@ class CategoriesController extends Controller {
                 });
             } else {
                 $prods = $prods->WhereHas('categories', function($query) use ($allCats) {
-                    return $query->whereIn('mall_prod_categories.id', "$allCats");
+                    return $query->whereIn('mall_prod_categories.id', $allCats);
                 });
             }
 //            $prod = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
