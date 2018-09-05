@@ -190,7 +190,7 @@
                                     <th>Qty</th>
                                     <th>Unit Price <span class="currency-sym-in-braces"></span></th>
                                     <th>Price <span class="currency-sym-in-braces"></span></th>
-                                    <th></th>
+                                    <!--<th></th>-->
                                 </tr>
                             </thead>
                             <tbody>
@@ -267,12 +267,12 @@
                                     @else
                                     <td>-</td>
                                     @endif
-                                    <td>{{ $order->qty }}
+                                    <td>{{ $prd->qty }}
                                         <input type="hidden" class="pid_{{$prd->id}}" value="{{ $order->qty }}"  />
 
                                     </td>
-                                    <td><b class="price">{{ number_format((@$prd->selling_price * Session::get("currency_val")), 2) }}</b></td>
-                                    <td><b class="subT">{{ number_format((@$order->price * Session::get("currency_val")), 2)}}</b></td>
+                                    <td><b class="price">{{ number_format(($storeProd->selling_price * Session::get("currency_val")), 2) }}</b></td>
+                                    <td><b class="subT">{{ number_format((@$prd->price * Session::get("currency_val")), 2)}}</b></td>
 
 
                                     <?php
@@ -286,7 +286,7 @@
                                     $discReferalA = 0;
                                     ?>
                                     @if($feature['loyalty']==1)
-                                    <td><b class="cashbackDisc">{{ number_format((@$fixedCashbackUsed * Session::get('currency_val')), 2)  }}</b></td>
+                                    <!--<td><b class="cashbackDisc">{{ number_format((@$fixedCashbackUsed * Session::get('currency_val')), 2)  }}</b></td>-->
                                     @endif
 
                                     <td><a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;"></i></a></td>
