@@ -134,6 +134,7 @@ class CategoriesController extends Controller {
                     $q->whereIn('cat_id', $comCats);
                 });
             } else {
+//                dd($cats);
                 $prods = $prods->whereHas('categories', function($query) use ($cats) {
                     return $query->whereIn('cat_id', $cats);
                 });
@@ -327,7 +328,7 @@ class CategoriesController extends Controller {
             'metaTitle' => @$metaTitle,
             'metaDesc' => @$metaDesc,
             'metaKeys' => @$metaKeys,
-            'maxp' => $maxP,
+            'maxp' => round($maxP * Session::get('currency_val')),
             'catChild' => $catChild,
             'currency_val' => (float) Session::get('currency_val'),
             'breadcrumbs' => $breadcrumbs,
