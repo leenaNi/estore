@@ -173,7 +173,8 @@ class CategoriesController extends Controller {
                 });
             } else {
 //                dd("NotBlank");
-                $prods = $prods->WhereHas('categories', function($query) use ($allCats) {
+                dd($allCats);
+                $prods = $prods->orWhereHas('categories', function($query) use ($allCats) {
                     return $query->whereIn('mall_prod_categories.id', $allCats);
                 });
             }
