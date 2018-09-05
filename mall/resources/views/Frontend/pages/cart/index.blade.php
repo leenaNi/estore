@@ -12,6 +12,7 @@
 </section>
 <div id="content" class="site-content single-product">
     <div class="container">
+        <?php // print_r($cart); ?>
         @if(!empty($cart->toArray()))
         <form class="cart-form" action="#">
             <div class="table-responsive">
@@ -59,14 +60,14 @@
                                             <?php
                                             if ($item->options->options) {
                                                 foreach ($item->options->options as $key => $value) {
-                                                    echo @App\Models\AttributeValue::find($value)->option_name . " ";
+                                                    echo DB::table($item->options->prefix.'_attribute_values')->where('id', $value)->first()->option_name . " ";
                                                 }
                                             }
                                             if ($item->options->options) {
                                                 foreach ($item->options->options as $key => $value) {
                                                     if (!empty($value->options)) {
                                                         foreach ($value->options as $opt => $optval) {
-                                                            echo @App\Models\AttributeValue::find($optval)->option_name . " ";
+                                                            echo DB::table($item->options->prefix.'_attribute_values')->where('id', $optval)->first()->option_name . " ";
                                                         }
                                                     }
                                                 }
