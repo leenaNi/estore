@@ -152,7 +152,7 @@
                                 <th>Name</th>
 <!--                                <th>Email ID</th>-->
                                 <th>Mobile</th>
-                                <th>Order Status</th>
+                                <!--<th>Order Status</th>-->
                                 <th>Payment Status</th>
 <!--                                <th>Payment Method</th>-->
                                 <th>@sortablelink ('pay_amt', 'Amount') <?php //echo!empty(Session::get('currency_symbol')) ? '('.Session::get('currency_symbol').')' : ''; ?></th>
@@ -179,7 +179,7 @@
                                 <td>{{ @$order->firstname }} {{ @$order->lastname }} </td>
 <!--                                <td>{{ @$order->users->email }}  </td>-->
                                 <td>{{ @$order->phone_no }}</td>
-                                <td>{{ @$order->order_status }}</td>
+                                <!--<td>{{ @$order->order_status }}</td>-->
                                 <td>{{ @$order->paymentstatus['payment_status'] }}</td>
 <!--                                <td>{{ @$order->paymentmethod['name'] }}</td>-->
                                 <td><span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}</td>
