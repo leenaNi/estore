@@ -23,18 +23,18 @@ class CategoriesController extends Controller {
 //        dd(Input::all());
         $data['cat_name'] = "";
         if ($slug != null) {
-            $cat = Category::where('url_key', $slug)->first();
-            $data['metaTitle'] = @$cat->meta_title == "" ? @$cat->category . " | Veestores " : @$cat->meta_title;
-            $data['metaDesc'] = @$cat->meta_desc == "" ? @$cat->category : @$cat->meta_desc;
-            $data['metaKeys'] = @$cat->meta_keys == "" ? @$cat->category : @$cat->meta_keys;
+            $category = Category::where('url_key', $slug)->first();
+            $data['metaTitle'] = @$category->meta_title == "" ? @$category->category . " | Veestores " : @$category->meta_title;
+            $data['metaDesc'] = @$category->meta_desc == "" ? @$category->category : @$category->meta_desc;
+            $data['metaKeys'] = @$category->meta_keys == "" ? @$category->category : @$category->meta_keys;
 
-            // dd($cat->category);
-            $data['cat_name'] = @$cat->category;
+            // dd(@$category->category);
+            $data['cat_name'] = @$category->category;
             $data['minp'] = 0;
-            // $data['maxp'] = @Helper::getMaxPriceByCat(@$cat->id);
-            if (!empty($cat)) {
+            // $data['maxp'] = @Helper::getMaxPriceByCat(@$category->id);
+            if (!empty(@$category)) {
 //                echo "Not empty";
-                $data['maxp'] = @Helper::maxPriceByCat(@$cat->id);
+                $data['maxp'] = @Helper::maxPriceByCat(@$category->id);
             } else {
 //                echo "Empty";
                 $data['maxp'] = 0;
@@ -99,7 +99,7 @@ class CategoriesController extends Controller {
         $maxP = 0;
         $checkVarient = GeneralSetting::where('url_key', 'products-with-variants')->first()->status;
         $category = @Category::where('url_key', $slug)->first();
-        if (!empty($cat)) {
+        if (!empty($category)) {
             $breadcrumbs = Helper::getbreadcrumbs($category->id, $category->url_key);
         } else {
             $breadcrumbs = "";
@@ -107,7 +107,7 @@ class CategoriesController extends Controller {
         $catChild = [];
         $catChild = @Category::where('parent_id', @$category->id)->where('status', 1)->where('is_nav', 1)->select('id', 'category', 'url_key')->get();
 
-        if (!empty($cat)) {
+        if (!empty($category)) {
             $metaTitle = @$category->meta_title == "" ? @$category->category . " | Cartini " : @$category->meta_title;
             $metaDesc = @$category->meta_desc == "" ? @$category->category : @$category->meta_desc;
             $metaKeys = @$category->meta_keys == "" ? @$category->category : @$category->meta_keys;
