@@ -2592,7 +2592,7 @@ public function mallOrderSave(){
             $output = curl_exec($ch);
             curl_close($ch);
             $data = json_decode($output);
-//dd($data->ID);
+dd($data);
             $saveorder = Order::find($ordid);
             $saveorder->shiplabel_tracking_id = $data->ID;
             $saveorder->order_status = 2;

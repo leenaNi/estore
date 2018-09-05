@@ -10,16 +10,16 @@
             ============================================= -->
             <div class="top-links fright">
                 <ul>
-                    <li><a href="https://www.veestores.com/">Create Store</a></li>
-                    <li><a href="http://www.veestores.com/about">About</a></li>
+                    <li><a href="https://www.veestores.com/" target="_blank">Create Store</a></li>
+                    <li><a href="http://www.veestores.com/about" target="_blank">About</a></li>
                     <!-- <li><a href="#">FAQs</a></li> -->
-                    <li><a href="http://www.veestores.com/contact">Contact</a></li>
+                    <li><a href="http://www.veestores.com/contact" target="_blank">Contact</a></li>
 
                     @if(Session::get('loggedin_user_id'))              
-                    <li> <a href="{{route('myProfile')}}" >My Account</a></li>
-                     <li> <a href="{{route('logoutUser')}}" >Logout</a></li>
+                    <li> <a href="{{route('myProfile')}}" target="_blank">My Account</a></li>
+                     <li> <a href="{{route('logoutUser')}}" target="_blank">Logout</a></li>
                     @else
-                    <li><a href="{{ route('loginUser') }}">Login / Register</a></li>
+                    <li><a href="{{ route('loginUser') }}" target="_blank">Login / Register</a></li>
                     @endif
                 </ul> 
             </div><!-- .top-links end -->
@@ -86,7 +86,7 @@
                                             }
                                             ?>
                                             <div class="col-sm-4 col-md-4 display-img">
-                                                <img src="public/Frontend/images/dummy image.jpg">
+                                                <img src="public/Frontend/images/menu-image.jpg">
                                             </div>
                                         </div> <!--/.lnt-subcategroy-carousel-wrap -->
                                     </div> <!--/.lnt-dropdown-mega-menu -->
