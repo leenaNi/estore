@@ -2137,6 +2137,9 @@ class ProductsController extends Controller {
                 Session::flash('message', "Product alredy exist!");
                 $data = ["status" => "0", "msg" => "Product alredy exist!"];
             } else {
+//                $prod = Product::where("id", Input::get("prodId"))->get();
+//                $tableColumns = Schema::getColumnListing('products');
+//                $this->updateProduct($prodConfig, $jsonString, $tableColumns);
                 $mallProd->status == 1;
                 $mallProd->save();
                 $products->is_share_on_mall = 1;
@@ -2164,6 +2167,21 @@ class ProductsController extends Controller {
     public function saveProduct($product, $jsonString, $tableColumns, $category = null, $parent = null) {
         foreach ($product as $prod) {
             $prods = new MallProducts();
+            $prods->store_id = $jsonString['store_id'];
+            $prods->prefix = $jsonString['prefix'];
+            $prods->store_prod_id = $prod->id;
+            for ($i = 1; $i < count($tableColumns); $i++) {
+                $prods->{$tableColumns[$i]} = $prod->{$tableColumns[$i]};
+            }
+            $prods->save();
+            if ($parent) {
+                $prods->mallcategories()->sync($category);
+            }
+        }
+    }
+    public function updateProduct($product, $jsonString, $tableColumns, $category = null, $parent = null) {
+        foreach ($product as $prod) {
+            $prods = MallProducts::where('store_prod_id', $prod->id);
             $prods->store_id = $jsonString['store_id'];
             $prods->prefix = $jsonString['prefix'];
             $prods->store_prod_id = $prod->id;
