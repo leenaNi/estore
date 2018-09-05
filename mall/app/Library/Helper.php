@@ -666,7 +666,7 @@ class Helper {
 
         $prod = DB::table('has_categories')->whereIn('cat_id', $cat_id)->pluck('prod_id');
         //dd($prod);
-        $maxp = DB::table('mall_products')->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
+        $maxp = DB::table('mall_products')->where('status', 1)->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
         // dd($maxp);
         return $maxp->maxp;
     }
