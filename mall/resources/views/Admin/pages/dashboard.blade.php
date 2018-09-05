@@ -178,7 +178,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 marginBottom20">
+<!--            <div class="col-md-6 marginBottom20">
                 <div class="box box-success" >
                     <div class="box-header dashbox-header with-border bg-green">
                         <h3 class="box-title dashbox-title">Top Selling Products</h3>
@@ -213,12 +213,9 @@
                             </table>
                         </div>
                     </div>
-                    <!--                <div class="box-footer clearfix">
-                                        <a href="{{route('admin.sales.byproduct')}}" class="btn btn-sm btn-success btn-flat pull-right">View All Products</a>
-                                    </div>-->
                 </div>
-            </div>
-            <div class="col-md-6 marginBottom20">
+            </div>-->
+            <div class="col-md-12 marginBottom20">
                 <div class="box box-warning" >
                     <div class="box-header dashbox-header with-border bg-yellow">
                         <h3 class="box-title dashbox-title">Top Customers</h3>
@@ -236,6 +233,7 @@
                                         <!--<th>Picture</th>-->
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Mobile</th>
                                         <th>Amount</th>
                                     </tr>
                                 </thead>
@@ -245,6 +243,7 @@
     <!--                                    <td><img src="{{@$user->users->profile ? @$user->users->profile : asset('public/Admin/dist/img/no-image.jpg')}}" class="admin-profile-picture" /></td>-->
                                         <td>{{$user}}{{@$user->first_name}} {{@$user->last_name}}</td>
                                         <td>{{@$user->users->email}}</td>
+                                         <td>{{@$user->users->telephone}}</td>
                                         <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{ number_format((@$user->total_amount  * Session::get('currency_val')), 2, '.', '')}}</td>
                                     </tr>
                                     @endforeach
