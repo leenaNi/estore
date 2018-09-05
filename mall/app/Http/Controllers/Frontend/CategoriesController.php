@@ -71,7 +71,7 @@ class CategoriesController extends Controller {
                                 ->orWhere('meta_keys', 'like', "%$search%");
             });
             if ($cat == '') {
-                $prods = $prods->WhereHas('categories', function($query) use ($search) {
+                $prods = $prods->orWhereHas('categories', function($query) use ($search) {
                     return $query->where('category', 'like', "%$search%");
                 });
             } else {
@@ -164,11 +164,11 @@ class CategoriesController extends Controller {
                                 ->orWhere('long_desc', 'like', "%$search%")
                                 ->orWhere('meta_title', 'like', "%$search%")
                                 ->orWhere('meta_desc', 'like', "%$search%")
-                                ->orWhere('meta_kes', 'like', "%$search%");
+                                ->orWhere('meta_keys', 'like', "%$search%");
             });
             if ($cat == '') {
 //                dd("Blank");
-                $prods = $prods->WhereHas('categories', function($query) use ($search) {
+                $prods = $prods->orWhereHas('categories', function($query) use ($search) {
                     return $query->where('category', 'like', "%$search%");
                 });
             } else {
