@@ -215,9 +215,9 @@ class CategoriesController extends Controller {
 //                    ->groupBy('products.id');
         }
 
-        if (!empty(Input::get('filtercatid'))) {
+        if (!empty(Input::get('filterd'))) {
             $prods = $prods->WhereHas('categories', function($q) {
-                $q->whereIn('categories.id', Input::get('filtercatid'));
+                $q->whereIn('categories.id', Input::get('filterd'));
             });
         }
 
