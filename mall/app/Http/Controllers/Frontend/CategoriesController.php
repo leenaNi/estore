@@ -202,7 +202,7 @@ class CategoriesController extends Controller {
 //                        ->orderBy(DB::raw('sum(\'has_products.qty\')'))
 //                        ->select('has_products.prod_id', 'products.*')
 //                        ->groupBy('products.id');
-                $prods = $prods->orderBy("mall_proucts.id", "desc");
+                $prods = $prods->orderBy("mall_products.id", "desc");
             }
             if (Input::get('sort') == 2) {
                 $prods = $prods->orderBy("mall_products.id", "desc");
