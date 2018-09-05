@@ -29,13 +29,13 @@
                 $currencySym = !empty(Session::get('currency_symbol')) ? '(' . Session::get('currency_symbol') . ')' : '';
                 ?>
                 {!! Form::model($order, ['method' => 'post', 'files'=> true, 'url' => $action , 'class' => 'form-horizontal' ]) !!}
-                {!! Form::hidden('order_id',$order->id) !!}
+                {!! Form::hidden('order_id',$products->id) !!}
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('payamount', "Order Amount $currencySym",['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('pay_amt',@$prd->pay_amt * Session::get("currency_val")), 2), ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Customer Payable Amount']) !!}
+                        {!! Form::text('pay_amt', $products->pay_amt, ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Customer Payable Amount']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -43,7 +43,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('order_status', 'Order Status ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::select('order_status',$order_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status']) !!}
+                        {!! Form::select('order_status',$order_status,$products->order_status, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status']) !!}
                     </div>
                 </div>
 
@@ -166,7 +166,7 @@
             <!-- Product Deatails form open -->
             <div class="tab-pane" id="product-detail">
                 <div class="panel-body">
-                    <? print_r($products); ?>
+                    <? // print_r($products); ?>
                     <!-- {{ Form::model($order, ['method' => 'post', 'route' => 'admin.orders.update.return' ,'id' => 'updateReturnQty', 'class' => 'bucket-form rtForm' ]) }} -->
 
 
@@ -518,7 +518,7 @@ $seldel = '<a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;
         newtd += '<td><?php echo $cashbackDisc; ?></td>';
 //    newtd += '<td><?php echo $voucherDisc; ?></td>';
         newtd += '<td><?php echo $referalDisc; ?></td>';
-        //  newtd += '<td><?php // echo $finalSubTotDiv;     ?></td>';
+        //  newtd += '<td><?php // echo $finalSubTotDiv;      ?></td>';
         newtd += '<td><?php echo $seldel; ?></td>';
         var newtr = '<tr>' + newtd + '</tr>';
         $("#tableProd tr:last").after(newtr);

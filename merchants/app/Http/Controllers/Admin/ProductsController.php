@@ -2140,7 +2140,7 @@ class ProductsController extends Controller {
 //                $prod = Product::where("id", Input::get("prodId"))->get();
 //                $tableColumns = Schema::getColumnListing('products');
 //                $this->updateProduct($prodConfig, $jsonString, $tableColumns);
-                $mallProd->status == 1;
+                $mallProd->status = 1;
                 $mallProd->save();
                 $products->is_share_on_mall = 1;
                 $products->save();
