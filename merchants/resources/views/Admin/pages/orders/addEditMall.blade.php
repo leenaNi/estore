@@ -190,9 +190,6 @@
                                     <th>Qty</th>
                                     <th>Unit Price <span class="currency-sym-in-braces"></span></th>
                                     <th>Price <span class="currency-sym-in-braces"></span></th>
-
-
-
                                     <th></th>
                                 </tr>
                             </thead>
