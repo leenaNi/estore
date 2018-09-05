@@ -79,7 +79,6 @@ class CartController extends Controller {
                 break;
             case 5:
                 $msg = $this->downloadProduct($prod_id, $quantity);
-                ;
                 break;
             default :
         }
@@ -264,15 +263,12 @@ class CartController extends Controller {
     }
 
     public function comboProduct($prod_id, $quantity, $sub_prod) {
-
         $product = Product::find($prod_id);
-
         $cats = [];
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
         }
         $pname = $product->product;
-
         $type = $product->is_tax;
         $sum = 0;
         foreach ($product->texes as $tax) {
@@ -300,8 +296,6 @@ class CartController extends Controller {
             $combos[$cmb->id]["name"] = $cmb->product;
             $combos[$cmb->id]["img"] = @$cmb->catalogimgs()->first()->filename;
             $prod = [];
-
-
             //print_r($sub_prod[$cmb->id]);
             //$price += $cmb->price;
             if (isset($sub_prod[$cmb->id])) {
@@ -345,10 +339,12 @@ class CartController extends Controller {
         $options = [];
 //            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
         $hasOptn = DB::table($product->prefix . '_has_options')->where("prod_id", $subProd->id)->get();
+        print_r($hasOptn);
         foreach ($hasOptn as $optn) {
             $options[$optn->attr_id] = $optn->attr_val;
             $option_name[] = DB::table($product->prefix . '_attribute_values')->find($optn->attr_val)->option_name;
         }
+        dd($options);
         $image = (count($product->images)>0) ? $product->images[0]->filename : "default.jpg";
         $option_name = json_encode($option_name);
         $type = $product->is_tax;
