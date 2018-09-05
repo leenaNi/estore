@@ -93,7 +93,7 @@ class CategoriesController extends Controller {
     }
 
     public function getProductListing() {
-//        dd(Session::all());
+        dd(Input::all());
         $catzz = json_decode(Input::get('filters'), true);
         dd($catzz);
         $slug = Input::get('slug');
