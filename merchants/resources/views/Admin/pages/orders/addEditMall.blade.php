@@ -167,7 +167,7 @@
             <!-- Product Deatails form open -->
             <div class="tab-pane" id="product-detail">
                 <div class="panel-body">
-                    <? print_r($ddproducts); ?>
+                    <? print_r($products); ?>
                     <!-- {{ Form::model($order, ['method' => 'post', 'route' => 'admin.orders.update.return' ,'id' => 'updateReturnQty', 'class' => 'bucket-form rtForm' ]) }} -->
                   
 
