@@ -77,7 +77,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('first_name', 'First Name ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('first_name',$order->orderDetails->first_name, ["class"=>'form-control validate[required]' ,"placeholder"=>'First Name']) !!}
+                        {!! Form::text('first_name',$order->first_name, ["class"=>'form-control validate[required]' ,"placeholder"=>'First Name']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -85,7 +85,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('last_name', 'Last Name',['class'=>'control-label']) !!}</div>
                     <div class="col-md-10">
-                        {!! Form::text('last_name',$order->orderDetails->last_name, ["class"=>'form-control' ,"placeholder"=>'Last Name']) !!}
+                        {!! Form::text('last_name',$order->last_name, ["class"=>'form-control' ,"placeholder"=>'Last Name']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -93,7 +93,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('address1', 'Address 1 ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('address1',$order->orderDetails->address1, ["class"=>'form-control validate[required]' ,"placeholder"=>'Address 1']) !!}
+                        {!! Form::text('address1',$order->address1, ["class"=>'form-control validate[required]' ,"placeholder"=>'Address 1']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -101,7 +101,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('address2', 'Address 2 ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('address2',$order->orderDetails->address2, ["class"=>'form-control validate[required]' ,"placeholder"=>'Address 2']) !!}
+                        {!! Form::text('address2',$order->address2, ["class"=>'form-control validate[required]' ,"placeholder"=>'Address 2']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -117,7 +117,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('phone_no', 'Mobile Number ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('phone_no',$order->orderDetails->phone_no, ["class"=>'form-control validate[required,custm[phone]]' ,"placeholder"=>'Phone Number']) !!}
+                        {!! Form::text('phone_no',$order->phone_no, ["class"=>'form-control validate[required,custm[phone]]' ,"placeholder"=>'Phone Number']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -127,7 +127,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('city', 'City ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('city',$order->orderDetails->city, ["class"=>'form-control validate[required]' ,"placeholder"=>'City']) !!}
+                        {!! Form::text('city',$order->city, ["class"=>'form-control validate[required]' ,"placeholder"=>'City']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -135,7 +135,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('country_id', 'Country ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::select('country_id', $countries,$order->orderDetails->country_id, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Country']) !!}
+                        {!! Form::select('country_id', $countries,$order->country_id, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Country']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -143,14 +143,14 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('zone_id', 'State/Zone ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::select('zone_id', $zones, $order->orderDetails->zone_id, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Zone']) !!}
+                        {!! Form::select('zone_id', $zones, $order->zone_id, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Zone']) !!}
                     </div>
                 </div> 
                 <div class="form-group">
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('postal_code', 'Pincode ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::number('postal_code',$order->orderDetails->postal_code, ["class"=>'form-control validate[required,custom[number]]' ,"placeholder"=>'Pincode']) !!}
+                        {!! Form::number('postal_code',$order->postal_code, ["class"=>'form-control validate[required,custom[number]]' ,"placeholder"=>'Pincode']) !!}
                     </div>
                 </div>
                 <div class="form-group">
