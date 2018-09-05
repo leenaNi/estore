@@ -164,7 +164,7 @@ class CategoriesController extends Controller {
                                 ->orWhere('long_desc', 'like', "%$search%")
                                 ->orWhere('meta_title', 'like', "%$search%")
                                 ->orWhere('meta_desc', 'like', "%$search%")
-                                ->orWhere('meta_key', 'like', "%$search%");
+                                ->orWhere('meta_keys', 'like', "%$search%");
             });
             if ($cat == '') {
                 dd("Blank");
