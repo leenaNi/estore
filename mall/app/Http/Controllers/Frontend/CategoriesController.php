@@ -328,7 +328,7 @@ class CategoriesController extends Controller {
             'metaTitle' => @$metaTitle,
             'metaDesc' => @$metaDesc,
             'metaKeys' => @$metaKeys,
-            'maxp' => number_format($maxP * Session::get('currency_val')), 2),
+            'maxp' => number_format($maxP * Session::get('currency_val'), 2),
             'catChild' => $catChild,
             'currency_val' => (float) Session::get('currency_val'),
             'breadcrumbs' => $breadcrumbs,
