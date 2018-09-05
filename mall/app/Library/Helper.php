@@ -444,7 +444,7 @@ class Helper {
     }
 
     public static function getMaxPriceByCat($catid) {
-        $prod = DB::table('products')->where('selling_price', '=', DB::raw("(select max(`selling_price`) from products as p inner join  has_categories as hc on (p.id=hc.prod_id)  where hc.cat_id={$catid})"))->first();
+        $prod = DB::table('products')->where('status', 1)->where('selling_price', '=', DB::raw("(select max(`selling_price`) from products as p inner join  has_categories as hc on (p.id=hc.prod_id)  where hc.cat_id={$catid})"))->first();
         if ($prod) {
             return @$prod->selling_price;
         } else {
