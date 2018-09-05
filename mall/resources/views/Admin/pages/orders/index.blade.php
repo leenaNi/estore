@@ -176,7 +176,7 @@
                                 <td><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
                                 <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
 
-                                <td>{{ @$order->firstname }} {{ @$order->lastname }} </td>
+                                <td>{{ @$order->first_name }} {{ @$order->last_name }} </td>
 <!--                                <td>{{ @$order->users->email }}  </td>-->
                                 <td>{{ @$order->phone_no }}</td>
                                 <!--<td>{{ @$order->order_status }}</td>-->
