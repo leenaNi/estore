@@ -95,7 +95,7 @@ class CategoriesController extends Controller {
     public function getProductListing() {
 //        dd(Input::all());
         $catzz = json_decode(Input::get('filters'), true);
-//        dd($catzz);
+        dd($catzz);
         $slug = Input::get('slug');
         $maxP = 0;
         $checkVarient = GeneralSetting::where('url_key', 'products-with-variants')->first()->status;
