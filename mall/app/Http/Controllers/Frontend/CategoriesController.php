@@ -128,9 +128,23 @@ class CategoriesController extends Controller {
         }
 
         if (!empty($category)) {
-            $prods = $prods->whereHas('categories', function($query) use ($cats) {
-                return $query->whereIn('cat_id', $cats);
-            });
+            if (!empty($catzz)) {
+                $comCats = array_intersect($catzz['cat'], $cats);
+                $prods = $prods->whereHas('categories', function($q) use($comCats) {
+                    $q->whereIn('mall_prod_categories.id', $comCats);
+                });
+            } else {
+                $prods = $prods->whereHas('categories', function($query) use ($cats) {
+                    return $query->whereIn('cat_id', $cats);
+                });
+            }
+        } else {
+            if (!empty($catzz)) {
+                $comCats = array_intersect($catzz['cat'], $cats);
+                $prods = $prods->whereHas('categories', function($q) use($comCats) {
+                    $q->whereIn('mall_prod_categories.id', $comCats);
+                });
+            }
         }
 //        $prods = $prods->where(function($query) {
 //            if (!empty(Input::get('tags'))) {
@@ -216,11 +230,7 @@ class CategoriesController extends Controller {
 //                    ->groupBy('products.id');
         }
 
-        if (!empty($catzz)) {
-            $prods = $prods->orWhereHas('categories', function($q) use($catzz) {
-                $q->whereIn('mall_prod_categories.id', $catzz['cat']);
-            });
-        }
+
 
         if (Input::get('minp')) {
 //            echo Input::get('minp');
