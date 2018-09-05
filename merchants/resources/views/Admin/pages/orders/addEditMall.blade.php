@@ -167,6 +167,7 @@
             <!-- Product Deatails form open -->
             <div class="tab-pane" id="product-detail">
                 <div class="panel-body">
+                    <? print_r($ddproducts); ?>
                     <!-- {{ Form::model($order, ['method' => 'post', 'route' => 'admin.orders.update.return' ,'id' => 'updateReturnQty', 'class' => 'bucket-form rtForm' ]) }} -->
                   
 
@@ -198,8 +199,8 @@
                         </thead>
                         <tbody>
                             <?php $i = 0; $prd=$products ;
-                                   ?>
-                           
+                            
+                                   ?>                          
                            
                             <tr> 
                                 <td>{{ @$prd->categories()->first()->category }}</td>
@@ -208,7 +209,8 @@
                            
                                 @if($prd->prod_type == 3)
                                 <?php
-                                $parentid = App\Models\Product::find($prd->pivot->sub_prod_id)->parent_prod_id;
+                                $mallProd = App\Models\MallProducts::find($prd->pivot->sub_prod_id);
+                                $parentid = App\Models\Product::find($mallProdsub_prod_id)->parent_prod_id;
                                 $getSubprods = App\Models\Product::find($parentid)->subproducts()->get();
                                 $configPrds = [];
                                 foreach ($getSubprods as $subp) {
