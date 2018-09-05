@@ -46,14 +46,14 @@ class CategoriesController extends Controller {
             $allCats = [];
             if ($cat != '') {
                 $categories = Category::where('url_key', 'like', "%$cat%")->get();
-                foreach ($categories as $ck => $cat) {
+                foreach ($categories as $ck => $c) {
                     if ($cat->parent_id == 0) {
-                        $childCats = Category::where('parent_id', $cat->id)->get(['id']);
+                        $childCats = Category::where('parent_id', $c->id)->get(['id']);
                         foreach ($childCats as $cck => $cCat) {
                             array_push($allCats, $cCat->id);
                         }
                     } else {
-                        array_push($allCats, $cat->id);
+                        array_push($allCats, $c->id);
                     }
                 }
 //            dd($allCats);
@@ -143,14 +143,14 @@ class CategoriesController extends Controller {
             $allCats = [];
             if ($cat != '') {
                 $categories = Category::where('url_key', 'like', "%$cat%")->get();
-                foreach ($categories as $ck => $cat) {
-                    if ($cat->parent_id == 0) {
-                        $childCats = Category::where('parent_id', $cat->id)->get(['id']);
+                foreach ($categories as $ck => $c) {
+                    if ($c->parent_id == 0) {
+                        $childCats = Category::where('parent_id', $c->id)->get(['id']);
                         foreach ($childCats as $cck => $cCat) {
                             array_push($allCats, $cCat->id);
                         }
                     } else {
-                        array_push($allCats, $cat->id);
+                        array_push($allCats, $c->id);
                     }
                 }
             }
