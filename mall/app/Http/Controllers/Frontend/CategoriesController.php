@@ -171,7 +171,7 @@ class CategoriesController extends Controller {
             if (@$category == '') {
 //                dd("Blank");
                 $prods = $prods->orWhereHas('categories', function($query) use ($search) {
-                    return $query->where('category', 'like', "%$search%");
+                    return $query->where('mall_prod_categories.category', 'like', "%$search%");
                 });
             } else {
 //                dd("NotBlank");
@@ -218,7 +218,7 @@ class CategoriesController extends Controller {
 
         if (!empty($catzz)) {
             $prods = $prods->WhereHas('categories', function($q) use($catzz) {
-                $q->whereIn('categories.id', $catzz['cat']);
+                $q->whereIn('mall_prod_categories.id', $catzz['cat']);
             });
         }
 
