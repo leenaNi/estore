@@ -33,7 +33,6 @@
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
                     <div class="col-md-2 text-right mobTextLeft">
-                        {{$products->pay_amt}}
                         {!! Form::label('payamount', "Order Amount $currencySym",['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
                         {!! Form::text('pay_amt', $products->pay_amt, ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Customer Payable Amount']) !!}
