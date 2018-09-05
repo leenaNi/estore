@@ -22,6 +22,7 @@ use App\Models\PaymentStatus;
 use App\Models\Product;
 use App\Models\ReturnOrder;
 use App\Models\User;
+use App\Models\CurierHistory;
 use App\Models\Zone;
 use App\Models\Courier;
 use App\Models\AdditionalCharge;
@@ -2540,6 +2541,7 @@ class OrdersController extends Controller {
     }
 
     public function getECourier() {
+       
         $ordid =15; //array(16,15);//explode(",", Input::get('OrderIds'));
 //        foreach ($orderids as $ordid) {
             $saveorder = Order::find($ordid);
@@ -2605,19 +2607,22 @@ class OrdersController extends Controller {
             $saveorder->shiplabel_tracking_id = $data->ID;
             $saveorder->order_status = 2;
             $saveorder->update();
+         $curierHistory= new CurierHistory();
+         $curierHistory->order_id=$ordid;
+         $curierHistory->courier_id=4;
+         $curierHistory->waybill_no=$data->ID;
+         $curierHistory->prefix=$this->jsonString['prefix'];
+         $curierHistory->store_id=$this->jsonString['store_id'];
+         $curierHistory->save();
           }else{
              echo $data->errors;
              die;
           }
           
-            DB::table('courier_history')->insert(
-                    ['order_id' => $ordid,
-                        'courier_id' => 4,
-                        'waybill_no' => $data->ID,
-                        'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
-                        'updated_at' => \Carbon\Carbon::now()->toDateTimeString()]);
+       
+                    
 //        }
-      //  return redirect()->back();
+       return redirect()->back();
     }
 
 }
