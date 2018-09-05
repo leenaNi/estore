@@ -98,20 +98,20 @@ class CategoriesController extends Controller {
         $slug = Input::get('slug');
         $maxP = 0;
         $checkVarient = GeneralSetting::where('url_key', 'products-with-variants')->first()->status;
-        $cat = @Category::where('url_key', $slug)->first();
+        $category = @Category::where('url_key', $slug)->first();
         if (!empty($cat)) {
-            $breadcrumbs = Helper::getbreadcrumbs($cat->id, $cat->url_key);
+            $breadcrumbs = Helper::getbreadcrumbs($category->id, $category->url_key);
         } else {
             $breadcrumbs = "";
         }
         $catChild = [];
-        $catChild = @Category::where('parent_id', $cat->id)->where('status', 1)->where('is_nav', 1)->select('id', 'category', 'url_key')->get();
+        $catChild = @Category::where('parent_id', @$category->id)->where('status', 1)->where('is_nav', 1)->select('id', 'category', 'url_key')->get();
 
         if (!empty($cat)) {
-            $metaTitle = @$cat->meta_title == "" ? @$cat->category . " | Cartini " : @$cat->meta_title;
-            $metaDesc = @$cat->meta_desc == "" ? @$cat->category : @$cat->meta_desc;
-            $metaKeys = @$cat->meta_keys == "" ? @$cat->category : @$cat->meta_keys;
-            $allCats = @$cat->getDescendantsAndSelf();
+            $metaTitle = @$category->meta_title == "" ? @$category->category . " | Cartini " : @$category->meta_title;
+            $metaDesc = @$category->meta_desc == "" ? @$category->category : @$category->meta_desc;
+            $metaKeys = @$category->meta_keys == "" ? @$category->category : @$category->meta_keys;
+            $allCats = @$category->getDescendantsAndSelf();
             $cats = [];
             foreach ($allCats as $catz) {
                 array_push($cats, $catz->id);
@@ -126,7 +126,7 @@ class CategoriesController extends Controller {
             $prods = $prods->where("mall_products.prod_type", 1);
         }
 
-        if (!empty($cat)) {
+        if (!empty($category)) {
             $prods = $prods->whereHas('categories', function($query) use ($cats) {
                 return $query->whereIn('cat_id', $cats);
             });
@@ -167,7 +167,7 @@ class CategoriesController extends Controller {
                                 ->orWhere('meta_desc', 'like', "%$search%")
                                 ->orWhere('meta_keys', 'like', "%$search%");
             });
-            if ($cat == '') {
+            if (@$category == '') {
 //                dd("Blank");
                 $prods = $prods->orWhereHas('categories', function($query) use ($search) {
                     return $query->where('category', 'like', "%$search%");
@@ -292,8 +292,8 @@ class CategoriesController extends Controller {
                 $maxP = 0;
             }
         } else {
-            if ($cat) {
-                $maxP = @Helper::maxPriceByCat(@$cat->id);
+            if (@$category) {
+                $maxP = @Helper::maxPriceByCat(@$category->id);
             } else {
                 if ($prdCnt > 0) {
                     $maxP = Helper::getmaxPrice();
