@@ -421,7 +421,7 @@ class Helper {
     }
 
     public static function getmaxPrice() {
-        $prod = DB::table('mall_products')->where('price', DB::raw("(select max(`price`) from " . DB::getTablePrefix() . "mall_products)"))->first();
+        $prod = DB::table('mall_products')->where('status', 1)->where('price', DB::raw("(select max(`price`) from " . DB::getTablePrefix() . "mall_products)"))->first();
         if ($prod) {
             return $prod->price;
         } else {
