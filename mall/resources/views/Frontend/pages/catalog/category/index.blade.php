@@ -97,26 +97,28 @@
 <script>
 
     $(document).ready(function () {
-        minP = 0;
-        minp = 0;
-        maxP = <?php echo (@$maxp) ? $maxp * Session::get('currency_val') : '0'; ?>;
-        maxp = <?php echo (@$maxp) ? $maxp * Session::get('currency_val') : '0'; ?>;
-        maxp = Math.ceil(maxp);
-        console.log("Min price => " + minp + "Max price => " + maxp);
+        setTimeout(function () {
+            minP = 0;
+            minp = 0;
+            maxP = <?php echo (@$maxp) ? $maxp * Session::get('currency_val') : '0'; ?>;
+            maxp = <?php echo (@$maxp) ? $maxp * Session::get('currency_val') : '0'; ?>;
+            maxp = Math.ceil(maxp);
+            console.log("Min price => " + minp + "Max price => " + maxp);
 
-        $('#slider-range').slider({
-            range: true,
-            min: minp,
-            max: maxp,
-            values: [minp, maxp],
-            slide: function (event, ui) {
-                $("input[name='min_price']").val(Math.round(ui.values[0] ));
-                $("input[name='max_price']").val(Math.round(ui.values[1]));
-            }
-        });
-        $("input[name='min_price']").val(minp);
-        $("input[name='max_price']").val(maxp);
+            $('#slider-range').slider({
+                range: true,
+                min: minp,
+                max: maxp,
+                values: [minp, maxp],
+                slide: function (event, ui) {
+                    $("input[name='min_price']").val(Math.round(ui.values[0]));
+                    $("input[name='max_price']").val(Math.round(ui.values[1]));
+                }
+            });
+            $("input[name='min_price']").val(minp);
+            $("input[name='max_price']").val(maxp);
 //        $('#amount').text('Amt. ' + $('#slider-range').slider('values', 0) + ' - Amt. ' + $('#slider-range').slider('values', 1));
+        }, 500);
     });
 </script>
 @stop

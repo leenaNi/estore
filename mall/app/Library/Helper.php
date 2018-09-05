@@ -421,7 +421,7 @@ class Helper {
     }
 
     public static function getmaxPrice() {
-        $prod = DB::table('mall_products')->where('price', DB::raw("(select max(`price`) from " . DB::getTablePrefix() . "mall_products)"))->first();
+        $prod = DB::table('mall_products')->where('status', 1)->where('price', DB::raw("(select max(`price`) from " . DB::getTablePrefix() . "mall_products)"))->first();
         if ($prod) {
             return $prod->price;
         } else {
@@ -444,7 +444,7 @@ class Helper {
     }
 
     public static function getMaxPriceByCat($catid) {
-        $prod = DB::table('products')->where('selling_price', '=', DB::raw("(select max(`selling_price`) from products as p inner join  has_categories as hc on (p.id=hc.prod_id)  where hc.cat_id={$catid})"))->first();
+        $prod = DB::table('products')->where('status', 1)->where('selling_price', '=', DB::raw("(select max(`selling_price`) from products as p inner join  has_categories as hc on (p.id=hc.prod_id)  where hc.cat_id={$catid})"))->first();
         if ($prod) {
             return @$prod->selling_price;
         } else {
@@ -666,7 +666,7 @@ class Helper {
 
         $prod = DB::table('has_categories')->whereIn('cat_id', $cat_id)->pluck('prod_id');
         //dd($prod);
-        $maxp = DB::table('mall_products')->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
+        $maxp = DB::table('mall_products')->where('status', 1)->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
         // dd($maxp);
         return $maxp->maxp;
     }
