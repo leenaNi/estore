@@ -38,8 +38,8 @@
                                 @endif
                             </tbody>
                         </table>
+                        <a href="{!! route('admin.orders.view') !!}"  class="pull-right"  ><button type="button" class="btn btn-success"><span> Back </span></button></a>
                 </div>
-                <a href="{!! route('admin.orders.view') !!}"  class="pull-right"  ><button type="button" class="btn btn-success"><span> Back </span></button></a>
             </section>
         </div>
     </div>
