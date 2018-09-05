@@ -61,11 +61,11 @@ span.editicons i {
 
 			<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 
-				<div class="box box-solid marginBottom20">
+				<!-- <div class="box box-solid marginBottom20">
 							<div class="box-header with-border noleftBorder">
-								<h3 class="box-title">Store Logo</h3>
+								<h3 class="box-title">Store Logo</h3> -->
 								<!-- tools box -->
-								<div class="pull-right box-tools">
+								<!-- <div class="pull-right box-tools">
 									<button type="button" class="btn btn-defualt btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
 									</button>
 									<button type="button" class="btn btn-defualt btn-sm" data-widget="remove"><i class="fa fa-times"></i>
@@ -73,14 +73,14 @@ span.editicons i {
 								</div>
 								<div class="box-body">
 									<div class="row">
-										<div class="col-sm-12 col-md-12">
+										<div class="col-sm-12 col-md-12"> -->
 											<!-- <center> <img src="{{ asset('public/Admin/dist/img/img-upload-dummy.svg') }}" width="300"> -->
-											<p>Update your brand logo for users to understand it's your online store.</p>
+											<!-- <p>Update your brand logo for users to understand it's your online store.</p>
 											<a href="#" class="btn btn-default noAllMargin updateLogo mobileSpecialfullBTN">Update Logo</a>	
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> -->
 
 				<div class="box box-solid marginBottom20">
 							<div class="box-header with-border noleftBorder">
@@ -124,7 +124,7 @@ span.editicons i {
 
 				<div class="box box-solid marginBottom20">
 					<div class="box-header with-border noleftBorder">
-						<h3 class="box-title">Add Product</h3>
+						<h3 class="box-title">Products</h3>
 						<div class="pull-right box-tools">
 							<button type="button" class="btn btn-defualt btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
 							</button>
@@ -135,14 +135,14 @@ span.editicons i {
 							<div class="row">
 								<div class="col-sm-12 col-md-12">
 									<p>Take the first step to launching your store. Add products to your store.</p>
-									<a href="{{ route('admin.products.view') }}" class="btn btn-default noAllMargin  mobileSpecialfullBTN">Add Product</a>
+									<a href="{{ route('admin.products.view') }}" class="btn btn-default noAllMargin  mobileSpecialfullBTN">Products</a>
 								</div>
 							</div>
 						</div>
 					</div>
 
 
-
+<!-- 
 							<div class="box box-solid marginBottom20">
 							<div class="box-header with-border noleftBorder">
 								<h3 class="box-title">About Store</h3>
@@ -160,11 +160,11 @@ span.editicons i {
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> -->
 
 
 
-							<div class="box box-solid marginBottom20">
+							<!-- <div class="box box-solid marginBottom20">
 							<div class="box-header with-border noleftBorder">
 								<h3 class="box-title">Contact Information</h3>
 								<div class="pull-right box-tools">
@@ -175,16 +175,16 @@ span.editicons i {
 								</div>
 								<div class="box-body">
 									<div class="row">
-										<div class="col-sm-12 col-md-12 text-left">
+										<div class="col-sm-12 col-md-12 text-left"> -->
 											<!-- <center> <img src="{{ asset('public/Admin/dist/img/img-upload-dummy.svg') }}" width="300"> -->
-											<p>Let people know where can they contact you. This makes communication more simpler. 
+										<!-- 	<p>Let people know where can they contact you. This makes communication more simpler. 
 											</p>										
 											
 											<a href="{{ route('admin.staticpages.view') }}" class="btn btn-default noAllMargin  mobileSpecialfullBTN">Update Contact Information</a>
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> -->
 
 					<!-- <div class="box box-solid marginBottom20">
 						<div class="box-header with-border noleftBorder">

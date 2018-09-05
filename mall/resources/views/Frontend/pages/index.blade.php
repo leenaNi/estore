@@ -66,7 +66,7 @@
         </div>
     </div>
     <div class="container topmargin">          
-        <div id="" class="heading-block title-center page-section">
+        <div id="" class="heading-block title-center page-section bottommargin-xxs">
             <h2>Shop By Industry</h2>
         </div>
     </div>
