@@ -219,7 +219,7 @@ class CartController extends Controller {
                 return 1;
             }
         } else {
-            Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
+            Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                 "options" => ["image" => $images, "image_with_path" => $imagPath, "url_key" => $product->url_key, "sub_prod"=>0, "is_cod" => $product->is_cod, 'url' => $product->url_key,
                     'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'store_name' => $storeName, 'is_stock' => $product->is_stock,
                     "prod_type" => $prod_type,
