@@ -3,25 +3,30 @@
 <!-- Document Wrapper   ============================================= -->
 <section id="page-title">
     <div class="container clearfix">
-        <h1>Login | Register</h1>
+        <h1>Login / Register</h1>
         <ol class="breadcrumb">
             <li><a href="{{route('home') }}">Home</a>
             </li>
-            <li class="active">Login | Register</li>
+            <li class="active">Login / Register</li>
         </ol>
     </div>
 </section>
 <!-- Content  ============================================= -->
 <section id="content">
+
     <div class="content-wrap">
         <div class="container clearfix">
             <div class="tabs divcenter tabs-justify nobottommargin clearfix" id="tab-login-register">
                 <div class='alert alert-danger login-error' style="display:none;"></div>
+
+                    <h3 class="nomargin center">One Account. All of VeeStores</h3>
+                    <h5 class="center">Login with your VeeStores Account</h5>
+
                 <ul class="tab-nav tab-nav2 loginTab center clearfix">
                     <li class="inline-block add-to-cart button nomargin " aria-selected="true" aria-expanded="true"><a class="tabClass" href="#tab-login">Login</a>
                     </li>
                     <li class="onlyDispUnder479"></li>
-                    <li class="inline-block mobMartop15 add-to-cart button nomargin nopadding"><a class="tabClass" href="#tab-register">Register</a>
+                    <li class="inline-block mobMartop15 add-to-cart button nomargin nopadding bck-grey"><a class="tabClass" href="#tab-register">Register</a>
                     </li>
                 </ul>
                 <div class="tab-container">

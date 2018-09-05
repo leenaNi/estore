@@ -65,7 +65,7 @@
             </div>
         </div>
     </div>
-    <div class="container topmargin-sm">          
+    <div class="container topmargin">          
         <div id="" class="heading-block title-center page-section">
             <h2>Shop By Industry</h2>
         </div>

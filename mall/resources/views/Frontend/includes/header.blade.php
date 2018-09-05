@@ -16,10 +16,10 @@
                     <li><a href="http://www.veestores.com/contact" target="_blank">Contact</a></li>
 
                     @if(Session::get('loggedin_user_id'))              
-                    <li> <a href="{{route('myProfile')}}" target="_blank">My Account</a></li>
-                     <li> <a href="{{route('logoutUser')}}" target="_blank">Logout</a></li>
+                    <li> <a href="{{route('myProfile')}}" >My Account</a></li>
+                     <li> <a href="{{route('logoutUser')}}">Logout</a></li>
                     @else
-                    <li><a href="{{ route('loginUser') }}" target="_blank">Login / Register</a></li>
+                    <li><a href="{{ route('loginUser') }}">Login / Register</a></li>
                     @endif
                 </ul> 
             </div><!-- .top-links end -->

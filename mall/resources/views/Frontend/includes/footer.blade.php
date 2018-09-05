@@ -29,12 +29,12 @@
 
 
                 <div class="copyright-links">
-                    <a href="#">About</a> / 
+                    <a href="https://www.veestores.com/about">About</a> / 
                     <!-- <a href="/faqs">FAQs</a> / 
                     <a href="#">Store set-up assistance</a> / <a href="#">Merchant Agreement</a> /  -->
-                    <a href="#">Terms &amp; Condition</a> /
-                    <a href="#">Privacy Policy</a> / 
-                    <a href="#">Contact</a></div>
+                    <a href="https://www.veestores.com/terms-condition">Terms &amp; Condition</a> /
+                    <a href="https://www.veestores.com/privacy-policy">Privacy Policy</a> / 
+                    <a href="https://www.veestores.com/contact">Contact</a></div>
             </div><!-- .footer-widgets-wrap end -->
 
         </div>
