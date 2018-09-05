@@ -647,7 +647,6 @@ class Helper {
     }
 
     public static function maxPriceByCat($catId) {
-        dd($catId);
         $allCats = array();
         if (MallProdCategory::find($catId)->isLeaf()) {
             array_push($allCats, MallProdCategory::find($catId)->ancestorsAndSelf()->get(['id']));
