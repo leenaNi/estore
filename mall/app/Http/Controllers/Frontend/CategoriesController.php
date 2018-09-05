@@ -193,9 +193,9 @@ class CategoriesController extends Controller {
                     return $query->whereIn('mall_prod_categories.id', $allCats);
                 });
             }
-            $prodMax = $prods;
-            $prodMax = $prodMax->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
-            $data['maxp'] = $prodMax->max_price;
+//            $prodMax = $prods;
+//            $prodMax = $prodMax->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
+//            $data['maxp'] = $prodMax->max_price;
         }
         if (!empty(Input::get('sort'))) {
             if (Input::get('sort') == 1) {
@@ -262,7 +262,7 @@ class CategoriesController extends Controller {
         $prdCnt = $prods->count();
 
         $prods = $prods->distinct('id')->paginate(9);
-        dd($prods);
+//        dd($prods);
         foreach ($prods as $prd) {
             $prd->is_stock_status = 1;
             if ($this->feature['stock'] == 1) {
