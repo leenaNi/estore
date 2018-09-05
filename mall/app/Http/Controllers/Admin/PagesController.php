@@ -53,7 +53,7 @@ class PagesController extends Controller {
         $totalOrders = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')->count();
         $topProducts = HasProducts::where('prefix', '')->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
         foreach ($topProducts as $prd) {
-            $mallProd = DB::table('products')->where('id', $prd->prod_id)->first();
+            $mallProd = Product::where('id', $prd->prod_id)->first();
             $prod = DB::table($prd->prefix . '_products')->where('id', $mallProd->store_prod_id)->first();
             $prd->product = $prod;
             if (!empty($prod->product)) {

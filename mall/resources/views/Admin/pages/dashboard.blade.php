@@ -158,9 +158,9 @@
                                     @foreach($latestOrders as $order)
                                     <tr>
                                         <td>{{ @$order->id }}</td>
-                                        <td>{{ ucfirst(@$order->users->firstname) }} {{ @$order->users->lastname }} </td>
+                                        <td>{{ ucfirst(@$order->first_name) }} {{ @$order->last_name }} </td>
                                         <td>{{ @$order->users->email }}  </td>
-                                        <td>{{ @$order->users->telephone }}</td>
+                                        <td>{{ @$order->phone_no }}</td>
                                         <td>{{ @$order->orderstatus['order_status'] }}</td>  
                                         <td>{{ @$order->paymentstatus['payment_status'] }}</td>
                                         <td>{{ @$order->paymentmethod['name'] }}</td>
@@ -243,7 +243,7 @@
                                     @foreach($topUsers as $user)
                                     <tr>
     <!--                                    <td><img src="{{@$user->users->profile ? @$user->users->profile : asset('public/Admin/dist/img/no-image.jpg')}}" class="admin-profile-picture" /></td>-->
-                                        <td>{{@$user->users->firstname}} {{@$user->users->lastname}}</td>
+                                        <td>{{@$user->first_name}} {{@$user->last_name}}</td>
                                         <td>{{@$user->users->email}}</td>
                                         <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{ number_format((@$user->total_amount  * Session::get('currency_val')), 2, '.', '')}}</td>
                                     </tr>
