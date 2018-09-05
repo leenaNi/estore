@@ -233,6 +233,7 @@
                             @endif
                         </td>
                           <td>
+                              {{$product->is_share_on_mall}}
                            @if($product->is_share_on_mall==0)
                             <a prod-id="{{$product->id}}" class="   shareProductToMall" ui-toggle-class="" title="Publish To Mall"> <i class="fa fa-check btn-plen btn"></i></a>
                             @else
