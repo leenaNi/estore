@@ -292,7 +292,15 @@ class CategoriesController extends Controller {
                 $maxP = 0;
             }
         } else {
-            $maxP = @Helper::maxPriceByCat(@$cat->id);
+            if ($cat) {
+                $maxP = @Helper::maxPriceByCat(@$cat->id);
+            } else {
+                if ($prdCnt > 0) {
+                    $maxP = Helper::getmaxPrice();
+                } else {
+                    $maxP = 0;
+                }
+            }
         }
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
         $currencySetting = $currencySetting->setCurrency();
