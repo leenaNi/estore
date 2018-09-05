@@ -55,7 +55,7 @@
                                     <small><a href="#"> <?php
                                             if (!empty($cart['options']['options'])) {
                                                 foreach ($cart['options']['options'] as $key => $value) {
-                                                    $option .= ' '.App\Models\AttributeValue::find($value)->option_name;
+                                                    $option .= ' '.DB::table($cart['options']['prefix'] .'_attribute_values')->where('id', $value)->first()->option_name;
                                                 }
                                             }
                                             echo $option;
