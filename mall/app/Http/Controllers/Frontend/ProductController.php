@@ -21,9 +21,9 @@ use Cart;
 
 class ProductController extends Controller {
 
-    public function index($slug) {
+    public function index($prefix, $slug) {
         $setting = GeneralSetting::where('url_key', 'debug-option')->first();
-        $prod = Product::where('url_key', $slug)->first();
+        $prod = Product::where('url_key', $slug)->where('prefix', $prefix)->first();
 
         if ($setting->status == 0 && count($prod) == 0) {
             abort(404);

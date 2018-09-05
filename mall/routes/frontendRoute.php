@@ -84,6 +84,6 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
 
     //Category Listing
     Route::get('/explore/{slug?}', ['as' => 'category', 'uses' => 'CategoriesController@index']);
-    Route::get('/{slug}/', ['as' => 'prod', 'uses' => 'ProductController@index']);
+    Route::get('/{prefix}/{slug}/', ['as' => 'prod', 'uses' => 'ProductController@index']);
 });
 

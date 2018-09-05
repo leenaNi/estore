@@ -48,14 +48,14 @@
                     <form id="form[[prd.id]]" action="{{ route('addToCart')}}">
                         <div class="product-image producImgBoxSize_4Col">
                             <img src="images/products/t-shirt.jpg" alt="">
-                            <a href="{{ route('home')}}/[[prd.url_key]]">
+                            <a href="{{ route('home')}}/[[prd.prefix]]/[[prd.url_key]]">
                                 <img ng-if="prd.catalogimgs != ''" src="[[prd.mainImage]]" alt="[[prd.alt_text]]">
                                 <img ng-if="prd.catalogimgs == ''" src="{{ @asset(Config('constants.productImgPath'))}}/default-image.jpg" alt="default-image">
                             </a>
                         </div>
                         <div class="product-desc text-center">
                             <div class="product-title">
-                                <h4><a href="[[prd.url_key]]">[[prd.product]]</a>
+                                <h4><a href="[[prd.prefix]]/[[prd.url_key]]">[[prd.product]]</a>
                                 <!-- <span class="subtitle">Flat 10% Off*</span> -->
                                 </h4>
                             </div>

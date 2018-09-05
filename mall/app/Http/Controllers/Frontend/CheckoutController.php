@@ -2121,7 +2121,6 @@ class CheckoutController extends Controller {
     }
 
     function successMail($orderId, $firstName, $toEmail) {
-        $toEmails = 'bhavana@infiniteit.biz';
         $tableContant = Helper::getEmailInvoice($orderId);
         $order = Order::find($orderId);
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
@@ -2135,7 +2134,7 @@ class CheckoutController extends Controller {
             $email_template = $emailContent[0]['content'];
             $subject = $emailContent[0]['subject'];
             $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[created_at]", "[primary_color]", "[secondary_color]", "[storeName]");
-            $replacewith = array($order->id, $firstName, $tableContant, $logoPath, $webUrl, $order->created_at, $settings['primary_color'], $settings['secondary_color'], $settings['storeName']);
+            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $order->created_at, $settings['primary_color'], $settings['secondary_color'], $settings['storeName']);
             $email_templates = str_replace($replace, $replacewith, $email_template);
             $data_email = ['email_template' => $email_templates];
             Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
