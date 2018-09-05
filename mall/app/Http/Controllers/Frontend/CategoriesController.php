@@ -93,7 +93,7 @@ class CategoriesController extends Controller {
     }
 
     public function getProductListing() {
-        dd(Input::all());
+//        dd(Input::all());
         $catzz = json_decode(Input::get('filters'), true);
         dd($catzz);
         $slug = Input::get('slug');
@@ -216,7 +216,7 @@ class CategoriesController extends Controller {
 //                    ->groupBy('products.id');
         }
 
-        if (!empty(Input::get('filterd'))) {
+        if (!empty($catzz)) {
             $prods = $prods->WhereHas('categories', function($q) {
                 $q->whereIn('categories.id', Input::get('filterd'));
             });
