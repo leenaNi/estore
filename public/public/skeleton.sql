@@ -2263,7 +2263,8 @@ INSERT INTO `tblprfx_permissions` (`id`, `name`, `display_name`, `description`, 
 (3352, 'admin.product.mall.category', 'Product Mall Category', NULL, 57, 0, 0),
 (3353, 'admin.product.mall.product.Add', 'Product Mall Product Add', NULL, 57, 0, 0 ),
 (3354, 'admin.product.mall.product.update', 'Product Mall Product Update', NULL, 57, 0, 0),
-(3355, 'admin.orders.getECourier', 'Orders Getecourier', NULL, 57, 0, 0);
+(3355, 'admin.orders.getECourier', 'Orders Getecourier', NULL, 57, 0, 0),
+(3356, 'admin.orders.mallOrderSave', 'Orders Mallordersave', NULL,57, 0, 0);
 -- --------------------------------------------------------
 
 --

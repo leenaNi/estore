@@ -19,7 +19,6 @@ use App\Models\StaticPage;
 use App\Models\Role;
 use App\Models\Layout;
 use App\Models\Order;
-
 use App\Models\HasLayout;
 use App\Models\ProductType;
 use App\Models\AttributeSet;
@@ -54,8 +53,7 @@ class HomeController extends Controller {
 //$chkEmail = DB::select(DB::raw("select * from users"));
 //      
 //          $chkEmail = User::get();
-
-          // print_r(Session::get('currency_val')); die;
+        // print_r(Session::get('currency_val')); die;
         $testimonial_status = GeneralSetting::where("url_key", 'testimonial')->first();
 //        $saveto= "public/Admin/uploads/slider/default_slider.png";
 //        dd(Helper::saveImage("http://www.techhaking.com/wp-content/uploads/2017/09/default-slider-image-300x150.png",$saveto));
@@ -96,15 +94,15 @@ class HomeController extends Controller {
 
             if (Session::get('login_user_type') == 1) {
                 if ($value->url_key == 'home-page-3-boxes') {
-                    $data[str_replace("-", "_", $value->url_key)] = HasLayout::where("image", "!=", "")->where('layout_id', $value->id)->orderBy("sort_order","asc")->take(3)->get();
+                    $data[str_replace("-", "_", $value->url_key)] = HasLayout::where("image", "!=", "")->where('layout_id', $value->id)->orderBy("sort_order", "asc")->take(3)->get();
                 } else {
-                    $data[str_replace("-", "_", $value->url_key)] = HasLayout::where('is_active', 1)->where('layout_id', $value->id)->orderBy("sort_order","asc")->get();
+                    $data[str_replace("-", "_", $value->url_key)] = HasLayout::where('is_active', 1)->where('layout_id', $value->id)->orderBy("sort_order", "asc")->get();
                 }
             } else {
-                $data[str_replace("-", "_", $value->url_key)] = HasLayout::where('is_active', 1)->where('layout_id', $value->id)->orderBy("sort_order","asc")->get();
+                $data[str_replace("-", "_", $value->url_key)] = HasLayout::where('is_active', 1)->where('layout_id', $value->id)->orderBy("sort_order", "asc")->get();
             }
         }
-        $data[str_replace("-", "_", $value->url_key)] = HasLayout::where('is_active', 1)->where('layout_id', $value->id)->orderBy("sort_order","asc")->get();
+        $data[str_replace("-", "_", $value->url_key)] = HasLayout::where('is_active', 1)->where('layout_id', $value->id)->orderBy("sort_order", "asc")->get();
 
         $data['attr_sets'] = $attr_sets;
         $data['prod_types'] = $prod_types;
@@ -117,12 +115,11 @@ class HomeController extends Controller {
         $data['dynamicLayout'] = DynamicLayout::where("status", 1)->orderBy('sort_order', 'asc')->get();
         $data['testimonial'] = Testimonials::where("status", 1)->orderBy('sort_order', 'asc')->get();
         $data['testimonial_status'] = $testimonial_status;
-       // dd($data);
+        // dd($data);
         $viewname = Config('constants.frontendView') . '.index';
 
         return Helper::returnView($viewname, $data, null, 1);
     }
-
 
     public function saveProduct() {
 //dd(Input::all());
@@ -137,10 +134,10 @@ class HomeController extends Controller {
             $destinationPath = Config('constants.productUploadImgPath') . "/";
             $data = Input::get('prod_img_url');
             list($type, $data) = explode(';', $data);
-            list(, $data)      = explode(',', $data);
+            list(, $data) = explode(',', $data);
             $data = base64_decode($data);
             $fileName = "prod-" . date("YmdHis") . "." . Input::File('images')->getClientOriginalExtension();
-            file_put_contents($destinationPath.$fileName, $data);
+            file_put_contents($destinationPath . $fileName, $data);
 
 
             // $destinationPath = public_path() . '/public/Admin/uploads/catalog/products/';
@@ -153,8 +150,9 @@ class HomeController extends Controller {
             $saveImgs->filename = is_null($fileName) ? $saveImgs->filename : $fileName;
             $saveImgs->image_type = 1;
             $saveImgs->image_mode = 1;
-            $saveImgs->alt_text = Input::get('product');;
-            $saveImgs->image_path =Config('constants.productImgPath');
+            $saveImgs->alt_text = Input::get('product');
+            ;
+            $saveImgs->image_path = Config('constants.productImgPath');
             $saveImgs->save();
         }
 
@@ -171,12 +169,12 @@ class HomeController extends Controller {
                 $prod->selling_price = Input::get('price');
             }
         }
-        if(Input::get('is_stock')){
-            $prod->stock =20;// Input::get('stock');
-        }else{
-             $prod->stock=10000;  
+        if (Input::get('is_stock')) {
+            $prod->stock = 20; // Input::get('stock');
+        } else {
+            $prod->stock = 10000;
         }
-        
+
         //dd($prod);
         // Session::flash("msg","Product Added succesfully.");
         $prod->update();
@@ -302,12 +300,12 @@ class HomeController extends Controller {
         $viewname = Config('constants.frontendView') . '.privacy-policy';
         return Helper::returnView($viewname, $data);
     }
-    
-    public function disclaimer(){
+
+    public function disclaimer() {
         $terms = StaticPage::where('url_key', 'privacy-policy')->first();
         $data = ['terms' => $terms];
         $viewname = Config('constants.frontendView') . '.disclaimer';
-        return Helper::returnView($viewname, $data);  
+        return Helper::returnView($viewname, $data);
     }
 
     public function checkPincode() {
@@ -377,7 +375,7 @@ class HomeController extends Controller {
     }
 
     public function updateHomePage3Boxes() {
-       //dd(Input::all());
+        //dd(Input::all());
         $dynamiclayout = HasLayout::find(Input::get("id"));
         $dynamiclayout->layout_id = 4;
         $dynamiclayout->link = Input::get("link");
@@ -391,10 +389,10 @@ class HomeController extends Controller {
             $destinationPath = Config('constants.layoutUploadPath');
             $data = Input::get('box3_image');
             list($type, $data) = explode(';', $data);
-            list(, $data)      = explode(',', $data);
+            list(, $data) = explode(',', $data);
             $data = base64_decode($data);
             $fileName = $fileName = date("YmdHis") . "." . Input::file('image')->getClientOriginalExtension();
-            file_put_contents($destinationPath.$fileName, $data);
+            file_put_contents($destinationPath . $fileName, $data);
         } else {
             $fileName = Input::get("old_image");
         }
@@ -446,8 +444,8 @@ class HomeController extends Controller {
         //Default Currency
         $currency = GeneralSetting::where('url_key', 'default-currency')->first(['details']);
         $currencySettings = json_decode($currency->details, true);
-        $jsonString =Helper::getSettings();
-        $data = (object)$jsonString;
+        $jsonString = Helper::getSettings();
+        $data = (object) $jsonString;
 
         //Current Session Currency
         $currentCurr = Session::get('currency');
@@ -478,25 +476,38 @@ class HomeController extends Controller {
             $curr = Helper::getCurrency($data->currencyId);
             return ['currency' => $data->currencyId, 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
         }
-//        if (empty($currentCurr)) {
-//            if (!empty($currency)) {
-//                Session::put('currency', $currencySettings['iso_code']);
-//                $curr = Helper::getCurrency($currencySettings['iso_code']);
-//                return ['currency' => $currencySettings['iso_code'], 'sym' => trim($curr->css_code)];
-//            } else {
-//                $curr = Helper::getCurrency($currencySettings['iso_code']);
-//                return ['currency' => 'IND', 'sym' => trim($curr->css_code)];
-//            }
-//        } else {
-//            if ($currencySettings['iso_code'] !== $currentCurr) {
-//                Session::put('currency', $currencySettings['iso_code']);
-//                $curr = Helper::getCurrency($currencySettings['iso_code']);
-//                return ['currency' => $currencySettings['iso_code'], 'sym' => trim($curr->css_code)];
-//            } else {
-//                $curr = Helper::getCurrency($currencySettings['iso_code']);
-//                return ['currency' => $currentCurr, 'sym' => trim($curr->css_code)];
-//            }
-//        }
+    }
+
+    public function ecurierTracking() {
+        $trackingId = Input::get("trackingId");
+        $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+        $headers[] = 'USER_ID:D2788';
+        $headers[] = 'API_KEY:F3DT';
+        $headers[] = 'API_SECRET:fCcBb';
+        $reqArray = [];
+        $reqArray['parcel'] = 'track';
+        $reqArray['ecr'] = 'ECR0002607188256';
+
+        $url = "http://103.239.254.146/apiv2/";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
+
+        $output = curl_exec($ch);
+        echo "==eerrno=" . curl_errno($ch) . "<br>";
+        echo "output===" . print_r($output);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        } else {
+            echo "ggg";
+        }
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        echo 'HTTP code: ' . $httpcode;
+        return $output
     }
 
 }
