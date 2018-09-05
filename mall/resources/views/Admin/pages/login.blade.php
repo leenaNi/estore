@@ -29,17 +29,17 @@
                         </div><!-- /.col -->
                     </div>
                 </form>
-                <div class="col-md-12 orDivider-box">
+              <!--   <div class="col-md-12 orDivider-box">
                     <div class="orDivider">
                         OR
                     </div>
                   
                 </div>
-        <!--  <div class="col-md-12 fbBTN" >
+         <div class="col-md-12 fbBTN" >
              <div class="fbBtnfull">
             <img src="{{ Config('constants.frontendPublicImgPath').'/fb_login.jpg'}}" onclick="fbLogin()" id="fbLink" class="fb_login_btn"></div>
-        </div> -->
-         <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('adminForgotPassword') }}" class="">Forgot Password?</a> </div>
+        </div>
+         <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('adminForgotPassword') }}" class="">Forgot Password?</a> </div> -->
                 <!--        <div class="social-auth-links text-center">
                           <p>- OR -</p>
                           <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using Facebook</a>

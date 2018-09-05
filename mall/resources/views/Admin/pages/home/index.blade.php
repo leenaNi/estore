@@ -134,7 +134,7 @@ span.editicons i {
 						<div class="box-body">
 							<div class="row">
 								<div class="col-sm-12 col-md-12">
-									<p>Take the first step to launching your store. Add products to your store.</p>
+									<p>This has products which the merchant has published to sell on the Veestoresmall.</p>
 									<a href="{{ route('admin.products.view') }}" class="btn btn-default noAllMargin  mobileSpecialfullBTN">Products</a>
 								</div>
 							</div>
