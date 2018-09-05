@@ -29,7 +29,7 @@
                 $currencySym = !empty(Session::get('currency_symbol')) ? '(' . Session::get('currency_symbol') . ')' : '';
                 ?>
                 {!! Form::model($order, ['method' => 'post', 'files'=> true, 'url' => $action , 'class' => 'form-horizontal' ]) !!}
-                {!! Form::hidden('order_id',$order->order_id) !!}
+                {!! Form::hidden('order_id',$order->id) !!}
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
                     <div class="col-md-2 text-right mobTextLeft">
@@ -521,7 +521,7 @@ $seldel = '<a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;
         newtd += '<td><?php echo $cashbackDisc; ?></td>';
 //    newtd += '<td><?php echo $voucherDisc; ?></td>';
         newtd += '<td><?php echo $referalDisc; ?></td>';
-        //  newtd += '<td><?php // echo $finalSubTotDiv;    ?></td>';
+        //  newtd += '<td><?php // echo $finalSubTotDiv;     ?></td>';
         newtd += '<td><?php echo $seldel; ?></td>';
         var newtr = '<tr>' + newtd + '</tr>';
         $("#tableProd tr:last").after(newtr);
