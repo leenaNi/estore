@@ -65,6 +65,7 @@ class PagesController extends Controller {
                 }
             }
         }
+        dd($topProducts);
 
         $topUsers = Order::whereNotIn("order_status", [0, 4, 6, 10])->with('users')->limit(10)->groupBy('user_id')->orderBy('total_amount', 'desc')->get(['user_id', DB::raw('count(user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
         $latestOrders = Order::whereNotIn('order_status', [3, 4, 5, 6, 10])->where('prefix', '')->limit(10)->orderBy('created_at', 'desc')->get();
