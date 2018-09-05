@@ -130,9 +130,8 @@ class CategoriesController extends Controller {
         if (!empty($category)) {
             if (!empty($catzz)) {
                 $comCats = array_intersect($catzz['cat'], $cats);
-                dd($comCats);
                 $prods = $prods->whereHas('categories', function($q) use($comCats) {
-                    $q->whereIn('mall_prod_categories.id', $comCats);
+                    $q->whereIn('cat_id', $comCats);
                 });
             } else {
                 $prods = $prods->whereHas('categories', function($query) use ($cats) {
