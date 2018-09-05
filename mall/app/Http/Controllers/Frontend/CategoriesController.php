@@ -47,7 +47,7 @@ class CategoriesController extends Controller {
             if ($cat != '') {
                 $categories = Category::where('url_key', 'like', "%$cat%")->get();
                 foreach ($categories as $ck => $c) {
-                    if ($cat->parent_id == 0) {
+                    if ($c->parent_id == 0) {
                         $childCats = Category::where('parent_id', $c->id)->get(['id']);
                         foreach ($childCats as $cck => $cCat) {
                             array_push($allCats, $cCat->id);
