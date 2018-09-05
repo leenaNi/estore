@@ -12,7 +12,7 @@
     <div class="content-wrap">
         <div class="container clearfix topmargin-sm bottommargin-sm" ng-controller="productListingController">
             <div class="sidebar nobottommargin col-md-2">
-                <div class="sidebar-widgets-wrap">
+                <div class="sidebar-widgets-wrap" ng-if="catChild.length > 0 || pdts.length > 0">
                     <div class="widget clearfix">
                         <h5 class="widget-title price-wid" ng-show="pdts.length > 0">Price</h5>
                         <div class="f-price price-rangebox price-wid" ng-show="pdts.length > 0">
