@@ -93,8 +93,9 @@ class CategoriesController extends Controller {
     }
 
     public function getProductListing() {
-//        dd(Session::all());
+//        dd(Input::all());
         $catzz = json_decode(Input::get('filters'), true);
+//        dd($catzz);
         $slug = Input::get('slug');
         $maxP = 0;
         $checkVarient = GeneralSetting::where('url_key', 'products-with-variants')->first()->status;
@@ -127,15 +128,29 @@ class CategoriesController extends Controller {
         }
 
         if (!empty($category)) {
-            $prods = $prods->whereHas('categories', function($query) use ($cats) {
-                return $query->whereIn('cat_id', $cats);
-            });
-        }
-        $prods = $prods->where(function($query) {
-            if (!empty(Input::get('tags'))) {
-//                $query->withAnyTag(Input::get('tags'));
+            if (!empty($catzz)) {
+                $comCats = array_intersect($catzz['cat'], $cats);
+                $prods = $prods->whereHas('categories', function($q) use($comCats) {
+                    $q->whereIn('cat_id', $comCats);
+                });
+            } else {
+                $prods = $prods->whereHas('categories', function($query) use ($cats) {
+                    return $query->whereIn('cat_id', $cats);
+                });
             }
-        });
+        } else {
+            if (!empty($catzz)) {
+                $comCats = array_intersect($catzz['cat'], $cats);
+                $prods = $prods->whereHas('categories', function($q) use($comCats) {
+                    $q->whereIn('cat_id', $comCats);
+                });
+            }
+        }
+//        $prods = $prods->where(function($query) {
+//            if (!empty(Input::get('tags'))) {
+////                $query->withAnyTag(Input::get('tags'));
+//            }
+//        });
 
         if (!empty(Input::get('searchTerm'))) {
             $search = Input::get('searchTerm');
@@ -170,7 +185,7 @@ class CategoriesController extends Controller {
             if (@$category == '') {
 //                dd("Blank");
                 $prods = $prods->orWhereHas('categories', function($query) use ($search) {
-                    return $query->where('category', 'like', "%$search%");
+                    return $query->where('mall_prod_categories.category', 'like', "%$search%");
                 });
             } else {
 //                dd("NotBlank");
@@ -178,8 +193,9 @@ class CategoriesController extends Controller {
                     return $query->whereIn('mall_prod_categories.id', $allCats);
                 });
             }
-//            $prod = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
-//            $data['maxp'] = $prod->max_price;
+            $prodMax = $prods;
+            $prodMax = $prodMax->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
+            $data['maxp'] = $prodMax->max_price;
         }
         if (!empty(Input::get('sort'))) {
             if (Input::get('sort') == 1) {
@@ -215,11 +231,7 @@ class CategoriesController extends Controller {
 //                    ->groupBy('products.id');
         }
 
-        if (!empty(Input::get('filtercatid'))) {
-//            $prods = $prods->WhereHas('categories', function($q) {
-//                $q->whereIn('categories.id', Input::get('filtercatid'));
-//            });
-        }
+
 
         if (Input::get('minp')) {
 //            echo Input::get('minp');
@@ -246,9 +258,11 @@ class CategoriesController extends Controller {
                 $i++;
             }
         }
+//        dd($cats);
         $prdCnt = $prods->count();
 
         $prods = $prods->distinct('id')->paginate(9);
+        dd($prods);
         foreach ($prods as $prd) {
             $prd->is_stock_status = 1;
             if ($this->feature['stock'] == 1) {
@@ -271,7 +285,6 @@ class CategoriesController extends Controller {
             $prd->delPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? 1 : 0;
             $prd->chkwishlist = 0;
         }
-
         $filters = [];
         if (Category::where('url_key', 'is-filter')->count() > 0) {
             $getfilters = Category::where('url_key', 'is-filter')->first()->getImmediateDescendants();
@@ -308,7 +321,7 @@ class CategoriesController extends Controller {
         $data = ['prods' => @$prods,
             'prdCnt' => @$prdCnt,
             'getslug' => @$slug,
-            'cat' => @$cat,
+            'cat' => @$category,
             'tags' => @$tags,
             'getfilters' => $filters,
             'metaTitle' => @$metaTitle,
