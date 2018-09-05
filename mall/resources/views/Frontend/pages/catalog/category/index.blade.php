@@ -55,8 +55,8 @@
                         </div>
                         <div class="product-desc text-center">
                             <div class="product-title">
-                                <h4><a href="[[prd.prefix]]/[[prd.url_key]]">[[prd.product]]</a>
-                                <!-- <span class="subtitle">Flat 10% Off*</span> -->
+                                <h4 class="limit-txt"><a href="[[prd.prefix]]/[[prd.url_key]]">[[prd.product]]</a>
+                                 <!--<span class="subtitle">Flat 10% Off*</span>--> 
                                 </h4>
                             </div>
                             <input type='hidden' name='prod_id' value='[[prd.id]]' data-parentid = "[[prd.id]]">
