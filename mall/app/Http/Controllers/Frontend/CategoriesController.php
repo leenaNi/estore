@@ -262,6 +262,7 @@ class CategoriesController extends Controller {
         $prdCnt = $prods->count();
 
         $prods = $prods->distinct('id')->paginate(9);
+        dd($prods);
         foreach ($prods as $prd) {
             $prd->is_stock_status = 1;
             if ($this->feature['stock'] == 1) {
