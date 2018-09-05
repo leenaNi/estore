@@ -246,7 +246,7 @@ class CategoriesController extends Controller {
                 $i++;
             }
         }
-        dd($cats);
+//        dd($cats);
         $prdCnt = $prods->count();
 
         $prods = $prods->distinct('id')->paginate(9);
