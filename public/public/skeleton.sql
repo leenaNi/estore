@@ -982,9 +982,9 @@ INSERT INTO `tblprfx_has_currency` (`id`, `iso_code`, `currency_code`, `currency
 (30, '', 'ZAR', '', '', '0.2288300000', '', 0),
 (31, 'BEL', 'EUR', 'Euro', 'euro', '0.0136910000', '€ ', 1),
 (32, 'IND', 'INR', 'Indian Rupee', 'inr', '1.0000000000', '₹', 1),
-(33, 'BGD', 'BDT', 'Bangladeshi taka', 'bdt', '1.2900000000', '৳', 1),
+(33, 'BGD', 'BDT', 'Bangladeshi taka', 'bdt', '1.1700000000', '৳', 1),
 (34, 'VNM', 'VND', 'vietnamese dong', 'bdt', '9.9999999999', '₫', 1),
-(35, 'LKA', 'LKR', 'Sri Lankan Rupaya', 'lkr', '2.4100000000', '₨', 1);
+(35, 'LKA', 'LKR', 'Sri Lankan Rupaya', 'lkr', '2.2500000000', '₨', 1);
 
 -- --------------------------------------------------------
 
