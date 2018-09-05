@@ -262,7 +262,7 @@ class OrdersController extends Controller {
 
             $orders = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->first();
             $products = $orders->product;
-            //dd($products);
+            dd($products);
             $action = route("admin.orders.mallOrderSave");        
             $viewname = Config('constants.adminOrderView') . '.addEditMall';
            // dd($orders);
