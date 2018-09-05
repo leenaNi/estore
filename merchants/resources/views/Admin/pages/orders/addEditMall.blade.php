@@ -201,7 +201,7 @@
                                 $storeProd = App\Models\Product::find($mallProd->store_prod_id);
                                 ?>
                                 <tr> 
-                                    <td>{{ $storeProd->category()->first()->category }}</td>
+                                    <td>{{ $storeProd->categories()->first()->category }}</td>
                                     <td>{{ $storeProd->product }}</td>
                                     @if($storeProd->prod_type == 3)
                                     <?php
