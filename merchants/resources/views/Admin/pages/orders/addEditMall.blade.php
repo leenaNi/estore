@@ -289,7 +289,7 @@
                                     <!--<td><b class="cashbackDisc">{{ number_format((@$fixedCashbackUsed * Session::get('currency_val')), 2)  }}</b></td>-->
                                     @endif
 
-                                    <td><a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;"></i></a></td>
+                                    <!--<td><a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;"></i></a></td>-->
                                 </tr>
 
                             </tbody>
