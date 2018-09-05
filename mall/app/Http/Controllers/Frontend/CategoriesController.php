@@ -142,7 +142,7 @@ class CategoriesController extends Controller {
             if (!empty($catzz)) {
                 $comCats = array_intersect($catzz['cat'], $cats);
                 $prods = $prods->whereHas('categories', function($q) use($comCats) {
-                    $q->whereIn('mall_prod_categories.id', $comCats);
+                    $q->whereIn('cat_id', $comCats);
                 });
             }
         }
@@ -202,7 +202,7 @@ class CategoriesController extends Controller {
 //                        ->orderBy(DB::raw('sum(\'has_products.qty\')'))
 //                        ->select('has_products.prod_id', 'products.*')
 //                        ->groupBy('products.id');
-                $prods = $prods->orderBy("mall_products.id", "desc");
+                $prods = $prods->orderBy("mall_proucts.id", "desc");
             }
             if (Input::get('sort') == 2) {
                 $prods = $prods->orderBy("mall_products.id", "desc");
