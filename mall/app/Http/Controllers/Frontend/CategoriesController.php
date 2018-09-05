@@ -217,7 +217,7 @@ class CategoriesController extends Controller {
         }
 
         if (!empty($catzz)) {
-            $prods = $prods->WhereHas('categories', function($q) {
+            $prods = $prods->WhereHas('categories', function($q) use($catzz) {
                 $q->whereIn('categories.id', $catzz['cat']);
             });
         }
