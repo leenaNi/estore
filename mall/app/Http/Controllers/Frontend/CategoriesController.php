@@ -43,10 +43,20 @@ class CategoriesController extends Controller {
         if (!empty(Input::get('searchTerm'))) {
             $search = Input::get('searchTerm');
             $cat = Input::get('searchCat');
+            $allCats = [];
+            $categories = Category::where('url_key', 'like', "%$cat%")->get();
+            foreach ($categories as $ck => $cat) {
+                if ($cat->parent_id == 0) {
+                    $childCats = Category::where('parent_id', $cat->id)->get(['id'])->toArray();
+                    array_push($allCats, $childCats);
+                } else {
+                    array_push($allCats, $cat->id);
+                }
+            }
             $data['category'] = array();
             $prods = Product::where('is_individual', '=', 1)
                             ->where('is_avail', '=', 1)->where('status', '=', 1);
-            $prods = $prods->where(function($query) use ($search, $cat) {
+            $prods = $prods->where(function($query) use ($search, $allCats) {
                 return $query
                                 ->where('product', 'like', "%$search%")
                                 ->orWhere('short_desc', 'like', "%$search%")
@@ -60,8 +70,8 @@ class CategoriesController extends Controller {
                     return $query->where('category', 'like', "%$search%");
                 });
             } else {
-                $prods = $prods->WhereHas('categories', function($query) use ($cat) {
-                    return $query->where('url_key', '=', "$cat");
+                $prods = $prods->WhereHas('categories', function($query) use ($allCats) {
+                    return $query->whereIn('id', "$allCats");
                 });
             }
             $prods = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
@@ -125,10 +135,20 @@ class CategoriesController extends Controller {
         if (!empty(Input::get('searchTerm'))) {
             $search = Input::get('searchTerm');
             $cat = Input::get('searchCat');
+            $allCats = [];
+            $categories = Category::where('url_key', 'like', "%$cat%")->get();
+            foreach ($categories as $ck => $cat) {
+                if ($cat->parent_id == 0) {
+                    $childCats = Category::where('parent_id', $cat->id)->get(['id'])->toArray();
+                    array_push($allCats, $childCats);
+                } else {
+                    array_push($allCats, $cat->id);
+                }
+            }
             $data['category'] = array();
             $prods = Product::where('is_individual', '=', 1)
                             ->where('is_avail', '=', 1)->where('status', '=', 1);
-            $prods = $prods->where(function($query) use ($search, $cat) {
+            $prods = $prods->where(function($query) use ($search, $allCats) {
                 return $query
                                 ->where('product', 'like', "%$search%")
                                 ->orWhere('short_desc', 'like', "%$search%")
@@ -142,8 +162,8 @@ class CategoriesController extends Controller {
                     return $query->where('category', 'like', "%$search%");
                 });
             } else {
-                $prods = $prods->WhereHas('categories', function($query) use ($cat) {
-                    return $query->where('mall_prod_categories.url_key', '=', "$cat");
+                $prods = $prods->WhereHas('categories', function($query) use ($allCats) {
+                    return $query->whereIn('mall_prod_categories.id', "$allCats");
                 });
             }
 //            $prod = $prods->select(DB::raw('MAX(mall_products.selling_price) AS max_price'))->first();
@@ -260,7 +280,7 @@ class CategoriesController extends Controller {
                 $maxP = 0;
             }
         } else {
-            $maxP = @Helper::maxPriceByCat(@$cat->id); 
+            $maxP = @Helper::maxPriceByCat(@$cat->id);
         }
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
         $currencySetting = $currencySetting->setCurrency();
