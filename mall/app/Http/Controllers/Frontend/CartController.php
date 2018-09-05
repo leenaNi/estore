@@ -210,7 +210,7 @@ class CartController extends Controller {
         $is_stockable = DB::table($product->prefix . '_general_setting')->where('url_key', 'stock')->first();
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
-                Cart::instance('shopping')->add(["id" => $storeProdId, "name" => $pname, "qty" => $quantity, "price" => $price,
+                Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                     "options" => ["image" => $images, "image_with_path" => $imagPath, "url_key" => $product->url_key, "sub_prod"=>0, "is_cod" => $product->is_cod, 'url' => $product->url_key,
                         'cats' => $cats, 'stock' => $product->stock, 'store_id' => $product->store_id, 'prefix' => $product->prefix, 'store_name' => $storeName, 'is_stock' => $product->is_stock,
                         "prod_type" => $prod_type,
