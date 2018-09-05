@@ -2540,13 +2540,15 @@ class OrdersController extends Controller {
     }
 
     public function getECourier() {
-        $orderids = explode(",", Input::get('OrderIds'));
-        foreach ($orderids as $ordid) {
+        $ordid =15; //array(16,15);//explode(",", Input::get('OrderIds'));
+//        foreach ($orderids as $ordid) {
+            $saveorder = Order::find($ordid);
+           // dd($saveorder);
             $headers = array();
             $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-            $headers[] = 'USER_ID:D2788';
-            $headers[] = 'API_KEY:F3DT';
-            $headers[] = 'API_SECRET:fCcBb';
+            $headers[] = 'USER_ID:I8837';
+            $headers[] = 'API_KEY:xqdH';
+            $headers[] = 'API_SECRET:jubLW';
 
             $reqArray = [];
             $reqArray['order_code'] = $ordid;
@@ -2556,20 +2558,29 @@ class OrdersController extends Controller {
             $reqArray['pick_contact_person'] = '9930619304';
             $reqArray['pick_division'] = '';
             $reqArray['pick_district'] = 'test';
-            $reqArray['pick_thana'] = 'test';
+            $reqArray['pick_thana'] = 'Adabor Thana';
             $reqArray['pick_union'] = 'test';
             $reqArray['pick_address'] = 'test';
             $reqArray['pick_mobile'] = '9930619304';
-            $reqArray['recipient_name'] = 'Madhuri';
-            $reqArray['recipient_mobile'] = '01819210883';
+            $reqArray['recipient_name'] = $saveorder->first_name. '' .$saveorder->last_name;
+            $reqArray['recipient_mobile'] =$saveorder->phone_no;
             $reqArray['recipient_division'] = '';
             $reqArray['recipient_district'] = '';
-            $reqArray['recipient_city'] = 'test';
+            $reqArray['recipient_city'] = $saveorder->zone->name;
             $reqArray['recipient_area'] = 'test';
-            $reqArray['recipient_thana'] = 'test';
+            $reqArray['recipient_thana'] = 'Adabor Thana';
             $reqArray['recipient_union'] = 'test';
+            $reqArray['weight'] = 'Up To 500gm';
+            
             $reqArray['upazila'] = '';
-            $reqArray['package_code'] = '#2505';
+            if($saveorder->zone_id=='322'){
+                $reqArray['delivery_timing'] = 'Next Day(24hr)';
+                 $reqArray['package_code'] = '#2443';
+            }else{
+               $reqArray['delivery_timing'] = 'Next Day(48hr)';
+               $reqArray['package_code'] = '#2444';  
+            }
+           
             $reqArray['product_id'] = '';
             $reqArray['recipient_address'] = 'test';
             $reqArray['shipping_price'] = '1';
@@ -2579,7 +2590,7 @@ class OrdersController extends Controller {
             $reqArray['payment_method'] = '1';
             $reqArray['ep_id'] = '1';
 
-            $url = "http://103.239.254.146/apiv2/";
+            $url = "http://ecourier.com.bd/apiv2/";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -2589,21 +2600,24 @@ class OrdersController extends Controller {
             $output = curl_exec($ch);
             curl_close($ch);
             $data = json_decode($output);
-            dd($data);
-            $saveorder = Order::find($ordid);
+
+          if($data->response_code==200){
             $saveorder->shiplabel_tracking_id = $data->ID;
             $saveorder->order_status = 2;
             $saveorder->update();
-
-
+          }else{
+             echo $data->errors;
+             die;
+          }
+          
             DB::table('courier_history')->insert(
                     ['order_id' => $ordid,
                         'courier_id' => 4,
                         'waybill_no' => $data->ID,
                         'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
                         'updated_at' => \Carbon\Carbon::now()->toDateTimeString()]);
-        }
-        return redirect()->back();
+//        }
+      //  return redirect()->back();
     }
 
 }
