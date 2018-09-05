@@ -131,11 +131,11 @@ class CategoriesController extends Controller {
                 return $query->whereIn('cat_id', $cats);
             });
         }
-        $prods = $prods->where(function($query) {
-            if (!empty(Input::get('tags'))) {
-//                $query->withAnyTag(Input::get('tags'));
-            }
-        });
+//        $prods = $prods->where(function($query) {
+//            if (!empty(Input::get('tags'))) {
+////                $query->withAnyTag(Input::get('tags'));
+//            }
+//        });
 
         if (!empty(Input::get('searchTerm'))) {
             $search = Input::get('searchTerm');
@@ -216,9 +216,9 @@ class CategoriesController extends Controller {
         }
 
         if (!empty(Input::get('filtercatid'))) {
-//            $prods = $prods->WhereHas('categories', function($q) {
-//                $q->whereIn('categories.id', Input::get('filtercatid'));
-//            });
+            $prods = $prods->WhereHas('categories', function($q) {
+                $q->whereIn('categories.id', Input::get('filtercatid'));
+            });
         }
 
         if (Input::get('minp')) {
@@ -246,7 +246,7 @@ class CategoriesController extends Controller {
                 $i++;
             }
         }
-        dd($cats);
+//        dd($cats);
         $prdCnt = $prods->count();
 
         $prods = $prods->distinct('id')->paginate(9);
@@ -308,7 +308,7 @@ class CategoriesController extends Controller {
         $data = ['prods' => @$prods,
             'prdCnt' => @$prdCnt,
             'getslug' => @$slug,
-            'cat' => @$cat,
+            'cat' => @$category,
             'tags' => @$tags,
             'getfilters' => $filters,
             'metaTitle' => @$metaTitle,
