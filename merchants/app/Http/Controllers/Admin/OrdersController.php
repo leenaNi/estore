@@ -208,7 +208,7 @@ class OrdersController extends Controller {
         Session::forget("referalCodeAmt");
         Session::forget("codCharges");
         Session::forget('shippingCost');
-         $jsonString = Helper::getSettings();
+        $jsonString = Helper::getSettings();
         $order = Order::findOrFail(Input::get('id'));
         $payment_method = PaymentMethod::get()->toArray();
         $payment_methods = [];
@@ -260,15 +260,22 @@ class OrdersController extends Controller {
             return Helper::returnView($viewname, $data);
         } else {
 
-            $orders = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->first();
-            $products = $orders->product;
+            $orders = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->get();
+//            $products = $orders->product;
+            $products = [];
+            foreach ($orders as $key => $ord) {
+                $mallProd = App\Models\MallProducts::find($orders->prod_id);
+                $prod = Product::find($mallProd->store_prod_id);
+                $prod->options = $ord->options;
+                array_push($products, $prod);
+            }
             dd($products);
-            $action = route("admin.orders.mallOrderSave");        
+            $action = route("admin.orders.mallOrderSave");
             $viewname = Config('constants.adminOrderView') . '.addEditMall';
-           // dd($orders);
-            $data = ['order' => $orders, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 
+            // dd($orders);
+            $data = ['order' => $orders, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones,
                 'products' => $products, 'courier' => $courier_status];
-             return Helper::returnView($viewname, $data);
+            return Helper::returnView($viewname, $data);
         }
     }
 
@@ -414,7 +421,7 @@ class OrdersController extends Controller {
             }
 
             $newcart = $newCartData;
-          HasProducts::where("order_id",Input::get('id'))->delete();
+            HasProducts::where("order_id", Input::get('id'))->delete();
             // dd($newcart);
             foreach ($newcart as $cart) {
                 $checkPrd = Product::find($cart->id);
@@ -473,11 +480,11 @@ class OrdersController extends Controller {
                     $prd->stock = $prd->stock - $cart->qty;
                     $prd->update();
                 }
-            $cart_ids[$cart->id]["order_id"] =Input::get('id');
-            $cart_ids[$cart->id]["prod_id"] = $prd->id;
-            $cart_ids[$cart->id]["order_status"] = 1;
-            $cart_ids[$cart->id]["order_source"] = $this->$jsonString['storeName'];
-            HasProducts::insert($cart_ids);
+                $cart_ids[$cart->id]["order_id"] = Input::get('id');
+                $cart_ids[$cart->id]["prod_id"] = $prd->id;
+                $cart_ids[$cart->id]["order_status"] = 1;
+                $cart_ids[$cart->id]["order_source"] = $this->$jsonString['storeName'];
+                HasProducts::insert($cart_ids);
                 //$orderUpdateCart->products()->attach($cart->id, $cart_ids[$cart->id]);
             }
 
@@ -491,7 +498,7 @@ class OrdersController extends Controller {
             $order = Order::findOrNew(Input::get('id'));
             $orderStatus = $order->order_status;
             $updateOrder = $order->fill(Input::except('not_in_use'))->save();
-            HasProducts::where("order_id",Input::get('id'))->update(["order_status"=> $order->order_status]);
+            HasProducts::where("order_id", Input::get('id'))->update(["order_status" => $order->order_status]);
             if (Input::get('order_status') && $updateOrder == TRUE && $orderStatus != Input::get('order_status')) {
                 OrderStatusHistory::create([
                     'order_id' => Input::get('id'),
@@ -510,16 +517,17 @@ class OrdersController extends Controller {
     public function addCartForCoupon() {
         $cartdata = Input::get('cartdata');
     }
-public function mallOrderSave(){
-  
-    $orders=HasProducts::find(Input::get("order_id"));
-    if(Input::get("order_status")){
-    $orders->order_status=Input::get("order_status");
+
+    public function mallOrderSave() {
+
+        $orders = HasProducts::find(Input::get("order_id"));
+        if (Input::get("order_status")) {
+            $orders->order_status = Input::get("order_status");
+        }
+        $orders->save();
+        return redirect()->route('admin.orders.view');
     }
-    $orders->save();
-    return redirect()->route('admin.orders.view');
-    
-}
+
     public function updateRetutnQty() {
 
         $orderEdit = Order::find(Input::get('id'));
@@ -2592,7 +2600,7 @@ public function mallOrderSave(){
             $output = curl_exec($ch);
             curl_close($ch);
             $data = json_decode($output);
-dd($data);
+            dd($data);
             $saveorder = Order::find($ordid);
             $saveorder->shiplabel_tracking_id = $data->ID;
             $saveorder->order_status = 2;

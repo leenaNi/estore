@@ -1867,7 +1867,7 @@ class CheckoutController extends Controller {
                 $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
-                $proddetails['id'] = $prddataS->id;
+                $proddetails['id'] = $prddataS->store_prod_id;
                 $proddetails['name'] = $prddataS->product;
                 $proddetails['image'] = $cart->options->image;
                 $proddetails['price'] = $cart->sellig_price;
@@ -1919,7 +1919,7 @@ class CheckoutController extends Controller {
             } else {
                 $proddetailsp = [];
                 $prddataSp = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
-                $proddetailsp['id'] = $prddataSp->id;
+                $proddetailsp['id'] = $prddataSp->store_prod_id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
                 $proddetailsp['price'] = $cart->sellig_price;
