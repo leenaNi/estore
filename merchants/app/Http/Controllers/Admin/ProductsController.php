@@ -2137,6 +2137,9 @@ class ProductsController extends Controller {
                 Session::flash('message', "Product alredy exist!");
                 $data = ["status" => "0", "msg" => "Product alredy exist!"];
             } else {
+//                $prod = Product::where("id", Input::get("prodId"))->get();
+//                $tableColumns = Schema::getColumnListing('products');
+//                $this->updateProduct($prodConfig, $jsonString, $tableColumns);
                 $mallProd->status == 1;
                 $mallProd->save();
                 $products->is_share_on_mall = 1;
@@ -2176,6 +2179,21 @@ class ProductsController extends Controller {
             }
         }
     }
+    public function updateProduct($product, $jsonString, $tableColumns, $category = null, $parent = null) {
+        foreach ($product as $prod) {
+            $prods = MallProducts::where('store_prod_id', $prod->id);
+            $prods->store_id = $jsonString['store_id'];
+            $prods->prefix = $jsonString['prefix'];
+            $prods->store_prod_id = $prod->id;
+            for ($i = 1; $i < count($tableColumns); $i++) {
+                $prods->{$tableColumns[$i]} = $prod->{$tableColumns[$i]};
+            }
+            $prods->save();
+            if ($parent) {
+                $prods->mallcategories()->sync($category);
+            }
+        }
+    }
 
     public function mallProductUpdate() {
         $prodId = Input::get("prodId");
@@ -2185,7 +2203,8 @@ class ProductsController extends Controller {
         $products->is_share_on_mall = 0;
         $products->save();
         MallProducts::where("store_prod_id", $prodId)->where("store_id", $store_id)->update(["status" => 0]);
-        Session::flash('msg', "Product unpublish on mall successfully");
+        Session::flash('msg', "Product unpublished from mall successfully");
+        $data = ["status" => "1", "msg" => "Product Unpublished from mall successfully", "prod" => $prod];
     }
 
 }

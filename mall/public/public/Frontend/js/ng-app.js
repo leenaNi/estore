@@ -1009,7 +1009,8 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
         }
         if ($(".chk_cit_pay").is(':checked')) {
             $scope.codcharges(event);
-            $("#frmTransaction").attr("action", domain + "/get-city-pay");
+            $("#frmTransaction").attr("action", "");
+//            $("#frmTransaction").attr("action", domain + "/get-city-pay");
         }
     };
 
