@@ -44,18 +44,20 @@ class CategoriesController extends Controller {
             $search = Input::get('searchTerm');
             $cat = Input::get('searchCat');
             $allCats = [];
-            $categories = Category::where('url_key', 'like', "%$cat%")->get();
-            foreach ($categories as $ck => $cat) {
-                if ($cat->parent_id == 0) {
-                    $childCats = Category::where('parent_id', $cat->id)->get(['id']);
-                    foreach ($childCats as $cck => $cCat) {
-                        array_push($allCats, $cCat->id);
+            if ($cat != '') {
+                $categories = Category::where('url_key', 'like', "%$cat%")->get();
+                foreach ($categories as $ck => $cat) {
+                    if ($cat->parent_id == 0) {
+                        $childCats = Category::where('parent_id', $cat->id)->get(['id']);
+                        foreach ($childCats as $cck => $cCat) {
+                            array_push($allCats, $cCat->id);
+                        }
+                    } else {
+                        array_push($allCats, $cat->id);
                     }
-                } else {
-                    array_push($allCats, $cat->id);
                 }
-            }
 //            dd($allCats);
+            }
             $data['category'] = array();
             $prods = Product::where('is_individual', '=', 1)
                             ->where('is_avail', '=', 1)->where('status', '=', 1);
@@ -139,15 +141,17 @@ class CategoriesController extends Controller {
             $search = Input::get('searchTerm');
             $cat = Input::get('searchCat');
             $allCats = [];
-            $categories = Category::where('url_key', 'like', "%$cat%")->get();
-            foreach ($categories as $ck => $cat) {
-                if ($cat->parent_id == 0) {
-                    $childCats = Category::where('parent_id', $cat->id)->get(['id']);
-                    foreach ($childCats as $cck => $cCat) {
-                        array_push($allCats, $cCat->id);
+            if ($cat != '') {
+                $categories = Category::where('url_key', 'like', "%$cat%")->get();
+                foreach ($categories as $ck => $cat) {
+                    if ($cat->parent_id == 0) {
+                        $childCats = Category::where('parent_id', $cat->id)->get(['id']);
+                        foreach ($childCats as $cck => $cCat) {
+                            array_push($allCats, $cCat->id);
+                        }
+                    } else {
+                        array_push($allCats, $cat->id);
                     }
-                } else {
-                    array_push($allCats, $cat->id);
                 }
             }
             $data['category'] = array();
@@ -163,10 +167,12 @@ class CategoriesController extends Controller {
                                 ->orWhere('meta_key', 'like', "%$search%");
             });
             if ($cat == '') {
+                dd("Blank");
                 $prods = $prods->WhereHas('categories', function($query) use ($search) {
                     return $query->where('category', 'like', "%$search%");
                 });
             } else {
+                dd("NotBlank");
                 $prods = $prods->WhereHas('categories', function($query) use ($allCats) {
                     return $query->whereIn('mall_prod_categories.id', $allCats);
                 });
