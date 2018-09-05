@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="box-header col-md-3 col-xs-12 pull-right mobPadding noMob-leftBorder mob-bottomBorder">
-                    <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default pull-right col-md-12 fullMobile-width">Create New Order</a>
+<!--                    <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default pull-right col-md-12 fullMobile-width">Create New Order</a>
                   
                     <div class="clearfix" style="margin-bottom:15px;"></div>
                     <a class="btn btn-primary" href="{{ asset(Config('constants.BulkOrderUploadPath')). "/cartini_orderBulk_upload.csv"}}"style="margin-bottom:15px; margin-left: 0; width: 100%;">Download Sample</a>
@@ -91,7 +91,7 @@
                         <div class="">
                             <input type="submit" class="btn sbtn btn-primary submitBulkUpload" value="Bulk Order Upload"  style="margin-left: 0; margin-bottom:15px; width: 100%; "/>
                         </div>
-                    </form>
+                    </form>-->
                     <div class="clearfix" style="margin-bottom:15px;"></div>
                     <a href="{{route('admin.orders.export')}}"  class="btn btn-default pull-right col-md-12 fullMobile-width">Export All Order</a>
 

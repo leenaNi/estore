@@ -27,12 +27,12 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.orders.view/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.orders.view') }}"><i class="fa fa-angle-right"></i>All Orders</a>
                     </li>
-                    <li class="{{ preg_match("/admin.orders.OrderReturn/",Route::currentRouteName()) ? 'active' : '' }}">
+<!--                    <li class="{{ preg_match("/admin.orders.OrderReturn/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.orders.OrderReturn') }}"><i class="fa fa-angle-right"></i>Return Orders</a>
                     </li>
                     <li class="{{ preg_match("/admin.orders.cancelOrder/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.orders.cancelOrder') }}"><i class="fa fa-angle-right"></i>Cancel Orders</a>
-                    </li>
+                    </li>-->
                    
                     <li class="{{ preg_match("/admin.order_status.view/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.order_status.view') }}"><i class="fa fa-angle-right"></i>Order Status</a></li>
@@ -53,11 +53,11 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </a>
             </li>
              
-             <li class="{{ Route::currentRouteName() == 'admin.pincodes' ? 'active' : '' }}">
+<!--             <li class="{{ Route::currentRouteName() == 'admin.pincodes' ? 'active' : '' }}">
                 <a href="{{ route('admin.pincodes.view') }}">
                     <i class="fa fa-folder-open"></i><span>Pincodes</span> <i class=""></i>
                 </a>
-            </li>
+            </li>-->
           
           
  
