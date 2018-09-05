@@ -43,7 +43,7 @@
                     <div class="col-md-2 text-right mobTextLeft">
                         {!! Form::label('order_status', 'Order Status ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::select('order_status',$order_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status']) !!}
+                        {!! Form::select('order_status',$products->order_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status']) !!}
                     </div>
                 </div>
 
