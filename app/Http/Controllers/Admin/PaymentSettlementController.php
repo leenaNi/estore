@@ -23,7 +23,10 @@ class PaymentSettlementController extends Controller {
     public function index() {
 
 
-      $orders=DB::table("has_products")->orderBy("has_products.id","desc")->join("stores","stores.id",'=',"has_products.store_id")->select('has_products.*', 'stores.store_name')->paginate(Config('constants.AdminPaginateNo'));
+      $orders=DB::table("has_products")->orderBy("has_products.id","desc")->join("stores","stores.id",'=',"has_products.store_id")->
+              leftjoin("payment_settlement","payment_settlement.id",'=',"has_products.id")
+              ->select('has_products.*', 'stores.store_name','payment_settlement.settled_amt','payment_settlement.settled_date')
+              ->paginate(Config('constants.AdminPaginateNo'));
 
         //$merchants = $merchants->paginate(Config('constants.AdminPaginateNo'));
         $data = ['orders'=>$orders];
@@ -31,5 +34,12 @@ class PaymentSettlementController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-
+public function settledPayment(){
+      $id = Input::get('id');
+        if(is_array($id)){
+           $order=DB::table("has_products")->where("id",$id)->where("settled_status",0)->first(); 
+        }else{
+          $order=DB::table("has_products")->where("id",$id)->where("settled_status",0)->first();   
+        }
+}
 }

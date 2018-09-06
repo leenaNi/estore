@@ -86,7 +86,7 @@
                                             }
                                             ?>
                                             <div class="col-sm-4 col-md-4 display-img">
-                                                <img src="public/Frontend/images/menu-image.jpg">
+                                                <img src="{{asset('public/Frontend/images/menu-image.jpg')}}">
                                             </div>
                                         </div> <!--/.lnt-subcategroy-carousel-wrap -->
                                     </div> <!--/.lnt-dropdown-mega-menu -->
