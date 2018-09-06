@@ -26,8 +26,10 @@
                             <th>Order Id</th>
                 
                             <th>Sub order Id</th>
-                            <th>pay Amount</th>
-                       
+                            <th>Store Name</th>
+                            <th>Pay Amount</th>
+                            <th>Settled Amt</th>
+                            <th>Settled Date</th>
                             <th>Created Date</th>
                             <th>Actions</th>
                         </tr>
@@ -37,7 +39,11 @@
                             <td>{{ $order->order_id }}</td>
                          
                             <td>{{ $order->id }}</td>
+                            <td>{{ $order->store_name }}</td>
                             <td>{{ $order->pay_amt }}</td>
+                            <td>{{ $order->settled_amt }}</td>
+                            <td>{{ date('d-M-Y',strtotime($order->settled_date)) }}</td>
+                            
                        
                             <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
                             <td>

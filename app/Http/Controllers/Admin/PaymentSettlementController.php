@@ -23,7 +23,7 @@ class PaymentSettlementController extends Controller {
     public function index() {
 
 
-       $orders=DB::table("has_products")->paginate(Config('constants.AdminPaginateNo'));
+       $orders=DB::table("has_products")->join("stores","stores.id",'=',"has_products.store_id")->paginate(Config('constants.AdminPaginateNo'));
 
         //$merchants = $merchants->paginate(Config('constants.AdminPaginateNo'));
         $data = ['orders'=>$orders];
