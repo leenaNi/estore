@@ -17,6 +17,16 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
+                 @if(!empty(Session::get('message')))
+                <div class="alert alert-success" role="alert">
+                    {{ Session::get('message') }}
+                </div>
+                @endif
+                @if(!empty(Session::get('msg')))
+                <div class="alert alert-danger" role="alert">
+                    {{Session::get('msg')}}
+                </div>
+                @endif
                 <div class="box-header">
                     <div class="box-header col-md-3">
                         <form action="" class="formMul" method="post">

@@ -21,10 +21,10 @@ class PaymentSettlementController extends Controller {
 
 
         $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
-                leftjoin("payment_settlement", "payment_settlement.id", '=', "has_products.id")
+                leftjoin("payment_settlement", "payment_settlement.order_id", '=', "has_products.id")
                 ->select('has_products.*', 'stores.store_name', 'payment_settlement.settled_amt', 'payment_settlement.settled_date')
                 ->paginate(Config('constants.AdminPaginateNo'));
-
+//dd($orders);
         //$merchants = $merchants->paginate(Config('constants.AdminPaginateNo'));
         $data = ['orders' => $orders];
         $viewname = Config('constants.AdminPagesPaymentettlement') . ".index";
@@ -40,13 +40,19 @@ class PaymentSettlementController extends Controller {
             if (count($orders) > 0) {
                 foreach ($orders as $order) {
                     $this->saveSettlementHistory($order);
+                    Session::flash("message","Orders settled successfully");
                 }
+            }else{
+                Session::flash("msg","Selected Orders alreay settled");
             }
         } else {
             $order = DB::table("has_products")->where("id", $id)->where("settled_status", 0)
                             ->join("stores", "stores.id", '=', "has_products.store_id")->select('has_products.*', 'stores.percent_to_charge')->first();
             if (count($order) > 0) {
                 $this->saveSettlementHistory($order);
+                Session::flash("msg","Order settled successfully");
+            }else{
+               Session::flash("message","Selected Order alreay settled"); 
             }
         }
     }
@@ -57,7 +63,7 @@ class PaymentSettlementController extends Controller {
         $history['order_id'] = $order->id;
         $history['store_id'] = $order->store_id;
         $history['order_amt'] = $order->pay_amt;
-        $history['settled_amt'] = $settleAmt;
+        $history['settled_amt'] = number_format($settleAmt,2);
         $history['percent'] = $order->percent_to_charge;
         $history['settled_date'] = date('Y-m-d h:i');
         DB::table("payment_settlement")->insert($history);
