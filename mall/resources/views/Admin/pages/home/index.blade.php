@@ -115,7 +115,7 @@ span.editicons i {
 								<div class="box-body">
 									<div class="row">
 										<div class="col-sm-12 col-md-12">
-											<p>Here are ready to use categories. Kindly select the categories that you offer. You can create your own custom categories under Products &gt; Categories in the left menu.</p>										
+											<p>Here are ready to use categories. Kindly select the categories that you offer. You can create your own custom categories under Categories in the left menu.</p>										
 											<a href="{{ route('admin.category.view') }}" class="btn btn-default noAllMargin  mobileSpecialfullBTN">Select Categories</a>
 										</div>
 									</div>

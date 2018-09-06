@@ -2541,88 +2541,88 @@ class OrdersController extends Controller {
     }
 
     public function getECourier() {
-       
-        $ordid =15; //array(16,15);//explode(",", Input::get('OrderIds'));
+
+        $ordid = 15; //array(16,15);//explode(",", Input::get('OrderIds'));
 //        foreach ($orderids as $ordid) {
-            $saveorder = Order::find($ordid);
-           // dd($saveorder);
-            $headers = array();
-            $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-            $headers[] = 'USER_ID:I8837';
-            $headers[] = 'API_KEY:xqdH';
-            $headers[] = 'API_SECRET:jubLW';
+        $saveorder = Order::find($ordid);
+        // dd($saveorder);
+        $headers = array();
+        $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+        $headers[] = 'USER_ID:I8837';
+        $headers[] = 'API_KEY:xqdH';
+        $headers[] = 'API_SECRET:jubLW';
 
-            $reqArray = [];
-            $reqArray['order_code'] = $ordid;
-            $reqArray['product_id'] = '1';
-            $reqArray['parcel'] = 'insert';
-            $reqArray['ep_name'] = 'test';
-            $reqArray['pick_contact_person'] = '9930619304';
-            $reqArray['pick_division'] = '';
-            $reqArray['pick_district'] = 'test';
-            $reqArray['pick_thana'] = 'Adabor Thana';
-            $reqArray['pick_union'] = 'test';
-            $reqArray['pick_address'] = 'test';
-            $reqArray['pick_mobile'] = '9930619304';
-            $reqArray['recipient_name'] = $saveorder->first_name. '' .$saveorder->last_name;
-            $reqArray['recipient_mobile'] =$saveorder->phone_no;
-            $reqArray['recipient_division'] = '';
-            $reqArray['recipient_district'] = '';
-            $reqArray['recipient_city'] = $saveorder->zone->name;
-            $reqArray['recipient_area'] = 'test';
-            $reqArray['recipient_thana'] = 'Adabor Thana';
-            $reqArray['recipient_union'] = 'test';
-            $reqArray['weight'] = 'Up To 500gm';
-            
-            $reqArray['upazila'] = '';
-            if($saveorder->zone_id=='322'){
-                $reqArray['delivery_timing'] = 'Next Day(24hr)';
-                 $reqArray['package_code'] = '#2443';
-            }else{
-               $reqArray['delivery_timing'] = 'Next Day(48hr)';
-               $reqArray['package_code'] = '#2444';  
-            }
-           
-            $reqArray['product_id'] = '';
-            $reqArray['recipient_address'] = 'test';
-            $reqArray['shipping_price'] = '1';
-            $reqArray['parcel_detail'] = '';
-            $reqArray['no_of_items'] = '';
-            $reqArray['product_price'] = '1';
-            $reqArray['payment_method'] = '1';
-            $reqArray['ep_id'] = '1';
+        $reqArray = [];
+        $reqArray['order_code'] = $ordid;
+        $reqArray['product_id'] = '1';
+        $reqArray['parcel'] = 'insert';
+        $reqArray['ep_name'] = 'test';
+        $reqArray['pick_contact_person'] = '9930619304';
+        $reqArray['pick_division'] = '';
+        $reqArray['pick_district'] = 'test';
+        $reqArray['pick_thana'] = 'Adabor Thana';
+        $reqArray['pick_union'] = 'test';
+        $reqArray['pick_address'] = 'test';
+        $reqArray['pick_mobile'] = '9930619304';
+        $reqArray['recipient_name'] = $saveorder->first_name . '' . $saveorder->last_name;
+        $reqArray['recipient_mobile'] = $saveorder->phone_no;
+        $reqArray['recipient_division'] = '';
+        $reqArray['recipient_district'] = '';
+        $reqArray['recipient_city'] = $saveorder->zone->name;
+        $reqArray['recipient_area'] = 'test';
+        $reqArray['recipient_thana'] = 'Adabor Thana';
+        $reqArray['recipient_union'] = 'test';
+        $reqArray['weight'] = 'Up To 500gm';
 
-            $url = "http://ecourier.com.bd/apiv2/";
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
-            $output = curl_exec($ch);
-            curl_close($ch);
-            $data = json_decode($output);
+        $reqArray['upazila'] = '';
+        if ($saveorder->zone_id == '322') {
+            $reqArray['delivery_timing'] = 'Next Day(24hr)';
+            $reqArray['package_code'] = '#2443';
+        } else {
+            $reqArray['delivery_timing'] = 'Next Day(48hr)';
+            $reqArray['package_code'] = '#2444';
+        }
 
-          if($data->response_code==200){
+        $reqArray['product_id'] = '';
+        $reqArray['recipient_address'] = 'test';
+        $reqArray['shipping_price'] = '1';
+        $reqArray['parcel_detail'] = '';
+        $reqArray['no_of_items'] = '';
+        $reqArray['product_price'] = '1';
+        $reqArray['payment_method'] = '1';
+        $reqArray['ep_id'] = '1';
+
+        $url = "http://ecourier.com.bd/apiv2/";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $data = json_decode($output);
+
+        if ($data->response_code == 200) {
             $saveorder->shiplabel_tracking_id = $data->ID;
             $saveorder->order_status = 2;
             $saveorder->update();
-         $curierHistory= new CurierHistory();
-         $curierHistory->order_id=$ordid;
-         $curierHistory->courier_id=4;
-         $curierHistory->waybill_no=$data->ID;
-         $curierHistory->prefix=$this->jsonString['prefix'];
-         $curierHistory->store_id=$this->jsonString['store_id'];
-         $curierHistory->save();
-          }else{
-             echo $data->errors;
-             die;
-          }
-          
-       
-                    
+            $curierHistory = new CurierHistory();
+            $curierHistory->order_id = $ordid;
+            $curierHistory->courier_id = 4;
+            $curierHistory->waybill_no = $data->ID;
+            $curierHistory->prefix = $this->jsonString['prefix'];
+            $curierHistory->store_id = $this->jsonString['store_id'];
+            $curierHistory->save();
+        } else {
+            echo $data->errors;
+            die;
+        }
+
+
+
 //        }
-       return redirect()->back();
+        return redirect()->back();
     }
 
 }
