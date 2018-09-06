@@ -46,7 +46,7 @@
                         </tr>
                         @foreach($orders as $order)
                         <tr>
-                            <td><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $product->id }}" /></td>
+                            <td><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /></td>
                             <td>{{ $order->order_id }}</td>
 
                             <td>{{ $order->id }}</td>
