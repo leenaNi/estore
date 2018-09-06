@@ -34,7 +34,7 @@ class PaymentSettlementController extends Controller {
     public function settledPayment() {
         $id = Input::get('id');
         if (is_array($id)) {
-            $orders = DB::table("has_products")->where("has_products.id", $id)->where("settled_status", 0)->join("stores", "stores.id", '=', "has_products.store_id")
+            $orders = DB::table("has_products")->whereIn("has_products.id", $id)->where("settled_status", 0)->join("stores", "stores.id", '=', "has_products.store_id")
                             ->select('has_products.*', 'stores.percent_to_charge')->get();
 
             if (count($orders) > 0) {
@@ -63,7 +63,7 @@ class PaymentSettlementController extends Controller {
         $history['order_id'] = $order->id;
         $history['store_id'] = $order->store_id;
         $history['order_amt'] = $order->pay_amt;
-        $history['settled_amt'] = number_format($settleAmt,2);
+        $history['settled_amt'] =round($settleAmt,2);
         $history['percent'] = $order->percent_to_charge;
         $history['settled_date'] = date('Y-m-d h:i');
         DB::table("payment_settlement")->insert($history);

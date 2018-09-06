@@ -109,6 +109,7 @@
             var ids = $(".orderTable input.checkOrderId:checkbox:checked").map(function () {
                 return $(this).val();
             }).toArray();
+            alert(ids);
             console.log(ids);
             if (ids.length == 0) {
                 alert('Error! No Order Selected! Please Select Order first.');
