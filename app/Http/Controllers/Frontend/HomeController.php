@@ -302,6 +302,7 @@ class HomeController extends Controller {
         $store->category_id = $themeInput->cat_id;
         $store->template_id = $themeInput->theme_id;
         $store->store_domain = $actualDomain;
+        $store->precent_to_charge = 1.00;
         $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
         $store->status = 1;
 
