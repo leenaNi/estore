@@ -190,6 +190,12 @@
                                     {{ Form::hidden('id',null) }}
                                     <div class="box-body mt15">
                                         <div class="form-group">
+                                            {{ Form::label('Percent To Charge On Order', 'Percent to charge on order ', ['class' => 'col-sm-3 control-label']) }}
+                                            <div class="col-sm-9">
+                                                {{Form::text('precent_to_charge',null ,['class'=>'form-control mt15']) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             {{ Form::label('TIN Number', 'TIN Number ', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
                                                 {{Form::text('tin',null ,['class'=>'form-control mt15']) }}

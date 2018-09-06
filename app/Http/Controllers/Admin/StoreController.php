@@ -34,22 +34,16 @@ class StoreController extends Controller {
             $selCats[$cat->id] = $cat->category;
         }
         $search = Input::get('search');
-
-
-
         if (!empty(Input::get('s_bank_name'))) {
             $stores = $stores->whereHas("getmerchant.hasMerchants", function($sQuery) {
                 $sQuery = $sQuery->where("banks.id", "=", Input::get('s_bank_name'));
             });
         }
-
-
         if (!empty($this->getbankid())) {
             $stores = $stores->whereHas("getmerchant.hasMerchants", function($sQuery) {
                 $sQuery = $sQuery->where("banks.id", "=", $this->getbankid());
             });
         }
-
         if (!empty(Input::get('s_name'))) {
             $stores = $stores->where("store_name", "like", "%" . Input::get('s_name') . "%");
         }
@@ -81,7 +75,6 @@ class StoreController extends Controller {
         }
 
         //$getAllStores = $stores->get();
-		
         //dd($getAllStores);
         $stores = $stores->paginate(Config('constants.AdminPaginateNo'));
         $getBanks = Bank::orderBy("name", "asc")->get();
@@ -90,12 +83,12 @@ class StoreController extends Controller {
             $selBanks[$getB->id] = $getB->name;
         }
 
-        /*foreach ($getAllStores as $st) {
-            //   dd($st->getlanguage);
-            $st->categoryname = @$st->getcategory()->first()->category;
-            $st->language_name = @$st->getlanguage()->first()->name;
-            $st->merchant_name = @$st->getmerchant()->first()->company_name;
-        }*/
+        /* foreach ($getAllStores as $st) {
+          //   dd($st->getlanguage);
+          $st->categoryname = @$st->getcategory()->first()->category;
+          $st->language_name = @$st->getlanguage()->first()->name;
+          $st->merchant_name = @$st->getmerchant()->first()->company_name;
+          } */
 
         $data = [];
         $viewname = Config('constants.AdminPagesStores') . ".index";
@@ -105,7 +98,7 @@ class StoreController extends Controller {
         //$data['storeList'] = $getAllStores;
         return Helper::returnView($viewname, $data);
     }
-    
+
     public function checkStore() {
         $storename = Input::get('storename');
         $storename = strtolower(str_replace(' ', '', $storename));
@@ -119,9 +112,8 @@ class StoreController extends Controller {
     }
 
     public function addEdit() {
-		
         $id = Input::get('id');
-		$store = Store::findOrNew($id);		
+        $store = Store::findOrNew($id);
         $templa = Templates::orderBy("id", "asc")->get();
         $templates = ['' => 'Select template'];
         foreach ($templa as $val) {
@@ -141,8 +133,6 @@ class StoreController extends Controller {
         } else if (array_key_exists('token', $request->headers)) {
             $merchants = Merchant::orderBy('id', 'desc')->where("id", $request->headers['authUserId'])->get();
         }
-
-
         $selMerchatns = ['' => 'Select Merchants'];
         foreach ($merchants as $merch) {
             $selMerchatns[$merch->id] = $merch->firstname;
@@ -175,7 +165,7 @@ class StoreController extends Controller {
         $data['store'] = $store;
         $data['selZones'] = $selZones;
         $data['languagesSel'] = $languagesSel;
-        $data['templates'] = $templates;		
+        $data['templates'] = $templates;
         return Helper::returnView($viewname, $data);
     }
 
@@ -187,7 +177,7 @@ class StoreController extends Controller {
             'store_name' => 'required|unique:stores' . ($id ? ",store_name,$id" : ''),
             'url_key' => 'required|unique:stores' . ($id ? ",url_key,$id" : ''),
             'status' => 'required',
-           // 'language_id' => 'required',
+            // 'language_id' => 'required',
             'template_id' => 'required'
         ];
         $messages = [
@@ -234,7 +224,7 @@ class StoreController extends Controller {
             $templateFile = $template->file;
             if ($store->save()) {
                 if (empty(Input::get('id'))) {
-                    $this->createInstance($store->prefix, $store->url_key, $merchantEamil, $merchantPassword, $templateFile,Input::get('category_id'));
+                    $this->createInstance($store->prefix, $store->url_key, $merchantEamil, $merchantPassword, $templateFile, Input::get('category_id'));
                 }
             }
             $data = [];
@@ -290,7 +280,8 @@ class StoreController extends Controller {
 
     public function saveUpdateBusiness() {
         $id = Input::get('id');
-        $rules = $messages =[];
+        $rules = [ "precent_to_charge" => "required"];
+        $messages = ["precent_to_charge" => "Percent to charge on order."];
         $validator = Validator::make(Input::all(), $rules, $messages);
         if ($validator->fails()) {
             return $validator->messages()->toJson();
@@ -302,8 +293,6 @@ class StoreController extends Controller {
             $data['id'] = $store->id;
             $data['status'] = 'success';
             $data['storedata'] = $store;
-
-
             return $data;
         }
     }
@@ -376,7 +365,7 @@ class StoreController extends Controller {
         echo "Successfully deleted";
     }
 
-    public function createInstance($prefix, $urlKey, $merchantEamil, $merchantPassword, $templateFile,$catid) {
+    public function createInstance($prefix, $urlKey, $merchantEamil, $merchantPassword, $templateFile, $catid) {
         // echo $merchantEamil."@@@".$merchantPassword;
         ini_set('max_execution_time', 600);
         $contents = File::get(public_path() . "/public/skeleton.sql");
@@ -395,7 +384,6 @@ class StoreController extends Controller {
                 $res = $zip->open($file);
                 //dd($res);
                 if ($res === TRUE) {
-                    
                     $zip->extractTo($path);
                     $zip->close();
                     $this->replaceFileString($path . "/.env", "%DB_DATABASE%", env('DB_DATABASE', ''));
@@ -406,15 +394,12 @@ class StoreController extends Controller {
                     $password = Hash::make($randno);
                     $newuserid = DB::table($prefix . "_users")->insertGetId([
                         "email" => "$merchantEamil", "user_type" => 1, "status" => 1, "password" => "$password"
-                    ]);   
-                   
-                    $json_url = realpath(getcwd(). "/..") . "/" . $urlKey . "/storage/json/storeSetting.json";
+                    ]);
+                    $json_url = realpath(getcwd() . "/..") . "/" . $urlKey . "/storage/json/storeSetting.json";
                     $json = file_get_contents($json_url);
                     $decodeVal = json_decode($json, true);
                     $decodeVal['industry_id'] = $catid;
                     $decodeVal['storeName'] = $storeName;
-                    
-                    
                     if (!empty($themeid)) {
                         $themedata = DB::select("SELECT t.id,c.category,t.name,t.image from themes t left join categories c on t.cat_id=c.id order by c.category");
                         $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->name);
@@ -424,25 +409,19 @@ class StoreController extends Controller {
                         //$decodeVal['currency_code'] = @Currency::find($currency)->iso_code;
                         $newJsonString = json_encode($decodeVal);
                     }
-
-
                     if (!empty($currency)) {
-
                         $decodeVal['currency'] = $currency;
                         $decodeVal['currency_code'] = @Currency::find($currency)->iso_code;
                         $currVal = Currency::find($currency);
-                        if(!empty($currVal)){
+                        if (!empty($currVal)) {
                             $currJson = json_encode(['name' => $currVal->name, 'iso_code' => $currVal->iso_code]);
-                            DB::table($prefix . "_general_setting")->insert(['name'=> 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0]);
+                            DB::table($prefix . "_general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0]);
                         }
                     }
 
-                    $fp = fopen(realpath(getcwd(). "/..") . "/" . $urlKey . '/storage/json/storeSetting.json', 'w+');
+                    $fp = fopen(realpath(getcwd() . "/..") . "/" . $urlKey . '/storage/json/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
-                    
-                    
-                    
                     DB::table($prefix . "_role_user")->insert([
                         ["user_id" => @$newuserid, "role_id" => "1"]
                     ]);
@@ -459,42 +438,37 @@ class StoreController extends Controller {
                             $permissions[$key]['role_id'] = 1;
                         }
                         $insertPermission = DB::table($prefix . "_permission_role")->insert($permissions);
-                    }             
-                    
-                    
+                    }
 //                    $this->addCategory($prefix);
 //                    $this->addAttributeSet($prefix);
 //                    $this->addAttribute($prefix);
-                   if (!empty($catid)) {
-                      Helper::saveDefaultSet($catid,$prefix);
+                    if (!empty($catid)) {
+                        Helper::saveDefaultSet($catid, $prefix);
                     }
-                    
-                    $banner=json_decode((Category::where("id",$catid)->first()->banner_image),true);
-                   foreach($banner as $image){
-                   $file=$image['banner'];
-                   $homePageSlider['layout_id']=1;
-                   $homePageSlider['is_active']=$image['banner_status'];
-                   $homePageSlider['image']=$image['banner'];
-                   $homePageSlider['sort_order']=$image['sort_order'];
-                   $source = public_path() . '/public/admin/themes/';
-                   $destination =  base_path() . "/".$urlKey."/public/public/Admin/uploads/layout/";
-                   copy($source.$file, $destination.$file);
-                   DB::table($prefix . "_has_layouts")->insert($homePageSlider);
-                   }
-
-                   $threeBoxes=json_decode((StoreTheme::where("id",$themeid)->first()->threebox_image),true);
-                   foreach($threeBoxes as $image){
-                   $file=$image['banner'];
-                   $homePageSlider['layout_id']=4;
-                   $homePageSlider['is_active']=$image['banner_status'];
-                   $homePageSlider['image']=$image['banner'];
-                   $homePageSlider['sort_order']=$image['sort_order'];
-                   $source = public_path() . '/public/admin/themes/';
-                   $destination =  base_path() . "/".$urlKey."/public/public/Admin/uploads/layout/";
-                   copy($source.$file, $destination.$file);
-                   DB::table($prefix . "_has_layouts")->insert($homePageSlider);
-                   }
-                   
+                    $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
+                    foreach ($banner as $image) {
+                        $file = $image['banner'];
+                        $homePageSlider['layout_id'] = 1;
+                        $homePageSlider['is_active'] = $image['banner_status'];
+                        $homePageSlider['image'] = $image['banner'];
+                        $homePageSlider['sort_order'] = $image['sort_order'];
+                        $source = public_path() . '/public/admin/themes/';
+                        $destination = base_path() . "/" . $urlKey . "/public/public/Admin/uploads/layout/";
+                        copy($source . $file, $destination . $file);
+                        DB::table($prefix . "_has_layouts")->insert($homePageSlider);
+                    }
+                    $threeBoxes = json_decode((StoreTheme::where("id", $themeid)->first()->threebox_image), true);
+                    foreach ($threeBoxes as $image) {
+                        $file = $image['banner'];
+                        $homePageSlider['layout_id'] = 4;
+                        $homePageSlider['is_active'] = $image['banner_status'];
+                        $homePageSlider['image'] = $image['banner'];
+                        $homePageSlider['sort_order'] = $image['sort_order'];
+                        $source = public_path() . '/public/admin/themes/';
+                        $destination = base_path() . "/" . $urlKey . "/public/public/Admin/uploads/layout/";
+                        copy($source . $file, $destination . $file);
+                        DB::table($prefix . "_has_layouts")->insert($homePageSlider);
+                    }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
                     $domain = $_SERVER['HTTP_HOST'];
@@ -503,7 +477,6 @@ class StoreController extends Controller {
                     $mailcontent .= "Site URL - " . $domain . "/" . $urlKey . "\n";
                     $mailcontent .= "Admin URL - " . $domain . "/" . $urlKey . "/admin/" . "\n";
                     $mailcontent .= "Code - " . $prefix . "\n";
-
                     Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     return "Extracted Successfully to $path";
                 } else {
@@ -614,35 +587,36 @@ class StoreController extends Controller {
             return $data;
         }
     }
-    
-    public function addCategory($prifix){
-          $cat= json_decode($categories->categories,true);
-       foreach($cat as $catdata){
-         $catname[]["category"]=$catdata;
-       }
-      // dd($catname);
-        $prifix='gupt280105_';
-        DB::table($prifix.'categories')->insert($catname); 
+
+    public function addCategory($prifix) {
+        $cat = json_decode($categories->categories, true);
+        foreach ($cat as $catdata) {
+            $catname[]["category"] = $catdata;
+        }
+        // dd($catname);
+        $prifix = 'gupt280105_';
+        DB::table($prifix . 'categories')->insert($catname);
     }
-    
-       public function addAttributeSet($prifix){
-          $attrSets= json_decode($categories->attributeset,true);
-       foreach($attrSets as $attrSet){
-         $catname[]["attr_set"]=$attrSets;
-         $catname[]["status"]=1;
-       }
-      // dd($catname);
-        $prifix='gupt280105_';
-        DB::table($prifix.'attribute_sets')->insert($catname); 
+
+    public function addAttributeSet($prifix) {
+        $attrSets = json_decode($categories->attributeset, true);
+        foreach ($attrSets as $attrSet) {
+            $catname[]["attr_set"] = $attrSets;
+            $catname[]["status"] = 1;
+        }
+        // dd($catname);
+        $prifix = 'gupt280105_';
+        DB::table($prifix . 'attribute_sets')->insert($catname);
     }
-    
-       public function addAttribute($prifix){
-          $cat= json_decode($categories->attribute,true);
-       foreach($cat as $catdata){
-         $catname[]["category"]=$catdata;
-       }
-      // dd($catname);
-        $prifix='gupt280105_';
-        DB::table($prifix.'categories')->insert($catname); 
+
+    public function addAttribute($prifix) {
+        $cat = json_decode($categories->attribute, true);
+        foreach ($cat as $catdata) {
+            $catname[]["category"] = $catdata;
+        }
+        // dd($catname);
+        $prifix = 'gupt280105_';
+        DB::table($prifix . 'categories')->insert($catname);
     }
+
 }
