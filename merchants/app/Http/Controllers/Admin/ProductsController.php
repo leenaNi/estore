@@ -1101,9 +1101,6 @@ class ProductsController extends Controller {
             if ($prod->catalogimgs()->count() >= 2) {
                 $prod->catalogimgs()->delete();
             }
-            if ($prod->savedlist()->count() >= 1) {
-                @$prod->savedlist()->detach();
-            }
             $prod->delete();
             return redirect()->back()->with('message', 'Product deleted successfully.');
         } else {

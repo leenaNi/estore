@@ -81,11 +81,7 @@ class Product extends \Eloquent {
     public function fabrics() {
         return $this->belongsToMany('App\Models\Fabric', 'has_fabrics', 'prod_id', 'fabric_id');
     }
-
-    public function savedlist() {
-        return $this->belongsToMany('App\Models\User', 'saved_list', 'prod_id', 'user_id');
-    }
-    
+   
     public function downlodableprods() {
         return $this->hasMany('App\Models\DownlodableProd', 'prod_id');
     }
