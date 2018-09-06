@@ -62,10 +62,11 @@ class PagesController extends Controller {
         $totalOrders = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->count();
         $topProducts = HasProducts::where('prefix', $this->jsonString['prefix'])->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
         foreach ($topProducts as $prd) {
-            $prod = DB::table('products')->where('id', $prd->prod_id)->first();
+            $mallProd = DB::table('mall_products')->where('id', $prd->prod_id)->first();
+            $prod = Products::find($mallProd->store_prod_id);
             $prd->product = $prod;
             if (!empty($prod)) {
-                $catImg = DB::table('catalog_images')->where('catalog_id', $prod->id)->where("image_mode", 1)->first();
+                $catImg = $prod->catalogimgs()->where("image_mode", 1)->first();
                 if ($catImg) {
                     $prd->product->prodImage = (Config('constants.productImgPath') . '/' . $catImg->filename);
                 } else {
