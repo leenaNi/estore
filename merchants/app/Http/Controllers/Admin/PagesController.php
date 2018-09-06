@@ -63,7 +63,7 @@ class PagesController extends Controller {
         $topProducts = HasProducts::where('prefix', $this->jsonString['prefix'])->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
         foreach ($topProducts as $prd) {
             $mallProd = DB::connection('mysql2')->table('mall_products')->where('id', $prd->prod_id)->first();
-            $prod = Products::find($mallProd->store_prod_id);
+            $prod = Product::find($mallProd->store_prod_id);
             $prd->product = $prod;
             if (!empty($prod)) {
                 $catImg = $prod->catalogimgs()->where("image_mode", 1)->first();
