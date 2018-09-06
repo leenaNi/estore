@@ -24,7 +24,8 @@ class PaymentSettlementController extends Controller {
 
 
       $orders=DB::table("has_products")->orderBy("has_products.id","desc")->join("stores","stores.id",'=',"has_products.store_id")->
-              join("payment_settlement","payment_settlement.id",'=',"has_products.id")->select('has_products.*', 'stores.store_name','payment_settlement.settled_amt','payment_settlement.date')
+              leftjoin("payment_settlement","payment_settlement.id",'=',"has_products.id")
+              ->select('has_products.*', 'stores.store_name','payment_settlement.settled_amt','payment_settlement.settled_date')
               ->paginate(Config('constants.AdminPaginateNo'));
 
         //$merchants = $merchants->paginate(Config('constants.AdminPaginateNo'));
