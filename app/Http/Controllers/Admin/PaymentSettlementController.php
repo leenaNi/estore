@@ -26,13 +26,13 @@ class PaymentSettlementController extends Controller {
                 leftjoin("payment_settlement", "payment_settlement.order_id", '=', "has_products.id")
                 ->select('has_products.*', 'stores.store_name', 'payment_settlement.settled_amt', 'payment_settlement.settled_date');
              if($settle == 1){
-            $orders->where('settlement_status',1);
+            $orders->where('settled_status',1);
         }elseif ($settle == 0) {
-           $orders->where('settlement_status', 0);
+           $orders->where('settled_status', 0);
         }elseif ($settle == 2){
             
         }else{
-            $orders->where('settlement_status', 0);
+            $orders->where('settled_status', 0);
         }
          if($storeId)  {
               $orders->where('has_products.store_id', $storeId);  
