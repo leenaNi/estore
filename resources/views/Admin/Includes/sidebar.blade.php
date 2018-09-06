@@ -9,13 +9,7 @@
                 </a>
             </li>
 
-           <!--  <li class="{{ (in_array(Route::currentRouteName(),['admin.banks.view'])?'active':'') }}">
-                <a href="{{ route('admin.banks.view') }}">
-                    <i class="fa fa-shopping-cart"></i> <span>Banks</span>
-
-                </a>
-
-            </li>-->
+       
             <li class="{{ (in_array(Route::currentRouteName(),['admin.merchants.view'])?'active':'') }}">
                 <a href="{{ route('admin.merchants.view') }}">
                     <i class="fa fa-users"></i> <span>Merchants</span>
@@ -51,7 +45,13 @@
                 </ul>
 
             </li>
+      <li class="{{ (in_array(Route::currentRouteName(),['admin.payment-settlement.view'])?'active':'') }}">
+                <a href="{{ route('admin.payment-settlement.view') }}">
+                    <i class="fa fa-shopping-cart"></i> <span>Payment Settlement</span>
 
+                </a>
+
+            </li>
             <li class="treeview {{ in_array(Route::currentRouteName(),['admin.systemusers.roles.view','admin.systemusers.users.view']) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-users"></i> <span>System Users</span>
