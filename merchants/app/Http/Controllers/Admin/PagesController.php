@@ -73,7 +73,6 @@ class PagesController extends Controller {
                 }
             }
         }
-        dd($topProducts);
 
 //        $topUsers = Orders::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->with('users')
 //                        ->limit(10)->groupBy('orders.user_id')->orderBy('total_amount', 'desc')->get(['orders.user_id', DB::raw('count(orders.user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
