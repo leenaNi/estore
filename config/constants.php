@@ -14,6 +14,7 @@ $adminConstants = [
     
     'AdminPagesBank' => 'Admin.Pages.Bank',
     'AdminPagesMerchant' => 'Admin.Pages.Merchants',
+    'AdminPagesPaymentettlement' => 'Admin.Pages.paymentSettlement',
     'AdminPagesStores' => 'Admin.Pages.Stores',
     'AdminPagesAnalytic' => 'Admin.Pages.Analytic',
     'AdminPagesUpdatesCode' => 'Admin.Pages.Updates.CodeUpdate',

@@ -141,6 +141,9 @@ Route::group(['namespace' => 'Admin'], function () {
            
           
         });
+         Route::group(['prefix' => 'payment-settlement'], function() {
+            Route::get('/', ['as' => 'admin.payment-settlement.view', 'uses' => 'PaymentSettlementController@index']);
+        });
         Route::group(['prefix' => 'set-cron'], function() {
             Route::get('/get-update-sales', ['as' => 'admin.setCron.getDashboard', 'uses' => 'SetCronController@updateSales']);
         });

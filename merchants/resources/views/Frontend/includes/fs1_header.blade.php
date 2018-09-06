@@ -108,7 +108,9 @@ span.editicons i {
                   ?>
                   <a href="{{ $redirectUrl }}" class="label mobilealignmenu" target="_blank" style="cursor:pointor;" data-toggle="tooltip" data-placement="bottom" title="Go to Store Admin"> <img src="{{ Config('constants.frontendPublicImgPath').'/store-admin-icon.png'}}"> <span class="mobDisplay">Go to Store Admin</span></a></li>
                   @endif
-                
+                 <li class="">
+                     <a href="#" class="label label-success tracking nobg mobilealignmenu" style="cursor:pointor;"> <div>Track Your Order</div></a>
+                     </li>
                 </ul>
                 <!-- Top Cart
                 ============================================= -->

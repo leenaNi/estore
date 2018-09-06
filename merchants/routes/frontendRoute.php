@@ -79,6 +79,7 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
     Route::any('/save-manage-categories', ['as' => 'saveManageCategories', 'uses' => 'HomeController@saveManageCategories']);
     Route::any('/update-home-page-3-boxes', ['as' => 'updateHomePage3Boxes', 'uses' => 'HomeController@updateHomePage3Boxes']);
     Route::any('/change-status-home-page3Boxes', ['as' => 'changeStatusHomePage3Boxes', 'uses' => 'HomeController@changeStatusHomePage3Boxes']);
+    Route::any('/ecurier-tracking', ['as' => 'ecurierTracking', 'uses' => 'HomeController@ecurierTracking']);
 
     Route::any('/checkout', ['as' => 'checkout', 'uses' => 'CheckoutController@index']);
 //    Route::any('/new-checkout', ['as' => 'newCheckout', 'uses' => 'CheckoutController@newCheckout']);
