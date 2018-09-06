@@ -47,13 +47,13 @@
                     </div>
                     
                    
-                    <div class="clearfix"></div>
+                   
                     <div class="form-group col-md-4 noBottomMargin">
-                        <div class=" button-filter-search col-md-6 no-padding">
+                        <div class=" button-filter-search col-md-5 no-padding">
                             <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Filter</button>
                         </div>
                         <div class=" button-filter col-md-5 no-padding noBottomMargin">
-                            <a href="{{route('admin.payment-settlement.view')}}"><button type="button" class="btn reset-btn form-control">Reset</button></a>
+                            <a href="{{route('admin.payment-settlement.view')}}"><button type="button" class="btn btn-default form-control">Reset</button></a>
                         </div>
                     </div>
                     {!! Form::close() !!}
