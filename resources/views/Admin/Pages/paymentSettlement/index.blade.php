@@ -23,23 +23,23 @@
                     <table class="table table-hover">
                         <tr>
                  
-                            <th>Merchant</th>
+                            <th>Order Id</th>
                 
-                            <th>Email ID</th>
-                            <th>Mobile</th>
+                            <th>Sub order Id</th>
+                            <th>pay Amount</th>
                        
                             <th>Created Date</th>
                             <th>Actions</th>
                         </tr>
-                        @foreach($merchants as $merchant)
+                        @foreach($orders as $order)
                         <tr>
 
-                            <td>{{ $merchant->firstname." ".$merchant->lastname }}</td>
+                            <td>{{ $order->order_id }}</td>
                          
-                            <td>{{ $merchant->email }}</td>
-                            <td>{{ $merchant->phone }}</td>
+                            <td>{{ $order->id }}</td>
+                            <td>{{ $order->pay_amt }}</td>
                        
-                            <td>{{ date('d-M-Y',strtotime($merchant->created_at)) }}</td>
+                            <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
                             <td>
                             </td>
                         </tr>
@@ -47,7 +47,7 @@
                     </table>
 
                     <div class="pull-right">
-                        {{ $merchants->appends($arguments)->links() }}
+                        {{ $orders->appends($arguments)->links() }}
                     </div>
 
 
