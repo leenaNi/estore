@@ -79,5 +79,44 @@
 
 @stop
 @section('myscripts')
-
+<script>
+      $('#checkAll').click(function (event) {
+            var checkbox = $(this),
+                    isChecked = checkbox.is(':checked');
+            if (isChecked) {
+                $('.checkOrderId').attr('Checked', 'Checked');
+            } else {
+                $('.checkOrderId').removeAttr('Checked');
+            }
+        });
+        
+           $("select#orderAction").change(function () {
+            var ids = $(".orderTable input.checkOrderId:checkbox:checked").map(function () {
+                return $(this).val();
+            }).toArray();
+            console.log(ids);
+            if (ids.length == 0) {
+                alert('Error! No Order Selected! Please Select Order first.');
+                $(this).val('');
+                return false;
+            }
+            // $("input[name='OrderIds']").val(ids);
+            if ($(this).val() == 1) {
+                chkInvoice = confirm("Are you sure you want to payment settlement ?");
+                if (chkInvoice == true) {
+                    $.ajax({
+                        method:"POST",
+                        data:{'id': ids },
+                        url:"<?php echo route('admin.payment-settlements.settledPayment') ;?>",
+                        success: function(data){
+                                 location.reload();
+                                }
+                        })
+                } else {
+                    return false;
+                }
+            }
+            
+        });
+    </script>
 @stop
