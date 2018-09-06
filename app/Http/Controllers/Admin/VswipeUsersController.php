@@ -15,9 +15,9 @@ use DB;
 class VswipeUsersController extends Controller {
 
     public function index() {
-         $orders=DB::table("has_products")->orderBy("has_products.id","desc")->join("stores","stores.id",'=',"has_products.store_id")->select('has_products.*', 'stores.store_name')->paginate(Config('constants.AdminPaginateNo'));
-       dd($orders);
-         
+//         $orders=DB::table("has_products")->orderBy("has_products.id","desc")->join("stores","stores.id",'=',"has_products.store_id")->select('has_products.*', 'stores.store_name')->paginate(Config('constants.AdminPaginateNo'));
+//       dd($orders);
+//         
          $vusers = VswipeUser::orderBy('id', 'desc');
 
         $search = Input::get('search');
