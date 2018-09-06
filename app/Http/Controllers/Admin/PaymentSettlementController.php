@@ -34,8 +34,8 @@ class PaymentSettlementController extends Controller {
     public function settledPayment() {
         $id = Input::get('id');
         if (is_array($id)) {
-            $orders = DB::table("has_products")->where("id", $id)->where("settled_status", 0)->join("stores", "stores.id", '=', "has_products.store_id")
-                            ->select('has_products.*', 'stores.percent_to_charge')->get();
+            $orders = DB::table("has_products")->where("has_products.id", $id)->where("settled_status", 0)->join("stores", "stores.id", '=', "has_products.store_id")
+                            ->select('has_products.*', 'stores.precent_to_charge')->get();
 
             if (count($orders) > 0) {
                 foreach ($orders as $order) {
