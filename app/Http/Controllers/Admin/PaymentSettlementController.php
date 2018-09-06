@@ -7,6 +7,7 @@ use App\Models\Merchant;
 use App\Models\Order;
 use App\Models\Category;
 use App\Models\Currency;
+use App\Models\Store;
 use App\Library\Helper;
 use Validator;
 use Illuminate\Support\Facades\Input;
@@ -18,15 +19,29 @@ use DB;
 class PaymentSettlementController extends Controller {
 
     public function index() {
-
-
+    $stores=Store::where("status",1)->pluck("store_name","id");
+    $settle = Input::get('settlement');
+    $storeId = Input::get('storeId');
         $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
                 leftjoin("payment_settlement", "payment_settlement.order_id", '=', "has_products.id")
-                ->select('has_products.*', 'stores.store_name', 'payment_settlement.settled_amt', 'payment_settlement.settled_date')
-                ->paginate(Config('constants.AdminPaginateNo'));
+                ->select('has_products.*', 'stores.store_name', 'payment_settlement.settled_amt', 'payment_settlement.settled_date');
+             if($settle == 1){
+            $orders->where('settlement_status',1);
+        }elseif ($settle == 0) {
+           $orders->where('settlement_status', 0);
+        }elseif ($settle == 2){
+            
+        }else{
+            $orders->where('settlement_status', 0);
+        }
+         if($storeId)  {
+              $orders->where('has_products.store_id', $storeId);  
+         }     
+                
+            $orders  =  $orders->paginate(Config('constants.AdminPaginateNo'));
 //dd($orders);
         //$merchants = $merchants->paginate(Config('constants.AdminPaginateNo'));
-        $data = ['orders' => $orders];
+        $data = ['orders' => $orders,'stores'=>$stores];
         $viewname = Config('constants.AdminPagesPaymentettlement') . ".index";
         return Helper::returnView($viewname, $data);
     }

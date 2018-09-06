@@ -27,7 +27,37 @@
                     {{Session::get('msg')}}
                 </div>
                 @endif
-                <div class="box-header">
+                
+              
+                    <div class="box-header box-tools filter-box col-md-9 noBorder rightBorder">
+                    {!! Form::open(['method' => 'get', 'route' => 'admin.payment-settlement.view' , 'id' => 'searchForm' ]) !!}
+                    {!! Form::hidden('is_export',null,['id' => 'is_export']) !!}
+                  <div class="form-group col-md-4">
+                        {!! Form::select('storeId', $stores,Input::get('storeId') ,["class"=>'form-control', "placeholder"=>"store name"]) !!}
+                    </div>
+                    
+<!--                    <div class="form-group col-md-4">
+                        {!! Form::text('date',Input::get('date'), ["class"=>'form-control  date', "placeholder"=>"Settlement Date"]) !!}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {!! Form::text('order_date',Input::get('date'), ["class"=>'form-control date', "placeholder"=>"Order Date"]) !!}
+                    </div>-->
+                    <div class="form-group col-md-4">
+                        {!! Form::select('settlement', ['1' => 'Settled','0' => 'Unsettled','2' => 'Both' ],Input::get('settlement') ,["class"=>'form-control', "placeholder"=>"Settlement Status"]) !!}
+                    </div>
+                    
+                   
+                    <div class="clearfix"></div>
+                    <div class="form-group col-md-4 noBottomMargin">
+                        <div class=" button-filter-search col-md-6 no-padding">
+                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Filter</button>
+                        </div>
+                        <div class=" button-filter col-md-5 no-padding noBottomMargin">
+                            <a href="{{route('admin.payment-settlement.view')}}"><button type="button" class="btn reset-btn form-control">Reset</button></a>
+                        </div>
+                    </div>
+                    {!! Form::close() !!}
+                </div>
                     <div class="box-header col-md-3">
                         <form action="" class="formMul" method="post">
                             <input type="hidden" value="" name="OrderIds" />
@@ -39,7 +69,8 @@
                             </select>
                         </form> 
                     </div>
-                </div>
+                
+                 <div class="clearfix"></div>
                 <div class="box-body table-responsive">
                     <table class="table table-hover orderTable">
                         <tr>
@@ -109,7 +140,7 @@
             var ids = $(".orderTable input.checkOrderId:checkbox:checked").map(function () {
                 return $(this).val();
             }).toArray();
-            alert(ids);
+           
             console.log(ids);
             if (ids.length == 0) {
                 alert('Error! No Order Selected! Please Select Order first.');
