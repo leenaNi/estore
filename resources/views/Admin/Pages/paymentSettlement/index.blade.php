@@ -42,7 +42,7 @@
                             <th>Settled Amt</th>
                             <th>Settled Date</th>
                             <th>Created Date</th>
-                            <th>Actions</th>
+                            <th>Settled Status</th>
                         </tr>
                         @foreach($orders as $order)
                         <tr>
@@ -58,6 +58,11 @@
 
                             <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
                             <td>
+                                @if($order->settled_status==1)
+                                Settled
+                                @else
+                                Unsettle
+                                @endif
                             </td>
                         </tr>
                         @endforeach

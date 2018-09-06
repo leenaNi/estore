@@ -34,5 +34,12 @@ class PaymentSettlementController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-
+public function settledPayment(){
+      $id = Input::get('id');
+        if(is_array($id)){
+           $order=DB::table("has_products")->where("id",$id)->where("settled_status",0)->first(); 
+        }else{
+          $order=DB::table("has_products")->where("id",$id)->where("settled_status",0)->first();   
+        }
+}
 }
