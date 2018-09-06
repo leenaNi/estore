@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="box-body table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover orderTable">
                         <tr>
                             <th><input type="checkbox" id="checkAll" /></th>
                             <th>Order Id</th>
