@@ -47,7 +47,7 @@
                     </table>
 
                     <div class="pull-right">
-                        {{ $orders->appends($arguments)->links() }}
+                        {{ $orders->links() }}
                     </div>
 
 
