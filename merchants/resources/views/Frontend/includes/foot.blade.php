@@ -992,7 +992,7 @@ save.addEventListener('click', function (e) {
 //                                $("#manageSlider").load(location.href + " #manageSlider>", "");
 //                            }
 //                        });
-//
+//eurireTraking
 //
 //
 //                    } else
@@ -1182,6 +1182,38 @@ function getFbUserData(){
     }
    });
 }
+ $(".tracking").on("click", function () {
+            $("#myModal").modal('show');
+        });
+        
+        $(".eurireTraking").on("click", function () {
+            var trackingId=$("#trackingId").val();
+            if(trackingId==''){
+                $("#trackingId").focus();
+                return false;
+            }else{
+                           $.ajax({
+                            url: "{{ route('ecurierTracking')}}",
+                            type: 'post',
+                            data: {trackingId:trackingId},
+          
+                            success: function (res) {
+                             
+                               $('#trackingDetails').empty();
+                               $('.tableVaglignMiddle').removeClass("hide");
+                               if(res.status==1){
+                             
+                               var trackData=' <td>'+res.trackdata[0][1]+'</td><td>'+res.trackdata[0][2]+'</td> ';                     
+                              $('#trackingDetails').append(trackData);  
+                          }else{
+                              var trackData='<td>'+res.trackdata+'</td>';
+                             $('#trackingDetails').append(trackData); 
+                            }
+                            }
+                        });
+                    }
+                    });
+
 
 </script>
 

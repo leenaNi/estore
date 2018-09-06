@@ -480,13 +480,14 @@ class HomeController extends Controller {
 
     public function ecurierTracking() {
         $trackingId = Input::get("trackingId");
+       // dd($trackingId);
         $headers[] = 'Content-Type:application/x-www-form-urlencoded';
         $headers[] = 'USER_ID:D2788';
         $headers[] = 'API_KEY:F3DT';
         $headers[] = 'API_SECRET:fCcBb';
         $reqArray = [];
         $reqArray['parcel'] = 'track';
-        $reqArray['ecr'] = 'ECR0002607188256';
+        $reqArray['ecr'] =$trackingId;
 
         $url = "http://103.239.254.146/apiv2/";
         $ch = curl_init();
@@ -497,17 +498,23 @@ class HomeController extends Controller {
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
 
         $output = curl_exec($ch);
-        echo "==eerrno=" . curl_errno($ch) . "<br>";
-        echo "output===" . print_r($output);
+       // echo "==eerrno=" . curl_errno($ch) . "<br>";
+      //  echo "output===" . print_r($output);
         if (curl_errno($ch)) {
-            echo 'Error:' . curl_error($ch);
+          //  echo 'Error:' . curl_error($ch);
         } else {
-            echo "ggg";
+          //  echo "ggg";
         }
+      //  dd(json_decode($output));
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        echo 'HTTP code: ' . $httpcode;
-        return $output;
+      //  echo 'HTTP code: ' . $httpcode;
+        if(json_decode($output)->query_data=='No Data Found'){
+             $data=['status'=>0,'trackdata'=>json_decode($output)->query_data]; 
+        }else{
+         $data=['status'=>1,'trackdata'=>json_decode($output)->query_data[0]->status];   
+        }
+        return $data;
     }
 
 }
