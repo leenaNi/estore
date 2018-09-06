@@ -27,7 +27,7 @@
                 
                             <th>Sub order Id</th>
                             <th>Store Name</th>
-                            <th>Pay Amount</th>
+                            <th>Paid Amount</th>
                             <th>Settled Amt</th>
                             <th>Settled Date</th>
                             <th>Created Date</th>
