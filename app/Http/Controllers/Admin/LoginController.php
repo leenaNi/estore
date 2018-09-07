@@ -81,18 +81,11 @@ class LoginController extends Controller {
         $allStoreOperatores = DB::table("users")->where("user_type", 1)->count();
         $happyCustomers = DB::table("users")->where("user_type", 2)->count();
         $totalOrders = $cnt= 0;
-        foreach ($stores as $sA) {
-            $storeOrderCnt = DB::table("orders")->where("prefix", $sA->prefix)->count();
-            echo $storeOrderCnt." <br/>";
-            $totalOrders += (int) ($storeOrderCnt);
-            echo $totalOrders . '  order ' . $sA->prefix . "<br>";
-            $cnt++;
-        }
-        print_r($cnt);
-        dd($totalOrders);
+        
+        $totalOrders = DB::table("orders")->where("order_status",'!=',0)->count();
         $totalSales = 0;
         foreach ($stores as $sA) {
-            $totalSales += DB::table("orders")->where("prefix", $sA->prefix)->where('order_status', 3)->sum('pay_amt');
+            $totalSales += DB::table("orders")->where('order_status', 3)->sum('pay_amt');
         }
 
         $topStoreSales = DB::select("select store_id,store_name,company_name,total_sales,group_concat(banknames) as banknames,logo,firstname FROM(SELECT vs.store_id,m.company_name,sum(sales)as total_sales,s.store_name,group_concat(DISTINCT(b.name)) as banknames,s.logo,m.firstname FROM `vswipe_sales` vs

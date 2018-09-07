@@ -31,17 +31,12 @@
               
                     <div class="box-header box-tools filter-box col-md-9 noBorder rightBorder">
                     {!! Form::open(['method' => 'get', 'route' => 'admin.payment-settlement.view' , 'id' => 'searchForm' ]) !!}
-                    {!! Form::hidden('is_export',null,['id' => 'is_export']) !!}
+                  
                   <div class="form-group col-md-4">
                         {!! Form::select('storeId', $stores,Input::get('storeId') ,["class"=>'form-control', "placeholder"=>"store name"]) !!}
                     </div>
                     
-<!--                    <div class="form-group col-md-4">
-                        {!! Form::text('date',Input::get('date'), ["class"=>'form-control  date', "placeholder"=>"Settlement Date"]) !!}
-                    </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('order_date',Input::get('date'), ["class"=>'form-control date', "placeholder"=>"Order Date"]) !!}
-                    </div>-->
+
                     <div class="form-group col-md-4">
                         {!! Form::select('settlement', ['1' => 'Settled','0' => 'Unsettled','2' => 'Both' ],Input::get('settlement') ,["class"=>'form-control', "placeholder"=>"Settlement Status"]) !!}
                     </div>
@@ -53,7 +48,7 @@
                             <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Filter</button>
                         </div>
                         <div class=" button-filter col-md-5 no-padding noBottomMargin">
-                            <a href="{{route('admin.payment-settlement.view')}}"><button type="button" class="btn btn-default form-control">Reset</button></a>
+                            <a href="{{route('admin.payment-settlement.view')}}"><button type="button" class="btn btn-default form-control" style="margin-left: 15px;">Reset</button></a>
                         </div>
                     </div>
                     {!! Form::close() !!}
@@ -92,9 +87,9 @@
 
                             <td>{{ $order->id }}</td>
                             <td>{{ $order->store_name }}</td>
-                            <td>{{ $order->pay_amt }}</td>
-                            <td>{{ $order->settled_amt }}</td>
-                            <td>{{ date('d-M-Y',strtotime($order->settled_date)) }}</td>
+                            <td> <span class="currency-sym"> </span><span class="priceConvert"> {{ $order->pay_amt }}<span></td>
+                            <td> <span class="currency-sym"> </span> <span class="priceConvert"> {{ $order->settled_amt? $order->settled_amt:'0'}}</span></td>
+                            <td > {{ date('d-M-Y',strtotime($order->settled_date)) }}</td>
 
 
                             <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>

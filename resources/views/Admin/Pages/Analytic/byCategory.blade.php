@@ -56,7 +56,7 @@
                         <tr>
 
                             <td>{{ $cat->category }}</td>
-                            <td><i class='fa fa-rupee'></i> {{ number_format($cat->total_sales) }}</td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert">{{ number_format($cat->total_sales) }}</span></td>
                             <td> <a href="{{ route("admin.analytics.byCategoryExport") }}?catid={{$cat->id}}" class="label label-success active" ui-toggle-class="">Export</a></td>
                         </tr>                       
                         @endforeach
