@@ -29,7 +29,7 @@ class SetCronController extends Controller {
            $merchant_details =  json_decode($getS->getmerchant()->first()->register_details,true);
            $currency = Currency::find($merchant_details['currency'])->currency_val;
            $vsUpdate =  new VswipeSale();
-           $vsUpdate->sales = DB::table("orders")->where("prefix",$getS->prefix)
+           $vsUpdate->sales = DB::table("has_products")->where("prefix",$getS->prefix)
                    ->where("order_status","!=",0)
                    //->where(DB::raw("DATE(created_at)"),"=",$yesterdayDate)
                   
