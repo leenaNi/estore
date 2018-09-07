@@ -85,7 +85,7 @@
             <div class="small-box bg-teal">
                 <div class="inner">
                     <h3>
-                        {{ number_format($data['totalOrders']) }}
+                        <span class="currency-sym"> </span><span class="priceConvert">  {{ number_format($data['totalOrders']) }}</span>
                     </h3>
                     <p>Total Orders</p>
                 </div>
@@ -101,7 +101,8 @@
             <div class="small-box bg-olive">
                 <div class="inner">
                     <h3>
-                        {{ number_format(  $data['totalSales']) }}
+                       <span class="currency-sym"> </span><span class="priceConvert"> 
+                           {{ number_format(  $data['totalSales']) }}</span>
                     </h3>
                     <p>Total Sales</p>
                 </div>
@@ -156,7 +157,7 @@
                                     <td>{{ @$topS->store_name}}</td>
                                     <td>{{$topS->firstname  }}</td>
                                     <!--<td>{{implode(',',array_unique(explode(',', $topS->banknames)))}}</td> -->
-                                    <td><span >{{ Session::get('cur') }}  {{number_format($topS->total_sales)}}</span></td>
+                                    <td> <span class="currency-sym"> </span><span class="priceConvert"> {{number_format($topS->total_sales)}}</span></td>
                                     <td>
                                         <div class="sparkbar" data-color="#00c0ef" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div>
                                     </td>
