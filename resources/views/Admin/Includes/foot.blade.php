@@ -139,4 +139,19 @@ $( window ).load(function() {
             errorDiv.append(error);
         }
     });
+      $(document).ready(function () {
+          var currency='<?php echo Session::get('cur') ?>';
+          var currentCurrency='<?php echo Session::get('currency_val') ?>';
+          $('.currency-sym').html('').html(currency);
+        // var currentCurrency=parseFloat(3.256); 
+      $(".priceConvert").each(function (k, v) {
+                    var filterNumber = $(this).text().trim();
+                    filterNumber = filterNumber.replace(",", "");
+                     
+                    var getPrice = parseFloat(filterNumber);
+                    var calCulate = (getPrice * currentCurrency).toFixed(2)
+                  
+                    $(this).text(calCulate);
+                })
+            });
 </script>

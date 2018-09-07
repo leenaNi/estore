@@ -51,9 +51,9 @@
                            
                          
                             <td>{{ $order->store_name }}</td>
-                            <td>{{ Session::get('cur') }} {{ $order->totalOrder }}</td>
-                            <td> {{ $order->totalPaid ?Session::get('cur').' '.$order->totalPaid:'--'}}</td>
-                            <td>{{ Session::get('cur') }} {{ ($order->totalOrder) - ($order->orderAmt) }}</td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert">{{ $order->totalOrder }}</td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert"> {{ $order->totalPaid ?$order->totalPaid:'--'}}</td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert">{{ ($order->totalOrder) - ($order->orderAmt) }}</td>
                             </td>
                         </tr>
                         @endforeach

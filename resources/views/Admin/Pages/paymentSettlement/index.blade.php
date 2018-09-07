@@ -92,9 +92,9 @@
 
                             <td>{{ $order->id }}</td>
                             <td>{{ $order->store_name }}</td>
-                            <td>{{ Session::get('cur') }} {{ $order->pay_amt }}</td>
-                            <td> {{ $order->settled_amt? Session::get('cur').' '. $order->settled_amt:'--'}}</td>
-                            <td>{{ date('d-M-Y',strtotime($order->settled_date)) }}</td>
+                            <td> <span class="currency-sym"> </span><span class="priceConvert"> {{ $order->pay_amt }}<span></td>
+                            <td> <span class="currency-sym"> </span> <span class="priceConvert"> {{ $order->settled_amt? $order->settled_amt:'--'}}</span></td>
+                            <td > {{ date('d-M-Y',strtotime($order->settled_date)) }}</td>
 
 
                             <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
