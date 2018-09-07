@@ -51,10 +51,23 @@ class PagesController extends Controller {
                 ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')
                 ->count();
         $totalOrders = Order::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', '')->count();
-        $topProducts = HasProducts::where('prefix', '')->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+//        $topProducts = HasProducts::where('prefix', '')->limit(5)->groupBy('prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+//        foreach ($topProducts as $prd) {
+//            $mallProd = Product::where('id', $prd->prod_id)->first();
+//            $prod = DB::table($prd->prefix . '_products')->where('id', $mallProd->store_prod_id)->first();
+//            $prd->product = $prod;
+//            if (!empty($prod->product)) {
+//                $catImg = DB::table($prd->prefix . '_catalog_images')->where('catalog_id', $prd->id)->where("image_mode", 1)->first();
+//                if ($catImg) {
+//                    $prd->product->prodImage = ($catImg->image_path . '/' . $catImg->filename);
+//                } else {
+//                    $prd->product->prodImage = DB::table('stores')->where('id', $prd->store_id)->first()->store_domain . '/uploads/catalog/products/default-product.jpg';
+//                }
+//            }
+//        }
+        $topProducts = Product::where('is_avail', 1)->where('is_individual', 1)->where('status', 1)->orderBy('trending_score', 'desc')->get(['store_prod_id', '']);
         foreach ($topProducts as $prd) {
-            $mallProd = Product::where('id', $prd->prod_id)->first();
-            $prod = DB::table($prd->prefix . '_products')->where('id', $mallProd->store_prod_id)->first();
+            $prod = DB::table($prd->prefix . '_products')->where('id', $prd->store_prod_id)->first();
             $prd->product = $prod;
             if (!empty($prod->product)) {
                 $catImg = DB::table($prd->prefix . '_catalog_images')->where('catalog_id', $prd->id)->where("image_mode", 1)->first();
@@ -65,7 +78,7 @@ class PagesController extends Controller {
                 }
             }
         }
-//        dd($topProducts);
+        dd($topProducts);
 
         $topUsers = Order::whereNotIn("order_status", [0, 4, 6, 10])->with('users')->limit(10)->groupBy('user_id')->orderBy('total_amount', 'desc')->get(['user_id', DB::raw('count(user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
         $latestOrders = Order::whereNotIn('order_status', [3, 4, 5, 6, 10])->where('prefix', '')->limit(10)->orderBy('created_at', 'desc')->get();
