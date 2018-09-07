@@ -85,7 +85,7 @@ class LoginController extends Controller {
         $totalOrders = DB::table("orders")->where("order_status",'!=',0)->count();
         $totalSales = 0;
         foreach ($stores as $sA) {
-            $totalSales += DB::table("orders")->where("prefix", $sA->prefix)->where('order_status', 3)->sum('pay_amt');
+            $totalSales += DB::table("orders")->where('order_status', 3)->sum('pay_amt');
         }
 
         $topStoreSales = DB::select("select store_id,store_name,company_name,total_sales,group_concat(banknames) as banknames,logo,firstname FROM(SELECT vs.store_id,m.company_name,sum(sales)as total_sales,s.store_name,group_concat(DISTINCT(b.name)) as banknames,s.logo,m.firstname FROM `vswipe_sales` vs
