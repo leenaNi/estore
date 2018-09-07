@@ -1194,7 +1194,7 @@ function getFbUserData(){
         })
         $(".eurireTraking").on("click", function () {
             var trackingId=$("#trackingId").val();
-            if(trackingId==''){
+            if(trackingId.length < 12){
                 $("#trackingId").focus();
                 $("#trackingId").css('border-color', 'red');
                 $("#trackingId").attr("placeholder", "Please enter tracking Id");

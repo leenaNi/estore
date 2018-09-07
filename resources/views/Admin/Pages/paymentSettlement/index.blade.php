@@ -72,7 +72,7 @@
                             <th><input type="checkbox" id="checkAll" /></th>
                             <th>Order Id</th>
 
-                            <th>Sub order Id</th>
+                            <th>Sub Order Id</th>
                             <th>Store Name</th>
                             <th>Paid Amount</th>
                             <th>Settled Amt</th>
