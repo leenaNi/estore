@@ -52,7 +52,7 @@
                          
                             <td>{{ $order->store_name }}</td>
                             <td><span class="currency-sym"> </span><span class="priceConvert">{{ $order->totalOrder }}</td>
-                            <td><span class="currency-sym"> </span><span class="priceConvert"> {{ $order->totalPaid ?$order->totalPaid:'--'}}</td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert"> {{ $order->totalPaid ?$order->totalPaid:'0'}}</td>
                             <td><span class="currency-sym"> </span><span class="priceConvert">{{ ($order->totalOrder) - ($order->orderAmt) }}</td>
                             </td>
                         </tr>
