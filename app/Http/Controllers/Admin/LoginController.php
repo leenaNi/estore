@@ -91,10 +91,11 @@ class LoginController extends Controller {
 
         $totalOrders = 0;
         foreach ($stores as $sA) {
-            $totalOrders += DB::table("orders")->where("prefix",$sA->prefix)->count();
+            $totalOrders =$totalOrders+ DB::table("orders")->where("prefix",$sA->prefix)->count();
+            echo $totalOrders .'  order '.$sA->prefix ."<br>";
         }
 
-
+dd($totalOrders);
         $totalSales = 0;
         foreach ($stores as $sA) {
             $totalSales += DB::table("orders")->where("prefix",$sA->prefix)->where('order_status', 3)->sum('pay_amt');
