@@ -52,7 +52,7 @@
                          
                             <td>{{ $order->store_name }}</td>
                             <td>{{ Session::get('cur') }} {{ $order->totalOrder }}</td>
-                            <td>{{ Session::get('cur') }} {{ $order->totalPaid }}</td>
+                            <td> {{ $order->totalPaid ?Session::get('cur').' '.$order->totalPaid:'--'}}</td>
                             <td>{{ Session::get('cur') }} {{ ($order->totalOrder) - ($order->orderAmt) }}</td>
                             </td>
                         </tr>

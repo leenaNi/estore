@@ -93,7 +93,7 @@
                             <td>{{ $order->id }}</td>
                             <td>{{ $order->store_name }}</td>
                             <td>{{ Session::get('cur') }} {{ $order->pay_amt }}</td>
-                            <td>{{ Session::get('cur') }} {{ $order->settled_amt }}</td>
+                            <td> {{ $order->settled_amt? Session::get('cur').' '. $order->settled_amt:'--'}}</td>
                             <td>{{ date('d-M-Y',strtotime($order->settled_date)) }}</td>
 
 
