@@ -3,9 +3,9 @@
     <div class="container clearfix">
         @if(count($contactDetails) >0)
         <div class="col_half nobottommargin">
-        <?php $contact =json_decode($contactDetails->contact_details); ?>
+            <?php $contact = json_decode($contactDetails->contact_details); ?>
             <p class="nobottommargin"><strong>Call:</strong> {{$contact->mobile}} | <strong>Email:</strong> {{$contact->email}} </p>
-           
+
         </div>
         @endif
         <div class="col_half col_last fright nobottommargin">
@@ -25,14 +25,7 @@
                                 <i class="icon-{{$media->media}}"></i>
                             </a>
                             @endforeach
-                            <!--								<a href="#" class="social-icon headsocial-icon si-borderless si-text-color si-twitter" title="Twitter">
-                                                                                                    <i class="icon-twitter"></i>
-                                                                                                    <i class="icon-twitter"></i>
-                                                                                            </a>
-                                                                                            <a href="#" class="social-icon headsocial-icon si-borderless si-text-color si-gplus" title="Google Plus">
-                                                                                                    <i class="icon-gplus"></i>
-                                                                                                    <i class="icon-gplus"></i>
-                                                                                            </a>-->
+
 
                         </div>
                     </li>
@@ -43,11 +36,15 @@
                         @else
                         <a href="{{ route('loginUser') }}">Login / Register</a>  
                         @endif</li>
-                    <li>		<!-- Top Cart
-            ============================================= -->
-                        <div id="top-bar-cart">
-                            <a href="{{ route('cart') }}" id=""><i class="icon-shopping-cart"></i><span class="shop-cart">{{(Cart::instance("shopping")->count())?Cart::instance("shopping")->count():0}}</span></a>
-                        </div><!-- #top-cart end --></li>
+                    <li>
+                    <li class="">
+                        <a href="#" class="label label-success tracking nobg mobilealignmenu" style="cursor:pointor;"> <div>Track Your Order</div></a>
+                    </li>
+                    <!-- Top Cart
+        ============================================= -->
+                    <div id="top-bar-cart">
+                        <a href="{{ route('cart') }}" id=""><i class="icon-shopping-cart"></i><span class="shop-cart">{{(Cart::instance("shopping")->count())?Cart::instance("shopping")->count():0}}</span></a>
+                    </div><!-- #top-cart end --></li>
                 </ul>
             </div><!-- .top-links end -->
 
@@ -87,12 +84,7 @@
                     @foreach($menu as $getm)
                     {{ App\Library\Helper::getmenu($getm) }}
                     @endforeach
-                    <!--							<li><a href="#"><div>T-Shirts</div></a>
-                                                                                    <ul>
-                                                                                            <li><a href="#"><div>Polo</div></a></li>
-                                                                                            <li><a href="#"><div>Graphic</div></a></li>
-                                                                                            <li><a href="#"><div>Full Sleeves</div></a></li>
-                                                                                    </ul></li>-->
+            
                     @if(count($staticManuPage) >0)
                     @foreach($staticManuPage as $menuPage) 
                     <li><a href="{{route($menuPage->url_key)}}"><div>{{$menuPage->page_name}}</div></a></li>
@@ -101,7 +93,7 @@
                     <!--<li><a href="{{route('contact-us')}}"><div>Contact</div></a></li>-->
                     @if(Session::get('login_user_type') == 1)
                     <li>
-                    <a  href="#"  class="label label-success manageCate nobg mobTextLeft" style="cursor:pointor;"> <div class="black-dashBorder">Manage Categories</div></a>
+                        <a  href="#"  class="label label-success manageCate nobg mobTextLeft" style="cursor:pointor;"> <div class="black-dashBorder">Manage Categories</div></a>
                     </li>
                     @endif
 
@@ -119,19 +111,7 @@
                         <a href="{{ $redirectUrl }}" class="label" target="_blank" style="cursor:pointor;" data-toggle="tooltip" data-placement="bottom" title="Go to Store Admin">  <img src="{{Config('constants.frontendPublicImgPath').'/store-admin-icon-black.png'}}"> <span class="mobDisplay">Go to Store Admin</span></a>
                     </li>
                     @endif
-<!--                    @if(Session::get('loggedin_user_id'))
-                    <li class="mobileMyAccount">  
-                        <a href="{{ route('myProfile')  }}">My Account</a>
-                    </li>
-                    <li class="mobileLoginRegister">     
-                        <a href="{{ route('logout')  }}">Logout</a>
-                    <li>
-
-                        @else
-                        <li>
-                        <a href="{{ route('loginUser') }}">Login / Register</a>  
-                        </li>
-                        @endif-->
+                
                 </ul>
 
 
@@ -147,8 +127,8 @@
 
 
                 <div id="top-bar-cart" class="mobileCart">
-                            <a href="{{ route('cart') }}" id=""><i class="icon-shopping-cart"></i><span class="shop-cart">{{(Cart::instance("shopping")->count())?Cart::instance("shopping")->count():0}}</span></a>
-                        </div>
+                    <a href="{{ route('cart') }}" id=""><i class="icon-shopping-cart"></i><span class="shop-cart">{{(Cart::instance("shopping")->count())?Cart::instance("shopping")->count():0}}</span></a>
+                </div>
 
             </nav><!-- #primary-menu end -->
 
