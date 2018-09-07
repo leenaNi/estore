@@ -80,11 +80,13 @@ class LoginController extends Controller {
 
         $allStoreOperatores = DB::table("users")->where("user_type", 1)->count();
         $happyCustomers = DB::table("users")->where("user_type", 2)->count();
-        $totalOrders = 0;
+        $totalOrders = $cnt= 0;
         foreach ($stores as $sA) {
             $totalOrders += (int) (DB::table("orders")->where("prefix", $sA->prefix)->count());
             echo $totalOrders . '  order ' . $sA->prefix . "<br>";
+            $cnt++;
         }
+        print_r($cnt);
         dd($totalOrders);
         $totalSales = 0;
         foreach ($stores as $sA) {
