@@ -202,9 +202,9 @@
                                 <tbody>
                                     @foreach($topProducts as $product)
                                     <tr>
-                                        <td><img src="{{@$product->product->prodImage}}" class="admin-profile-picture" /></td>
-                                        <td>{{@$product->product->product}}</td>
-                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{number_format((@$product->product->price  * Session::get('currency_val')), 2, '.', '')}}</td>
+                                        <td><img src="{{@$product->prodImage}}" class="admin-profile-picture" /></td>
+                                        <td>{{@$product->product}}</td>
+                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{number_format((@$product->price  * Session::get('currency_val')), 2, '.', '')}}</td>
                                         <td>{{@$product->trending_score}}</td>
                                     </tr>
                                     @endforeach
@@ -214,7 +214,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6marginBottom20">
+            <div class="col-md-6 marginBottom20">
                 <div class="box box-warning" >
                     <div class="box-header dashbox-header with-border bg-yellow">
                         <h3 class="box-title dashbox-title">Top Customers</h3>

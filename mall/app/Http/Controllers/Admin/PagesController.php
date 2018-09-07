@@ -65,20 +65,21 @@ class PagesController extends Controller {
 //                }
 //            }
 //        }
-        $topProducts = Product::where('is_avail', 1)->where('is_individual', 1)->where('status', 1)->orderBy('trending_score', 'desc')->get(['store_prod_id', '']);
+        //['store_prod_id', 'prefix', 'store_id']
+        $topProducts = Product::where('is_avail', 1)->where('is_individual', 1)->where('status', 1)->orderBy('trending_score', 'desc')->limit(5)->get();
         foreach ($topProducts as $prd) {
-            $prod = DB::table($prd->prefix . '_products')->where('id', $prd->store_prod_id)->first();
-            $prd->product = $prod;
-            if (!empty($prod->product)) {
-                $catImg = DB::table($prd->prefix . '_catalog_images')->where('catalog_id', $prd->id)->where("image_mode", 1)->first();
+//            $prod = DB::table($prd->prefix . '_products')->where('id', $prd->store_prod_id)->first();
+//            $prd->product = $prod;
+//            if (!empty($prod)) {
+                $catImg = DB::table($prd->prefix . '_catalog_images')->where('catalog_id', $prd->store_prod_id)->where("image_mode", 1)->first();
                 if ($catImg) {
-                    $prd->product->prodImage = ($catImg->image_path . '/' . $catImg->filename);
+                    $prd->prodImage = ($catImg->image_path . '/' . $catImg->filename);
                 } else {
-                    $prd->product->prodImage = DB::table('stores')->where('id', $prd->store_id)->first()->store_domain . '/uploads/catalog/products/default-product.jpg';
+                    $prd->prodImage = DB::table('stores')->where('id', $prd->store_id)->first()->store_domain . '/uploads/catalog/products/default-product.jpg';
                 }
-            }
+//            }
         }
-        dd($topProducts);
+//        dd($topProducts);
 
         $topUsers = Order::whereNotIn("order_status", [0, 4, 6, 10])->with('users')->limit(10)->groupBy('user_id')->orderBy('total_amount', 'desc')->get(['user_id', DB::raw('count(user_id) as top'), DB::raw('sum(pay_amt) as total_amount')]);
         $latestOrders = Order::whereNotIn('order_status', [3, 4, 5, 6, 10])->where('prefix', '')->limit(10)->orderBy('created_at', 'desc')->get();
