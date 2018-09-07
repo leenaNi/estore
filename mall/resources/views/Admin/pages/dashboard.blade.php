@@ -214,7 +214,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6marginBottom20">
+            <div class="col-md-6 marginBottom20">
                 <div class="box box-warning" >
                     <div class="box-header dashbox-header with-border bg-yellow">
                         <h3 class="box-title dashbox-title">Top Customers</h3>
