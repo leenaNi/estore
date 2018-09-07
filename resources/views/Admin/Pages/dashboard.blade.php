@@ -85,7 +85,7 @@
             <div class="small-box bg-teal">
                 <div class="inner">
                     <h3>
-                        <span class="currency-sym"> </span><span class="priceConvert">  {{ number_format($data['totalOrders']) }}</span>
+                         {{ number_format($data['totalOrders']) }}
                     </h3>
                     <p>Total Orders</p>
                 </div>
