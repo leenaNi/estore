@@ -19,7 +19,11 @@ use DB;
 class PaymentSettlementController extends Controller {
 
     public function index() {
-    $stores=Store::where("status",1)->pluck("store_name","id");
+//     $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
+//                leftjoin("payment_settlement", "payment_settlement.order_id", '=', "has_products.id")
+//                ->select(DB::raw('sum(has_products.pay_amt) as totalOrder' ), 'stores.store_name', DB::raw('sum(payment_settlement.settled_amt) as totalPaid'),  DB::raw('sum(payment_settlement.order_amt) as orderAmt'))->groupBy("has_products.store_id")->get();
+//         dd($orders);
+         $stores=Store::where("status",1)->pluck("store_name","id");
     $settle = Input::get('settlement');
     $storeId = Input::get('storeId');
         $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
@@ -84,5 +88,12 @@ class PaymentSettlementController extends Controller {
         DB::table("payment_settlement")->insert($history);
         DB::table("has_products")->where("id", $order->id)->update(['settled_status' => 1]);
     }
-
+public function settlementSummary(){
+       $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
+                leftjoin("payment_settlement", "payment_settlement.order_id", '=', "has_products.id")
+                ->select(DB::raw('sum(has_products.pay_amt) as totalOrder' ), 'stores.store_name', DB::raw('sum(payment_settlement.settled_amt) as totalPaid'),  DB::raw('sum(payment_settlement.order_amt) as orderAmt'))->groupBy("has_products.store_id")->get();
+      $data = ['orders' => $orders];
+        $viewname = Config('constants.AdminPagesPaymentettlement') . ".settlementSummary";
+        return Helper::returnView($viewname, $data);
+}
 }

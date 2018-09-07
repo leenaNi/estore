@@ -9,7 +9,7 @@
                 </a>
             </li>
 
-       
+
             <li class="{{ (in_array(Route::currentRouteName(),['admin.merchants.view'])?'active':'') }}">
                 <a href="{{ route('admin.merchants.view') }}">
                     <i class="fa fa-users"></i> <span>Merchants</span>
@@ -40,18 +40,29 @@
 
                     <li class="{{ in_array(Route::currentRouteName(),['admin.analytics.byStore']) ? 'active' : '' }}"><a href="{{ route('admin.analytics.byStore') }}"><i class="fa fa-circle-o"></i>By Store</a></li>
                     <!-- <li class="{{ in_array(Route::currentRouteName(),['admin.analytics.byDate']) ? 'active' : '' }}"><a href="{{ route('admin.analytics.byDate') }}"><i class="fa fa-circle-o"></i>By Date</a></li> -->
-                                        <li class="{{ in_array(Route::currentRouteName(),['admin.analytics.byCategory']) ? 'active' : '' }}"><a href="{{ route('admin.analytics.byCategory') }}"><i class="fa fa-circle-o"></i>By Category</a></li>
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.analytics.byCategory']) ? 'active' : '' }}"><a href="{{ route('admin.analytics.byCategory') }}"><i class="fa fa-circle-o"></i>By Category</a></li>
 
                 </ul>
 
             </li>
-      <li class="{{ (in_array(Route::currentRouteName(),['admin.payment-settlement.view'])?'active':'') }}">
-                <a href="{{ route('admin.payment-settlement.view') }}">
-                    <i class="fa fa-shopping-cart"></i> <span>Payment Settlement</span>
 
+
+            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.payment-settlement','admin.payment-settlements.settlementSummary']) ? 'active' : '' }}">
+                <a href="#">
+                    <i class="fa fa-area-chart"></i> <span>Payment Settlement</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
                 </a>
+                <ul class="treeview-menu {{ in_array(Route::currentRouteName(),['admin.payment-settlement.view','admin.payment-settlements.settlementSummary']) ? 'menu-open' : '' }}">
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.payment-settlement.view']) ? 'active' : '' }}"><a href="{{ route('admin.payment-settlement.view') }}"><i class="fa fa-circle-o"></i>Payment Settlement</a></li>
+
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.payment-settlements.settlementSummary']) ? 'active' : '' }}"><a href="{{route('admin.payment-settlements.settlementSummary')}}"><i class="fa fa-circle-o"></i>Settlement Summary</a></li>
+
+                </ul>
 
             </li>
+          
             <li class="treeview {{ in_array(Route::currentRouteName(),['admin.systemusers.roles.view','admin.systemusers.users.view']) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-users"></i> <span>System Users</span>
@@ -66,7 +77,7 @@
                 </ul>
 
             </li>
-             <li class="treeview {{ in_array(Route::currentRouteName(),['admin.notification.view']) ? 'active' : '' }}">
+            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.notification.view']) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-users"></i> <span>Push Notification</span>
                     <span class="pull-right-container">
@@ -74,13 +85,13 @@
                     </span>
                 </a>
                 <ul class="treeview-menu {{ in_array(Route::currentRouteName(),['admin.notification.view']) ? 'menu-open' : '' }}">
-                   
+
                     <li><a href="{{ route('admin.notification.view') }}"><i class="fa fa-circle-o"></i>Sent Notification</a></li>
 
                 </ul>
 
             </li>
-    
+
             <li class="treeview  {{ in_array(Route::currentRouteName(),['admin.masters.category.view','admin.masters.language.view','admin.masters.language.addEdit','admin.masters.category.addEdit','admin.masters.themes.view','admin.masters.themes.addEdit']) ? 'active' : '' }}" >
                 <a href="#">
                     <i class="fa fa-database"></i> <span>Masters</span>
@@ -95,11 +106,11 @@
                                'admin.masters.language.view'
                             ]) ? 'menu-open' : '' }}">
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.category.view','admin.masters.category.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.category.view') }}"><i class="fa fa-circle-o"></i>Store Categories</a></li>
-                    
+
 
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.language.view','admin.masters.language.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.language.view') }}"><i class="fa fa-circle-o"></i>Language</a></li>
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.translation.view'])?'active':'' }}"><a href="{{ route('admin.masters.translation.view') }}"><i class="fa fa-circle-o"></i>Translation</a></li>
-                       <li class="{{ in_array(Route::currentRouteName(),['admin.masters.themes.view','admin.masters.themes.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.themes.view') }}"><i class="fa fa-circle-o"></i>Themes</a></li>
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.masters.themes.view','admin.masters.themes.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.themes.view') }}"><i class="fa fa-circle-o"></i>Themes</a></li>
 
 
                 </ul>
