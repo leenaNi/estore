@@ -189,7 +189,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        {{$topProducts}}
+                        {{//$topProducts}}
                         <div class="table-responsive">
                             <table class="table no-margin">
                                 <thead>
