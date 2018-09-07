@@ -189,6 +189,7 @@
                         </div>
                     </div>
                     <div class="box-body">
+                        {{$topProducts}}
                         <div class="table-responsive">
                             <table class="table no-margin">
                                 <thead>
@@ -202,9 +203,9 @@
                                 <tbody>
                                     @foreach($topProducts as $product)
                                     <tr>
-                                        <td><img src="{{@$product->product->prodImage}}" class="admin-profile-picture" /></td>
-                                        <td>{{@$product->product->product}}</td>
-                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{number_format((@$product->product->price  * Session::get('currency_val')), 2, '.', '')}}</td>
+                                        <td><img src="{{@$product->prodImage}}" class="admin-profile-picture" /></td>
+                                        <td>{{@$product->product}}</td>
+                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{number_format((@$product->price  * Session::get('currency_val')), 2, '.', '')}}</td>
                                         <td>{{@$product->trending_score}}</td>
                                     </tr>
                                     @endforeach
