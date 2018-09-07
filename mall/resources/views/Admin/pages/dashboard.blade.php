@@ -178,7 +178,7 @@
             </div>
         </div>
         <div class="row">
-<!--            <div class="col-md-6 marginBottom20">
+            <div class="col-md-6 marginBottom20">
                 <div class="box box-success" >
                     <div class="box-header dashbox-header with-border bg-green">
                         <h3 class="box-title dashbox-title">Top Selling Products</h3>
@@ -201,12 +201,11 @@
                                 </thead>
                                 <tbody>
                                     @foreach($topProducts as $product)
-
                                     <tr>
                                         <td><img src="{{@$product->product->prodImage}}" class="admin-profile-picture" /></td>
                                         <td>{{@$product->product->product}}</td>
                                         <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{number_format((@$product->product->price  * Session::get('currency_val')), 2, '.', '')}}</td>
-                                        <td>{{@$product->quantity}}</td>
+                                        <td>{{@$product->trending_score}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -214,8 +213,8 @@
                         </div>
                     </div>
                 </div>
-            </div>-->
-            <div class="col-md-12 marginBottom20">
+            </div>
+            <div class="col-md-6marginBottom20">
                 <div class="box box-warning" >
                     <div class="box-header dashbox-header with-border bg-yellow">
                         <h3 class="box-title dashbox-title">Top Customers</h3>
