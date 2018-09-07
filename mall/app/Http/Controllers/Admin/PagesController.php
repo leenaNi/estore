@@ -65,7 +65,7 @@ class PagesController extends Controller {
 //                }
 //            }
 //        }
-        $topProducts = Product::where('is_avail', 1)->where('is_individual', 1)->where('status', 1)->orderBy('trending_score', 'desc')->get(['store_prod_id', '']);
+        $topProducts = Product::where('is_avail', 1)->where('is_individual', 1)->where('status', 1)->orderBy('trending_score', 'desc')->get(['store_prod_id', 'prefix', 'store_id']);
         foreach ($topProducts as $prd) {
             $prod = DB::table($prd->prefix . '_products')->where('id', $prd->store_prod_id)->first();
             $prd->product = $prod;
