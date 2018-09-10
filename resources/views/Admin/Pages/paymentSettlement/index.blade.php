@@ -72,10 +72,11 @@
                             <th><input type="checkbox" id="checkAll" /></th>
                             <th>Order Id</th>
 
-                            <th>Sub Order Id</th>
+                            <th>Mrch. Order Id</th>
                             <th>Store Name</th>
-                            <th>Paid Amount</th>
+                            <th>Received Amount</th>
                             <th>Settled Amt</th>
+                            <th>Commision Amt</th>
                             <th>Settled Date</th>
                             <th>Created Date</th>
                             <th>Settled Status</th>
@@ -89,7 +90,8 @@
                             <td>{{ $order->store_name }}</td>
                             <td> <span class="currency-sym"> </span><span class="priceConvert"> {{ $order->pay_amt }}<span></td>
                             <td> <span class="currency-sym"> </span> <span class="priceConvert"> {{ $order->settled_amt? $order->settled_amt:'0'}}</span></td>
-                            <td > {{ date('d-M-Y',strtotime($order->settled_date)) }}</td>
+                            <td> <span class="currency-sym"> </span> <span class="priceConvert"> {{ $order->commision? $order->commision:'0'}}</span></td>
+                            <td > {{@$order->settled_date? date('d-M-Y',strtotime(@$order->settled_date)):'--' }}</td>
 
 
                             <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
