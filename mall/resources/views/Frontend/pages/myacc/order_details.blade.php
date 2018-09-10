@@ -150,7 +150,7 @@ $currency_code = "inr";
                                                 @endif
                                                 <td>
                                                     <?php
-                                                    $status = HasProducts::where('order_id', $order->id)->where('prod_id', $prd['store_prod_id'])->where('sub_prod', $prd['sub_prod'])->with('orderstatus')->first();
+                                                    $status = App\Models\HasProducts::where('order_id', $order->id)->where('prod_id', $prd['store_prod_id'])->where('sub_prod', $prd['sub_prod'])->with('orderstatus')->first();
                                                     echo $status->orderstatus->order_status;
                                                     ?>
                                                 </td>
