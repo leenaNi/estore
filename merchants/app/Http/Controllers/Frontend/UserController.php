@@ -82,10 +82,13 @@ class UserController extends Controller {
         $returnPolicy = @GeneralSetting::where("type", 6)->first()->details;
         $returnProductStatus=GeneralSetting::where('url_key','return-product')->where('status',1)->get();
          $orderReturnReason=OrderReturnReason::pluck('reason','id');
+      $getid = $id;
+         $order = Order::where('orders.id', $getid)->with('currency','orderStatHist')->first();
         
-        $getid = $id;
-        $order = Order::where('id', $getid)->with('currency','orderStatHist')->with(['products'=>function($pro){
-         return $pro->with([
+       
+    $prod_id = HasProducts::where('order_id', $getid)->where("prefix",$this->jsonString['prefix'])->pluck("prod_id");
+      
+            $products=Product::whereIn("id",$prod_id)->with([
                                 'subproducts' => function ($query) {
                                     $query->with(['attributes' => function($q) {
                                             $q->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
@@ -97,15 +100,15 @@ class UserController extends Controller {
                                             $qattr->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
                                         }]);
                                 }
-                                    ]);
-        }])->first();
+                                    ])->get();
+        //dd($products);
         $collectOrderProduct=[];
-        dd($order->products);
-        if(isset($order->products) && count($order->products)>0)
-        foreach($order->products as $getProduct):
+        //dd($order->orderStatHist);
+        if(isset($products) && count($products)>0)
+        foreach($products as $getProduct):
             $collectOrderProduct[$getProduct->id]=$getProduct;
         endforeach;
-        dd($collectOrderProduct);
+       // dd($collectOrderProduct);
         $this->order_id=$getid;
         $getReturnRequest=ReturnOrder::where("order_id",$getid)->with('return_status_id','exchangeProduct')->get();
         $getReturnRequestSum=ReturnOrder::select('return_order.*', DB::raw('sum(quantity) as quantityAdd'))->where("order_id",$getid)->groupBy('sub_prod')->pluck('sub_prod','sub_prod');
