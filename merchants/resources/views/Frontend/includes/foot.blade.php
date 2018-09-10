@@ -1185,13 +1185,22 @@ function getFbUserData(){
  $(".tracking").on("click", function () {
             $("#myModal").modal('show');
         });
-        
+        $("#trackingId").keyup(function(){
+            if($("#trackingId").val().length < 12 || ($("#trackingId").val()=='')){
+             $("#trackingId").css('border-color', 'red')   
+            }else{
+               $("#trackingId").css('border-color', '')   
+            }
+        })
         $(".eurireTraking").on("click", function () {
             var trackingId=$("#trackingId").val();
-            if(trackingId==''){
+            if(trackingId.length < 12){
                 $("#trackingId").focus();
+                $("#trackingId").css('border-color', 'red');
+                $("#trackingId").attr("placeholder", "Please enter tracking Id");
                 return false;
             }else{
+                
                            $.ajax({
                             url: "{{ route('ecurierTracking')}}",
                             type: 'post',
