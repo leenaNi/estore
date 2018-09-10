@@ -150,7 +150,7 @@ $currency_code = "inr";
                                                 @endif
                                                 <td>
                                                     <?php
-                                                    if (array_key_exists($prd['options'], 'store_prod_id')) {
+                                                    if (array_key_exists('store_prod_id', $prd['options'])) {
                                                         $status = App\Models\HasProducts::where('order_id', $order->id)->where('prod_id', $prd['options']['store_prod_id'])->where('sub_prod', $prd['sub_prod'])->with('orderstatus')->first();
                                                         echo $status->orderstatus->order_status;
                                                     }
