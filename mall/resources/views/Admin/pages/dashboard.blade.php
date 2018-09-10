@@ -12,7 +12,7 @@
 <!-- Main content -->
 <section>
     <div class="panel-body">   
-            <div class="row">
+        <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
                     <span class="info-box-icon bg-aqua"><i class="fa fa-shopping-cart"></i></span>
@@ -50,11 +50,11 @@
                 </div>
             </div>
         </div>
-   
+
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
-                    <span class="info-box-icon bg-green"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span></span>
+                    <span class="info-box-icon bg-green"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';          ?><span class="currency-sym"></span></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Sales Today</span>
                         <span class="info-box-number">{{ number_format($todaysSales * Session::get('currency_val')) }}</span>
@@ -63,7 +63,7 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
-                    <span class="info-box-icon bg-green"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span></span>
+                    <span class="info-box-icon bg-green"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';          ?><span class="currency-sym"></span></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Sales This Week</span>
                         <span class="info-box-number ">{{ number_format($weeklySales * Session::get('currency_val')) }}</span>
@@ -72,7 +72,7 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
-                    <span class="info-box-icon bg-green"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span></span>
+                    <span class="info-box-icon bg-green"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';          ?><span class="currency-sym"></span></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Sales This Month</span>
                         <span class="info-box-number">{{ number_format($monthlySales * Session::get('currency_val')) }}</span>
@@ -81,7 +81,7 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
-                    <span class="info-box-icon bg-green"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span></span>
+                    <span class="info-box-icon bg-green"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';          ?><span class="currency-sym"></span></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Sales This Year</span>
                         <span class="info-box-number">{{ number_format($yearlySales  * Session::get('currency_val')) }}</span>
@@ -89,7 +89,7 @@
                 </div>
             </div>
         </div>
-             <div class="row">
+        <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
                     <span class="info-box-icon bg-yellow"><i class="fa fa-user"></i></span>
@@ -126,9 +126,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    
-  <div class="row">
+        </div>    
+        <div class="row">
             <div class="col-md-12 marginBottom20">
                 <div class="box box-info" >
                     <div class="box-header dashbox-header with-border bg-aqua">
@@ -164,7 +163,7 @@
                                         <td>{{ @$order->orderstatus['order_status'] }}</td>  
                                         <td>{{ @$order->paymentstatus['payment_status'] }}</td>
                                         <td>{{ @$order->paymentmethod['name'] }}</td>
-                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{ number_format((@$order->pay_amt * Session::get('currency_val')), 2, '.', '')}}</td>
+                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';          ?><span class="currency-sym"></span> {{ number_format((@$order->pay_amt * Session::get('currency_val')), 2, '.', '')}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -242,8 +241,8 @@
     <!--                                    <td><img src="{{@$user->users->profile ? @$user->users->profile : asset('public/Admin/dist/img/no-image.jpg')}}" class="admin-profile-picture" /></td>-->
                                         <td>{{@$user->users->firstname}} {{@$user->users->lastname}}</td>
                                         <td>{{@$user->users->email}}</td>
-                                         <td>{{@$user->users->telephone}}</td>
-                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{ number_format((@$user->total_amount  * Session::get('currency_val')), 2, '.', '')}}</td>
+                                        <td>{{@$user->users->telephone}}</td>
+                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';          ?><span class="currency-sym"></span> {{ number_format((@$user->total_amount  * Session::get('currency_val')), 2, '.', '')}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -256,9 +255,6 @@
                 </div>
             </div>
         </div>
-
-      
-
         <div class="row">
             <div class="col-md-6 marginBottom20">
                 <div class="box box-success" >
@@ -281,13 +277,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     @foreach($latestProducts as $product)
-
                                     <tr>
                                         <td><img src="{{@$product->prodImage}}" class="admin-profile-picture" /></td>
                                         <td>  {{@$product->product}}</td>
-                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{ number_format((@$product->selling_price* Session::get('currency_val')), 2, '.', '')}}</td>
+                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';          ?><span class="currency-sym"></span> {{ number_format((@$product->selling_price* Session::get('currency_val')), 2, '.', '')}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -318,7 +312,7 @@
                                             <!--<th>Picture</th>-->
                                             <th>Name</th>
                                             <th>Email</th>
-                                             <th>Registered Date</th>
+                                            <th>Registered Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -327,7 +321,7 @@
                                             <!--<td><img src="{{@$user->users->profile ? @$user->users->profile : asset('public/Admin/dist/img/no-image.jpg')}}" class="admin-profile-picture" /></td>-->
                                             <td>{{@$user->firstname}} {{@$user->lastname}}</td>
                                             <td>{{@$user->email}}</td>
-                                             <td>{{date("d-M-Y",strtotime($user->created_at))}}</td>
+                                            <td>{{date("d-M-Y",strtotime($user->created_at))}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -340,9 +334,7 @@
                 </div>
             </div>
         </div>
-
         <div class="clearfix"></div>
-
         <div class="row">
             <div class="col-md-6">
                 <div class="box box-primary">
@@ -379,7 +371,6 @@
         </div>
     </div>
 </section>
-
 @stop
 @section('myscripts')
 <script>
