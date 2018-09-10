@@ -104,6 +104,7 @@ class UserController extends Controller {
         foreach($order->products as $getProduct):
             $collectOrderProduct[$getProduct->id]=$getProduct;
         endforeach;
+        dd($collectOrderProduct);
         $this->order_id=$getid;
         $getReturnRequest=ReturnOrder::where("order_id",$getid)->with('return_status_id','exchangeProduct')->get();
         $getReturnRequestSum=ReturnOrder::select('return_order.*', DB::raw('sum(quantity) as quantityAdd'))->where("order_id",$getid)->groupBy('sub_prod')->pluck('sub_prod','sub_prod');
