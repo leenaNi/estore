@@ -41,8 +41,9 @@
 
                          
                             <th>Store Name</th>
-                            <th>Total Amount</th>
+                            <th>Total Amt</th>
                             <th>Settled Amt</th>
+                            <!--<th>Commision</th>-->
                             <th>Un Settled Amt</th>
                            
                         </tr>
@@ -53,6 +54,7 @@
                             <td>{{ $order->store_name }}</td>
                             <td><span class="currency-sym"> </span><span class="priceConvert">{{ $order->totalOrder }}</span></td>
                             <td><span class="currency-sym"> </span><span class="priceConvert"> {{ $order->totalPaid ?$order->totalPaid:'0'}}</span></td>
+                            <!--<td><span class="currency-sym"> </span><span class="priceConvert"> {{ ($order->totalPaid)-($order->totalPaid) }}</span></td>-->
                             <td><span class="currency-sym"> </span><span class="priceConvert">{{ ($order->totalOrder) - ($order->orderAmt) }}</span></td>
                             </td>
                         </tr>
