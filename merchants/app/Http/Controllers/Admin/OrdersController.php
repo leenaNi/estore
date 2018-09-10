@@ -648,14 +648,13 @@ class OrdersController extends Controller {
 
         $orders = Order::whereIn('id', explode(",", $allids))->with('currency')->get();
         foreach ($orders as $key => $order) {
-            $catlogs = json_decode($order->cart, true);
-
+            $catlogs = json_decode($order->cart, true);           
             $orders[$key]->previous_order = [];
             if ($order->forward_id != 0) {
                 $orders[$key]->previous_order = Order::where('id', $order->forward_id)->select('order_amt', 'pay_amt')->get();
             }
             foreach ($catlogs as $key2 => $product) {
-                //echo $key2."".$product['options']['cats'][0];die;
+             //  dd($product['options']);die;
                 // dd($product['id']);
                 $catlogs[$key2]['product'] = Product::where('id', $product['id'])->first();
                 $catlogs[$key2]['category'] = Category::where('id', $product['options']['cats'][0])->first();

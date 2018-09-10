@@ -76,10 +76,10 @@ $currency_code = "inr";
                                                     $cartData = json_decode($order->cart, true);
                                                     $gettotal = 0;
                                                     ?> 
-                                                    @foreach($orderProds as $key => $ordProd) 
+                                                    @foreach($orderProds as $key => $prd) 
                                                     <?php
-                                                    $prd = App\Library\Helper::getCartProd($cartData, $ordProd->prod_id, $ordProd->sub_prod_id);
-                                                    print_r($prd);
+                                                    //$prd = App\Library\Helper::getCartProd($cartData, $ordProd->prod_id, $ordProd->sub_prod_id);
+                                                   // print_r($prd);
                                                     ?>
                                                     <tr class="cart_item">
                                                 <input type="hidden" id="oid" value="{{ $order->id }}" />
