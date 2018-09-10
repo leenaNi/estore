@@ -1865,7 +1865,7 @@ class CheckoutController extends Controller {
 
 
             if ($cart->options->has('sub_prod')) {
-                $cart_ids[$product->store_prod_id]["sub_prod_id"] = $cart->options->sub_prod;
+                $cart_ids[$product->id]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
                 $proddetails['id'] = $prddataS->store_prod_id;
@@ -1875,8 +1875,8 @@ class CheckoutController extends Controller {
                 $proddetails['qty'] = $cart->qty;
                 $proddetails['subtotal'] = $subtotal;
                 $proddetails['is_cod'] = $prddataS->is_cod;
-                $cart_ids[$product->store_prod_id]["product_details"] = json_encode($proddetails);
-                $cart_ids[$product->store_prod_id]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$product->id]["product_details"] = json_encode($proddetails);
+                $cart_ids[$product->id]["prod_type"] = $cart->options->prod_type;
                 $prddataS->trending_score = $prddataS->trending_score + $cart->qty;
                 $prddataS->update();
                 if ($prddataS->is_stock == 1) {
@@ -1916,7 +1916,7 @@ class CheckoutController extends Controller {
                         }
                     }
                 }
-                $cart_ids[$product->store_prod_id]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$product->id]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
                 $prddataSp = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
@@ -1928,11 +1928,11 @@ class CheckoutController extends Controller {
                 $proddetailsp['subtotal'] = $subtotal;
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
 
-                $cart_ids[$product->store_prod_id]["product_details"] = json_encode($proddetailsp);
+                $cart_ids[$product->id]["product_details"] = json_encode($proddetailsp);
                 //$cart_ids[$cart->id]["eCount"] = $cart->options->eCount;
 //                $date = $cart->options->eNoOfDaysAllowed;
 //                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$product->store_prod_id]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$product->id]["prod_type"] = $cart->options->prod_type;
                 $prddataS->trending_score = $prddataS->trending_score + $cart->qty;
                 $prddataS->update();
 
@@ -1948,11 +1948,11 @@ class CheckoutController extends Controller {
 //                    $this->AdminStockAlert($prd->id);
 //                }
             }
-            $cart_ids[$product->store_prod_id]["order_source"] = "Mall";
-            $cart_ids[$product->store_prod_id]["order_status"] = 1;
+            $cart_ids[$product->id]["order_source"] = "Mall";
+            $cart_ids[$product->id]["order_status"] = 1;
             // $order->products()->attach($cart_ids); 
-            // DB::table($cart->options->prefix . '_has_products')->insert($cart_ids);
-            $order->products()->attach($product->store_prod_id, $cart_ids[$product->store_prod_id]);
+//             DB::table('has_products')->insert($cart_ids);
+            $order->products()->attach($product->store_prod_id, $cart_ids[$product->id]);
         }
         //  $this->orderSuccess();
     }
