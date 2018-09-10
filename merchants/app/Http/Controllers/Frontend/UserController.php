@@ -100,6 +100,7 @@ class UserController extends Controller {
                                     ]);
         }])->first();
         $collectOrderProduct=[];
+        dd($order->products);
         if(isset($order->products) && count($order->products)>0)
         foreach($order->products as $getProduct):
             $collectOrderProduct[$getProduct->id]=$getProduct;
