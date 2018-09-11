@@ -78,7 +78,7 @@ class SalesController extends Controller {
                 ->where('is_individual', '=', '1')->orderBy("product", "asc")
                 ->join("has_products as hp", "hp.prod_id", '=', 'p.id')->whereNotIn('hp.order_status',[0,4,6,10])
                 ->join($this->jsonString['prefix']."_has_categories as hc", "hc.prod_id", "=", "p.id")
-                ->join("categories as c", "c.id", "=", "hc.cat_id")
+                ->join($this->jsonString['prefix']."_categories as c", "c.id", "=", "hc.cat_id")
                 ->where("hp.store_id", $this->jsonString['store_id'])
                 ->select('p.id','p.product',DB::raw("SUM(hp.qty) tot_qty"),DB::raw("SUM(hp.pay_amt) sales"), 'c.category')
                 ->groupBy('p.id');
