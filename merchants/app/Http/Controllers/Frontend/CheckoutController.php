@@ -1969,7 +1969,7 @@ class CheckoutController extends Controller {
             $cart_ids[$cart->id]["order_id"] = $orderId;
             $cart_ids[$cart->id]["prod_id"] = $cart->id;
             $cart_ids[$cart->id]["order_status"] = 1;
-            $cart_ids[$cart->id]["order_source"] = $jsonString['storeName'];
+            $cart_ids[$cart->id]["order_source"] = 2;
             HasProducts::insert($cart_ids);
          // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
           //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);

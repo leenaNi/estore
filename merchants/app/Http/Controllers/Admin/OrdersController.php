@@ -256,7 +256,7 @@ class OrdersController extends Controller {
             $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
             $additional = json_decode($order->additional_charge, true);
             $prodTab=$jsonString['prefix'].'_products';
-         $prods= HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'.id','=','has_products.prod_id')->where("prefix",$this->jsonString['prefix'])
+            $prods= HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'.id','=','has_products.prod_id')->where("prefix",$this->jsonString['prefix'])
                 ->select($prodTab.".*",'has_products.order_id','has_products.disc','has_products.prod_id','has_products.qty','has_products.price as hasPrice','has_products.product_details','has_products.sub_prod_id')->get();
           
            // $prod_id = HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'id','=','has_prodducts.prod_id')->where("prefix",$this->jsonString['prefix']);
@@ -482,7 +482,7 @@ class OrdersController extends Controller {
                 $cart_ids[$cart->id]["order_id"] = Input::get('id');
                 $cart_ids[$cart->id]["prod_id"] = $prd->id;
                 $cart_ids[$cart->id]["order_status"] = 1;
-                $cart_ids[$cart->id]["order_source"] = $this->$jsonString['storeName'];
+                $cart_ids[$cart->id]["order_source"] =2;
                 HasProducts::insert($cart_ids);
                 //$orderUpdateCart->products()->attach($cart->id, $cart_ids[$cart->id]);
             }
