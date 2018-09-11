@@ -681,7 +681,7 @@ class OrdersController extends Controller {
 //        dd($orders);
         // return View(Config('constants.adminOrderView') . '.invoice', compact('orders', 'allids'));
         $viewname = Config('constants.adminOrderView') . '.invoice';
-        $data = ['orders' => $orders, 'allids' => $allids, 'additional' => $additional, 'chrges' => $addCharge];
+        $data = ['orders' => $orders, 'allids' => $allids, 'additional' => $additional, 'chrges' => $addCharge, 'jsonString' => $this->jsonString];
         return Helper::returnView($viewname, $data);
     }
 
