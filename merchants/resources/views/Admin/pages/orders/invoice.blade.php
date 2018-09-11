@@ -170,6 +170,13 @@ $address = $order->users->addresses->first();
             //print_r($order->cartItems);
             ?>
             @foreach($order->cartItems as $prd)
+            <?php
+            if ($prd['options']['prefix'] == $this->jsonString['prefix']) {
+                echo "Matched";
+            } else {
+                echo "Not Matched";
+            }
+            ?>
             <tr>
                 <td><strong>{{ ucwords($prd['name']) }} <br/>
                         {{ @$prd['category']->category }}<br/></strong>
@@ -196,7 +203,7 @@ $address = $order->users->addresses->first();
                             if (!empty($value['options'])) {
                                 foreach ($value['options'] as $opt => $optval) {
                                     echo $value['name'] . "<br/>";
-                                    echo DB::table('attributes')->where('id', $opt)->first()->attr . ": " . DB::table('attribute_values')->where('id', $optval)->first()->option_name . str_repeat('&nbsp;', 2), "<br/>"; 
+                                    echo DB::table('attributes')->where('id', $opt)->first()->attr . ": " . DB::table('attribute_values')->where('id', $optval)->first()->option_name . str_repeat('&nbsp;', 2), "<br/>";
                                 }
                                 echo "SKU: " . $value['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . @Product::find($value['sub_prod'])->warehouse_code . "<br/><br/>";
                             } else {
@@ -276,12 +283,12 @@ $address = $order->users->addresses->first();
             ?>  
             @endif    
 
-            <?php //if ($order->shipping_amt > 0) { ?>
+            <?php //if ($order->shipping_amt > 0) {   ?>
 <!--                <tr>
     <td  colspan="5" class="txtr br0"> <span>Shipping Charges: </span>  </td>
-    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                                 ?>"></i> {{ number_format($order->shipping_amt) }} </td>
+    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                                          ?>"></i> {{ number_format($order->shipping_amt) }} </td>
 </tr>-->
-            <?php // }  ?>
+            <?php // }    ?>
 
 
             <?php if (!empty($order->voucher_amt_used)) { ?>
