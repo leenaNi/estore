@@ -243,7 +243,7 @@
                                     @foreach($topUsers as $user)
                                     <tr>
     <!--                                    <td><img src="{{@$user->users->profile ? @$user->users->profile : asset('public/Admin/dist/img/no-image.jpg')}}" class="admin-profile-picture" /></td>-->
-                                        <td>{{@$user->first_name}} {{@$user->last_name}}</td>
+                                        <td>{{@$user->firstname}} {{@$user->lastname}}</td>
                                         <td>{{@$user->email}}</td>
                                         <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?><span class="currency-sym"></span> {{ number_format((@$user->total_amount  * Session::get('currency_val')), 2, '.', '')}}</td>
                                     </tr>

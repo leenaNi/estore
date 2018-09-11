@@ -1948,7 +1948,7 @@ class CheckoutController extends Controller {
 //                    $this->AdminStockAlert($prd->id);
 //                }
             }
-            $cart_ids[$product->id]["order_source"] = "Mall";
+            $cart_ids[$product->id]["order_source"] = 1;
             $cart_ids[$product->id]["order_status"] = 1;
             // $order->products()->attach($cart_ids); 
 //             DB::table('has_products')->insert($cart_ids);

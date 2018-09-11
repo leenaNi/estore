@@ -207,7 +207,12 @@
                                 <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
                                 @endif
                                 </td>
- <td>{{ @$order->order_source }}</td>
+ <td>@if(@$order->order_source==1)
+ Mall 
+ @elseif(@$order->order_source==2)
+{{ Session::get("storeName")}}
+ @endif
+ </td>
 <!--                                <td><?php
 //                                    if ($order->courier == 1) {
 //                                        echo "Fedex";
