@@ -171,70 +171,70 @@ $address = $order->users->addresses->first();
             ?>
             @foreach($order->cartItems as $prd)
             <?php
-            if ($prd['options']['prefix'] == $this->jsonString['prefix']) {
-                echo "Matched";
-            } else {
-                echo "Not Matched";
-            }
-            ?>
-            <tr>
-                <td><strong>{{ ucwords($prd['name']) }} <br/>
-                        {{ @$prd['category']->category }}<br/></strong>
+            if ($prd['options']['prefix'] == $jsonString['prefix']) {
+//                echo "Matched";
+                ?>
+                <tr>
+                    <td><strong>{{ ucwords($prd['name']) }} <br/>
+                            {{ @$prd['category']->category }}<br/></strong>
 
-                    <?php //print_r($prd); ?>   
-                    <?php
-                    $prdT = $prd['product']->prod_type;
-                    $warehouseCode = $prd['product']->warehouse_code;
-                    if ($prdT == 1) {
-                        //echo "SKU: " . $prd['id'] . str_repeat('&nbsp;', 2) . "WC: " . $warehouseCode;
-                    }
-                    ?>
-
-                    <?php
-                    if (!empty($prd['options']['options'])) {
-                        foreach ($prd['options']['options'] as $key => $value) {
-                            echo DB::table('attributes')->where('id', $key)->first()->attr . ": " . DB::table('attribute_values')->where('id', $value)->first()->option_name . str_repeat('&nbsp;', 2) . "<br/>";
+                        <?php //print_r($prd);  ?>   
+                        <?php
+                        $prdT = $prd['product']->prod_type;
+                        $warehouseCode = $prd['product']->warehouse_code;
+                        if ($prdT == 1) {
+                            //echo "SKU: " . $prd['id'] . str_repeat('&nbsp;', 2) . "WC: " . $warehouseCode;
                         }
-                        echo "SKU: " . $prd['options']['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . $warehouseCode;
-                    }
+                        ?>
 
-                    if (!empty($prd['options']['combos'])) {
-                        foreach ($prd['options']['combos'] as $key => $value) {
-                            if (!empty($value['options'])) {
-                                foreach ($value['options'] as $opt => $optval) {
-                                    echo $value['name'] . "<br/>";
-                                    echo DB::table('attributes')->where('id', $opt)->first()->attr . ": " . DB::table('attribute_values')->where('id', $optval)->first()->option_name . str_repeat('&nbsp;', 2), "<br/>";
+                        <?php
+                        if (!empty($prd['options']['options'])) {
+                            foreach ($prd['options']['options'] as $key => $value) {
+                                echo DB::table('attributes')->where('id', $key)->first()->attr . ": " . DB::table('attribute_values')->where('id', $value)->first()->option_name . str_repeat('&nbsp;', 2) . "<br/>";
+                            }
+                            echo "SKU: " . $prd['options']['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . $warehouseCode;
+                        }
+
+                        if (!empty($prd['options']['combos'])) {
+                            foreach ($prd['options']['combos'] as $key => $value) {
+                                if (!empty($value['options'])) {
+                                    foreach ($value['options'] as $opt => $optval) {
+                                        echo $value['name'] . "<br/>";
+                                        echo DB::table('attributes')->where('id', $opt)->first()->attr . ": " . DB::table('attribute_values')->where('id', $optval)->first()->option_name . str_repeat('&nbsp;', 2), "<br/>";
+                                    }
+                                    echo "SKU: " . $value['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . @Product::find($value['sub_prod'])->warehouse_code . "<br/><br/>";
+                                } else {
+                                    $simpleProd = app\Models\Product::find($key);
+                                    $prodName = $simpleProd->product;
+                                    $prodCat = $simpleProd->categories()->first()->category;
+                                    $wc = $simpleProd->warehouse_code;
+                                    echo $prodName . "(" . $prodCat . ") <br/>" . "SKU: " . $simpleProd->id . str_repeat('&nbsp;', 2) . "WC: " . $wc . "<br/>";
                                 }
-                                echo "SKU: " . $value['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . @Product::find($value['sub_prod'])->warehouse_code . "<br/><br/>";
-                            } else {
-                                $simpleProd = app\Models\Product::find($key);
-                                $prodName = $simpleProd->product;
-                                $prodCat = $simpleProd->categories()->first()->category;
-                                $wc = $simpleProd->warehouse_code;
-                                echo $prodName . "(" . $prodCat . ") <br/>" . "SKU: " . $simpleProd->id . str_repeat('&nbsp;', 2) . "WC: " . $wc . "<br/>";
                             }
                         }
-                    }
-                    ?> 
+                        ?> 
 
-                </td>
-                <!--<td ></td>-->
+                    </td>
+                    <!--<td ></td>-->
 
+                    <?php
+                    $unitP = $prd['price'] / (1 + (@$prd['category']->vat / 100));
+                    $unitPSubtotal += round($prd['price'] / (1 + (@$prd['category']->vat / 100))) * $prd['qty'];
+                    ?>
+                    <td class="txtc">
+                        <span class="currency-sym"></span> {{ number_format(($prd['price']  * $currency_val)/(1 + (@$prd['category']->vat/100)),2) }}
+                    </td>
+                    <td class="txtc"> {{ $prd['qty'] }} </td>
+                    <?php $vatTotal += round(1 * (@$prd['category']->vat / 100) * $unitP) * $prd['qty']; ?>
+                    <?php if ($feature['tax'] == 1) { ?>
+                        <td class="txtc"><span class="currency-sym"></span> {{ number_format(1*(@$prd['category']->vat/100)*$unitP ,2) }}</td>
+                    <?php } ?>
+                    <td class="txtc" align=""><span class="currency-sym"></span> {{ number_format(@$prd['subtotal']  * $currency_val,2) }}</td>
+                </tr>
                 <?php
-                $unitP = $prd['price'] / (1 + (@$prd['category']->vat / 100));
-                $unitPSubtotal += round($prd['price'] / (1 + (@$prd['category']->vat / 100))) * $prd['qty'];
-                ?>
-                <td class="txtc">
-                    <span class="currency-sym"></span> {{ number_format(($prd['price']  * $currency_val)/(1 + (@$prd['category']->vat/100)),2) }}
-                </td>
-                <td class="txtc"> {{ $prd['qty'] }} </td>
-                <?php $vatTotal += round(1 * (@$prd['category']->vat / 100) * $unitP) * $prd['qty']; ?>
-                <?php if ($feature['tax'] == 1) { ?>
-                    <td class="txtc"><span class="currency-sym"></span> {{ number_format(1*(@$prd['category']->vat/100)*$unitP ,2) }}</td>
-                <?php } ?>
-                <td class="txtc" align=""><span class="currency-sym"></span> {{ number_format(@$prd['subtotal']  * $currency_val,2) }}</td>
-            </tr>
-            <?php $subtotal += @$prd['subtotal'] ?>
+            }
+            $subtotal += @$prd['subtotal']
+            ?>
             @endforeach
             @if($weight)
             <tr>
@@ -286,7 +286,7 @@ $address = $order->users->addresses->first();
             <?php //if ($order->shipping_amt > 0) {   ?>
 <!--                <tr>
     <td  colspan="5" class="txtr br0"> <span>Shipping Charges: </span>  </td>
-    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                                          ?>"></i> {{ number_format($order->shipping_amt) }} </td>
+    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                                                ?>"></i> {{ number_format($order->shipping_amt) }} </td>
 </tr>-->
             <?php // }    ?>
 
