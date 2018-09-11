@@ -76,10 +76,10 @@ $currency_code = "inr";
                                                     $cartData = json_decode($order->cart, true);
                                                     $gettotal = 0;
                                                     ?> 
-                                                    @foreach($orderProds as $key => $ordProd) 
+                                                    @foreach($cartData as $key => $prd) 
                                                     <?php
-                                                    $prd = App\Library\Helper::getCartProd($cartData, $ordProd->prod_id, $ordProd->sub_prod_id);
-                                                    print_r($prd);
+//                                                    $prd = App\Library\Helper::getCartProd($cartData, $ordProd->prod_id, $ordProd->sub_prod_id);
+//                                                    print_r($prd);
                                                     ?>
                                                     <tr class="cart_item">
                                                 <input type="hidden" id="oid" value="{{ $order->id }}" />
@@ -97,7 +97,7 @@ $currency_code = "inr";
                                                         if (!empty($prd['options']['options'])) {
                                                             $descript = "";
                                                             foreach ($prd['options']['options'] as $key => $value) {
-                                                                $descript .= DB::table($prd['options']['prefix'] .'_attribute_values')->where('id', $value)->first()->option_name . ",";
+                                                                $descript .= DB::table($prd['options']['prefix'] . '_attribute_values')->where('id', $value)->first()->option_name . ",";
                                                             }
                                                         }
                                                         if (!empty($prd['options']['combos'])) {
@@ -105,7 +105,7 @@ $currency_code = "inr";
                                                                 //  echo $key['options']."<br/>";
                                                                 if (!empty($value['options'])) {
                                                                     foreach ($value['options'] as $opt => $optval) {
-                                                                        echo "<span class='product-size'>" . @DB::table($prd['options']['prefix'] .'_attribute_values')->where('id', $optval)->first()->option_name . "</span> ";
+                                                                        echo "<span class='product-size'>" . @DB::table($prd['options']['prefix'] . '_attribute_values')->where('id', $optval)->first()->option_name . "</span> ";
                                                                     }
                                                                 }
                                                             }
@@ -149,7 +149,12 @@ $currency_code = "inr";
                                                 </td>
                                                 @endif
                                                 <td>
-                                                    {{$ordProd->orderstatus->order_status}}
+                                                    <?php
+                                                    if (array_key_exists('store_prod_id', $prd['options'])) {
+                                                        $status = App\Models\HasProducts::where('order_id', $order->id)->where('prod_id', $prd['options']['store_prod_id'])->where('sub_prod_id', $prd['options']['sub_prod'])->with('orderstatus')->first();
+                                                        echo $status->orderstatus->order_status;
+                                                    }
+                                                    ?>
                                                 </td>
                                                 <?php
                                                 $subTotal = ($prd['options']['tax_type'] == 2 ) ? $prd['subtotal'] + $prd['options']['tax_amt'] : $prd['subtotal'];
@@ -238,10 +243,10 @@ $currency_code = "inr";
                                                 //if ($order->order_status == 1) {
                                                 ?>
 <!--                                                    <tr class="cart_item ">
-                                        <td colspan="6" class="product-subtotal text-right">
-                                            <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
-                                        </td>
-                                    </tr>-->
+                            <td colspan="6" class="product-subtotal text-right">
+                                <a href="javascript:void(0)" class="button button-3d button-mini button-rounded orderCancelled"  >Cancel Order</a>
+                            </td>
+                        </tr>-->
                                                 <?php
                                                 //}
                                                 ?>
