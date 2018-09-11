@@ -390,7 +390,7 @@
                                 <td>{{ $prd->product }}</td>
                                 @if($prd->prod_type == 3)
                                 <?php
-                                $parentid = App\Models\Product::find($prd->pivot->sub_prod_id)->parent_prod_id;
+                                $parentid = App\Models\Product::find($prd->sub_prod_id)->parent_prod_id;
                                 $getSubprods = App\Models\Product::find($parentid)->subproducts()->get();
                                 $configPrds = [];
                                 foreach ($getSubprods as $subp) {
@@ -408,11 +408,11 @@
                                 }
                                 ?>
                                 <td>
-                                    {{ Form::select("cartdata[".$i."][".$prd->id."][subprd]",$configPrds,$prd->pivot->sub_prod_id,['class'=>'form-control selConfigProd addPrdVar']) }}
+                                    {{ Form::select("cartdata[".$i."][".$prd->id."][subprd]",$configPrds,$prd->sub_prod_id,['class'=>'form-control selConfigProd addPrdVar']) }}
                                 </td>
                                 @elseif($prd->prod_type == 2)
                                 <?php
-                                $cmb = json_decode($prd->pivot->sub_prod_id);
+                                $cmb = json_decode($prd->sub_prod_id);
                                 $comboSub = [];
                                 foreach ($cmb as $combos) {
                                     $comboSub[Product::find($combos)->parent_prod_id] = $combos;
