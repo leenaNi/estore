@@ -185,8 +185,6 @@ $address = $order->users->addresses->first();
 
                     <?php
                     if (!empty($prd['options']['options'])) {
-                        print_r($prd['options']['options']);
-                        //$warehouseCode = @Product::find($prd['options']['sub_prod'])->warehouse_code;
                         foreach ($prd['options']['options'] as $key => $value) {
                             echo DB::table('attributes')->where('id', $key)->first()->attr . ": " . DB::table('attribute_values')->where('id', $value)->first()->option_name . str_repeat('&nbsp;', 2) . "<br/>";
                         }
@@ -281,7 +279,7 @@ $address = $order->users->addresses->first();
             <?php //if ($order->shipping_amt > 0) { ?>
 <!--                <tr>
     <td  colspan="5" class="txtr br0"> <span>Shipping Charges: </span>  </td>
-    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                                ?>"></i> {{ number_format($order->shipping_amt) }} </td>
+    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                                 ?>"></i> {{ number_format($order->shipping_amt) }} </td>
 </tr>-->
             <?php // }  ?>
 
