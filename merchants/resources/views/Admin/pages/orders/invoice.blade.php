@@ -188,17 +188,17 @@ $address = $order->users->addresses->first();
                         foreach ($prd['options']['options'] as $key => $value) {
                             echo DB::table('attributes')->where('id', $key)->first()->attr . ": " . DB::table('attribute_values')->where('id', $value)->first()->option_name . str_repeat('&nbsp;', 2) . "<br/>";
                         }
-                        echo "<br/>SKU: " . $prd['options']['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . $warehouseCode;
+                        echo "SKU: " . $prd['options']['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . $warehouseCode;
                     }
 
                     if (!empty($prd['options']['combos'])) {
                         foreach ($prd['options']['combos'] as $key => $value) {
-
                             if (!empty($value['options'])) {
                                 foreach ($value['options'] as $opt => $optval) {
                                     echo $value['name'] . "<br/>";
-                                    echo DB::table('attributes')->where('id', $opt)->first()->attr . ": " . DB::table('attribute_values')->where('id', $optval)->first()->option_name . str_repeat('&nbsp;', 2) . "<br/>SKU: " . $value['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . @Product::find($value['sub_prod'])->warehouse_code . "<br/><br/>";
+                                    echo DB::table('attributes')->where('id', $opt)->first()->attr . ": " . DB::table('attribute_values')->where('id', $optval)->first()->option_name . str_repeat('&nbsp;', 2), "<br/>"; 
                                 }
+                                echo "SKU: " . $value['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . @Product::find($value['sub_prod'])->warehouse_code . "<br/><br/>";
                             } else {
                                 $simpleProd = app\Models\Product::find($key);
                                 $prodName = $simpleProd->product;
