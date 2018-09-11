@@ -172,6 +172,7 @@
                                 <th>Payment Status</th>
 <!--                                <th>Payment Method</th>-->
                                 <th>@sortablelink ('pay_amt', 'Amount') <?php //echo!empty(Session::get('currency_symbol')) ? '('.Session::get('currency_symbol').')' : ''; ?></th>
+                                 <th>Order Source</th>
 <!--                                <th>Courier</th>
                                 <th>Tracking no.</th>
                                 <th>Shipping date</th>-->
@@ -206,7 +207,7 @@
                                 <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
                                 @endif
                                 </td>
-
+ <td>{{ @$order->order_source }}</td>
 <!--                                <td><?php
 //                                    if ($order->courier == 1) {
 //                                        echo "Fedex";

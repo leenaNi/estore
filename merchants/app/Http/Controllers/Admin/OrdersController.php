@@ -44,7 +44,7 @@ class OrdersController extends Controller {
 
     use OrdersTrait;
 
-    public function index() {
+    public function indexold() {
         $jsonString = Helper::getSettings();
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
@@ -52,8 +52,8 @@ class OrdersController extends Controller {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
 
-        $orders = Order::where("orders.order_status", "!=", 0)->join("has_products","has_products.order_id",'=','orders.id')->where("has_products.store_id",$jsonString['store_id'])->select('orders.*',DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
-  //   dd($orders);
+        $orders = Order::where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', DB::raw('sum(has_products.pay_amt) as hasPayamt', 'has_products.order_source'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        //   dd($orders);
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
         if (!empty(Input::get('order_ids'))) {
@@ -119,15 +119,16 @@ class OrdersController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function indexold() {
+    public function index() {
         $jsonString = Helper::getSettings();
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
-
-        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
+        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', DB::raw('sum(has_products.pay_amt) as hasPayamt', 'has_products.order_source'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        //   dd($orders);
+        //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
         if (!empty(Input::get('order_ids'))) {
@@ -188,7 +189,7 @@ class OrdersController extends Controller {
         $ordersCount = $orders->total();
         $flags = Flags::all();
 
-        $viewname = Config('constants.adminOrderView') . '.index1';
+        $viewname = Config('constants.adminOrderView') . '.index';
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
         return Helper::returnView($viewname, $data);
     }
@@ -649,13 +650,13 @@ class OrdersController extends Controller {
 
         $orders = Order::whereIn('id', explode(",", $allids))->with('currency')->get();
         foreach ($orders as $key => $order) {
-            $catlogs = json_decode($order->cart, true);           
+            $catlogs = json_decode($order->cart, true);
             $orders[$key]->previous_order = [];
             if ($order->forward_id != 0) {
                 $orders[$key]->previous_order = Order::where('id', $order->forward_id)->select('order_amt', 'pay_amt')->get();
             }
             foreach ($catlogs as $key2 => $product) {
-             //  dd($product['options']);die;
+                //  dd($product['options']);die;
                 // dd($product['id']);
                 $catlogs[$key2]['product'] = Product::where('id', $product['id'])->first();
                 $catlogs[$key2]['category'] = Category::where('id', $product['options']['cats'][0])->first();
