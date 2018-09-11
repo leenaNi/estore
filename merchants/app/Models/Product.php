@@ -85,9 +85,9 @@ class Product extends \Eloquent {
     public function downlodableprods() {
         return $this->hasMany('App\Models\DownlodableProd', 'prod_id');
     }
-    public function sales() {
+    public function sales($storeId) {
         return $this->belongsToMany('App\Models\Order', 'has_products', 'prod_id', 'order_id')
-                ->whereNotIn("has_products.order_status",[0,4,6,10])
+                ->whereNotIn("has_products.order_status",[0,4,6,10])->where("has_products.store_id",$storeId)
                 ->withPivot("id","sub_prod_id", "qty", "price","created_at");
     }
     

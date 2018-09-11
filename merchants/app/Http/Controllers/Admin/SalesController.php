@@ -112,7 +112,7 @@ class SalesController extends Controller {
     }
 
     public function categories() {
-
+       $storeId=$this->jsonString['store_id'];
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['category', 'short_desc', 'long_desc'];
         $categories = Category::orderBy('category')->where("status",1);
@@ -133,7 +133,7 @@ class SalesController extends Controller {
             $categoryCount=$categories->total();
         }
 
-        return view(Config('constants.saleView') . '.by_categories', compact('categories','categoryCount'));
+        return view(Config('constants.saleView') . '.by_categories', compact('categories','categoryCount','storeId'));
     }
 
     public function attributes() {
