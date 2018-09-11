@@ -185,6 +185,7 @@ $address = $order->users->addresses->first();
 
                     <?php
                     if (!empty($prd['options']['options'])) {
+                        print_r($prd['options']['options']);
                         //$warehouseCode = @Product::find($prd['options']['sub_prod'])->warehouse_code;
                         foreach ($prd['options']['options'] as $key => $value) {
                             echo $key . ": " . $value . str_repeat('&nbsp;', 2) . "<br/>SKU: " . $prd['options']['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . $warehouseCode . "<br/>";
