@@ -121,12 +121,13 @@ class OrdersController extends Controller {
 
     public function index() {
         $jsonString = Helper::getSettings();
-        $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
+       
+         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
-        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', DB::raw('sum(has_products.pay_amt) as hasPayamt', 'has_products.order_source'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
         //   dd($orders);
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
@@ -213,6 +214,7 @@ class OrdersController extends Controller {
         Session::forget("codCharges");
         Session::forget('shippingCost');
         $jsonString = Helper::getSettings();
+        $prodTab=$jsonString['prefix'].'_products';
         $order = Order::findOrFail(Input::get('id'));
         $payment_method = PaymentMethod::get()->toArray();
         $payment_methods = [];
@@ -253,7 +255,12 @@ class OrdersController extends Controller {
             Cart::instance("shopping")->destroy();
             $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
             $additional = json_decode($order->additional_charge, true);
-            $products = $order->products;
+            $prodTab=$jsonString['prefix'].'_products';
+         $prods= HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'.id','=','has_products.prod_id')->where("prefix",$this->jsonString['prefix'])
+                ->select($prodTab.".*",'has_products.order_id','has_products.disc','has_products.prod_id','has_products.qty','has_products.price as hasPrice','has_products.product_details','has_products.sub_prod_id')->get();
+          
+           // $prod_id = HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'id','=','has_prodducts.prod_id')->where("prefix",$this->jsonString['prefix']);
+           $products= $prods;
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
             // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users', 

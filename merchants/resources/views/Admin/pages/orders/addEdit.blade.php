@@ -384,7 +384,7 @@
                         </thead>
                         <tbody>
                             <?php $i = 0; ?>
-                            @foreach($order->products as $k =>$prd)
+                            @foreach($products as $k =>$prd)
                             <tr> 
                                 <td>{{ @$prd->categories()->first()->category }}</td>
                                 <td>{{ $prd->product }}</td>
@@ -452,16 +452,16 @@
                                 <td>-</td>
                                 @endif
                                 <td>
-                                    <input type="hidden" class="pid_{{$prd->id}}" value="{{ $prd->pivot->qty }}"  />
-                                    <input  name="{{"cartdata[".$k."][".$prd->id."]"}}[qty]" type="number" min="1" data-ppid="{{$prd->id}}" data-prdType="{{$prd->prod_type}}" {{ $prd->prod_type == 3?' subprod-id='.$prd->pivot->sub_prod_id:'' }} class="qtyOrder editqty form-control validate[required, custom[number],,min[1]]" value="{{ $prd->pivot->qty }}" />
+                                    <input type="hidden" class="pid_{{$prd->id}}" value="{{ $prd->qty }}"  />
+                                    <input  name="{{"cartdata[".$k."][".$prd->id."]"}}[qty]" type="number" min="1" data-ppid="{{$prd->id}}" data-prdType="{{$prd->prod_type}}" {{ $prd->prod_type == 3?' subprod-id='.$prd->sub_prod_id:'' }} class="qtyOrder editqty form-control validate[required, custom[number],,min[1]]" value="{{ $prd->qty }}" />
                                 </td>
                                 <td><b class="price">{{ number_format((@$prd->selling_price * Session::get("currency_val")), 2) }}</b></td>
-                                <td><b class="subT">{{ number_format((@$prd->pivot->price * Session::get("currency_val")), 2)}}</b></td>
+                                <td><b class="subT">{{ number_format((@$prd->hasPrice * Session::get("currency_val")), 2)}}</b></td>
                                 @if($feature['coupon']==1)
-                                <td><b class="coupDisc">{{  round($prd->pivot->disc * Session::get("currency_val"))  }}</b></td>
+                                <td><b class="coupDisc">{{  round($prd->disc * Session::get("currency_val"))  }}</b></td>
                                 @endif
                                 <?php
-                                $productP = ($prd->pivot->price / 100);
+                                $productP = ($prd->hasPrice / 100);
                                 $orderAmtP = ($order->order_amt / 100);
                                 $fixedVaoucherUsed = $order->voucher_amt_used;
                                 $fixedCashbackUsed = $order->cashback_used;
@@ -477,11 +477,11 @@
                                 @if($feature['loyalty']==1)
                                 <td><b class="cashbackDisc">{{ number_format((@$fixedCashbackUsed * Session::get('currency_val')), 2)  }}</b></td>
                                 @endif
-    <!--                            <td><i class="fa fa-rupee"></i><b class="voucherDisc">{{ @$fixedVaoucherUsed }}</b></td>-->
+    <!--                          
                                 @if($feature['referral']==1 )
                                 <td><b class="referalDisc">{{ @$fixedReferalUsed  }}</b></td>
                                 @endif
-                               <!--  <td><i class="fa fa-rupee"></i><b class="finalSubTotal">{{ round($prd->pivot->price - @$allDiscFor) }}</b></td> -->
+                              
                                 <td><a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;"></i></a></td>
                             </tr>
                             <?php $i++; ?>
