@@ -47,14 +47,16 @@
                             <td class="cartProductName" valign="top">
                                 <div class="CPN-Box">
                                 <div class="CPN-BoxLeft">
+                                    <a href="{{ route('home')}}/{{$item->options->url}}">
                                 <?php if ($item->options->image != "") { ?>
                                     <img src="{{ config('constants.productImgPath').'/'.$item->options->image }}" class="cart-prodimg"/>
                                 <?php } else { ?>
                                     <img src="{{ (Config('constants.defaultImgPath').'/default-product.jpg') }}" class="cart-prodimg"/>
                                 <?php } ?>
+                                    </a>
                                 </div>
                                 <div class="CPN-BoxRight">
-                                <div>{{ $item->name }}
+                                    <div><a href="{{ route('home')}}/{{$item->options->url}}">{{ $item->name }}</a>
                                 <div class="clearfix"></div></div>
                                 <?php
                                 if ($item->options->CatType != '') {

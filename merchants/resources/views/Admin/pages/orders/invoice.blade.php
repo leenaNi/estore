@@ -3,17 +3,17 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 <style type="text/css">
     .invcontainer{
-      width: 970px;
-    margin: 0 auto;
-    background: #fff;
-    color: #000;
-    padding: 30px;
-    font-family: source_sans_prolight;
-    font-size: 16px;
-    display: table;
-    border: 1px solid #ccc;
-    margin-bottom: 20px;
-    page-break-after: always;
+        width: 970px;
+        margin: 0 auto;
+        background: #fff;
+        color: #000;
+        padding: 30px;
+        font-family: source_sans_prolight;
+        font-size: 16px;
+        display: table;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        page-break-after: always;
     }
     .w100{width:100%; float: left; }
     .w50{width:50%; float: left;}
@@ -53,7 +53,6 @@
 
 <a class="printInvoice" align="left" style=" width: 180px; color: #fff; text-decoration: none; border: 1px solid #ccc; background: #009EDA; text-align: center; padding: 10px 20px; border-radius: 10px; position: relative; top: 25px; left: 30px;" href="#" data-orderids="{{$allids}}" >Print</a>
 <?php
-
 //$addCharge = GeneralSetting::where('url_key', 'additional-charge')->first();
 ?>
 
@@ -88,9 +87,9 @@ $address = $order->users->addresses->first();
         <table>
             <tr>
                 <td><span> Order ID: </span> {{ $order->id }} </td>
-            
+
                 <td><span> Date: </span>{{ date('d-M-Y' , strtotime($order->created_at)) }}</td>
-           
+
                 <td><span> Payment Method: </span>{{$order->paymentmethod['name'] }}</td>
             </tr>
 
@@ -151,14 +150,15 @@ $address = $order->users->addresses->first();
                 <td class="txtc"> <span> Price</span> </td>
                 <td class="txtc"><span> Qty </span></td>
                 <!--<td class=" txtc"> <span>TAX</span> </td>-->
-                <?php if ($feature['tax'] == 1) { 
+                <?php
+                if ($feature['tax'] == 1) {
                     $colSpan = 4;
                     ?>
                     <td class="txtc"><span>Tax</span> </td>
                 <?php } ?>
                 <td class="txtc"> <span> Total</span> </td>
 
-                
+
             </tr>
             <?php
 //                   echo "<pre>";
@@ -185,20 +185,20 @@ $address = $order->users->addresses->first();
 
                     <?php
                     if (!empty($prd['options']['options'])) {
-                        //$warehouseCode = @Product::find($prd['options']['sub_prod'])->warehouse_code;
                         foreach ($prd['options']['options'] as $key => $value) {
-                            echo $key . ": " . $value . str_repeat('&nbsp;', 2) . "<br/>SKU: " . $prd['options']['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . $warehouseCode . "<br/>";
+                            echo DB::table('attributes')->where('id', $key)->first()->attr . ": " . DB::table('attribute_values')->where('id', $value)->first()->option_name . str_repeat('&nbsp;', 2) . "<br/>";
                         }
+                        echo "SKU: " . $prd['options']['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . $warehouseCode;
                     }
 
                     if (!empty($prd['options']['combos'])) {
                         foreach ($prd['options']['combos'] as $key => $value) {
-
                             if (!empty($value['options'])) {
                                 foreach ($value['options'] as $opt => $optval) {
                                     echo $value['name'] . "<br/>";
-                                    echo $opt . ": " . $optval . str_repeat('&nbsp;', 2) . "<br/>SKU: " . $value['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . @Product::find($value['sub_prod'])->warehouse_code . "<br/><br/>";
+                                    echo DB::table('attributes')->where('id', $opt)->first()->attr . ": " . DB::table('attribute_values')->where('id', $optval)->first()->option_name . str_repeat('&nbsp;', 2), "<br/>"; 
                                 }
+                                echo "SKU: " . $value['sub_prod'] . str_repeat('&nbsp;', 2) . "WC: " . @Product::find($value['sub_prod'])->warehouse_code . "<br/><br/>";
                             } else {
                                 $simpleProd = app\Models\Product::find($key);
                                 $prodName = $simpleProd->product;
@@ -222,9 +222,9 @@ $address = $order->users->addresses->first();
                 </td>
                 <td class="txtc"> {{ $prd['qty'] }} </td>
                 <?php $vatTotal += round(1 * (@$prd['category']->vat / 100) * $unitP) * $prd['qty']; ?>
-                 <?php if ($feature['tax'] == 1) { ?>
-                <td class="txtc"><span class="currency-sym"></span> {{ number_format(1*(@$prd['category']->vat/100)*$unitP ,2) }}</td>
-            <?php }?>
+                <?php if ($feature['tax'] == 1) { ?>
+                    <td class="txtc"><span class="currency-sym"></span> {{ number_format(1*(@$prd['category']->vat/100)*$unitP ,2) }}</td>
+                <?php } ?>
                 <td class="txtc" align=""><span class="currency-sym"></span> {{ number_format(@$prd['subtotal']  * $currency_val,2) }}</td>
             </tr>
             <?php $subtotal += @$prd['subtotal'] ?>
@@ -279,7 +279,7 @@ $address = $order->users->addresses->first();
             <?php //if ($order->shipping_amt > 0) { ?>
 <!--                <tr>
     <td  colspan="5" class="txtr br0"> <span>Shipping Charges: </span>  </td>
-    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                               ?>"></i> {{ number_format($order->shipping_amt) }} </td>
+    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                                 ?>"></i> {{ number_format($order->shipping_amt) }} </td>
 </tr>-->
             <?php // }  ?>
 
@@ -341,8 +341,8 @@ $address = $order->users->addresses->first();
             <div class="compaddress">Telephone: 12345678</div>
         </div> -->
         <div class="txtr w50">  <div class="compname"> 224,  Mumbai- 400011
-        </div>
-           
+            </div>
+
             <div class="compaddress">Mobile: 12345678</div>
             <div class="compaddress">connect@inficart.com</div><!-- connect@inficart.com <br/> http://infistore.com --></div>
     </div> 
