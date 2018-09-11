@@ -171,7 +171,7 @@ $address = $order->users->addresses->first();
             ?>
             @foreach($order->cartItems as $prd)
             <?php
-            if ($prd['options']['prefix'] == $this->jsonString['prefix']) {
+            if ($prd['options']['prefix'] == $jsonString['prefix']) {
                 echo "Matched";
             } else {
                 echo "Not Matched";
