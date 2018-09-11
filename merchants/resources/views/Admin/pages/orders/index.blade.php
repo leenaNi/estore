@@ -96,10 +96,10 @@
 
                 <div class="box-header col-md-3 col-xs-12 pull-right mobPadding noMob-leftBorder mob-bottomBorder">
                     <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default pull-right col-md-12 fullMobile-width">Create New Order</a>
-                  
+
                     <div class="clearfix" style="margin-bottom:15px;"></div>
                     <a class="btn btn-primary" href="{{ asset(Config('constants.BulkOrderUploadPath')). "/cartini_orderBulk_upload.csv"}}"style="margin-bottom:15px; margin-left: 0; width: 100%;">Download Sample</a>
-                     <div class="clearfix"></div>
+                    <div class="clearfix"></div>
                     <form action="{{route('admin.traits.orders')}}"  method="post" enctype="multipart/form-data">
                         <div class=""> 
                             <input type="file" class="form-control validate[required] fileUploder" name="order_file" placeholder="Browse CSV file"  required style="margin-bottom:15px; "  onChange="validateFile(this.value)"/>
@@ -111,36 +111,36 @@
                     <div class="clearfix" style="margin-bottom:15px;"></div>
                     <a href="{{route('admin.orders.export')}}"  class="btn btn-default pull-right col-md-12 fullMobile-width">Export All Order</a>
 
-  <div class="clearfix" style="margin-bottom:15px;"></div>
+                    <div class="clearfix" style="margin-bottom:15px;"></div>
                     <form action="" class="formMul" method="post" >
                         <input type="hidden" value="" name="OrderIds" />
                         <select name="orderAction" id="orderAction" class="form-control pull-right col-md-12" style="margin-bottom:15px;">
                             <option value="">Select Bulk Action</option>
-<!--                            <option value="">Generate Waybill</option>-->
+                            <!--                            <option value="">Generate Waybill</option>-->
                             <option value="1">Print Invoice</option>
                             <!--<option value="17">Send to Shiprocket</option>-->
                             <option value="3" >Export</option>
                             @if($feature['flag'] == 1)  
                             <option value="30" >Flag</option>
                             @endif
-                            
-                             <optgroup label="Courier Services">
-                                 <option value="31">E-courier</option>
-                             </optgroup>
-                            
+
+                            <optgroup label="Courier Services">
+                                <option value="31">E-courier</option>
+                            </optgroup>
+
                             <!--<option value="25" >Warehouse Order Export</option>-->
                             <optgroup label="Update Order Status">                                           
-                                  <option value="8">Cancelled</option>
-                                 <option value="12" >Delayed</option>
+                                <option value="8">Cancelled</option>
+                                <option value="12" >Delayed</option>
                                 <option value="6" >Delivered</option>
                                 <option value="9">Exchanged</option>
                                 <option value="10">Returned</option>
                                 <option value="20">Partially Shipped</option>
-                               <option value="4" >Processing</option>
+                                <option value="4" >Processing</option>
                                 <option value="21">Refunded</option>
-                               <option value="5">Shipped</option>
-                              <option value="11">Undelivered</option>
-                               
+                                <option value="5">Shipped</option>
+                                <option value="11">Undelivered</option>
+
                             </optgroup>
                             <optgroup label="Update Payment Status">
                                 <option value="13">Pending</option>
@@ -156,7 +156,7 @@
 
 
                 <div class="dividerhr"></div>
-               
+
                 <div style="clear: both"></div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table orderTable table-striped table-hover tableVaglignMiddle">
@@ -171,11 +171,11 @@
                                 <th>Order Status</th>
                                 <th>Payment Status</th>
 <!--                                <th>Payment Method</th>-->
-                                <th>@sortablelink ('pay_amt', 'Amount') <?php //echo!empty(Session::get('currency_symbol')) ? '('.Session::get('currency_symbol').')' : ''; ?></th>
-                                 <th>Order Source</th>
+                                <th>@sortablelink ('pay_amt', 'Amount') <?php //echo!empty(Session::get('currency_symbol')) ? '('.Session::get('currency_symbol').')' : '';  ?></th>
+                                <th>Order Source</th>
 <!--                                <th>Courier</th>
-                                <th>Tracking no.</th>
-                                <th>Shipping date</th>-->
+                               <th>Tracking no.</th>
+                               <th>Shipping date</th>-->
 
 <!--                                <th>Invoice Printed?</th>-->
                                 @if($feature['flag'] == 1)  
@@ -203,17 +203,17 @@
                                 <td>{{ @$order->paymentstatus['payment_status'] }}</td>
 <!--                                <td>{{ @$order->paymentmethod['name'] }}</td>-->
                                 <td>@if(@$order->prefix)<span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
-                                @else 
-                                <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
-                                @endif
+                                    @else 
+                                    <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
+                                    @endif
                                 </td>
- <td>@if(@$order->order_source==1)
- Mall 
- @elseif(@$order->order_source==2)
-{{ Session::get("storeName")}}
- @endif
- </td>
-<!--                                <td><?php
+                                <td>@if(@$order->order_source==1)
+                                    Mall 
+                                    @elseif(@$order->order_source==2)
+                                    {{ Session::get("storeName")}}
+                                    @endif
+                                </td>
+                               <!--                                <td><?php
 //                                    if ($order->courier == 1) {
 //                                        echo "Fedex";
 //                                    } else if ($order->courier == 2) {
@@ -225,29 +225,29 @@
 //                                        echo "Other" . @$serviceN;
 //                                    }
                                 ?></td>
-
-                                <td>{{ @$order->shiplabel_tracking_id }}</td>
-
-                                <td>{{ !empty($order->ship_date != 00-00-00)?date('d M y',strtotime($order->ship_date)):'' }}</td>-->
+                               
+                                                               <td>{{ @$order->shiplabel_tracking_id }}</td>
+                               
+                                                               <td>{{ !empty($order->ship_date != 00-00-00)?date('d M y',strtotime($order->ship_date)):'' }}</td>-->
 
 
 <!--                                <td>{{ ($order->print_invoice == 0)?"No":"Yes" }}</td>-->
                                 @if($feature['flag'] == 1)  
-                                 <td>
-                                     <div id="flagD{{$order->id }}" class="flagD">   
-                                         <div class="flagDName" id="flagDName{{$order->id }}">
-                                             <div style='width: 20px;height: 20px;background:{{ @$order->orderFlag->value }} ; border-radius: 50%'></div>
-                                             <br/>{{  (strpos(@$order->orderFlag->flag, 'No Flag') !== false)?"":@$order->orderFlag->flag}} <br> {{  $order->flag_remark}}
-                                         </div>
-                                     </div>
-                                 </td>
+                                <td>
+                                    <div id="flagD{{$order->id }}" class="flagD">   
+                                        <div class="flagDName" id="flagDName{{$order->id }}">
+                                            <div style='width: 20px;height: 20px;background:{{ @$order->orderFlag->value }} ; border-radius: 50%'></div>
+                                            <br/>{{  (strpos(@$order->orderFlag->flag, 'No Flag') !== false)?"":@$order->orderFlag->flag}} <br> {{  $order->flag_remark}}
+                                        </div>
+                                    </div>
+                                </td>
 <!--                                 <td>
-                                     <div class="flagC{{$order->id }}" id="flagC{{$order->id }}"> 
-                                         <div class="flagDC{{$order->id }}" id="flagDC{{$order->id }}">
-                                             {{  $order->flag_remark}}
-                                         </div>
-                                     </div>
-                                 </td>-->
+                                    <div class="flagC{{$order->id }}" id="flagC{{$order->id }}"> 
+                                        <div class="flagDC{{$order->id }}" id="flagDC{{$order->id }}">
+                                            {{  $order->flag_remark}}
+                                        </div>
+                                    </div>
+                                </td>-->
                                 @endif
                                 @if($feature['courier-services'] == 1)  
 <!--                                   <td>{{ ($order->courier != 0)?$order->getcourier['name']:'-' }}</td>-->
@@ -255,11 +255,11 @@
                                 <td>
                                     <!--                                    <a href="{!! route('admin.orders.editReOrder',['id'=>$order->id]) !!}"  class="label label-success active ereorder" ui-toggle-class="">Edit / Update Order</a>-->
                                     <a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
-                                      <a href="#" data-ordId ="{{ $order->id }}"  class="flage"  ui-toggle-class="" data-toggle="tooltip" title="Flag"><i class="fa fa-flag-o btn-plen"></i></a>
+                                    <a href="#" data-ordId ="{{ $order->id }}"  class="flage"  ui-toggle-class="" data-toggle="tooltip" title="Flag"><i class="fa fa-flag-o btn-plen"></i></a>
                                     <a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this order?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash "></i></a>
                        <!--                                    <a href="{!! route('admin.orders.orderHistory') !!}?id={{$order->id}}" target="_blank" class="viewHistory"><span class="label label-info label-mini">History</span></a>-->
-                                
-                                   <!--  <a href="#" data-ordId ="{{ $order->id }}"  class="" ui-toggle-class="" data-toggle="tooltip" title="History"><i class="fa fa-history"></i></a> -->
+
+   <!--  <a href="#" data-ordId ="{{ $order->id }}"  class="" ui-toggle-class="" data-toggle="tooltip" title="History"><i class="fa fa-history"></i></a> -->
                                     <!--                                    <a href="{!! route('admin.orders.ReturnOrder',['id'=>$order->id]) !!}"  class="label label-success active" ui-toggle-class="">Return Order</a>-->
 
                                 </td>
@@ -658,17 +658,17 @@
                                                         return false;
                                                     }
                                                 } else if ($(this).val() == "") {
-                                                    window.location.href="{{route('admin.orders.view')}}";
+                                                    window.location.href = "{{route('admin.orders.view')}}";
                                                     // location.reload();
-                                                }else if($(this).val() == 31){
-                                                   checkConfirm =  confirm("Are you sure you want to continue (yes/no)?");
-                                                   if(checkConfirm){
-                                                     $(this).parent().attr("action", "{{route('admin.orders.getECourier')}}");
-                                                       $(this).parent().submit();
-                                                   }else{
-                                                       return false;
-                                                   }
-                                                   
+                                                } else if ($(this).val() == 31) {
+                                                    checkConfirm = confirm("Are you sure you want to continue (yes/no)?");
+                                                    if (checkConfirm) {
+                                                        $(this).parent().attr("action", "{{route('admin.orders.getECourier')}}");
+                                                        $(this).parent().submit();
+                                                    } else {
+                                                        return false;
+                                                    }
+
                                                 }
                                                 var Thisval = $(this).val();
                                                 if (ids.length > 0) {
@@ -726,8 +726,8 @@
                                                 $('#checkAll').show();
                                             }, 1000);
                                         });
-                                        
-                                        
+
+
 </script>
 
 @stop

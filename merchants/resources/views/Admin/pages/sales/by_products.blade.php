@@ -31,8 +31,8 @@
                         <div class="form-group col-md-2  col-sm-6 col-xs-12 noAllpadding">
                             <input type="submit" name="submit" class="form-control btn btn-primary mobAddnewflagBTN" value="Search">
                         </div>
-                       <div class="form-group col-md-2 noBottomMargin col-sm-6 col-xs-12">
-                         <a  href="{{route('admin.sales.byproduct')}}" class="medium btn btn-block reset-btn" style="margin-left:0px">Reset</a>
+                        <div class="form-group col-md-2 noBottomMargin col-sm-6 col-xs-12">
+                            <a  href="{{route('admin.sales.byproduct')}}" class="medium btn btn-block reset-btn" style="margin-left:0px">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -48,7 +48,7 @@
                 </div> 
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
-          
+
 
                 <div class="box-body table-responsive no-padding">
                     <table class="table  prodSalesTable  table-hover general-table tableVaglignMiddle">
@@ -68,36 +68,37 @@
                             <tr>
 <!--                                <td>{{ $prd->id }}</td>-->
                                 <td>{{ @$prd->product }}</td>
-                                <td>{{ @$prd->categories()->first()->category }}</td>
+                                <td>{{ @$prd->category }}</td>
                                 <td>
-
+                                    {{$prd->tot_qty}}
 
 
                                     <?php
-                                    $sales = $prd->sales();
-
-                                    if (!empty(Input::get('from_date')) && !empty(Input::get('to_date'))) {
-                                        $sales = $sales->whereBetween('has_products.created_at', [ Input::get('from_date'), Input::get('to_date') . " 23:59:59"]);
-                                    }else{
-                                        
-                                        }
-
-                                    echo $sales->sum('qty');
+//                                    $sales = $prd->sales();
+//
+//                                    if (!empty(Input::get('from_date')) && !empty(Input::get('to_date'))) {
+//                                        $sales = $sales->whereBetween('has_products.created_at', [ Input::get('from_date'), Input::get('to_date') . " 23:59:59"]);
+//                                    }else{
+//                                        
+//                                        }
+//
+//                                    echo $sales->sum('qty');
                                     ?>
 
 
                                 </td>
                                 <td>
-                                    <?php  echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">
+                                    
+                                    <?php echo!empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">
                                     <?php
-                                    echo  number_format($sales->sum('price'), 2);
+                                    echo number_format($prd->sales, 2);
                                     ?>
                                     </span>
                                 </td>
                             </tr>
                             @endforeach
-                             @else
-                           <tr><td colspan=6> No Record Found.</td></tr>
+                            @else
+                            <tr><td colspan=6> No Record Found.</td></tr>
                             @endif
                         </tbody>
                     </table>
@@ -118,10 +119,10 @@
                         !empty(Input::get("from_date")) ? $args["from_date"] = Input::get("from_date") : '';
                         !empty(Input::get("to_date")) ? $args["to_date"] = Input::get("to_date") : '';
                         ?>
-                    <?= $prods->appends($args)->links() ?>
+                        <?= $prods->appends($args)->links() ?>
 
                     </div>
-<?php } ?>
+                <?php } ?>
             </div>
         </div>
     </div>
