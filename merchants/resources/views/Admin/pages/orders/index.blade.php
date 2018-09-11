@@ -201,7 +201,12 @@
                                 <td>{{ @$order->orderstatus['order_status']  }}</td>
                                 <td>{{ @$order->paymentstatus['payment_status'] }}</td>
 <!--                                <td>{{ @$order->paymentmethod['name'] }}</td>-->
-                                <td><span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}</td>
+                                <td>@if(@$order->prefix)<span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
+                                @else 
+                                <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
+                                @endif
+                                </td>
+
 <!--                                <td><?php
 //                                    if ($order->courier == 1) {
 //                                        echo "Fedex";

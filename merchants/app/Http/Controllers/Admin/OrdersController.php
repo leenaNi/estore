@@ -52,7 +52,8 @@ class OrdersController extends Controller {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
 
-        $orders = HasProducts::where("order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->orderBy("id", "desc");
+        $orders = Order::where("orders.order_status", "!=", 0)->join("has_products","has_products.order_id",'=','orders.id')->where("has_products.store_id",$jsonString['store_id'])->select('orders.*',DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+  //   dd($orders);
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
         if (!empty(Input::get('order_ids'))) {
@@ -113,7 +114,7 @@ class OrdersController extends Controller {
         $ordersCount = $orders->total();
         $flags = Flags::all();
 
-        $viewname = Config('constants.adminOrderView') . '.index1';
+        $viewname = Config('constants.adminOrderView') . '.index';
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
         return Helper::returnView($viewname, $data);
     }
