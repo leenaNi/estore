@@ -30,14 +30,14 @@ class CourierController extends Controller {
     public function index() {
         $couriers = Courier::orderBy('created_at', 'DESC')->paginate(Config('constants.paginateNo'));
         //  dd($couriers);
-        return Helper::returnView(Config('constants.adminCourierView') . '.index', compact('couriers'));
+        return Helper::returnView(Config('constants.AdminPagesCourier') . '.index', compact('couriers'));
     }
 
     public function add() {
         $courier = new Courier;
         $action = route("admin.courier.save");
 
-        return view(Config('constants.adminCourierView') . '.addEdit', compact('courier', 'action'));
+        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action'));
     }
 
     public function save() {
@@ -49,7 +49,7 @@ class CourierController extends Controller {
     public function edit() {
         $courier = Courier::where("url_key", Input::get('url_key'))->first();
         $action = route("admin.courier.update");
-        return view(Config('constants.adminCourierView') . '.addEdit', compact('courier', 'action'));
+        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action'));
     }
 
     public function update() {

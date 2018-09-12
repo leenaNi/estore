@@ -34,6 +34,7 @@ $adminConstants = [
     'AdminPagesBankUsersRoles' => 'Admin.Pages.BankUsers.Roles',
     'AdminPagesBankUsersUsers' => 'Admin.Pages.BankUsers.Users',
     'AdminPagesTemplates' => 'Admin.Pages.Templates',
+    'AdminPagesCourier' => 'Admin.Pages.Courier',
     
      'AdminPaginateNo' => '10'
 ];
