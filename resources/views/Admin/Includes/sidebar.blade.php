@@ -77,7 +77,7 @@
                 </ul>
 
             </li>
-              <li class="{{ (in_array(Route::currentRouteName(),[;'admin.courier.view'])?'active':'') }}">
+              <li class="{{ (in_array(Route::currentRouteName(),['admin.courier.view'])?'active':'') }}">
                 <a href="{{ route('admin.courier.view') }}">
                     <i class="fa fa-truck"></i> <span>Courier Services</span>
 
