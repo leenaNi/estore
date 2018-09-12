@@ -142,7 +142,7 @@ class SalesController extends Controller {
         $search_fields = ['product', 'short_desc', 'long_desc'];
 
         $prods = Product::where('is_individual', '=', '1')
-                ->where("is_crowd_funded", "=", "0")
+              
                 ->where("prod_type", "=", "3")
                 ->orderBy("product", "asc");
         $prods = $prods->where(function($query) use($search_fields, $search) {
@@ -165,7 +165,19 @@ class SalesController extends Controller {
             $prodCount=$prods->total();
             
         }
-//dd($prods->get());
+        foreach($prods as $prod){
+           $prod->category= $prod->categories()->first()->category;
+            foreach($prod->subproducts as $sub){
+              $orderCount=HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where("sub_prod_id", "=", $sub->id)->where("store_id", $this->jsonString['store_id']);
+                   if (!empty(Input::get('from_date')) && !empty(Input::get('to_date'))) {
+                        $orderCount = $orderCount->whereBetween('created_at', [Input::get('from_date'), Input::get('to_date'). " 23:59:59"]);
+                      }
+               $sub->detials = $orderCount->select("created_at", DB::raw("sum(qty) as qty"),DB::raw("sum(price) as price"))->groupBy("sub_prod_id")->get();                           
+                                               
+                                               
+            }
+        }
+
         return view(Config('constants.saleView') . '.by_attributes', compact('prods','prodCount'));
     }
 

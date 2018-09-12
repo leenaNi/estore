@@ -171,10 +171,10 @@ class CategoriesController extends Controller {
         if (!empty(Input::get('sort'))) {
 
             if (Input::get('sort') == 1) {
-                $prods = $prods->leftjoin('has_products', 'products.id', '=', 'has_products.prod_id')
-                        ->orderBy(DB::raw('sum(\'has_products.qty\')'))
-                        ->select('has_products.prod_id', 'products.*')
-                        ->groupBy('products.id');
+//                $prods = $prods->leftjoin('has_products', 'products.id', '=', 'has_products.prod_id')
+//                        ->orderBy(DB::raw('sum(\'has_products.qty\')'))
+//                        ->select('has_products.prod_id', 'products.*')
+//                        ->groupBy('products.id');
             }
             if (Input::get('sort') == 2) {
                 $prods = $prods->orderBy("products.id", "desc");
@@ -197,13 +197,13 @@ class CategoriesController extends Controller {
             }
         } else {
             //  dd($prods->get());
-            $prods = $prods->leftjoin('has_products', 'products.id', '=', 'has_products.prod_id')
-//                     if($checkVarient==0){
-//                     $prods=$prods->whereRaw(("products.prod_type","1"));
-//                         }
-                    ->orderBy(DB::raw('sum("has_products.qty")'))
-                    ->select('has_products.prod_id', 'products.*')
-                    ->groupBy('products.id');
+//            $prods = $prods->leftjoin('has_products', 'products.id', '=', 'has_products.prod_id')
+////                     if($checkVarient==0){
+////                     $prods=$prods->whereRaw(("products.prod_type","1"));
+////                         }
+//                    ->orderBy(DB::raw('sum("has_products.qty")'))
+//                    ->select('has_products.prod_id', 'products.*')
+//                    ->groupBy('products.id');
 
             // $prods = $prods->orderBy("products.id", "asc");
         }

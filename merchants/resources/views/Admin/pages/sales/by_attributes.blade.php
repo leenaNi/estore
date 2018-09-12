@@ -69,7 +69,7 @@
 <!--                                <td>{{ $prd->id }}</td>-->
                                 <td>{{ $prd->product }}</td>
                               
-                              
+                               <td>{{ @$prd->category }}</td>
                                 <td>
                                     <ul>
                                         @foreach($prd->subproducts as $sub)
@@ -78,46 +78,24 @@
                                         @endforeach
                                     </ul>
                                 </td>
-                                 <td>{{ @$prd->categories()->first()->category }}</td>
+                                
                                 <td>
                                     <ul>
                                         @foreach($prd->subproducts as $sub)
-                                        <?php
-                                     //  dd($sub) ; 
-                                        $orderCount = DB::table("has_products")
-                                              
-                                                ->whereNotIn("has_products.order_status", [0, 4, 6, 10])
-                                                ->where("sub_prod_id", "=", $sub->id)
-                                                ->select("has_products.created_at", "has_products.qty");
-
-                                         
- //dd($orderCount->sum('qty'));
-                                        if (!empty(Input::get('from_date')) && !empty(Input::get('to_date'))) {
-                                            $orderCount = $orderCount->whereBetween('has_products.created_at', [Input::get('from_date'), Input::get('to_date'). " 23:59:59"]);
-                                        }
-                                        $orderCount = $orderCount->sum('qty');
-                                       
-                                        ?>
-                                        <li> {{ $orderCount }}</li>       
+                                        @foreach($sub->detials as $details)
+                                        <li>{{$details->qty}}</li>  
+                                        @endforeach
+                                      
                                         @endforeach                         
                                     </ul>
                                 </td>
                                 <td>
-                                    <ul>
+                               <ul>
                                         @foreach($prd->subproducts as $sub)
-                                        <?php
-                                        $sales = DB::table("has_products")
-                                              
-                                                ->whereNotIn("has_products.order_status", [0, 4, 6, 10])
-                                                ->where("sub_prod_id", "=", $sub->id)
-                                                ->select("has_products.created_at", "has_products.qty");
-
-                                        if (!empty(Input::get('from_date')) && !empty(Input::get('to_date'))) {
-                                            $sales = $sales->whereBetween('has_products.created_at', [Input::get('from_date') , Input::get('to_date'). " 23:59:59"]);
-                                        }
-                                        $sales = $sales->sum('price');
-                                        ?>
-                                        <li><?php echo  !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">{{ $sales }}<span></li>       
+                                        @foreach($sub->detials as $details)
+                                        <li>{{$details->price}}</li>  
+                                        @endforeach
+                                      
                                         @endforeach                         
                                     </ul>
                                 </td>
