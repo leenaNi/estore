@@ -47,7 +47,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 {!! Form::label('charges', 'Charges ') !!}<span class="red-astrik"> *</span>
-                                {!! Form::text('charges',null, ["class"=>'form-control validate[required,custom[number]]' ,"placeholder"=>'Charges']) !!}
+                                {!! Form::text('charges',null, ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Charges']) !!}
                                 <p style="color: red;" class="errorCharges"></p>
                             </div>
                         </div>

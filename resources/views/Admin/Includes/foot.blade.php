@@ -152,6 +152,21 @@ $( window ).load(function() {
                     var calCulate = (getPrice * currentCurrency).toFixed(2)
                   
                     $(this).text(calCulate);
-                })
+                });
+                $(".priceConvertTextBox").each(function (k, v) {
+                var getPrice = $(this).val();
+                getPrice = getPrice.replace(",", "");
+                getPrice = parseFloat($(this).val());
+                if (isNaN(getPrice)) {
+                    var getPrice = " ";
+                } else {
+                    var calCulate = (getPrice * currentCurrency).toFixed(2);
+                    $(this).attr("value", calCulate);
+                }
+                var getName = $(this).attr("name");
+                $(this).parent().append("<input type='hidden' name='" + getName + "' class='priceConvertTextBoxMain' value='" + getPrice + "' > ");
+                $(this).attr("name", "not_in_use");
+            });
+                
             });
 </script>
