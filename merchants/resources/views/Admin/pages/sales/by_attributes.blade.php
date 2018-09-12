@@ -64,7 +64,9 @@
                         <tbody>
                              @if(count($prods) >0)
                             @foreach($prods as $prd)
-
+                            <?php  $qty='';
+                            $sale='';
+                            ?>
                             <tr>
 <!--                                <td>{{ $prd->id }}</td>-->
                                 <td>{{ $prd->product }}</td>
@@ -74,29 +76,26 @@
                                     <ul>
                                         @foreach($prd->subproducts as $sub)
                                         <li>{{$sub->product}}</li>
-
+                                 <?php foreach($sub->detials as $details){
+                                       $qty.='<li>'.$details->qty.'</li>';  
+                                      
+                                       $sale.='<li>'.Session::get("currency_symbol").' <span class="priceConvert">'.$details->price.'</span> </li>';  
+                                    
+                                 } 
+                               
+                                 ?>
                                         @endforeach
                                     </ul>
                                 </td>
                                 
                                 <td>
                                     <ul>
-                                        @foreach($prd->subproducts as $sub)
-                                        @foreach($sub->detials as $details)
-                                        <li>{{$details->qty}}</li>  
-                                        @endforeach
-                                      
-                                        @endforeach                         
+                                       <?php echo html_entity_decode($qty); ?>                     
                                     </ul>
                                 </td>
                                 <td>
                                <ul>
-                                        @foreach($prd->subproducts as $sub)
-                                        @foreach($sub->detials as $details)
-                                        <li>{{$details->price}}</li>  
-                                        @endforeach
-                                      
-                                        @endforeach                         
+                                <?php echo html_entity_decode($sale); ?>                  
                                     </ul>
                                 </td>
                             </tr>
