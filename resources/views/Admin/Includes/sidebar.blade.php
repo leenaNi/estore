@@ -77,6 +77,13 @@
                 </ul>
 
             </li>
+              <li class="{{ (in_array(Route::currentRouteName(),[;'admin.courier.view'])?'active':'') }}">
+                <a href="{{ route('admin.courier.view') }}">
+                    <i class="fa fa-truck"></i> <span>Courier Services</span>
+
+                </a>
+
+            </li>
             <li class="treeview {{ in_array(Route::currentRouteName(),['admin.notification.view']) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-users"></i> <span>Push Notification</span>
