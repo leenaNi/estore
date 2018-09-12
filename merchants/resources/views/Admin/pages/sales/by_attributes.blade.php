@@ -85,8 +85,8 @@
                                         <?php
                                      //  dd($sub) ; 
                                         $orderCount = DB::table("has_products")
-                                                ->leftjoin("orders", "orders.id", "=", "has_products.order_id")
-                                                ->whereNotIn("orders.order_status", [0, 4, 6, 10])
+                                              
+                                                ->whereNotIn("has_products.order_status", [0, 4, 6, 10])
                                                 ->where("sub_prod_id", "=", $sub->id)
                                                 ->select("has_products.created_at", "has_products.qty");
 
@@ -107,8 +107,8 @@
                                         @foreach($prd->subproducts as $sub)
                                         <?php
                                         $sales = DB::table("has_products")
-                                                ->leftjoin("orders", "orders.id", "=", "has_products.order_id")
-                                                ->whereNotIn("orders.order_status", [0, 4, 6, 10])
+                                              
+                                                ->whereNotIn("has_products.order_status", [0, 4, 6, 10])
                                                 ->where("sub_prod_id", "=", $sub->id)
                                                 ->select("has_products.created_at", "has_products.qty");
 

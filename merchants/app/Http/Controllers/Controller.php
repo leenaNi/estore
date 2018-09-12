@@ -92,6 +92,7 @@ abstract class Controller extends BaseController {
         View::share('feature', $this->feature);
         $this->storeViesion=$this->getStoreVersion();      
          View::share('storeViesion', $this->storeViesion);
+         View::share('$jsonString', $this->jsonString);
         //        $data['socialMedia']=SocialMediaLink::where('status',1)->get();
 //        $data['contactDetails']=Contact::where('status',1)->get();
 //        $data['staticPages']=StaticPage::where('status',1)->get();

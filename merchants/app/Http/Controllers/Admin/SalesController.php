@@ -30,7 +30,11 @@ class SalesController extends Controller {
     public function order() {
        // dd(DB::getTablePrefix());
         $where = '';
-           $order=Order::select(DB::raw('count(*) as order_count,sum(pay_amt) as sales'),'created_at','id')->whereNotIn('order_status',[0,4,6,10])->groupBy(DB::raw('DATE(created_at)'))->orderBy('sales','desc');
+        $order = Order::whereNotIn('orders.order_status',[0,4,6,10])->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $this->jsonString['store_id'])
+                  ->select( DB::raw('sum(has_products.pay_amt) as hasPayamt'),DB::raw('count(*) as order_count,sum(orders.pay_amt) as sales'),'orders.created_at','orders.id','orders.prefix')
+                  ->groupBy(DB::raw('DATE(orders.created_at)'))->orderBy('sales','desc');
+       // dd($order->get());
+      //     $order=Order::select(DB::raw('count(*) as order_count,sum(pay_amt) as sales'),'created_at','id')->whereNotIn('order_status',[0,4,6,10])->groupBy(DB::raw('DATE(created_at)'))->orderBy('sales','desc');
          // dd($order);
         if (!empty(Input::get('month'))) {
             $select = "DATE_FORMAT(created_at, '%M %Y') as created_at";
@@ -70,38 +74,45 @@ class SalesController extends Controller {
          
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['product', 'short_desc', 'long_desc'];
-
-        $prods = Product::
-                where('is_individual', '=', '1')
-                ->where("is_crowd_funded", "=", "0")
-                ->orderBy("product", "asc");
-        $prods = $prods->with('sales')->orderBy("price", "desc");
-        $prods = $prods->where(function($query) use($search_fields, $search) {
-            foreach ($search_fields as $field) {
-                $query->orWhere($field, "like", "%$search%");
-            }
-
-            $query->orWhereHas('categories', function($query) use ($search) {
-                return $query->where('category', 'like', "%$search%");
-            });
-        });
+        $prods = DB::connection('mysql2')->table($this->jsonString['prefix'].'_products as p')
+                ->where('is_individual', '=', '1')->orderBy("product", "asc")
+                ->join("has_products as hp", "hp.prod_id", '=', 'p.id')->whereNotIn('hp.order_status',[0,4,6,10])
+                ->join($this->jsonString['prefix']."_has_categories as hc", "hc.prod_id", "=", "p.id")
+                ->join($this->jsonString['prefix']."_categories as c", "c.id", "=", "hc.cat_id")
+                ->where("hp.store_id", $this->jsonString['store_id'])
+                ->select('p.id','p.product',DB::raw("SUM(hp.qty) tot_qty"),DB::raw("SUM(hp.pay_amt) sales"), 'c.category')
+                ->groupBy('p.id');
+//        $prods = Product::where('is_individual', '=', '1');
+//        $prods = $prods->setConnection('mysql2')
+//                ->where("is_crowd_funded", "=", "0")
+//                ->orderBy("product", "asc");
+//        $prods = $prods->with('sales')->orderBy("price", "desc");
+//        $prods = $prods->where(function($query) use($search_fields, $search) {
+//            foreach ($search_fields as $field) {
+//                $query->orWhere($field, "like", "%$search%");
+//            }
+//
+//            $query->orWhereHas('categories', function($query) use ($search) {
+//                return $query->where('category', 'like', "%$search%");
+//            });
+//        });
 
 
         if (!empty(Input::get('from_date')) || !empty(Input::get('search')) || !empty(Input::get('to_date'))) {
-            $prods = $prods->where('status',1)->get();
+            $prods = $prods->where('p.status',1)->get();
             $prodCount=$prods->count();
 
             // dd($prods);
         } else {
 
-            $prods = $prods->where('status',1)->paginate(Config('constants.paginateNo'));
+            $prods = $prods->where('p.status',1)->paginate(Config('constants.paginateNo'));
              $prodCount=$prods->total();
         }
         return view(Config('constants.saleView') . '.by_products', compact('prods','prodCount'));
     }
 
     public function categories() {
-
+       $storeId=$this->jsonString['store_id'];
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['category', 'short_desc', 'long_desc'];
         $categories = Category::orderBy('category')->where("status",1);
@@ -122,7 +133,7 @@ class SalesController extends Controller {
             $categoryCount=$categories->total();
         }
 
-        return view(Config('constants.saleView') . '.by_categories', compact('categories','categoryCount'));
+        return view(Config('constants.saleView') . '.by_categories', compact('categories','categoryCount','storeId'));
     }
 
     public function attributes() {

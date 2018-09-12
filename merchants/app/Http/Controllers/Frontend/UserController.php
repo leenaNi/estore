@@ -88,7 +88,7 @@ class UserController extends Controller {
        
     $prod_id = HasProducts::where('order_id', $getid)->where("prefix",$this->jsonString['prefix'])->pluck("prod_id");
       
-            $products=Product::whereIn("id",$prod_id)->with([
+            $products = Product::whereIn("id", $prod_id)->with([
                                 'subproducts' => function ($query) {
                                     $query->with(['attributes' => function($q) {
                                             $q->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
@@ -314,9 +314,7 @@ class UserController extends Controller {
               return   $result = ['status'=>'nomatch','msg'=>'Password and Confirm Password does not match'];
             }
         } else {
-            //return 0;
-           
-            // Session::flash('PasswordError', 'Incorrect Old Password');
+     
           return  $result = ['status'=>'error','msg'=>'Incorrect Old Password']; 
         }
 
