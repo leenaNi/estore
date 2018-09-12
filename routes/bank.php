@@ -25,6 +25,7 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('/', ["as" => "admin.login", "uses" => "LoginController@login"]);
     Route::get('/logout', ["as" => "admin.bank.logout", "uses" => "LoginController@bankLogout"]);
     Route::post('/check-bank-login', ["as" => "admin.login.checkBankLogin", "uses" => "LoginController@checkBankLogin"]);
+    Route::any('/forgot-password', ["as" => "adminForgotPassword", "uses" => "LoginController@forgotPassword"]);
     //->middleware('auth.basic:bank-users-web-guard')
 
     Route::group(['middleware' => ['auth:bank-users-web-guard']], function () {
@@ -59,8 +60,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/by-date-get-yearly', ["as" => "admin.analytics.byDateGetYearly", "uses" => "AnalyticController@byDateGetYearly"]);
             Route::any('/by-date-get-daily', ["as" => "admin.analytics.byDateGetDaily", "uses" => "AnalyticController@byDateGetDaily"]);
             Route::any('/by-date-get-monthly', ["as" => "admin.analytics.byDateGetMonthly", "uses" => "AnalyticController@byDateGetMonthly"]);
-           Route::any('/by-category-export', ["as" => "admin.analytics.byCategoryExport", "uses" => "AnalyticController@byCategoryExport"]);
-
+            Route::any('/by-category-export', ["as" => "admin.analytics.byCategoryExport", "uses" => "AnalyticController@byCategoryExport"]);
         });
         Route::group(['prefix' => 'bankusers'], function () {
             Route::group(['prefix' => 'roles'], function() {
