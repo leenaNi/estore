@@ -1,25 +1,24 @@
 @extends('Admin.Layouts.default')
 
+@section('contents')
 
-@section('content')
 <section class="content-header">
-    <div class="flash-message"><b>{{ Session::get("ProductCode") }} {{ Session::get("errorMessage") }}</b></div>
-    <h1>
-        Courier Service
-
-    </h1>
+    <h1>  Courier Service </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+           <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
         <li class=""><a href="{{route('admin.courier.view')}}" > Courier Service </a></li>
         <li class="active">Add/Edit</li>
     </ol>
 </section>
-<section class='content'>
-    <div class="nav-tabs-custom"> 
-        <div class="tab-content">
-            <div class="tab-pan-active" id="activity">
-                <div class="panel-body">
-                    <div class="row"> 
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="nav-tabs-custom">
+                    
+                    <div >
+                        <div class="tab-pane active" id="bank_tab_1">
+                            <div class="row"> 
                         {!! Form::model($courier, ['method' => 'post', 'files'=> true, 'url' => $action ,'id'=>'EditGeneralInfo']) !!}
 
                         {!! Form::hidden('id',null) !!}
@@ -84,13 +83,10 @@
                     </div>
                 </div>
             </div>
+            </div>
+            </div>
         </div>
     </div>
 </section>
 
 @stop 
-
-@section('myscripts')
-
-
-@stop
