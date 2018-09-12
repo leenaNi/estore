@@ -49,7 +49,7 @@
 
             <li class="treeview {{ in_array(Route::currentRouteName(),['admin.payment-settlement','admin.payment-settlements.settlementSummary']) ? 'active' : '' }}">
                 <a href="#">
-                    <i class="fa fa-area-chart"></i> <span>Payment Settlement</span>
+                    <i class="fa fa-money"></i> <span>Payment Settlement</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
