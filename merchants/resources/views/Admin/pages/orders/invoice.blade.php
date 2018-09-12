@@ -286,7 +286,7 @@ $address = $order->users->addresses->first();
             <?php //if ($order->shipping_amt > 0) {   ?>
 <!--                <tr>
     <td  colspan="5" class="txtr br0"> <span>Shipping Charges: </span>  </td>
-    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                                                ?>"></i> {{ number_format($order->shipping_amt) }} </td>
+    <td class=" txtright">+ <i class="fa fa-<?php // echo strtolower($currency);                                                                 ?>"></i> {{ number_format($order->shipping_amt) }} </td>
 </tr>-->
             <?php // }    ?>
 
@@ -302,10 +302,8 @@ $address = $order->users->addresses->first();
                 foreach ($additional['details'] as $add) {
                     //  print_r($additional);die;
                     ?> 
-
                     <?php if (count($add) > 0) { ?>  
                         <tr>
-
                             <td colspan="{{$colSpan}}" class="txtr"> <span> {{$add['label'] }}</span>  </td>
                             <td class=" txtc"><span class="currency-sym"></span> {{number_format(($add['applied'] * $currency_val), 2)}} </td>
                         </tr>
