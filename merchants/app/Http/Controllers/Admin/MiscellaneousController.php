@@ -317,35 +317,35 @@ class MiscellaneousController extends Controller {
         $imagePath = Helper::getLogoFromURL($logo);
 
         if (!empty(Input::get('store_name'))) {
-            $storeName = Input::get('store_name');
+            $store_configuration['storeName'] = Input::get('store_name');
         }
 
         if (!empty(Input::get('primary_color'))) {
-            $pcolor = Input::get('primary_color');
+            $store_configuration['primary_color'] = Input::get('primary_color');
         }
 
         if (!empty(Input::get('secondary_color'))) {
-            $scolor = Input::get('secondary_color');
+            $store_configuration['secondary_color'] = Input::get('secondary_color');
         }
 
         if (!empty(Input::get('btn_color'))) {
-            $btncolor = Input::get('btn_color');
+            $store_configuration['btn_color'] = Input::get('btn_color');
         }
 
         if (!empty(Input::get('sbtn_color'))) {
-            $sbtncolor = Input::get('sbtn_color');
+            $store_configuration['sbtn_color'] = Input::get('sbtn_color');
         }
 
         if (!empty(Input::get('standard_delivary_days'))) {
-            $delivary_days = Input::get('standard_delivary_days');
+            $store_configuration['standard_delivary_days'] = Input::get('standard_delivary_days');
         }
 
         if ((Input::get('cod_option') != null)) {
-            $cod_option = Input::get('cod_option');
+            $store_configuration['cod_option'] = Input::get('cod_option');
         }
 
         if (!empty(Input::get('language'))) {
-            $language = Input::get('language');
+            $store_configuration['language'] = Input::get('language');
         }
 
         if (!empty(Input::get('store_version'))) {
@@ -360,30 +360,31 @@ class MiscellaneousController extends Controller {
         if (!empty(Input::get('theme'))) {
 
             $index = (int) Input::get('theme');
-            $themeSel = $themes[$index];
-            $themeid = Input::get('theme');
+            $store_configuration['theme'] = $themes[$index];
+            $store_configuration['themeid'] = Input::get('theme');
         }
-        $store_configuration = array(
-            "logo" => $logo,
-            "primary_color" => $pcolor,
-            "secondary_color" => $scolor,
-            "btn_color" => $btncolor,
-            "sbtn_color" => $sbtncolor,
-            "storeName" => $storeName,
-            "standard_delivary_days" => $delivary_days,
-            "cod_option" => $cod_option,
-            "language" => $language,
-            "currencyId" => $currency,
-            "theme" => $themeSel,
-            "themeid" => $themeid,
-            "themedata" => $themedata1,
-            "industry_id" => $industry_id,
-            "store_version" => $store_version
-        );
-
+//        $store_configuration = array(
+//            "logo" => $logo,
+//            "primary_color" => $pcolor,
+//            "secondary_color" => $scolor,
+//            "btn_color" => $btncolor,
+//            "sbtn_color" => $sbtncolor,
+//            "storeName" => $storeName,
+//            "standard_delivary_days" => $delivary_days,
+//            "cod_option" => $cod_option,
+//            "language" => $language,
+//            "currencyId" => $currency,
+//            "theme" => $themeSel,
+//            "themeid" => $themeid,
+//            "themedata" => $themedata1,
+//            "industry_id" => $industry_id,
+//            "store_version" => $store_version
+//        );
+        $store_configuration['logo'] = $logo;
+        $store_configuration['currencyId'] = $currency;
+        $store_configuration['store_version'] = $store_version;
         $productconfig = json_encode($store_configuration);
-//dd($productconfig);
-        // $productconfig = json_encode($store_configuration);
+
         Helper::saveSettings($productconfig);
         // $path = storage_path() . "/json/storeSetting.json";
         Session::put('storeName', $storeName);
