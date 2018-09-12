@@ -31,7 +31,7 @@
                             <input type="submit" name="submit" class="form-control btn btn-primary noMob-leftmargin" value="Search">
                         </div>
                         <div class="form-group col-md-2 col-sm-12 col-xs-12 noBottomMargin">
-                           <a href="{{route('admin.sales.byattribute')}}" class="btn btn-block reset-btn noLeftMargin">Reset</a>
+                            <a href="{{route('admin.sales.byattribute')}}" class="btn btn-block reset-btn noLeftMargin">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -46,81 +46,87 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
-          
-                
+
+
                 <div class="box-body table-responsive no-padding">
                     <table class="table attrSalesTable  table-hover general-table tableVaglignMiddle">
                         <thead>
                             <tr>
 <!--                                <th>Sr No</th>-->
                                 <th>Product</th>
-                               
+                                <th>Category</th>
                                 <th>Sub Products</th>
-                                 <th>Category</th>
+
                                 <th>Order Count</th>
                                 <th>Sales</th>
                             </tr>
                         </thead>
                         <tbody>
-                             @if(count($prods) >0)
+                            @if(count($prods) >0)
                             @foreach($prods as $prd)
-                            <?php  $qty='';
-                            $sale='';
+                            <?php
+                            $qty = '';
+                            $sale = '';
                             ?>
                             <tr>
 <!--                                <td>{{ $prd->id }}</td>-->
                                 <td>{{ $prd->product }}</td>
-                              
-                               <td>{{ @$prd->category }}</td>
+
+                                <td>{{ @$prd->category }}</td>
                                 <td>
                                     <ul>
                                         @foreach($prd->subproducts as $sub)
                                         <li>{{$sub->product}}</li>
-                                 <?php foreach($sub->detials as $details){
-                                       $qty.='<li>'.$details->qty.'</li>';  
-                                      
-                                       $sale.='<li>'.Session::get("currency_symbol").' <span class="priceConvert">'.$details->price.'</span> </li>';  
-                                    
-                                 } 
-                               
-                                 ?>
+                                        <?php
+                                        if ($sub->detials->count()>0) {
+                                            foreach ($sub->detials as $details) {
+                                                $qty.='<li>' . $details->qty . '</li>';
+
+                                                $sale.='<li>' . Session::get("currency_symbol") . ' <span class="priceConvert">' . $details->price . '</span> </li>';
+                                            }
+                                        } else {
+//                                            print_r($sub->detials);
+                                            $qty.='<li>0</li>';
+                                            $sale.='<li>'. Session::get("currency_symbol") . ' <span class="priceConvert">0</span</li>';
+                                        }
+                                        ?>
                                         @endforeach
                                     </ul>
                                 </td>
-                                
+
                                 <td>
                                     <ul>
-                                       <?php echo html_entity_decode($qty); ?>                     
+                                        <?php echo html_entity_decode($qty); ?>                     
                                     </ul>
                                 </td>
                                 <td>
-                               <ul>
-                                <?php echo html_entity_decode($sale); ?>                  
+                                    <ul>
+                                        <?php echo html_entity_decode($sale); ?>                  
                                     </ul>
                                 </td>
                             </tr>
                             @endforeach
-                             @else
-                           <tr><td colspan=6> No Record Found.</td></tr>
+                            @else
+                            <tr><td colspan=6> No Record Found.</td></tr>
                             @endif
                         </tbody>
                     </table>
                 </div>
-                <?php   if(empty(Input::get('dateSearch'))){ ?>
-                <div class="box-footer clearfix">
-                    <?php
-                    $args = [];
-                    !empty(Input::get("search")) ? $args["search"] = Input::get("search") : '';
-                    !empty(Input::get("sort")) ? $args["sort"] = Input::get("sort") : '';
-                    !empty(Input::get("order")) ? $args["order"] = Input::get("order") : '';
+                <?php if (empty(Input::get('dateSearch'))) { ?>
+                    <div class="box-footer clearfix">
+                        <?php
+                        $args = [];
+                        !empty(Input::get("search")) ? $args["search"] = Input::get("search") : '';
+                        !empty(Input::get("sort")) ? $args["sort"] = Input::get("sort") : '';
+                        !empty(Input::get("order")) ? $args["order"] = Input::get("order") : '';
 
-                    !empty(Input::get("from_date")) ? $args["from_date"] = Input::get("from_date") : '';
-                    !empty(Input::get("to_date")) ? $args["to_date"] = Input::get("to_date") : '';
-                    ?>
-                    <?php echo $prods->appends($args)->links() ?>
+                        !empty(Input::get("from_date")) ? $args["from_date"] = Input::get("from_date") : '';
+                        !empty(Input::get("to_date")) ? $args["to_date"] = Input::get("to_date") : '';
+                        ?>
+                        <?php echo $prods->appends($args)->links() ?>
 
-                </div>
-                <?php  } ?>
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </div>
@@ -161,7 +167,7 @@
         });
 
 
-          $(".fromDate").datepicker({
+        $(".fromDate").datepicker({
             dateFormat: "yy-mm-dd",
             onSelect: function (selected) {
                 $(".toDate").datepicker("option", "minDate", selected);
