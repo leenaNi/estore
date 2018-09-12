@@ -48,6 +48,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Charges</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -58,6 +59,7 @@
                   <tr>
 
                     <td>{{$courier->name}}</td>
+                    <td>{{$courier->charges}}</td>
                     
                     <td>@if($courier->status==1)
                         <a href="{!! route('admin.courier.changeStatus',['id'=>$courier->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this record?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn"></i></a>
