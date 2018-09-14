@@ -909,13 +909,13 @@ class HomeController extends Controller {
   public function contactSend() {
         $data = [];
        $firstname=Input::get("firstname");
-       $useremail=Input::get("email");
+       $useremail=Input::get("useremail");
        $telephone=Input::get("telephone");
        $message=Input::get("message");
       
         $emailData = ['name' => $firstname, 'email' => $useremail,'telephone'=>$telephone,'messages'=>$message];
         Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
-            $m->to("pradeep@infiniteit.biz", $firstname)->subject('Your password changed!');
+            $m->to("pradeep@infiniteit.biz", $firstname)->subject('Veestores Contact form!');
             //$m->cc('madhuri@infiniteit.biz');
         });
    return 1;

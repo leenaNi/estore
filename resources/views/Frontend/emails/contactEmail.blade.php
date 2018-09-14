@@ -10,7 +10,7 @@
 <p>Dear Admin,</p>  
 <br />
 <p>
- We have got a new enquiry email. User Details are given Below.
+    We have got a new enquiry email. User Details are given Below. <br>
  Name {{$name}}
  <br>
  Mobile  {{$telephone}} <br>
