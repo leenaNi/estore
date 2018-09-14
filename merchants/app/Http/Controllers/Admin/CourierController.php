@@ -4,9 +4,23 @@ namespace App\Http\Controllers\Admin;
 
 use Route;
 use Input;
+use App\Models\Category;
 use App\Library\Helper;
+use App\Classes\UploadHandler;
 use App\Http\Controllers\Controller;
+use App\Models\CatalogImage;
+use App\Models\Tax;
+use App\Models\Product;
+use App\Models\HasTaxes;
+use App\Models\HasCurrency;
+use App\Models\Vendor;
+use App\Models\Country;
+use App\Models\State;
+use App\Models\City;
+use App\Models\User;
 use App\Models\GeneralSetting;
+use App\Models\ProductType;
+use App\Models\AttributeSet;
 use App\Models\Courier;
 use DB;
 use Session;
@@ -16,19 +30,19 @@ class CourierController extends Controller {
     public function index() {
         $couriers = Courier::orderBy('created_at', 'DESC')->paginate(Config('constants.paginateNo'));
         //  dd($couriers);
-        return Helper::returnView(Config('constants.AdminPagesCourier') . '.index', compact('couriers'));
+        return Helper::returnView(Config('constants.adminCourierView') . '.index', compact('couriers'));
     }
 
     public function add() {
         $courier = new Courier;
         $action = route("admin.courier.save");
 
-        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action'));
+        return view(Config('constants.adminCourierView') . '.addEdit', compact('courier', 'action'));
     }
 
     public function save() {
          $courier = Courier::findOrNew(Input::get('id'));
-         $courier->charges = Input::get('charges');
+        // $courier->charges = (Input::get('charges')*Session::get("currency_val"));
          $courier->save();
         Session::flash("msg", "Courier service added successfully.");
         return redirect()->route('admin.courier.view');
@@ -37,13 +51,13 @@ class CourierController extends Controller {
     public function edit() {
         $courier = Courier::where("url_key", Input::get('url_key'))->first();
         $action = route("admin.courier.update");
-        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action'));
+        return view(Config('constants.adminCourierView') . '.addEdit', compact('courier', 'action'));
     }
 
     public function update() {
         $courier = Courier::find(Input::get('id'));
         $courier->update(Input::except(['details']));
-        $courier->charges =Input::get('charges');
+        //$courier->charges = Input::get('id')*Session::get("currency_val");
         $courier->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
         $courier->update();
         Session::flash("msg", "Courier service updated successfully.");

@@ -21,18 +21,17 @@ use DB;
 use Config;
 
 class MiscellaneousController extends Controller {
-    
+
     public function generalSetting() {
-       // dd(config('app.industry'));
+        // dd(config('app.industry'));
         $name = Input::get('name');
         $status = Input::get('status');
-        $industry_id=config('app.industry');
-      $questionCategory=DB::table('question_category')->get();
+        $industry_id = config('app.industry');
+        $questionCategory = DB::table('question_category')->get();
         if (!empty(config('app.industry'))) {
-            $settings = GeneralSetting::where('name', '<>', 'set_popup')->orderBy('question_category_id','desc')->whereHas('industry', function($que) use($industry_id) {
-                        $que->where("industry_id", $industry_id);
-                    });
-        
+            $settings = GeneralSetting::where('name', '<>', 'set_popup')->orderBy('question_category_id', 'desc')->whereHas('industry', function($que) use($industry_id) {
+                $que->where("industry_id", $industry_id);
+            });
         } else {
             $settings = GeneralSetting::where('is_active', 1)->where('name', '<>', 'set_popup')->orderBy('question_category_id', 'DESC');
         }
@@ -44,17 +43,16 @@ class MiscellaneousController extends Controller {
             $settings = $settings->where('status', $status);
         }
         $settings = $settings->get();
-        $settingData=[];
-        foreach($questionCategory as $cat){
-           foreach($settings as $setting) {
-               if($cat->id==$setting->question_category_id){
-                   $settingData[$cat->category][]=$setting;
-               }
-           }
-            
-      }
-      //dd($data);
-      //  dd($settingData);
+        $settingData = [];
+        foreach ($questionCategory as $cat) {
+            foreach ($settings as $setting) {
+                if ($cat->id == $setting->question_category_id) {
+                    $settingData[$cat->category][] = $setting;
+                }
+            }
+        }
+        //dd($data);
+        //  dd($settingData);
         return view(Config('constants.adminMiscellaneousGeneralSettingView') . '.index', compact('settingData'));
     }
 
@@ -138,10 +136,10 @@ class MiscellaneousController extends Controller {
         return view(Config('constants.adminMiscellaneousAdvanceSettingView') . '.index', compact('settings'));
     }
 
-    public function domain_success(){
-                return view(Config('constants.adminMiscellaneousDomains').'.success');
-
+    public function domain_success() {
+        return view(Config('constants.adminMiscellaneousDomains') . '.success');
     }
+
     public function emailSetting() {
         $settings = GeneralSetting::where("type", 4)->paginate(Config('constants.paginateNo'));
 
@@ -149,10 +147,11 @@ class MiscellaneousController extends Controller {
     }
 
     public function domains() {
-        
 
-        return view(Config('constants.adminMiscellaneousDomains').'.index');
+
+        return view(Config('constants.adminMiscellaneousDomains') . '.index');
     }
+
     public function emailSettingEdit() {
         $settings = GeneralSetting::where('url_key', Input::get('url_key'))->first();
         $action = route("admin.emailSetting.save");
@@ -258,7 +257,7 @@ class MiscellaneousController extends Controller {
 
         $languages = Language::select('id', 'name')->get();
         $currency = HasCurrency::where('currency_status', 1)->get();
-        
+
         $themedata = Helper::getSettings()['themedata'];
         $themes = [];
         foreach ($themedata as $k => $thed) {
@@ -275,18 +274,12 @@ class MiscellaneousController extends Controller {
 
     function generalStoreAdd() {
         $themes = [];
-
         $themedata1 = Helper::getSettings()['themedata'];
         foreach ($themedata1 as $td) {
             $themes[$td['id']] = strtolower($td['name']);
         }
-        $logo = $storeName = "Your store";
-        $pcolor = "#3c8dbc";
-        $scolor = "#222d32";
-        $delivary_days = '3';
-        $cod_option = '1';
-        $language = "";
-        $currency = "IND";
+  
+        $store_configuration = Helper::getSettings();
         $industry_id = Helper::getSettings()['industry_id'];
 
         $themeSel = Helper::getSettings()['theme'];
@@ -310,85 +303,68 @@ class MiscellaneousController extends Controller {
 
         if (!empty(Input::get('logo_img_url'))) {
             $logo = Input::get('logo_img_url');
-        }else
-        {
+        } else {
             $logo = Helper::getSettings()['logo'];
         }
 
         $imagePath = Helper::getLogoFromURL($logo);
-        
+
         if (!empty(Input::get('store_name'))) {
-            $storeName = Input::get('store_name');
+            $store_configuration['storeName'] = Input::get('store_name');
         }
 
         if (!empty(Input::get('primary_color'))) {
-            $pcolor = Input::get('primary_color');
+            $store_configuration['primary_color'] = Input::get('primary_color');
         }
 
         if (!empty(Input::get('secondary_color'))) {
-            $scolor = Input::get('secondary_color');
+            $store_configuration['secondary_color'] = Input::get('secondary_color');
         }
 
         if (!empty(Input::get('btn_color'))) {
-            $btncolor = Input::get('btn_color');
+            $store_configuration['btn_color'] = Input::get('btn_color');
         }
 
         if (!empty(Input::get('sbtn_color'))) {
-            $sbtncolor = Input::get('sbtn_color');
+            $store_configuration['sbtn_color'] = Input::get('sbtn_color');
         }
 
         if (!empty(Input::get('standard_delivary_days'))) {
-            $delivary_days = Input::get('standard_delivary_days');
+            $store_configuration['standard_delivary_days'] = Input::get('standard_delivary_days');
         }
 
         if ((Input::get('cod_option') != null)) {
-            $cod_option = Input::get('cod_option');
+            $store_configuration['cod_option'] = Input::get('cod_option');
         }
 
         if (!empty(Input::get('language'))) {
-            $language = Input::get('language');
+            $store_configuration['language'] = Input::get('language');
         }
 
         if (!empty(Input::get('store_version'))) {
-            $store_version = Input::get('store_version');            
-           
+            $store_version = Input::get('store_version');
         }
-        
-         if (!empty(Input::get('currency'))) {
-            $currency = Input::get('currency');            
+
+        if (!empty(Input::get('currency'))) {
+            $currency = Input::get('currency');
             Helper::getCurrency($currency);
         }
 
         if (!empty(Input::get('theme'))) {
 
             $index = (int) Input::get('theme');
-            $themeSel = $themes[$index];
-            $themeid = Input::get('theme');
+            $store_configuration['theme'] = $themes[$index];
+            $store_configuration['themeid'] = Input::get('theme');
         }
-        $store_configuration = array(
-            "logo" => $logo,
-            "primary_color" => $pcolor,
-            "secondary_color" => $scolor,
-            "btn_color" => $btncolor,
-            "sbtn_color" => $sbtncolor,
-            "storeName" => $storeName,
-            "standard_delivary_days" => $delivary_days,
-            "cod_option" => $cod_option,
-            "language" => $language,
-            "currencyId" => $currency,
-            "theme" => $themeSel,
-            "themeid" => $themeid,
-            "themedata" => $themedata1,
-            "industry_id"=>$industry_id,
-            "store_version"=>$store_version
-        );
-        
+
+        $store_configuration['logo'] = $logo;
+        $store_configuration['currencyId'] = $currency;
+        $store_configuration['store_version'] = $store_version;
         $productconfig = json_encode($store_configuration);
-//dd($productconfig);
-            // $productconfig = json_encode($store_configuration);
-            Helper::saveSettings($productconfig);
-       // $path = storage_path() . "/json/storeSetting.json";
-          Session::put('storeName', $storeName);
+
+        Helper::saveSettings($productconfig);
+        // $path = storage_path() . "/json/storeSetting.json";
+        Session::put('storeName', $storeName);
     }
 
     function returnPolicy() {
@@ -472,52 +448,55 @@ class MiscellaneousController extends Controller {
             $general_setting->update();
         }
     }
-    
-    public function referralProgram(){
-         $settings = GeneralSetting::where('url_key','referral')->get();
+
+    public function referralProgram() {
+        $settings = GeneralSetting::where('url_key', 'referral')->get();
         return view(Config('constants.adminMiscellaneousReferalView') . '.index', compact('settings'));
     }
-    public function editReferral(){
-         $id=Input::get("id");
-         $settings = GeneralSetting::find($id);
-         //dd($settings);
-          $action = route("admin.referralProgram.saveReferral");
+
+    public function editReferral() {
+        $id = Input::get("id");
+        $settings = GeneralSetting::find($id);
+        //dd($settings);
+        $action = route("admin.referralProgram.saveReferral");
         return view(Config('constants.adminMiscellaneousReferalView') . '.addEdit', compact('settings', 'action'));
     }
-      public function saveReferral(){
-        $save = GeneralSetting::where('url_key', Input::get('url_key'))->first();
-        $save->status = Input::get('status');
-        $save->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
-        $save->save();
-        Session::flash("aletC", '1');
-       Session::flash("message", "Refrral program updated successfully.");
-       return redirect()->route('admin.referralProgram.view');
-       
-}
 
-public function bankDetails(){
-    $bankDetail= GeneralSetting::where('url_key','bank_acc_details')->get();
-     return view(Config('constants.adminMiscellaneousBankView') . '.index', compact('bankDetail'));
-}
- public function addEditBankDetails(){
-         $id=Input::get("id");
-         $bankDetail = GeneralSetting::find($id); 
-         $accountType[1]="Saving";
-         $accountType[2]="Current";
-        $countryId=Country::where("status",1)->pluck("id");
-         $country=Country::where("status",1)->pluck("name","id");
-          $state=Zone::where("status",1)->whereIn("country_id",$countryId)->pluck("name","id");
-          $action = route("admin.bankDetails.update");
-        return view(Config('constants.adminMiscellaneousBankView') . '.addEdit', compact('bankDetail', 'action','accountType','state','country'));
-    }
-       public function updateBankDetails(){
+    public function saveReferral() {
         $save = GeneralSetting::where('url_key', Input::get('url_key'))->first();
         $save->status = Input::get('status');
         $save->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
         $save->save();
         Session::flash("aletC", '1');
-       Session::flash("message", "Bank Details updated successfully.");
-       return redirect()->route('admin.bankDetails.view');
-       
-}
+        Session::flash("message", "Refrral program updated successfully.");
+        return redirect()->route('admin.referralProgram.view');
+    }
+
+    public function bankDetails() {
+        $bankDetail = GeneralSetting::where('url_key', 'bank_acc_details')->get();
+        return view(Config('constants.adminMiscellaneousBankView') . '.index', compact('bankDetail'));
+    }
+
+    public function addEditBankDetails() {
+        $id = Input::get("id");
+        $bankDetail = GeneralSetting::find($id);
+        $accountType[1] = "Saving";
+        $accountType[2] = "Current";
+        $countryId = Country::where("status", 1)->pluck("id");
+        $country = Country::where("status", 1)->pluck("name", "id");
+        $state = Zone::where("status", 1)->whereIn("country_id", $countryId)->pluck("name", "id");
+        $action = route("admin.bankDetails.update");
+        return view(Config('constants.adminMiscellaneousBankView') . '.addEdit', compact('bankDetail', 'action', 'accountType', 'state', 'country'));
+    }
+
+    public function updateBankDetails() {
+        $save = GeneralSetting::where('url_key', Input::get('url_key'))->first();
+        $save->status = Input::get('status');
+        $save->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
+        $save->save();
+        Session::flash("aletC", '1');
+        Session::flash("message", "Bank Details updated successfully.");
+        return redirect()->route('admin.bankDetails.view');
+    }
+
 }

@@ -19,6 +19,7 @@
                     <div >
                         <div class="tab-pane active" id="bank_tab_1">
                             <div class="row"> 
+                       <div class="col-md-12 col-xs-12"> 
                         {!! Form::model($courier, ['method' => 'post', 'files'=> true, 'url' => $action ,'id'=>'EditGeneralInfo']) !!}
 
                         {!! Form::hidden('id',null) !!}
@@ -46,7 +47,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 {!! Form::label('charges', 'Charges ') !!}<span class="red-astrik"> *</span>
-                                {!! Form::text('charges',null, ["class"=>'form-control validate[required,custom[number]]' ,"placeholder"=>'Charges']) !!}
+                                {!! Form::text('charges',null, ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Charges']) !!}
                                 <p style="color: red;" class="errorCharges"></p>
                             </div>
                         </div>
