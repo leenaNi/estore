@@ -908,7 +908,16 @@ class HomeController extends Controller {
     }
   public function contactSend() {
         $data = [];
-       dd(Input::all());
+       $firstname=Input::get("firstname");
+       $useremail=Input::get("email");
+       $telephone=Input::get("telephone");
+       $message=Input::get("message");
+      
+        $emailData = ['name' => $firstname, 'email' => $useremail,'telephone'=>$telephone,'message'=>$message];
+        Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
+            $m->to("pradeep@infiniteit.biz", $firstname)->subject('Your password changed!');
+            //$m->cc('madhuri@infiniteit.biz');
+        });
         return Helper::returnView($viewname, $data);
     }
     public function faqS() {
