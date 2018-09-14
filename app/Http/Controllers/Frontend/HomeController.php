@@ -110,12 +110,6 @@ class HomeController extends Controller {
 
     public function newStore() {
 
-//		if ($store_name) {
-//            Session::put('storename', $store_name);
-//        } else {
-//            return redirect()->to("/");
-//        }
-
         if (Session::get('merchantid')) {
             Session::flash('storeadded', 'You can not create more than one store.');
             //return redirect()->back(); 
@@ -305,7 +299,7 @@ class HomeController extends Controller {
         $store->percent_to_charge = 1.00;
         $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
         $store->status = 1;
-
+         $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
         if (empty($themeInput->id)) {
             if (!empty($themeInput->url_key)) {
                 $chkUrlKey = Store::where("url_key", $themeInput->url_key)->count();
@@ -912,7 +906,11 @@ class HomeController extends Controller {
         $viewname = Config('constants.frontendView') . ".contact";
         return Helper::returnView($viewname, $data);
     }
-
+  public function contactSend() {
+        $data = [];
+       dd(Input::all())
+        return Helper::returnView($viewname, $data);
+    }
     public function faqS() {
         $data = [];
         $viewname = Config('constants.frontendView') . ".faqs";

@@ -16,23 +16,24 @@
                             ============================================= -->
             <div class="postcontent nobottommargin">
                 <h3>Get in Touch with Us</h3>
+                 <div id='contactMsg'></div>
                 <div class="contact-widget">
-                    <form class="nobottommargin" action="" method="post">
+                    <form class="nobottommargin" action="{{route("contactSend")}}" method="post" id='contactform'>
                         <div class="col_one_third">
-                            <input type="text" placeholder="Name *" class="sm-form-control required" />
+                            <input type="text" name='firstname' placeholder="Name *" class="sm-form-control required" />
                         </div>
                         <div class="col_one_third">
-                            <input type="email" placeholder="Email *" class="required email sm-form-control" />
+                            <input type="email" name='useremail' placeholder="Email *" class="required email sm-form-control" />
                         </div>
                         <div class="col_one_third col_last">
-                            <input type="text" placeholder="Mobile *" class="sm-form-control" />
+                            <input type="text" name="telephone" placeholder="Mobile *" class="sm-form-control" />
                         </div>
                         <div class="clear"></div>
                         <div class="col_full">
-                            <textarea class="required sm-form-control" placeholder="Your Message" rows="6" cols="30"></textarea>
+                            <textarea class="required sm-form-control" name='message' placeholder="Your Message" rows="6" cols="30"></textarea>
                         </div>
                         <div class="col_full">
-                            <button class="button button-3d nomargin" type="submit" value="submit">Submit</button>
+                            <button class="button button-3d nomargin" type="submit" id="msgsubmit"  value="submit">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -63,3 +64,79 @@
 </section>
 @stop
 
+@section("myscripts")
+
+ <script>
+
+
+    $("#contactform").validate({
+        // Specify the validation rules
+        rules: {
+            firstname: "required",
+            useremail: {
+                required: true,
+                email: true,
+                emailvalidate: true
+            },
+            telephone: {
+                required: true,
+                 phonevalidate: true
+            },
+            message: {
+                required: true,
+            }
+        },
+        // Specify the validation error messages
+        messages: {
+            firstname: "Please enter your full name",
+            useremail: {
+                required: "Please provide email id",
+                email: "Please enter valid email id"
+            },
+            telephone: {
+                required: "Please enter mobile number"
+
+            },
+            message: {
+                required: "Please enter message"
+            }
+
+        },
+        submitHandler: function (form) {
+              //$('#msgsubmit').attr('disabled', true);
+               $('#msgsubmit').attr('disabled', true).html('Sending...');
+            $.ajax({
+                type: $(form).attr('method'),
+                url: $(form).attr('action'),
+                data: $(form).serialize(),
+                success: function (response) {
+                    console.log(response);
+                     
+                   // alert('ndjfhsgdjhf');
+                   // alert(response);
+                    if (response == 1) {
+                        $('#msgsubmit').attr('disabled', false).html('Submit');
+                        $('#contactMsg').html('<div class="alert alert-success center">Message sent successfully</div>');
+                    $(form)[0].reset();            
+                    } else {
+                        $('#contactMsg').html('<div class="alert alert-danger center">Oops something went wrong</div>');
+                    }
+                },
+                error: function (e) {
+                    console.log(e.responseText);
+                }
+            });
+            return false; // required to block normal submit since you used ajax
+        },
+        errorPlacement: function (error, element) {
+            var name = $(element).attr("name");
+            error.appendTo($("#" + name + "_re_validate"));
+        }
+
+    });
+
+
+
+
+</script>
+@stop

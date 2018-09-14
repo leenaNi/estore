@@ -51,6 +51,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/privacy-policy', ['as' => 'privacy-policy', 'uses' => 'HomeController@privacyPolicy']);
     Route::any('/about', ['as' => 'about', 'uses' => 'HomeController@aboutUs']);
     Route::any('/contact', ['as' => 'contact', 'uses' => 'HomeController@contactUs']);
+    Route::any('/contact-send', ['as' => 'contactSend', 'uses' => 'HomeController@contactSend']);
     Route::any('/faqs', ['as' => 'faqs', 'uses' => 'HomeController@faqS']);
    Route::any('/send-otp', ['as' => 'sendOpt', 'uses' => 'HomeController@sendOtp']);
     Route::any('/check-otp', ['as' => 'checkOtp', 'uses' => 'HomeController@checkOtp']);
