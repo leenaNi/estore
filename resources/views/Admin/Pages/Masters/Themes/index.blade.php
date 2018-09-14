@@ -78,7 +78,7 @@
                         @foreach($themes as $theme)
                         <tr>
                             <td>{{ $theme->category['category'] }}</td>
-                            <td>{{ $theme->name }}</td>
+                            <td>{{ $theme->theme_category }}</td>
                                              <?php
                                             if (!empty($theme->image)) {
                                                 $slogo = asset('public/admin/themes/') . "/" . $theme->image;
