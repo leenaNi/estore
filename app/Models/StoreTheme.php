@@ -20,7 +20,7 @@ class StoreTheme extends Model {
         'cat_id.required' => 'Category is required.']
    ;
     protected $fillable = [
-        'name', 'status', 'cat_id','added_by','theme_type','sort_orders',
+        'name', 'theme_category', 'status', 'cat_id','added_by','theme_type','sort_orders',
     ];
     
     
