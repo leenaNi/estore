@@ -908,7 +908,7 @@ class HomeController extends Controller {
     }
   public function contactSend() {
         $data = [];
-       dd(Input::all())
+       dd(Input::all());
         return Helper::returnView($viewname, $data);
     }
     public function faqS() {
