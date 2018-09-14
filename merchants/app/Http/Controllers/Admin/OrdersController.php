@@ -38,6 +38,7 @@ use Crypt;
 use App\Traits\Admin\OrdersTrait;
 use Form;
 use Request;
+use DateTime;
 use App\Models\MallProducts;
 
 class OrdersController extends Controller {
@@ -46,7 +47,13 @@ class OrdersController extends Controller {
 
     public function index() {
         $jsonString = Helper::getSettings();
-       
+        $datetime1 = new DateTime('2018-08-26');
+$datetime2 = new DateTime(date('y-m-d')); 
+$diff = $datetime1->diff($datetime2);
+//echo "Raw Difference: ",$diff->format('%y years %m months %d days %h hours %i minutes %s seconds'),"\n";
+
+print_r($diff->days);
+die;
          $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {

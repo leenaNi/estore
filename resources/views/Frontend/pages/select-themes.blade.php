@@ -38,10 +38,15 @@
                 <?php
                 $themimg = ($theme->image) ? $theme->image : 'default-theme.png';
                 $themeK++;
+                 if($theme->theme_type==2 && !in_array($theme->id,$themeIds)){
+                   $action= route('getCityPay');
+                }else{
+                      $action= route('waitProcess');
+                }
                 ?>
                 <article class="portfolio-item tab{{$c->id}} tab0">
                     <div class="portfolio-image port-img-outline">
-                        <form action="{{route('waitProcess')}}" method="post" class="sel-theme-form">
+                        <form action="{{$action}}" method="post" class="sel-theme-form">
                             <a href="#">
                                 <img src="{{ asset('public/admin/themes/'.$themimg) }}" alt="{{$theme->name}}">
                             </a>
@@ -69,7 +74,7 @@
                                     @endif
                                     <a type="button" href="{{ asset('themes/'.strtolower($theme->name)."_home.php") }}" target="_blank" class="btn btn-block marginauto btn-trans-whiteborder">View Demo</a>
                                     @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
-                                    <button type="submit" class="btn theme-btn btn-block marginauto short-btn applythemebtn" {{$theme->theme_type==2?'disabled':''}}>Apply Theme</button>
+                                 <button type="submit" class="btn theme-btn btn-block marginauto short-btn applythemebtn"> <?php echo $theme->theme_type==2 && !in_array($theme->id,$themeIds)?'Pay Now':'Apply Theme'  ?></button>
                                     @endif
                                 </div>
                             </div>

@@ -1,4 +1,26 @@
 body{overflow-x: hidden;}
+
+.mobDisplay{display:none !important;}
+.mobileLoginRegister{display: none !important;}
+.mobileCart{display: none !important;}
+.dark #primary-menu:not(.not-dark) ul ul li > a, #primary-menu.dark ul ul li > a {
+    color: #444 !important;
+}
+.dark #primary-menu:not(.not-dark) ul ul li:hover > a, #primary-menu.dark ul ul li:hover > a {
+    background-color: rgba(0,0,0,0.1);
+    color: #444 !important;
+}
+.shop .product form {
+    margin-bottom: 0px !important;
+}
+.updateHomeBannerfs2 {
+    position: absolute;
+    left: 0%;
+    top: 70%;
+    z-index: 999;
+    width: 100%;
+    text-align: center;
+}
 .headsocial-icon {
     margin: 7px 5px 5px 0;
     width: 30px;
@@ -19,9 +41,6 @@ body{overflow-x: hidden;}
 }
 #header.sticky-header:not(.static-sticky) #primary-menu > ul > li > a.thmbtn {
     margin-top: 10px!important;
-}
-.content-wrap {
-    padding: 40px 0 !important;
 }
 
 body:not(.device-touch):not(.device-xs):not(.device-xxs) .product-overlay2 {
@@ -327,16 +346,6 @@ body:not(.device-touch):not(.device-xs):not(.device-xxs) .product-overlay2 {
 .sidebar-widgets-wrap .widget:first-child {
     padding-top: 0 !important;
 }
-.accordion.accordion-bg .acc_content {
-    padding: 10px 0 10px 25px !important;
-}
-ul.cat-list {
-    margin-bottom: 0px;
-}
-ul.cat-list li {
-    margin-bottom: 15px;
-    list-style-type: none;
-}
 #page-title {
     padding: 30px 0 !important;}
 
@@ -354,6 +363,19 @@ button {
 }
 .product-overlay a{width: 100% !important; border: 0 !important;}
 @media (max-width: 991px) {
+    .mobileMyAccount{display: block !important;
+        border-top: 0px !important;
+        clear: both;}
+    .socialDisplay{
+        display: none !important;
+    }
+    button.add-to-cart.button.nomargin.addToCartB.addToCart {
+        margin-bottom: 15px !important;
+    }
+    #top-search form input{color:#444 !important;}
+    body:not(.dark) #header:not(.dark) #header-wrap:not(.dark) #primary-menu ul ul a, body:not(.dark) #header:not(.dark) #header-wrap:not(.dark) #primary-menu > ul > li:hover ul a, body:not(.dark) #header:not(.dark) #header-wrap:not(.dark) #primary-menu > ul > li.current ul a, body:not(.dark) #header:not(.dark) #header-wrap:not(.dark) #primary-menu > div > ul > li:hover ul a, body:not(.dark) #header:not(.dark) #header-wrap:not(.dark) #primary-menu > div > ul > li.current ul a {
+        color: #444 !important;
+    }
     #header.transparent-header,
     #header.semi-transparent {
         border-bottom: 1px solid #F5F5F5 !important;
@@ -366,6 +388,36 @@ button {
     }
 }
 @media (max-width: 767px) {
+    li.bottommobileMargin0.ui-state-default.ui-corner-top.ui-tabs-active.ui-state-active {
+        margin-bottom: 0px !important;
+    }
+    .footer-widgets-wrap .widget h4{margin-bottom: 10px !important;}
+    #footer .footer-widgets-wrap {
+        padding: 20px 0 !important;
+    }
+    .bottommobileMargin0{
+        margin-bottom: 0px !important;
+    }
+    .bottommobilePadding0{
+        padding-bottom: 0px !important;
+    }
+    .mobDisplay{display:block !important;}
+    .updateLogoBlack {
+        position: absolute;
+        right: 80px !important;
+        top: 22% !important;
+        z-index: 99;
+    }
+    .widget.clearfix.abt-secFooter h4 {
+        margin-bottom: 10px !important;
+    }
+    .mobileLoginRegister{display: block !important; border-top: 0px !important;}
+    .mobileCart {
+        display: block !important;
+        position: absolute;
+        right: 0;
+        top: 28px;
+    }
     .product.clearfix.mobwidth100 {
         width: 100% !important;
     }
@@ -388,6 +440,25 @@ button {
     }
 }
 @media (max-width: 479px) {
+    .updateHomeBannerfs2 a {
+        font-size: 10px !important;
+        max-width: 80%;
+        height: 35px !important;
+        line-height: 35px !important;
+    }
+    .updateHomeBannerfs2{
+        top: 62% !important;
+    }
+    #top-search {
+        right: -5px !important;}
+        .mobileCart {
+            right: -10px !important;
+        }
+        .updateLogoBlack {
+            right: 20px !important;}
+    li.bottommobileMargin0.ui-state-default.ui-corner-top.ui-tabs-active.ui-state-active {
+        margin-bottom: 0px !important;
+    }
     .shop:not(.product-1) .product {
         width: 100% !important;
     }

@@ -1,9 +1,20 @@
+/* .fs1_product {
+    min-height: 410px;
+} */
+
+/* .select-color-box {
+    position: absolute;
+    left: 0;
+    margin: 10px;
+    width: 92%;
+} */
 body {
     overflow-x: hidden;
 }
+
 #top-cart > a > span{background-color: #8ab34f !important;}
 #page-title {
-    padding: 30px 0 !important;
+    padding: 20px 0 !important;
 }
 .sort-dropdown {
     max-width: 264px;
@@ -16,24 +27,9 @@ body {
 .irs-from, .irs-to, .irs-single{background: #1ABC9C !important;}
 .irs-from:after, .irs-single:after, .irs-to:after{border-top-color: #1ABC9C !important;}
 .irs-bar{background-color: #1ABC9C !important;}
-.sidebar-widgets-wrap .widget {
-    padding-top: 40px !important;
-}
+
 .sidebar-widgets-wrap .widget:first-child {
     padding-top: 0 !important;
-}
-.accordion.accordion-bg .acc_content {
-    padding: 10px 0 10px 25px !important;
-}
-ul.cat-list {
-    margin-bottom: 0px;
-}
-ul.cat-list li {
-    margin-bottom: 15px;
-    list-style-type: none;
-}
-.bord-on-overlay:hover {
-    border: 1px solid #ddd !important;
 }
 
 /* Style-1 + Style-2 */
@@ -192,7 +188,7 @@ ul.cat-list li {
 }
 #primary-menu ul ul:not(.mega-menu-column),
 #primary-menu ul li .mega-menu-content {
-    border-top: 2px solid #8ab34f;
+    border-top: 2px solid #8AB34F;
 }
 #primary-menu ul ul li > a {
     color: #666 !important;
@@ -228,31 +224,7 @@ ul.cat-list li {
     margin-right: 0 !important;
 }
 .content-wrap {
-    padding: 30px 0px !important;
-}
-.size-color-box {
-    margin-bottom: 15px;
-}
-.size-color-box select:first-child {
-    margin-right: 2% !important;
-}
-.size-color-box select {
-    float: left;
-    display: inline-block;
-    width: 48%;
-    margin-bottom: 10px;
-}
-.fullwidth {
-    width: 100% !important;
-    margin: 0px;
-}
-#primary-menu ul li:hover > a, #primary-menu ul li.current > a {
-    color: #8ab34f !important;
-}
-.button.button-border.button-light:hover {
-    background-color: #EEE !important;
-    color: #333 !important;
-    text-shadow: none !important;
+    padding: 0px 0px !important;
 }
 .shop .product {
     float: left;
@@ -266,6 +238,7 @@ ul.cat-list li {
 .product-overlay a {
     width: 100% !important;
     font-size: 13px !important;
+    cursor: pointer;
 }
 .product-title h3 {
     margin: 0;
@@ -276,7 +249,7 @@ ul.cat-list li {
     text-overflow: ellipsis;
 }
 .product-desc {
-    padding: 15px 10px;
+    padding: 15px 10px 0px 10px;
     font-size: 14px;
     background: transparent;
     border-top: 0;
@@ -291,9 +264,32 @@ ul.cat-list li {
     padding: 50px 0 !important;
 }
 #copyrights {
-    padding: 25px 0 !important;
+    padding: 15px 0 !important;
 }
 @media (max-width: 991px) {
+    /* .fs1_product-image img {
+    min-height: 200px;
+    max-height: 200px;
+} */
+.quantity-box {
+    float: none;
+    margin: 10px auto;
+    width: 122px;
+}
+.select-productbox {
+    float: none;
+    position: relative;
+    top: 10px;
+    margin: 10px;
+}
+.select-color-box {
+    position: relative;
+    left: -10px;
+    margin: 10px;
+    width: 100%;
+    float: none;
+}
+
     #header.transparent-header,
     #header.semi-transparent {
         border-bottom: 1px solid #F5F5F5 !important;
@@ -302,12 +298,38 @@ ul.cat-list li {
         clear: both;
     }
     #primary-menu-trigger {
-        color: #000 !important;
+        color: #fff !important;
     }
 }
 @media (max-width: 767px) {
+    a.label.mobilealignmenu span {
+        display: block !important;
+    }
+    .widget.subscribe-widget.clearfix {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    .footer-widgets-wrap .widget {
+        margin-bottom: 15px;
+        padding-bottom: 0px;
+    }
     .product.clearfix.mobwidth100 {
         width: 100% !important;
+    }
+    #footer .footer-widgets-wrap {
+        padding: 20px 0 !important;
+    }
+    .bottommobileMargin0{
+        margin-bottom: 0px !important;
+    }
+    .footer-widgets-wrap .widget h4{
+        margin-bottom:10px !important;
+    }
+    .bottommobilePadding0{
+        padding-bottom: 0px !important;
+    }    
+    .widget.clearfix.abt-secFooter h4 {
+        margin-bottom: 10px !important;
     }
 }
 @media (max-width: 767px) and (min-width: 480px) {
@@ -330,9 +352,34 @@ ul.cat-list li {
     .shop:not(.product-1) .product {
         width: 100% !important;
     }
-    #top-cart {
-    display: block !important;
-    right: -10px !important;
+    /* .fs1_product-image img {
+    min-height: 100%;
+    max-height: 100%;
+} */
+.shop .product {
+    min-height: 100%;
 }
-body:not(.dark) #header:not(.dark) #header-wrap:not(.dark) #primary-menu > ul > li.current a{color: #8ab34f !important;}
+.quantity-box-full {
+    position: relative;
+    bottom: 10px;
 }
+}
+@media only screen 
+and (device-width : 768px) 
+and (device-height : 1024px)  { 
+	section#slider {
+    max-height: 440px !important;
+}
+}
+
+@media only screen 
+and (device-width : 1024px) 
+and (device-height : 1366px)  { 
+	section#slider {
+    max-height: 540px !important;
+}
+input.min-price-filter, input.max-price-filter {
+    border: 1px solid #000;
+}
+}
+

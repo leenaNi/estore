@@ -268,12 +268,30 @@ span.editicons i {
 				@foreach($general_setting as $set)
 					<div class="col-md-8 noAllpadding"><p><a href="javascript:;" data-placement="right" title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
                                                     <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20"></a> {{ $set->name }} </p> </div>
-					<div class="col-md-4">
-						<input type="checkbox" <?php echo $set->status == 1?'checked':''; ?> data-id="{{ $set->id }}" data-toggle="toggle" name="onOff" data-size="normal" class="toggle-two" data-on="Yes" data-off="No">
+				@if($set->url_key =='default-courier')
+                                <div class="col-md-4">
+                                <input type="checkbox" <?php echo $set->status == 1?'checked':''; ?> data-id="{{ $set->id }}" data-url="{{ $set->url_key}}"  data-toggle="toggle" name="onOff" data-size="normal" class="toggle-two courier-services" data-on="Yes" data-off="No">
+                                </div>
+                                    <div class="col-md-4 courierSelect hide">
+						<select class="form-control" id='courierSelect' name="courier_service">
+                                                    <option>Select</option>
+                                                   @foreach($courier as $cour)
+							
+							<option value="{{$cour->id}}">{{$cour->name}}</option>
+							@endforeach
+						</select>
 					</div>
-					<hr class="style1">
+                                <hr class="style1">
+                               @else
+                                <div class="col-md-4">
+						<input type="checkbox" <?php echo $set->status == 1?'checked':''; ?> data-id="{{ $set->id }}" data-url="{{ $set->url_key}}"  data-toggle="toggle" name="onOff" data-size="normal" class="toggle-two" data-on="Yes" data-off="No">
+					</div>
+                                 @endif	
+                                <hr class="style1">
+                                
+					
 					@endforeach
-
+                                    
 					<div class="col-md-8 noAllpadding"><p> <a href="javascript:;" data-placement="right" title="Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." data-toggle="tooltip" class="tooltip-style"> <img src="{{ asset('public/Admin/dist/img/info-icon.png') }}" width="20"> </a> Your products will be inclusive/exclusive of taxes? </p></div>
 					<div class="col-md-4">
 						<select class="form-control" name="">
@@ -306,17 +324,44 @@ span.editicons i {
 <script>
 $(".toggle-two").change(function(){
 	userId = $(this).attr('data-id');
+	url_data = $(this).attr('data-url');
+       
+        if(url_data=='default-courier'){
+         if($(this).prop("checked") == true){
+              $('.courierSelect').removeClass("hide");
+               
+            }else{
+                $('.courierSelect').addClass("hide"); 
+            }
+        }
 	   $.ajax({
         method:"POST",
         data:{'id':userId },
         url:"<?php  echo route('admin.generalSetting.changeStatus') ;?>",
         success: function(data){
             // console.log(data);
-            // location.reload();
+            // location.reload();courier-services
+        }
+      })
+});
+
+$("#courierSelect").change(function(){
+
+	var courierId = $(this).val();
+        alert(courierId);
+                                      
+	$.ajax({
+        method:"POST",
+        data:{'courierId':courierId },
+        url:"<?php  echo route('admin.generalSetting.assignCourier') ;?>",
+        success: function(data){
+            // console.log(data);
+            // location.reload();courier-services
         }
       })
 });
 $( document ).ready(function() {
+ 
     $(".updateLogo").click(function () {
         $("#logoModal").modal('show');
     });
@@ -329,7 +374,10 @@ $( document ).ready(function() {
 	 }else{
 	 	modal.style.display = "none";	
 	 }
-	 
+	if($('.courier-services').prop("checked") == true){
+              $('.courierSelect').removeClass("hide");
+               
+            } 
 });
 $("#submit").click(function(){
 	

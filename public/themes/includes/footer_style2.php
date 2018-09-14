@@ -14,18 +14,18 @@
 
 							<h4>About</h4>
 
-							<p>We believe in <strong>Simple</strong>, <strong>Creative</strong> &amp; <strong>Flexible</strong> Design Standards with a Retina &amp; Responsive Approach. Browse the amazing Features this template offers.</p>
+							<p>Your Store Name about page is an opportunity to tell a story that will help you to stick in your customer's minds. You can describe your History, Vision & Mission, and Your Global Presence etc....<span><a href="/about-us?theme=fs1">Read more.</a></span></p>
 
 							<div class="clearfix">
 								<div class="col_half">
 									<address class="nobottommargin">
-										<abbr title="Address"><strong>Address:</strong></abbr><br>
+										<strong>Address:</strong><br>
 										C/504, Neelkanth Business Park, Near Vidyavihar Station, Vidyavihar West, Mumbai 400086. <br>
 									</address>
 								</div>
 								<div class="col_half col_last">
-									<abbr title="Phone Number"><strong>Phone:</strong></abbr> (022) 6697 3260<br>
-									<abbr title="Email Address"><strong>Email:</strong></abbr> jigar.shah@infiniteit.biz
+									<strong>Phone:</strong> 9773303885 <br>
+									<strong>Email:</strong> chitanlad@infinietit.biz
 								</div>
 							</div>
 
@@ -33,14 +33,14 @@
 								<h4>Newsletter</h4>
 
 								<div class="widget subscribe-widget clearfix">
-							<h5><strong>Subscribe</strong> to Our Newsletter to get Important News, Amazing Offers:</h5>
+							<h5><strong>Subscribe</strong> to Our Newsletter to get News, Update & Amazing Offers</h5>
 							<div class="widget-subscribe-form-result"></div>
 							<form id="widget-subscribe-form" action="include/subscribe.php" role="form" method="post" class="nobottommargin">
 								<div class="input-group divcenter">
 									<span class="input-group-addon"><i class="icon-email2"></i></span>
-									<input type="email" id="widget-subscribe-form-email" name="widget-subscribe-form-email" class="form-control required email" placeholder="Enter your Email">
+									<input type="email" id="widget-subscribe-form-email" name="widget-subscribe-form-email" class="form-control required email" placeholder="Enter your email address">
 									<span class="input-group-btn">
-										<button class="btn btn-success" type="submit">Subscribe</button>
+										<button class="btn btn-success" id="btn-subscribe" type="submit">Subscribe</button>
 									</span>
 								</div>
 							</form>
@@ -58,13 +58,13 @@
 								<h4>Links</h4>
 
 								<ul>
-									<li><a href="about-us.php">About Us</a></li>
-									<li><a href="#">Payments Policy</a></li>
-									<li><a href="privacy-policy.php">Privacy Policy</a></li>
-									<li><a href="#">Shipping Policy</a></li>
-									<li><a href="#">Return Policy</a></li>
-									<li><a href="#">Terms & Conditions</a></li>
-									<li><a href="faqs.php">FAQs</a></li>
+								<li><a href="about-us.php?theme=fs2">About Us</a></li>
+									<li><a href="payment-policy.php?theme=fs2">Payments Policy</a></li>
+									<li><a href="privacy-policy.php?theme=fs2">Privacy Policy</a></li>
+									<li><a href="shipping-policy.php?theme=fs2">Shipping Policy</a></li>
+									<li><a href="return-policy.php?theme=fs2">Return Policy</a></li>
+									<li><a href="terms-condition.php?theme=fs2">Terms & Conditions</a></li>
+									<li><a href="faqs.php?theme=fs2">FAQs</a></li>
 								</ul>
 
 							</div>
@@ -92,13 +92,8 @@
 				<div class="container clearfix">
 
 					<div class="col_half">
-						Copyrights &copy; <?php echo date("Y"); ?> All Rights Reserved by Veefin.
-						<div class="clearfix"></div>
-						<div class="fleft clearfix">
-							<div class="copyrights-menu copyright-links nobottommargin">
-								<a href="#">Home</a>/<a href="#">T &amp; C</a>/<a href="#">Disclaimer</a>/<a href="#">Contact</a>
-							</div>
-						</div>
+					Copyright © <?php echo date("Y"); ?>. <a href="#">Your Store Name</a>. Powered by <a href="http://www.veestores.com/" target="_blank">Veestores</a>.
+						<div class="clearfix"></div>					
 					</div>
 
 					<div class="col_half col_last tright">

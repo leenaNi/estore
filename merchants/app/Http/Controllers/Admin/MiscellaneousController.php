@@ -15,6 +15,7 @@ use App\Models\EmailTemplate;
 use App\Models\Language;
 use App\Models\Zone;
 use App\Models\Country;
+use App\Models\HasCourier;
 use App\Library\Helper;
 use Mail;
 use DB;
@@ -498,5 +499,25 @@ class MiscellaneousController extends Controller {
         Session::flash("message", "Bank Details updated successfully.");
         return redirect()->route('admin.bankDetails.view');
     }
-
+  public function assignCourier() {
+        $courier = Input::get('courierId');
+        $storeId = $this->jsonString['store_id'];
+        $has_courire = HasCourier::where("store_id", $storeId)->first();
+        if(count($has_courire) > 0) {
+            $has_courire->store_id = $storeId;
+            $has_courire->courier_id = $courier;
+            $has_courire->preference = 1;
+            $has_courire->status = 1;
+            $has_courire->timestamps = false;
+            $has_courire->save();
+        } else {
+            $has_courire = new HasCourier;
+            $has_courire->store_id = $storeId;
+            $has_courire->courier_id = $courier;
+            $has_courire->preference = 1;
+            $has_courire->status = 1;
+            $has_courire->timestamps = false;
+            $has_courire->save();
+        }
+    }
 }

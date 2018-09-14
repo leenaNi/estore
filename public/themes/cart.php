@@ -6,7 +6,15 @@
   <!-- Document Wrapper
 	============================================= -->
   <div id="wrapper" class="clearfix">
-    <?php include( 'includes/header_style1.php'); ?>
+  <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+     include( 'includes/header_style1.php');
+
+     if($_GET['theme'] == 'fs2')
+     include( 'includes/header_style2.php');
+     
+     
+     ?>
     <section id="page-title">
       <div class="container clearfix">
         <h1>Cart</h1>
@@ -19,79 +27,130 @@
     </section>
     <!-- Content
 		============================================= -->
-    <section id="content">
-      <div class="content-wrap">
-        <div class="container clearfix">
-          <div class="col_three_fourth nobottommargin">
-            <div class="table-responsive nobottommargin">
-              <table class="table table-bordered cart">
+    <div id="content" class="site-content single-product" style="margin-bottom: 0px;">
+
+
+<div class="container">
+            <form class="cart-form" action="#">
+        <div class="table-responsive">
+            <table class="table table-bordered cart-table cartT">
                 <thead>
-                  <tr>
-                    <th class="cart-product-remove">Action</th>
-                    <th class="cart-product-thumbnail">Product</th>
-                    <th class="cart-product-detail">Detail</th>
-                    <th class="cart-product-price">Unit Price</th>
-                    <th class="cart-product-quantity">Quantity</th>
-                    <th class="cart-product-subtotal">Total</th>
-                  </tr>
+                    <tr>
+                        <th></th>
+                        <th class="text-left">Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Coupon Discount </th>
+                        <th>Tax</th>
+                        <th>Subtotal</th>
+                    </tr>
                 </thead>
                 <tbody>
-                  <tr class="cart_item">
-                    <td class="cart-product-remove"> <a href="#" class="remove" title="Remove this item"><i class="icon-trash2"></i></a> </td>
-                    <td class="cart-product-thumbnail">
-                      <a href="#"><img width="64" height="64" src="images/shop/blue-tshirt2.jpg" alt="">
-                      </a>
-                    </td>
-                    <td class="cart-product-name"> <a href="#">Gritstones Men Black Regular Fit T-shirt</a> </td>
-                    <td class="cart-product-price"> <span class="amount">Rs. 399</span> </td>
-                    <td class="cart-product-quantity">
-                      <div class="quantity clearfix">
+                <tr>
+                <td class="product-remove">
+                <span style="cursor: pointer;" class="remove removeCartItem"><i class="icon-line2-trash"></i></span>
+                </td>
+                <td class="cartProductName" valign="top">
+                <div class="CPN-Box">
+                <div class="CPN-BoxLeft">
+                <img src="images/fashion/products/4.jpg" class="cart-prodimg">
+                </div>
+                <div class="CPN-BoxRight">
+                <div>Gritstones Men Black Regular Fit T-shirt
+                <div class="clearfix"></div>
+                </div>
+                <div class="cart-quanitiy">Black</div>
+                </div>
+                </div>
+                </td>
+                <td>82.13<br>
+                </td>
+                <td class="cartQuantityBox-td cart-product-quantity">
+                <div class="quantity clearfix">
                         <input type="button" value="-" class="minus">
                         <input type="text" name="quantity" value="1" class="qty" />
-                        <input type="button" value="+" class="plus"> </div>
-                    </td>
-                    <td class="cart-product-subtotal"> <span class="amount">Rs. 399</span> </td>
-                  </tr>
-                  <tr class="cart_item">
-                    <td colspan="6">
-                      <div class="row clearfix">
-                      <div class="col-md-12 col-xs-12"> 
-                        <a href="checkout.php" class="button button-3d notopmargin fright">Checkout</a>                         
-                        <a href="product_listing.php" class="button button-3d nomargin fright">Continue Shopping</a> 
-                      </div>
-                      </div>
-                    </td>
-                  </tr>
+                        <input type="button" value="+" class="plus">
+                </div>
+                </td>
+                <td>
+                <span class="tax_amt"> 0.00</span>
+                </td>
+                <td>
+                <span class=""> 0.00</span>
+                </td>
+                <td>
+                <span>82.13</span>
+                </td>
+                </tr>
                 </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="col_one_fourth col_last nobottommargin">
-            <div class="table-responsive">
-              <h4>Cart Totals</h4>
-              <table class="table cart">
-                <tbody>
-                  <tr class="cart_item">
-                    <td class="cart-product-name"> <strong>Cart Subtotal</strong> </td>
-                    <td class="cart-product-name"> <span class="amount">Rs. 399</span> </td>
-                  </tr>
-                  <tr class="cart_item">
-                    <td class="cart-product-name"> <strong>Shipping</strong> </td>
-                    <td class="cart-product-name"> <span class="amount">Free Delivery</span> </td>
-                  </tr>
-                  <tr class="cart_item">
-                    <td class="cart-product-name"> <strong>Total</strong> </td>
-                    <td class="cart-product-name"> <span class="amount color lead"><strong>Rs. 399</strong></span> </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+            </table>
         </div>
-      </div>
-    </section>
+    </form>
+    <div class="cart-collaterals row">
+    <div class="col-md-6 col-sm-6 col-xs-12 mobMB15">
+     <div class="cal-shipping  mar-bot15">
+     <h4 class="heading-title">HAVE A COUPON?</h4>
+     <form class="checkout_coupon ng-pristine ng-valid" method="post">
+     <div class="cart-input">
+     <input name="coupon_code" class="userCouponCode sm-form-control" id="" value="" placeholder="Enter Coupon Code " type="text"> 
+     </div>
+     <div class="">
+     <input class="button applycoupenbtn bold default" name="apply_coupon" id="couponApply" value="Apply Coupon" type="submit">
+     </div>
+     </form>
+     <div class="col-md-12 col-xs-12 space3">
+     <span class="cmsg" style="display:none;color:red;font-size:13px;margin-top:15px"></span>
+     </div>
+     </div><!-- .cal-shipping -->
+     </div>
+        
+
+        <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
+            <div class="cal-shipping table-responsive">
+                <h4 class="heading-title ">Cart Total</h4>
+                <table class="table cart">
+                <tbody><tr class="cart-subtotal">
+                        <th>Sub-Total: </th>
+                        <td><strong><span class="amount allSubtotal" id="amountallSubtotal">82.13</span></strong></td>
+                    </tr>
+                    <tr class="shipping">
+                        <th>Coupon<span class="coupCode"></span>: </th>
+                        <td>
+                        <strong><span class="couponUsedAmount" id="couponUsedAmount">0.00</span></strong>
+                        </td>
+                    </tr>
+                    <tr class="order-total">
+                        <th><div class="black-bg">Total: </div></th>
+                        <td><div class="black-bg"><strong><span class="amount finalAmt">82.13</span></strong></div></td>
+                    </tr>
+                    </tbody></table>
+            </div><!-- .cal-shipping -->
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+
+            <div class="cart-actions clearfix">
+                <form action="#" class="ng-pristine ng-valid">
+                    <a class="button bold default" href="checkout.php?theme=fs1">PROCEED TO CHECKOUT</a>
+                    <a class="button bold default" href="/">Continue Shopping</a>
+                </form>
+            </div><!-- .cart-actions -->
+        </div>
+    </div><!-- .cart-collaterals -->
+        </div><!-- .container -->
+</div>
+
     <!-- #content end -->
-    <?php include( 'includes/footer_style1.php'); ?> </div>
+    <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+     include( 'includes/footer_style1.php');
+
+     if($_GET['theme'] == 'fs2')
+     include( 'includes/footer_style2.php');
+     
+     
+     ?>
+      </div>
   <!-- #wrapper end -->
   <?php include( 'includes/foot.php'); ?> </body>
 

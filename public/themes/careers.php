@@ -6,7 +6,15 @@
   <!-- Document Wrapper
 	============================================= -->
   <div id="wrapper" class="clearfix">
-    <?php include( 'includes/header_style1.php'); ?>
+  <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+     include( 'includes/header_style1.php');
+
+     if($_GET['theme'] == 'fs2')
+     include( 'includes/header_style2.php');
+     
+     
+     ?>
     <section id="page-title">
       <div class="container clearfix">
         <h1>Careers</h1>
@@ -128,7 +136,15 @@
       </div>
       <!-- /.modal-dialog -->
     </div>
-    <?php include( 'includes/footer_style1.php'); ?> </div>
+    <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+     include( 'includes/footer_style1.php');
+
+     if($_GET['theme'] == 'fs2')
+     include( 'includes/footer_style2.php');
+     
+     
+     ?> </div>
   <!-- #wrapper end -->
   <?php include( 'includes/foot.php'); ?> </body>
 

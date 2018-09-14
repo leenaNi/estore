@@ -2,9 +2,47 @@
 	Responsive CSS
 -----------------------------------------------------------------*/
 
+.onlyDispUnder479{display: none;}
+
 
 @media (max-width: 1199px) {
-
+	.minPriceBox, .maxPriceBox {
+    width: 100%;
+    float: left;
+    margin-bottom: 15px;
+}
+input.min-price-filter, input.max-price-filter {
+	width: calc(100% - 15px);
+	margin: 0px;
+}
+.priceHypen {
+	width: 100%;
+	text-align: center;
+	margin-bottom: 15px;
+}
+	.select-color-box {
+    clear: both;
+    position: relative !important;
+    min-width: 100% !important;
+    left: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+.select-productbox {
+	width: calc(100% - 15px) !important;
+	float: left !important;
+	margin: 10px !important;
+}
+.quantity-box {
+	float: none;
+	max-width: 122px !important;
+	margin: 15px auto 5px auto !important;
+}
+	form.login_form_btn .form-group a, form.login_form_btn .form-group button {
+    max-width: 130px;
+    font-size: 11px !important;
+}
+#primary-menu ul li > a{padding: 39px 2px !important;}
 	canvas {
 		max-width: 100%;
 		height: auto !important;
@@ -242,7 +280,104 @@
 
 
 @media (max-width: 991px) {
-
+	.product-price ins {
+    font-size: 75%;
+}
+.product-price del {
+	font-size: 72%;
+}
+	.noMobileMargin{margin:0px !important; margin-bottom:0px !important;}
+	.mobTextLeft {
+    text-align: left;
+}
+li.mobMenuAlign a {
+	float: left;
+	text-align: left;
+}
+li.mobMenuAlign a span {
+	display: block !important;
+	float: right;
+    margin-left: 10px;
+}
+	.CPN-Box .cart-quanitiy {
+    position: relative !important;
+}
+	section.gmap {
+    height: auto !important;
+}
+	.minPriceBox, .maxPriceBox {
+    width: 48.5%;
+    float: left;
+    margin-bottom: 15px;
+}
+.priceHypen {
+	width: auto;
+	text-align: center;
+	margin-bottom: 0;
+}
+	.pymt_mtd_col{border-right:0px !important;}
+	.social_media_login a {
+    margin-bottom: 15px;
+    float: left;
+    width: 100% !important;
+    padding: 0;
+}
+.or-text-vertical {
+	left: 18%;
+	top: 38% !important;
+}
+	.si-share div {
+    float: right;
+}
+	.mobMB15 {
+    margin-bottom: 15px !important;
+}
+	.select-productbox {max-width: 100% !important;}
+	.img-box{margin-top: 15px;}
+	form#productAddPopUp, form#frmUpdateBanner {
+    max-height: 450px;
+    overflow-y: auto;
+}
+	.mobile-text-left{text-align: left !important;}
+	.mobilenomargin{margin:0 !important;}
+	.mobiletopmargin15{margin-top: 15px !important;}
+	.updateImageBox.clearfix div#addImg {
+    margin-top: 0px;
+}
+	div#addImg {
+    margin-top: 15px !important;
+}
+	.homepage3boxespopalign{
+		width: 100%;
+    float: left;
+    text-align: left !important;
+    margin-bottom: 15px;
+    margin-top: 15px !important;
+    clear: both;
+	}
+	.modal-header p {
+    margin-bottom: 0;
+}
+	.managecatbox{
+		    max-height: 250px;
+    overflow-y: auto;
+	}
+	.mobilepopup-chooselogo .choosebtnbox {
+    float: left;
+    margin-bottom: 15px;
+}
+	.manageCate div {
+    border-bottom: 0px !important;
+}
+	.body:not(.dark) #header:not(.dark) #header-wrap:not(.dark) #primary-menu ul ul a{color: #fff !important;}
+	.mobilealignmenu {
+    width: 100% !important;
+    float: left !important;
+    text-align: left !important;
+}
+div.logo .updateLogo {
+        margin-right: 15% !important;
+}
 	#wrapper {
 		width: 100%;
 		margin: 0;
@@ -651,7 +786,7 @@
 
 	#primary-menu > div > #top-search form { height: 60px !important; }
 
-	#top-search form input { font-size: 24px; }
+	#top-search form input { font-size: 20px; }
 
 	#side-panel-trigger { right: 71px; }
 
@@ -1104,6 +1239,85 @@
 
 
 @media (max-width: 767px) {
+	.table-responsive > .table-bordered {
+    border: 1px solid #ddd;
+}
+	.sort-dropdown {
+    min-width: 100%;
+}
+	.noMobileMargin{margin:0px !important; margin-bottom:0px !important;}
+	input.form-control.returnProduct {
+    padding: 0;
+    text-align: center;
+}
+	div#cancelModal .modal-lg {
+    width: 100% !important;
+}
+.viewDetailModal .modal-lg {
+	width: 90%!important;
+}
+	.col-md-12.form-group.continue-cancel-btnbox.mobPadd0-15 {
+    padding: 0px 15px !important;
+}
+	ul.tab-nav:not(.tab-nav-lg) li{border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; height: auto !important;}
+	.CPN-Box {
+    margin-top: 3px;
+}
+	.flex-caption{top: 45%;display: block !important;}
+	.flex-caption h2 {
+    font-size: 20px;
+}
+	.minPriceBox, .maxPriceBox {
+    width: 100%;
+    float: left;
+    margin-bottom: 10px;
+}
+input.min-price-filter, input.max-price-filter {
+	width: calc(100% - 15px);
+	margin: 0px;
+	border: 1px solid #ddd;
+}
+.priceHypen {
+	width: 100%;
+	text-align: center;
+	margin-bottom: 10px;
+}
+	ul.sumcol-rightlist li .col-sm-12.col-xs-12, ul.sumcol-rightlist li p, ul.sumcol-rightlist li label {
+    padding-left: 0;
+}
+	form.login_form_btn .form-group a, form.login_form_btn .form-group button {
+		max-width: 100%;
+	}
+	.social_media_login a {
+    width: 48% !important;
+    margin-right: 1%;
+}
+.social_media_login a:last-child {
+	width: 48% !important;
+	margin-right: 0 !important;
+}
+	.social_media_login a img{width: 100% !important; height: 38px;}
+.social_media_login {
+	padding: 30px 0px 0px 5px !important;
+	margin-right: -15px;
+}
+	.cart-actions form a {
+    float: left !important;
+    width: 47%;
+    text-align: center;
+    padding: 0px;
+}
+	.col_full.noMobBottMargin {
+    margin-bottom: 0px !important;
+}
+	.footer-widgets-wrap .widget {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}
+/* .footer-widgets-wrap .widget:last-child {
+	margin-bottom: 0px !important;
+	padding-bottom: 0px !important;
+} */
 
 	body { padding: 0 !important; }
 
@@ -1152,7 +1366,6 @@
 	#top-social,
 	#slider:not(.swiper_wrapper) .slider-caption,
 	.nivo-caption,
-	.flex-caption,
 	.slider-caption p,
 	.slider-caption .button,
 	.camera_caption,
@@ -1461,8 +1674,11 @@
 
 	#copyrights .col_half { text-align: center; }
 
-	#copyrights .col_half:last-child { display: none; }
-
+	#copyrights .col_half:last-child { display: block; }
+	.col_half.col_last.tright .fright {
+    float: none !important;
+    text-align: center;
+}
 	#copyrights .footer-logo {
 		margin-left: auto;
 		margin-right: auto;
@@ -1611,7 +1827,48 @@
 }
 
 @media (max-width: 479px) {
-
+	.onlyDispUnder479{display: block !important;
+    min-height: 10px !important;
+    border: 0px !important;}
+	#logo img {
+    display: block;
+    max-width: 90%;
+}
+	.noMobileMargin{margin:0px !important; margin-bottom:0px !important;}
+	.quantity{margin-bottom: 20px;}
+	.col-md-12.form-group.continue-cancel-btnbox.mobPadd0-15 {
+    padding: 0px 15px !important;
+}
+	body.top-search-open #top-search form {
+    float: left !important;
+    position: relative !important;
+}
+	.continue-cancel-btnbox button, .continue-cancel-btnbox input, .continue-cancel-btnbox a{
+		width: 100% !important;
+    text-align: center !important;
+    padding: 0px !important;
+		margin: 0px 0px 15px 0px !important;
+		font-size: 12px !important;
+	}
+	.continue-cancel-btnbox {
+    float: left !important;
+		width: 100% !important;
+		padding: 0 !important;
+}
+	.social_media_login{margin-right: 0;}
+	.social_media_login a {
+    width: 100% !important;}
+	.cart-actions form a {
+    float: left !important;
+    width: 100%;
+    text-align: center;
+    padding: 0px;
+}
+input#couponApply {
+	width: 100%;
+}
+	ul.tab-nav:not(.tab-nav-lg) li{width: 100%; margin:0px !important; }
+	
 	.container,
 	#header.full-header .container,
 	.container-fullwidth { width: 310px !important; }
@@ -1620,11 +1877,19 @@
 
 	.full-screen:not(.force-full-screen) .container.vertical-middle { width: 310px !important; }
 
-	#top-cart { display: none; }
+	#top-cart {display: block;
+    top: 0px;
+		right: 10px; }
+		#top-search {
+			right: 20px;
+			margin: 0 !important;
+			position: absolute;
+			top: 0px;
+	}
 
 	#top-search a { right: 15px; }
 
-	#top-search form input { padding-right: 30px; }
+	#top-search form input { padding-right: 18px; }
 
 	#side-panel-trigger { right: 43px; }
 
@@ -1693,7 +1958,10 @@
 		height: 45px !important;
 	}
 
-	.si-share span { display: none; }
+	.si-share span { display: block; }
+	.si-share div {
+    float: left !important;
+}
 
 	.parallax .entry-overlay-meta,
 	.parallax .entry-overlay {
@@ -1772,9 +2040,49 @@
 	}
 
 	.button.button-desc span { font-size: 11px; }
+	.nobottompaddingMob{padding-bottom: 0px!important;}
+	.nobottommarginMob{margin-bottom: 0px!important;}
 
 }
-
+@media (max-width: 320px) {
+	#logo img {
+		max-width: 110px !important;
+    padding: 15px 0px;
+}
+	button.add-to-cart.button.nomargin.addToCartB.addToCart {
+    margin-bottom: 20px !important;
+}
+	.shareSociIconBox strong{width: 100%;}
+	.a2a_svg {
+    height: 28px !important;
+    line-height: 28px !important;
+    width: 28px !important;
+}
+	ul.tab-nav:not(.tab-nav-lg) li {
+    float: left;
+    text-align: left;
+    width: 100%;
+    margin-left: 0 !important;
+    border: 1px solid #ddd;
+}
+	.button {
+		width: 100%;
+		font-size: 12px !important;
+}
+	.container, #header.full-header .container, .container-fullwidth {
+    width: 230px !important;
+}
+input.min-price-filter, input.max-price-filter {
+	width: calc(100% - 20px);
+	margin-bottom: 10px;
+}
+div#slider-range {
+	margin-top: 30px;
+	clear: both;
+}
+.nobottompaddingMob{padding-bottom: 0px!important;}
+.nobottommarginMob{margin-bottom: 0px!important;}
+}
 
 /* ----------------------------------------------------------------
 	Retina CSS

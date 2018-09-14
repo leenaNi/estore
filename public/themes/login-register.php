@@ -6,14 +6,23 @@
   <!-- Document Wrapper
 	============================================= -->
   <div id="wrapper" class="clearfix">
-    <?php include( 'includes/header_style1.php'); ?>
+  <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3' ||  $_GET['theme'] == 'ac1' ||  $_GET['theme'] == 'ac3')
+     include( 'includes/header_style1.php');
+
+     if($_GET['theme'] == 'fs2' ||  $_GET['theme'] == 'ac2')
+     include( 'includes/header_style2.php');
+     
+     
+     ?>
     <section id="page-title">
       <div class="container clearfix">
-        <h1>Forgot Password</h1>
+        <h1>Login | Register</h1>
         <ol class="breadcrumb">
-          <li><a href="fs1_home.php">Home</a>
+      
+          <li><a href="<?php echo $_GET['theme']; ?>_home.php?theme=<?php echo $_GET['theme']; ?>">Home</a>
           </li>
-          <li class="active">Forgot Password</li>
+          <li class="active">Login | Register</li>
         </ol>
       </div>
     </section>
@@ -22,7 +31,7 @@
     <section id="content">
       <div class="content-wrap">
         <div class="container clearfix">
-          <div class="tabs divcenter tabs-justify nobottommargin clearfix" id="tab-login-register" style="max-width: 500px;">
+        <div class="tabs divcenter tabs-justify nobottommargin clearfix" id="tab-login-register" style="max-width: 500px;">
             <div class='alert alert-danger login-error' style="display:none;"></div>
             <ul class="tab-nav tab-nav2 loginTab center clearfix">
               <li class="inline-block" aria-selected="true" aria-expanded="true"><a href="#tab-login">Login</a>
@@ -43,14 +52,16 @@
                         <button class="button button-black nomargin" type="submit" value="login">Login</button>
                       </div>
                       <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="forgot-password.php" class="">Forgot Password?</a> </div>
-                      <div class="horizontaldivider">
-                        <div class="horizontal-desk-or-divider-text">OR</div>
-                      </div>
-                      <div class="social_media">
-                        <a href="#" class="col-md-6 col-sm-6 col-xs-12"> <img src="images/fb_login.jpg" class="fb_login_btn"> </a>
-                        <a href="#" class="col-md-6 col-sm-6 col-xs-12"> <img src="images/g_login.jpg" class="g_login_btn"> </a>
-                      </div>
+                      <div class="col-md-12 topmargin-sm orDivider-box clearfix">
+                        <div class="orDivider">or</div>
+                    </div>
+                    <div class="clearfix"></div>
+                      
                     </form>
+                    <div class="social_media text-center topmargin-sm">
+                    <a id="fbLink" class="col-sm-6 col-xs-12 fb_login_btn"   style="margin-bottom:11px;"> <img src="images/fb_login.jpg" class="fb_login_btn"> </a>
+                        <a href="#" class="col-md-6 col-sm-6 col-xs-12"> <img src="images/g_login.jpg" class="g_login_btn"> </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -85,7 +96,16 @@
       </div>
     </section>
     <!-- #content end -->
-    <?php include( 'includes/footer_style1.php'); ?> </div>
+    <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+     include( 'includes/footer_style1.php');
+
+     if($_GET['theme'] == 'fs2')
+     include( 'includes/footer_style2.php');
+     
+     
+     ?>
+      </div>
   <!-- #wrapper end -->
   <?php include( 'includes/foot.php'); ?> </body>
 

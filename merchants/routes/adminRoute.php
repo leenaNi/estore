@@ -480,6 +480,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                     Route::post('/save', ['as' => 'admin.generalSetting.save', 'uses' => 'MiscellaneousController@generalSettingSave']);
                     Route::get('/delete', ['as' => 'admin.generalSetting.delete', 'uses' => 'MiscellaneousController@generalSettingDelete']);
                     Route::any('/changeStatus', ['as' => 'admin.generalSetting.changeStatus', 'uses' => 'MiscellaneousController@changeStatus']);
+                    Route::any('/assign-courier', ['as' => 'admin.generalSetting.assignCourier', 'uses' => 'MiscellaneousController@assignCourier']);
                 });
 
                 Route::group(['prefix' => 'storeSettings', 'middlewareGroups' => ['web']], function() {
