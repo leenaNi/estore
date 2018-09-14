@@ -913,7 +913,7 @@ class HomeController extends Controller {
        $telephone=Input::get("telephone");
        $message=Input::get("message");
       
-        $emailData = ['name' => $firstname, 'email' => $useremail,'telephone'=>$telephone,'message'=>$message];
+        $emailData = ['name' => $firstname, 'email' => $useremail,'telephone'=>$telephone,'messages'=>$message];
         Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
             $m->to("pradeep@infiniteit.biz", $firstname)->subject('Your password changed!');
             //$m->cc('madhuri@infiniteit.biz');

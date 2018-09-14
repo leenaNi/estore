@@ -15,7 +15,7 @@
  <br>
  Mobile  {{$telephone}} <br>
  Email {{$email}} <br>
- Meaasge  {{$message}}
+ Meaasge  {{$messages }}
  
 </p>
   
