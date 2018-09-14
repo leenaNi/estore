@@ -274,18 +274,11 @@ class MiscellaneousController extends Controller {
 
     function generalStoreAdd() {
         $themes = [];
-
         $themedata1 = Helper::getSettings()['themedata'];
         foreach ($themedata1 as $td) {
             $themes[$td['id']] = strtolower($td['name']);
         }
-        $logo = $storeName = "Your store";
-        $pcolor = "#3c8dbc";
-        $scolor = "#222d32";
-        $delivary_days = '3';
-        $cod_option = '1';
-        $language = "";
-        $currency = "IND";
+  
         $store_configuration = Helper::getSettings();
         $industry_id = Helper::getSettings()['industry_id'];
 
@@ -363,23 +356,7 @@ class MiscellaneousController extends Controller {
             $store_configuration['theme'] = $themes[$index];
             $store_configuration['themeid'] = Input::get('theme');
         }
-//        $store_configuration = array(
-//            "logo" => $logo,
-//            "primary_color" => $pcolor,
-//            "secondary_color" => $scolor,
-//            "btn_color" => $btncolor,
-//            "sbtn_color" => $sbtncolor,
-//            "storeName" => $storeName,
-//            "standard_delivary_days" => $delivary_days,
-//            "cod_option" => $cod_option,
-//            "language" => $language,
-//            "currencyId" => $currency,
-//            "theme" => $themeSel,
-//            "themeid" => $themeid,
-//            "themedata" => $themedata1,
-//            "industry_id" => $industry_id,
-//            "store_version" => $store_version
-//        );
+
         $store_configuration['logo'] = $logo;
         $store_configuration['currencyId'] = $currency;
         $store_configuration['store_version'] = $store_version;
