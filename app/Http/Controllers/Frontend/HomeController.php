@@ -177,7 +177,7 @@ class HomeController extends Controller {
         if (empty(Input::get('firstname')) && empty(Session::get('merchantid'))) {
             $cats = Category::where("status", 1)->get();
 
-            $data = ['cats' => $cats];
+            $data = ['cats' => $cats,'themeIds'=>$themeIds];
             $viewname = Config('constants.frontendView') . ".select-themes";
             return Helper::returnView($viewname, $data);
         }
