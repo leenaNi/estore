@@ -11,11 +11,11 @@
 <br />
 <p>
  We have got a new enquiry email. User Details are given Below.
- Name : {{$name}}
+ Name {{$name}}
  <br>
- Mobile : {{$telephone}} <br>
- Email : {{$email}} <br>
- Meaasge : {{$message}}
+ Mobile  {{$telephone}} <br>
+ Email {{$email}} <br>
+ Meaasge  {{$message}}
  
 </p>
   

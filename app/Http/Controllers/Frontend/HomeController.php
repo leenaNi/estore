@@ -918,7 +918,7 @@ class HomeController extends Controller {
             $m->to("pradeep@infiniteit.biz", $firstname)->subject('Your password changed!');
             //$m->cc('madhuri@infiniteit.biz');
         });
-        return Helper::returnView($viewname, $data);
+   return 1;
     }
     public function faqS() {
         $data = [];

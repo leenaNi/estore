@@ -14,11 +14,11 @@
         <div class="container clearfix">
             <!-- Postcontent
                             ============================================= -->
-            <div class="postcontent nobottommargin">
+            <div class=" nobottommargin">
                 <h3>Get in Touch with Us</h3>
                  <div id='contactMsg'></div>
-                <div class="contact-widget">
-                    <form class="nobottommargin" action="{{route("contactSend")}}" method="post" id='contactform'>
+                <div class="">
+                    <form class="nobottommargin" action="#" method="post" id='contactform'>
                         <div class="col_one_third">
                             <input type="text" name='firstname' placeholder="Name *" class="sm-form-control required" />
                         </div>
@@ -103,17 +103,18 @@
 
         },
         submitHandler: function (form) {
+             alert("response");
               //$('#msgsubmit').attr('disabled', true);
                $('#msgsubmit').attr('disabled', true).html('Sending...');
             $.ajax({
                 type: $(form).attr('method'),
-                url: $(form).attr('action'),
+                url: '{{route("contactSend")}}',
                 data: $(form).serialize(),
                 success: function (response) {
                     console.log(response);
                      
                    // alert('ndjfhsgdjhf');
-                   // alert(response);
+                    alert(response);
                     if (response == 1) {
                         $('#msgsubmit').attr('disabled', false).html('Submit');
                         $('#contactMsg').html('<div class="alert alert-success center">Message sent successfully</div>');
