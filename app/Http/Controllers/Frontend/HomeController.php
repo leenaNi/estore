@@ -173,7 +173,7 @@ class HomeController extends Controller {
 //        if(empty(Session::get('storename'))){
 //            return redirect()->to("/");
 //        }
-        $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("theme_id")->toArray();
+        $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
         if (empty(Input::get('firstname')) && empty(Session::get('merchantid'))) {
             $cats = Category::where("status", 1)->get();
 

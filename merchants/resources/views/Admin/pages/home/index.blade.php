@@ -348,7 +348,7 @@ $(".toggle-two").change(function(){
 $("#courierSelect").change(function(){
 
 	var courierId = $(this).val();
-        alert(courierId);
+//        alert(courierId);
                                       
 	$.ajax({
         method:"POST",
