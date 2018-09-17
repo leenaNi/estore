@@ -38,7 +38,7 @@
                 <?php
                 $themimg = ($theme->image) ? $theme->image : 'default-theme.png';
                 $themeK++;
-                 if($theme->theme_type==2 && !in_array($theme->id,$themeIds)){
+                 if($theme->theme_type==2 && !in_array(Session::get('merchantid'),$themeIds)){
                    $action= route('getCityPay');
                 }else{
                       $action= route('waitProcess');
