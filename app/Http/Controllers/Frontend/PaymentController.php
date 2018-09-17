@@ -227,7 +227,7 @@ class PaymentController extends Controller {
         $order->payment_status = $paymentStatus;
         $order->transaction_id = $trasactionId;
         $order->transaction_status = $transactionStatus;
-       // $order->transaction_info = @$transactionInfo;
+        $order->transaction_info = @$transaction_info;
      //   $order->description = $des;
         $order->currency_id =$getMerchat->currency;
        // $order->currency_value = Session::get("currency_val");
@@ -247,16 +247,7 @@ class PaymentController extends Controller {
         $order->category_id=$getMerchat->business_type;
         $order->store_version=$getMerchat->store_version;
         $order->theme_id= Session::get('theme_id');
-//        $coupon_id = Session::get('voucherUsedAmt');
-//        if (isset($coupon_id)) {
-//            $coupon = Coupon::find($coupon_id);
-//            $coupon->initial_coupon_val = Session::get('remainingVoucherAmt');
-//            $coupon->update();
-//        }
-
-//        $order->shipping_amt = is_null(Session::get('shippingAmount')) ? 0 : Session::get('shippingAmount');
-
-
+      $order->shipping_amt = is_null(Session::get('shippingAmount')) ? 0 : Session::get('shippingAmount');
 
      $order->save();
         Session::put("orderId",$order->id);
@@ -273,9 +264,6 @@ class PaymentController extends Controller {
 //        $order->created_at = $date;
         // dd($order);
 //        if ($order->Update()) {
-//            $this->coupon_count();
-//            $this->forget_session_coupon();
-//            $this->updateStock($order->id);
 //            // return $data_email = ['first_name' => $fname, 'orderId' => $orderId, 'emial' => $mail_id];
 //            // send mail to customer for order confirmation
 //           $order= Order::where("id",$order->id)->with("DeliverySlot")->first();
@@ -291,7 +279,7 @@ class PaymentController extends Controller {
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus; 
         $order->transaction_status = $transactionStatus;
-        $order->transaction_info = @$transactionInfo;
+        $order->transaction_info = @$transaction_info;
         $order->first_name=$getMerchat->firstname;
         $order->phone_no=$getMerchat->phone;
         $order->email=$getMerchat->email;    
