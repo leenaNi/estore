@@ -300,7 +300,12 @@ class HomeController extends Controller {
         $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
         $store->status = 1;
          $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
-        if (empty($themeInput->id)) {
+      if(count($merchantPay) > 0){
+            $themeInput->store_version=2;
+      }else{
+          $themeInput->store_version=1; 
+      }
+         if (empty($themeInput->id)) {
             if (!empty($themeInput->url_key)) {
                 $chkUrlKey = Store::where("url_key", $themeInput->url_key)->count();
                 if ($chkUrlKey == 0)
