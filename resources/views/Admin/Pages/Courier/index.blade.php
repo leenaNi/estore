@@ -49,6 +49,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Charges</th>
+                        <th>Country</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -60,7 +61,7 @@
 
                     <td>{{$courier->name}}</td>
                     <td><span class="currency-sym"></span><span class="priceConvert">{{$courier->charges}}0</span></td>
-                    
+                     <td>{{@$courier->countryname->name}}</td>
                     <td>@if($courier->status==1)
                         <a href="{!! route('admin.courier.changeStatus',['id'=>$courier->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this record?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn"></i></a>
                           @elseif($courier->status==0)
