@@ -202,7 +202,7 @@ class PaymentController extends Controller {
         $xml = PostQW($data);
         $OrderStatus = $xml->Response->Order->OrderStatus;
 
-
+dd($OrderStatus);
 
         if (Input::get('responseType') == 'json') {
             $data = [];
