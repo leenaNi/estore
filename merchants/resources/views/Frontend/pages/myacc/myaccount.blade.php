@@ -34,11 +34,12 @@
                             <h4 id="userProfile" class="mb15">{{$user->firstname}} <!--  {{$user->lastname}} --></h4> 
                             <div class="emailbox"><strong>Email:</strong> {{ @$user->email}}</div>
                             <div class="mobilebox"><strong>Mobile:</strong> {{ $user->telephone}}</div>
+                          
                             @if($feature['referral']==1)
                             <div class="mobilebox"><strong>Referral Code:</strong> {{ $user->referal_code}}</div>
                          @endif
                              @if($feature['loyalty']==1)                     
-                             <div class="mobilebox"><strong>Loyalty:</strong> <span class="currency-sym"></span>  {{ number_format($user->cashback * Session::get('currency_val'),2) }}</div>
+                             <div class="mobilebox"><strong>Loyalty:</strong> <span class="currency-sym"></span>  {{ number_format(@$user->userCashback->cashback * Session::get('currency_val'),2) }}</div>
                        @endif
                         </div>
                         <?php if ($user->provider_id == 0) { ?>

@@ -47,14 +47,10 @@ class OrdersController extends Controller {
 
     public function index() {
         $jsonString = Helper::getSettings();
-        $datetime1 = new DateTime('2018-08-26');
-$datetime2 = new DateTime(date('y-m-d')); 
-$diff = $datetime1->diff($datetime2);
-//echo "Raw Difference: ",$diff->format('%y years %m months %d days %h hours %i minutes %s seconds'),"\n";
-
-print_r($diff->days);
-die;
-         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
+//      $data=  DB::table('has_industries')->join("general_setting as g",'g.id','=','has_industries.general_setting_id')
+//             ->join("categories",'has_industries1.industry_id','=','categories.id')
+//              ->select('g.id','g.name','g.is_active','g.is_question','g.question_category_id','categories.category')->get();
+     $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';

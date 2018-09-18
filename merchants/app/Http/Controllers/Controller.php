@@ -64,6 +64,7 @@ abstract class Controller extends BaseController {
         View::share('industry_id', Helper::getSettings()['industry_id']);
         View::share('store_version_id', Helper::getSettings()['store_version']);
         Session::put("storeName", Helper::getSettings()['storeName']);
+        Session::put("store_id", Helper::getSettings()['store_id']);
         View::share('settingStatus', $this->getSettingStatus());
         View::share('socialMedia', SocialMediaLink::where('status', 1)->get());
         View::share('staticPages', StaticPage::where('status', 1)->orderby('sort_order','asc')->get());

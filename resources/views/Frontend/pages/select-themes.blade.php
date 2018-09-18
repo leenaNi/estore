@@ -38,7 +38,7 @@
                 <?php
                 $themimg = ($theme->image) ? $theme->image : 'default-theme.png';
                 $themeK++;
-                 if($theme->theme_type==2 && !in_array($theme->id,$themeIds)){
+                 if($theme->theme_type==2 && !in_array(Session::get('merchantid'),$themeIds)){
                    $action= route('getCityPay');
                 }else{
                       $action= route('waitProcess');
@@ -74,7 +74,7 @@
                                     @endif
                                     <a type="button" href="{{ asset('themes/'.strtolower($theme->name)."_home.php") }}" target="_blank" class="btn btn-block marginauto btn-trans-whiteborder">View Demo</a>
                                     @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
-                                 <button type="submit" class="btn theme-btn btn-block marginauto short-btn applythemebtn"> <?php echo $theme->theme_type==2 && !in_array($theme->id,$themeIds)?'Pay Now':'Apply Theme'  ?></button>
+                                     <button type="submit" class="btn theme-btn btn-block marginauto short-btn applythemebtn"> <?php echo $theme->theme_type==2 && !in_array(Session::get('merchantid'),$themeIds)?'Pay Now':'Apply Theme'  ?></button>
                                     @endif
                                 </div>
                             </div>

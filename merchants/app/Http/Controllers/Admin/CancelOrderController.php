@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CancelOrder;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\HasCashbackLoyalty;
 use App\Models\Order;
 use App\Library\Helper;
 use Session;
@@ -18,14 +19,14 @@ class CancelOrderController extends Controller {
 //
     public function index() {
         //dd($this->jsonString);
-      //  $jsonString = Helper::getSettings();
-        $getData = CancelOrder::with('getorders', 'getorders.users')->where("prefix",$this->jsonString['prefix'])->get();
+        //  $jsonString = Helper::getSettings();
+        $getData = CancelOrder::with('getorders', 'getorders.users')->where("prefix", $this->jsonString['prefix'])->get();
         return Helper::returnView(Config('constants.adminOrderView') . '.cancel-order.index', ["data" => $getData]);
     }
 
     public function edit($id) {
         //$jsonString = Helper::getSettings();
-        $getData = CancelOrder::with('getorders', 'getorders.users', "reason")->where("prefix",$this->jsonString['prefix'])->where("id", $id)->first();
+        $getData = CancelOrder::with('getorders', 'getorders.users', "reason")->where("prefix", $this->jsonString['prefix'])->where("id", $id)->first();
         return Helper::returnView(Config('constants.adminOrderView') . '.cancel-order.edit', ["data" => $getData]);
     }
 
@@ -73,9 +74,21 @@ class CancelOrderController extends Controller {
 
     public function updateUserCashback($data) {
         if (isset($data->uid)):
-            $user = User::find($data->uid);
-            $user->cashback = $user->cashback + $data->return_amount;
-            $user->save();
+            $usercashback = HasCashbackLoyalty::where("user_id", $data->uid)->where("store_id", $this->jsonString['store_id'])->first();
+            if (count($usercashback) > 0) {
+                $usercashback->cashback = $usercashback->cashback + $data->return_amount;
+                $usercashback->timestamps = false;
+                $usercashback->save();
+            } else {
+                $usercashback = new HasCashbackLoyalty;
+                $usercashback->user_id = $data->uid;
+                $usercashback->store_id = $this->jsonString['store_id'];
+                $usercashback->cashback = round($data->return_amount,2);
+                $usercashback->timestamps = false;
+                $usercashback->save();
+            }
+
+
         endif;
     }
 

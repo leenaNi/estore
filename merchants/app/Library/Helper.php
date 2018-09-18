@@ -301,16 +301,16 @@ class Helper {
 
     public static function getUserCashBack($phone = null) {
         if (!is_null($phone)) {
-            $user = User::where('telephone', $phone)->with('addresses')->first();
+            $user = User::where('telephone', $phone)->with('addresses','userCashBack')->first();
             if (!is_null($user)) {
-                $data = ['status' => 1, 'cashback' => $user->cashback, 'user' => $user];
+                $data = ['status' => 1, 'cashback' => $user->userCashBack->cashback, 'user' => $user];
             } else {
                 $data = ['status' => 0, 'cashback' => 0, 'user' => $user];
             }
         } else {
             $user = User::where('id', Session::get('loggedin_user_id'))->with('addresses')->first();
             if (!is_null($user)) {
-                $data = ['status' => 1, 'cashback' => $user->cashback, 'user' => $user];
+                $data = ['status' => 1, 'cashback' => $user->userCashBack->cashback, 'user' => $user];
             } else {
                 $data = ['status' => 0, 'cashback' => 0, 'user' => $user];
             }

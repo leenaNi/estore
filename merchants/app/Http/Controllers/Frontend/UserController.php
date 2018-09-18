@@ -39,7 +39,10 @@ class UserController extends Controller {
     }
 
     public function my_profile() {
-        //print_r(Session::get('loggedin_user_id'));
+//        $user=User::find(Session::get('loggedin_user_id'));
+//        $user->userCashback->cashback=$user->userCashback->cashback+200;
+//      $user->userCashback->save();
+//      dd($user);
         $orderReturnReason=OrderReturnReason::pluck('reason','id');
         $user=User::find(@Session::get('loggedin_user_id'));
         $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;

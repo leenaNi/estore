@@ -5,9 +5,9 @@ namespace App\models;
 use Illuminate\Database\Eloquent\Model;
 
 class ReturnOrder extends Model {
-
+    protected $connection = 'mysql2';
     protected $table = 'return_order';
-
+   
     function reason() {
         return $this->belongsTo('App\Models\OrderReturnReason')->select('id', 'reason');
     }

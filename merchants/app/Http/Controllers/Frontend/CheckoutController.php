@@ -327,7 +327,7 @@ class CheckoutController extends Controller {
         $cart_amt = Helper::calAmtWithTax();
         $summary = [];
         $summary['cart'] = Cart::instance("shopping")->content();
-        $summary['cashback'] = (User::find(Session::get('loggedin_user_id'))->cashback > 0 ) ? User::find(Session::get('loggedin_user_id'))->cashback : 0; // * Session::get('currency_val')
+        $summary['cashback'] = (@User::find(Session::get('loggedin_user_id'))->userCashback->cashback > 0 ) ? User::find(Session::get('loggedin_user_id'))->userCashback->cashback : 0; // * Session::get('currency_val')
         $summary['orderCount'] = @Order::where("user_id", Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->count();
         $summary['address'] = $selAdd;
         $summary['chkRefDisc'] = $refDisc;
@@ -849,9 +849,10 @@ class CheckoutController extends Controller {
         $user_id = input::get('userId');
 
         if (isset($user_id)) {
-            $cashback = User::find($user_id)->cashback * Session::get('currency_val');
+           
+            $cashback = @User::find($user_id)->userCashback->cashback * Session::get('currency_val');
         } else {
-            $cashback = User::find(Session::get('loggedin_user_id'))->cashback;
+            $cashback = @User::find(Session::get('loggedin_user_id'))->userCashback->cashback;
         }
 
         $cartAmount = Helper::getMrpTotal();
@@ -909,7 +910,7 @@ class CheckoutController extends Controller {
         $finalamt = $cart_data['total'];
 
         Session::put('pay_amt', $finalamt);
-        $data['cashback'] = User::find(Session::get('loggedin_user_id'))->cashback;
+        $data['cashback'] = User::find(Session::get('loggedin_user_id'))->userCashback->cashback;
 //        echo number_format(($finalamt * Session::get('currency_val')), 2);
         $data['finalamt'] = number_format(($finalamt * Session::get('currency_val')), 2);
         return $data;
@@ -1384,7 +1385,8 @@ class CheckoutController extends Controller {
                     $loyaltyPercent = $user->loyalty['percent'];
                     $order->cashback_earned = is_null($loyaltyPercent) ? 0 : number_format(($loyaltyPercent * $order->pay_amt) / 100, 2);
                     $order->cashback_credited = is_null($loyaltyPercent) ? 0 : number_format(($loyaltyPercent * $order->pay_amt) / 100, 2);
-                    $user->cashback = $user->cashback - @Session::get('checkbackUsedAmt');
+                    $user->userCashback->cashback= $user->userCashback->cashback - @Session::get('checkbackUsedAmt');
+                   $user->userCashback->save();
                     if (!empty(Session::get('voucherUsedAmt'))) {
                         $voucherUpdate = Coupon::find(Session::get('voucherUsedAmt'));
                         $voucherUpdate->voucher_val = is_null(Session::get('remainingVoucherAmt')) ? $voucherUpdate->voucher_val : Session::get('remainingVoucherAmt');
@@ -1776,8 +1778,9 @@ class CheckoutController extends Controller {
         } else {
             $order->loyalty_cron_status = 0;
         }
-        $user->cashback = $user->cashback - (@Session::get('checkbackUsedAmt') / Session::get('currency_val'));
+        $user->userCashback->cashback = $user->userCashback->cashback - (@Session::get('checkbackUsedAmt') / Session::get('currency_val'));
         $user->update();
+        $user->userCashback->save();
         $tempName = Session::get('login_user_first_name');
         if (empty($tempName)) {
             $parts = explode("@", Session::get('logged_in_user'));
@@ -2247,8 +2250,9 @@ class CheckoutController extends Controller {
                     $order->cashback_used = $userCashback['cashback'];
                     $cashbackRemained = 0;
                 }
-                $user->cashback = $cashbackRemained;
-                $user->update();
+                $user->userCashBack->cashback = $cashbackRemained;
+                $user->userCashBack->update();
+                
             }
             //echo "Applied";
         } else {
