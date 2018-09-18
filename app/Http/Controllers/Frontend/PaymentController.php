@@ -104,7 +104,6 @@ class PaymentController extends Controller {
     }
 
     public function getCityDeclined() {
-
         if (@$_REQUEST['xmlmsg'] != "") {
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
@@ -112,6 +111,7 @@ class PaymentController extends Controller {
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
+            dd($array);
             $paymentMethod = 9;
             $paymentStatus = 1;
             $payAmt = $array['PurchaseAmountScr'];
@@ -202,7 +202,7 @@ class PaymentController extends Controller {
         $xml = PostQW($data);
         $OrderStatus = $xml->Response->Order->OrderStatus;
 
-dd($xml);
+
 
         if (Input::get('responseType') == 'json') {
             $data = [];
