@@ -214,7 +214,8 @@ class UserController extends Controller {
                 $return->sub_prod = $d['sub_prod'];
                 $return->order_status = Input::get('order_status');
                 $return->return_action = 3;
-                $return->return_status = 3;
+                $return->store_id =$this->jsonString['store_id'];
+                $return->prefix =$this->jsonString['prefix'];
                 $return->save();
             }
         }
@@ -246,6 +247,8 @@ class UserController extends Controller {
                     $return->opened_id = $return_qnty['opened'];
                     $return->remark = $return_qnty['remark'];
                     $return->return_status = 4;
+                    $return->store_id =$this->jsonString['store_id'];
+                    $return->prefix =$this->jsonString['prefix'];
                     $return->save();
                 }
             }

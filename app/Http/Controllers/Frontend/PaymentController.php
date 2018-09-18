@@ -301,8 +301,8 @@ class PaymentController extends Controller {
             <input type="hidden" size="25" name="Description" value="1520"/>  
             <input type="hidden" size="25" name="storeId" value="{{$storeid}}"/>
             <input type="hidden" size="50" name="ApproveURL" value="https://www.veestores.com/get-renew-city-approved" readonly/>
-            <input type="hidden" size="50" name="CancelURL" value="http://www.veestores.com/get-city-cancelled" readonly/>
-            <input type="hidden" size="50" name="DeclineURL" value="http://www.veestores.com/get-city-declined" readonly/>
+            <input type="hidden" size="50" name="CancelURL" value="https://www.veestores.com/get-city-cancelled" readonly/>
+            <input type="hidden" size="50" name="DeclineURL" value="https://www.veestores.com/get-city-declined" readonly/>
             <input type="submit" style="display:none;" value="Create Order"/>
         </form>
         <script type="text/javascript">
