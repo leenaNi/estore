@@ -29,16 +29,7 @@
     }
 </style>
 
-<?php
-$date1 = date_create(App\Library\Helper::getSettings()['expiry_date']);
-$date2 = date_create(date("Y-m-d"));
-$diff = date_diff($date2, $date1);
-$dayused = $diff->format("%a");
-//dd($dayused);
-if ($dayused < 30) {
-    $dayremain = 30 - $dayused;
-}
-?>
+
 
 <header id="header" class="transparent-header full-header bg-blackTransparant" data-sticky-class="dark">
     <!--<div class="applyTheme-stickyHeader"><div class="pull-right"><a href="#" class="applyTheme"><div> Apply Theme</div></a><a href="#" class="closeTheme">Remove</a></div></div>-->
