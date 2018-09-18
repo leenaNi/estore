@@ -216,7 +216,7 @@ class PaymentController extends Controller {
     }
 
     public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info) {
-        $order = New MerchantOrder();
+        $order = new MerchantOrder();
         $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
         $order->merchant_id = Session::get('merchantid');
         $order->pay_amt = $payAmt;
@@ -260,7 +260,7 @@ class PaymentController extends Controller {
     }
 
     public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info) {
-        $order = New MerchantOrder();
+        $order = new MerchantOrder();
        // dd(Session::get('merchantid'));
         $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
         $order->merchant_id = Session::get('merchantid');
