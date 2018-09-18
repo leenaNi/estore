@@ -72,7 +72,7 @@
                     <p class="btn btn-block btn-sm view-storeBtn"> Your free trial version of store will be expire after {{30 - $dayused}} days.</p>
                 </div>
                 @endif
-                @if($expirydate < 30)
+                @if($expirydate)
                 <div class="pull-right storeBtn">
                     <p class="btn btn-block btn-sm view-storeBtn"> Your  store will be expire after {{$expirydate}} days.If you want to continue please renew it.
                     <form method="post" action="#"  target="_parent" onsubmit="window.open('https://veestores.com/get-city-pay', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
