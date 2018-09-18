@@ -261,6 +261,7 @@ class PaymentController extends Controller {
 
     public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info) {
         $order = New MerchantOrder();
+       // dd(Session::get('merchantid'));
         $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
         $order->merchant_id = Session::get('merchantid');
         $order->pay_amt = $payAmt;
@@ -286,11 +287,11 @@ class PaymentController extends Controller {
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
        // dd(Crypt::decrypt($storeid));
 //       dd(Input::all());
-        $mechant=Store::find($storeid)->getmerchant()->first()->id;
+        $merchant=Store::find($storeid)->getmerchant()->first()->id;
        
         $payAmt = 1; //Helper::getAmt();
         Session::put('storeId', $storeid);
-        Session::put('merchantid', $mechant);
+        Session::put('merchantid', $merchant);
         ?>
 
         <form method="post" action="https://www.veestores.com/get-city-createOrder" name="cityPayForm">
@@ -300,8 +301,8 @@ class PaymentController extends Controller {
             <input type="hidden" size="25" name="Description" value="1520"/>  
             <input type="hidden" size="25" name="storeId" value="{{$storeid}}"/>
             <input type="hidden" size="50" name="ApproveURL" value="https://www.veestores.com/get-renew-city-approved" readonly/>
-            <input type="hidden" size="50" name="CancelURL" value="https://www.veestores.com/get-city-cancelled" readonly/>
-            <input type="hidden" size="50" name="DeclineURL" value="https://www.veestores.com/get-city-declined" readonly/>
+            <input type="hidden" size="50" name="CancelURL" value="http://www.veestores.com/get-city-cancelled" readonly/>
+            <input type="hidden" size="50" name="DeclineURL" value="http://www.veestores.com/get-city-declined" readonly/>
             <input type="submit" style="display:none;" value="Create Order"/>
         </form>
         <script type="text/javascript">
@@ -341,5 +342,11 @@ class PaymentController extends Controller {
 //            $viewname = Config('constants.frontendView') . ".select-themes";
 //            return Helper::returnView($viewname, $data);
         }
+    }
+    public function orderFailure(){
+              $data ="";
+              Session::forget(all());
+            $viewname = Config('constants.frontendView') . ".failure";
+            return Helper::returnView($viewname, $data);   
     }
 }

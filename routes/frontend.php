@@ -66,4 +66,5 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/get-city-cancelled', array('as' => 'getCityCancelled', 'uses' => 'PaymentController@getCityCancelled'));
     Route::any('/get-city-createOrder', array('as' => 'getCityCreateOrder', 'uses' => 'PaymentController@getCityCreateOrder'));
     Route::any('/payment-success', array('as' => 'paymentSuccess', 'uses' => 'PaymentController@paymentSuccess'));
+    Route::any('/order-failure', array('as' => 'orderFailure', 'uses' => 'PaymentController@orderFailure'));
 });
