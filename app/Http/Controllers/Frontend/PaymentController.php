@@ -31,16 +31,15 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller {
 
-   
-
     public function index() {
+        
     }
-    
-     public function getCityPay() {
+
+    public function getCityPay() {
         define('DS', DIRECTORY_SEPARATOR);
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
         $payAmt = 1; //Helper::getAmt();
-         Session::put('theme_id', Input::get("theme_id"));
+        Session::put('theme_id', Input::get("theme_id"));
 //        $paymentMethod=9; $paymentStatus=4;$trasactionId='433434CFDFS'; $transactionStatus='success'; $transaction_info="fsfsffsdsd";
 //        $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info);
 //         $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
@@ -69,6 +68,8 @@ class PaymentController extends Controller {
 
         <?php
     }
+    
+    
     //for city payment
     public function getCityApproved() {
 
@@ -86,17 +87,17 @@ class PaymentController extends Controller {
             $paymentStatus = 4;
             $payAmt = $array['PurchaseAmountScr'];
             $trasactionId = $array['MerchantTranID'];
-            $transactionStatus = $array['OrderStatus'];         
+            $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
             $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info);
             $data = [];
-            $themeIds =MerchantOrder::where("merchant_id",Session::get('merchantid'))->where("order_status",1)->where("payment_status",4)->pluck("theme_id")->toArray();
+            $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
             $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
             $checkStote = Merchant::find(Session::get('merchantid'))->getstores()->count();
             Session::put('merchantstorecount', $checkStote);
-            
-            $data = ['cats' => $cats, 'allinput' => $allinput,'themeIds' => $themeIds];
+
+            $data = ['cats' => $cats, 'allinput' => $allinput, 'themeIds' => $themeIds];
             $viewname = Config('constants.frontendView') . ".select-themes";
             return Helper::returnView($viewname, $data);
         }
@@ -116,9 +117,9 @@ class PaymentController extends Controller {
             $payAmt = $array['PurchaseAmountScr'];
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
-             $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
+            $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
 
-             return redirect()->route('orderFailure');
+            return redirect()->route('orderFailure');
         }
     }
 
@@ -136,16 +137,14 @@ class PaymentController extends Controller {
             $payAmt = $array['PurchaseAmountScr'];
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
-           $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
-       
-           // return redirect()->route('orderFailure');
+            $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
+
+            // return redirect()->route('orderFailure');
         }
     }
 
-   
-
     public function getCityCreateOrder() {
-       // dd(Input::all());
+        // dd(Input::all());
 //        if (Input::get('responseType') == 'json') {
 //            $getAddreses = Address::where("id", "=", Input::get('addid'))->first();
 //            $orderS = Order::find(Input::get('Description'));
@@ -182,9 +181,9 @@ class PaymentController extends Controller {
         $data.="<CancelURL>" . htmlentities(Input::get('CancelURL')) . "</CancelURL>";
         $data.="<DeclineURL>" . htmlentities(Input::get('DeclineURL')) . "</DeclineURL>";
         $data.="</Order></Request></TKKPG>";
- 
+
         $xml = PostQW($data);
-     //  dd($xml);
+        //  dd($xml);
         $OrderID = $xml->Response->Order->OrderID;
         $SessionID = $xml->Response->Order->SessionID;
         $URL = $xml->Response->Order->URL;
@@ -214,13 +213,12 @@ class PaymentController extends Controller {
             header("Location: " . $URL . "?ORDERID=" . $OrderID . "&SESSIONID=" . $SessionID . "");
             exit();
         }
-    } 
-    
-  
-    public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info){
-        $order =New MerchantOrder();
-       $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
-        $order->merchant_id =Session::get('merchantid');
+    }
+
+    public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info) {
+        $order = New MerchantOrder();
+        $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
+        $order->merchant_id = Session::get('merchantid');
         $order->pay_amt = $payAmt;
         $order->order_amt = $payAmt;
         $order->payment_method = $paymentMethod;
@@ -228,29 +226,18 @@ class PaymentController extends Controller {
         $order->transaction_id = $trasactionId;
         $order->transaction_status = $transactionStatus;
         $order->transaction_info = @$transaction_info;
-     //   $order->description = $des;
-        $order->currency_id =$getMerchat->currency;
-       // $order->currency_value = Session::get("currency_val");
-       // $order->cart = json_encode(Cart::instance('shopping')->content());
+        $order->currency_id = $getMerchat->currency;
         $order->order_status = 1;
-//        $order->cod_charges = @Session::get('codCharges') * Session::get("currency_val");
-//        $order->discount_type = (Session::get('discType')) ? Session::get('discType') : 0;
-//        $order->discount_amt = (Session::get('discAmt')) ? Session::get('discAmt') * Session::get('currency_val') : 0;
-//        $order->coupon_amt_used = is_null(Session::get('couponUsedAmt')) ? 0 : Session::get('couponUsedAmt') * Session::get('currency_val');
-//        $order->coupon_used = is_null(Session::get('usedCouponId')) ? 0 : Session::get('usedCouponId');
-//        $order->cashback_used = is_null(Session::get('checkbackUsedAmt')) ? 0 : Session::get('checkbackUsedAmt');
-//        $order->voucher_amt_used = is_null(Session::get('voucherAmount')) ? 0 : Session::get('voucherAmount');
-//        $order->voucher_used = is_null(Session::get('voucherUsedAmt')) ? 0 : Session::get('voucherUsedAmt');
-        $order->first_name=$getMerchat->firstname;
-        $order->phone_no=$getMerchat->phone;
-        $order->email=$getMerchat->email;    
-        $order->category_id=$getMerchat->business_type;
-        $order->store_version=$getMerchat->store_version;
-        $order->theme_id= Session::get('theme_id');
-      $order->shipping_amt = is_null(Session::get('shippingAmount')) ? 0 : Session::get('shippingAmount');
+        $order->first_name = $getMerchat->firstname;
+        $order->phone_no = $getMerchat->phone;
+        $order->email = $getMerchat->email;
+        $order->category_id = $getMerchat->business_type;
+        $order->store_version = $getMerchat->store_version;
+        $order->theme_id = Session::get('theme_id');
+        $order->shipping_amt = is_null(Session::get('shippingAmount')) ? 0 : Session::get('shippingAmount');
 
-     $order->save();
-        Session::put("orderId",$order->id);
+        $order->save();
+        Session::put("orderId", $order->id);
         return $order;
 //        if (empty($tempName)) {
 //            $parts = explode("@", Session::get('logged_in_user'));
@@ -270,23 +257,81 @@ class PaymentController extends Controller {
 //            Mail::to($user->email)->send(new OrderSuccess($user, $order));
 //        } 
     }
-      public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info){
-       $order =New MerchantOrder();
-       $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
-        $order->merchant_id =Session::get('merchantid');
+
+    public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info) {
+        $order = New MerchantOrder();
+        $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
+        $order->merchant_id = Session::get('merchantid');
         $order->pay_amt = $payAmt;
         $order->order_amt = $payAmt;
         $order->payment_method = $paymentMethod;
-        $order->payment_status = $paymentStatus; 
+        $order->payment_status = $paymentStatus;
         $order->transaction_status = $transactionStatus;
         $order->transaction_info = @$transaction_info;
-        $order->first_name=$getMerchat->firstname;
-        $order->phone_no=$getMerchat->phone;
-        $order->email=$getMerchat->email;    
-        $order->category_id=$getMerchat->business_type;
-        $order->store_version=$getMerchat->store_version;
+        $order->first_name = $getMerchat->firstname;
+        $order->phone_no = $getMerchat->phone;
+        $order->email = $getMerchat->email;
+        $order->category_id = $getMerchat->business_type;
+        $order->store_version = $getMerchat->store_version;
         $order->save();
-         Session::put("orderId",$order->id);
-         return $order;
-      }
+        Session::put("orderId", $order->id);
+        return $order;
     }
+   public function getCityPayRenew() {
+        define('DS', DIRECTORY_SEPARATOR);
+        include(app_path() . DS . 'Library' . DS . 'Functions.php');
+      //  dd(Crypt::decrypt(Input::get('storeid')));
+       //dd(Input::all());
+        $payAmt = 1; //Helper::getAmt();
+        Session::put('storeId', Input::get("storeid"));
+        ?>
+
+        <form method="post" action="https://www.veestores.com/get-city-createOrder" name="cityPayForm">
+            <input type="hidden" size="25" name="Merchant" value="11122333" readonly/>
+            <input type="hidden" size="25" name="Amount" value="1"/>
+            <input type="hidden" size="25" name="Currency" value="050" readonly/>
+            <input type="hidden" size="25" name="Description" value="1520"/>       
+            <input type="hidden" size="50" name="ApproveURL" value="https://www.veestores.com/get-renew-city-approved" readonly/>
+            <input type="hidden" size="50" name="CancelURL" value="https://www.veestores.com/get-city-cancelled" readonly/>
+            <input type="hidden" size="50" name="DeclineURL" value="https://www.veestores.com/get-city-declined" readonly/>
+            <input type="submit" style="display:none;" value="Create Order"/>
+        </form>
+        <script type="text/javascript">
+            document.cityPayForm.submit();
+        </script>
+
+        <?php
+    }
+    public function getRenewCityApproved() {
+
+        //  dd($_REQUEST['xmlmsg']);
+        if (@$_REQUEST['xmlmsg'] != "") {
+
+            $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
+            $json = json_encode($xmlResponse);
+            $array = json_decode($json, TRUE);
+            if (empty(Session::get('orderId'))) {
+                Session::put('orderId', $array['OrderDescription']);
+            }
+
+            $paymentMethod = 9;
+            $paymentStatus = 4;
+            $payAmt = $array['PurchaseAmountScr'];
+            $trasactionId = $array['MerchantTranID'];
+            $transactionStatus = $array['OrderStatus'];
+            $transaction_info = json_encode($array);
+            $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info);
+           // $merchantStorePath= base_path() . "/merchants/" . $domainname . "/";
+            $data = [];
+//            $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
+//            $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
+//          
+//          
+//           
+//
+//            $data = ['cats' => $cats, 'allinput' => $allinput, 'themeIds' => $themeIds];
+//            $viewname = Config('constants.frontendView') . ".select-themes";
+//            return Helper::returnView($viewname, $data);
+        }
+    }
+}

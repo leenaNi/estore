@@ -16,39 +16,39 @@ class CourierController extends Controller {
 
     public function index() {
         $couriers = Courier::with("countryname")->orderBy('created_at', 'DESC')->paginate(Config('constants.paginateNo'));
-        $country = Country::where('status', '1')->pluck("name","id");
+        $country = Country::where('status', '1')->pluck("name", "id");
         // dd($couriers);
-        return Helper::returnView(Config('constants.AdminPagesCourier') . '.index', compact('couriers','country'));
+        return Helper::returnView(Config('constants.AdminPagesCourier') . '.index', compact('couriers', 'country'));
     }
 
     public function add() {
         $courier = new Courier;
         $action = route("admin.courier.save");
-       $country = Country::where('status', '1')->pluck("name","id");
-        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action','$ountry'));
+        $country = Country::where('status', '1')->pluck("name", "id");
+        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action', '$ountry'));
     }
 
     public function save() {
-         $courier = Courier::findOrNew(Input::get('id'));
-         $courier->charges = Input::get('charges');
-         $courier->country = Input::get('country');
-         $courier->save();
+        $courier = Courier::findOrNew(Input::get('id'));
+        $courier->charges = Input::get('charges');
+        $courier->country = Input::get('country');
+        $courier->save();
         Session::flash("msg", "Courier service added successfully.");
         return redirect()->route('admin.courier.view');
     }
 
     public function edit() {
         $courier = Courier::where("url_key", Input::get('url_key'))->first();
-       $country = Country::where('status', '1')->pluck("name","id");
+        $country = Country::where('status', '1')->pluck("name", "id");
         $action = route("admin.courier.update");
-        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action','country'));
+        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action', 'country'));
     }
 
     public function update() {
         $courier = Courier::find(Input::get('id'));
         $courier->update(Input::except(['details']));
-        $courier->charges =Input::get('charges');
-        $courier->country =Input::get('country');
+        $courier->charges = Input::get('charges');
+        $courier->country = Input::get('country');
         $courier->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
         $courier->update();
         Session::flash("msg", "Courier service updated successfully.");
@@ -61,6 +61,7 @@ class CourierController extends Controller {
         Session::flash("messege", "Courier service deleted successfully.");
         return redirect()->route('admin.courier.view');
     }
+
     public function changeStatus() {
         $courier = Courier::find(Input::get('id'));
         if ($courier->status == 1) {
@@ -77,6 +78,5 @@ class CourierController extends Controller {
             return redirect()->back()->with('msg', $msg);
         }
     }
-    
 
 }
