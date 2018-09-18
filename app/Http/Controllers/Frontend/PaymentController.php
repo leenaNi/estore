@@ -111,7 +111,7 @@ class PaymentController extends Controller {
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
-            dd($array);
+           
             $paymentMethod = 9;
             $paymentStatus = 1;
             $payAmt = $array['PurchaseAmountScr'];
