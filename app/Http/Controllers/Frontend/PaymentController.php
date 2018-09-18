@@ -177,6 +177,7 @@ class PaymentController extends Controller {
         $data.="<Amount>" . Input::get('Amount') * 100 . "</Amount>";
         $data.="<Currency>" . Input::get('Currency') . "</Currency>";
         $data.="<Description>" . Input::get('Description') . "</Description>";
+        $data.="<Merchnatid>" . Input::get('merchantid') . "</Merchnatid>";
         $data.="<ApproveURL>" . htmlentities(Input::get('ApproveURL')) . "</ApproveURL>";
         $data.="<CancelURL>" . htmlentities(Input::get('CancelURL')) . "</CancelURL>";
         $data.="<DeclineURL>" . htmlentities(Input::get('DeclineURL')) . "</DeclineURL>";
@@ -261,7 +262,7 @@ class PaymentController extends Controller {
 
     public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info) {
         $order = new MerchantOrder();
-       // dd(Session::get('merchantid'));
+        dd(Session::get('merchantid'));
         $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
         $order->merchant_id = Session::get('merchantid');
         $order->pay_amt = $payAmt;
@@ -299,7 +300,7 @@ class PaymentController extends Controller {
             <input type="hidden" size="25" name="Amount" value="1"/>
             <input type="hidden" size="25" name="Currency" value="050" readonly/>
             <input type="hidden" size="25" name="Description" value="1520"/>  
-            <input type="hidden" size="25" name="storeId" value="{{$storeid}}"/>
+            <input type="hidden" size="25" name="merchnatId" value="{{$merchant}}"/>
             <input type="hidden" size="50" name="ApproveURL" value="https://www.veestores.com/get-renew-city-approved" readonly/>
             <input type="hidden" size="50" name="CancelURL" value="https://www.veestores.com/get-city-cancelled" readonly/>
             <input type="hidden" size="50" name="DeclineURL" value="https://www.veestores.com/get-city-declined" readonly/>
