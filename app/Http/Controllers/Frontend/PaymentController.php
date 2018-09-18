@@ -184,7 +184,7 @@ class PaymentController extends Controller {
         $data.="</Order></Request></TKKPG>";
 
         $xml = PostQW($data);
-        //  dd($xml);
+          dd($xml);
         $OrderID = $xml->Response->Order->OrderID;
         $SessionID = $xml->Response->Order->SessionID;
         $URL = $xml->Response->Order->URL;
