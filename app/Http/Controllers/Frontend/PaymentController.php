@@ -238,6 +238,7 @@ class PaymentController extends Controller {
 
         $order->save();
         Session::put("orderId", $order->id);
+        
         return $order;
 //        if (empty($tempName)) {
 //            $parts = explode("@", Session::get('logged_in_user'));
@@ -275,6 +276,8 @@ class PaymentController extends Controller {
         $order->store_version = $getMerchat->store_version;
         $order->save();
         Session::put("orderId", $order->id);
+        Session::forget("merchantid");
+        Session::forget("storeId");
         return $order;
     }
    public function getCityPayRenew($storeid) {
@@ -283,8 +286,11 @@ class PaymentController extends Controller {
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
        // dd(Crypt::decrypt($storeid));
 //       dd(Input::all());
+        $mechant=Store::find($storeid)->getmerchant()->first()->id;
+       
         $payAmt = 1; //Helper::getAmt();
         Session::put('storeId', $storeid);
+        Session::put('merchantid', $mechant);
         ?>
 
         <form method="post" action="https://www.veestores.com/get-city-createOrder" name="cityPayForm">
@@ -292,7 +298,7 @@ class PaymentController extends Controller {
             <input type="hidden" size="25" name="Amount" value="1"/>
             <input type="hidden" size="25" name="Currency" value="050" readonly/>
             <input type="hidden" size="25" name="Description" value="1520"/>  
-              <input type="hidden" size="25" name="storeId" value="{{$storeid}}"/>
+            <input type="hidden" size="25" name="storeId" value="{{$storeid}}"/>
             <input type="hidden" size="50" name="ApproveURL" value="https://www.veestores.com/get-renew-city-approved" readonly/>
             <input type="hidden" size="50" name="CancelURL" value="https://www.veestores.com/get-city-cancelled" readonly/>
             <input type="hidden" size="50" name="DeclineURL" value="https://www.veestores.com/get-city-declined" readonly/>
