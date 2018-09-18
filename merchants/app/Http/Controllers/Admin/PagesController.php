@@ -14,6 +14,7 @@ use Route;
 class PagesController extends Controller {
 
     public function index() {
+       
         $current_week_start = Date('Y-m-d', strtotime('previous monday'));
         $current_week_end = Date('Y-m-d', strtotime('next sunday'));
         $current_month['start'] = Date('Y-m-01');
