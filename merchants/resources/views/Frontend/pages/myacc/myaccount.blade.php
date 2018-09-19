@@ -35,7 +35,7 @@
                             <div class="emailbox"><strong>Email:</strong> {{ @$user->email}}</div>
                             <div class="mobilebox"><strong>Mobile:</strong> {{ $user->telephone}}</div>
                           
-                            @if($feature['referral']==1)
+                            @if($feature['referral']==1 && ($user->referal_code!=''))
                             <div class="mobilebox"><strong>Referral Code:</strong> {{ $user->referal_code}}</div>
                          @endif
                              @if($feature['loyalty']==1)                     

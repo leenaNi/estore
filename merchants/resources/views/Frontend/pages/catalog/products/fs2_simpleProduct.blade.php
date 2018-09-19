@@ -90,7 +90,7 @@
                 <div class="line"></div>
                 <!-- Product Single - Short Description
 								============================================= -->
-                <p>{{$product->short_desc}}</p>
+                <p><?php echo html_entity_decode($product->short_desc) ?></p>
                
                 <!-- Product Single - Share
 								============================================= -->
