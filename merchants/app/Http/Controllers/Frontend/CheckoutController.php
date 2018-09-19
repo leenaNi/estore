@@ -1784,7 +1784,8 @@ class CheckoutController extends Controller {
         } else {
             $order->loyalty_cron_status = 0;
         }
-        $usercashback = $user->userCashback()->first();
+        $usercashback = $user->userCashback()->where('store_id', $jsonString['store_id'])->first();
+        dd($usercashback);
         $usercashback->cashback = $usercashback->cashback - (@Session::get('checkbackUsedAmt') / Session::get('currency_val'));
         $user->update();
         $usercashback->save();
