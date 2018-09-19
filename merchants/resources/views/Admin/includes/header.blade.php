@@ -67,22 +67,26 @@
                 <div class="pull-right storeBtn">
                     <a href="{{ route('home') }}" target="_balak" class="btn btn-block btn-sm view-storeBtn"> View Store </a>
                 </div>
-                @if($dayused < 30)
+<!--                @if($dayused < 30)
                 <div class="pull-right storeBtn">
                     <p class="btn btn-block btn-sm view-storeBtn"> Your free trial version of store will be expire after {{30 - $dayused}} days.</p>
                 </div>
-                @endif
-                @if($expirydate < 30)
+                @endif-->
+                @if($expirydate)
+                       <div class="pull-right storeBtn">
+                     <a href="#" class="btn btn-block renewStore"  style="cursor:pointor;"> Renew Now </a>
+                </div>
                 <div class="pull-right storeBtn">
                     <p class="btn btn-block btn-sm view-storeBtn"> Your  store will be expire after {{$expirydate}} days.If you want to continue please renew it.
                   <!--  <form method="post" action="#"  target="_parent" onsubmit="window.open('https://veestores.com/get-city-pay', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
                             return true;"> -->
-                    <a href="#" class="btn btn-block renewStore"  style="cursor:pointor;"> Renew Now </a>
+                   
 <!--                        <input type="hidden" name="store_id" value="{{Session::get('store_id')}}" >
                         <input type="button" id="renewStore" value="submit" class="btn btn-primary renewStore">-->
                     <!--</form>-->
                     </p>
                 </div>
+               
                 @endif
             </nav>
             </header>

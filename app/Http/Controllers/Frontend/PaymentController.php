@@ -282,7 +282,7 @@ class PaymentController extends Controller {
         Session::forget("storeId");
         return $order;
     }
-   public function getCityPayRenew($storeid) {
+   public function getCityPayRenew($storeid,$type) {
      //  print_r($storeid);
         define('DS', DIRECTORY_SEPARATOR);
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
