@@ -14,6 +14,7 @@ use App\Models\Coupon;
 use App\Models\User;
 use App\Models\HasProducts;
 use App\Models\Order;
+use App\Models\HasCashbackLoyalty;
 use App\Library\Helper;
 use App\Models\EmailTemplate;
 use App\Models\AttributeValue;
@@ -1784,7 +1785,7 @@ class CheckoutController extends Controller {
         } else {
             $order->loyalty_cron_status = 0;
         }
-        $usercashback = $user->userCashback()->where('store_id', $jsonString['store_id'])->first();
+        $usercashback = HasCashbackLoyalty::where('user_id', $user->id)->where('store_id', $jsonString['store_id'])->first();
         dd($usercashback);
         $usercashback->cashback = $usercashback->cashback - (@Session::get('checkbackUsedAmt') / Session::get('currency_val'));
         $user->update();
