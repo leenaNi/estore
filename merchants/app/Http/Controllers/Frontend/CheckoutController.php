@@ -1784,13 +1784,14 @@ class CheckoutController extends Controller {
         } else {
             $order->loyalty_cron_status = 0;
         }
+//        $cashback = $user->userCashback()->first();
         $user->userCashback->cashback = $user->userCashback->cashback - (@Session::get('checkbackUsedAmt') / Session::get('currency_val'));
         $user->update();
         $user->userCashback->save();
         $tempName = Session::get('login_user_first_name');
         if (empty($tempName)) {
             $parts = explode("@", Session::get('logged_in_user'));
-            $fname = $parts[0];
+            $fname = (!empty($parts))? $parts[0]: '';
         } else {
             $fname = $tempName;
         }
