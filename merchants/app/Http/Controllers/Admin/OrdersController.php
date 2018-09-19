@@ -1084,7 +1084,7 @@ class OrdersController extends Controller {
     function order_return() {
         $return = ReturnOrder::with('reason', 'opened', 'product_id', 'order_id', 'return_status_id')->with(['order_id' => function($q) {
                         $q->with('user');
-                    }])->orderBy('id', 'desc')->get()->toArray();
+                    }])->where("store_id",$this->jsonString['store_id'])->orderBy('id', 'desc')->get()->toArray();
         return view(Config('constants.adminOrderView') . '.returnOrders', compact('return'));
     }
 
@@ -1185,9 +1185,19 @@ class OrdersController extends Controller {
     }
 
     public function updateUserCashback($uid, $ammount, $quantity) {
-        $user = User::find($uid);
-        $user->cashback = $user->cashback + ($ammount * $quantity);
-        $user->save();
+          $usercashback = HasCashbackLoyalty::where("user_id", $uid)->where("store_id", $this->jsonString['store_id'])->first();
+            if (count($usercashback) > 0) {
+                $usercashback->cashback = $usercashback->cashback + ($ammount * $quantity);
+                
+                $usercashback->save();
+            } else {
+                $usercashback = new HasCashbackLoyalty;
+                $usercashback->user_id = $data->uid;
+                $usercashback->store_id = $this->jsonString['store_id'];
+                $usercashback->cashback = round(($ammount * $quantity),2);             
+                $usercashback->save();
+            }
+
     }
 
     public function export() {

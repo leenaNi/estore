@@ -207,6 +207,12 @@ class CheckoutController extends Controller {
             $newAdd->update();
         } else {
             $newAdd = new Address();
+            $user=User::find(Session::get('loggedin_user_id'));
+            if(empty($user->firstname)){
+              $user->firstname=Input::get('firstname');
+              $user->lastname=Input::get('lastname');
+              $user->save();
+            }
             $newAdd->user_id = Session::get('loggedin_user_id');
             $newAdd->firstname = Input::get('firstname');
             $newAdd->lastname = Input::get('lastname');

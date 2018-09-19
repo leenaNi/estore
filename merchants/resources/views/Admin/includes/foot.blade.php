@@ -59,43 +59,43 @@
 </script>-->
 
 <script type="text/javascript">
-    var currentCurrency = parseFloat(<?= Session::get('currency_val'); ?>);
-            var map = {63: false, 98: false, 121: false, 101: false, 97: false, 112: false, 99: false, 116: false, 117: false, 103: false, 104: false, 111: false, 115: false};
-    $(document).keypress(function (e) {
-        if ($(e.target).prop("tagName") == 'BODY') {
-            //console.log(e.currentTarget.activeElement);
-            if (e.keyCode in map) {
-                map[e.keyCode] = true;
-                // open popup model
-                if (e.keyCode == 63) {
-                    $('#shortcut-popup').modal('show');
-                }
-                if (map[98] && map[121] && e.keyCode == 101) {
-                    window.location.href = "<?php echo route('adminLogout'); ?>";
-                }
+var currentCurrency = parseFloat(<?= Session::get('currency_val'); ?>);
+var map = {63: false, 98: false, 121: false, 101: false, 97: false, 112: false, 99: false, 116: false, 117: false, 103: false, 104: false, 111: false, 115: false};
+$(document).keypress(function (e) {
+    if ($(e.target).prop("tagName") == 'BODY') {
+        //console.log(e.currentTarget.activeElement);
+        if (e.keyCode in map) {
+            map[e.keyCode] = true;
+            // open popup model
+            if (e.keyCode == 63) {
+                $('#shortcut-popup').modal('show');
+            }
+            if (map[98] && map[121] && e.keyCode == 101) {
+                window.location.href = "<?php echo route('adminLogout'); ?>";
+            }
 
-                // Adding items to your store
-                if (map[97] && e.keyCode == 112) {
-                    window.location.href = "<?php echo route('admin.products.add'); ?>";
-                } else if (map[97] && e.keyCode == 99) {
-                    window.location.href = "<?php echo route('admin.category.add'); ?>";
-                } else if (map[97] && e.keyCode == 116) {
-                    window.location.href = "<?php echo route('admin.tax.add'); ?>";
-                } else if (map[97] && e.keyCode == 117) {
-                    window.location.href = "<?php echo route('admin.customers.add'); ?>";
-                }
+            // Adding items to your store
+            if (map[97] && e.keyCode == 112) {
+                window.location.href = "<?php echo route('admin.products.add'); ?>";
+            } else if (map[97] && e.keyCode == 99) {
+                window.location.href = "<?php echo route('admin.category.add'); ?>";
+            } else if (map[97] && e.keyCode == 116) {
+                window.location.href = "<?php echo route('admin.tax.add'); ?>";
+            } else if (map[97] && e.keyCode == 117) {
+                window.location.href = "<?php echo route('admin.customers.add'); ?>";
+            }
 
-                //Navigating your admin panel
-                if (map[103] && e.keyCode == 111) {
-                    window.location.href = "<?php echo route('admin.orders.view'); ?>";
-                } else if (map[103] && e.keyCode == 104) {
-                    window.location.href = "<?php echo route('admin.home.view'); ?>";
-                } else if (map[103] && e.keyCode == 112) {
-                    window.location.href = "<?php echo route('admin.products.view'); ?>";
-                }
+            //Navigating your admin panel
+            if (map[103] && e.keyCode == 111) {
+                window.location.href = "<?php echo route('admin.orders.view'); ?>";
+            } else if (map[103] && e.keyCode == 104) {
+                window.location.href = "<?php echo route('admin.home.view'); ?>";
+            } else if (map[103] && e.keyCode == 112) {
+                window.location.href = "<?php echo route('admin.products.view'); ?>";
             }
         }
-    });</script>
+    }
+});</script>
 
 <script>
     $(function () {
@@ -168,7 +168,7 @@
 
 <script  type="text/javascript">
     $(document).ready(function () {
-//        $(".fa-rupee").toggleClass("fa-rupee fa-<?php //echo Session::get("currency_code")  ?>")
+//        $(".fa-rupee").toggleClass("fa-rupee fa-<?php //echo Session::get("currency_code")      ?>")
     })
 
 //    var currentCurrency = parseFloat("<?= Session::get("currency_val") ?>");
@@ -216,120 +216,141 @@
             cropper = '';
 // on change show image with crop options
     upload.addEventListener('change', function (e) {
-    if (e.target.files.length) {
-    // start file reader
-    var reader = new FileReader();
-    reader.onload = function (e) {
-    if (e.target.result) {
-    // create new image
-    var img = document.createElement('img');
-    img.id = 'image';
-    img.src = e.target.result;
-    // clean result before
-    result.innerHTML = '';
-    result.appendChild(img);
-    // init cropper
-    save.classList.remove('hide');
-    options.classList.remove('hide');
-    
-    cropper = new Cropper(img, {
-    aspectRatio: 1.70,
-            dragMode: 'move',
-            cropBoxMovable: true,
-            cropBoxResizable: true,
-            zoom : - 0.1,
-            built: function () {
-            $toCrop.cropper("setCropBoxData", { width: "170", height: "100" });
-            }
-    });
-    }
-    };
-    reader.readAsDataURL(e.target.files[0]);
-    }
+        if (e.target.files.length) {
+            // start file reader
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                if (e.target.result) {
+                    // create new image
+                    var img = document.createElement('img');
+                    img.id = 'image';
+                    img.src = e.target.result;
+                    // clean result before
+                    result.innerHTML = '';
+                    result.appendChild(img);
+                    // init cropper
+                    save.classList.remove('hide');
+                    options.classList.remove('hide');
+
+                    cropper = new Cropper(img, {
+                        aspectRatio: 1.70,
+                        dragMode: 'move',
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                        zoom: -0.1,
+                        built: function () {
+                            $toCrop.cropper("setCropBoxData", {width: "170", height: "100"});
+                        }
+                    });
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
     });
 // save on click
     save.addEventListener('click', function (e) {
-    e.preventDefault();
-    // get result to data uri 
+        e.preventDefault();
+        // get result to data uri 
 
 
 
-    if ($("#logoF").val() == "")
-    {
-    $("#error-logo").html("Please select Logo.");
-    return false;
-    }
-    else
-    {
-    var fileUpload = $("#logoF")[0];
-    //Check whether the file is valid Image.
-    var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
-    if (regex.test(fileUpload.value.toLowerCase())) {
-    //Check whether HTML5 is supported.
-    if (typeof (fileUpload.files) != "undefined") {
-    var form = $('#store_save');
-    var formdata = false;
-    if (window.FormData){
-    formdata = new FormData(form[0]);
-    }
-    var ImageURL = cropper.getCroppedCanvas({
-    width: 170 // input value
-    }).toDataURL();
-    formdata.append("logo_img_url", ImageURL);
-    $.ajax({
-    url: "{{route('updateHomeSettings')}}",
-            type: 'post',
-            data: formdata,
-            processData: false,
-            contentType: false,
-            //   dataType: 'json',
-            beforeSend: function () {
-            // $("#barerr" + id).text('Please wait');
-            },
-            success: function (res) {
-            window.location.href = "";
+        if ($("#logoF").val() == "")
+        {
+            $("#error-logo").html("Please select Logo.");
+            return false;
+        }
+        else
+        {
+            var fileUpload = $("#logoF")[0];
+            //Check whether the file is valid Image.
+            var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+            if (regex.test(fileUpload.value.toLowerCase())) {
+                //Check whether HTML5 is supported.
+                if (typeof (fileUpload.files) != "undefined") {
+                    var form = $('#store_save');
+                    var formdata = false;
+                    if (window.FormData) {
+                        formdata = new FormData(form[0]);
+                    }
+                    var ImageURL = cropper.getCroppedCanvas({
+                        width: 170 // input value
+                    }).toDataURL();
+                    formdata.append("logo_img_url", ImageURL);
+                    $.ajax({
+                        url: "{{route('updateHomeSettings')}}",
+                        type: 'post',
+                        data: formdata,
+                        processData: false,
+                        contentType: false,
+                        //   dataType: 'json',
+                        beforeSend: function () {
+                            // $("#barerr" + id).text('Please wait');
+                        },
+                        success: function (res) {
+                            window.location.href = "";
+                        }
+                    });
+                }
+                else
+                {
+                    $("#error-logo").html("This browser does not support HTML5.");
+                    return false;
+                }
             }
-    });
-    }
-    else
-    {
-    $("#error-logo").html("This browser does not support HTML5.");
-    return false;
-    }
-    }
-    else
-    {
-    $("#error-logo").html("Please select a valid Image file.");
-    return false;
-    }
-    }
+            else
+            {
+                $("#error-logo").html("Please select a valid Image file.");
+                return false;
+            }
+        }
 
 
 
     });
 
-    
-  // declare variable
-  var scrollTop = $("#go-to-top");
 
-  $(window).scroll(function() {
     // declare variable
-    var topPos = $(this).scrollTop();
+    var scrollTop = $("#go-to-top");
 
-    // if user scrolls down - show scroll to top button
-    if (topPos > 100) {
-      $(scrollTop).css("opacity", "1");
+    $(window).scroll(function () {
+        // declare variable
+        var topPos = $(this).scrollTop();
 
-    } else {
-      $(scrollTop).css("opacity", "0");
-    }
+        // if user scrolls down - show scroll to top button
+        if (topPos > 100) {
+            $(scrollTop).css("opacity", "1");
 
-  }); 
+        } else {
+            $(scrollTop).css("opacity", "0");
+        }
 
-    $('#go-to-top').click(function() {
-    $(window.opera ? 'html' : 'html, body').animate({
-        scrollTop: 0
-    }, 'slow');
-});
+    });
+
+    $('#go-to-top').click(function () {
+        $(window.opera ? 'html' : 'html, body').animate({
+            scrollTop: 0
+        }, 'slow');
+    });
 </script>
 
+<script>
+    $(document).ready(function () {
+        $('div.storeBtn').on('click', 'input#renewStore', function () {
+//            alert();
+           // window.open('http://192.168.2.47:8025/get-city-pay-renew/{{Crypt::encrypt(Session::get("store_id"))}}', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
+           window.open('https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
+                    //            alert("adsd");
+
+//            var form = document.createElement("form");
+//            var element1 = document.createElement("input");
+//            form.method = "POST";
+//            form.action = "#";
+//            element1.value = "{{Session::get('store_id')}}";
+//            element1.name = "store_id";
+//            form.appendChild(element1);
+//            alert(form);
+//            document.body.appendChild(form);
+//                        form.submit();
+        });
+    });
+</script>

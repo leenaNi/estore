@@ -106,21 +106,21 @@ CREATE TABLE IF NOT EXISTS `tblprfx_attribute_types` (
 INSERT INTO `tblprfx_attribute_types` (`id`, `attr_type`) VALUES
 (1, 'Dropdown'),
 (2, 'Multiselect Dropdown'),
-(3, 'Textbox'),
+-- (3, 'Textbox'),
 (4, 'Radio Button'),
-(5, 'Checkbox'),
-(6, 'Date'),
-(7, 'Time'),
-(8, 'Date Time'),
-(9, 'Date Range'),
-(10, 'File'),
-(11, 'Image'),
-(12, 'WYSIWYG'),
-(13, 'Textarea'),
-(14, 'Number'),
-(15, 'Yes/No'),
-(16, 'File Multiple'),
-(17, 'Image Multiple');
+(5, 'Checkbox');
+-- (6, 'Date'),
+-- (7, 'Time'),
+-- (8, 'Date Time'),
+-- (9, 'Date Range'),
+-- (10, 'File'),
+-- (11, 'Image'),
+-- (12, 'WYSIWYG'),
+-- (13, 'Textarea'),
+-- (14, 'Number'),
+-- (15, 'Yes/No'),
+-- (16, 'File Multiple'),
+-- (17, 'Image Multiple');
 
 -- --------------------------------------------------------
 

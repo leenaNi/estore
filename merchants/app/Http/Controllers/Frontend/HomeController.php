@@ -50,6 +50,7 @@ class HomeController extends Controller {
     }
 
     public function index() {
+     
 //$chkEmail = DB::select(DB::raw("select * from users"));
 //      
 //          $chkEmail = User::get();
@@ -333,9 +334,9 @@ class HomeController extends Controller {
         $data['name'] = $contactform_fname;
         $data['phone'] = $contactform_phone;
         $data['textmessage'] = $contactform_message;
-        $contact = Contact::where('status', '1')->first();
+        $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
         if (!empty($contact))
-            $email_list = $contact->email;
+            $email_list = json_decode($contact)->email;
         else
             $email_list = "leena@infiniteit.biz";
         //dd($data);
