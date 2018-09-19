@@ -60,7 +60,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
 
     Route::any('/get-city-pay', array('as' => 'getCityPay', 'uses' => 'PaymentController@getCityPay'));
      Route::any('/get-city-approved', array('as' => 'getCityApproved', 'uses' => 'PaymentController@getCityApproved'));
-    Route::any('/get-city-pay-renew/{storeid}', array('as' => 'getCityPayRenew', 'uses' => 'PaymentController@getCityPayRenew')); 
+    Route::any('/get-city-pay-renew/{storeid}/{version}', array('as' => 'getCityPayRenew', 'uses' => 'PaymentController@getCityPayRenew')); 
     Route::any('/get-renew-city-approved', array('as' => 'getRenewCityApproved', 'uses' => 'PaymentController@getRenewCityApproved'));
     Route::any('/get-city-declined', array('as' => 'getCityDeclined', 'uses' => 'PaymentController@getCityDeclined'));
     Route::any('/get-city-cancelled', array('as' => 'getCityCancelled', 'uses' => 'PaymentController@getCityCancelled'));
