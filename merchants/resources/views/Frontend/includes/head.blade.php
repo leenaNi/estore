@@ -101,7 +101,6 @@ foreach ($menu as $ca) {
 </div>
 <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -123,26 +122,17 @@ foreach ($menu as $ca) {
                         <table class="table  table-hover general-table tableVaglignMiddle hide">
                             <thead>
                                 <tr>
-
                                     <th>Tracking Status</th>
                                     <th>Date</th>
-
-
                                 </tr>
                             </thead>
                             <tbody>
-
-
                                 <tr id="trackingDetails">
-
-
                                 </tr>
-
                             </tbody>
                         </table>    
                     </div>
                 </div>
-
             </form>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -2112,6 +2112,9 @@ class CheckoutController extends Controller {
         if (empty($chkEmail)) {
             $user = new User();
             $user->email = Input::get('guestemail');
+            $jsonString = Helper::getSettings();
+            $user->prefix = $jsonString['prefix'];
+             $user->store_id = $jsonString['store_id'];
             $user->save();
             Helper::newUserInfo($user->id);
 

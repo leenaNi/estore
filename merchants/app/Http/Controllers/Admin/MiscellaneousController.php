@@ -16,6 +16,7 @@ use App\Models\Language;
 use App\Models\Zone;
 use App\Models\Country;
 use App\Models\HasCourier;
+use App\Models\StoreCharge;
 use App\Library\Helper;
 use Mail;
 use DB;
@@ -518,6 +519,35 @@ class MiscellaneousController extends Controller {
             $has_courire->status = 1;
             $has_courire->timestamps = false;
             $has_courire->save();
+        }
+    }
+    
+    public function storeVersion(){
+        $version=Input::get("version");
+        $type=Input::get("pagetype");
+       
+        
+        if($type==1){
+         $storeVersion = Helper::getSettings()['store_version'];
+         $charge=StoreCharge::where('store_type',$storeVersion)->first()->charge;
+         if($storeVersion ==1){
+            
+             $data=['status'=>1,"storeVersion"=>$storeVersion,"charge"=>$charge];
+         }else if($storeVersion ==2){
+             
+             $data=['status'=>2,"storeVersion"=>$storeVersion,"charge"=>$charge];
+         }
+         return $data;
+        }else{
+              $charge=StoreCharge::where('store_type',$version)->first()->charge;
+//           if($version ==1){
+//             $charge=360;
+//             
+//         }else if($version ==2){
+//              $charge=720;
+//             
+//         }  
+         return $charge;
         }
     }
 }
