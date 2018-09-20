@@ -33,7 +33,7 @@ class LoyaltyController extends Controller {
                 $orderId = Order::find($ordVal['id']);
                 $orderId->loyalty_cron_status = 1;
                 $orderId->update();
-                $overall_pay_amt = DB::table('orders')
+                $overall_pay_amt = DB::connection('mysql2')->table('orders')
                                 ->select('id', 'cashback_earned', 'currency_value', 'pay_amt')
                                 ->where('user_id', $ordVal['user_id'])
                                 ->where('loyalty_cron_status', 1)->where("store_id", $this->jsonString['store_id'])->get();
@@ -102,15 +102,14 @@ class LoyaltyController extends Controller {
                 if ($detRk == "discount_on_order")
                     $discountOnOrder = $detRv;
             }
-            $users = User::with("userCashback")->where("user_type", 2)->where("status", 1)->get();
-           
+            $users = User::with("userCashback")->whereIn("user_type", [2, 1])->where("status", 1)->get();
+           print_r($users);
             foreach ($users as $user) {
                 if (!empty($user->referal_code)) {
                     $refUsedOrders = Order::where('referal_code_used', "=", $user->referal_code)
                                     ->where('created_at', '<=', date('Y-m-d', strtotime("now -$activate_duration days")))
                                     ->whereIn('order_status', [2, 3])
                                     ->where('ref_flag', '=', 0)->where("store_id", $this->jsonString['store_id'])->get();
-
                     $refToAdd = 0;
                    
                     if (count($refUsedOrders) > 0) {

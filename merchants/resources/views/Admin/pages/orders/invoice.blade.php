@@ -345,11 +345,17 @@ $address = $order->users->addresses->first();
             <div class="compaddress">224,  Mumbai- 400011</div>
             <div class="compaddress">Telephone: 12345678</div>
         </div> -->
-        <div class="txtr w50">  <div class="compname"> 224,  Mumbai- 400011
-            </div>
-
-            <div class="compaddress">Mobile: 12345678</div>
-            <div class="compaddress">connect@inficart.com</div><!-- connect@inficart.com <br/> http://infistore.com --></div>
+        <div class="txtr w50">  
+            <?php
+            $contact = App\Models\StaticPage::where('url_key', 'contact-us')->first()->contact_details;
+            $contact = json_decode($contact);
+            ?>
+            <div class="compname"> {{$contact->address_line1}} </div>
+            @if($contact->address_line2!='')<div class="compname"> {{$contact->address_line2}} </div>@endif
+            <div class="compaddress">{{$contact->city}}-{{$contact->pincode}}</div>
+            <div class="compaddress">Mobile: {{$contact->mobile}}</div>
+            <div class="compaddress">{{$contact->email}}</div>
+            <!-- connect@inficart.com <br/> http://infistore.com --></div>
     </div> 
 </div>
 @endforeach
