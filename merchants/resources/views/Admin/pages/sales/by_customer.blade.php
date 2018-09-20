@@ -70,8 +70,8 @@
                                 <td>{{ $user->firstname }} {{ $user->lastname }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->telephone }}</td>
-                                <td><?php echo  !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">{{ number_format($user->total_purchase_till_now,2) }}</span></td>
-                                <td><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">{{ number_format($user->cashback,2)}}</span></td>
+                                <td><?php echo  !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">{{ number_format($user->userCashback->total_purchase_till_now,2) }}</span></td>
+                                <td><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">{{ number_format($user->userCashback->cashback,2)}}</span></td>
                                 <td><a href="{{ URL::route('admin.sales.orderByCustomer',['id' => $user->id]) }}"  data-toggle="tooltip" title="View"><i class="fa fa-eye btn btn-penel btnNo-margn-padd"></i></a></td>
                             </tr>
                             <?php //$i++ ?>

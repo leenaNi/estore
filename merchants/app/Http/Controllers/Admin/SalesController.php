@@ -394,7 +394,7 @@ class SalesController extends Controller {
 //        if (!empty(Input::get('search_number'))) {
 //            $where['users.telephone'] = Input::get('search_number');
 //        }
-        $users=User::where('user_type',2);
+        $users=User::with("userCashback")->where('user_type',2);
          if (!empty(Input::get('search_name'))) {
              $uname=Input::get('search_name');
              $users=$users->where('firstname',"like","$uname%");

@@ -113,7 +113,7 @@ select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transfo
                 <td>{{ date("d-M-Y",strtotime($customer->created_at)) }}</td>
                 @if($setting->status ==1)
                 <td>{{ isset($customer->loyalty)?ucfirst(strtolower($customer->loyalty->group)):'' }}</td>
-                <td>{{ number_format(($customer->cashback * Session::get('currency_val')), 2) }}</td>
+                <td><span class="currency-sym"> </span> {{ number_format(($customer->userCashback->cashback * Session::get('currency_val')), 2) }}</td>
                 @endif
                 <td>@if($customer->status==1)
                     <a href="{!! route('admin.customers.changeStatus',['id'=>$customer->id]) !!}"  onclick="return confirm('Are you sure you want to disable this customer?')" data-toggle='tooltip' title='Enabled' ><i class="fa fa-check btn-plen btn btnNo-margn-padd"></i></a>

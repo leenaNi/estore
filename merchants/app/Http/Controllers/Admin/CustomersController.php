@@ -22,7 +22,7 @@ class CustomersController extends Controller {
 
     public function index() {
         $search = !empty(Input::get("custSearch")) ? Input::get("custSearch") : '';
-        $customers = User::where('user_type', 2);
+        $customers = User::with("userCashback")->where('user_type', 2);
         $search_fields = ['firstname', 'lastname', 'email', 'telephone'];
         if (!empty(Input::get('custSearch'))) {
             $customers = $customers->where(function($query) use($search_fields, $search) {
@@ -61,7 +61,7 @@ class CustomersController extends Controller {
             $customers->appends($_GET);
             $customerCount=$customers->total();
         }
-        
+       
         $loyalty = [''=>'Select Loyalty Group'] + Loyalty::orderBy('group')->pluck('group', 'id')->toArray();
         $loyalty = array_map('strtolower', $loyalty);
         $setting = GeneralSetting::where('url_key','=','loyalty')->first();
