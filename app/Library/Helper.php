@@ -499,7 +499,16 @@ class Helper {
 
         return $settings;
     }
- 
+    public static function saveMerchantStoreSettings($storePath,$productconfig) {
+         //  echo Config("constants.adminStorePath");
+         //  dd($productconfig);
+        $path =$storePath. "/storeSetting.json";
+        $jsonfile = fopen($path, "w");
+
+        fwrite($jsonfile, $productconfig);
+        fclose($jsonfile);
+      return 1;
+    }
 }
 
 ?>
