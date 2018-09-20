@@ -35,7 +35,7 @@
                                     $dayremain = 30 - $dayused;
                                 }
                                 ?>
-                                <img src="{{ Config('constants.adminImgPath') }}/{{($profileimg)?$profileimg:'default-profile-picture.png'}}" class="user-image" alt="User">
+                                <img src="{{ Config('constants.adminImgangePath') }}/{{($profileimg)?$profileimg:'default-profile-picture.png'}}" class="user-image" alt="User">
                                 <span class="hidden-xs">{{ @App\Models\User::find(Session::get('loggedinAdminId'))->first_name }}</span>
                             </a>
                             <ul class="dropdown-menu">

@@ -2581,7 +2581,7 @@ class OrdersController extends Controller {
                         }))
                     ;
             } else {
-                echo $data->errors;
+                print_r($data->errors);
                 die;
             }
         }
