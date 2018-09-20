@@ -333,7 +333,7 @@ class PaymentController extends Controller {
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
             $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info);
-            $store=Store::find(Session::get("store_id"))->url_key;
+            $store=Store::find(29)->url_key;
             $merchantStorePath= base_path() . "/merchants/" . $store . "/";         
             $settings = Helper::getMerchantStoreSettings($merchantStorePath);
             $settings['expiry_date']= date('Y-m-d', strtotime($settings['expiry_date'] . " + 365 day"));
