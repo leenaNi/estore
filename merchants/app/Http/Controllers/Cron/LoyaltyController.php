@@ -106,7 +106,7 @@ class LoyaltyController extends Controller {
            
             foreach ($users as $user) {
                 if (!empty($user->referal_code)) {
-                    $refUsedOrders = Order::connection('mysql2')->where('referal_code_used', "=", $user->referal_code)
+                    $refUsedOrders = Order::where('referal_code_used', "=", $user->referal_code)
                                     ->where('created_at', '<=', date('Y-m-d', strtotime("now -$activate_duration days")))
                                     ->whereIn('order_status', [2, 3])
                                     ->where('ref_flag', '=', 0)->where("store_id", $this->jsonString['store_id'])->get();
