@@ -66,8 +66,8 @@
                             $totSales = 0;
 
                             foreach ($cat->products as $prd) {
-                                $sales = $prd->sales();
-
+                                $sales = $prd->sales($storeId);
+                             // dd($sales->get());
                                 if (!empty(Input::get('from_date')) && !empty(Input::get('to_date'))) {
                                     $sales = $sales->whereBetween('has_products.created_at', [ Input::get('from_date'), Input::get('to_date') . " 23:59:59"]);
                                 } else {

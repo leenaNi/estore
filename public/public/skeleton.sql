@@ -52,9 +52,6 @@ INSERT INTO `tblprfx_additional_charges` (`id`, `name`, `label`, `type`, `rate`,
 --
 
 
-
-
-
 CREATE TABLE IF NOT EXISTS `tblprfx_attributes` (
   `id` bigint(20) unsigned NOT NULL,
   `attr` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -109,21 +106,21 @@ CREATE TABLE IF NOT EXISTS `tblprfx_attribute_types` (
 INSERT INTO `tblprfx_attribute_types` (`id`, `attr_type`) VALUES
 (1, 'Dropdown'),
 (2, 'Multiselect Dropdown'),
-(3, 'Textbox'),
+-- (3, 'Textbox'),
 (4, 'Radio Button'),
-(5, 'Checkbox'),
-(6, 'Date'),
-(7, 'Time'),
-(8, 'Date Time'),
-(9, 'Date Range'),
-(10, 'File'),
-(11, 'Image'),
-(12, 'WYSIWYG'),
-(13, 'Textarea'),
-(14, 'Number'),
-(15, 'Yes/No'),
-(16, 'File Multiple'),
-(17, 'Image Multiple');
+(5, 'Checkbox');
+-- (6, 'Date'),
+-- (7, 'Time'),
+-- (8, 'Date Time'),
+-- (9, 'Date Range'),
+-- (10, 'File'),
+-- (11, 'Image'),
+-- (12, 'WYSIWYG'),
+-- (13, 'Textarea'),
+-- (14, 'Number'),
+-- (15, 'Yes/No'),
+-- (16, 'File Multiple'),
+-- (17, 'Image Multiple');
 
 -- --------------------------------------------------------
 
@@ -156,17 +153,18 @@ CREATE TABLE IF NOT EXISTS `tblprfx_catalog_images` (
   `image_mode` int(50) NOT NULL,
   `catalog_id` bigint(20) NOT NULL,
   `sort_order` int(11) NOT NULL,
+  `image_path` varchar(180) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
    `updated_at` timestamp  DEFAULT  NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-INSERT INTO `tblprfx_catalog_images` (`id`, `filename`, `alt_text`, `image_type`, `image_mode`, `catalog_id`, `sort_order`) VALUES
-(1, 'prod-20180623103707.jpg', 'Product Image', 1, 1, 1, 1),
-(2, 'prod-120180623103750.jpg', 'Product Image', 1, 1, 1, 2),
-(3, 'prod-420180623103751.jpg', 'Product Image', 1, 1, 1, 3),
-(4, 'prod-320180623103752.jpg', 'Product Image', 1, 1, 1, 4),
-(5, 'prod-220180623103753.jpg', 'Product Image', 1, 1, 1, 5);
+INSERT INTO `tblprfx_catalog_images` (`id`, `filename`, `alt_text`, `image_type`, `image_mode`, `catalog_id`, `sort_order`,image_path) VALUES
+(1, 'prod-20180623103707.jpg', 'Product Image', 1, 1, 1, 1,null),
+(2, 'prod-120180623103750.jpg', 'Product Image', 1, 1, 1, 2,null),
+(3, 'prod-420180623103751.jpg', 'Product Image', 1, 1, 1, 3,null),
+(4, 'prod-320180623103752.jpg', 'Product Image', 1, 1, 1, 4,null),
+(5, 'prod-220180623103753.jpg', 'Product Image', 1, 1, 1, 5,null);
 -- --------------------------------------------------------
 
 --
@@ -869,28 +867,6 @@ CREATE TABLE IF NOT EXISTS `tblprfx_gifts` (
    `updated_at` timestamp  DEFAULT  NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `tblprfx_has_addresses`
---
-
-CREATE TABLE IF NOT EXISTS `tblprfx_has_addresses` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `firstname` varchar(32) NOT NULL,
-  `lastname` varchar(32) NOT NULL,
-  `address3` text NOT NULL,
-  `address1` text NOT NULL,
-  `address2` text NOT NULL,
-  `phone_no` varchar(255) NOT NULL,
-  `city` varchar(128) NOT NULL,
-  `postcode` varchar(10) NOT NULL,
-  `country_id` int(11) NOT NULL DEFAULT '0',
-  `zone_id` int(11) NOT NULL DEFAULT '0',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1006,9 +982,9 @@ INSERT INTO `tblprfx_has_currency` (`id`, `iso_code`, `currency_code`, `currency
 (30, '', 'ZAR', '', '', '0.2288300000', '', 0),
 (31, 'BEL', 'EUR', 'Euro', 'euro', '0.0136910000', '€ ', 1),
 (32, 'IND', 'INR', 'Indian Rupee', 'inr', '1.0000000000', '₹', 1),
-(33, 'BGD', 'BDT', 'Bangladeshi taka', 'bdt', '1.2900000000', '৳', 1),
+(33, 'BGD', 'BDT', 'Bangladeshi taka', 'bdt', '1.1700000000', '৳', 1),
 (34, 'VNM', 'VND', 'vietnamese dong', 'bdt', '9.9999999999', '₫', 1),
-(35, 'LKA', 'LKR', 'Sri Lankan Rupaya', 'lkr', '2.4100000000', '₨', 1);
+(35, 'LKA', 'LKR', 'Sri Lankan Rupaya', 'lkr', '2.2500000000', '₨', 1);
 
 -- --------------------------------------------------------
 
@@ -1182,34 +1158,35 @@ INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`)
 -- Table structure for table `tblprfx_has_products`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_has_products` (
-  `id` bigint(20) NOT NULL,
-  `order_id` bigint(20) NOT NULL,
-  `kot` bigint(20) NOT NULL,
-  `prod_id` bigint(20) NOT NULL,
-  `sub_prod_id` text NOT NULL,
-  `qty` bigint(20) NOT NULL,
-  `price` double NOT NULL,
-  `amt_after_discount` float(10,2) NOT NULL,
-  `disc` double NOT NULL,
-  `wallet_disc` double NOT NULL,
-  `voucher_disc` double NOT NULL,
-  `referral_disc` double NOT NULL,
-  `user_disc` double NOT NULL,
-  `product_details` text NOT NULL,
-  `qty_returned` int(10) NOT NULL,
-  `eCount` int(11) NOT NULL,
-  `eTillDownload` date NOT NULL,
-  `prod_type` int(11) DEFAULT '0',
-  `remark` text NOT NULL,
-  `tax` text,
-  `order_status` int(11) DEFAULT NULL,
-  `tracking_id` int(11) DEFAULT NULL,
-  `vendor_id` int(11) DEFAULT NULL,
-`qty_exchange` int(11) DEFAULT NULL,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_has_products` (
+--   `id` bigint(20) NOT NULL,
+--   `order_id` bigint(20) NOT NULL,
+--   `kot` bigint(20) NOT NULL,
+--   `prod_id` bigint(20) NOT NULL,
+--   `sub_prod_id` text NOT NULL,
+--   `qty` bigint(20) NOT NULL,
+--   `price` double NOT NULL,
+--    `pay_amt` double NOT NULL,
+--   `amt_after_discount` float(10,2) NOT NULL,
+--   `disc` double NOT NULL,
+--   `wallet_disc` double NOT NULL,
+--   `voucher_disc` double NOT NULL,
+--   `referral_disc` double NOT NULL,
+--   `user_disc` double NOT NULL,
+--   `product_details` text NOT NULL,
+--   `qty_returned` int(10) NOT NULL,
+--   `eCount` int(11) NOT NULL,
+--   `eTillDownload` date NOT NULL,
+--   `prod_type` int(11) DEFAULT '0',
+--   `remark` text NOT NULL,
+--   `tax` text,
+--   `order_status` int(11) DEFAULT NULL,
+--   `tracking_id` int(11) DEFAULT NULL,
+--   `vendor_id` int(11) DEFAULT NULL,
+-- `qty_exchange` int(11) DEFAULT NULL,
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1475,77 +1452,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_offers_users` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `tblprfx_orders`
---
 
-CREATE TABLE IF NOT EXISTS `tblprfx_orders` (
-  `id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `otype` int(11) NOT NULL,
-  `table_id` bigint(20) DEFAULT NULL,
-  `join_tables` text NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `order_amt` double NOT NULL,
-  `pay_amt` double NOT NULL,
-  `cod_charges` int(20) NOT NULL,
-  `gifting_charges` int(20) NOT NULL,
-  `payment_method` int(11) NOT NULL,
-  `payment_status` int(11) NOT NULL,
-  `payment_id` int(11) NOT NULL,
-  `transaction_id` varchar(255) NOT NULL,
-  `transaction_status` text NOT NULL,
-  `description` text NOT NULL,
-  `cart` text NOT NULL,
-  `cashback_used` float NOT NULL,
-  `cashback_earned` float NOT NULL,
-  `cashback_credited` double NOT NULL,
-  `voucher_used` bigint(20) NOT NULL,
-  `coupon_used` bigint(20) NOT NULL,
-  `discount_type` tinyint(4) NOT NULL COMMENT '1-percentage, 2 absolute',
-  `discount_amt` decimal(10,2) NOT NULL,
-  `shipping_amt` int(11) NOT NULL,
-  `voucher_amt_used` bigint(20) NOT NULL,
-  `coupon_amt_used` double NOT NULL,
-  `shiplabel_tracking_id` varchar(255) NOT NULL,
-  `referal_code_used` varchar(255) NOT NULL,
-  `referal_code_amt` float NOT NULL,
-  `user_ref_points` double NOT NULL,
-  `ref_flag` int(11) NOT NULL,
-   `currency_id` int(11) NOT NULL,
-  `order_status` int(20) NOT NULL,
-  `forward_id` int(11) NOT NULL,
-  `ship_date` datetime NOT NULL,
-  `order_comment` varchar(255) NOT NULL,
- 
-  `currency_value` float(10,6) NOT NULL,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `address1` varchar(255) NOT NULL,
-  `address2` varchar(35) NOT NULL,
-  `address3` varchar(35) NOT NULL,
-  `phone_no` varchar(20) NOT NULL,
-  `country_id` text NOT NULL,
-  `zone_id` text NOT NULL,
-  `postal_code` varchar(20) NOT NULL,
-  `city` varchar(255) NOT NULL,
-  `print_invoice` int(11) NOT NULL,
-  `cart_rec_notify1` int(11) NOT NULL,
-  `cart_rec_notify2` int(11) NOT NULL,
-  `incomplete_order` int(11) NOT NULL,
-  `flag_id` int(11) NOT NULL,
-  `flag_remark` varchar(500) NOT NULL,
-  `loyalty_cron_status` enum('2','1','0') NOT NULL DEFAULT '2' COMMENT '2=ready,1=lock,0=completed',
-  `remark` text NOT NULL,
-  `additional_charge` text,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tblprfx_ordertypes`
 --
 
@@ -1672,36 +1579,36 @@ INSERT INTO `tblprfx_order_return_open_unopen` (`id`, `status`) VALUES
 -- Table structure for table `tblprfx_order_return_reason`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_order_return_reason` (
-  `id` int(11) NOT NULL,
-  `reason` varchar(255) NOT NULL,
-`created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_order_return_reason` (
+--   `id` int(11) NOT NULL,
+--   `reason` varchar(255) NOT NULL,
+-- `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tblprfx_order_return_reason`
 --
 
-INSERT INTO `tblprfx_order_return_reason` (`id`, `reason`) VALUES
-(1, 'Dead on arrival'),
-(2, 'Faulty Product'),
-(3, 'Order error'),
-(4, 'Received wrong item'),
-(5, 'Bought by mistake'),
-(6, 'Better price available'),
-(7, 'Item arrived too late'),
-(8, 'Both product and shipping box damaged'),
-(9, 'Item defective or doesn’t work'),
-(10, 'Received extra item I didn’t buy (no refund needed)'),
-(11, 'No longer needed'),
-(12, 'Too small'),
-(13, 'Too large'),
-(14, 'Style not as expected'),
-(15, 'Ordered wrong size/colour'),
-(16, 'Inaccurate website description'),
-(17, 'Quality not as expected'),
-(18, 'Managed By Admin');
+-- INSERT INTO `tblprfx_order_return_reason` (`id`, `reason`) VALUES
+-- (1, 'Dead on arrival'),
+-- (2, 'Faulty Product'),
+-- (3, 'Order error'),
+-- (4, 'Received wrong item'),
+-- (5, 'Bought by mistake'),
+-- (6, 'Better price available'),
+-- (7, 'Item arrived too late'),
+-- (8, 'Both product and shipping box damaged'),
+-- (9, 'Item defective or doesn’t work'),
+-- (10, 'Received extra item I didn’t buy (no refund needed)'),
+-- (11, 'No longer needed'),
+-- (12, 'Too small'),
+-- (13, 'Too large'),
+-- (14, 'Style not as expected'),
+-- (15, 'Ordered wrong size/colour'),
+-- (16, 'Inaccurate website description'),
+-- (17, 'Quality not as expected'),
+-- (18, 'Managed By Admin');
 
 -- --------------------------------------------------------
 
@@ -1709,22 +1616,22 @@ INSERT INTO `tblprfx_order_return_reason` (`id`, `reason`) VALUES
 -- Table structure for table `tblprfx_order_return_status`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_order_return_status` (
-  `id` int(11) NOT NULL,
-  `status` varchar(255) NOT NULL,
-`created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_order_return_status` (
+--   `id` int(11) NOT NULL,
+--   `status` varchar(255) NOT NULL,
+-- `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tblprfx_order_return_status`
 --
 
-INSERT INTO `tblprfx_order_return_status` (`id`, `status`) VALUES
-(1, 'Awaiting Products'),
-(2, 'Complete'),
-(3, 'Pending'),
-(4, 'No Status');
+-- INSERT INTO `tblprfx_order_return_status` (`id`, `status`) VALUES
+-- (1, 'Awaiting Products'),
+-- (2, 'Complete'),
+-- (3, 'Pending'),
+-- (4, 'No Status');
 
 -- --------------------------------------------------------
 
@@ -1790,25 +1697,25 @@ CREATE TABLE IF NOT EXISTS `tblprfx_password_resets` (
 -- Table structure for table `tblprfx_payment_method`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_payment_method` (
-  `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_payment_method` (
+--   `id` int(11) NOT NULL,
+--   `name` varchar(255) NOT NULL,
+--   `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tblprfx_payment_method`
 --
 
-INSERT INTO `tblprfx_payment_method` (`id`, `name`) VALUES
-(1, 'COD'),
-(2, 'EBS'),
-(3, 'Cashback/Points/Vouchers/Coupons'),
-(4, 'Paypal'),
-(5, 'PayU'),
-(6, 'Citrus'),
-(7, 'Razorpay');
+-- INSERT INTO `tblprfx_payment_method` (`id`, `name`) VALUES
+-- (1, 'COD'),
+-- (2, 'EBS'),
+-- (3, 'Cashback/Points/Vouchers/Coupons'),
+-- (4, 'Paypal'),
+-- (5, 'PayU'),
+-- (6, 'Citrus'),
+-- (7, 'Razorpay');
 
 -- --------------------------------------------------------
 
@@ -1816,22 +1723,22 @@ INSERT INTO `tblprfx_payment_method` (`id`, `name`) VALUES
 -- Table structure for table `tblprfx_payment_status`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_payment_status` (
-  `id` int(11) NOT NULL,
-  `payment_status` varchar(255) NOT NULL,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_payment_status` (
+--   `id` int(11) NOT NULL,
+--   `payment_status` varchar(255) NOT NULL,
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tblprfx_payment_status`
 --
 
-INSERT INTO `tblprfx_payment_status` (`id`, `payment_status`) VALUES
-(1, 'Pending'),
-(2, 'Cancelled'),
-(3, 'Partially Paid'),
-(4, 'Paid');
+-- INSERT INTO `tblprfx_payment_status` (`id`, `payment_status`) VALUES
+-- (1, 'Pending'),
+-- (2, 'Cancelled'),
+-- (3, 'Partially Paid'),
+-- (4, 'Paid');
 
 -- --------------------------------------------------------
 
@@ -1904,456 +1811,461 @@ INSERT INTO `tblprfx_permissions` (`id`, `name`, `display_name`, `description`, 
 (48, 'admin.systemusers.save', 'Systemusers Save', NULL, 43, 0, 0),
 (49, 'admin.systemusers.edit', 'Systemusers Edit', NULL, 43, 0, 0),
 (50, 'admin.systemusers.update', 'Systemusers Update', NULL, 43, 0, 0),
-(83, 'admin.products.configurable.update.without.stock', 'Products Configurable Update Without Stock', NULL, 5, 20, 0),
-(84, 'admin.products.configurable.without.stock.attributes', 'Products Configurable Without Stock Attributes', NULL, 5, 0, 0),
-(98, 'admin.miscellaneous.view', 'Miscellaneous View', NULL, 0, 0, 0),
-(99, 'admin.miscellaneous.add', 'Miscellaneous Add', NULL, 0, 0, 0),
-(100, 'admin.miscellaneous.edit', 'Miscellaneous Edit', NULL, 0, 0, 0),
-(101, 'admin.miscellaneous.save', 'Miscellaneous Save', NULL, 0, 0, 0),
-(102, 'admin.miscellaneous.delete', 'Miscellaneous Delete', NULL, 0, 0, 0),
-(108, 'admin.category.delete', 'Category Delete', NULL, 2, 0, 0),
-(118, 'admin.attributes.delete', 'Attributes Delete', NULL, 4, 0, 0),
-(211, 'admin.roles.delete', 'Roles Delete', NULL, 20, 0, 0),
-(222, 'admin.systemusers.delete', 'Systemusers Delete', NULL, 43, 0, 0),
-(229, 'admin.category.catSeo', 'Category Catseo', NULL, 2, 0, 0),
-(230, 'admin.category.saveCatSeo', 'Category Savecatseo', NULL, 2, 4, 0),
-(270, 'admin.products.attribute', 'Products Attribute', NULL, 5, 0, 0),
-(271, 'admin.products.attribute.save', 'Products Attribute Save', NULL, 5, 18, 0),
-(272, 'admin.products.prodSeo', 'Products Prodseo', NULL, 5, 0, 0),
-(273, 'admin.products.prodSaveSeo', 'Products Prodsaveseo', NULL, 5, 18, 0),
-(274, 'admin.products.prodUpload', 'Products Produpload', NULL, 5, 0, 0),
-(275, 'admin.products.prodUploadDel', 'Products Produploaddel', NULL, 5, 0, 0),
-(276, 'admin.products.prodSaveUpload', 'Products Prodsaveupload', NULL, 5, 18, 0),
-(277, 'admin.coupons.view', 'Coupons View', NULL, 6, 0, 0),
-(278, 'admin.coupons.add', 'Coupons Add', NULL, 6, 0, 0),
-(279, 'admin.coupons.save', 'Coupons Save', NULL, 6, 0, 0),
-(280, 'admin.coupons.edit', 'Coupons Edit', NULL, 6, 0, 0),
-(281, 'admin.coupons.delete', 'Coupons Delete', NULL, 6, 0, 0),
-(282, 'admin.coupons.searchUser', 'Coupons Searchuser', NULL, 6, 0, 0),
-(283, 'admin.orders.view', 'Orders View', NULL, 13, 0, 0),
-(284, 'admin.orders.add', 'Orders Add', NULL, 13, 0, 0),
-(285, 'admin.orders.invoice', 'Orders Invoice', NULL, 13, 0, 0),
-(286, 'admin.orders.invoice.print', 'Orders Invoice Print', NULL, 13, 0, 0),
-(287, 'admin.orders.export', 'Orders Export', NULL, 13, 0, 0),
-(288, 'admin.orders.update.payment', 'Orders Update Payment', NULL, 13, 292, 0),
-(289, 'admin.orders.update.status', 'Orders Update Status', NULL, 13, 292, 0),
-(290, 'admin.orders.update.return', 'Orders Update Return', NULL, 13, 292, 0),
-(291, 'admin.orders.revert.return', 'Orders Revert Return', NULL, 13, 0, 0),
-(292, 'admin.orders.update', 'Orders Update', NULL, 13, 0, 0),
-(293, 'admin.orders.save', 'Orders Save', NULL, 13, 0, 0),
-(294, 'admin.orders.edit', 'Orders Edit', NULL, 13, 0, 0),
-(295, 'admin.orders.delete', 'Orders Delete', NULL, 13, 0, 0),
-(296, 'admin.sales.byorder', 'Sales Byorder', NULL, 14, 0, 0),
-(297, 'admin.sales.byproduct', 'Sales Byproduct', NULL, 14, 0, 0),
-(298, 'admin.sales.bycategory', 'Sales Bycategory', NULL, 14, 0, 0),
-(299, 'admin.sales.byartist', 'Sales Byartist', NULL, 14, 0, 0),
-(300, 'admin.sales.export.attribute', 'Sales Export Attribute', NULL, 14, 0, 0),
-(301, 'admin.sales.export.category', 'Sales Export Category', NULL, 14, 0, 0),
-(302, 'admin.sales.export.artist', 'Sales Export Artist', NULL, 14, 0, 0),
-(303, 'admin.sales.export.product', 'Sales Export Product', NULL, 14, 0, 0),
-(304, 'admin.sales.export.order', 'Sales Export Order', NULL, 14, 0, 0),
-(305, 'admin.sales.users', 'Sales Users', NULL, 14, 0, 0),
-(306, 'admin.sales.byattribute', 'Sales Byattribute', NULL, 14, 0, 0),
-(307, 'admin.offers.view', 'Offers View', NULL, 15, 0, 0),
-(308, 'admin.offers.add', 'Offers Add', NULL, 15, 0, 0),
-(309, 'admin.offers.save', 'Offers Save', NULL, 15, 0, 0),
-(310, 'admin.offers.edit', 'Offers Edit', NULL, 15, 0, 0),
-(311, 'admin.offers.delete', 'Offers Delete', NULL, 15, 0, 0),
-(312, 'admin.offers.searchUser', 'Offers Searchuser', NULL, 15, 0, 0),
-(318, 'admin.loyalty.view', 'Loyalty View', NULL, 22, 0, 0),
-(319, 'admin.loyalty.add', 'Loyalty Add', NULL, 22, 0, 0),
-(320, 'admin.loyalty.save', 'Loyalty Save', NULL, 22, 0, 0),
-(321, 'admin.loyalty.edit', 'Loyalty Edit', NULL, 22, 0, 0),
-(322, 'admin.loyalty.update', 'Loyalty Update', NULL, 22, 0, 0),
-(323, 'admin.loyalty.delete', 'Loyalty Delete', NULL, 22, 0, 0),
-(324, 'admin.generalSetting.view', 'Generalsetting View', NULL, 33, 0, 0),
-(325, 'admin.generalSetting.add', 'Generalsetting Add', NULL, 33, 0, 0),
-(326, 'admin.generalSetting.edit', 'Generalsetting Edit', NULL, 33, 0, 0),
-(327, 'admin.generalSetting.save', 'Generalsetting Save', NULL, 33, 0, 0),
-(328, 'admin.generalSetting.delete', 'Generalsetting Delete', NULL, 33, 0, 0),
-(329, 'admin.paymentSetting.view', 'Paymentsetting View', NULL, 36, 0, 0),
-(330, 'admin.paymentSetting.add', 'Paymentsetting Add', NULL, 36, 0, 0),
-(331, 'admin.paymentSetting.edit', 'Paymentsetting Edit', NULL, 36, 0, 0),
-(332, 'admin.paymentSetting.save', 'Paymentsetting Save', NULL, 36, 0, 0),
-(333, 'admin.paymentSetting.delete', 'Paymentsetting Delete', NULL, 36, 0, 0),
-(334, 'admin.advanceSetting.view', 'Advancesetting View', NULL, 37, 0, 0),
-(389, 'admin.products.sampleBulkDownload', 'Products Samplebulkdownload', NULL, 5, 0, 0),
-(390, 'admin.products.productBulkUpload', 'Products Productbulkupload', NULL, 5, 0, 0),
-(391, 'admin.products.prdBulkImgUpload', 'Products Prdbulkimgupload', NULL, 5, 0, 0),
-(505, 'admin.emailSetting.view', 'Emailsetting View', NULL, 38, 0, 0),
-(506, 'admin.emailSetting.add', 'Emailsetting Add', NULL, 38, 0, 0),
-(507, 'admin.emailSetting.edit', 'Emailsetting Edit', NULL, 38, 0, 0),
-(508, 'admin.emailSetting.save', 'Emailsetting Save', NULL, 38, 0, 0),
-(509, 'admin.emailSetting.delete', 'Emailsetting Delete', NULL, 38, 0, 0),
-(510, 'admin.emailSetting.status', 'Emailsetting Status', NULL, 38, 0, 0),
-(511, 'admin.templateSetting.view', 'Templatesetting View', NULL, 39, 0, 0),
-(512, 'admin.templateSetting.add', 'Templatesetting Add', NULL, 39, 0, 0),
-(513, 'admin.templateSetting.edit', 'Templatesetting Edit', NULL, 39, 0, 0),
-(514, 'admin.templateSetting.save', 'Templatesetting Save', NULL, 39, 0, 0),
-(515, 'admin.templateSetting.delete', 'Templatesetting Delete', NULL, 39, 0, 0),
-(516, 'admin.templateSetting.status', 'Templatesetting Status', NULL, 39, 0, 0),
-(663, 'admin.category.sampleCategoryDownload', 'Category Samplecategorydownload', NULL, 2, 0, 0),
-(664, 'admin.category.sampleBulkDownload', 'Category Samplebulkdownload', NULL, 2, 0, 0),
-(665, 'admin.category.categoryBulkUpload', 'Category Categorybulkupload', NULL, 2, 0, 0),
-(666, 'admin.category.catBulkImgUpload', 'Category Catbulkimgupload', NULL, 2, 0, 0),
-(680, 'admin.products.deleteVarient', 'Products Deletevarient', NULL, 5, 17, 0),
-(681, 'admin.products.changeStatus', 'Products Changestatus', NULL, 5, 20, 0),
-(718, 'admin.products.generateBarcode', 'Products Generatebarcode', NULL, 5, 0, 0),
-(719, 'admin.products.printBarcode', 'Products Printbarcode', NULL, 5, 0, 0),
-(720, 'admin.products.barcodeForm', 'Products Barcodeform', NULL, 5, 0, 0),
-(721, 'admin.products.downloadbarcode', 'Products Downloadbarcode', NULL, 5, 0, 0),
-(722, 'admin.products.showbarcodes', 'Products Showbarcodes', NULL, 5, 0, 0),
-(727, 'admin.coupons.history', 'Coupons History', NULL, 6, 0, 0),
-(730, 'admin.stock.view', 'Stock View', NULL, 7, 0, 0),
-(731, 'admin.stock.outOfStock', 'Stock Outofstock', NULL, 7, 0, 0),
-(732, 'admin.stock.runningShort', 'Stock Runningshort', NULL, 7, 0, 0),
-(733, 'admin.stock.updateProdStock', 'Stock Updateprodstock', NULL, 7, 0, 0),
-(734, 'admin.order.view', 'Order View', NULL, 9, 0, 0),
-(735, 'admin.order.edit', 'Order Edit', NULL, 9, 0, 0),
-(736, 'admin.order.status', 'Order Status', NULL, 42, 0, 0),
-(750, 'admin.orders.ReturnOrder', 'Orders Returnorder', NULL, 13, 0, 0),
-(751, 'admin.orders.ReturnOrderCal', 'Orders Returnordercal', NULL, 13, 0, 0),
-(752, 'admin.orders.OrderReturn', 'Orders Orderreturn', NULL, 13, 0, 0),
-(753, 'admin.orders.editreturn', 'Orders Editreturn', NULL, 13, 294, 0),
-(754, 'admin.orders.UpdateReturnOrderStatus', 'Orders Updatereturnorderstatus', NULL, 13, 0, 0),
-(755, 'admin.orders.addFlag', 'Orders Addflag', NULL, 13, 0, 0),
-(756, 'admin.orders.addMulFlag', 'Orders Addmulflag', NULL, 13, 0, 0),
-(757, 'admin.orders.orderHistory', 'Orders Orderhistory', NULL, 13, 0, 0),
-(758, 'admin.orders.editReOrder', 'Orders Editreorder', NULL, 13, 294, 0),
-(759, 'admin.orders.getProdDetails', 'Orders Getproddetails', NULL, 13, 0, 0),
-(760, 'admin.orders.quantityUpdate', 'Orders Quantityupdate', NULL, 13, 292, 0),
-(761, 'admin.orders.saveReOrder', 'Orders Savereorder', NULL, 13, 293, 0),
-(762, 'admin.orders.addToCart', 'Orders Addtocart', NULL, 13, 0, 0),
-(772, 'admin.sales.bycustomer', 'Sales Bycustomer', NULL, 14, 0, 0),
-(773, 'admin.sales.orderByCustomer', 'Sales Orderbycustomer', NULL, 14, 0, 0),
-(774, 'admin.sales.orderByCustomerExport', 'Sales Orderbycustomerexport', NULL, 14, 0, 0),
-(781, 'admin.country.view', 'Country View', NULL, 18, 0, 0),
-(782, 'admin.country.edit', 'Country Edit', NULL, 18, 0, 0),
-(783, 'admin.country.save', 'Country Save', NULL, 18, 0, 0),
-(784, 'admin.country.delete', 'Country Delete', NULL, 18, 0, 0),
-(785, 'admin.currency.view', 'Currency View', NULL, 19, 0, 0),
-(786, 'admin.currency.editCurrencyListing', 'Currency Editcurrencylisting', NULL, 19, 0, 0),
-(787, 'admin.currency.save', 'Currency Save', NULL, 19, 0, 0),
-(788, 'admin.currency.currencyStatus', 'Currency Currencystatus', NULL, 19, 0, 0),
-(794, 'admin.customers.view', 'Customers View', NULL, 21, 0, 0),
-(795, 'admin.customers.add', 'Customers Add', NULL, 21, 0, 0),
-(796, 'admin.customers.save', 'Customers Save', NULL, 21, 0, 0),
-(797, 'admin.customers.edit', 'Customers Edit', NULL, 21, 0, 0),
-(798, 'admin.customers.update', 'Customers Update', NULL, 21, 0, 0),
-(799, 'admin.customers.delete', 'Customers Delete', NULL, 21, 0, 0),
-(800, 'admin.customers.export', 'Customers Export', NULL, 21, 0, 0),
-(801, 'admin.customers.chkExistingUseremail', 'Customers Chkexistinguseremail', NULL, 21, 0, 0),
-(808, 'admin.sliders.view', 'Sliders View', NULL, 32, 0, 0),
-(809, 'admin.slider.add', 'Slider Add', NULL, 32, 0, 0),
-(810, 'admin.slider.edit', 'Slider Edit', NULL, 32, 0, 0),
-(811, 'admin.slider.save', 'Slider Save', NULL, 32, 0, 0),
-(812, 'admin.slider.update', 'Slider Update', NULL, 32, 0, 0),
-(813, 'admin.slider.delete', 'Slider Delete', NULL, 32, 0, 0),
-(814, 'admin.slider.masterList', 'Slider Masterlist', NULL, 32, 808, 0),
-(815, 'admin.slider.addSlider', 'Slider Addslider', NULL, 32, 809, 0),
-(816, 'admin.slider.editSlider', 'Slider Editslider', NULL, 32, 810, 0),
-(817, 'admin.slider.sliderDelete', 'Slider Sliderdelete', NULL, 32, 813, 0),
-(818, 'admin.slider.saveEditSlider', 'Slider Saveeditslider', NULL, 32, 811, 0),
-(819, 'admin.slider.updateMasterList', 'Slider Updatemasterlist', NULL, 32, 812, 0),
-(825, 'admin.storeSetting.view', 'Storesetting View', NULL, 34, 0, 0),
-(826, 'admin.storeSetting.add', 'Storesetting Add', NULL, 34, 0, 0),
-(827, 'admin.returnPolicy.view', 'Returnpolicy View', NULL, 35, 0, 0),
-(828, 'admin.returnPolicy.edit', 'Returnpolicy Edit', NULL, 35, 0, 0),
-(829, 'admin.returnPolicy.save', 'Returnpolicy Save', NULL, 35, 0, 0),
-(849, 'admin.miscellaneous.flags', 'Miscellaneous Flags', NULL, 41, 0, 0),
-(850, 'admin.miscellaneous.addNewFlag', 'Miscellaneous Addnewflag', NULL, 41, 0, 0),
-(851, 'admin.miscellaneous.editFlag', 'Miscellaneous Editflag', NULL, 41, 0, 0),
-(852, 'admin.miscellaneous.saveFlag', 'Miscellaneous Saveflag', NULL, 41, 0, 0),
-(853, 'admin.miscellaneous.updateFlag', 'Miscellaneous Updateflag', NULL, 41, 0, 0),
-(854, 'admin.miscellaneous.deleteFlag', 'Miscellaneous Deleteflag', NULL, 41, 0, 0),
-(861, 'admin.systemusers.export', 'Systemusers Export', NULL, 43, 0, 0),
-(862, 'admin.staticpage.view', 'Staticpage View', NULL, 44, 0, 0),
-(863, 'admin.staticpage.add', 'Staticpage Add', NULL, 44, 0, 0),
-(930, 'admin.products.bulkUpdate', 'Products Bulkupdate', NULL, 5, 0, 0),
-(931, 'admin.products.export', 'Products Export', NULL, 5, 0, 0),
-(1789, 'admin.tax.view', 'Tax View', NULL, 8, 0, 0),
-(1790, 'admin.tax.add', 'Tax Add', NULL, 8, 0, 0),
-(1791, 'admin.tax.save', 'Tax Save', NULL, 8, 0, 0),
-(1792, 'admin.tax.edit', 'Tax Edit', NULL, 8, 0, 0),
-(1793, 'admin.tax.delete', 'Tax Delete', NULL, 8, 0, 0),
-(1794, 'admin.tax.changeStatus', 'Tax Changestatus', NULL, 8, 0, 0),
-(2012, 'admin.apicat.view', 'Apicat View', NULL, 16, 0, 0),
-(2013, 'admin.apicat.add', 'Apicat Add', NULL, 16, 0, 0),
-(2014, 'admin.apicat.save', 'Apicat Save', NULL, 16, 0, 0),
-(2015, 'admin.apicat.edit', 'Apicat Edit', NULL, 16, 0, 0),
-(2016, 'admin.apicat.delete', 'Apicat Delete', NULL, 16, 0, 0),
-(2017, 'admin.apicat.changeStatus', 'Apicat Changestatus', NULL, 16, 0, 0),
-(2240, 'admin.apicat.catSeo', 'Apicat Catseo', NULL, 16, 0, 0),
-(2241, 'admin.apicat.saveCatSeo', 'Apicat Savecatseo', NULL, 16, 2014, 0),
-(2242, 'admin.apiprod.view', 'Apiprod View', NULL, 17, 0, 0),
-(2243, 'admin.apiprod.add', 'Apiprod Add', NULL, 17, 0, 0),
-(2244, 'admin.apiprod.save', 'Apiprod Save', NULL, 17, 0, 0),
-(2245, 'admin.apiprod.edit', 'Apiprod Edit', NULL, 17, 0, 0),
-(2246, 'admin.apiprod.delete', 'Apiprod Delete', NULL, 17, 0, 0),
-(2247, 'admin.apiprod.changeStatus', 'Apiprod Changestatus', NULL, 17, 0, 0),
-(3165, 'admin.testimonial.view', 'Testimonial View', NULL, 23, 0, 0),
-(3166, 'admin.testimonial.edit', 'Testimonial Edit', NULL, 23, 0, 0),
-(3167, 'admin.testimonial.changeStatus', 'Testimonial Changestatus', NULL, 23, 0, 0),
-(3168, 'admin.dynamicLayout.view', 'Dynamiclayout View', NULL, 24, 0, 0),
-(3169, 'admin.dynamicLayout.add', 'Dynamiclayout Add', NULL, 24, 0, 0),
-(3170, 'admin.dynamicLayout.edit', 'Dynamiclayout Edit', NULL, 24, 0, 0),
-(3171, 'admin.dynamicLayout.save', 'Dynamiclayout Save', NULL, 24, 0, 0),
-(3172, 'admin.dynamicLayout.delete', 'Dynamiclayout Delete', NULL, 24, 0, 0),
-(3173, 'admin.dynamicLayout.changeStatus', 'Dynamiclayout Changestatus', NULL, 24, 0, 0),
-(3174, 'admin.sizechart.view', 'Sizechart View', NULL, 25, 0, 0),
-(3175, 'admin.sizechart.add', 'Sizechart Add', NULL, 25, 0, 0),
-(3176, 'admin.sizechart.save', 'Sizechart Save', NULL, 25, 0, 0),
-(3177, 'admin.sizechart.edit', 'Sizechart Edit', NULL, 25, 0, 0),
-(3178, 'admin.sizechart.delete', 'Sizechart Delete', NULL, 25, 0, 0),
-(3256, 'admin.attribute.set.checkattrset', 'Attribute Set Checkattrset', NULL, 3, 0, 0),
-(3257, 'admin.attribute.set.changeStatus', 'Attribute Set Changestatus', NULL, 3, 0, 0),
-(3263, 'admin.attributes.checkattr', 'Attributes Checkattr', NULL, 4, 0, 0),
-(3264, 'admin.attributes.changeStatus', 'Attributes Changestatus', NULL, 4, 0, 0),
-(3320, 'admin.coupons.checkcoupon', 'Coupons Checkcoupon', NULL, 6, 0, 0),
-(3321, 'admin.coupons.changeStatus', 'Coupons Changestatus', NULL, 6, 0, 0),
-(3325, 'admin.stock.runningShortCount', 'Stock Runningshortcount', NULL, 7, 0, 0),
-(3420, 'admin.loyalty.changeStatus', 'Loyalty Changestatus', NULL, 22, 0, 0),
-(3422, 'admin.testimonial.delete', 'Testimonial Delete', NULL, 23, 0, 0),
-(3441, 'admin.slider.changestatus', 'Slider Changestatus', NULL, 32, 0, 0),
-(3477, 'admin.stockSetting.view', 'Stocksetting View', NULL, 40, 0, 0),
-(3478, 'admin.stockSetting.save', 'Stocksetting Save', NULL, 40, 0, 0),
-(3566, 'admin.category.checkcat', 'Category Checkcat', NULL, 2, 0, 0),
-(4597, 'admin.tax.checktax', 'Tax Checktax', NULL, 8, 0, 0),
-(5074, 'admin.systemusers.changeStatus', 'Systemusers Changestatus', NULL, 43, 50, 0),
-(5335, 'admin.pincodes.view', 'Pincodes View', NULL, 26, 0, 0),
-(5336, 'admin.pincodes.upload', 'Pincodes Upload', NULL, 26, 0, 0),
-(5337, 'admin.pincodes.samplecsv', 'Pincodes Samplecsv', NULL, 26, 0, 0),
-(6755, 'admin.category.changeStatus', 'Category Changestatus', NULL, 2, 0, 0),
-(7314, 'admin.customers.changeStatus', 'Customers Changestatus', NULL, 21, 798, 0),
-(7399, 'admin.staticpages.view', 'Staticpages View', NULL, 44, 0, 0),
-(7400, 'admin.staticpages.add', 'Staticpages Add', NULL, 44, 0, 0),
-(7401, 'admin.staticpages.save', 'Staticpages Save', NULL, 44, 0, 0),
-(7402, 'admin.staticpages.update', 'Staticpages Update', NULL, 44, 0, 0),
-(7403, 'admin.staticpages.edit', 'Staticpages Edit', NULL, 44, 0, 0),
-(7404, 'admin.staticpages.delete', 'Staticpages Delete', NULL, 44, 0, 0),
-(7405, 'admin.staticpages.changeStatus', 'Staticpages Changestatus', NULL, 44, 7402, 0),
-(7406, 'admin.staticpages.getdesc', 'Staticpages Getdesc', NULL, 44, 0, 0),
-(7407, 'admin.contact.view', 'Contact View', NULL, 45, 0, 0),
-(7408, 'admin.contact.add', 'Contact Add', NULL, 45, 0, 0),
-(7409, 'admin.contact.save', 'Contact Save', NULL, 45, 0, 0),
-(7410, 'admin.contact.update', 'Contact Update', NULL, 45, 0, 0),
-(7411, 'admin.contact.edit', 'Contact Edit', NULL, 45, 0, 0),
-(7412, 'admin.contact.delete', 'Contact Delete', NULL, 45, 0, 0),
-(7413, 'admin.contact.changeStatus', 'Contact Changestatus', NULL, 45, 7410, 0),
-(7414, 'admin.socialmedialink.view', 'Socialmedialink View', NULL, 46, 0, 0),
-(7415, 'admin.socialmedialink.add', 'Socialmedialink Add', NULL, 46, 0, 0),
-(7416, 'admin.socialmedialink.save', 'Socialmedialink Save', NULL, 46, 0, 0),
-(7417, 'admin.socialmedialink.update', 'Socialmedialink Update', NULL, 46, 0, 0),
-(7418, 'admin.socialmedialink.edit', 'Socialmedialink Edit', NULL, 46, 0, 0),
-(7419, 'admin.socialmedialink.delete', 'Socialmedialink Delete', NULL, 46, 0, 0),
-(7420, 'admin.socialmedialink.changeStatus', 'Socialmedialink Changestatus', NULL, 46, 7417, 0),
-(9727, 'admin.testimonial.addEdit', 'Testimonial Addedit', NULL, 23, 0, 0),
-(9728, 'admin.testimonial.save', 'Testimonial Save', NULL, 23, 0, 0),
-(10588, 'admin.category.sizeChart', 'Category Sizechart', NULL, 2, 0, 0),
-(10779, 'admin.pincodes.addEdit', 'Pincodes Addedit', NULL, 26, 0, 0),
-(10780, 'admin.pincodes.save', 'Pincodes Save', NULL, 26, 0, 0),
-(10781, 'admin.pincodes.delete', 'Pincodes Delete', NULL, 26, 0, 0),
-(10783, 'admin.smsSubscription.view', 'Smssubscription View', NULL, 27, 0, 0),
-(10784, 'admin.smsSubscription.addEdit', 'Smssubscription Addedit', NULL, 27, 0, 0),
-(10785, 'admin.smsSubscription.save', 'Smssubscription Save', NULL, 27, 0, 0),
-(10786, 'admin.smsSubscription.delete', 'Smssubscription Delete', NULL, 27, 0, 0),
-(11134, 'admin.pincodes.codStatusChange', 'Pincodes Codstatuschange', NULL, 26, 0, 0),
-(11135, 'admin.pincodes.delivaryStatusChange', 'Pincodes Delivarystatuschange', NULL, 26, 0, 0),
-(11852, 'admin.state.view', 'State View', NULL, 30, 0, 0),
-(11853, 'admin.state.addEdit', 'State Addedit', NULL, 30, 0, 0),
-(11854, 'admin.state.save', 'State Save', NULL, 30, 0, 0),
-(11855, 'admin.state.delete', 'State Delete', NULL, 30, 0, 0),
-(12215, 'admin.cities.view', 'Cities View', NULL, 31, 0, 0),
-(12216, 'admin.cities.addEdit', 'Cities Addedit', NULL, 31, 0, 0),
-(12217, 'admin.cities.save', 'Cities Save', NULL, 31, 0, 0),
-(12218, 'admin.cities.delete', 'Cities Delete', NULL, 31, 0, 0),
-(12219, 'admin.cities.changeStatus', 'Cities Changestatus', NULL, 31, 0, 0),
-(12220, 'admin.cities.changeDelivaryStatus', 'Cities Changedelivarystatus', NULL, 31, 12219, 0),
-(12221, 'admin.cities.changeCodStatus', 'Cities Changecodstatus', NULL, 31, 12219, 0),
-(12573, 'admin.pincodes.changeStatus', 'Pincodes Changestatus', NULL, 26, 0, 0),
-(12578, 'admin.language.view', 'Language View', NULL, 28, 0, 0),
-(12579, 'admin.language.addEdit', 'Language Addedit', NULL, 28, 0, 0),
-(12580, 'admin.language.save', 'Language Save', NULL, 28, 0, 0),
-(12581, 'admin.language.delete', 'Language Delete', NULL, 28, 0, 0),
-(12582, 'admin.language.changeStatus', 'Language Changestatus', NULL, 28, 0, 0),
-(12583, 'admin.translation.view', 'Translation View', NULL, 29, 0, 0),
-(12584, 'admin.translation.addEdit', 'Translation Addedit', NULL, 29, 0, 0),
-(12585, 'admin.translation.save', 'Translation Save', NULL, 29, 0, 0),
-(12586, 'admin.translation.delete', 'Translation Delete', NULL, 29, 0, 0),
-(12587, 'admin.translation.changeStatus', 'Translation Changestatus', NULL, 29, 0, 0),
-(12739, 'admin.home.view', 'Home View', NULL, 52, 0, 0),
-(13121, 'admin.order_status.view', 'Order_status View', NULL, 42, 0, 0),
-(13123, 'admin.order_status.add', 'Order_status Add', NULL, 42, 0, 0),
-(13125, 'admin.order_status.edit', 'Order_status Edit', NULL, 42, 0, 0),
-(13127, 'admin.order_status.save', 'Order_status Save', NULL, 42, 0, 0),
-(13129, 'admin.order_status.update', 'Order_status Update', NULL, 42, 0, 0),
-(13131, 'admin.order_status.delete', 'Order_status Delete', NULL, 42, 0, 0),
-(13133, 'admin.order_status.changeStatus', 'Order_status Changestatus', NULL, 42, 13129, 0),
-(14851, 'admin.loyalty.checkName', 'Loyalty Checkname', NULL, 22, 0, 0),
-(14852, 'admin.loyalty.checkRange', 'Loyalty Checkrange', NULL, 22, 0, 0),
-(15284, 'admin.state.getState', 'State Getstate', NULL, 30, 0, 0),
-(15379, 'admin.bill.view', 'Bill View', NULL, 47, 0, 0),
-(15380, 'admin.bill.add', 'Bill Add', NULL, 47, 0, 0),
-(15381, 'admin.bill.save', 'Bill Save', NULL, 47, 0, 0),
-(15382, 'admin.bill.update', 'Bill Update', NULL, 47, 0, 0),
-(15383, 'admin.bill.edit', 'Bill Edit', NULL, 47, 0, 0),
-(15384, 'admin.bill.delete', 'Bill Delete', NULL, 47, 0, 0),
-(15385, 'admin.vendors.view', 'Vendors View', NULL, 48, 0, 0),
-(15386, 'admin.vendors.add', 'Vendors Add', NULL, 48, 0, 0),
-(15387, 'admin.vendors.save', 'Vendors Save', NULL, 48, 0, 0),
-(15388, 'admin.vendors.update', 'Vendors Update', NULL, 48, 0, 0),
-(15389, 'admin.vendors.edit', 'Vendors Edit', NULL, 48, 0, 0),
-(15390, 'admin.vendors.delete', 'Vendors Delete', NULL, 48, 0, 0),
-(16591, 'admin.raw-material.view', 'Raw-material View', NULL, 49, 0, 0),
-(16592, 'admin.raw-material.add', 'Raw-material Add', NULL, 49, 0, 0),
-(16593, 'admin.raw-material.save', 'Raw-material Save', NULL, 49, 0, 0),
-(16594, 'admin.raw-material.update', 'Raw-material Update', NULL, 49, 0, 0),
-(16595, 'admin.raw-material.edit', 'Raw-material Edit', NULL, 49, 0, 0),
-(16596, 'admin.raw-material.delete', 'Raw-material Delete', NULL, 49, 0, 0),
-(16761, 'admin.orders.createOrder', 'Orders Createorder', NULL, 13, 284, 0),
-(16762, 'admin.orders.getCustomerEmails', 'Orders Getcustomeremails', NULL, 13, 0, 0),
-(16763, 'admin.orders.getCustomerData', 'Orders Getcustomerdata', NULL, 13, 0, 0),
-(16764, 'admin.orders.getCustomerZone', 'Orders Getcustomerzone', NULL, 13, 0, 0),
-(16765, 'admin.orders.getCustomerAdd', 'Orders Getcustomeradd', NULL, 13, 0, 0),
-(16766, 'admin.orders.saveCustomerAdd', 'Orders Savecustomeradd', NULL, 13, 293, 0),
-(16767, 'admin.orders.getCatProds', 'Orders Getcatprods', NULL, 13, 0, 0),
-(16768, 'admin.orders.getSubProds', 'Orders Getsubprods', NULL, 13, 0, 0),
-(16769, 'admin.orders.saveCartData', 'Orders Savecartdata', NULL, 13, 293, 0),
-(16770, 'admin.orders.getProdPrice', 'Orders Getprodprice', NULL, 13, 0, 0),
-(17130, 'admin.products.upsell.product', 'Products Upsell Product', NULL, 5, 0, 0),
-(17133, 'admin.products.upsell.related.search', 'Products Upsell Related Search', NULL, 5, 0, 0),
-(18021, 'admin.orders.getSearchProds', 'Orders Getsearchprods', NULL, 13, 0, 0),
-(18388, 'admin.products.related.search', 'Products Related Search', NULL, 5, 0, 0),
-(18408, 'admin.products.checkattr', 'Products Checkattr', NULL, 5, 0, 0),
-(18469, 'admin.orders.checkOrderCoupon', 'Orders Checkordercoupon', NULL, 13, 0, 0),
-(20154, 'admin.orders.editOrderChkStock', 'Orders Editorderchkstock', NULL, 13, 0, 0),
-(20155, 'admin.orders.getCartEditProd', 'Orders Getcarteditprod', NULL, 13, 0, 0),
-(20156, 'admin.orders.getCartEditProdVar', 'Orders Getcarteditprodvar', NULL, 13, 0, 0),
-(20157, 'admin.orders.cartEditGetComboSelect', 'Orders Carteditgetcomboselect', NULL, 13, 0, 0),
-(20862, 'admin.set.preference', 'Set Preference', NULL, 54, 0, 0),
-(20968, 'admin.tables.view', 'Tables View', NULL, 10, 0, 0),
-(20969, 'admin.tables.addEdit', 'Tables Addedit', NULL, 10, 0, 0),
-(20970, 'admin.tables.save', 'Tables Save', NULL, 10, 0, 0),
-(20971, 'admin.tables.delete', 'Tables Delete', NULL, 10, 0, 0),
-(20972, 'admin.tables.changeStatus', 'Tables Changestatus', NULL, 10, 0, 0),
-(20973, 'admin.restaurantlayout.view', 'Restaurantlayout View', NULL, 11, 0, 0),
-(20974, 'admin.restaurantlayout.addEdit', 'Restaurantlayout Addedit', NULL, 11, 0, 0),
-(20975, 'admin.restaurantlayout.save', 'Restaurantlayout Save', NULL, 11, 0, 0),
-(20976, 'admin.tableorder.view', 'Tableorder View', NULL, 12, 0, 0),
-(20977, 'admin.tableorder.addEdit', 'Tableorder Addedit', NULL, 12, 0, 0),
-(20978, 'admin.tableorder.save', 'Tableorder Save', NULL, 12, 0, 0),
-(20979, 'admin.order.additems', 'Order Additems', NULL, 9, 0, 0),
-(20980, 'admin.order.saveitems', 'Order Saveitems', NULL, 9, 0, 0),
-(21236, 'admin.additional-charges.view', 'Additional-charges View', NULL, 50, 0, 0),
-(21237, 'admin.additional-charges.add', 'Additional-charges Add', NULL, 50, 0, 0),
-(21238, 'admin.additional-charges.save', 'Additional-charges Save', NULL, 50, 0, 0),
-(21239, 'admin.additional-charges.edit', 'Additional-charges Edit', NULL, 50, 0, 0),
-(21240, 'admin.additional-charges.delete', 'Additional-charges Delete', NULL, 50, 0, 0),
-(21241, 'admin.additional-charges.changeStatus', 'Additional-charges Changestatus', NULL, 50, 0, 0),
-(21745, 'admin.home.changePopupStatus', 'Home Changepopupstatus', NULL, 52, 0, 0),
-(21864, 'admin.order.transferKot', 'Order Transferkot', NULL, 12, 0, 0),
-(21865, 'admin.order.addNewOrder', 'Order Addneworder', NULL, 12, 20977, 0),
-(21866, 'admin.order.getJoinTableCheckbox', 'Order Getjointablecheckbox', NULL, 12, 0, 0),
-(21867, 'admin.order.saveJoinTableOrder', 'Order Savejointableorder', NULL, 12, 20976, 0),
-(21868, 'admin.order.getOrderKotProds', 'Order Getorderkotprods', NULL, 12, 0, 0),
-(21869, 'admin.order.deleteKotProds', 'Order Deletekotprods', NULL, 12, 0, 0),
-(22042, 'admin.generalSetting.changeStatus', 'Generalsetting Changestatus', NULL, 33, 0, 0),
-(22322, 'admin.tableOccupiedOrder', 'Tableoccupiedorder', NULL, 12, 0, 0),
-(22590, 'admin.additional-charges.getAditionalCharge', 'Additional-charges Getaditionalcharge', NULL, 50, 0, 0),
-(23233, 'admin.getCartAmt', 'Getcartamt', NULL, 12, 0, 0),
-(23276, 'admin.orders.applyCashback', 'Orders Applycashback', NULL, 13, 0, 0),
-(23277, 'admin.orders.applyVoucher', 'Orders Applyvoucher', NULL, 13, 0, 0),
-(23278, 'admin.orders.applyUserLevelDisc', 'Orders Applyuserleveldisc', NULL, 13, 0, 0),
-(23279, 'admin.orders.applyReferel', 'Orders Applyreferel', NULL, 13, 0, 0),
-(24110, 'admin.product.vendors', 'Product Vendors', NULL, 5, 0, 0),
-(24111, 'admin.product.vendors.search', 'Product Vendors Search', NULL, 5, 0, 0),
-(25334, 'admin.vendors.dashboard', 'Vendors Dashboard', NULL, 48, 0, 0),
-(25340, 'admin.vendors.orders', 'Vendors Orders', NULL, 48, 0, 0),
-(25341, 'admin.vendors.rejectOrders', 'Vendors Rejectorders', NULL, 48, 0, 0),
-(25342, 'admin.vendors.product', 'Vendors Product', NULL, 48, 0, 0),
-(25343, 'admin.vendors.productStatus', 'Vendors Productstatus', NULL, 48, 0, 0),
-(25344, 'admin.vendors.productBulkAction', 'Vendors Productbulkaction', NULL, 48, 0, 0),
-(25345, 'admin.vendors.saleByOrder', 'Vendors Salebyorder', NULL, 48, 0, 0),
-(25346, 'admin.vendors.saleByProduct', 'Vendors Salebyproduct', NULL, 48, 0, 0),
-(25347, 'admin.vendor.export.order', 'Vendor Export Order', NULL, 48, 0, 0),
-(25348, 'admin.vendor.order.status', 'Vendor Order Status', NULL, 48, 0, 0),
-(25980, 'admin.product.vendors.save', 'Product Vendors Save', NULL, 5, 18, 0),
-(25981, 'admin.product.vendors.delete', 'Product Vendors Delete', NULL, 5, 17, 0),
-(26782, 'admin.section.view', 'Section View', NULL, 51, 0, 0);
+(51, 'admin.products.configurable.update.without.stock', 'Products Configurable Update Without Stock', NULL, 5, 20, 0),
+(52, 'admin.products.configurable.without.stock.attributes', 'Products Configurable Without Stock Attributes', NULL, 5, 0, 0),
+(53, 'admin.miscellaneous.view', 'Miscellaneous View', NULL, 0, 0, 0),
+(54, 'admin.miscellaneous.add', 'Miscellaneous Add', NULL, 0, 0, 0),
+(55, 'admin.miscellaneous.edit', 'Miscellaneous Edit', NULL, 0, 0, 0),
+(56, 'admin.miscellaneous.save', 'Miscellaneous Save', NULL, 0, 0, 0),
+(57, 'admin.miscellaneous.delete', 'Miscellaneous Delete', NULL, 0, 0, 0),
+(58, 'admin.category.delete', 'Category Delete', NULL, 2, 0, 0),
+(59, 'admin.attributes.delete', 'Attributes Delete', NULL, 4, 0, 0),
+(60, 'admin.roles.delete', 'Roles Delete', NULL, 20, 0, 0),
+(61, 'admin.systemusers.delete', 'Systemusers Delete', NULL, 43, 0, 0),
+(62, 'admin.category.catSeo', 'Category Catseo', NULL, 2, 0, 0),
+(63, 'admin.category.saveCatSeo', 'Category Savecatseo', NULL, 2, 4, 0),
+(64, 'admin.products.attribute', 'Products Attribute', NULL, 5, 0, 0),
+(65, 'admin.products.attribute.save', 'Products Attribute Save', NULL, 5, 18, 0),
+(66, 'admin.products.prodSeo', 'Products Prodseo', NULL, 5, 0, 0),
+(67, 'admin.products.prodSaveSeo', 'Products Prodsaveseo', NULL, 5, 18, 0),
+(68, 'admin.products.prodUpload', 'Products Produpload', NULL, 5, 0, 0),
+(69, 'admin.products.prodUploadDel', 'Products Produploaddel', NULL, 5, 0, 0),
+(70, 'admin.products.prodSaveUpload', 'Products Prodsaveupload', NULL, 5, 18, 0),
+(71, 'admin.coupons.view', 'Coupons View', NULL, 6, 0, 0),
+(72, 'admin.coupons.add', 'Coupons Add', NULL, 6, 0, 0),
+(73, 'admin.coupons.save', 'Coupons Save', NULL, 6, 0, 0),
+(74, 'admin.coupons.edit', 'Coupons Edit', NULL, 6, 0, 0),
+(75, 'admin.coupons.delete', 'Coupons Delete', NULL, 6, 0, 0),
+(76, 'admin.coupons.searchUser', 'Coupons Searchuser', NULL, 6, 0, 0),
+(77, 'admin.orders.view', 'Orders View', NULL, 13, 0, 0),
+(78, 'admin.orders.add', 'Orders Add', NULL, 13, 0, 0),
+(79, 'admin.orders.invoice', 'Orders Invoice', NULL, 13, 0, 0),
+(80, 'admin.orders.invoice.print', 'Orders Invoice Print', NULL, 13, 0, 0),
+(81, 'admin.orders.export', 'Orders Export', NULL, 13, 0, 0),
+(82, 'admin.orders.update.payment', 'Orders Update Payment', NULL, 13, 292, 0),
+(83, 'admin.orders.update.status', 'Orders Update Status', NULL, 13, 292, 0),
+(84, 'admin.orders.update.return', 'Orders Update Return', NULL, 13, 292, 0),
+(85, 'admin.orders.revert.return', 'Orders Revert Return', NULL, 13, 0, 0),
+(86, 'admin.orders.update', 'Orders Update', NULL, 13, 0, 0),
+(87, 'admin.orders.save', 'Orders Save', NULL, 13, 0, 0),
+(88, 'admin.orders.edit', 'Orders Edit', NULL, 13, 0, 0),
+(89, 'admin.orders.delete', 'Orders Delete', NULL, 13, 0, 0),
+(90, 'admin.sales.byorder', 'Sales Byorder', NULL, 14, 0, 0),
+(91, 'admin.sales.byproduct', 'Sales Byproduct', NULL, 14, 0, 0),
+(92, 'admin.sales.bycategory', 'Sales Bycategory', NULL, 14, 0, 0),
+(93, 'admin.sales.byartist', 'Sales Byartist', NULL, 14, 0, 0),
+(94, 'admin.sales.export.attribute', 'Sales Export Attribute', NULL, 14, 0, 0),
+(95, 'admin.sales.export.category', 'Sales Export Category', NULL, 14, 0, 0),
+(96, 'admin.sales.export.artist', 'Sales Export Artist', NULL, 14, 0, 0),
+(97, 'admin.sales.export.product', 'Sales Export Product', NULL, 14, 0, 0),
+(98, 'admin.sales.export.order', 'Sales Export Order', NULL, 14, 0, 0),
+(99, 'admin.sales.users', 'Sales Users', NULL, 14, 0, 0),
+(100, 'admin.sales.byattribute', 'Sales Byattribute', NULL, 14, 0, 0),
+(101, 'admin.offers.view', 'Offers View', NULL, 15, 0, 0),
+(102, 'admin.offers.add', 'Offers Add', NULL, 15, 0, 0),
+(103, 'admin.offers.save', 'Offers Save', NULL, 15, 0, 0),
+(104, 'admin.offers.edit', 'Offers Edit', NULL, 15, 0, 0),
+(105, 'admin.offers.delete', 'Offers Delete', NULL, 15, 0, 0),
+(106, 'admin.offers.searchUser', 'Offers Searchuser', NULL, 15, 0, 0),
+(107, 'admin.loyalty.view', 'Loyalty View', NULL, 22, 0, 0),
+(108, 'admin.loyalty.add', 'Loyalty Add', NULL, 22, 0, 0),
+(109, 'admin.loyalty.save', 'Loyalty Save', NULL, 22, 0, 0),
+(110, 'admin.loyalty.edit', 'Loyalty Edit', NULL, 22, 0, 0),
+(111, 'admin.loyalty.update', 'Loyalty Update', NULL, 22, 0, 0),
+(112, 'admin.loyalty.delete', 'Loyalty Delete', NULL, 22, 0, 0),
+(113, 'admin.generalSetting.view', 'Generalsetting View', NULL, 33, 0, 0),
+(114, 'admin.generalSetting.add', 'Generalsetting Add', NULL, 33, 0, 0),
+(115, 'admin.generalSetting.edit', 'Generalsetting Edit', NULL, 33, 0, 0),
+(116, 'admin.generalSetting.save', 'Generalsetting Save', NULL, 33, 0, 0),
+(117, 'admin.generalSetting.delete', 'Generalsetting Delete', NULL, 33, 0, 0),
+(118, 'admin.paymentSetting.view', 'Paymentsetting View', NULL, 36, 0, 0),
+(119, 'admin.paymentSetting.add', 'Paymentsetting Add', NULL, 36, 0, 0),
+(120, 'admin.paymentSetting.edit', 'Paymentsetting Edit', NULL, 36, 0, 0),
+(121, 'admin.paymentSetting.save', 'Paymentsetting Save', NULL, 36, 0, 0),
+(122, 'admin.paymentSetting.delete', 'Paymentsetting Delete', NULL, 36, 0, 0),
+(123, 'admin.advanceSetting.view', 'Advancesetting View', NULL, 37, 0, 0),
+(124, 'admin.products.sampleBulkDownload', 'Products Samplebulkdownload', NULL, 5, 0, 0),
+(125, 'admin.products.productBulkUpload', 'Products Productbulkupload', NULL, 5, 0, 0),
+(126, 'admin.products.prdBulkImgUpload', 'Products Prdbulkimgupload', NULL, 5, 0, 0),
+(127, 'admin.emailSetting.view', 'Emailsetting View', NULL, 38, 0, 0),
+(128, 'admin.emailSetting.add', 'Emailsetting Add', NULL, 38, 0, 0),
+(129, 'admin.emailSetting.edit', 'Emailsetting Edit', NULL, 38, 0, 0),
+(130, 'admin.emailSetting.save', 'Emailsetting Save', NULL, 38, 0, 0),
+(131, 'admin.emailSetting.delete', 'Emailsetting Delete', NULL, 38, 0, 0),
+(132, 'admin.emailSetting.status', 'Emailsetting Status', NULL, 38, 0, 0),
+(133, 'admin.templateSetting.view', 'Templatesetting View', NULL, 39, 0, 0),
+(134, 'admin.templateSetting.add', 'Templatesetting Add', NULL, 39, 0, 0),
+(135, 'admin.templateSetting.edit', 'Templatesetting Edit', NULL, 39, 0, 0),
+(136, 'admin.templateSetting.save', 'Templatesetting Save', NULL, 39, 0, 0),
+(137, 'admin.templateSetting.delete', 'Templatesetting Delete', NULL, 39, 0, 0),
+(138, 'admin.templateSetting.status', 'Templatesetting Status', NULL, 39, 0, 0),
+(139, 'admin.category.sampleCategoryDownload', 'Category Samplecategorydownload', NULL, 2, 0, 0),
+(140, 'admin.category.sampleBulkDownload', 'Category Samplebulkdownload', NULL, 2, 0, 0),
+(141, 'admin.category.categoryBulkUpload', 'Category Categorybulkupload', NULL, 2, 0, 0),
+(142, 'admin.category.catBulkImgUpload', 'Category Catbulkimgupload', NULL, 2, 0, 0),
+(143, 'admin.products.deleteVarient', 'Products Deletevarient', NULL, 5, 17, 0),
+(144, 'admin.products.changeStatus', 'Products Changestatus', NULL, 5, 20, 0),
+(145, 'admin.products.generateBarcode', 'Products Generatebarcode', NULL, 5, 0, 0),
+(146, 'admin.products.printBarcode', 'Products Printbarcode', NULL, 5, 0, 0),
+(147, 'admin.products.barcodeForm', 'Products Barcodeform', NULL, 5, 0, 0),
+(148, 'admin.products.downloadbarcode', 'Products Downloadbarcode', NULL, 5, 0, 0),
+(150, 'admin.products.showbarcodes', 'Products Showbarcodes', NULL, 5, 0, 0),
+(151, 'admin.coupons.history', 'Coupons History', NULL, 6, 0, 0),
+(152, 'admin.stock.view', 'Stock View', NULL, 7, 0, 0),
+(153, 'admin.stock.outOfStock', 'Stock Outofstock', NULL, 7, 0, 0),
+(154, 'admin.stock.runningShort', 'Stock Runningshort', NULL, 7, 0, 0),
+(155, 'admin.stock.updateProdStock', 'Stock Updateprodstock', NULL, 7, 0, 0),
+(156, 'admin.order.view', 'Order View', NULL, 9, 0, 0),
+(157, 'admin.order.edit', 'Order Edit', NULL, 9, 0, 0),
+(158, 'admin.order.status', 'Order Status', NULL, 42, 0, 0),
+(159, 'admin.orders.ReturnOrder', 'Orders Returnorder', NULL, 13, 0, 0),
+(160, 'admin.orders.ReturnOrderCal', 'Orders Returnordercal', NULL, 13, 0, 0),
+(161, 'admin.orders.OrderReturn', 'Orders Orderreturn', NULL, 13, 0, 0),
+(162, 'admin.orders.editreturn', 'Orders Editreturn', NULL, 13, 294, 0),
+(163, 'admin.orders.UpdateReturnOrderStatus', 'Orders Updatereturnorderstatus', NULL, 13, 0, 0),
+(164, 'admin.orders.addFlag', 'Orders Addflag', NULL, 13, 0, 0),
+(165, 'admin.orders.addMulFlag', 'Orders Addmulflag', NULL, 13, 0, 0),
+(166, 'admin.orders.orderHistory', 'Orders Orderhistory', NULL, 13, 0, 0),
+(167, 'admin.orders.editReOrder', 'Orders Editreorder', NULL, 13, 294, 0),
+(168, 'admin.orders.getProdDetails', 'Orders Getproddetails', NULL, 13, 0, 0),
+(169, 'admin.orders.quantityUpdate', 'Orders Quantityupdate', NULL, 13, 292, 0),
+(170, 'admin.orders.saveReOrder', 'Orders Savereorder', NULL, 13, 293, 0),
+(171, 'admin.orders.addToCart', 'Orders Addtocart', NULL, 13, 0, 0),
+(172, 'admin.sales.bycustomer', 'Sales Bycustomer', NULL, 14, 0, 0),
+(173, 'admin.sales.orderByCustomer', 'Sales Orderbycustomer', NULL, 14, 0, 0),
+(174, 'admin.sales.orderByCustomerExport', 'Sales Orderbycustomerexport', NULL, 14, 0, 0),
+(175, 'admin.country.view', 'Country View', NULL, 18, 0, 0),
+(176, 'admin.country.edit', 'Country Edit', NULL, 18, 0, 0),
+(177, 'admin.country.save', 'Country Save', NULL, 18, 0, 0),
+(178, 'admin.country.delete', 'Country Delete', NULL, 18, 0, 0),
+(179, 'admin.currency.view', 'Currency View', NULL, 19, 0, 0),
+(180, 'admin.currency.editCurrencyListing', 'Currency Editcurrencylisting', NULL, 19, 0, 0),
+(181, 'admin.currency.save', 'Currency Save', NULL, 19, 0, 0),
+(182, 'admin.currency.currencyStatus', 'Currency Currencystatus', NULL, 19, 0, 0),
+(183, 'admin.customers.view', 'Customers View', NULL, 21, 0, 0),
+(184, 'admin.customers.add', 'Customers Add', NULL, 21, 0, 0),
+(185, 'admin.customers.save', 'Customers Save', NULL, 21, 0, 0),
+(186, 'admin.customers.edit', 'Customers Edit', NULL, 21, 0, 0),
+(188, 'admin.customers.update', 'Customers Update', NULL, 21, 0, 0),
+(189, 'admin.customers.delete', 'Customers Delete', NULL, 21, 0, 0),
+(190, 'admin.customers.export', 'Customers Export', NULL, 21, 0, 0),
+(191, 'admin.customers.chkExistingUseremail', 'Customers Chkexistinguseremail', NULL, 21, 0, 0),
+(192, 'admin.sliders.view', 'Sliders View', NULL, 32, 0, 0),
+(193, 'admin.slider.add', 'Slider Add', NULL, 32, 0, 0),
+(194, 'admin.slider.edit', 'Slider Edit', NULL, 32, 0, 0),
+(195, 'admin.slider.save', 'Slider Save', NULL, 32, 0, 0),
+(196, 'admin.slider.update', 'Slider Update', NULL, 32, 0, 0),
+(197, 'admin.slider.delete', 'Slider Delete', NULL, 32, 0, 0),
+(198, 'admin.slider.masterList', 'Slider Masterlist', NULL, 32, 808, 0),
+(199, 'admin.slider.addSlider', 'Slider Addslider', NULL, 32, 809, 0),
+(200, 'admin.slider.editSlider', 'Slider Editslider', NULL, 32, 810, 0),
+(201, 'admin.slider.sliderDelete', 'Slider Sliderdelete', NULL, 32, 813, 0),
+(202, 'admin.slider.saveEditSlider', 'Slider Saveeditslider', NULL, 32, 811, 0),
+(203, 'admin.slider.updateMasterList', 'Slider Updatemasterlist', NULL, 32, 812, 0),
+(204, 'admin.storeSetting.view', 'Storesetting View', NULL, 34, 0, 0),
+(205, 'admin.storeSetting.add', 'Storesetting Add', NULL, 34, 0, 0),
+(206, 'admin.returnPolicy.view', 'Returnpolicy View', NULL, 35, 0, 0),
+(207, 'admin.returnPolicy.edit', 'Returnpolicy Edit', NULL, 35, 0, 0),
+(208, 'admin.returnPolicy.save', 'Returnpolicy Save', NULL, 35, 0, 0),
+(209, 'admin.miscellaneous.flags', 'Miscellaneous Flags', NULL, 41, 0, 0),
+(210, 'admin.miscellaneous.addNewFlag', 'Miscellaneous Addnewflag', NULL, 41, 0, 0),
+(211, 'admin.miscellaneous.editFlag', 'Miscellaneous Editflag', NULL, 41, 0, 0),
+(212, 'admin.miscellaneous.saveFlag', 'Miscellaneous Saveflag', NULL, 41, 0, 0),
+(213, 'admin.miscellaneous.updateFlag', 'Miscellaneous Updateflag', NULL, 41, 0, 0),
+(214, 'admin.miscellaneous.deleteFlag', 'Miscellaneous Deleteflag', NULL, 41, 0, 0),
+(215, 'admin.systemusers.export', 'Systemusers Export', NULL, 43, 0, 0),
+(216, 'admin.staticpage.view', 'Staticpage View', NULL, 44, 0, 0),
+(217, 'admin.staticpage.add', 'Staticpage Add', NULL, 44, 0, 0),
+(218, 'admin.products.bulkUpdate', 'Products Bulkupdate', NULL, 5, 0, 0),
+(219, 'admin.products.export', 'Products Export', NULL, 5, 0, 0),
+(220, 'admin.tax.view', 'Tax View', NULL, 8, 0, 0),
+(221, 'admin.tax.add', 'Tax Add', NULL, 8, 0, 0),
+(222, 'admin.tax.save', 'Tax Save', NULL, 8, 0, 0),
+(223, 'admin.tax.edit', 'Tax Edit', NULL, 8, 0, 0),
+(224, 'admin.tax.delete', 'Tax Delete', NULL, 8, 0, 0),
+(225, 'admin.tax.changeStatus', 'Tax Changestatus', NULL, 8, 0, 0),
+(226, 'admin.apicat.view', 'Apicat View', NULL, 16, 0, 0),
+(227, 'admin.apicat.add', 'Apicat Add', NULL, 16, 0, 0),
+(228, 'admin.apicat.save', 'Apicat Save', NULL, 16, 0, 0),
+(229, 'admin.apicat.edit', 'Apicat Edit', NULL, 16, 0, 0),
+(230, 'admin.apicat.delete', 'Apicat Delete', NULL, 16, 0, 0),
+(231, 'admin.apicat.changeStatus', 'Apicat Changestatus', NULL, 16, 0, 0),
+(232, 'admin.apicat.catSeo', 'Apicat Catseo', NULL, 16, 0, 0),
+(233, 'admin.apicat.saveCatSeo', 'Apicat Savecatseo', NULL, 16, 2014, 0),
+(234, 'admin.apiprod.view', 'Apiprod View', NULL, 17, 0, 0),
+(235, 'admin.apiprod.add', 'Apiprod Add', NULL, 17, 0, 0),
+(236, 'admin.apiprod.save', 'Apiprod Save', NULL, 17, 0, 0),
+(237, 'admin.apiprod.edit', 'Apiprod Edit', NULL, 17, 0, 0),
+(238, 'admin.apiprod.delete', 'Apiprod Delete', NULL, 17, 0, 0),
+(239, 'admin.apiprod.changeStatus', 'Apiprod Changestatus', NULL, 17, 0, 0),
+(240, 'admin.testimonial.view', 'Testimonial View', NULL, 23, 0, 0),
+(241, 'admin.testimonial.edit', 'Testimonial Edit', NULL, 23, 0, 0),
+(242, 'admin.testimonial.changeStatus', 'Testimonial Changestatus', NULL, 23, 0, 0),
+(243, 'admin.dynamicLayout.view', 'Dynamiclayout View', NULL, 24, 0, 0),
+(244, 'admin.dynamicLayout.add', 'Dynamiclayout Add', NULL, 24, 0, 0),
+(245, 'admin.dynamicLayout.edit', 'Dynamiclayout Edit', NULL, 24, 0, 0),
+(246, 'admin.dynamicLayout.save', 'Dynamiclayout Save', NULL, 24, 0, 0),
+(247, 'admin.dynamicLayout.delete', 'Dynamiclayout Delete', NULL, 24, 0, 0),
+(248, 'admin.dynamicLayout.changeStatus', 'Dynamiclayout Changestatus', NULL, 24, 0, 0),
+(249, 'admin.sizechart.view', 'Sizechart View', NULL, 25, 0, 0),
+(250, 'admin.sizechart.add', 'Sizechart Add', NULL, 25, 0, 0),
+(251, 'admin.sizechart.save', 'Sizechart Save', NULL, 25, 0, 0),
+(252, 'admin.sizechart.edit', 'Sizechart Edit', NULL, 25, 0, 0),
+(253, 'admin.sizechart.delete', 'Sizechart Delete', NULL, 25, 0, 0),
+(254, 'admin.attribute.set.checkattrset', 'Attribute Set Checkattrset', NULL, 3, 0, 0),
+(255, 'admin.attribute.set.changeStatus', 'Attribute Set Changestatus', NULL, 3, 0, 0),
+(256, 'admin.attributes.checkattr', 'Attributes Checkattr', NULL, 4, 0, 0),
+(257, 'admin.attributes.changeStatus', 'Attributes Changestatus', NULL, 4, 0, 0),
+(258, 'admin.coupons.checkcoupon', 'Coupons Checkcoupon', NULL, 6, 0, 0),
+(259, 'admin.coupons.changeStatus', 'Coupons Changestatus', NULL, 6, 0, 0),
+(260, 'admin.stock.runningShortCount', 'Stock Runningshortcount', NULL, 7, 0, 0),
+(261, 'admin.loyalty.changeStatus', 'Loyalty Changestatus', NULL, 22, 0, 0),
+(262, 'admin.testimonial.delete', 'Testimonial Delete', NULL, 23, 0, 0),
+(263, 'admin.slider.changestatus', 'Slider Changestatus', NULL, 32, 0, 0),
+(264, 'admin.stockSetting.view', 'Stocksetting View', NULL, 40, 0, 0),
+(265, 'admin.stockSetting.save', 'Stocksetting Save', NULL, 40, 0, 0),
+(266, 'admin.category.checkcat', 'Category Checkcat', NULL, 2, 0, 0),
+(267, 'admin.tax.checktax', 'Tax Checktax', NULL, 8, 0, 0),
+(268, 'admin.systemusers.changeStatus', 'Systemusers Changestatus', NULL, 43, 50, 0),
+(269, 'admin.pincodes.view', 'Pincodes View', NULL, 26, 0, 0),
+(270, 'admin.pincodes.upload', 'Pincodes Upload', NULL, 26, 0, 0),
+(271, 'admin.pincodes.samplecsv', 'Pincodes Samplecsv', NULL, 26, 0, 0),
+(272, 'admin.category.changeStatus', 'Category Changestatus', NULL, 2, 0, 0),
+(273, 'admin.customers.changeStatus', 'Customers Changestatus', NULL, 21, 798, 0),
+(274, 'admin.staticpages.view', 'Staticpages View', NULL, 44, 0, 0),
+(275, 'admin.staticpages.add', 'Staticpages Add', NULL, 44, 0, 0),
+(276, 'admin.staticpages.save', 'Staticpages Save', NULL, 44, 0, 0),
+(278, 'admin.staticpages.update', 'Staticpages Update', NULL, 44, 0, 0),
+(279, 'admin.staticpages.edit', 'Staticpages Edit', NULL, 44, 0, 0),
+(280, 'admin.staticpages.delete', 'Staticpages Delete', NULL, 44, 0, 0),
+(281, 'admin.staticpages.changeStatus', 'Staticpages Changestatus', NULL, 44, 7402, 0),
+(282, 'admin.staticpages.getdesc', 'Staticpages Getdesc', NULL, 44, 0, 0),
+(283, 'admin.contact.view', 'Contact View', NULL, 45, 0, 0),
+(284, 'admin.contact.add', 'Contact Add', NULL, 45, 0, 0),
+(285, 'admin.contact.save', 'Contact Save', NULL, 45, 0, 0),
+(286, 'admin.contact.update', 'Contact Update', NULL, 45, 0, 0),
+(287, 'admin.contact.edit', 'Contact Edit', NULL, 45, 0, 0),
+(288, 'admin.contact.delete', 'Contact Delete', NULL, 45, 0, 0),
+(289, 'admin.contact.changeStatus', 'Contact Changestatus', NULL, 45, 7410, 0),
+(290, 'admin.socialmedialink.view', 'Socialmedialink View', NULL, 46, 0, 0),
+(291, 'admin.socialmedialink.add', 'Socialmedialink Add', NULL, 46, 0, 0),
+(292, 'admin.socialmedialink.save', 'Socialmedialink Save', NULL, 46, 0, 0),
+(293, 'admin.socialmedialink.update', 'Socialmedialink Update', NULL, 46, 0, 0),
+(294, 'admin.socialmedialink.edit', 'Socialmedialink Edit', NULL, 46, 0, 0),
+(295, 'admin.socialmedialink.delete', 'Socialmedialink Delete', NULL, 46, 0, 0),
+(296, 'admin.socialmedialink.changeStatus', 'Socialmedialink Changestatus', NULL, 46, 7417, 0),
+(297, 'admin.testimonial.addEdit', 'Testimonial Addedit', NULL, 23, 0, 0),
+(298, 'admin.testimonial.save', 'Testimonial Save', NULL, 23, 0, 0),
+(299, 'admin.category.sizeChart', 'Category Sizechart', NULL, 2, 0, 0),
+(300, 'admin.pincodes.addEdit', 'Pincodes Addedit', NULL, 26, 0, 0),
+(301, 'admin.pincodes.save', 'Pincodes Save', NULL, 26, 0, 0),
+(302, 'admin.pincodes.delete', 'Pincodes Delete', NULL, 26, 0, 0),
+(303, 'admin.smsSubscription.view', 'Smssubscription View', NULL, 27, 0, 0),
+(304, 'admin.smsSubscription.addEdit', 'Smssubscription Addedit', NULL, 27, 0, 0),
+(305, 'admin.smsSubscription.save', 'Smssubscription Save', NULL, 27, 0, 0),
+(306, 'admin.smsSubscription.delete', 'Smssubscription Delete', NULL, 27, 0, 0),
+(307, 'admin.pincodes.codStatusChange', 'Pincodes Codstatuschange', NULL, 26, 0, 0),
+(308, 'admin.pincodes.delivaryStatusChange', 'Pincodes Delivarystatuschange', NULL, 26, 0, 0),
+(309, 'admin.state.view', 'State View', NULL, 30, 0, 0),
+(310, 'admin.state.addEdit', 'State Addedit', NULL, 30, 0, 0),
+(311, 'admin.state.save', 'State Save', NULL, 30, 0, 0),
+(312, 'admin.state.delete', 'State Delete', NULL, 30, 0, 0),
+(313, 'admin.cities.view', 'Cities View', NULL, 31, 0, 0),
+(314, 'admin.cities.addEdit', 'Cities Addedit', NULL, 31, 0, 0),
+(315, 'admin.cities.save', 'Cities Save', NULL, 31, 0, 0),
+(316, 'admin.cities.delete', 'Cities Delete', NULL, 31, 0, 0),
+(317, 'admin.cities.changeStatus', 'Cities Changestatus', NULL, 31, 0, 0),
+(318, 'admin.cities.changeDelivaryStatus', 'Cities Changedelivarystatus', NULL, 31, 12219, 0),
+(319, 'admin.cities.changeCodStatus', 'Cities Changecodstatus', NULL, 31, 12219, 0),
+(320, 'admin.pincodes.changeStatus', 'Pincodes Changestatus', NULL, 26, 0, 0),
+(321, 'admin.language.view', 'Language View', NULL, 28, 0, 0),
+(322, 'admin.language.addEdit', 'Language Addedit', NULL, 28, 0, 0),
+(323, 'admin.language.save', 'Language Save', NULL, 28, 0, 0),
+(324, 'admin.language.delete', 'Language Delete', NULL, 28, 0, 0),
+(325, 'admin.language.changeStatus', 'Language Changestatus', NULL, 28, 0, 0),
+(326, 'admin.translation.view', 'Translation View', NULL, 29, 0, 0),
+(327, 'admin.translation.addEdit', 'Translation Addedit', NULL, 29, 0, 0),
+(328, 'admin.translation.save', 'Translation Save', NULL, 29, 0, 0),
+(329, 'admin.translation.delete', 'Translation Delete', NULL, 29, 0, 0),
+(330, 'admin.translation.changeStatus', 'Translation Changestatus', NULL, 29, 0, 0),
+(331, 'admin.home.view', 'Home View', NULL, 52, 0, 0),
+(332, 'admin.order_status.view', 'Order_status View', NULL, 42, 0, 0),
+(333, 'admin.order_status.add', 'Order_status Add', NULL, 42, 0, 0),
+(334, 'admin.order_status.edit', 'Order_status Edit', NULL, 42, 0, 0),
+(335, 'admin.order_status.save', 'Order_status Save', NULL, 42, 0, 0),
+(336, 'admin.order_status.update', 'Order_status Update', NULL, 42, 0, 0),
+(337, 'admin.order_status.delete', 'Order_status Delete', NULL, 42, 0, 0),
+(338, 'admin.order_status.changeStatus', 'Order_status Changestatus', NULL, 42, 13129, 0),
+(339, 'admin.loyalty.checkName', 'Loyalty Checkname', NULL, 22, 0, 0),
+(340, 'admin.loyalty.checkRange', 'Loyalty Checkrange', NULL, 22, 0, 0),
+(341, 'admin.state.getState', 'State Getstate', NULL, 30, 0, 0),
+(342, 'admin.bill.view', 'Bill View', NULL, 47, 0, 0),
+(343, 'admin.bill.add', 'Bill Add', NULL, 47, 0, 0),
+(344, 'admin.bill.save', 'Bill Save', NULL, 47, 0, 0),
+(345, 'admin.bill.update', 'Bill Update', NULL, 47, 0, 0),
+(346, 'admin.bill.edit', 'Bill Edit', NULL, 47, 0, 0),
+(347, 'admin.bill.delete', 'Bill Delete', NULL, 47, 0, 0),
+(348, 'admin.vendors.view', 'Vendors View', NULL, 48, 0, 0),
+(349, 'admin.vendors.add', 'Vendors Add', NULL, 48, 0, 0),
+(350, 'admin.vendors.save', 'Vendors Save', NULL, 48, 0, 0),
+(351, 'admin.vendors.update', 'Vendors Update', NULL, 48, 0, 0),
+(352, 'admin.vendors.edit', 'Vendors Edit', NULL, 48, 0, 0),
+(353, 'admin.vendors.delete', 'Vendors Delete', NULL, 48, 0, 0),
+(354, 'admin.raw-material.view', 'Raw-material View', NULL, 49, 0, 0),
+(355, 'admin.raw-material.add', 'Raw-material Add', NULL, 49, 0, 0),
+(356, 'admin.raw-material.save', 'Raw-material Save', NULL, 49, 0, 0),
+(357, 'admin.raw-material.update', 'Raw-material Update', NULL, 49, 0, 0),
+(358, 'admin.raw-material.edit', 'Raw-material Edit', NULL, 49, 0, 0),
+(359, 'admin.raw-material.delete', 'Raw-material Delete', NULL, 49, 0, 0),
+(360, 'admin.orders.createOrder', 'Orders Createorder', NULL, 13, 284, 0),
+(361, 'admin.orders.getCustomerEmails', 'Orders Getcustomeremails', NULL, 13, 0, 0),
+(362, 'admin.orders.getCustomerData', 'Orders Getcustomerdata', NULL, 13, 0, 0),
+(363, 'admin.orders.getCustomerZone', 'Orders Getcustomerzone', NULL, 13, 0, 0),
+(364, 'admin.orders.getCustomerAdd', 'Orders Getcustomeradd', NULL, 13, 0, 0),
+(365, 'admin.orders.saveCustomerAdd', 'Orders Savecustomeradd', NULL, 13, 293, 0),
+(366, 'admin.orders.getCatProds', 'Orders Getcatprods', NULL, 13, 0, 0),
+(367, 'admin.orders.getSubProds', 'Orders Getsubprods', NULL, 13, 0, 0),
+(368, 'admin.orders.saveCartData', 'Orders Savecartdata', NULL, 13, 293, 0),
+(369, 'admin.orders.getProdPrice', 'Orders Getprodprice', NULL, 13, 0, 0),
+(370, 'admin.products.upsell.product', 'Products Upsell Product', NULL, 5, 0, 0),
+(371, 'admin.products.upsell.related.search', 'Products Upsell Related Search', NULL, 5, 0, 0),
+(372, 'admin.orders.getSearchProds', 'Orders Getsearchprods', NULL, 13, 0, 0),
+(373, 'admin.products.related.search', 'Products Related Search', NULL, 5, 0, 0),
+(374, 'admin.products.checkattr', 'Products Checkattr', NULL, 5, 0, 0),
+(375, 'admin.orders.checkOrderCoupon', 'Orders Checkordercoupon', NULL, 13, 0, 0),
+(376, 'admin.orders.editOrderChkStock', 'Orders Editorderchkstock', NULL, 13, 0, 0),
+(377, 'admin.orders.getCartEditProd', 'Orders Getcarteditprod', NULL, 13, 0, 0),
+(378, 'admin.orders.getCartEditProdVar', 'Orders Getcarteditprodvar', NULL, 13, 0, 0),
+(379, 'admin.orders.cartEditGetComboSelect', 'Orders Carteditgetcomboselect', NULL, 13, 0, 0),
+(380, 'admin.set.preference', 'Set Preference', NULL, 54, 0, 0),
+(381, 'admin.tables.view', 'Tables View', NULL, 10, 0, 0),
+(382, 'admin.tables.addEdit', 'Tables Addedit', NULL, 10, 0, 0),
+(383, 'admin.tables.save', 'Tables Save', NULL, 10, 0, 0),
+(384, 'admin.tables.delete', 'Tables Delete', NULL, 10, 0, 0),
+(385, 'admin.tables.changeStatus', 'Tables Changestatus', NULL, 10, 0, 0),
+(386, 'admin.restaurantlayout.view', 'Restaurantlayout View', NULL, 11, 0, 0),
+(387, 'admin.restaurantlayout.addEdit', 'Restaurantlayout Addedit', NULL, 11, 0, 0),
+(388, 'admin.restaurantlayout.save', 'Restaurantlayout Save', NULL, 11, 0, 0),
+(389, 'admin.tableorder.view', 'Tableorder View', NULL, 12, 0, 0),
+(390, 'admin.tableorder.addEdit', 'Tableorder Addedit', NULL, 12, 0, 0),
+(391, 'admin.tableorder.save', 'Tableorder Save', NULL, 12, 0, 0),
+(392, 'admin.order.additems', 'Order Additems', NULL, 9, 0, 0),
+(393, 'admin.order.saveitems', 'Order Saveitems', NULL, 9, 0, 0),
+(394, 'admin.additional-charges.view', 'Additional-charges View', NULL, 50, 0, 0),
+(395, 'admin.additional-charges.add', 'Additional-charges Add', NULL, 50, 0, 0),
+(396, 'admin.additional-charges.save', 'Additional-charges Save', NULL, 50, 0, 0),
+(397, 'admin.additional-charges.edit', 'Additional-charges Edit', NULL, 50, 0, 0),
+(398, 'admin.additional-charges.delete', 'Additional-charges Delete', NULL, 50, 0, 0),
+(399, 'admin.additional-charges.changeStatus', 'Additional-charges Changestatus', NULL, 50, 0, 0),
+(400, 'admin.home.changePopupStatus', 'Home Changepopupstatus', NULL, 52, 0, 0),
+(401, 'admin.order.transferKot', 'Order Transferkot', NULL, 12, 0, 0),
+(402, 'admin.order.addNewOrder', 'Order Addneworder', NULL, 12, 20977, 0),
+(403, 'admin.order.getJoinTableCheckbox', 'Order Getjointablecheckbox', NULL, 12, 0, 0),
+(404, 'admin.order.saveJoinTableOrder', 'Order Savejointableorder', NULL, 12, 20976, 0),
+(405, 'admin.order.getOrderKotProds', 'Order Getorderkotprods', NULL, 12, 0, 0),
+(406, 'admin.order.deleteKotProds', 'Order Deletekotprods', NULL, 12, 0, 0),
+(407, 'admin.generalSetting.changeStatus', 'Generalsetting Changestatus', NULL, 33, 0, 0),
+(408, 'admin.tableOccupiedOrder', 'Tableoccupiedorder', NULL, 12, 0, 0),
+(409, 'admin.additional-charges.getAditionalCharge', 'Additional-charges Getaditionalcharge', NULL, 50, 0, 0),
+(410, 'admin.getCartAmt', 'Getcartamt', NULL, 12, 0, 0),
+(411, 'admin.orders.applyCashback', 'Orders Applycashback', NULL, 13, 0, 0),
+(412, 'admin.orders.applyVoucher', 'Orders Applyvoucher', NULL, 13, 0, 0),
+(413, 'admin.orders.applyUserLevelDisc', 'Orders Applyuserleveldisc', NULL, 13, 0, 0),
+(414, 'admin.orders.applyReferel', 'Orders Applyreferel', NULL, 13, 0, 0),
+(415, 'admin.product.vendors', 'Product Vendors', NULL, 5, 0, 0),
+(416, 'admin.product.vendors.search', 'Product Vendors Search', NULL, 5, 0, 0),
+(417, 'admin.vendors.dashboard', 'Vendors Dashboard', NULL, 48, 0, 0),
+(418, 'admin.vendors.orders', 'Vendors Orders', NULL, 48, 0, 0),
+(419, 'admin.vendors.rejectOrders', 'Vendors Rejectorders', NULL, 48, 0, 0),
+(420, 'admin.vendors.product', 'Vendors Product', NULL, 48, 0, 0),
+(421, 'admin.vendors.productStatus', 'Vendors Productstatus', NULL, 48, 0, 0),
+(422, 'admin.vendors.productBulkAction', 'Vendors Productbulkaction', NULL, 48, 0, 0),
+(423, 'admin.vendors.saleByOrder', 'Vendors Salebyorder', NULL, 48, 0, 0),
+(424, 'admin.vendors.saleByProduct', 'Vendors Salebyproduct', NULL, 48, 0, 0),
+(425, 'admin.vendor.export.order', 'Vendor Export Order', NULL, 48, 0, 0),
+(426, 'admin.vendor.order.status', 'Vendor Order Status', NULL, 48, 0, 0),
+(427, 'admin.product.vendors.save', 'Product Vendors Save', NULL, 5, 18, 0),
+(428, 'admin.product.vendors.delete', 'Product Vendors Delete', NULL, 5, 17, 0),
+(429, 'admin.section.view', 'Section View', NULL, 51, 0, 0);
 INSERT INTO `tblprfx_permissions` (`id`, `name`, `display_name`, `description`, `section_id`, `parent_id`, `status`) VALUES
-(26783, 'admin.section.add', 'Section Add', NULL, 51, 0, 0),
-(26784, 'admin.section.save', 'Section Save', NULL, 51, 0, 0),
-(26785, 'admin.section.update', 'Section Update', NULL, 51, 0, 0),
-(26786, 'admin.section.edit', 'Section Edit', NULL, 51, 0, 0),
-(26787, 'admin.section.delete', 'Section Delete', NULL, 51, 0, 0),
-(26788, 'admin.traits.orders', 'Traits Orders', NULL, 55, 0, 0),
-(29166, 'admin.vendors.ordersDetails', 'Vendors Ordersdetails', NULL, 0, 0, 0),
-(29825, 'admin.dynamic-layout.addEdit', 'Dynamic-layout Addedit', NULL, 24, 0, 0),
-(29826, 'admin.dynamic-layout.save', 'Dynamic-layout Save', NULL, 24, 0, 0),
-(29827, 'admin.dynamic-layout.edit', 'Dynamic-layout Edit', NULL, 24, 0, 0),
-(29828, 'admin.dynamic-layout.saveEdit', 'Dynamic-layout Saveedit', NULL, 24, 0, 0),
-(29829, 'admin.dynamic-layout.changeStatus', 'Dynamic-layout Changestatus', NULL, 24, 0, 0),
-(29830, 'admin.dynamic-layout.view', 'Dynamic-layout View', NULL, 24, 0, 0),
-(33093, 'adminLogin', 'Adminlogin', NULL, 0, 0, 0),
-(33094, 'unauthorized', 'Unauthorized', NULL, 0, 0, 0),
-(33095, 'check_admin_user', 'Check_admin_user', NULL, 0, 0, 0),
-(33096, 'adminLogout', 'Adminlogout', NULL, 0, 0, 0),
-(33097, 'adminEditProfile', 'Admineditprofile', NULL, 0, 0, 0),
-(33098, 'adminSaveProfile', 'Adminsaveprofile', NULL, 0, 0, 0),
-(33099, 'chk_existing_username', 'Chk_existing_username', NULL, 0, 0, 0),
-(33100, 'admin.courier.view', 'Courier View', NULL, 56, 0, 0),
-(33101, 'admin.courier.add', 'Courier Add', NULL, 56, 0, 0),
-(33102, 'admin.courier.save', 'Courier Save', NULL, 56, 0, 0),
-(33103, 'admin.courier.update', 'Courier Update', NULL, 56, 0, 0),
-(33104, 'admin.courier.edit', 'Courier Edit', NULL, 56, 0, 0),
-(33105, 'admin.courier.delete', 'Courier Delete', NULL, 56, 0, 0),
-(33106, 'admin.pincodes.sampleBulkDownload', 'Pincodes Samplebulkdownload', NULL, 26, 0, 0),
-(33107, 'admin.raw-material.checkStatus', 'Raw-material Checkstatus', NULL, 0, 49, 0),
-(33108, 'admin.pages.view', 'Pages View', NULL, 0, 0, 0),
-(33109, 'admin.paymentSetting.changeStatus', 'Paymentsetting Changestatus', NULL, 36, 0, 0),
-(33110, 'admin.country.countryStatus', 'Country Countrystatus', NULL, 18, 0, 0),
-(33111, 'admin.courier.changeStatus', 'Courier Changestatus', NULL, 56, 0, 0),
-(33112, 'admin.tables.checkCoupon', 'Tables Checkcoupon', NULL, 10, 0, 0),
-(33113, 'admin.tables.getAdditionalcharge', 'Tables Getadditionalcharge', NULL, 10, 0, 0),
-(33114, 'admin.returnPolicy.changeStatus', 'Returnpolicy Changestatus', NULL, 35, 0, 0),
-(33115, 'admin.tables.reqloyalty', 'Tables Reqloyalty', NULL, 10, 0, 0),
-(33116, 'admin.tables.revloyalty', 'Tables Revloyalty', NULL, 10, 0, 0),
-(33117, 'admin.tables.tableCod', 'Tables Tablecod', NULL, 10, 0, 0),
-(33118, 'admin.order.getbill', 'Order Getbill', NULL, 57, 0, 0),
-(33119, 'admin.orders.cancelOrder', 'Orders Cancelorder', NULL, 13, 0, 0),
-(33120, 'admin.orders.cancelOrderEdit', 'Orders Cancelorderedit', NULL, 13, 0, 0),
-(33121, 'admin.orders.cancelOrderUpdate', 'Orders Cancelorderupdate', NULL, 13, 0, 0),
-(33122, 'admin.email.status', 'Email Status', NULL, 57, 0, 0),
-(33123, 'adminForgotPassword', 'Adminforgotpassword', NULL, 57, 0, 0),
-(33124, 'adminChkForgotPasswordEmail', 'Adminchkforgotpasswordemail', NULL, 57, 0, 0),
-(33125, 'adminResetPassword', 'Adminresetpassword', NULL, 57, 0, 0),
-(33126, 'adminSaveResetPwd', 'Adminsaveresetpwd', NULL, 57, 0, 0),
-(33127, 'admin.home.newsletter', 'Home Newsletter', NULL, 57, 0, 0),
-(33128, 'admin.contact.getState', 'Contact Getstate', NULL, 57, 0, 0),
-(33129, 'adminCheckCurPassowrd', 'Admincheckcurpassowrd', NULL, 57, 0, 0),
-(33130, 'admin.domains.view', 'Domains View', NULL, 57, 0, 0),
-(33131, 'admin.marketing.emails', 'Marketing Emails', NULL, 57, 0, 0),
-(33132, 'admin.marketing.addGroup', 'Marketing Addgroup', NULL, 57, 0, 0),
-(33133, 'admin.marketing.editGroup', 'Marketing Editgroup', NULL, 57, 0, 0),
-(33134, 'admin.marketing.saveGroup', 'Marketing Savegroup', NULL, 57, 0, 0),
-(33135, 'admin.marketing.changeStatus', 'Marketing Changestatus', NULL, 57, 0, 0),
-(33136, 'admin.marketing.groups', 'Marketing Groups', NULL, 57, 0, 0),
-(33137, 'admin.marketing.emailTemplates', 'Marketing Emailtemplates', NULL, 57, 0, 0),
-(33138, 'admin.marketing.changeTempStatus', 'Marketing Changetempstatus', NULL, 57, 0, 0),
-(33139, 'admin.marketing.addEmailTemp', 'Marketing Addemailtemp', NULL, 57, 0, 0),
-(33140, 'admin.marketing.editEmailTemp', 'Marketing Editemailtemp', NULL, 57, 0, 0),
-(33141, 'admin.marketing.saveEmailTemp', 'Marketing Saveemailtemp', NULL, 57, 0, 0),
-(33142, 'admin.domains.success', 'Domains Success', NULL, 57, 0, 0),
-(33143, 'check_fb_admin_user', 'Check_fb_admin_user', NULL, 57, 0, 0),
-(33144, 'admin.home.exportNewsLetter', 'Home Exportnewsletter', NULL, 57, 0, 0),
-(33145, 'admin.product.wishlist', 'Product Wishlist', NULL, 57, 0, 0),
-(33146, 'admin.referralProgram.view', 'Referralprogram View', NULL, 57, 0, 0),
-(33147, 'admin.referralProgram.editReferral', 'Referralprogram Editreferral', NULL, 57, 0, 0),
-(33148, 'admin.referralProgram.saveReferral', 'Referralprogram Savereferral', NULL, 57, 0, 0),
-(33149, 'admin.bankDetails.view', 'Bankdetails View', NULL, 57, 0, 0),
-(33150, 'admin.bankDetails.addEdit', 'Bankdetails Addedit', NULL, 57, 0, 0),
-(33151, 'admin.bankDetails.update', 'Bankdetails Update', NULL, 57, 0, 0);
-
+(430, 'admin.section.add', 'Section Add', NULL, 51, 0, 0),
+(431, 'admin.section.save', 'Section Save', NULL, 51, 0, 0),
+(432, 'admin.section.update', 'Section Update', NULL, 51, 0, 0),
+(433, 'admin.section.edit', 'Section Edit', NULL, 51, 0, 0),
+(434, 'admin.section.delete', 'Section Delete', NULL, 51, 0, 0),
+(435, 'admin.traits.orders', 'Traits Orders', NULL, 55, 0, 0),
+(436, 'admin.vendors.ordersDetails', 'Vendors Ordersdetails', NULL, 0, 0, 0),
+(437, 'admin.dynamic-layout.addEdit', 'Dynamic-layout Addedit', NULL, 24, 0, 0),
+(438, 'admin.dynamic-layout.save', 'Dynamic-layout Save', NULL, 24, 0, 0),
+(439, 'admin.dynamic-layout.edit', 'Dynamic-layout Edit', NULL, 24, 0, 0),
+(440, 'admin.dynamic-layout.saveEdit', 'Dynamic-layout Saveedit', NULL, 24, 0, 0),
+(441, 'admin.dynamic-layout.changeStatus', 'Dynamic-layout Changestatus', NULL, 24, 0, 0),
+(442, 'admin.dynamic-layout.view', 'Dynamic-layout View', NULL, 24, 0, 0),
+(443, 'adminLogin', 'Adminlogin', NULL, 0, 0, 0),
+(444, 'unauthorized', 'Unauthorized', NULL, 0, 0, 0),
+(445, 'check_admin_user', 'Check_admin_user', NULL, 0, 0, 0),
+(446, 'adminLogout', 'Adminlogout', NULL, 0, 0, 0),
+(447, 'adminEditProfile', 'Admineditprofile', NULL, 0, 0, 0),
+(448, 'adminSaveProfile', 'Adminsaveprofile', NULL, 0, 0, 0),
+(449, 'chk_existing_username', 'Chk_existing_username', NULL, 0, 0, 0),
+(450, 'admin.courier.view', 'Courier View', NULL, 56, 0, 0),
+(451, 'admin.courier.add', 'Courier Add', NULL, 56, 0, 0),
+(452, 'admin.courier.save', 'Courier Save', NULL, 56, 0, 0),
+(453, 'admin.courier.update', 'Courier Update', NULL, 56, 0, 0),
+(454, 'admin.courier.edit', 'Courier Edit', NULL, 56, 0, 0),
+(455, 'admin.courier.delete', 'Courier Delete', NULL, 56, 0, 0),
+(456, 'admin.pincodes.sampleBulkDownload', 'Pincodes Samplebulkdownload', NULL, 26, 0, 0),
+(457, 'admin.raw-material.checkStatus', 'Raw-material Checkstatus', NULL, 0, 49, 0),
+(458, 'admin.pages.view', 'Pages View', NULL, 0, 0, 0),
+(459, 'admin.paymentSetting.changeStatus', 'Paymentsetting Changestatus', NULL, 36, 0, 0),
+(460, 'admin.country.countryStatus', 'Country Countrystatus', NULL, 18, 0, 0),
+(461, 'admin.courier.changeStatus', 'Courier Changestatus', NULL, 56, 0, 0),
+(462, 'admin.tables.checkCoupon', 'Tables Checkcoupon', NULL, 10, 0, 0),
+(463, 'admin.tables.getAdditionalcharge', 'Tables Getadditionalcharge', NULL, 10, 0, 0),
+(464, 'admin.returnPolicy.changeStatus', 'Returnpolicy Changestatus', NULL, 35, 0, 0),
+(465, 'admin.tables.reqloyalty', 'Tables Reqloyalty', NULL, 10, 0, 0),
+(466, 'admin.tables.revloyalty', 'Tables Revloyalty', NULL, 10, 0, 0),
+(467, 'admin.tables.tableCod', 'Tables Tablecod', NULL, 10, 0, 0),
+(468, 'admin.order.getbill', 'Order Getbill', NULL, 57, 0, 0),
+(469, 'admin.orders.cancelOrder', 'Orders Cancelorder', NULL, 13, 0, 0),
+(470, 'admin.orders.cancelOrderEdit', 'Orders Cancelorderedit', NULL, 13, 0, 0),
+(471, 'admin.orders.cancelOrderUpdate', 'Orders Cancelorderupdate', NULL, 13, 0, 0),
+(472, 'admin.email.status', 'Email Status', NULL, 57, 0, 0),
+(473, 'adminForgotPassword', 'Adminforgotpassword', NULL, 57, 0, 0),
+(474, 'adminChkForgotPasswordEmail', 'Adminchkforgotpasswordemail', NULL, 57, 0, 0),
+(475, 'adminResetPassword', 'Adminresetpassword', NULL, 57, 0, 0),
+(476, 'adminSaveResetPwd', 'Adminsaveresetpwd', NULL, 57, 0, 0),
+(477, 'admin.home.newsletter', 'Home Newsletter', NULL, 57, 0, 0),
+(478, 'admin.contact.getState', 'Contact Getstate', NULL, 57, 0, 0),
+(479, 'adminCheckCurPassowrd', 'Admincheckcurpassowrd', NULL, 57, 0, 0),
+(480, 'admin.domains.view', 'Domains View', NULL, 57, 0, 0),
+(481, 'admin.marketing.emails', 'Marketing Emails', NULL, 57, 0, 0),
+(482, 'admin.marketing.addGroup', 'Marketing Addgroup', NULL, 57, 0, 0),
+(483, 'admin.marketing.editGroup', 'Marketing Editgroup', NULL, 57, 0, 0),
+(484, 'admin.marketing.saveGroup', 'Marketing Savegroup', NULL, 57, 0, 0),
+(485, 'admin.marketing.changeStatus', 'Marketing Changestatus', NULL, 57, 0, 0),
+(486, 'admin.marketing.groups', 'Marketing Groups', NULL, 57, 0, 0),
+(487, 'admin.marketing.emailTemplates', 'Marketing Emailtemplates', NULL, 57, 0, 0),
+(488, 'admin.marketing.changeTempStatus', 'Marketing Changetempstatus', NULL, 57, 0, 0),
+(489, 'admin.marketing.addEmailTemp', 'Marketing Addemailtemp', NULL, 57, 0, 0),
+(490, 'admin.marketing.editEmailTemp', 'Marketing Editemailtemp', NULL, 57, 0, 0),
+(491, 'admin.marketing.saveEmailTemp', 'Marketing Saveemailtemp', NULL, 57, 0, 0),
+(492, 'admin.domains.success', 'Domains Success', NULL, 57, 0, 0),
+(493, 'check_fb_admin_user', 'Check_fb_admin_user', NULL, 57, 0, 0),
+(494, 'admin.home.exportNewsLetter', 'Home Exportnewsletter', NULL, 57, 0, 0),
+(495, 'admin.product.wishlist', 'Product Wishlist', NULL, 57, 0, 0),
+(496, 'admin.referralProgram.view', 'Referralprogram View', NULL, 57, 0, 0),
+(497, 'admin.referralProgram.editReferral', 'Referralprogram Editreferral', NULL, 57, 0, 0),
+(498, 'admin.referralProgram.saveReferral', 'Referralprogram Savereferral', NULL, 57, 0, 0),
+(499, 'admin.bankDetails.view', 'Bankdetails View', NULL, 57, 0, 0),
+(500, 'admin.bankDetails.addEdit', 'Bankdetails Addedit', NULL, 57, 0, 0),
+(501, 'admin.bankDetails.update', 'Bankdetails Update', NULL, 57, 0, 0),
+(502, 'admin.product.mall.category', 'Product Mall Category', NULL, 57, 0, 0),
+(503, 'admin.product.mall.product.Add', 'Product Mall Product Add', NULL, 57, 0, 0 ),
+(504, 'admin.product.mall.product.update', 'Product Mall Product Update', NULL, 57, 0, 0),
+(505, 'admin.orders.getECourier', 'Orders Getecourier', NULL, 57, 0, 0),
+(506, 'admin.orders.mallOrderSave', 'Orders Mallordersave', NULL,57, 0, 0),
+(507, 'admin.generalSetting.assignCourier', 'Generalsetting Assigncourier', NULL,57,0,0);
 -- --------------------------------------------------------
 
 --
@@ -2553,23 +2465,23 @@ CREATE TABLE IF NOT EXISTS `tblprfx_restaurant_tables` (
 -- Table structure for table `tblprfx_return_order`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_return_order` (
-  `id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-`sub_prod` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `return_amount` float(10,2) NOT NULL,
-  `reason_id` int(11) NOT NULL,
-  `opened_id` int(11) NOT NULL,
-  `remark` text NOT NULL,
-  `return_action` int(11) NOT NULL,
-  `return_status` int(11) NOT NULL,
-  `order_status` int(11) DEFAULT NULL,
-`exchange_product_id` int(11) DEFAULT NULL,
-`created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_return_order` (
+--   `id` int(11) NOT NULL,
+--   `order_id` int(11) NOT NULL,
+-- `sub_prod` int(11) NOT NULL,
+--   `product_id` int(11) NOT NULL,
+--   `quantity` int(11) NOT NULL,
+--   `return_amount` float(10,2) NOT NULL,
+--   `reason_id` int(11) NOT NULL,
+--   `opened_id` int(11) NOT NULL,
+--   `remark` text NOT NULL,
+--   `return_action` int(11) NOT NULL,
+--   `return_status` int(11) NOT NULL,
+--   `order_status` int(11) DEFAULT NULL,
+-- `exchange_product_id` int(11) DEFAULT NULL,
+-- `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -2784,19 +2696,19 @@ INSERT INTO `tblprfx_slider_master` (`id`, `slider`, `is_active`, `delete_master
 -- Table structure for table `tblprfx_sms_subscription`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_order_cancelled` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) DEFAULT NULL,
-  `order_id` int(11) NOT NULL,
-  `return_amount` float NOT NULL,
-  `reason_id` int(11) NOT NULL,
-  `remark` text NOT NULL,
-  `status` int(11) DEFAULT NULL COMMENT '0:No,1: Yes',
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL,
-  PRIMARY KEY (`id`),
-  KEY `order_id` (`order_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_order_cancelled` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `uid` int(11) DEFAULT NULL,
+--   `order_id` int(11) NOT NULL,
+--   `return_amount` float NOT NULL,
+--   `reason_id` int(11) NOT NULL,
+--   `remark` text NOT NULL,
+--   `status` int(11) DEFAULT NULL COMMENT '0:No,1: Yes',
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `order_id` (`order_id`)
+-- ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
 CREATE TABLE `tblprfx_question_category` (
@@ -3063,41 +2975,41 @@ INSERT INTO `tblprfx_unit_measures` (`id`, `unit`, `status`) VALUES
 -- Table structure for table `tblprfx_users`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_users` (
-  `id` int(10) unsigned NOT NULL,
-  `firstname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `lastname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `country_code` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-  `telephone` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `user_type` tinyint(4) NOT NULL,
-  `provider` text COLLATE utf8_unicode_ci NOT NULL,
-  `provider_id` bigint(20) NOT NULL,
-  `profile` text COLLATE utf8_unicode_ci NOT NULL,
-  `cashback` double NOT NULL,
-  `whishlist` bigint(20) NOT NULL,
-  `loyalty_group` int(11) NOT NULL,
-  `is_manually_updated` int(11) NOT NULL,
-  `total_purchase_till_now` float(20,2) NOT NULL,
-  `referal_code` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `cart` text COLLATE utf8_unicode_ci NOT NULL,
-  `sort_order` int(11) NOT NULL,
-  `status` int(11) NOT NULL DEFAULT '1',
-  `newsletter` int(11) NOT NULL,
-  `ip` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
-  `device_id` text COLLATE utf8_unicode_ci NOT NULL,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `tblprfx_users`
---
-
-INSERT INTO `tblprfx_users` (`id`, `firstname`, `lastname`, `email`, `password`,`country_code`, `telephone`, `remember_token`, `user_type`, `provider`, `provider_id`, `profile`, `cashback`, `whishlist`, `loyalty_group`, `is_manually_updated`, `total_purchase_till_now`, `referal_code`, `cart`, `sort_order`, `status`, `newsletter`, `ip`,`device_id`) VALUES
-(1, 'Super', 'Admin', 'admin@inficart.com', '$2y$10$zaosj.mDRRhXdUSi9wpD4OQvzAHWbjnF1CBkyp546l.CP.ZdPY2hm','+91', '9685986589', 'TsY5yucwXJ5niWCohjhLwpqijGslwrGWYLgVXOSDUxRGG6G78gNmeFhlJOQG', 1, '', 0, '', 0, 0, 1, 0, 0.00, '', '', 0, 1, 0, '','');
+-- CREATE TABLE IF NOT EXISTS `tblprfx_users` (
+--   `id` int(10) unsigned NOT NULL,
+--   `firstname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+--   `lastname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+--   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+--   `password` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
+--   `country_code` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+--   `telephone` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+--   `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+--   `user_type` tinyint(4) NOT NULL,
+--   `provider` text COLLATE utf8_unicode_ci NOT NULL,
+--   `provider_id` bigint(20) NOT NULL,
+--   `profile` text COLLATE utf8_unicode_ci NOT NULL,
+--   `cashback` double NOT NULL,
+--   `whishlist` bigint(20) NOT NULL,
+--   `loyalty_group` int(11) NOT NULL,
+--   `is_manually_updated` int(11) NOT NULL,
+--   `total_purchase_till_now` float(20,2) NOT NULL,
+--   `referal_code` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+--   `cart` text COLLATE utf8_unicode_ci NOT NULL,
+--   `sort_order` int(11) NOT NULL,
+--   `status` int(11) NOT NULL DEFAULT '1',
+--   `newsletter` int(11) NOT NULL,
+--   `ip` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+--   `device_id` text COLLATE utf8_unicode_ci NOT NULL,
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+-- 
+-- --
+-- -- Dumping data for table `tblprfx_users`
+-- --
+-- 
+-- INSERT INTO `tblprfx_users` (`id`, `firstname`, `lastname`, `email`, `password`,`country_code`, `telephone`, `remember_token`, `user_type`, `provider`, `provider_id`, `profile`, `cashback`, `whishlist`, `loyalty_group`, `is_manually_updated`, `total_purchase_till_now`, `referal_code`, `cart`, `sort_order`, `status`, `newsletter`, `ip`,`device_id`) VALUES
+-- (1, 'Super', 'Admin', 'admin@inficart.com', '$2y$10$zaosj.mDRRhXdUSi9wpD4OQvzAHWbjnF1CBkyp546l.CP.ZdPY2hm','+91', '9685986589', 'TsY5yucwXJ5niWCohjhLwpqijGslwrGWYLgVXOSDUxRGG6G78gNmeFhlJOQG', 1, '', 0, '', 0, 0, 1, 0, 0.00, '', '', 0, 1, 0, '','');
 
 -- --------------------------------------------------------
 
@@ -7275,14 +7187,7 @@ ALTER TABLE `tblprfx_general_setting`
 ALTER TABLE `tblprfx_gifts`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `tblprfx_has_addresses`
---
-ALTER TABLE `tblprfx_has_addresses`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `customer_id` (`user_id`);
 
---
 -- Indexes for table `tblprfx_has_attributes`
 --
 ALTER TABLE `tblprfx_has_attributes`
@@ -7326,9 +7231,9 @@ ALTER TABLE `tblprfx_has_options`
 
 --
 -- Indexes for table `tblprfx_has_products`
---
-ALTER TABLE `tblprfx_has_products`
-  ADD PRIMARY KEY (`id`);
+-- --
+-- ALTER TABLE `tblprfx_has_products`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_has_related_prods`
@@ -7420,11 +7325,7 @@ ALTER TABLE `tblprfx_offers_products`
 ALTER TABLE `tblprfx_offers_users`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `tblprfx_orders`
---
-ALTER TABLE `tblprfx_orders`
-  ADD PRIMARY KEY (`id`);
+
 
 --
 -- Indexes for table `tblprfx_ordertypes`
@@ -7465,14 +7366,14 @@ ALTER TABLE `tblprfx_order_return_open_unopen`
 --
 -- Indexes for table `tblprfx_order_return_reason`
 --
-ALTER TABLE `tblprfx_order_return_reason`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_order_return_reason`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_order_return_status`
 --
-ALTER TABLE `tblprfx_order_return_status`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_order_return_status`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_order_status`
@@ -7496,14 +7397,14 @@ ALTER TABLE `tblprfx_password_resets`
 --
 -- Indexes for table `tblprfx_payment_method`
 --
-ALTER TABLE `tblprfx_payment_method`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_payment_method`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_payment_status`
 --
-ALTER TABLE `tblprfx_payment_status`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_payment_status`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_permissions`
@@ -7554,9 +7455,9 @@ ALTER TABLE `tblprfx_restaurant_tables`
 --
 -- Indexes for table `tblprfx_return_order`
 --
-ALTER TABLE `tblprfx_return_order`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `order_id` (`order_id`);
+-- ALTER TABLE `tblprfx_return_order`
+--   ADD PRIMARY KEY (`id`),
+--   ADD KEY `order_id` (`order_id`);
 
 --
 -- Indexes for table `tblprfx_roles`
@@ -7681,8 +7582,8 @@ ALTER TABLE `tblprfx_unit_measures`
 --
 -- Indexes for table `tblprfx_users`
 --
-ALTER TABLE `tblprfx_users`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_users`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_vendors`
@@ -7817,11 +7718,7 @@ ALTER TABLE `tblprfx_general_setting`
 ALTER TABLE `tblprfx_gifts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `tblprfx_has_addresses`
---
-ALTER TABLE `tblprfx_has_addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=42512;
---
+
 -- AUTO_INCREMENT for table `tblprfx_has_attributes`
 --
 ALTER TABLE `tblprfx_has_attributes`
@@ -7859,8 +7756,8 @@ ALTER TABLE `tblprfx_has_options`
 --
 -- AUTO_INCREMENT for table `tblprfx_has_products`
 --
-ALTER TABLE `tblprfx_has_products`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+-- ALTER TABLE `tblprfx_has_products`
+--   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tblprfx_has_related_prods`
 --
@@ -7937,10 +7834,7 @@ ALTER TABLE `tblprfx_offers_products`
 ALTER TABLE `tblprfx_offers_users`
   MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `tblprfx_orders`
---
-ALTER TABLE `tblprfx_orders`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `tblprfx_ordertypes`
 --
@@ -7974,13 +7868,13 @@ ALTER TABLE `tblprfx_order_return_open_unopen`
 --
 -- AUTO_INCREMENT for table `tblprfx_order_return_reason`
 --
-ALTER TABLE `tblprfx_order_return_reason`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
+-- ALTER TABLE `tblprfx_order_return_reason`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT for table `tblprfx_order_return_status`
 --
-ALTER TABLE `tblprfx_order_return_status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+-- ALTER TABLE `tblprfx_order_return_status`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `tblprfx_order_status`
 --
@@ -7994,13 +7888,13 @@ ALTER TABLE `tblprfx_order_status_history`
 --
 -- AUTO_INCREMENT for table `tblprfx_payment_method`
 --
-ALTER TABLE `tblprfx_payment_method`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+-- ALTER TABLE `tblprfx_payment_method`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `tblprfx_payment_status`
 --
-ALTER TABLE `tblprfx_payment_status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+-- ALTER TABLE `tblprfx_payment_status`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `tblprfx_permissions`
 --
@@ -8039,8 +7933,8 @@ ALTER TABLE `tblprfx_restaurant_tables`
 --
 -- AUTO_INCREMENT for table `tblprfx_return_order`
 --
-ALTER TABLE `tblprfx_return_order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+-- ALTER TABLE `tblprfx_return_order`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tblprfx_roles`
 --
@@ -8134,8 +8028,8 @@ ALTER TABLE `tblprfx_unit_measures`
 --
 -- AUTO_INCREMENT for table `tblprfx_users`
 --
-ALTER TABLE `tblprfx_users`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+-- ALTER TABLE `tblprfx_users`
+--   MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tblprfx_vendors`
 --

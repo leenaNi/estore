@@ -1,10 +1,12 @@
 <?php
+
 /* Commented Somecode for veestores mall
  * Line 505, 522
  * Line 383-387
  * Line 539
  * 
  */
+
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
@@ -110,12 +112,6 @@ class HomeController extends Controller {
 
     public function newStore() {
 
-//		if ($store_name) {
-//            Session::put('storename', $store_name);
-//        } else {
-//            return redirect()->to("/");
-//        }
-
         if (Session::get('merchantid')) {
             Session::flash('storeadded', 'You can not create more than one store.');
             //return redirect()->back(); 
@@ -173,11 +169,11 @@ class HomeController extends Controller {
 //        if(empty(Session::get('storename'))){
 //            return redirect()->to("/");
 //        }
-        $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("theme_id")->toArray();
+        $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
         if (empty(Input::get('firstname')) && empty(Session::get('merchantid'))) {
             $cats = Category::where("status", 1)->get();
 
-            $data = ['cats' => $cats];
+            $data = ['cats' => $cats, 'themeIds' => $themeIds];
             $viewname = Config('constants.frontendView') . ".select-themes";
             return Helper::returnView($viewname, $data);
         }
@@ -302,9 +298,15 @@ class HomeController extends Controller {
         $store->category_id = $themeInput->cat_id;
         $store->template_id = $themeInput->theme_id;
         $store->store_domain = $actualDomain;
+        $store->percent_to_charge = 1.00;
         $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
         $store->status = 1;
-
+        $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
+        if (count($merchantPay) > 0) {
+            $themeInput->store_version = 2;
+        } else {
+            $themeInput->store_version = 1;
+        }
         if (empty($themeInput->id)) {
             if (!empty($themeInput->url_key)) {
                 $chkUrlKey = Store::where("url_key", $themeInput->url_key)->count();
@@ -410,8 +412,8 @@ class HomeController extends Controller {
                     $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", $prefix . "_");
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
 
-                   
-                    $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname","store_id"=>"$storeId","prefix"=>"$prefix"];
+
+                    $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
@@ -444,8 +446,8 @@ class HomeController extends Controller {
 
 
                     if (!empty($themeid)) {
-                        $themedata = DB::select("SELECT t.id,c.category,t.name,t.image from themes t left join categories c on t.cat_id=c.id order by c.category");
-                        $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->name);
+                        $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
+                        $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
                         $decodeVal['themeid'] = $themeid;
                         $decodeVal['themedata'] = $themedata;
                         $decodeVal['currencyId'] = @Currency::find($currency)->iso_code;
@@ -464,7 +466,16 @@ class HomeController extends Controller {
                             DB::table($prefix . "_general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0]);
                         }
                     }
-
+                    
+                    //Update Email Setting for mandrill and SMTP
+                    $emailSett = array("mandrill", "smtp");
+                    foreach ($emailSett as $email) {
+                        $emaildetails = json_decode(DB::table($prefix . "_general_setting")->where('url_key', $email)->first()->details);
+                        $emaildetails->name = $storeName;
+                        DB::table($prefix . "_general_setting")->where('url_key', $email)->update(["details" => json_encode($emaildetails)]);
+                    }
+                    //End Email Setting Update
+                    
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
@@ -535,7 +546,7 @@ class HomeController extends Controller {
                     $mailcontent .= "Store Admin Link: https://" . $domainname . '.' . $domain . "/admin" . "\n";
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n";
                     if (!empty($merchantEamil)) {
-                          Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
+                        Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
                     return "Extracted Successfully to $path";
                 } else {
@@ -910,6 +921,21 @@ class HomeController extends Controller {
         $data = [];
         $viewname = Config('constants.frontendView') . ".contact";
         return Helper::returnView($viewname, $data);
+    }
+
+    public function contactSend() {
+        $data = [];
+        $firstname = Input::get("firstname");
+        $useremail = Input::get("useremail");
+        $telephone = Input::get("telephone");
+        $message = Input::get("message");
+
+        $emailData = ['name' => $firstname, 'email' => $useremail, 'telephone' => $telephone, 'messages' => $message];
+        Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
+            $m->to("pradeep@infiniteit.biz", $firstname)->subject('Veestores Contact form!');
+            //$m->cc('madhuri@infiniteit.biz');
+        });
+        return 1;
     }
 
     public function faqS() {

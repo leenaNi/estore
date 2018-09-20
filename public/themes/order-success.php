@@ -6,7 +6,15 @@
   <!-- Document Wrapper
 	============================================= -->
   <div id="wrapper" class="clearfix">
-    <?php include( 'includes/header_style1.php'); ?>
+  <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+     include( 'includes/header_style1.php');
+
+     if($_GET['theme'] == 'fs2')
+     include( 'includes/header_style2.php');
+     
+     
+     ?>
 
     <!-- Content
 		============================================= -->
@@ -32,7 +40,7 @@
                 <tbody>
                   <tr class="cart_item">
                     <td class="cart-product-thumbnail">
-                      <a href="#"><img width="64" height="64" src="images/shop/blue-tshirt2.jpg" alt="">
+                      <a href="#"><img width="64" height="64" src="images/fashion/products/4.jpg" alt="">
                       </a>
                     </td>
                     <td class="cart-product-name"> <a href="#">Gritstones Men Blue Regular Fit T-shirt</a> </td>
@@ -46,7 +54,7 @@
               </table>
               <div class="col-md-12 col-sm-12 col-xs-12 text-center"> 
               <a href="#" class="button button-black">Print</a> 
-              <a href="myaccount.php" class="button button-default">My Account</a>
+              <a href="myaccount.php?theme=fs1" class="button button-default">My Account</a>
               </div>
             </div>
           </div>
@@ -54,7 +62,16 @@
       </div>
     </section>
     <!-- #content end -->
-    <?php include( 'includes/footer_style1.php'); ?> </div>
+    <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+     include( 'includes/footer_style1.php');
+
+     if($_GET['theme'] == 'fs2')
+     include( 'includes/footer_style2.php');
+     
+     
+     ?>
+      </div>
   <!-- #wrapper end -->
   <?php include( 'includes/foot.php'); ?> </body>
 

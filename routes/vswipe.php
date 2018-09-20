@@ -126,6 +126,16 @@ Route::group(['namespace' => 'Admin'], function () {
                 Route::post('/new-db-update', ["as" => "admin.updates.databaseUpdate.newDatabaseUpdate", "uses" => "UpdatesController@newDatabaseUpdate"]);
             });
         });
+         Route::group(['prefix' => 'courier-service', 'middlewareGroups' => ['web']], function() {
+            Route::get('/', ['as' => 'admin.courier.view', 'uses' => 'CourierController@index']);
+            Route::get('/add', ['as' => 'admin.courier.add', 'uses' => 'CourierController@add']);
+            Route::post('/save', ['as' => 'admin.courier.save', 'uses' => 'CourierController@save']);
+            Route::post('/update', ['as' => 'admin.courier.update', 'uses' => 'CourierController@update']);
+            Route::get('/edit', ['as' => 'admin.courier.edit', 'uses' => 'CourierController@edit']);
+            Route::get('/delete', ['as' => 'admin.courier.delete', 'uses' => 'CourierController@delete']);
+            Route::any('/changeStatus', ['as' => 'admin.courier.changeStatus', 'uses' => 'CourierController@changeStatus']);
+        });
+        
         Route::group(['prefix' => 'bank'], function () {
             Route::get('/', ["as" => "admin.banks.view", "uses" => "BankController@index"]);
             Route::any('/add-edit', ["as" => "admin.banks.addEdit", "uses" => "BankController@addEdit"]);
@@ -140,6 +150,11 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/notication-resend', ['as' => 'admin.notification.resend', 'uses' => 'PushNotificationController@resendNotification']);
            
           
+        });
+         Route::group(['prefix' => 'payment-settlement'], function() {
+            Route::get('/', ['as' => 'admin.payment-settlement.view', 'uses' => 'PaymentSettlementController@index']);
+            Route::any('/settled-payment', ['as' => 'admin.payment-settlements.settledPayment', 'uses' => 'PaymentSettlementController@settledPayment']);
+            Route::any('/settlement-summary', ['as' => 'admin.payment-settlements.settlementSummary', 'uses' => 'PaymentSettlementController@settlementSummary']);
         });
         Route::group(['prefix' => 'set-cron'], function() {
             Route::get('/get-update-sales', ['as' => 'admin.setCron.getDashboard', 'uses' => 'SetCronController@updateSales']);

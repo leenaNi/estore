@@ -489,7 +489,26 @@ class Helper {
             $amt = 0;
         return $amt;
     }
-    
+     public static function getMerchantStoreSettings($storePath) {
+        $path = $storePath . "/storeSetting.json";
+
+        $str = file_get_contents($path);
+
+        $settings = json_decode($str, true);
+
+
+        return $settings;
+    }
+    public static function saveMerchantStoreSettings($storePath,$productconfig) {
+         //  echo Config("constants.adminStorePath");
+         //  dd($productconfig);
+        $path =$storePath. "/storeSetting.json";
+        $jsonfile = fopen($path, "w");
+
+        fwrite($jsonfile, $productconfig);
+        fclose($jsonfile);
+      return 1;
+    }
 }
 
 ?>

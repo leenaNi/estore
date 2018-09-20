@@ -61,7 +61,13 @@
 <!--                                <td>{{ $od->id }}</td>-->
                                 <td>{{date("d-M-Y",strtotime($od->created_at)) }}</td>
                                 <td>{{ $od->order_count }}</td>
-                                <td><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';  ?> <span class="priceConvert"> {{ number_format($od->sales,2) }}</span></td>
+                                <td><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';  ?> <span class="priceConvert"> 
+                                        @if($od->prefix)
+                                        {{ number_format($od->sales,2) }}
+                                        @else 
+                                        {{number_format($od->hasPayamt,2)}}
+                                        @endif
+                                    </span></td>
                             </tr>
                             @endforeach
                             @else

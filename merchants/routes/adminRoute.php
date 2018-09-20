@@ -20,7 +20,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::get('/home', ["as" => "admin.home.view", "uses" => "HomeController@index"]);
 //       
         Route::any('/newsletter', ["as" => "admin.home.newsletter", "uses" => "HomeController@newsLetter"]);
-        Route::any('/export-newsLetter', ["as" => "admin.home.exportNewsLetter", "uses" => "HomeController@exportNewsLetter"]);      
+        Route::any('/export-newsLetter', ["as" => "admin.home.exportNewsLetter", "uses" => "HomeController@exportNewsLetter"]);
         Route::get('/set-preference', ["as" => "admin.set.preference", "uses" => "HomeController@setPref"]);
         Route::post('/changePopupStatus', ["as" => "admin.home.changePopupStatus", "uses" => "HomeController@changePopupStatus"]);
 
@@ -253,6 +253,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/save-re-order', ['as' => 'admin.orders.saveReOrder', 'uses' => 'OrdersController@save_re_order']);
             Route::any('/add-to-cart', ['as' => 'admin.orders.addToCart', 'uses' => 'OrdersController@add_to_cart']);
             Route::post('/check-order-coupon', ['as' => 'admin.orders.checkOrderCoupon', 'uses' => 'OrdersController@checkOrderCoupon']);
+            Route::any('/waybill/{OrderIds?}', ['as' => 'admin.orders.waybill', 'uses' => 'OrdersController@waybill']);
+            Route::post('/mallOrderSave', ['as' => 'admin.orders.mallOrderSave', 'uses' => 'OrdersController@mallOrderSave']);
 
             Route::post('/editOrderChkStock', ['as' => 'admin.orders.editOrderChkStock', 'uses' => 'OrdersController@editOrderChkStock']);
             Route::post('/getCartEditProd', ['as' => 'admin.orders.getCartEditProd', 'uses' => 'OrdersController@getCartEditProd']);
@@ -266,11 +268,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any("/cancel-order", ['as' => 'admin.orders.cancelOrder', 'uses' => 'CancelOrderController@index']);
             Route::any("/cancel-order-edit/{id}", ['as' => 'admin.orders.cancelOrderEdit', 'uses' => 'CancelOrderController@edit']);
             Route::any("/cancel-order-update", ['as' => 'admin.orders.cancelOrderUpdate', 'uses' => 'CancelOrderController@update']);
-            
-            
+
+
             //for courier services
             Route::any("/get-e-courier", ['as' => 'admin.orders.getECourier', 'uses' => 'OrdersController@getECourier']);
-
         });
 
         Route::group(['prefix' => 'sales', 'middlewareGroups' => ['CheckUser', 'web']], function() {
@@ -382,7 +383,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/save', ['as' => 'admin.dynamicLayout.save', 'uses' => 'DynamicLayoutController@Save']);
                 Route::get('/delete', ['as' => 'admin.dynamicLayout.delete', 'uses' => 'DynamicLayoutController@Delete']);
                 Route::any('/dynamic-layout-change-status', ['as' => 'admin.dynamicLayout.changeStatus', 'uses' => 'DynamicLayoutController@changeStatus']);
-                
             });
 
             Route::group(['prefix' => 'sizechart', 'middlewareGroups' => ['web']], function() {
@@ -478,16 +478,17 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                     Route::post('/save', ['as' => 'admin.generalSetting.save', 'uses' => 'MiscellaneousController@generalSettingSave']);
                     Route::get('/delete', ['as' => 'admin.generalSetting.delete', 'uses' => 'MiscellaneousController@generalSettingDelete']);
                     Route::any('/changeStatus', ['as' => 'admin.generalSetting.changeStatus', 'uses' => 'MiscellaneousController@changeStatus']);
+                    Route::any('/assign-courier', ['as' => 'admin.generalSetting.assignCourier', 'uses' => 'MiscellaneousController@assignCourier']);
+                    Route::any('/get-store-version', ['as' => 'admin.generalSetting.storeVersion', 'uses' => 'MiscellaneousController@storeVersion']);
                 });
 
                 Route::group(['prefix' => 'storeSettings', 'middlewareGroups' => ['web']], function() {
                     Route::get('/', ['as' => 'admin.storeSetting.view', 'uses' => 'MiscellaneousController@storeSetting']);
                     Route::any('/add', ['as' => 'admin.storeSetting.add', 'uses' => 'MiscellaneousController@generalStoreAdd']);
                 });
- Route::group(['prefix' => 'domains', 'middlewareGroups' => ['web']], function() {
+                Route::group(['prefix' => 'domains', 'middlewareGroups' => ['web']], function() {
                     Route::get('/', ['as' => 'admin.domains.view', 'uses' => 'MiscellaneousController@domains']);
                     Route::get('/success', ['as' => 'admin.domains.success', 'uses' => 'MiscellaneousController@domain_success']);
-
                 });
                 Route::group(['prefix' => 'retunPolicy', 'middlewareGroups' => ['web']], function() {
                     Route::get('/', ['as' => 'admin.returnPolicy.view', 'uses' => 'MiscellaneousController@returnPolicy']);
@@ -507,9 +508,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
 
                 Route::group(['prefix' => 'AdvanceSetting', 'middlewareGroups' => ['web']], function() {
                     Route::any('/', ['as' => 'admin.advanceSetting.view', 'uses' => 'MiscellaneousController@advanceSetting']);
-                  
                 });
-            Route::group(['prefix' => 'referralProgram', 'middlewareGroups' => ['web']], function() {
+                Route::group(['prefix' => 'referralProgram', 'middlewareGroups' => ['web']], function() {
                     Route::any('/', ['as' => 'admin.referralProgram.view', 'uses' => 'MiscellaneousController@referralProgram']);
                     Route::any('/editReferral', ['as' => 'admin.referralProgram.editReferral', 'uses' => 'MiscellaneousController@editReferral']);
                     Route::any('/saveReferral', ['as' => 'admin.referralProgram.saveReferral', 'uses' => 'MiscellaneousController@saveReferral']);
@@ -537,7 +537,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                     Route::get('/', ['as' => 'admin.stockSetting.view', 'uses' => 'MiscellaneousController@stockSetting']);
                     Route::post('/save', ['as' => 'admin.stockSetting.save', 'uses' => 'MiscellaneousController@saveStockLimit']);
                 });
-                  Route::group(['prefix' => 'bankDetails'], function() {
+                Route::group(['prefix' => 'bankDetails'], function() {
                     Route::get('/', ['as' => 'admin.bankDetails.view', 'uses' => 'MiscellaneousController@bankDetails']);
                     Route::get('/addEdit', ['as' => 'admin.bankDetails.addEdit', 'uses' => 'MiscellaneousController@addEditBankDetails']);
                     Route::post('/update', ['as' => 'admin.bankDetails.update', 'uses' => 'MiscellaneousController@updateBankDetails']);

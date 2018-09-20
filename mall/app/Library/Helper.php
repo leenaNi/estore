@@ -84,7 +84,7 @@ class Helper {
             echo ($key == 0) ? 'active' : '';
             echo "'>";
             if ($node->children()->count() > 0) {
-                echo "<a href='#subcategory-{$node->url_key}' >{$node->category}</a>"; //href=" . route('category', ['slug' => $node->url_key]) . "
+                echo "<a href='#subcategory-{$node->id}' >{$node->category}</a>"; //href=" . route('category', ['slug' => $node->url_key]) . "
             } else {
                 echo "<a href=" . route('category', ['slug' => $node->url_key]) . " >{$node->category}</a>";
             }
@@ -93,7 +93,7 @@ class Helper {
     }
 
     public static function getSubmenu($child, $key) {
-        echo " <div id='subcategory-{$child->url_key}' class='";
+        echo " <div id='subcategory-{$child->id}' class='";
         echo ($key == 0) ? 'active' : '';
         echo "' >"
         . "<div class='lnt-subcategory col-sm-8 col-md-8'><h3 class='lnt-category-name'>"
@@ -421,7 +421,7 @@ class Helper {
     }
 
     public static function getmaxPrice() {
-        $prod = DB::table('mall_products')->where('price', DB::raw("(select max(`price`) from " . DB::getTablePrefix() . "mall_products)"))->first();
+        $prod = DB::table('mall_products')->where('status', 1)->where('price', DB::raw("(select max(`price`) from " . DB::getTablePrefix() . "mall_products)"))->first();
         if ($prod) {
             return $prod->price;
         } else {
@@ -444,7 +444,7 @@ class Helper {
     }
 
     public static function getMaxPriceByCat($catid) {
-        $prod = DB::table('products')->where('selling_price', '=', DB::raw("(select max(`selling_price`) from products as p inner join  has_categories as hc on (p.id=hc.prod_id)  where hc.cat_id={$catid})"))->first();
+        $prod = DB::table('products')->where('status', 1)->where('selling_price', '=', DB::raw("(select max(`selling_price`) from products as p inner join  has_categories as hc on (p.id=hc.prod_id)  where hc.cat_id={$catid})"))->first();
         if ($prod) {
             return @$prod->selling_price;
         } else {
@@ -664,11 +664,11 @@ class Helper {
             }
         }
 
-//        $prod = DB::table('has_categories')->whereIn('cat_id', $cat_id)->pluck('prod_id');
+        $prod = DB::table('has_categories')->whereIn('cat_id', $cat_id)->pluck('prod_id');
         //dd($prod);
-//        $maxp = DB::table('products')->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
+        $maxp = DB::table('mall_products')->where('status', 1)->select(DB::raw("max(`selling_price`) as maxp"))->whereIn('id', $prod)->first();
         // dd($maxp);
-        return 100; //$maxp->maxp;
+        return $maxp->maxp;
     }
 
     public static function quickAddtoCart($prods) {
@@ -835,19 +835,20 @@ class Helper {
                         $tableContant = $tableContant . '   <tr class="cart_item">
         <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
                         if ($cart['options']['image'] != '') {
-                            $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . "/" . $cart["options"]["image"]) . '" alt="">
+                            $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . $cart["options"]["image_with_path"] . "/" . $cart["options"]["image"] . '" alt="">
           </a>';
                         } else {
-                            $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
+                            $tableContant = $tableContant . '  <img width="64" height="64" src="' . $cart["options"]["image_with_path"] . '/default-image.jpg" alt="">';
                         }
                         $tableContant = $tableContant . '</td>
         <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
             <br>
           <small><a href="#"> ';
                         if (!empty($cart['options']['options'])) {
-
+                            $option = '';
                             foreach ($cart['options']['options'] as $key => $value) {
-                                $option = AttributeValue::find($value)->option_name;
+                                $optVal = DB::table($cart['options']['prefix'] .'_attribute_values')->where('id', $value)->first();
+                                $option .= ($optVal)? $optVal->option_name: '';
                             }
                         }
                         $tableContant = $tableContant . @$option . ' </a></small></td>
@@ -979,6 +980,22 @@ class Helper {
                 $file = Config("constants.logoUploadImgPath") . 'logo.png';
                 $success = file_put_contents($file, $data);
                 return $file;
+            }
+
+            public static function getCartProd($cart, $prodId, $subProdId) {
+                $prod = [];
+                foreach ($cart as $key => $cartProd) {
+                    if ($subProdId > 0 && $cartProd['options']['prod_type'] == 3) {
+                        if ($cartProd['options']['sub_prod'] == $subProdId) {
+                            $prod = $cartProd;
+                        }
+                    } else if ($cartProd['options']['prod_type'] == 1) {
+                        if ($cartProd['id'] == $prodId) {
+                            $prod = $cartProd;
+                        }
+                    }
+                }
+                return $prod;
             }
 
         }

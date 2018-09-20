@@ -102,6 +102,7 @@ $adminConstants = [
     'catImgPath' => asset('uploads/catalog/category/'),    
     'fileUploadPluginPath' =>'https://dakwhavtmnuuf.cloudfront.net/Admin/fileUploadPlugin',
     'adminImgUploadPath' =>'uploads/dist/img/',
+    'adminImgangePath' =>asset('uploads/dist/img/'), 
     'adminImgPath' =>'https://dakwhavtmnuuf.cloudfront.net/Admin/dist/img',
     'adminDistCssPath' => 'https://dakwhavtmnuuf.cloudfront.net/Admin/dist/css',
     'adminBootstrapCssPath' =>'https://dakwhavtmnuuf.cloudfront.net/Admin/bootstrap/css',

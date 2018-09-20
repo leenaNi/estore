@@ -84,9 +84,9 @@ class ProductsController extends Controller {
             $products = $products->where('selling_price', '<=', $max_prize);
         }
         if (!empty(Input::get('category'))) {
-            dd(Input::get('category'));
+         
             $products = $products->whereHas('categories', function($q) {
-                $q->where('categories.id', Input::get('category'));
+                $q->where('mall_prod_categories.id', Input::get('category'));
             });
         }
         if (Input::get('status') == '0' || Input::get('status') == '1') {
@@ -141,7 +141,7 @@ class ProductsController extends Controller {
             $prd->mainImage =  $prodImg->image_path . '/' .@$prodImg->filename;
             
         }
-       // dd($dd);
+      
 
         return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount','category'));
     }

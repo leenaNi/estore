@@ -62,24 +62,8 @@
                         {!! Form::text('dateto',Input::get('dateto'), ["class"=>'form-control  toDate', "placeholder"=>"To Date"]) !!}
                     </div> -->
 
-                    @if($order_status->count())
-                    @php echo Input::get('searchStatus[]'); @endphp
-                    <div class="btn-group form-group col-md-4 col-xs-12">
-                        <select name='searchStatus[]' class="multiselect form-control" multiple="multiple" style="background-color: none!important;">
-                            @php echo $order_options @endphp
-                        </select>                                  
-                    </div>
-                    @endif
-                    @if($feature['flag'])
-                    <div class="btn-group col-md-4 col-xs-12 mob-marBottom15">
-                        <select name='searchFlag' class="form-control">
-                            <option  value="">Select Flag</option>
-                            @foreach($flags as $flag)
-                            <option  value="{{$flag->id }}"  <?php echo (Input::get('searchFlag') == $flag->id ) ? "selected" : '' ?> >{{$flag->flag }}</option> 
-                            @endforeach
-                        </select>                                    
-                    </div>
-                    @endif
+               
+                
                     <div class="clearfix"></div>
                     <div class="form-group col-md-4 noBottomMargin">
                         <div class=" button-filter-search col-md-6 col-xs-12 no-padding mob-marBottom15">
@@ -95,7 +79,7 @@
                 </div>
 
                 <div class="box-header col-md-3 col-xs-12 pull-right mobPadding noMob-leftBorder mob-bottomBorder">
-                    <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default pull-right col-md-12 fullMobile-width">Create New Order</a>
+<!--                    <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default pull-right col-md-12 fullMobile-width">Create New Order</a>
                   
                     <div class="clearfix" style="margin-bottom:15px;"></div>
                     <a class="btn btn-primary" href="{{ asset(Config('constants.BulkOrderUploadPath')). "/cartini_orderBulk_upload.csv"}}"style="margin-bottom:15px; margin-left: 0; width: 100%;">Download Sample</a>
@@ -107,7 +91,7 @@
                         <div class="">
                             <input type="submit" class="btn sbtn btn-primary submitBulkUpload" value="Bulk Order Upload"  style="margin-left: 0; margin-bottom:15px; width: 100%; "/>
                         </div>
-                    </form>
+                    </form>-->
                     <div class="clearfix" style="margin-bottom:15px;"></div>
                     <a href="{{route('admin.orders.export')}}"  class="btn btn-default pull-right col-md-12 fullMobile-width">Export All Order</a>
 
@@ -168,7 +152,7 @@
                                 <th>Name</th>
 <!--                                <th>Email ID</th>-->
                                 <th>Mobile</th>
-                                <th>Order Status</th>
+                                <!--<th>Order Status</th>-->
                                 <th>Payment Status</th>
 <!--                                <th>Payment Method</th>-->
                                 <th>@sortablelink ('pay_amt', 'Amount') <?php //echo!empty(Session::get('currency_symbol')) ? '('.Session::get('currency_symbol').')' : ''; ?></th>
@@ -177,10 +161,7 @@
                                 <th>Shipping date</th>-->
 
 <!--                                <th>Invoice Printed?</th>-->
-                                @if($feature['flag'] == 1)  
-                                <th>Flag</th>
-<!--                                <th>Flag Comment</th>-->
-                                @endif
+
                                 @if($feature['courier-services'] == 1)  
 <!--                                <th>Courier Service</th>-->
                                 @endif
@@ -195,10 +176,10 @@
                                 <td><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
                                 <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
 
-                                <td>{{ @$order->users->firstname }} {{ @$order->users->lastname }} </td>
+                                <td>{{ @$order->first_name }} {{ @$order->last_name }} </td>
 <!--                                <td>{{ @$order->users->email }}  </td>-->
-                                <td>{{ @$order->users->telephone }}</td>
-                                <td>{{ @$order->orderstatus['order_status']  }}</td>
+                                <td>{{ @$order->phone_no }}</td>
+                                <!--<td>{{ @$order->order_status }}</td>-->
                                 <td>{{ @$order->paymentstatus['payment_status'] }}</td>
 <!--                                <td>{{ @$order->paymentmethod['name'] }}</td>-->
                                 <td><span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}</td>
@@ -220,35 +201,18 @@
                                 <td>{{ !empty($order->ship_date != 00-00-00)?date('d M y',strtotime($order->ship_date)):'' }}</td>-->
 
 
-<!--                                <td>{{ ($order->print_invoice == 0)?"No":"Yes" }}</td>-->
-                                @if($feature['flag'] == 1)  
-                                 <td>
-                                     <div id="flagD{{$order->id }}" class="flagD">   
-                                         <div class="flagDName" id="flagDName{{$order->id }}">
-                                             <div style='width: 20px;height: 20px;background:{{ @$order->orderFlag->value }} ; border-radius: 50%'></div>
-                                             <br/>{{  (strpos(@$order->orderFlag->flag, 'No Flag') !== false)?"":@$order->orderFlag->flag}} <br> {{  $order->flag_remark}}
-                                         </div>
-                                     </div>
-                                 </td>
-<!--                                 <td>
-                                     <div class="flagC{{$order->id }}" id="flagC{{$order->id }}"> 
-                                         <div class="flagDC{{$order->id }}" id="flagDC{{$order->id }}">
-                                             {{  $order->flag_remark}}
-                                         </div>
-                                     </div>
-                                 </td>-->
-                                @endif
+
                                 @if($feature['courier-services'] == 1)  
 <!--                                   <td>{{ ($order->courier != 0)?$order->getcourier['name']:'-' }}</td>-->
                                 @endif
                                 <td>
                                     <!--                                    <a href="{!! route('admin.orders.editReOrder',['id'=>$order->id]) !!}"  class="label label-success active ereorder" ui-toggle-class="">Edit / Update Order</a>-->
-                                    <a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
-                                      <a href="#" data-ordId ="{{ $order->id }}"  class="flage"  ui-toggle-class="" data-toggle="tooltip" title="Flag"><i class="fa fa-flag-o btn-plen"></i></a>
-                                    <a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this order?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash "></i></a>
-                       <!--                                    <a href="{!! route('admin.orders.orderHistory') !!}?id={{$order->id}}" target="_blank" class="viewHistory"><span class="label label-info label-mini">History</span></a>-->
+                                    <!--<a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>-->
+                                      <!--<a href="#" data-ordId ="{{ $order->id }}"  class="flage"  ui-toggle-class="" data-toggle="tooltip" title="Flag"><i class="fa fa-flag-o btn-plen"></i></a>-->
+                                    <!--<a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this order?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash "></i></a>-->
+                                                           <a href="{!! route('admin.orders.viewOrderDetails') !!}?id={{$order->id}}" target="_blank" class="viewHistory"><span class="label label-info label-mini">Details</span></a>
                                 
-                                   <!--  <a href="#" data-ordId ="{{ $order->id }}"  class="" ui-toggle-class="" data-toggle="tooltip" title="History"><i class="fa fa-history"></i></a> -->
+                                     <!--<a href="#" data-ordId ="{{ $order->id }}"  class="" ui-toggle-class="" data-toggle="tooltip" title="History"><i class="fa fa-history"></i></a>--> 
                                     <!--                                    <a href="{!! route('admin.orders.ReturnOrder',['id'=>$order->id]) !!}"  class="label label-success active" ui-toggle-class="">Return Order</a>-->
 
                                 </td>
@@ -313,35 +277,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="flagBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Flag</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post" id="flagForm" action=""> 
-                            <label>Select Flag</label>
-                            <select name="flagid" class="form-control selFlag">
-                                <option value="">Please select</option>
-                                @foreach($flags as $flag)
-                                <option value="{{ $flag->id }}">{{ $flag->flag  }}</option>
-                                @endforeach
-                            </select>
-                            <br/>
-                            <label>Comments</label>
-                            <textarea name="flag_remark"  class="form-control flagComment"></textarea>
-                            <input type="hidden" name="ord_id" class="OdID">
-                        </form>   
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="saveFlag" class="btn btn-primary saveFlag" >Submit</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
     </div>
 </div>
 </section>

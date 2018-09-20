@@ -161,7 +161,7 @@
                                 <th>@sortablelink ('product', 'Product')</th>
                                 <!-- <th>@sortablelink ('product_code', 'SKU')</th> -->
                                 <th>Categories</th>
-                                <th><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';               ?>@sortablelink ('price', 'Price') </th>
+                                <th><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';                ?>@sortablelink ('price', 'Price') </th>
                                 <!-- <th>@sortablelink ('spl_price', 'Special Price')</th> -->
                                 <th>Product Type</th>
                                <!-- <th>Availability</th> -->
@@ -169,6 +169,7 @@
                                 <th>Stock</th>
                                 @endif
                                 <th>Status</th>
+                                <th>Sell On Veestores Mall</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -225,18 +226,22 @@
                         @endif
                         <td>
                             @if($product->status==1)
-                            <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this product?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn"></i></a>
+                            <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this product?')" data-toggle="tooltip" title="Enabled">
+                                <i class="fa fa-check btn-plen btn"></i></a>
                             @elseif($product->status==0)
                             <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this product?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn"></i></a>
                             @endif
                         </td>
+                          <td>
+                           @if($product->is_share_on_mall==0)
+                            <a prod-id="{{$product->id}}" class="   shareProductToMall" ui-toggle-class="" title="Publish To Mall"> <i class="fa fa-check btn-plen btn"></i></a>
+                            @else
+                            <a prod-id="{{$product->id}}" class="  unpublishToMall" ui-toggle-class=""  title="Unpublish" ><i class="fa fa-times  btn-plen btn"></i></a>
+                            @endif
+                        </td>
                         <td>
                             <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw"></i></a>
-                            @if($product->is_share_on_mall==0)
-                            <a prod-id="{{$product->id}}" class="label label-info active shareProductToMall" ui-toggle-class="" title="Publish To Mall"><i class="fa fa-arrow-up"></i></a>
-                            @else
-                            <a prod-id="{{$product->id}}" class="label label-info active unpublishToMall" ui-toggle-class=""  title="Unpublish" ><i class="fa fa-arrow-down"></i></a>
-                            @endif
+                           
                             <!--                        
 <a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
 
@@ -590,31 +595,31 @@
                                                 });
                                                 $("#addProductToMall").modal("show");
                                                 $("#selCat").append(optionVal).append(data.category);
-                                                
+
                                                 //                                                $("#selCat").append(optionVal);
                                             }
                                         });
                                     });
-                                      $(".unpublishToMall").click(function () {
-                                                     //    alert("for ");
+                                    $(".unpublishToMall").click(function () {
+                                        //    alert("for ");
                                         var prodId = ($(this).attr('prod-id'));
                                         //  var optionVal='<oprion value="">Please Select Category</option>';
-                                      var conf=confirm("Are you sure to unpublish the product form mall ?");
-                                      if(conf){
-                                        $.ajax({
-                                            url: "{{ route('admin.product.mall.product.update') }}",
-                                            type: "post",
-                                            data: {prodId: prodId},
-                                            success: function (data) {
-                                                if(data.status === 1)
-                                            window.location.href = "{{ route('admin.products.view') }}";
-                                                
-                                                //                                                $("#selCat").append(optionVal);
-                                            }
-                                        });
-                                    }else{
-                                        return false;
-                                    }
+                                        var conf = confirm("Are you sure to unpublish the product form mall ?");
+                                        if (conf) {
+                                            $.ajax({
+                                                url: "{{ route('admin.product.mall.product.update') }}",
+                                                type: "post",
+                                                data: {prodId: prodId},
+                                                success: function (data) {
+                                                    if (data.status === "1" || data.status === "0")
+                                                        window.location.href = "{{ route('admin.products.view') }}";
+
+                                                    //                                                $("#selCat").append(optionVal);
+                                                }
+                                            });
+                                        } else {
+                                            return false;
+                                        }
                                     });
                                     $(function () {
                                         $("body").on("click", "button#publish", function (e) {
@@ -635,7 +640,7 @@
                                                         // $("#barerr" + id).text('Please wait');
                                                     },
                                                     success: function (res) {
-                                                        if (res.status===1) {
+                                                        if (res.status == "1" || res.status == "0") {
                                                             $("#addProductToMall").modal("hide");
                                                             window.location.href = "{{ route('admin.products.view') }}";
                                                         }

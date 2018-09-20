@@ -48,17 +48,9 @@
                     @endif
 
 
-                    @if($feature['courier-services'] == 1)    
-                    <div class="row">
-                        <div class='col-sm-12'>     
-                            <div class="form-group">
-                                {!!form::label('service_provider','Service Provider ', ["class"=> 'control-label']) !!}<span class="red-astrik"> *</span>
-                                {!! form::select('service_provider',$service_provider,null,["class"=>'form-control servicePrv validate[required]', "placeholder"=>'Select Service Provider']) !!}
-                            </div>
-                        </div>
-                    </div>
+                 
                     {!! Form::hidden('pref',0) !!}
-                    @endif
+                  
                     <div class="row">
                         <div class='col-sm-12'>     
 
@@ -90,16 +82,16 @@
 
 @section('myscripts')
 <script>
-    $(".servicePrv").on("change", function () {
-        selval = $(this).val();
-        $("input[name='pref']").val(0);
-        if (selval != "") {
-            pref = '<?= json_encode($prefdata) ?>';
-            prefArr = JSON.parse(pref);
-            $("input[name='pref']").val(prefArr[selval]);
-        }
-
-    });
+//    $(".servicePrv").on("change", function () {
+//        selval = $(this).val();
+//        $("input[name='pref']").val(0);
+//        if (selval != "") {
+//            pref = '<?php // echo json_encode($prefdata) ?>';
+//            prefArr = JSON.parse(pref);
+//            $("input[name='pref']").val(prefArr[selval]);
+//        }
+//
+//    });
 
 </script>
 

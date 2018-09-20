@@ -86,8 +86,8 @@ $(document).ready(function () {
     });
 });
 </script>
-<script>
-    //PRODUCT DETAILS PAGE 
+<!-- <script>
+    //PRODUCT DETAILS PAGE - zoom effect  
     var cw = $('#shop .product a img').width();
     console.log("Image width", cw);
     jQuery('#shop .product a img').css({'height': cw + 'px'});
@@ -100,21 +100,22 @@ $(document).ready(function () {
 
         if ($(window).width() < 768) {
             setTimeout(function () {
-                $('.zoom-me').elevateZoom({
-                    zoomType: "inner",
-                    cursor: "crosshair",
-                    zoomWindowFadeIn: 500,
-                    zoomWindowFadeOut: 750
-                });
+//                $('.zoom-me').elevateZoom({
+//                    zoomType: "inner",
+//                    cursor: "crosshair",
+//                    zoomWindowFadeIn: 500,
+//                    zoomWindowFadeOut: 750
+//                });
+                $('.zoomContainer').remove();
             }, 2000);
         } else {
             setTimeout(function () {
                 $('.zoom-me').elevateZoom();
-            }, 2000);
+            }, 1000);
         }
 
     });
-</script>
+</script> -->
 <!---- Subscription Link ------------->
 <script type="text/javascript">
 //    $("#btn-subscribe").click(function () {

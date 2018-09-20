@@ -35,7 +35,7 @@ abstract class Controller extends BaseController {
     public $pincodeStatus;
     public $feature;
     public $storeViesion;
-
+    public $jsonString;
     public function __construct() {  
         
      
@@ -45,6 +45,7 @@ abstract class Controller extends BaseController {
         Session::forget('currency_val');
 
         $this->setGlobalCurrency();
+        $this->jsonString = Helper::getSettings();
 //        $currencyId ='IND';
 //        //$currency = HasCurrency::find($currencyId);
 //        $currency = HasCurrency::where('iso_code',$currencyId)->first();
@@ -63,6 +64,7 @@ abstract class Controller extends BaseController {
         View::share('industry_id', Helper::getSettings()['industry_id']);
         View::share('store_version_id', Helper::getSettings()['store_version']);
         Session::put("storeName", Helper::getSettings()['storeName']);
+        Session::put("store_id", Helper::getSettings()['store_id']);
         View::share('settingStatus', $this->getSettingStatus());
         View::share('socialMedia', SocialMediaLink::where('status', 1)->get());
         View::share('staticPages', StaticPage::where('status', 1)->orderby('sort_order','asc')->get());
@@ -91,6 +93,7 @@ abstract class Controller extends BaseController {
         View::share('feature', $this->feature);
         $this->storeViesion=$this->getStoreVersion();      
          View::share('storeViesion', $this->storeViesion);
+         View::share('$jsonString', $this->jsonString);
         //        $data['socialMedia']=SocialMediaLink::where('status',1)->get();
 //        $data['contactDetails']=Contact::where('status',1)->get();
 //        $data['staticPages']=StaticPage::where('status',1)->get();

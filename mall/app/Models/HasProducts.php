@@ -23,7 +23,15 @@ class HasProducts extends Model {
     public function orderDetails() {
         return $this->belongsTo('App\Models\Order', 'order_id');
     }
+   public function orderstatus() {
 
+        return $this->belongsTo("App\Models\OrderStatus", "order_status");
+    }
+    
+    public function getStore() {
+
+        return $this->belongsTo("App\Models\Stores", "store_id");
+    } 
     public function consignment() {
 
         return $this->belongsTo('App\Models\Consignment', 'consignment_id');

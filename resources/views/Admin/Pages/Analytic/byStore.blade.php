@@ -92,7 +92,7 @@
                             <td>{{$ssale->store_name}}</td>
                             <td>{{$ssale->category}}</td>
                             <!--<td>{{$ssale->banknames}}</td>-->
-                            <td>{{ Session::get('cur') }}  {{number_format($ssale->total_sales)}}</td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert"> {{number_format($ssale->total_sales)}}</span></td>
 
                         </tr>
 

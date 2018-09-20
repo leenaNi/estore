@@ -216,6 +216,7 @@ class ProductsController extends Controller {
             $saveImgs->catalog_id = $prod->id;
             $saveImgs->filename = is_null($fileName) ? $saveImgs->filename : $fileName;
             $saveImgs->image_type = 1;
+            $saveImgs->alt_text = Input::get('product');
             $saveImgs->image_path = Config('constants.productImgPath');
             $saveImgs->image_mode = 1;
             $saveImgs->save();
@@ -1100,9 +1101,6 @@ class ProductsController extends Controller {
             }
             if ($prod->catalogimgs()->count() >= 2) {
                 $prod->catalogimgs()->delete();
-            }
-            if ($prod->savedlist()->count() >= 1) {
-                @$prod->savedlist()->detach();
             }
             $prod->delete();
             return redirect()->back()->with('message', 'Product deleted successfully.');
@@ -2137,7 +2135,10 @@ class ProductsController extends Controller {
                 Session::flash('message', "Product alredy exist!");
                 $data = ["status" => "0", "msg" => "Product alredy exist!"];
             } else {
-                $mallProd->status == 1;
+//                $prod = Product::where("id", Input::get("prodId"))->get();
+//                $tableColumns = Schema::getColumnListing('products');
+//                $this->updateProduct($prodConfig, $jsonString, $tableColumns);
+                $mallProd->status = 1;
                 $mallProd->save();
                 $products->is_share_on_mall = 1;
                 $products->save();
@@ -2155,7 +2156,7 @@ class ProductsController extends Controller {
             }
             $products->is_share_on_mall = 1;
             $products->save();
-            Session::put('msg', "Product share on mall successfully");
+            Session::flash('msg', "Product published to mall successfully");
             $data = ["status" => "1", "msg" => "Product published to mall successfully", "prod" => $prod];
         }
         return $data;
@@ -2164,6 +2165,21 @@ class ProductsController extends Controller {
     public function saveProduct($product, $jsonString, $tableColumns, $category = null, $parent = null) {
         foreach ($product as $prod) {
             $prods = new MallProducts();
+            $prods->store_id = $jsonString['store_id'];
+            $prods->prefix = $jsonString['prefix'];
+            $prods->store_prod_id = $prod->id;
+            for ($i = 1; $i < count($tableColumns); $i++) {
+                $prods->{$tableColumns[$i]} = $prod->{$tableColumns[$i]};
+            }
+            $prods->save();
+            if ($parent) {
+                $prods->mallcategories()->sync($category);
+            }
+        }
+    }
+    public function updateProduct($product, $jsonString, $tableColumns, $category = null, $parent = null) {
+        foreach ($product as $prod) {
+            $prods = MallProducts::where('store_prod_id', $prod->id);
             $prods->store_id = $jsonString['store_id'];
             $prods->prefix = $jsonString['prefix'];
             $prods->store_prod_id = $prod->id;
@@ -2185,7 +2201,8 @@ class ProductsController extends Controller {
         $products->is_share_on_mall = 0;
         $products->save();
         MallProducts::where("store_prod_id", $prodId)->where("store_id", $store_id)->update(["status" => 0]);
-        Session::flash('msg', "Product unpublish on mall successfully");
+        Session::flash('msg', "Product unpublished from mall successfully");
+        return $data = ["status" => "1", "msg" => "Product Unpublished from mall successfully", "prod" => $products];
     }
 
 }

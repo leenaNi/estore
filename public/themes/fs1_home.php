@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="ltr" lang="en-US">
 <?php include( 'includes/head.php'); ?>
 
@@ -13,13 +14,22 @@
           <div class="flexslider">
             <div class="slider-wrap">
               <div class="slide">
-                <a href="#"> <img src="images/slider/1.jpg" alt="Shop Image"> </a>
+                <a href="#"> <img src="images/fashion/slider/1.jpg" alt="Shop Image"> 
+                <div class="flex-caption">
+                                <h2>Fashions fade, style is eternal</h2>
+                            </div></a>
               </div>
               <div class="slide">
-                <a href="#"> <img src="images/slider/2.jpg" alt="Shop Image"> </a>
+                <a href="#"> <img src="images/fashion/slider/2.jpg" alt="Shop Image"> 
+                <div class="flex-caption">
+                                <h2>Dress Like A Boss</h2>
+                            </div></a>
               </div>
               <div class="slide">
-                <a href="#"> <img src="images/slider/3.jpg" alt="Shop Image"> </a>
+                <a href="#"> <img src="images/fashion/slider/3.jpg" alt="Shop Image"> 
+                <div class="flex-caption">
+                                <h2>Shop It As You Watch It</h2>
+                            </div></a>
               </div>
             </div>
           </div>
@@ -33,16 +43,32 @@
       <div class="content-wrap">
         <div class="container clearfix">
           <div class="col_one_third">
-            <a href="fs1_product_listing.php"><img src="images/features/features1.jpg" alt="feature1">
+           
+            <a href="fs1_product_listing.php"><img src="images/fashion/featurebox/1.jpg" alt="">
             </a>
+            <div class="overlayContentBox">
+                    <div>
+                        <h3 class="nobottommargin text-center">Half Price Store</h3>
+                    </div>
+                </div>
           </div>
           <div class="col_one_third">
-            <a href="fs1_product_listing.php"><img src="images/features/features2.jpg" alt="feature1">
+            <a href="fs1_product_listing.php"><img src="images/fashion/featurebox/2.jpg" alt="">
             </a>
+            <div class="overlayContentBox">
+                    <div>
+                        <h3 class="nobottommargin text-center">Attitude Says It All</h3>
+                    </div>
+                </div>
           </div>
           <div class="col_one_third col_last">
-            <a href="fs1_product_listing.php"><img src="images/features/features3.jpg" alt="feature1">
+            <a href="fs1_product_listing.php"><img src="images/fashion/featurebox/3.jpg" alt="">
             </a>
+            <div class="overlayContentBox">
+                    <div>
+                        <h3 class="nobottommargin text-center">Perfect You</h3>
+                    </div>
+                </div>
           </div>
         </div>
         <div class="container clearfix">
@@ -51,198 +77,216 @@
           <div id="shop" class="shop clearfix">
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-tshirt1.jpg" alt="Unisex Sunglasses">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
                 </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-tshirt2.jpg" alt="Unisex Sunglasses">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
               <div class="product-desc">
                 <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Gritstones Men Black Regular Fit T-Shirt</a></h3>
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
                 </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
                 </div>
               </div>
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-shirt1.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
                 </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-shirt2.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
               <div class="product-desc">
                 <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Park Avenue Men Dark Blue Slim Fit Formal Shirt</a></h3>
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
                 </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
                 </div>
               </div>
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/yellow-half-sleeve1.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
                 </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/yellow-half-sleeve2.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
               <div class="product-desc">
                 <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">abof Men Mustard Yellow & Navy Blue Slim Fit Polo T-shirt</a></h3>
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
                 </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
+                </div>
+              </div>
+            </div>
+
+            <div class="product clearfix">
+              <div class="product-image producImgBoxSize_4Col">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                </a>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+              </div>
+              <div class="product-desc">
+                <div class="product-title">
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
+                </div>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
+                </div>
+              </div>
+            </div>
+            
+            
+            <div class="product clearfix">
+              <div class="product-image producImgBoxSize_4Col">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                </a>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+              </div>
+              <div class="product-desc">
+                <div class="product-title">
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
+                </div>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
+                </div>
+              </div>
+            </div>
+
+            <div class="product clearfix">
+              <div class="product-image producImgBoxSize_4Col">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                </a>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+              </div>
+              <div class="product-desc">
+                <div class="product-title">
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
+                </div>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
+                </div>
+              </div>
+            </div><div class="product clearfix">
+              <div class="product-image producImgBoxSize_4Col">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                </a>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+              </div>
+              <div class="product-desc">
+                <div class="product-title">
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
+                </div>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
                 </div>
               </div>
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/line-halfsleeve-shirt1.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
                 </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/line-halfsleeve-shirt2.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
               <div class="product-desc">
                 <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Peter England Men White Striped Slim Fit Semiformal Shirt</a></h3>
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
                 </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
                 </div>
               </div>
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-tshirt1.jpg" alt="Unisex Sunglasses">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
                 </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-tshirt2.jpg" alt="Unisex Sunglasses">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
               <div class="product-desc">
                 <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Gritstones Men Blue Regular Fit T-shirt</a></h3>
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
                 </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
                 </div>
               </div>
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-shirt1.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
                 </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-shirt2.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
               <div class="product-desc">
                 <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Park Avenue Men Dark Blue Slim Fit Formal Shirt</a></h3>
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
                 </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
                 </div>
               </div>
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/yellow-half-sleeve1.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
                 </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/yellow-half-sleeve2.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
               <div class="product-desc">
                 <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">abof Men Mustard Yellow & Navy Blue Slim Fit Polo T-shirt</a></h3>
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
                 </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
                 </div>
               </div>
             </div>
+
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/line-halfsleeve-shirt1.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
                 </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/line-halfsleeve-shirt2.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
               <div class="product-desc">
                 <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Peter England Men White Striped Slim Fit Semiformal Shirt</a></h3>
+                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
                 </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
-                </div>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-tshirt1.jpg" alt="Unisex Sunglasses">
-                </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-tshirt2.jpg" alt="Unisex Sunglasses">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Gritstones Men Blue Regular Fit T-shirt</a></h3>
-                </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
+                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
                 </div>
               </div>
             </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-shirt1.jpg" alt="">
-                </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/blue-shirt2.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Park Avenue Men Dark Blue Slim Fit Formal Shirt</a></h3>
-                </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
-                </div>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/yellow-half-sleeve1.jpg" alt="">
-                </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/yellow-half-sleeve2.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">abof Men Mustard Yellow & Navy Blue Slim Fit Polo T-shirt</a></h3>
-                </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
-                </div>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/shop/line-halfsleeve-shirt1.jpg" alt="">
-                </a>
-                <a href="fs1_product_detail.php"><img src="images/shop/line-halfsleeve-shirt2.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="cart.php" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Peter England Men White Striped Slim Fit Semiformal Shirt</a></h3>
-                </div>
-                <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </div>
+
+        <div class="section footer-touch">
+            <h4 class="uppercase center">Testimonials</h4>
+            <div class="fslider testimonial testimonial-full bottommargin" data-animation="fade" data-arrows="false">
+						<div class="flexslider">
+							<div class="slider-wrap">
+								<div class="slide">
+									<div class="testi-image">
+										<a href="#"><img src="images/default-female.png" alt="Customer Testimonails"></a>
+									</div>
+									<div class="testi-content">
+										<p>Similique fugit repellendus expedita excepturi iure perferendis provident quia eaque. Repellendus, vero numquam?</p>
+										<div class="testi-meta">
+											XYZ, Super Market
+										</div>
+									</div>
+								</div>
+								<div class="slide">
+									<div class="testi-image">
+										<a href="#"><img src="images/default-male.png" alt="Customer Testimonails"></a>
+									</div>
+									<div class="testi-content">
+										<p>Quod necessitatibus quis expedita harum provident eos obcaecati id culpa corporis molestias.</p>
+										<div class="testi-meta">
+											ABC, Infini
+										</div>
+									</div>
+								</div>
+								
+							</div>
+						</div>
+          </div>
+          </div>
+        </div>
+
+      </div>
+        
     </section>
     <!-- #content end -->
     <?php include( 'includes/footer_style1.php'); ?> </div>

@@ -3,25 +3,30 @@
 <!-- Document Wrapper   ============================================= -->
 <section id="page-title">
     <div class="container clearfix">
-        <h1>Login | Register</h1>
+        <h1>Login / Register</h1>
         <ol class="breadcrumb">
             <li><a href="{{route('home') }}">Home</a>
             </li>
-            <li class="active">Login | Register</li>
+            <li class="active">Login / Register</li>
         </ol>
     </div>
 </section>
 <!-- Content  ============================================= -->
 <section id="content">
+
     <div class="content-wrap">
         <div class="container clearfix">
             <div class="tabs divcenter tabs-justify nobottommargin clearfix" id="tab-login-register">
                 <div class='alert alert-danger login-error' style="display:none;"></div>
+
+                    <h3 class="nomargin center">One Account. All of VeeStores</h3>
+                    <h5 class="center">Login with your VeeStores Account</h5>
+
                 <ul class="tab-nav tab-nav2 loginTab center clearfix">
                     <li class="inline-block add-to-cart button nomargin " aria-selected="true" aria-expanded="true"><a class="tabClass" href="#tab-login">Login</a>
                     </li>
                     <li class="onlyDispUnder479"></li>
-                    <li class="inline-block mobMartop15 add-to-cart button nomargin nopadding"><a class="tabClass" href="#tab-register">Register</a>
+                    <li class="inline-block mobMartop15 add-to-cart button nomargin nopadding bck-grey"><a class="tabClass" href="#tab-register">Register</a>
                     </li>
                 </ul>
                 <div class="tab-container">
@@ -38,19 +43,19 @@
                                         <button class="button nomargin add-to-cart" type="submit" value="login">Login</button>
                                     </div>
                                     <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('forgotPassword') }}" class="">Forgot Password?</a> </div>
-                                    <div class="col-md-12 topmargin-sm orDivider-box clearfix">
+                                    <!-- <div class="col-md-12 topmargin-sm orDivider-box clearfix">
                                         <div class="orDivider">or</div>
-                                    </div>
+                                    </div> -->
                                     <div class="clearfix"></div>
                                 </form>
-                                <div class="social_media text-center topmargin-sm">
+                               <!--  <div class="social_media text-center topmargin-sm">
                                     <a id="fbLink" class="col-sm-6 col-xs-12 fb_login_btn" style="margin-bottom:11px;">
                                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/fb_login.jpg')}}" onclick="fbLogin()"  class="fb_login_btn"></img>
                                     </a>
                                     <a class="col-sm-6 col-xs-12">
                                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/g_login.jpg')}}" class="g_login_btn"></img>
                                     </a>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

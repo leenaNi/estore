@@ -14,6 +14,7 @@ $adminConstants = [
     
     'AdminPagesBank' => 'Admin.Pages.Bank',
     'AdminPagesMerchant' => 'Admin.Pages.Merchants',
+    'AdminPagesPaymentettlement' => 'Admin.Pages.paymentSettlement',
     'AdminPagesStores' => 'Admin.Pages.Stores',
     'AdminPagesAnalytic' => 'Admin.Pages.Analytic',
     'AdminPagesUpdatesCode' => 'Admin.Pages.Updates.CodeUpdate',
@@ -33,6 +34,7 @@ $adminConstants = [
     'AdminPagesBankUsersRoles' => 'Admin.Pages.BankUsers.Roles',
     'AdminPagesBankUsersUsers' => 'Admin.Pages.BankUsers.Users',
     'AdminPagesTemplates' => 'Admin.Pages.Templates',
+    'AdminPagesCourier' => 'Admin.Pages.Courier',
     
      'AdminPaginateNo' => '10'
 ];

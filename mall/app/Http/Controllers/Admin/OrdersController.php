@@ -46,13 +46,13 @@ class OrdersController extends Controller {
 // $tableContant = Helper::getEmailInvoice(91);
 // print_r($tableContant);die;
         // dd(Order::where("order_status",1)->latest()->first());
-        $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
+       // $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
-        foreach ($order_status as $status) {
-            $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
-        }
+//        foreach ($order_status as $status) {
+//            $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
+//        }
 
-        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->with(['orderFlag'])->orderBy("id", "desc");
+        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where("prefix",'=','')->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
         if (!empty(Input::get('order_ids'))) {
@@ -89,16 +89,16 @@ class OrdersController extends Controller {
           $date = date("Y-m-d", strtotime(Input::get('dateto')));
           $orders = $orders->where('created_at', '<=', $date);
           } */
-        if (!empty(Input::get('searchFlag'))) {
-            $chk = Flags::find(Input::get('searchFlag'))->flag;
-            if (strpos($chk, 'No Flag') !== false) {
-                $orders = $orders->where('flag_id', 0);
-            } else {
-                $orders = $orders->WhereHas('orderFlag', function($q) {
-                    $q->where('flag_id', '=', Input::get('searchFlag'));
-                });
-            }
-        }
+//        if (!empty(Input::get('searchFlag'))) {
+//            $chk = Flags::find(Input::get('searchFlag'))->flag;
+//            if (strpos($chk, 'No Flag') !== false) {
+//                $orders = $orders->where('flag_id', 0);
+//            } else {
+//                $orders = $orders->WhereHas('orderFlag', function($q) {
+//                    $q->where('flag_id', '=', Input::get('searchFlag'));
+//                });
+//            }
+//        }
         if (Input::get('searchStatus') !== null) {
             if (!empty(Input::get('searchStatus'))) {
                 $order_options = '';
@@ -111,8 +111,9 @@ class OrdersController extends Controller {
 
         $orders = $orders->paginate(Config('constants.paginateNo'));
         $ordersCount = $orders->total();
-        $flags = Flags::all();
-
+        $flags ='';
+        $order_status='';
+//dd($orders);
         $viewname = Config('constants.adminOrderView') . '.index';
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
         return Helper::returnView($viewname, $data);
@@ -143,7 +144,7 @@ class OrdersController extends Controller {
 //            $users[$val['id']] = $val['firstname'] . $val['lastname'];
 //        }
         Cart::instance("shopping")->destroy();
-        $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
+       // $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
         $payment_method = PaymentMethod::get()->toArray();
         $payment_methods = [];
         foreach ($payment_method as $val) {
@@ -169,23 +170,23 @@ class OrdersController extends Controller {
         foreach ($zoneA as $val) {
             $zones[$val['id']] = $val['name'];
         }
-        $flags = Flags::where('status', 1)->get()->toArray();
-        $flag_status[0] = "Select Flag";
-        foreach ($flags as $val) {
-            $flag_status[$val['id']] = $val['flag'];
-        }
-        $courier = Courier::where('status', 1)->get()->toArray();
-        $courier_status = [];
-        foreach ($courier as $val) {
-            $courier_status[$val['id']] = $val['name'];
-        }
+//        $flags = Flags::where('status', 1)->get()->toArray();
+//        $flag_status[0] = "Select Flag";
+//        foreach ($flags as $val) {
+//            $flag_status[$val['id']] = $val['flag'];
+//        }
+//        $courier = Courier::where('status', 1)->get()->toArray();
+//        $courier_status = [];
+//        foreach ($courier as $val) {
+//            $courier_status[$val['id']] = $val['name'];
+//        }
         $additional = json_decode($order->additional_charge, true);
         $products = $order->products;
-        $coupon = Coupon::find($order->coupon_used);
+        //$coupon = Coupon::find($order->coupon_used);
         $action = route("admin.orders.save");
         // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users', 
         $viewname = Config('constants.adminOrderView') . '.addEdit';
-        $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'coupon' => $coupon, 'coupons' => $coupons, 'flags' => $flag_status, 'courier' => $courier_status, 'additional' => $additional];
+        $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'additional' => $additional];
         return Helper::returnView($viewname, $data);
     }
 
@@ -2511,6 +2512,12 @@ class OrdersController extends Controller {
         return redirect()->back();
     }
 
+   public function viewOrderDetails(){
+       $ordId=Input::get("id");
+       $orders=HasProducts::where("order_id",$ordId)->get();
+      
+       return view(Config('constants.adminOrderView') . '.orderDetails', compact('orders'));
+   }
 }
 
 ?>

@@ -90,7 +90,7 @@
                 <div class="line"></div>
                 <!-- Product Single - Short Description
 								============================================= -->
-                <p>{{$product->short_desc}}</p>
+                <p><?php echo html_entity_decode($product->short_desc) ?></p>
                
                 <!-- Product Single - Share
 								============================================= -->
@@ -136,9 +136,9 @@ print_r(App\Library\Helper::socialShareIcon($social));
                 <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
                   @if(!empty(@$relprd->catalogimgs()->first()->filename))
-                    <a href="{{$relprd->url_key}}"><img src="{{ asset(Config('constants.productImgPath') . @$relprd->catalogimgs()->first()->filename) }}" alt="{{$relprd->product}}" class="boxSizeImage"> </a>
+                    <a href="{{$relprd->url_key}}"><img src="{{ asset(Config('constants.productImgPath') . '/'.@$relprd->catalogimgs()->first()->filename) }}" alt="{{$relprd->product}}" class="boxSizeImage"> </a>
                     @else
-                    <a href="{{$relprd->url_key}}"><img src="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}" alt="" class="boxSizeImage"> </a>
+                    <a href="{{$relprd->url_key}}"><img src="{{ asset(Config('constants.defaultImgPath').'/default-product.jpg') }}" alt="" class="boxSizeImage"> </a>
                     @endif
                     <!--<div class="product-overlay"> <a href="{{$relprd->url_key}}" class="add-to-cart"><i class="icon-shopping-cart"></i><span> View Detail</span></a> <a href="{{$relprd->url_key}}" data-prodid="{{$relprd->id}}" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>-->
                   </div>

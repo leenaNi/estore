@@ -6,7 +6,15 @@
   <!-- Document Wrapper
 	============================================= -->
   <div id="wrapper" class="clearfix">
-    <?php include( 'includes/header_style1.php'); ?>
+  <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+     include( 'includes/header_style1.php');
+
+     if($_GET['theme'] == 'fs2')
+     include( 'includes/header_style2.php');
+     
+     
+     ?>
     <section id="page-title">
       <div class="container clearfix">
         <h1>My Account</h1>
@@ -25,19 +33,14 @@
           <div class="col-lg-3">
             <div class="panel panel-default border-radiusNone">
               <div class="panel-body">
-                <div class="testi-image profile-image">
-                  <center><img src="images/shop/blue-tshirt2.jpg" alt="Profile Pic" draggable="false">
-                  </center>
-                </div>
-                <div class="col-md-12 nobottommargin topmargin-sm editprofchoose">
-                  <h4>Vikram Gangawane</h4> </div>
-                <form method="post" action="#" enctype="multipart/form-data">
-                  <div class="col-md-12 notopmargin bottommargin-sm">
-                    <input id="user_profile" name="user_profile" type="file" class="file-loading "> </div>
-                  <div class="col-md-12 bottommargin-sm editprofchoose">
-                    <button class="button nomargin " type="submit">Upload Profile</button>
-                  </div>
-                </form>
+              <div class="col-md-12 nobottommargin editprofchoose">
+                            <h4 id="userProfile" class="mb15">Aparna</h4> 
+                            <div class="emailbox"><strong>Email:</strong> aparna@infiniteit.biz</div>
+                            <div class="mobilebox"><strong>Mobile:</strong> 97693707222</div>
+                            <div class="mobilebox"><strong>Referral Code:</strong> APA24872</div>
+                            <div class="mobilebox"><strong>Loyalty:</strong> -743011.7698585</div>
+                          </div>
+               
               </div>
             </div>
           </div>
@@ -48,7 +51,7 @@
                 </li>
                 <li><a href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-3"> My Orders</a>
                 </li>
-                <li><a href="#tabs-3" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-4"> Wishlist</a>
+                <li><a href="#tabs-3" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-4"> My Wishlist</a>
                 </li>
                 <li><a href="#tabs-4" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-2"> Change Password</a>
                 </li>
@@ -59,31 +62,31 @@
                     <div class="col_half">
                       <label for="template-contactform-name">First Name <small>*</small>
                       </label>
-                      <input type="text" name="firstname" value="Vikram" class="sm-form-control"> </div>
+                      <input type="text" name="firstname" value="Aparna" class="sm-form-control"> </div>
                     <div class="col_half col_last">
                       <label for="template-contactform-name">Last Name </label>
-                      <input type="text" name="lastname" value="Gangawane" class="sm-form-control"> </div>
+                      <input type="text" name="lastname" value="" class="sm-form-control"> </div>
                     <div class="col_half ">
                       <label for="template-contactform-email">Email <small>*</small>
                       </label>
-                      <input type="email" name="email" value="vikram.g@infiniteit.biz" class="email sm-form-control" disabled=""> </div>
+                      <input type="email" name="email" value="aparna@infiniteit.biz" class="email sm-form-control" disabled=""> </div>
                     <div class="col_half col_last">
                       <label for="template-contactform-phone">Mobile <small>*</small>
                       </label>
-                      <input type="text" id="template-contactform-phone" name="telephone" value="9769143142" class="sm-form-control"> </div>
+                      <input type="text" id="template-contactform-phone" name="telephone" value="9769143142" class="sm-form-control" disabled=""> </div>
                     <div class="col_full">
                       <button class="button nomargin" value="submit">Update</button>
                     </div>
                   </form>
                 </div>
                 <div class="tab-content clearfix" id="tabs-4">
-                  <form class="nobottommargin ng-pristine ng-valid" action="http://www.edunguru.com/account/update-change-password-myacc" id="resetPasswordAccount" method="post" novalidate="novalidate">
+                  <form class="nobottommargin" id="resetPasswordAccount" method="post" novalidate="novalidate">
                     <div class="col_full"> <span id="passUpdate" style="color: #1B2987"></span> </div>
                     <div class="col_full">
                       <input type="hidden" placeholder="email" name="email" value="bhavana@infiniteit.biz" readonly="readonly">
-                      <label for="template-contactform-name">OLD PASSWORD <small>*</small>
+                      <label for="template-contactform-name">CURRENT PASSWORD<small>*</small>
                       </label>
-                      <input type="password" name="old_password" placeholder="Old Password" class="sm-form-control required" aria-required="true">
+                      <input type="password" name="old_password" placeholder="Current Password" class="sm-form-control required" aria-required="true">
                       <div id="old_password_validate" style="color:red;"></div>
                     </div>
                     <div class="col_full">
@@ -119,14 +122,14 @@
                           <td class="tdfont text-center">101408</td>
                           <td class="tdfont text-center">Rs. 2000</td>
                           <td class="tdfont text-center">23-Jun-2016 </td>
-                          <td data-th="Subtotal" class="text-center"><a href="#" class="button button-3d button-mini button-rounded">View Detail</a>
+                          <td data-th="Subtotal" class="text-center"><a href="order-details.php?theme=fs1" class="button button-3d button-mini button-rounded">View Detail</a>
                           </td>
                         </tr>
                         <tr>
                           <td class="tdfont text-center">101408</td>
                           <td class="tdfont text-center">Rs. 2000</td>
                           <td class="tdfont text-center">23-Jun-2016 </td>
-                          <td data-th="Subtotal" class="text-center"><a href="#" class="button button-3d button-mini button-rounded">View Detail</a>
+                          <td data-th="Subtotal" class="text-center"><a href="order-details.php?theme=fs1" class="button button-3d button-mini button-rounded">View Detail</a>
                           </td>
                         </tr>
                       </tbody>
@@ -147,7 +150,7 @@
                       <tbody>
                         <tr class="cart_item">
                           <td class="cart-product-thumbnail">
-                            <a href="#"><img width="64" height="64" src="images/shop/blue-tshirt2.jpg" alt="img">
+                            <a href="#"><img width="64" height="64" src="images/fashion/products/default-product.jpg" alt="img">
                             </a>
                           </td>
                           <td class="cart-product-name"> <a href="#">Gritstones Men Black Regular Fit T-shirt</a> </td>
@@ -165,7 +168,16 @@
       </div>
     </section>
     <!-- #content end -->
-    <?php include( 'includes/footer_style1.php'); ?></div>
+    <?php
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+     include( 'includes/footer_style1.php');
+
+     if($_GET['theme'] == 'fs2')
+     include( 'includes/footer_style2.php');
+     
+     
+     ?>
+     </div>
   <!-- #wrapper end -->
   <?php include( 'includes/foot.php'); ?> </body>
 

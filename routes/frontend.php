@@ -51,6 +51,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/privacy-policy', ['as' => 'privacy-policy', 'uses' => 'HomeController@privacyPolicy']);
     Route::any('/about', ['as' => 'about', 'uses' => 'HomeController@aboutUs']);
     Route::any('/contact', ['as' => 'contact', 'uses' => 'HomeController@contactUs']);
+    Route::any('/contact-send', ['as' => 'contactSend', 'uses' => 'HomeController@contactSend']);
     Route::any('/faqs', ['as' => 'faqs', 'uses' => 'HomeController@faqS']);
    Route::any('/send-otp', ['as' => 'sendOpt', 'uses' => 'HomeController@sendOtp']);
     Route::any('/check-otp', ['as' => 'checkOtp', 'uses' => 'HomeController@checkOtp']);
@@ -58,9 +59,12 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     
 
     Route::any('/get-city-pay', array('as' => 'getCityPay', 'uses' => 'PaymentController@getCityPay'));
-    Route::any('/get-city-approved', array('as' => 'getCityApproved', 'uses' => 'PaymentController@getCityApproved'));
+     Route::any('/get-city-approved', array('as' => 'getCityApproved', 'uses' => 'PaymentController@getCityApproved'));
+    Route::any('/get-city-pay-renew/{storeid}/{version}', array('as' => 'getCityPayRenew', 'uses' => 'PaymentController@getCityPayRenew')); 
+    Route::any('/get-renew-city-approved', array('as' => 'getRenewCityApproved', 'uses' => 'PaymentController@getRenewCityApproved'));
     Route::any('/get-city-declined', array('as' => 'getCityDeclined', 'uses' => 'PaymentController@getCityDeclined'));
     Route::any('/get-city-cancelled', array('as' => 'getCityCancelled', 'uses' => 'PaymentController@getCityCancelled'));
     Route::any('/get-city-createOrder', array('as' => 'getCityCreateOrder', 'uses' => 'PaymentController@getCityCreateOrder'));
     Route::any('/payment-success', array('as' => 'paymentSuccess', 'uses' => 'PaymentController@paymentSuccess'));
+    Route::any('/order-failure', array('as' => 'orderFailure', 'uses' => 'PaymentController@orderFailure'));
 });

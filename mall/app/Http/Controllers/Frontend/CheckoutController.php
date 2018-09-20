@@ -154,7 +154,8 @@ class CheckoutController extends Controller {
                 Helper::newUserInfo($user->id);
                 $getUserInfo = User::find($user->id);
                 $referralCode = "Your referral code is " . $getUserInfo->referal_code;
-                if ( $getUserInfo->email != '') {
+                if ($getUserInfo->email != '') {
+                    $referralStatus = 1;
                     $email_template = EmailTemplate::where('id', 1)->select('content')->get()->toArray()[0]['content'];
                     if ($referralStatus == 1) {
                         $replace = ["[first_name]", "[last_name]", "[referralCode]"];
@@ -1788,7 +1789,7 @@ class CheckoutController extends Controller {
             $this->updateStock($order->id);
             //}
             if ($user->telephone) {
-                $msgOrderSucc = "Your order from " . Session::put('storeName') . " with id " . $order->id . " has been placed successfully. Thank you!";
+                $msgOrderSucc = "Your order from Veestores Mall with id " . $order->id . " has been placed successfully. Thank you!";
 
                 Helper::sendsms($user->telephone, $msgOrderSucc, $user->country_code);
             }
@@ -1798,7 +1799,7 @@ class CheckoutController extends Controller {
             $messagearray->message = "Hey! You have received a New Order online. Its order id is " . $order->id . " & order amount is " . $order->pay_amt * Session::get('currency_val');
 
             $this->pushNotification($messagearray);
-            return $data_email = ['first_name' => $fname, 'orderId' => $orderId, 'email' => $mail_id];
+            return $data_email = ['first_name' => $fname, 'orderId' => $order->id, 'email' => $mail_id];
         }
     }
 
@@ -1832,9 +1833,10 @@ class CheckoutController extends Controller {
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-        // $order->products()->detach();
+        $order->products()->detach();
         foreach ($cartContent as $cart) {
-            $product = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
+//            dd($cart);
+            $product = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
             $sum = 0;
             $prod_tax = array();
             $total_tax = array();
@@ -1847,39 +1849,42 @@ class CheckoutController extends Controller {
 //                    $total_tax[] = $prod_tax;
 //                }
 //            }
-
+            $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
             if ($cart->options->tax_type == 2) {
                 $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
                 $taxeble_amt = $cart->subtotal - $getdisc;
                 $tax_amt = round($taxeble_amt * $cart->options->taxes / 100, 2);
                 $subtotal = $cart->subtotal + $tax_amt;
+                $payamt = $subtotal - $getdisc;
             } else {
                 $subtotal = $cart->subtotal;
+                $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax)];
+            $cart_ids[$product->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc,
+                'tax' => json_encode($total_tax), 'pay_amt' => $payamt, 'store_id' => $cart->options->store_id, 'prefix' => $cart->options->prefix];
 
 
             if ($cart->options->has('sub_prod')) {
-                $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
+                $cart_ids[$product->id]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
-                $prddataS = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
-                $proddetails['id'] = $prddataS->id;
+                $prddataS = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
+                $proddetails['id'] = $prddataS->store_prod_id;
                 $proddetails['name'] = $prddataS->product;
                 $proddetails['image'] = $cart->options->image;
                 $proddetails['price'] = $cart->sellig_price;
                 $proddetails['qty'] = $cart->qty;
                 $proddetails['subtotal'] = $subtotal;
                 $proddetails['is_cod'] = $prddataS->is_cod;
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);
-                $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$product->id]["product_details"] = json_encode($proddetails);
+                $cart_ids[$product->id]["prod_type"] = $cart->options->prod_type;
                 $prddataS->trending_score = $prddataS->trending_score + $cart->qty;
                 $prddataS->update();
                 if ($prddataS->is_stock == 1) {
-                    $stocks = DB::table($cart->options->prefix . '_products')->find($cart->id)->stock;
+                    $stocks = DB::table($cart->options->prefix . '_products')->find($prddataS->store_prod_id)->stock;
                     $finalStock = $stocks - $cart->qty;
                     $prddataS->stock = $finalStock;
                     $prddataS->update();
-                    DB::table($cart->options->prefix . '_products')->where("id", $cart->id)->update(["stock" => $finalStock]);
+                    DB::table($cart->options->prefix . '_products')->where("id", $prddataS->store_prod_id)->update(["stock" => $finalStock]);
                 }
 
 
@@ -1896,9 +1901,7 @@ class CheckoutController extends Controller {
                         $prd->stock = $prd->stock - $cart->qty;
                         if ($prd->is_stock == 1) {
                             $prd->update();
-                        };
-
-
+                        }
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             $this->AdminStockAlert($prd->id);
                         }
@@ -1908,18 +1911,16 @@ class CheckoutController extends Controller {
                         if ($prd->is_stock == 1) {
                             $prd->update();
                         }
-
-
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             $this->AdminStockAlert($prd->id);
                         }
                     }
                 }
-                $cart_ids[$cart->id]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$product->id]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
-                $prddataSp = Product::where("store_prod_id", $cart->id)->where("store_id", $cart->options->store_id)->first();
-                $proddetailsp['id'] = $prddataSp->id;
+                $prddataSp = Product::where("id", $cart->id)->where("store_id", $cart->options->store_id)->first();
+                $proddetailsp['id'] = $prddataSp->store_prod_id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
                 $proddetailsp['price'] = $cart->sellig_price;
@@ -1927,31 +1928,31 @@ class CheckoutController extends Controller {
                 $proddetailsp['subtotal'] = $subtotal;
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
 
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetailsp);
+                $cart_ids[$product->id]["product_details"] = json_encode($proddetailsp);
                 //$cart_ids[$cart->id]["eCount"] = $cart->options->eCount;
 //                $date = $cart->options->eNoOfDaysAllowed;
 //                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$product->id]["prod_type"] = $cart->options->prod_type;
                 $prddataS->trending_score = $prddataS->trending_score + $cart->qty;
                 $prddataS->update();
 
                 if ($prddataS->is_stock == 1) {
-                    $stocks = DB::table($cart->options->prefix . '_products')->find($cart->id)->stock;
+                    $stocks = DB::table($cart->options->prefix . '_products')->find($prddataS->store_prod_id)->stock;
                     $finalStock = $stocks - $cart->qty;
                     $prddataS->stock = $finalStock;
                     $prddataS->update();
-                    DB::table($cart->options->prefix . '_products')->where("id", $cart->id)->update(["stock" => $finalStock]);
+                    DB::table($cart->options->prefix . '_products')->where("id", $prddataS->store_prod_id)->update(["stock" => $finalStock]);
                 }
 
 //                if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
 //                    $this->AdminStockAlert($prd->id);
 //                }
             }
-            $cart_ids[$cart->id]["order_id"] = $orderId;
-            $cart_ids[$cart->id]["prod_id"] = $cart->id;
+            $cart_ids[$product->id]["order_source"] = 1;
+            $cart_ids[$product->id]["order_status"] = 1;
             // $order->products()->attach($cart_ids); 
-            DB::table($cart->options->prefix . '_has_products')->insert($cart_ids);
-            //$order->products()->attach($cart->id, $cart_ids[$cart->id]);
+//             DB::table('has_products')->insert($cart_ids);
+            $order->products()->attach($product->store_prod_id, $cart_ids[$product->id]);
         }
         //  $this->orderSuccess();
     }
@@ -1989,7 +1990,6 @@ class CheckoutController extends Controller {
     public function pushNotification($notification) {
         $userMobile = User::where("user_type", 1)->where("device_id", '!=', '')->pluck("device_id");
         $gcmRegIds = $userMobile;
-
         $fields = array(
             'registration_ids' => $gcmRegIds,
             'data' => $notification
@@ -1999,26 +1999,19 @@ class CheckoutController extends Controller {
             'Authorization: key=' . 'AAAAZeeZoaQ:APA91bHR9lt8JdJDhAzH1dUh9oUOUs3F6GM4BdMzK1uVqQLcMv1NUVc-twlw7hklrRHOvj8Ada-UhiggbrxXiUldSH1KuxG0kcroiah_4bLylwt9LSBcjihdxweKtvEhrUrHLtUbuYOj',
             'Content-Type: application/json'
         );
-
-
         $ch = curl_init();
-
         //Setting the curl url
         curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-
         //setting the method as post
         curl_setopt($ch, CURLOPT_POST, true);
-
         //adding headers 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
         //disabling ssl support
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         //adding the fields in json format 
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-
         //finally executing the curl request 
         $result = curl_exec($ch);
         if ($result === FALSE) {
@@ -2036,7 +2029,6 @@ class CheckoutController extends Controller {
 //           // $pushNotification->user_type = $userType;
 //            $pushNotification->save();
         }
-
         curl_close($ch);
         return 1;
     }
@@ -2046,7 +2038,7 @@ class CheckoutController extends Controller {
 
         if (Session::get('orderId')) {
             $order = Order::find(Session::get('orderId'));
-            $coupon = Coupon::find($order->coupon_used);
+            $coupon = []; //Coupon::find($order->coupon_used);
             Session::forget('orderId');
             Session::forget('couponUsedAmt');
             Session::forget('usedCouponId');
@@ -2130,25 +2122,22 @@ class CheckoutController extends Controller {
     }
 
     function successMail($orderId, $firstName, $toEmail) {
-        $toEmails = 'bhavana@infiniteit.biz';
         $tableContant = Helper::getEmailInvoice($orderId);
         $order = Order::find($orderId);
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
         $path = Config("constants.adminStorePath") . "/storeSetting.json";
         $str = file_get_contents($path);
-        $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
+        $logoPath = (Helper::getSettings()['logo']) ? Helper::getSettings()['logo'] : asset(Config('constants.defaultImgPath') . 'default-logo.png'); // @asset(Config("constants.logoUploadImgPath") . 'logo.png');
         $settings = json_decode($str, true);
         $webUrl = $_SERVER['SERVER_NAME'];
         if ($emailStatus == 1) {
             $emailContent = EmailTemplate::where('id', 2)->select('content', 'subject')->get()->toArray();
             $email_template = $emailContent[0]['content'];
             $subject = $emailContent[0]['subject'];
-
-            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]");
-            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName']);
+            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[created_at]", "[primary_color]", "[secondary_color]", "[storeName]");
+            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $order->created_at, $settings['primary_color'], $settings['secondary_color'], $settings['storeName']);
             $email_templates = str_replace($replace, $replacewith, $email_template);
             $data_email = ['email_template' => $email_templates];
-
             Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
             return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
         }

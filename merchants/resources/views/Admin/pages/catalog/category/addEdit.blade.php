@@ -326,7 +326,7 @@
         var prodId=$('.new_prod').val();
        // if ($('#category').val() != "") {
        if(prodId){
-            $(".rtUrl").val("{!!route('admin.products.general.info',['id'=>Input::get('new_prod_cat')])!!}");
+            $(".rtUrl").val("{!!route('admin.products.edit.category',['id'=>Input::get('new_prod_cat')])!!}");
        }else{
             $(".rtUrl").val("{!!route('admin.category.view')!!}");
         }

@@ -15,6 +15,22 @@
 	<script type="text/javascript" src="js/functions.js"></script>
 	<script type="text/javascript" src="js/custom.js"></script>
 	<script type="text/javascript" src="js/jquery.elevatezoom.js"></script>
+	<script>
+   var cw = $('#shop .product a img').width();
+jQuery('#shop .product a img').css({'height':cw+'px'}); 
+
+
+ $( document ).ready(function() {
+    var pw = $('div#oc-product .owl-stage-outer .owl-stage .owl-item').width();
+jQuery('.boxSizeImage').css({'height':pw+'px'});
+});
+  
+
+$(document).ready(function() { 
+    $('p:empty').remove(); 
+    $('.shortDesc:empty').remove(); 
+    });
+</script>
   <script type="text/javascript">
 $(document).ready( function() {
 $(".closeTheme").click( function() {
@@ -60,15 +76,45 @@ zoomWindowFadeOut: 750
 });
    
 </script>
-	<script type="text/javascript">
 
-		$(document).ready(function () {
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"></script>
+    <script>
 
-			$(".range_02").ionRangeSlider({
-				min: 150,
-				max: 10000,
-				from: 3500,
-            prefix: "Rs. ",
-			});
-			});
-			</script>
+        $(function() {
+          $( "#slider-range" ).slider();
+      });
+
+
+        $(document).ready(function () {
+            minP = 0;
+            minp = 0;
+            maxP =4000;
+						maxp =4000;
+            maxp = Math.ceil(maxp);
+            console.log("fs1Min price => " + minp + "Max price => " + maxp);
+//    setTimeout(sliderFun, 500);
+//    var sliderFun = function(){
+    setTimeout(function () {
+        $('#slider-range').slider({
+            range: true,
+            min: minp,
+            max: maxp,
+            values: [minp, maxp],
+            slide: function (event, ui) {
+
+                $("input[name='min_price']").val(ui.values[0]);
+                $("input[name='max_price']").val(ui.values[1]);
+            }
+        });
+    }, 2000);
+    $("input[name='min_price']").val(minp);
+    $("input[name='max_price']").val(maxp);
+    console.log("Min price => " + minp + "Max price => " + maxp);
+                            // $("#min_price").val(minp);
+
+                            //   $("#max_price").val(maxp);
+                            //};
+                        });
+                    </script>

@@ -35,8 +35,11 @@
                                             if (count($product->images) > 0) {
                                                 foreach ($product->images as $pk => $prdimg) {
                                                     ?>
+
                                                     <div class="slide" data-thumb="{{$prdimg->img}}">
-                                                        <a href="{{$prdimg->img}}" title="" data-lightbox="gallery-item"><img src="{{$prdimg->img}}" alt="" class="zoom-me zoom-me1" data-zoom-image="{{$prdimg->img}}"> </a>
+                                                        <a href="{{$prdimg->img}}" title="{{$product->product}}" data-lightbox="gallery-item">
+                                                            <img src="{{$prdimg->img}}" alt="{{ $product->product }}" class="zoom-me zoom-me1 {{ ($pk == 0)?'fimg':''  }} " data-zoom-image="{{$prdimg->img}}">
+                                                        </a>
                                                     </div>
                                                     <?php
                                                 }
@@ -78,10 +81,10 @@
                             <input type='hidden' name='prod_type' value='{{$product->prod_type}}'>
                             <div class="quantity clearfix">
                                 <input type="button" value="-" class="minus">
-                                <input type="text" step="1" min="1" name="quantity" value="1" title="Qty" class="qty"  onkeypress="return isNumber(event);" onkeypress="return isNumber(event);" max="{{$maxValue }}"size="4" />
+                                <input type="text" step="1" min="1" id="quantity" name="quantity" value="1" title="Qty" class="qty"  onkeypress="return isNumber(event);" onkeypress="return isNumber(event);" max="{{$maxValue }}" size="4" />
                                 <input type="button" value="+" class="plus"> </div>
                             <button  form-id='{{ $product->id }}'type="button" class="add-to-cart button nomargin addToCartB addToCart">Add to cart</button>
-                            <button type="button"  data-prodid="{{ $product->id }}" class="add-to-wishlist button nomargin">Add To Wishlist<i id="wish{{ $product->id}}" class="{{($product->wishlist == 1) ? 'icon-heart3 red-heart' : 'icon-heart'}}" style="margin-right:0px;"></i></button>
+                            <button type="button"  data-prodid="{{ $product->id }}" class="add-to-wishlist button nomargin">Add To Wishlist<i id="wish{{ $product->id}}" class="" style="margin-right:0px;"></i></button>
                             <!-- Product Single - Quantity & Cart Button End -->
                             @if($product->short_desc!='')
                             <div class="clear"></div>
@@ -119,42 +122,45 @@
                     </form>
                 </div>
             </div>
+            @if(count($product->related)>0)
             <div class="clear"></div>
             <div class="line"></div>
             <div class="col_full nobottommargin">
                 <h3>Other Products Sold By {{$product->store_name}}</h3>
                 <div id="oc-product" class="owl-carousel product-carousel carousel-widget" data-margin="30" data-pagi="false" data-autoplay="5000" data-items-xxs="1" data-items-sm="2" data-items-md="3" data-items-lg="4">
-                    <?php foreach($product->related as $relprd) { ?>
-                    <div class="oc-item">
-                        <div class="product clearfix mobwidth100 relatedProduct">
-                            <div class="product-image">
-                                <?php
-                                $relProdImg = DB::table($relprd->prefix . "_catalog_images")->where("catalog_id", $relprd->store_prod_id)->where("image_mode", 1)->first();//$relprd->catalogimgs()->first();
-                                ?>
-                                @if(!empty($relProdImg))
-                                <a href="{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. $relProdImg->filename }}" alt="{{ $relprd->product }}" class="boxSizeImage"> </a>
-                                @else
-                                <a href="{{ $relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. 'default-product.jpg' }}" alt="" class="boxSizeImage"> </a>
-                                @endif
-            <!--                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>-->
-                            </div>
-                            <div class="product-desc">
-                                <div class="product-title">
-                                    <h3><a href="{{ $relprd->url_key }}">{{ $relprd->product }}</a></h3> </div>
-                                <div class="product-price">
-                                    @if($relprd->spl_price > 0 && $relprd->spl_price > $relprd->price)
-                                    <del><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                    <?php foreach ($product->related as $relprd) { ?>
+                        <div class="oc-item">
+                            <div class="product clearfix mobwidth100 relatedProduct">
+                                <div class="product-image">
+                                    <?php
+                                    $relProdImg = DB::table($relprd->prefix . "_catalog_images")->where("catalog_id", $relprd->store_prod_id)->where("image_mode", 1)->first(); //$relprd->catalogimgs()->first();
+                                    ?>
+                                    @if(!empty($relProdImg))
+                                    <a href="{{route('home')}}/{{ $relprd->prefix.'/'.$relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. $relProdImg->filename }}" alt="{{ $relprd->product }}" class="boxSizeImage"> </a>
                                     @else
-                                    <ins><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                                    <a href="{{route('home')}}/{{$relprd->prefix.'/'.$relprd->url_key }}"><img src="{{ $relProdImg->image_path .'/'. 'default-product.jpg' }}" alt="" class="boxSizeImage"> </a>
                                     @endif
+                <!--                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>-->
+                                </div>
+                                <div class="product-desc">
+                                    <div class="product-title">
+                                        <h3><a href="{{route('home')}}/{{ $relprd->prefix.'/'.$relprd->url_key }}">{{ $relprd->product }}</a></h3> </div>
+                                    <div class="product-price">
+                                        @if($relprd->spl_price > 0 && $relprd->spl_price > $relprd->price)
+                                        <del><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                                        @else
+                                        <ins><span class="currency-sym"></span> {{number_format(@$relprd->price * Session::get('currency_val'), 2, '.', '')}}</ins> 
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     <?php } ?>
                 </div>
             </div>
+            @endif
         </div>
+    </div>
 </section>
 <!-- #content end -->
 @stop
@@ -170,18 +176,22 @@
     }
     $('.plus').click(function (e) {
         // Stop acting like a button
+
         e.preventDefault();
         // Get the field name
         var maxvalue = parseInt($('input[name="quantity"]').attr('max'));
         // console.log(maxvalue);
         // Get its current value
-        var currentVal = parseInt($('#quantity').val());
+
+        var currentVal = parseInt($('input[name="quantity"]').val());
         //  console.log(currentVal);
         // If is not undefined
+
         if (!isNaN(currentVal) && (currentVal < maxvalue)) {
             // Increment
             //$('.plus').css('pointer-events', '');
-            $('#quantity').val(parseInt(currentVal) + 1);
+            $('input[name="quantity"]').val(parseInt(currentVal) + 1);
+
             // alert(parseInt(currentVal)+ 1);
         } else if (currentVal >= maxvalue) {
             // console.log(maxvalue);

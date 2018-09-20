@@ -25,17 +25,17 @@ class SetCronController extends Controller {
         $yesterdayDate = date('Y-m-d',strtotime("-1 days"));;
         
         foreach($getStores as $getk => $getS){
-            
-           $merchant_details =  json_decode($getS->getmerchant()->register_details,true);
+            //dd($getS->getmerchant()->first()->register_details);
+           $merchant_details =  json_decode($getS->getmerchant()->first()->register_details,true);
            $currency = Currency::find($merchant_details['currency'])->currency_val;
            $vsUpdate =  new VswipeSale();
-           $vsUpdate->sales = DB::table($getS->prefix."_orders")
+           $vsUpdate->sales = DB::table("has_products")->where("prefix",$getS->prefix)
                    ->where("order_status","!=",0)
                    //->where(DB::raw("DATE(created_at)"),"=",$yesterdayDate)
                   
                    ->sum("pay_amt");
-           $vsUpdate->user_count = DB::table($getS->prefix."_users")
-                  // ->where(DB::raw("DATE(created_at)"),"=",$yesterdayDate)
+           $vsUpdate->user_count = DB::table("users")
+               
                    ->count();
                 
            $vsUpdate->store_id = $getS->id;

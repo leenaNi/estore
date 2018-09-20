@@ -25,7 +25,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/forget-password', array('as' => 'chkForgotPasswordEmail', 'uses' => 'LoginController@chkForgotPasswordEmail'));
     Route::get('/reset-password/{link?}', array('as' => 'resetNewPwd', 'uses' => 'HomeController@resetNewPwd'));
     Route::post('/save-reset-password', array('as' => 'saveResetPwd', 'uses' => 'LoginController@saveResetPwd'));
-   Route::any('/home-edit', ['as' => 'updateHomeSettings', 'uses' => 'HomeEditController@updateStoreSettings']);
+    Route::any('/home-edit', ['as' => 'updateHomeSettings', 'uses' => 'HomeEditController@updateStoreSettings']);
     //CART ROUTES
     Route::group(array('prefix' => Config('constants.cartSlug'), 'middleware' => ['web']), function() {
         Route::get('/cart', array('as' => 'cart', 'uses' => 'CartController@index'));
@@ -40,6 +40,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/checkout', ['as' => 'checkout', 'uses' => 'CheckoutController@index']);
     Route::any('/new_user_login_new', array('as' => 'new_user_login_new', 'uses' => 'CheckoutController@new_user_login_new'));
     Route::any('/get_exist_user_login_new', array('as' => 'get_exist_user_login_new', 'uses' => 'CheckoutController@get_exist_user_login_new'));
+    Route::any('/guest_checkout', array('as' => 'guestCheckout', 'uses' => 'CheckoutController@guestCheckout'));
     Route::any('check-pincode-home', ["as" => "checkPincodeHome", "uses" => "HomeController@checkPincode"]);
     Route::any('/check-pincode', array('as' => 'checkPincode', 'uses' => 'CheckoutController@checkPincode'));
     Route::any('/get_loggedindata', array('as' => 'get_loggedindata', 'uses' => 'CheckoutController@get_loggedindata'));
@@ -54,6 +55,14 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/toPayment', array('as' => 'toPayment', 'uses' => 'CheckoutController@toPayment'));
     Route::any('/chk-cart-inventory', array('as' => 'chk_cart_inventory', 'uses' => 'CheckoutController@chk_cart_inventory'));
     Route::post('/order_cash_on_delivery', array('as' => 'order_cash_on_delivery', 'uses' => 'CheckoutController@order_cash_on_delivery'));
+
+    //COD
+    Route::any('/apply_cod_charges', array('as' => 'apply_cod_charges', 'uses' => 'CheckoutController@apply_cod_charges'));
+    Route::any('/revert_cod_charges', array('as' => 'revert_cod_charges', 'uses' => 'CheckoutController@revert_cod_charges'));
+    //Order Success
+    Route::any('/order-success', array('as' => 'orderSuccess', 'uses' => 'CheckoutController@orderSuccess'));
+    Route::any('/order-failure', array('as' => 'orderFailure', 'uses' => 'CheckoutController@orderFailure'));
+
     //WISHLIST
     Route::post('/save-wishlist', ['as' => 'addToWishlist', 'uses' => 'UserController@addToWishlist']);
     Route::post('/remove-wishlist', ['as' => 'removeWishlist', 'uses' => 'UserController@removeWishlist']);
@@ -62,8 +71,8 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::get('/order-details/{id}', array('as' => 'orderDetails', 'uses' => 'UserController@orderDetails'));
     Route::any('/order-details-json', array('as' => 'orderDetailsJson', 'uses' => 'UserController@orderDetails_json'));
     Route::any('/order-cancel-status', array('as' => 'statusOrderCancel', 'uses' => 'UserController@statusOrderCancel'));
-     Route::post('/update-profile-image', array('as' => 'updateProfileImage', 'uses' => 'UserController@updateProfileImage'));
-     Route::post('/update-change-password-myacc', array('as' => 'updateMyaccChangePassword', 'uses' => 'UserController@updateMyaccChangePassword'));
+    Route::post('/update-profile-image', array('as' => 'updateProfileImage', 'uses' => 'UserController@updateProfileImage'));
+    Route::post('/update-change-password-myacc', array('as' => 'updateMyaccChangePassword', 'uses' => 'UserController@updateMyaccChangePassword'));
     //PRODUCT LISTING ROUTES
     Route::any('/getListingFilter', ['as' => 'getListingFilter', 'uses' => 'CategoriesController@getListingFilter']);
     Route::any('/get-product-listing', ['as' => 'getProductListing', 'uses' => 'CategoriesController@getProductListing']);
@@ -75,6 +84,6 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
 
     //Category Listing
     Route::get('/explore/{slug?}', ['as' => 'category', 'uses' => 'CategoriesController@index']);
-    Route::get('/{slug}/', ['as' => 'prod', 'uses' => 'ProductController@index']);
+    Route::get('/{prefix}/{slug}/', ['as' => 'prod', 'uses' => 'ProductController@index']);
 });
 

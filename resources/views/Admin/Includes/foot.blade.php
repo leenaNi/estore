@@ -139,4 +139,34 @@ $( window ).load(function() {
             errorDiv.append(error);
         }
     });
+      $(document).ready(function () {
+          var currency='<?php echo Session::get('cur') ?>';
+          var currentCurrency='<?php echo Session::get('currency_val') ?>';
+          $('.currency-sym').html('').html(currency);
+        // var currentCurrency=parseFloat(3.256); 
+      $(".priceConvert").each(function (k, v) {
+                    var filterNumber = $(this).text().trim();
+                    filterNumber = filterNumber.replace(",", "");
+                     
+                    var getPrice = parseFloat(filterNumber);
+                    var calCulate = (getPrice * currentCurrency).toFixed(2)
+                  
+                    $(this).text(calCulate);
+                });
+                $(".priceConvertTextBox").each(function (k, v) {
+                var getPrice = $(this).val();
+                getPrice = getPrice.replace(",", "");
+                getPrice = parseFloat($(this).val());
+                if (isNaN(getPrice)) {
+                    var getPrice = " ";
+                } else {
+                    var calCulate = (getPrice * currentCurrency).toFixed(2);
+                    $(this).attr("value", calCulate);
+                }
+                var getName = $(this).attr("name");
+                $(this).parent().append("<input type='hidden' name='" + getName + "' class='priceConvertTextBoxMain' value='" + getPrice + "' > ");
+                $(this).attr("name", "not_in_use");
+            });
+                
+            });
 </script>

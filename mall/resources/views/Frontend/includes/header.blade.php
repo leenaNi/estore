@@ -10,13 +10,14 @@
             ============================================= -->
             <div class="top-links fright">
                 <ul>
-                    <li><a href="http://www.veestores.com/about">About</a></li>
+                    <li><a href="https://www.veestores.com/" target="_blank">Create Store</a></li>
+                    <li><a href="http://www.veestores.com/about" target="_blank">About</a></li>
                     <!-- <li><a href="#">FAQs</a></li> -->
-                    <li><a href="http://www.veestores.com/contact">Contact</a></li>
+                    <li><a href="http://www.veestores.com/contact" target="_blank">Contact</a></li>
 
                     @if(Session::get('loggedin_user_id'))              
-                    <li> <a href="{{route('myProfile')}}" >Myaccount</a></li>
-                     <li> <a href="{{route('logoutUser')}}" >Logout</a></li>
+                    <li> <a href="{{route('myProfile')}}" >My Account</a></li>
+                     <li> <a href="{{route('logoutUser')}}">Logout</a></li>
                     @else
                     <li><a href="{{ route('loginUser') }}">Login / Register</a></li>
                     @endif
@@ -84,6 +85,9 @@
                                                 }
                                             }
                                             ?>
+                                            <div class="col-sm-4 col-md-4 display-img">
+                                                <img src="{{asset('public/Frontend/images/menu-image.jpg')}}">
+                                            </div>
                                         </div> <!--/.lnt-subcategroy-carousel-wrap -->
                                     </div> <!--/.lnt-dropdown-mega-menu -->
                                 </div> <!--/.dropdown-menu -->

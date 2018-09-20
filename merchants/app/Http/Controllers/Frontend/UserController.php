@@ -37,9 +37,15 @@ class UserController extends Controller {
         //  dd(Helper::returnView($viewname, $data));
         return Helper::returnView($viewname, $data);
     }
-
+public function showItem($id = 4) {
+ $retrieveItems = User::userCashback();
+return $retrieveItems;
+}
     public function my_profile() {
-        //print_r(Session::get('loggedin_user_id'));
+//        $user=User::find(Session::get('loggedin_user_id'));
+//        $user->userCashback->cashback=$user->userCashback->cashback+200;
+//      $user->userCashback->save();
+//      dd($user);
         $orderReturnReason=OrderReturnReason::pluck('reason','id');
         $user=User::find(@Session::get('loggedin_user_id'));
         $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
@@ -82,9 +88,13 @@ class UserController extends Controller {
         $returnPolicy = @GeneralSetting::where("type", 6)->first()->details;
         $returnProductStatus=GeneralSetting::where('url_key','return-product')->where('status',1)->get();
          $orderReturnReason=OrderReturnReason::pluck('reason','id');
-        $getid = $id;
-        $order = Order::where('id', $getid)->with('currency','orderStatHist')->with(['products'=>function($pro){
-         return $pro->with([
+      $getid = $id;
+         $order = Order::where('orders.id', $getid)->with('currency','orderStatHist')->first();
+        
+       
+    $prod_id = HasProducts::where('order_id', $getid)->where("prefix",$this->jsonString['prefix'])->pluck("prod_id");
+      
+            $products = Product::whereIn("id", $prod_id)->with([
                                 'subproducts' => function ($query) {
                                     $query->with(['attributes' => function($q) {
                                             $q->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
@@ -96,13 +106,15 @@ class UserController extends Controller {
                                             $qattr->where("is_filterable", 1)->with('attributevalues')->with('attributeoptions');
                                         }]);
                                 }
-                                    ]);
-        }])->first();
+                                    ])->get();
+        //dd($products);
         $collectOrderProduct=[];
-        if(isset($order->products) && count($order->products)>0)
-        foreach($order->products as $getProduct):
+        //dd($order->orderStatHist);
+        if(isset($products) && count($products)>0)
+        foreach($products as $getProduct):
             $collectOrderProduct[$getProduct->id]=$getProduct;
         endforeach;
+       // dd($collectOrderProduct);
         $this->order_id=$getid;
         $getReturnRequest=ReturnOrder::where("order_id",$getid)->with('return_status_id','exchangeProduct')->get();
         $getReturnRequestSum=ReturnOrder::select('return_order.*', DB::raw('sum(quantity) as quantityAdd'))->where("order_id",$getid)->groupBy('sub_prod')->pluck('sub_prod','sub_prod');
@@ -205,7 +217,8 @@ class UserController extends Controller {
                 $return->sub_prod = $d['sub_prod'];
                 $return->order_status = Input::get('order_status');
                 $return->return_action = 3;
-                $return->return_status = 3;
+                $return->store_id =$this->jsonString['store_id'];
+                $return->prefix =$this->jsonString['prefix'];
                 $return->save();
             }
         }
@@ -237,6 +250,8 @@ class UserController extends Controller {
                     $return->opened_id = $return_qnty['opened'];
                     $return->remark = $return_qnty['remark'];
                     $return->return_status = 4;
+                    $return->store_id =$this->jsonString['store_id'];
+                    $return->prefix =$this->jsonString['prefix'];
                     $return->save();
                 }
             }
@@ -308,9 +323,7 @@ class UserController extends Controller {
               return   $result = ['status'=>'nomatch','msg'=>'Password and Confirm Password does not match'];
             }
         } else {
-            //return 0;
-           
-            // Session::flash('PasswordError', 'Incorrect Old Password');
+     
           return  $result = ['status'=>'error','msg'=>'Incorrect Old Password']; 
         }
 

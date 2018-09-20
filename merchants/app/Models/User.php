@@ -51,9 +51,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function wish() {
         return $this->hasMany('App\Models\WishList', 'user_id');
     }
+  public function userCashback($id=null) {
+        return $this->hasOne('App\Models\HasCashbackLoyalty', 'user_id')->where("store_id",env('STORE_ID'));
+    }
 
     function hasOrder() {
         return $this->hasMany('App\Models\Order', 'user_id')->groupBy('user_id')->count();
     }
-
+public static function rtvItem($id) {
+ dd($id);
+}
 }

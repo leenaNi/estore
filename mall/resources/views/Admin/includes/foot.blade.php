@@ -233,13 +233,13 @@
     options.classList.remove('hide');
     
     cropper = new Cropper(img, {
-    aspectRatio: 1.70,
+    aspectRatio: 4.0,
             dragMode: 'move',
             cropBoxMovable: true,
             cropBoxResizable: true,
             zoom : - 0.1,
             built: function () {
-            $toCrop.cropper("setCropBoxData", { width: "170", height: "100" });
+            $toCrop.cropper("setCropBoxData", { width: "250", height: "60" });
             }
     });
     }
@@ -273,7 +273,7 @@
     formdata = new FormData(form[0]);
     }
     var ImageURL = cropper.getCroppedCanvas({
-    width: 170 // input value
+    width: 250 // input value
     }).toDataURL();
     formdata.append("logo_img_url", ImageURL);
     $.ajax({

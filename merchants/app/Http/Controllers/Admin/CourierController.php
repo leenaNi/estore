@@ -41,7 +41,9 @@ class CourierController extends Controller {
     }
 
     public function save() {
-        Courier::create(Input::all());
+         $courier = Courier::findOrNew(Input::get('id'));
+        // $courier->charges = (Input::get('charges')*Session::get("currency_val"));
+         $courier->save();
         Session::flash("msg", "Courier service added successfully.");
         return redirect()->route('admin.courier.view');
     }
@@ -55,6 +57,7 @@ class CourierController extends Controller {
     public function update() {
         $courier = Courier::find(Input::get('id'));
         $courier->update(Input::except(['details']));
+        //$courier->charges = Input::get('id')*Session::get("currency_val");
         $courier->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
         $courier->update();
         Session::flash("msg", "Courier service updated successfully.");

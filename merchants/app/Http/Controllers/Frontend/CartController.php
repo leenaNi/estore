@@ -151,7 +151,7 @@ class CartController extends Controller {
         $data['subtotal'] = $sub_total * Session::get('currency_val');
         $data['finaltotal'] = $amt['total'] * Session::get('currency_val');
         $data['total'] = $amt['total'] * Session::get('currency_val');
-        $data['tax']=$cartInstance->options->tax_amt;
+        $data['tax'] = $cartInstance->options->tax_amt;
         // $data['subtotal'] = Cart::instance('shopping')->get(Input::get("rowid"))->subtotal * Session::get('currency_val') ;
         // $data['finaltotal'] = Cart::total() * Session::get('currency_val');
         // $data['total'] = Cart::total() * Session::get('currency_val');
@@ -181,6 +181,7 @@ class CartController extends Controller {
     }
 
     public function simpleProduct($prod_id, $quantity) {
+        $jsonString = Helper::getSettings();
         $product = Product::find($prod_id);
         $quantity = (Input::get('quantity')) ? Input::get('quantity') : $quantity;
 
@@ -192,10 +193,10 @@ class CartController extends Controller {
         $pname = $product->product;
         $prod_type = $product->prod_type;
         $images = @$product->catalogimgs()->where("image_type", "=", 1)->first()->filename;
-         $imagPath=Config("constants.productImgPath") .'/'. $images;
+        $imagPath = Config("constants.productImgPath") . '/' . $images;
         $type = $product->is_tax;
         $sum = 0;
-        
+
         foreach ($product->texes as $tax) {
             $sum = $sum + $tax->rate;
         }
@@ -204,29 +205,20 @@ class CartController extends Controller {
             $tax = $product->selling_price * $quantity * $sum / 100;
             $tax_amt = round($tax, 2);
         }
-
-        if ($product->is_stock == 1) {
-            $is_stockable = GeneralSetting::where('id', 26)->first();
-            if ($is_stockable->status == 1 && $product->prod_type == 1) {
-                if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
-                    Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
-                        "options" => ["image" => $images,"image_with_path"=>$imagPath, "sub_prod" => $prod_id, "is_cod" => $product->is_cod, 'url' => $product->url_key,
-                            'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
-                            "prod_type" => $prod_type,
-                            "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
-                } else {
-                    return 1;
-                }
-            } else {
+        $is_stockable = GeneralSetting::where('id', 26)->first();
+        if ($product->is_stock == 1 && $is_stockable->status == 1) {
+            if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                 Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
-                    "options" => ["image" => $images,"image_with_path"=>$imagPath, "sub_prod" => $prod_id, "is_cod" => $product->is_cod, 'url' => $product->url_key,
+                    "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $prod_id, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix'],
                         'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                         "prod_type" => $prod_type,
                         "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
+            } else {
+                return 1;
             }
         } else {
             Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
-                "options" => ["image" => $images,"image_with_path"=>$imagPath, "sub_prod" => $prod_id, "is_cod" => $product->is_cod, 'url' => $product->url_key,
+                "options" => ["image" => $images, "image_with_path" => $imagPath, "sub_prod" => $prod_id, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix'],
                     'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                     "prod_type" => $prod_type,
                     "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
@@ -234,6 +226,7 @@ class CartController extends Controller {
     }
 
     public function downloadProduct($prod_id, $quantity) {
+        $jsonString = Helper::getSettings();
         $product = Product::find($prod_id);
         $quantity = (Input::get('quantity')) ? Input::get('quantity') : $quantity;
         $cats = [];
@@ -259,25 +252,23 @@ class CartController extends Controller {
         $is_stockable = GeneralSetting::where('id', 26)->first();
         if ($is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
-                Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $images, "sub_prod" => $prod_id, 'url' => $product->url_key, "is_cod" => $product->is_cod, 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "eNoOfDaysAllowed" => $eNoOfDaysAllowed, "prod_type" => $prod_type, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
+                Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $images, "sub_prod" => $prod_id, 'url' => $product->url_key, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix'], "is_cod" => $product->is_cod, 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "eNoOfDaysAllowed" => $eNoOfDaysAllowed, "prod_type" => $prod_type, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
             } else {
                 return 1;
             }
         } else {
-            Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $images, "sub_prod" => $prod_id, 'url' => $product->url_key, "is_cod" => $product->is_cod, 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "eNoOfDaysAllowed" => $eNoOfDaysAllowed, "prod_type" => $prod_type, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
+            Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $images, "sub_prod" => $prod_id, 'url' => $product->url_key, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix'], "is_cod" => $product->is_cod, 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "eNoOfDaysAllowed" => $eNoOfDaysAllowed, "prod_type" => $prod_type, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
         }
     }
 
     public function comboProduct($prod_id, $quantity, $sub_prod) {
-
+        $jsonString = Helper::getSettings();
         $product = Product::find($prod_id);
-
         $cats = [];
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
         }
         $pname = $product->product;
-
         $type = $product->is_tax;
         $sum = 0;
         foreach ($product->texes as $tax) {
@@ -305,8 +296,6 @@ class CartController extends Controller {
             $combos[$cmb->id]["name"] = $cmb->product;
             $combos[$cmb->id]["img"] = @$cmb->catalogimgs()->first()->filename;
             $prod = [];
-
-
             //print_r($sub_prod[$cmb->id]);
             //$price += $cmb->price;
             if (isset($sub_prod[$cmb->id])) {
@@ -323,106 +312,67 @@ class CartController extends Controller {
         $image = (!empty($images)) ? $images : "default.jpg";
         if ($is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock" || $product->is_crowd_funded != 0) {
-
-                Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $image, "sub_prod" => $prod_id, "is_crowd_funded" => $product->is_crowd_funded, 'url' => $product->url_key, "combos" => $combos, "is_cod" => $product->is_cod, 'cats' => $cats, "is_shipped_inter" => $isShipped, "is_ref_disc" => $isRefDisc, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, 'tax_amt' => $tax_amt, 'prod_type' => $prod_type]]);
+                Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $image, "sub_prod" => $prod_id, "is_crowd_funded" => $product->is_crowd_funded, 'url' => $product->url_key, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix'], "combos" => $combos, "is_cod" => $product->is_cod, 'cats' => $cats, "is_shipped_inter" => $isShipped, "is_ref_disc" => $isRefDisc, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, 'tax_amt' => $tax_amt, 'prod_type' => $prod_type]]);
             } else {
                 return 1;
             }
         } else {
-            Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $image, "sub_prod" => $prod_id, "is_crowd_funded" => $product->is_crowd_funded, 'url' => $product->url_key, "combos" => $combos, "is_cod" => $product->is_cod, 'cats' => $cats, "is_shipped_inter" => $isShipped, "is_ref_disc" => $isRefDisc, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, 'tax_amt' => $tax_amt, 'prod_type' => $prod_type]]);
+            Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $image, "sub_prod" => $prod_id, "is_crowd_funded" => $product->is_crowd_funded, 'url' => $product->url_key, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix'], "combos" => $combos, "is_cod" => $product->is_cod, 'cats' => $cats, "is_shipped_inter" => $isShipped, "is_ref_disc" => $isRefDisc, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, 'tax_amt' => $tax_amt, 'prod_type' => $prod_type]]);
         }
     }
 
     public function configProduct($prod_id, $quantity, $sub_prod) {
+        $jsonString = Helper::getSettings();
         $is_stockable = GeneralSetting::where('id', 26)->first();
         $product = Product::find($prod_id);
-     
+        $cats = [];
+
+        foreach ($product->categories as $cat) {
+            array_push($cats, $cat->id);
+        }
+        $pname = $product->product;
+        $prod_type = $product->prod_type;
+        $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
+        $imagPath = Config("constants.productImgPath") . '/' . $images;
+        $subProd = Product::where("id", "=", $sub_prod)->first();
+        $price = $subProd->price + $product->selling_price;
+        $options = [];
+        $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
+
+        foreach ($hasOptn as $optn) {
+            $options[$optn->pivot->attr_id] = $optn->pivot->attr_val;
+            $option_name[] = AttributeValue::find($optn->pivot->attr_id)->option_name;
+        }
+        $image = isset($images) ? $images : "default.jpg";
+        $option_name = json_encode($option_name);
+        $type = $product->is_tax;
+        $sum = 0;
+        foreach ($product->texes as $tax) {
+            $sum = $sum + $tax->rate;
+        }
+        $tax_amt = 0;
+        if ($type == 1 || $type == 2) {
+            $tax = $product->selling_price * $quantity * $sum / 100;
+            $tax_amt = round($tax, 2);
+        }
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
-          
+
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock") {
                 // $product = Product::find($sub_prod);
-
-                $cats = [];
-
-                foreach ($product->categories as $cat) {
-                    array_push($cats, $cat->id);
-                }
-                $pname = $product->product;
-                $prod_type = $product->prod_type;
-                $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
-                $imagPath=Config("constants.productImgPath") .'/'. $images;
-                $subProd = Product::where("id", "=", $sub_prod)->first();
-                $price = $subProd->price + $product->selling_price;
-                $options = [];
-                $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-               
-                foreach ($hasOptn as $optn) {
-                    $options[$optn->pivot->attr_id] = $optn->pivot->attr_val;
-                   
-                    $option_name[]=AttributeValue::find($optn->pivot->attr_id)->option_name;
-                }
-                 $option_name=json_encode($option_name);
-                $image = isset($images) ? $images : "default.jpg";
-
-                $type = $product->is_tax;
-                $sum = 0;
-                foreach ($product->texes as $tax) {
-                    $sum = $sum + $tax->rate;
-                }
-                $tax_amt = 0;
-                if ($type == 1 || $type == 2) {
-                    $tax = $product->selling_price * $quantity * $sum / 100;
-                    $tax_amt = round($tax, 2);
-                }
-
-
                 Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                     "qty" => $quantity, "price" => $price,
-                    "options" => ["image" => $image,"image_with_path"=>$imagPath,"selected_attrs_labels"=>$option_name, "sub_prod" => $subProd->id,
+                    "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
                         "options" => $options, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
-                        'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
+                        'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix'], 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
             } else {
                 return 1;
             }
         } else {
-
-            $cats = [];
-
-            foreach ($product->categories as $cat) {
-                array_push($cats, $cat->id);
-            }
-            $pname = $product->product;
-            $prod_type = $product->prod_type;
-            $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
-            $imagPath=Config("constants.productImgPath") .'/'. $images;
-            $subProd = Product::where("id", "=", $sub_prod)->first();
-            $price = $subProd->price + $product->selling_price;
-            $options = [];
-            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-          
-            foreach ($hasOptn as $optn) {
-                $options[$optn->pivot->attr_id] = $optn->pivot->attr_val;
-                $option_name[]=AttributeValue::find($optn->pivot->attr_id)->option_name;
-            }
-            $image = isset($images) ? $images : "default.jpg";
-            $option_name=json_encode($option_name);
-            $type = $product->is_tax;
-            $sum = 0;
-            foreach ($product->texes as $tax) {
-                $sum = $sum + $tax->rate;
-            }
-            $tax_amt = 0;
-            if ($type == 1 || $type == 2) {
-                $tax = $product->selling_price * $quantity * $sum / 100;
-                $tax_amt = round($tax, 2);
-            }
-
-
             Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                 "qty" => $quantity, "price" => $price,
-                "options" => ["image" => $image,"image_with_path"=>$imagPath,"selected_attrs_labels"=>$option_name, "sub_prod" => $subProd->id,
+                "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
                     "options" => $options, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
-                    'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
+                    'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix'], 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
         }
     }
 
@@ -487,7 +437,6 @@ class CartController extends Controller {
             Cart::update($amt['sid'], ['options' => ['discountedAmount' => $amt['rc']]]);
         }
     }
-
 
     public function check_coupon() {
         Session::get('currency_val');
@@ -699,13 +648,13 @@ class CartController extends Controller {
             $data['orderAmount'] = filter_var($cart_amt['total'] * Session::get('currency_val'), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             return $data;
         } else {
-            $cart_amt = Helper::revertTax(); 
+            $cart_amt = Helper::revertTax();
             $data['remove'] = 1;
             if (empty($msg)) {
                 $msg = "Coupon code invalid";
             }
-         
-             Session::forget('couponUsedAmt');
+
+            Session::forget('couponUsedAmt');
             Session::forget('usedCouponId');
             Session::forget('usedCouponCode');
 //            if (Session::get('individualDiscountPercent')) {
@@ -717,7 +666,7 @@ class CartController extends Controller {
 
             $cart_amt = Helper::calAmtWithTax();
             $data['cmsg'] = @$msg;
-            $data['cart'] =$cart_amt['cart'];// Cart::instance('shopping')->content()->toArray();
+            $data['cart'] = $cart_amt['cart']; // Cart::instance('shopping')->content()->toArray();
             $data['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
             $data['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
             $data['cartCnt'] = Cart::instance('shopping')->count();

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Input;
 use App\Http\Controllers\Controller;
 use App\Models\Pincode;
-use App\Models\City;
+//use App\Models\City;
 use DB;
 use Session;
 use App\Library\Helper;
@@ -18,7 +18,7 @@ class PincodeController extends Controller {
     public function index() {
 
 
-        $pincodes = Pincode::with('cities')->orderBy("id");
+        $pincodes = Pincode::orderBy("id");
         $delivary_status = Input::get("delivary_status") != null ? Input::get("delivary_status") : '';
         $cod_status = Input::get("cod_status") != null ? Input::get("cod_status") : '';
         if (!empty(Input::get("pincode"))) {
@@ -44,25 +44,25 @@ class PincodeController extends Controller {
 
     public function addEdit() {
         $pincodes = Pincode::find(Input::get('id'));
-        $cities = City::orderBy('city_name')->pluck('city_name', 'id');
-        $service_provider = Courier::where('status', 1)->orderBy('name')->pluck('name', 'id')->prepend("Courier Service", "")->toArray();
+        //$cities = City::orderBy('city_name')->pluck('city_name', 'id');
+      //  $service_provider = Courier::where('status', 1)->orderBy('name')->pluck('name', 'id')->prepend("Courier Service", "")->toArray();
         // dd($pincode);
         $action = route('admin.pincodes.save');
         $prefdataArr = [];
-        $prefdata = Courier::where('status', 1)->orderBy('name')->get();
-        foreach ($prefdata as $pref) {
-            $prefdataArr[$pref->id] = $pref->pref;
-        }
+//        $prefdata = Courier::where('status', 1)->orderBy('name')->get();
+//        foreach ($prefdata as $pref) {
+//            $prefdataArr[$pref->id] = $pref->pref;
+//        }
 
 
-        return view(Config('constants.pincodeView') . '.addEdit', ['pincodes' => $pincodes, 'action' => $action, 'cities' => $cities, 'service_provider' => $service_provider, 'prefdata' => $prefdataArr]);
+        return view(Config('constants.pincodeView') . '.addEdit', ['pincodes' => $pincodes, 'action' => $action]);
     }
 
     public function save() {
         $pincodes = Pincode::findOrNew(Input::get("id"));
         $pincodes->pincode = Input::get("pincode");
 
-        $pincodes->service_provider = (Input::get("service_provider")) ? Input::get("service_provider") : 0;
+      //  $pincodes->service_provider = (Input::get("service_provider")) ? Input::get("service_provider") : 0;
         $pincodes->cod_status = (Input::get("cod_status")) ? Input::get("cod_status") : 0;
         $pincodes->pref = (Input::get("pref")) ? Input::get("pref") : 0;
         $pincodes->status = Input::get("status");

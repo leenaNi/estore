@@ -51,23 +51,28 @@
                 @endif
 
 
-                <div class="box-header box-tools filter-box col-md-9 noBorder">
+                <div class="box-header box-tools filter-box col-md-12 noBorder">
+                        <div class="col-md-9 noBorder">
                     <form action="" method="get" >
                         <input type="hidden" name="dataSearch" value="dataSearch"/>
 
-                        <div class="form-group col-md-6 noBottomMargin">
+                        <div class="form-group col-md-4 noBottomMargin">
                             <div class="input-group-btn">
                                 <input type="text" name="product_name" class="form-control medium pull-right catSearcH" placeholder="Search Something" value="{{ (!empty(Input::get('product_name'))) ? Input::get('product_name') :''}}">
                             </div>
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
 
                             {!! Form::select('category',$category,!empty(Input::get('category'))?Input::get('category'):null, ["class"=>'form-control']) !!}
                         </div>
-                        <div class="form-group col-md-3 noBottomMargin">
-                            <button type="submit" class="btn btn-primary "> Search</button>
+                        <div class="form-group col-md-4 noBottomMargin">
+                            <button type="submit" class="btn btn-primary form-control"> Search</button>
                         </div>
                     </form>
+                        </div>
+                      <div class="btn-group  col-md-3 noBottomMargin">
+                            <a href="{{route('admin.products.view')}}"><button type="button" class="btn sbtn btn-block reset-btn" value="reset">Reset</button></a>
+                        </div>
                 </div>
 
                 <?php
@@ -126,6 +131,7 @@
                                         </span>    
                                     </span>  
                                 </td>
+                               
                                 <td>  {{($product->categories()->first()->category) }}<br> 
                                       </td>
                                 <td>

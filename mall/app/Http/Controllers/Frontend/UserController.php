@@ -10,9 +10,9 @@ use App\Models\OrderReturnOpenUnopen;
 use App\Models\OrderReturnReason;
 use App\Models\ReturnOrder;
 use App\Models\Order;
+use App\Models\HasProducts;
 use App\Models\Product;
 use App\Library\Helper;
-use App\Models\HasProducts;
 use App\Models\DownlodableProd;
 use App\Models\TempDownload;
 use App\Models\GeneralSetting;
@@ -105,6 +105,7 @@ class UserController extends Controller {
 //                                    ]);
 //        }])->first();
         $order = Order::where('id', $getid)->first();
+        $orderProds = HasProducts::where('order_id', $order->id)->with('orderstatus')->get();
         $collectOrderProduct=[];
 //        if(isset($order->products) && count($order->products)>0)
 //        foreach($order->products as $getProduct):
@@ -116,7 +117,7 @@ class UserController extends Controller {
 //        $returnSumqty=ReturnOrder::select('return_order.*', DB::raw('sum(quantity) as quantityAdd'))->where("order_id",$getid)->groupBy('sub_prod')->pluck('quantity','sub_prod');
 //   // dd($getReturnRequestSum);
 //        $coupon = Coupon::find($order->coupon_used);
-        $data = ['order' => $order];
+        $data = ['order' => $order, 'orderProds' => $orderProds];
         $viewname = Config('constants.frontendMyAccView') . '.order_details';
         return Helper::returnView($viewname, $data);
         //return view(Config('constants.frontendMyAccView') . '.order_details', compact('order', 'coupon'));

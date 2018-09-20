@@ -21,11 +21,11 @@
                   <div class="fslider" data-pagi="false" data-autoplay="false" data-arrows="false" data-thumbs="true">
                     <div class="flexslider">
                       <div class="slider-wrap" data-lightbox="gallery" style="width:100% !important;">
-                        <div class="slide" data-thumb="images/shop/polo-big.jpg">
-                          <a href="images/shop/polo-big.jpg" title="Gritstones Men Black Regular Fit T-Shirt" data-lightbox="gallery-item"><img src="images/shop/polo-big.jpg" alt="Pink Printed Dress" class="zoom-me zoom-me1" data-zoom-image="images/shop/polo-big.jpg"> </a>
+                        <div class="slide" data-thumb="images/fashion/products/default-product.jpg">
+                          <a href="images/fashion/products/default-product.jpg" title="" data-lightbox="gallery-item"><img src="images/fashion/products/default-product.jpg" alt="" class="zoom-me zoom-me1" data-zoom-image="images/fashion/products/default-product.jpg"> </a>
                         </div>
-                        <div class="slide" data-thumb="images/shop/polo-big2.jpg">
-                          <a href="images/shop/polo-big2.jpg" title="Pink Printed Dress - Side View" data-lightbox="gallery-item"><img src="images/shop/polo-big2.jpg" alt="Pink Printed Dress" class="zoom-me zoom-me1" data-zoom-image="images/shop/polo-big2.jpg"> </a>
+                        <div class="slide" data-thumb="images/fashion/products/default-product.jpg">
+                          <a href="images/fashion/products/default-product.jpg" title="" data-lightbox="gallery-item"><img src="images/fashion/products/default-product.jpg" alt="" class="zoom-me zoom-me1" data-zoom-image="images/fashion/products/default-product.jpg"> </a>
                         </div>
                       </div>
                     </div>
@@ -34,11 +34,11 @@
                 <!-- Product Single - Gallery End -->
               </div>
               <div class="col_last col_half product-desc">
-                <h1 class="product_title">Gritstones Men Black Regular Fit T-Shirt</h1>
+                <h1 class="product_title">Your Product Name</h1>
                 <div class="product-rating">
                   <p>PRODUCT CODE: BAER 0045</p>
                 </div>
-                <div class="product-price"> <del>Rs. 499</del> <ins>Rs. 399</ins></div> <span class="span2" style="color:red;">STOCK LEFT - 6</span>
+                <div class="product-price"> <del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins></div> <span class="span2" style="color:red;">STOCK LEFT - 6</span>
                 <div class="clear"></div>
                 <div class="line"></div>
                 <!-- Product Single - Quantity & Cart Button
@@ -48,8 +48,7 @@
                     <input type="button" value="-" class="minus">
                     <input type="text" step="1" min="1" name="quantity" value="1" title="Qty" class="qty" size="4" />
                     <input type="button" value="+" class="plus"> </div>
-                  <button type="submit" class="add-to-cart button nomargin">Add to cart</button>
-                  <button type="submit" class="add-to-cart button nomargin">Buy Now</button>
+                  <a class="add-to-cart button nomargin" onclick="location.href='cart.php';">Add to cart</a>
                   <button type="submit" class="add-to-cart button nomargin"><i class="icon-heart" style="margin-right:0px;"></i></button>
                 </form>
                 <!-- Product Single - Quantity & Cart Button End -->
@@ -58,15 +57,9 @@
                 <!-- Product Single - Short Description
 								============================================= -->
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero velit id eaque ex quae laboriosam nulla optio doloribus! Perspiciatis, libero, neque, perferendis at nisi optio dolor!</p>
-                <!-- Product Single - Meta
-								============================================= -->
-                <div class="panel panel-default product-meta">
-                  <div class="panel-body">
-<strong>Color :</strong> Blue<br/><br/>
-<strong>Type :</strong>Half Sleeve
-				  </div>
-                </div>
-                <!-- Product Single - Meta End -->
+              
+                <div class="line"></div>
+                <div class="clear"></div>
                 <!-- Product Single - Share
 								============================================= -->
                 <div class="si-share noborder clearfix"> <span class="pull-left">Share:</span>
@@ -82,50 +75,19 @@
                 <!-- Product Single - Share End -->
               </div>
               <div class="col_full nobottommargin">
-                <div class="tabs clearfix nobottommargin" id="tab-1">
-                  <ul class="tab-nav clearfix">
-                    <li><a href="#tabs-1"><i class="icon-align-justify2"></i><span class="hidden-xs"> Description</span></a> </li>
-                    <li><a href="#tabs-2"><i class="icon-info-sign"></i><span class="hidden-xs"> Additional Information</span></a> </li>
-                  </ul>
-                  <div class="tab-container">
-                    <div class="tab-content clearfix" id="tabs-1">
-                      <p>Pink printed dress, woven, round neck with a keyhole and buttoned closure at the back, sleeveless, concealed zip up at left side seam, belt loops along waist with slight gathers beneath, brand appliqu?? above left front hem, has an attached lining.</p> Comes with a white, slim synthetic belt that has a tang clasp. </div>
-                    <div class="tab-content clearfix" id="tabs-2">
-                      <table class="table table-striped table-bordered">
-                        <tbody>
-                          <tr>
-                            <td>Size</td>
-                            <td>Small, Medium &amp; Large</td>
-                          </tr>
-                          <tr>
-                            <td>Color</td>
-                            <td>Pink &amp; White</td>
-                          </tr>
-                          <tr>
-                            <td>Waist</td>
-                            <td>26 cm</td>
-                          </tr>
-                          <tr>
-                            <td>Length</td>
-                            <td>40 cm</td>
-                          </tr>
-                          <tr>
-                            <td>Chest</td>
-                            <td>33 inches</td>
-                          </tr>
-                          <tr>
-                            <td>Fabric</td>
-                            <td>Cotton, Silk &amp; Synthetic</td>
-                          </tr>
-                          <tr>
-                            <td>Warranty</td>
-                            <td>3 Months</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
+                <div class="tabs clearfix nobottommargin ui-tabs ui-widget ui-widget-content ui-corner-all" id="tab-1" style="border: 0px;">
+                                    <ul class="tab-nav clearfix ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist" style="background: #fff; border: 0px; border-bottom: 1px solid #ddd;">
+                                        <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab" tabindex="0" aria-controls="tabs-1" aria-labelledby="ui-id-1" aria-selected="true" aria-expanded="true"><a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1"><span>Additional Description</span></a> </li></li> 
+                                    </ul>
+                                    <div class="tab-container">
+                                        <div class="tab-content tabBox clearfix ui-tabs-panel ui-widget-content ui-corner-bottom" id="tabs-1" aria-labelledby="ui-id-1" role="tabpanel" aria-hidden="false">
+                                            <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero velit id eaque ex quae laboriosam nulla optio doloribus! Perspiciatis, libero, neque, perferendis at nisi optio dolor!</div>                                     
+                                        </div>
+                                        <!-- <div class="tab-content tabBox clearfix" id="tabs-2">
+                                            <div ng-bind-html="product.add_desc | toTrust"></div> 
+                                        </div> -->
+                                    </div>
+                                </div>
               </div>
             </div>
           </div>
@@ -135,72 +97,67 @@
             <h4>Related Products</h4>
             <div id="oc-product" class="owl-carousel product-carousel carousel-widget" data-margin="30" data-pagi="false" data-autoplay="5000" data-items-xxs="1" data-items-sm="2" data-items-md="3" data-items-lg="4">
               <div class="oc-item">
-                <div class="product clearfix mobwidth100">
+                <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="#"><img src="images/shop/yellow-half-sleeve1.jpg" alt="Unisex Sunglasses"> </a>
-                    <a href="#"><img src="images/shop/yellow-half-sleeve2.jpg" alt="Unisex Sunglasses"> </a>
-                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                    <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="#">Gritstones Men Blue Regular Fit T-shirt</a></h3> </div>
-                    <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins> </div>
+                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                    <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
               </div>
               <div class="oc-item">
-                <div class="product clearfix mobwidth100">
+              <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="#"><img src="images/shop/blue-tshirt1.jpg" alt="Unisex Sunglasses"> </a>
-                    <a href="#"><img src="images/shop/blue-tshirt2.jpg" alt="Unisex Sunglasses"> </a>
-                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                    <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="#">Gritstones Men Blue Regular Fit T-shirt</a></h3> </div>
-                    <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins> </div>
+                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                    <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
               </div>
               <div class="oc-item">
-                <div class="product clearfix mobwidth100">
+              <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="#"><img src="images/shop/line-halfsleeve-shirt1.jpg" alt="Unisex Sunglasses"> </a>
-                    <a href="#"><img src="images/shop/line-halfsleeve-shirt2.jpg" alt="Unisex Sunglasses"> </a>
-                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                    <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="#">Gritstones Men Blue Regular Fit T-shirt</a></h3> </div>
-                    <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins> </div>
+                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                    <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
               </div>
               <div class="oc-item">
-                <div class="product clearfix mobwidth100">
+              <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="#"><img src="images/shop/blue-tshirt1.jpg" alt="Unisex Sunglasses"> </a>
-                    <a href="#"><img src="images/shop/blue-tshirt2.jpg" alt="Unisex Sunglasses"> </a>
-                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                    <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="#">Gritstones Men Blue Regular Fit T-shirt</a></h3> </div>
-                    <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins> </div>
+                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                    <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
               </div>
               <div class="oc-item">
-                <div class="product clearfix mobwidth100">
+              <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="#"><img src="images/shop/yellow-half-sleeve1.jpg" alt="Unisex Sunglasses"> </a>
-                    <a href="#"><img src="images/shop/yellow-half-sleeve2.jpg" alt="Unisex Sunglasses"> </a>
-                    <div class="product-overlay"> <a href="#" class="add-to-cart"><i class="icon-shopping-cart"></i><span> Add to Cart</span></a> <a href="#" class="item-quick-view"><i class="icon-heart"></i><span>Wishlist</span></a> </div>
+                    <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="#">Gritstones Men Blue Regular Fit T-shirt</a></h3> </div>
-                    <div class="product-price"><del>Rs. 499</del> <ins>Rs. 399</ins> </div>
+                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                    <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
               </div>

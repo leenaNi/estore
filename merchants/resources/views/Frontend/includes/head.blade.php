@@ -35,7 +35,7 @@
                 <form role="form" id="store_save" action="{{route('updateHomeSettings')}}"  enctype="multipart/form-data" class="cls_logo">   
                     <div class="col-md-12 col-sm-12 col-xs-12 mobilepopup-chooselogo"><div class="form-group"> 
                             <div class="choosebtnbox text-center">   
-                                <input type="file" class="custom-file-input chooselogottext1" id="logoF" name="logo_img" onClick='setCroppedImage("#saveLogo",".resultLogo","#logoF",171,100 )' >
+                                <input type="file" class="custom-file-input chooselogottext1" id="logoF" name="logo_img" onClick='setCroppedImage("#saveLogo", ".resultLogo", "#logoF", 171, 100)' >
                             </div><!-- 
                   <input type="file" class="form-control" id="logoF" name="logo_img" class="form-control" /> -->
                             <span id="error-logo" class="text-danger"></span>
@@ -48,7 +48,7 @@
                         </div>
                     </div>    
                     <div class="text-center col-md-12 topmargin-sm mobilepopup-chooselogo">
-                        <button type="submit" id="saveLogo" onClick="saveCroppedImage('#saveLogo','#logoF','#store_save',171,'#error-logo' )"  class="btn btn-default btn-success"><span class="glyphicon glyphicon-off"></span> Upload</button>
+                        <button type="submit" id="saveLogo" onClick="saveCroppedImage('#saveLogo', '#logoF', '#store_save', 171, '#error-logo')"  class="btn btn-default btn-success"><span class="glyphicon glyphicon-off"></span> Upload</button>
                     </div>
                     <div class="col-md-12  col-xs-12 topmargin-sm orDivider-box marginBottom20">
                         <div class="orDivider">or</div>
@@ -56,9 +56,9 @@
                     <div class="text-center col-md-12 col-xs-12 topmargin-sm custom-chooselogo">
                         <a href="https://www.logocrisp.com/logomaker/" target="_blank" class="btn btn-default btn-success">Auto Logo Generator</a>
                         <p class="nobottommargin topMargin5">Note: This is a third party feature and it is paid.</p>
-</div>
-<div class="clearfix"></div>
-                   
+                    </div>
+                    <div class="clearfix"></div>
+
                 </form>
 
             </div>
@@ -100,23 +100,46 @@ foreach ($menu as $ca) {
     </div>
 </div>
 <div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Track Your Order</h4>
+            </div>
+            <form method="post" >
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input type="taxt" class="form-control" name="trackingId" id="trackingId" placeholder="Tracking Id">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary eurireTraking">Submit</button>
+                            <!--                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                        </div >
+                    </div >
+                    <div>
+                        <table class="table  table-hover general-table tableVaglignMiddle hide">
+                            <thead>
+                                <tr>
+                                    <th>Tracking Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="trackingDetails">
+                                </tr>
+                            </tbody>
+                        </table>    
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
-      </div>
-      <div class="modal-body">
-        <p>Some text in the modal.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
     </div>
-
-  </div>
 </div>
 
 <div id="homepage3Boxespopup" class="modal fade in" role="dialog">
@@ -138,18 +161,18 @@ foreach ($menu as $ca) {
                             <span class="add-img-txt">Add Image</span>
                         </div>
                         <span id="error-product" class="text-danger"></span>
-                         <div class="img-box">  
+                        <div class="img-box">  
                             <div class="form-group">
-                               <div class="box-2">
-                                  <div class="result3Boxes"></div>
-                              </div>
+                                <div class="box-2">
+                                    <div class="result3Boxes"></div>
+                                </div>
                             </div>
                         </div>  
                     </div>                   
-                     
-                     <div class="clearfix"></div>
 
-                     <img id="previewImage" class="existingImg3Box" height="20%" width="20%"  src="#" alt="your image" />
+                    <div class="clearfix"></div>
+
+                    <img id="previewImage" class="existingImg3Box" height="20%" width="20%"  src="#" alt="your image" />
 
                     <div class="row topmargin-sm">
                         <div class="col-md-6 col-sm-12 col-xs-12  homepage3boxespopalign">

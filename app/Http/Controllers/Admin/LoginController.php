@@ -28,7 +28,7 @@ use App\Library\Helper;
 class LoginController extends Controller {
 
     public function dashboard(Request $request) {
-        
+
 //        $stores = DB::select("SELECT s.id,s.prefix FROM `stores` s 
 //            left join merchants m on  s.merchant_id = m.id
 //            left join bank_has_merchants bm on m.id = bm.merchant_id
@@ -42,7 +42,6 @@ class LoginController extends Controller {
 //        }
 //        
 //        dd("----");
-        
         // dd("kdjfskdf");
         $headers = $request->headers->all();
 
@@ -78,26 +77,15 @@ class LoginController extends Controller {
             $and
             group by s.id");
         //  dd($stores);
-        $allStoreOperatores = 0;
-        foreach ($stores as $sA) {
-            // dd($sA->prefix . "_users");
-            $allStoreOperatores += DB::table($sA->prefix . "_users")->where("user_type", 1)->count();
-        }
-        //  dd($allStoreOperatores);
-        $happyCustomers = 0;
-        foreach ($stores as $sA) {
-            $happyCustomers += DB::table($sA->prefix . "_users")->where("user_type", 2)->count();
-        }
 
-        $totalOrders = 0;
-        foreach ($stores as $sA) {
-            $totalOrders += DB::table($sA->prefix . "_orders")->count();
-        }
-
-
+        $allStoreOperatores = DB::table("users")->where("user_type", 1)->count();
+        $happyCustomers = DB::table("users")->where("user_type", 2)->count();
+        $totalOrders = $cnt= 0;
+        
+        $totalOrders = DB::table("orders")->where("order_status",'!=',0)->count();
         $totalSales = 0;
         foreach ($stores as $sA) {
-            $totalSales += DB::table($sA->prefix . "_orders")->where('order_status', 3)->sum('pay_amt');
+            $totalSales += DB::table("orders")->where('order_status', 3)->sum('pay_amt');
         }
 
         $topStoreSales = DB::select("select store_id,store_name,company_name,total_sales,group_concat(banknames) as banknames,logo,firstname FROM(SELECT vs.store_id,m.company_name,sum(sales)as total_sales,s.store_name,group_concat(DISTINCT(b.name)) as banknames,s.logo,m.firstname FROM `vswipe_sales` vs
@@ -273,11 +261,11 @@ group by vs.order_date,b.id,m.id) t1");
 
         $merchant = Merchant::find($id);
         $merchant->device_id = $deviceId;
-        $prifix =$merchant->getstores()->first();
+        $prifix = $merchant->getstores()->first();
 
 
-        $user = DB::table($prifix->prefix . '_users')->where("telephone",$merchant->phone )->first();
-        DB::table($prifix->prefix . '_users')->where("id",$user->id)->update(['device_id'=>$deviceId]);
+        $user = DB::table($prifix->prefix . '_users')->where("telephone", $merchant->phone)->first();
+        DB::table($prifix->prefix . '_users')->where("id", $user->id)->update(['device_id' => $deviceId]);
         if ($merchant->update())
             $data = ["status" => 1, "msg" => "Device register successfully!"];
         else
@@ -313,7 +301,7 @@ group by vs.order_date,b.id,m.id) t1");
             if ($chkemail->email != '') {
                 $name = ucfirst($chkemail->name);
                 $data = ['name' => $name, 'newlink' => $linktosend];
-                
+
                 Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'forgotPassEmail', $data, 'Forgot password', "support@infiniteit.biz", "Veestores", $chkemail->email, $chkemail->name . " " . $chkemail->name);
             }
             // if ($chkemail->telephone) {
@@ -334,15 +322,15 @@ group by vs.order_date,b.id,m.id) t1");
 
     public function adminSaveResetPwd() {
         $useremail = Crypt::decrypt(Input::get('link'));
-        $user = DB::table("vswipe_users")->where("email", "=", $useremail)->update(['password'=>Hash::make(Input::get('confirmpwd'))]);
+        $user = DB::table("vswipe_users")->where("email", "=", $useremail)->update(['password' => Hash::make(Input::get('confirmpwd'))]);
 
         $upPassword = DB::table("vswipe_users")->where("email", "=", $useremail)->first();
-       
-        $data = ['name' => $upPassword->name , 'email' => $useremail];
+
+        $data = ['name' => $upPassword->name, 'email' => $useremail];
         $filepath = Config('constants.frontviewEmailTemplatesPath') . '.resetForgotPwdEmail';
         Helper::sendMyEmail($filepath, $data, 'Your password changed!', "support@infiniteit.biz", "Veestores", $useremail, $upPassword->name);
         session()->flash('pwdResetMsg', 'Password reset successfully!');
-        
+
         return redirect()->route('admin.login');
     }
 
