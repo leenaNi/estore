@@ -29,12 +29,12 @@
                     {{Session::get('msg')}}
                 </div>
                 @endif
-                <!-- <div class="box-header box-tools filter-box col-md-9 noBorder">
+                 <div class="box-header box-tools filter-box col-md-9 noBorder">
 
-          </div> -->
-                <!--          <div class="box-header col-md-3">
+          </div> 
+                          <div class="box-header col-md-3">
                             <a href="{!! route('admin.courier.add') !!}" class="btn btn-default pull-right form-control" type="button">Add Courier Services</a> 
-                        </div>-->
+                        </div>
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
                 <div class="form-group col-md-4 ">

@@ -25,7 +25,7 @@ class CourierController extends Controller {
         $courier = new Courier;
         $action = route("admin.courier.save");
         $country = Country::where('status', '1')->pluck("name", "id");
-        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action', '$ountry'));
+        return view(Config('constants.AdminPagesCourier') . '.addEdit', compact('courier', 'action', 'country'));
     }
 
     public function save() {
