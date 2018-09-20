@@ -144,9 +144,10 @@ $(document).keypress(function (e) {
                 var filterNumber = $(this).text().trim();
                 filterNumber = filterNumber.replace(",", "");
                 var getPrice = parseFloat(filterNumber);
-                var calCulate = (getPrice * currentCurrency).toFixed(2)
+                var calCulate = (getPrice * currentCurrency).toFixed(2);
+                console.log("PriceConvert", calCulate);
                 $(this).text(calCulate);
-            })
+            });
 
             $(".priceConvertTextBox").each(function (k, v) {
                 var getPrice = $(this).val();
@@ -156,6 +157,7 @@ $(document).keypress(function (e) {
                     var getPrice = " ";
                 } else {
                     var calCulate = (getPrice * currentCurrency).toFixed(2);
+                    console.log("PriceConvert", calCulate);
                     $(this).attr("value", calCulate);
                 }
                 var getName = $(this).attr("name");
@@ -168,7 +170,7 @@ $(document).keypress(function (e) {
 
 <script  type="text/javascript">
     $(document).ready(function () {
-//        $(".fa-rupee").toggleClass("fa-rupee fa-<?php //echo Session::get("currency_code")       ?>")
+//        $(".fa-rupee").toggleClass("fa-rupee fa-<?php //echo Session::get("currency_code")        ?>")
     })
 
 //    var currentCurrency = parseFloat("<?= Session::get("currency_val") ?>");
@@ -258,8 +260,7 @@ $(document).keypress(function (e) {
         {
             $("#error-logo").html("Please select Logo.");
             return false;
-        }
-        else
+        } else
         {
             var fileUpload = $("#logoF")[0];
             //Check whether the file is valid Image.
@@ -290,14 +291,12 @@ $(document).keypress(function (e) {
                             window.location.href = "";
                         }
                     });
-                }
-                else
+                } else
                 {
                     $("#error-logo").html("This browser does not support HTML5.");
                     return false;
                 }
-            }
-            else
+            } else
             {
                 $("#error-logo").html("Please select a valid Image file.");
                 return false;
@@ -336,22 +335,22 @@ $(document).keypress(function (e) {
 <script>
     $(document).ready(function () {
         $(".renewStore").on("click", function () {
-           
+
             $("#renewModal").modal(
                     {backdrop: 'static',
-                    keyboard: false });
+                        keyboard: false});
 
             $.ajax({
                 url: "{{ route('admin.generalSetting.storeVersion')}}",
                 type: 'post',
-                data: {version:0,pagetype:1},
+                data: {version: 0, pagetype: 1},
                 success: function (res) {
                     $('#chargesDetails').empty();
                     if (res.status == 2) {
-                        var trackData = '<td>Advance<input type="hidden" id="storeV" name="store_version"  value="2"></td><td><span class="currency-sym">  </span><span class="priceConvert"> ' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="'+ res.charge + '"></td> ';
+                        var trackData = '<td>Advance<input type="hidden" id="storeV" name="store_version"  value="2"></td><td><span class="currency-sym">  </span><span class="priceConvert"> ' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="' + res.charge + '"></td> ';
                         $('#chargesDetails').append(trackData);
                     } else {
-                        var trackData = ' <td><select name="store_version" id="storeV" class="form-control storeV"><option value="1">Stater</option><option value="2">Advance</option></select></td><td><span class="currency-sym"> </span><span class="priceConvert renewCharge">' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="'+ res.charge + '"></td> ';
+                        var trackData = ' <td><select name="store_version" id="storeV" class="form-control storeV"><option value="1">Starter</option><option value="2">Advance</option></select></td><td><span class="currency-sym"> </span><span class="priceConvert renewCharge">' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="' + res.charge + '"></td> ';
                         $('#chargesDetails').append(trackData);
                     }
                 }
@@ -360,15 +359,15 @@ $(document).keypress(function (e) {
         });
 
 
-       
+
 
         $('div#renewModal').on('click', '.storerenewSubmit', function (e) {
 //            alert();
-        e.preventDefault();
-                var vrsn = $('#storeV').val();
-           // window.open('http://192.168.2.47:8025/get-city-pay-renew/{{Crypt::encrypt(Session::get("store_id"))}}', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
-           window.open('https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/'+vrsn, '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
-                    //            alert("adsd");
+            e.preventDefault();
+            var vrsn = $('#storeV').val();
+            // window.open('http://192.168.2.47:8025/get-city-pay-renew/{{Crypt::encrypt(Session::get("store_id"))}}', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
+            window.open('https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn, '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
+            //            alert("adsd");
 
 //            var form = document.createElement("form");
 //            var element1 = document.createElement("input");
@@ -382,22 +381,19 @@ $(document).keypress(function (e) {
 //                        form.submit();
         });
     });
-     $('div#renewModal').delegate('#storeV', 'change', function ()
-        {
-           
-            var version=$(this).val();
-            $.ajax({
-                url: "{{ route('admin.generalSetting.storeVersion')}}",
-                type: 'post',
-                data: {version:version,pagetype:2},
-                success: function (res) {
-                   //  alert(res);
-                     $('.renewCharge').text(res)
-                     $('#store_charge').val(res)
-                   
-                }
-            });
-           
-             getCur();
+    $('div#renewModal').delegate('#storeV', 'change', function (){
+        var version = $(this).val();
+        $.ajax({
+            url: "{{ route('admin.generalSetting.storeVersion')}}",
+            type: 'post',
+            data: {version: version, pagetype: 2},
+            success: function (res) {
+                //  alert(res);
+                $('.renewCharge').text(parseFloat(res).toFixed(2));
+                $('#store_charge').val(parseFloat(res).toFixed(2));
+
+            }
         });
+        getCur();
+    });
 </script>

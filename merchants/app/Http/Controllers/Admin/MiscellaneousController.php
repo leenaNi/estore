@@ -280,7 +280,7 @@ class MiscellaneousController extends Controller {
         foreach ($themedata1 as $td) {
             $themes[$td['id']] = strtolower($td['name']);
         }
-  
+
         $store_configuration = Helper::getSettings();
         $industry_id = Helper::getSettings()['industry_id'];
 
@@ -362,6 +362,7 @@ class MiscellaneousController extends Controller {
         $store_configuration['logo'] = $logo;
         $store_configuration['currencyId'] = $currency;
         $store_configuration['store_version'] = $store_version;
+//        $store_configuration['expiry_date'] = date('Y-m-d', strtotime($store_configuration['expiry_date'] . " - 355 day"));
         $productconfig = json_encode($store_configuration);
 
         Helper::saveSettings($productconfig);
@@ -500,11 +501,12 @@ class MiscellaneousController extends Controller {
         Session::flash("message", "Bank Details updated successfully.");
         return redirect()->route('admin.bankDetails.view');
     }
-  public function assignCourier() {
+
+    public function assignCourier() {
         $courier = Input::get('courierId');
         $storeId = $this->jsonString['store_id'];
         $has_courire = HasCourier::where("store_id", $storeId)->first();
-        if(count($has_courire) > 0) {
+        if (count($has_courire) > 0) {
             $has_courire->store_id = $storeId;
             $has_courire->courier_id = $courier;
             $has_courire->preference = 1;
@@ -521,25 +523,25 @@ class MiscellaneousController extends Controller {
             $has_courire->save();
         }
     }
-    
-    public function storeVersion(){
-        $version=Input::get("version");
-        $type=Input::get("pagetype");
-       
-        
-        if($type==1){
-         $storeVersion = Helper::getSettings()['store_version'];
-         $charge=StoreCharge::where('store_type',$storeVersion)->first()->charge;
-         if($storeVersion ==1){
-            
-             $data=['status'=>1,"storeVersion"=>$storeVersion,"charge"=>$charge];
-         }else if($storeVersion ==2){
-             
-             $data=['status'=>2,"storeVersion"=>$storeVersion,"charge"=>$charge];
-         }
-         return $data;
-        }else{
-              $charge=StoreCharge::where('store_type',$version)->first()->charge;
+
+    public function storeVersion() {
+        $version = Input::get("version");
+        $type = Input::get("pagetype");
+
+
+        if ($type == 1) {
+            $storeVersion = Helper::getSettings()['store_version'];
+            $charge = StoreCharge::where('store_type', $storeVersion)->first()->charge;
+            if ($storeVersion == 1) {
+
+                $data = ['status' => 1, "storeVersion" => $storeVersion, "charge" => $charge];
+            } else if ($storeVersion == 2) {
+
+                $data = ['status' => 2, "storeVersion" => $storeVersion, "charge" => $charge];
+            }
+            return $data;
+        } else {
+            $charge = StoreCharge::where('store_type', $version)->first()->charge;
 //           if($version ==1){
 //             $charge=360;
 //             
@@ -547,7 +549,8 @@ class MiscellaneousController extends Controller {
 //              $charge=720;
 //             
 //         }  
-         return $charge;
+            return $charge;
         }
     }
+
 }
