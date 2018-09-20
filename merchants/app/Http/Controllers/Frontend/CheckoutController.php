@@ -37,7 +37,7 @@ use stdClass;
 use App\Models\AdditionalCharge;
 
 class CheckoutController extends Controller {
- 
+
     public function index() {
         $checkGuestCheckoutEnabled = GeneralSetting::where("url_key", "guest-checkout")->where("status", 1)->get();
 
@@ -208,11 +208,11 @@ class CheckoutController extends Controller {
             $newAdd->update();
         } else {
             $newAdd = new Address();
-            $user=User::find(Session::get('loggedin_user_id'));
-            if(empty($user->firstname)){
-              $user->firstname=Input::get('firstname');
-              $user->lastname=Input::get('lastname');
-              $user->save();
+            $user = User::find(Session::get('loggedin_user_id'));
+            if (empty($user->firstname)) {
+                $user->firstname = Input::get('firstname');
+                $user->lastname = Input::get('lastname');
+                $user->save();
             }
             $newAdd->user_id = Session::get('loggedin_user_id');
             $newAdd->firstname = Input::get('firstname');
@@ -856,7 +856,7 @@ class CheckoutController extends Controller {
         $user_id = input::get('userId');
 
         if (isset($user_id)) {
-           
+
             $cashback = @User::find($user_id)->userCashback->cashback * Session::get('currency_val');
         } else {
             $cashback = @User::find(Session::get('loggedin_user_id'))->userCashback->cashback;
@@ -1392,8 +1392,8 @@ class CheckoutController extends Controller {
                     $loyaltyPercent = $user->loyalty['percent'];
                     $order->cashback_earned = is_null($loyaltyPercent) ? 0 : number_format(($loyaltyPercent * $order->pay_amt) / 100, 2);
                     $order->cashback_credited = is_null($loyaltyPercent) ? 0 : number_format(($loyaltyPercent * $order->pay_amt) / 100, 2);
-                    $user->userCashback->cashback= $user->userCashback->cashback - @Session::get('checkbackUsedAmt');
-                   $user->userCashback->save();
+                    $user->userCashback->cashback = $user->userCashback->cashback - @Session::get('checkbackUsedAmt');
+                    $user->userCashback->save();
                     if (!empty(Session::get('voucherUsedAmt'))) {
                         $voucherUpdate = Coupon::find(Session::get('voucherUsedAmt'));
                         $voucherUpdate->voucher_val = is_null(Session::get('remainingVoucherAmt')) ? $voucherUpdate->voucher_val : Session::get('remainingVoucherAmt');
@@ -1785,16 +1785,23 @@ class CheckoutController extends Controller {
         } else {
             $order->loyalty_cron_status = 0;
         }
-//        echo $user->id;
-        $usercashback = HasCashbackLoyalty::where('user_id', $user->id)->where('store_id', $jsonString['store_id'])->first();
-//        dd($usercashback);
-        $usercashback->cashback = $usercashback->cashback - (@Session::get('checkbackUsedAmt') / Session::get('currency_val'));
         $user->update();
-        $usercashback->save();
+        $usercashback = HasCashbackLoyalty::where('user_id', $user->id)->where('store_id', $jsonString['store_id'])->first();
+        if ($usercashback) {
+            $usercashback->cashback = $usercashback->cashback - (@Session::get('checkbackUsedAmt') / Session::get('currency_val'));
+            $usercashback->save();
+        } else {
+            $usercashback = new HasCashbackLoyalty();
+            $usercashback->user_id = $user->id;
+            $usercashback->store_id = $jsonString['store_id'];
+            $usercashback->cashback = 0;
+            $usercashback->save();
+        }
+
         $tempName = Session::get('login_user_first_name');
         if (empty($tempName)) {
             $parts = explode("@", Session::get('logged_in_user'));
-            $fname = (!empty($parts))? $parts[0]: '';
+            $fname = (!empty($parts)) ? $parts[0] : '';
         } else {
             $fname = $tempName;
         }
@@ -1847,16 +1854,16 @@ class CheckoutController extends Controller {
 
     // For order Update stock
     public function updateStock($orderId) {
-      
-    $jsonString = Helper::getSettings();
+
+        $jsonString = Helper::getSettings();
         // $is_stockable = GeneralSetting::where('id', 26)->first();
         $stock_limit = GeneralSetting::where('url_key', 'stock')->first();
         $stockLimit = json_decode($stock_limit->details, TRUE);
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-        
-        HasProducts::where("order_id",$orderId)->delete();
+
+        HasProducts::where("order_id", $orderId)->delete();
         foreach ($cartContent as $cart) {
             $product = Product::find($cart->id);
             $sum = 0;
@@ -1883,7 +1890,7 @@ class CheckoutController extends Controller {
                 $payamt = $subtotal - $getdisc;
             }
             $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
-                'pay_amt' => $payamt,'store_id'=>$jsonString['store_id'],'prefix'=>$jsonString['prefix']];
+                'pay_amt' => $payamt, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix']];
 //            $market_place = Helper::generalSetting(35);
 //            if (isset($market_place) && $market_place->status == 1) {
 //                $prior_vendor = $product->vendorPriority()->first();
@@ -1984,8 +1991,8 @@ class CheckoutController extends Controller {
             $cart_ids[$cart->id]["order_status"] = 1;
             $cart_ids[$cart->id]["order_source"] = 2;
             HasProducts::insert($cart_ids);
-         // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
-          //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);
+            // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
+            //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
         //  $this->orderSuccess();
     }
@@ -2117,7 +2124,7 @@ class CheckoutController extends Controller {
             $user->email = Input::get('guestemail');
             $jsonString = Helper::getSettings();
             $user->prefix = $jsonString['prefix'];
-             $user->store_id = $jsonString['store_id'];
+            $user->store_id = $jsonString['store_id'];
             $user->save();
             Helper::newUserInfo($user->id);
 
@@ -2265,7 +2272,6 @@ class CheckoutController extends Controller {
                 }
                 $user->userCashBack->cashback = $cashbackRemained;
                 $user->userCashBack->update();
-                
             }
             //echo "Applied";
         } else {
