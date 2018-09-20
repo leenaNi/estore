@@ -37,7 +37,10 @@ class UserController extends Controller {
         //  dd(Helper::returnView($viewname, $data));
         return Helper::returnView($viewname, $data);
     }
-
+public function showItem($id = 4) {
+ $retrieveItems = User::userCashback();
+return $retrieveItems;
+}
     public function my_profile() {
 //        $user=User::find(Session::get('loggedin_user_id'));
 //        $user->userCashback->cashback=$user->userCashback->cashback+200;
