@@ -36,11 +36,11 @@
 
         <div class="container clearfix">
             <!-- left navbar button -->
-            <button class="lno-btn-toggle hidden">
+            <button class="lno-btn-toggle">
                 <span class="fa fa-bars"></span>
             </button>
             <!-- Line left navbar for secondary navbar on small devices -->
-            <div class="line-navbar-left hidden">
+            <div class="line-navbar-left">
                 <p class="lnl-nav-title">Categories</p>
                 <ul class="lnl-nav">
                     <!-- The list will be automatically cloned from mega menu via jQuery -->

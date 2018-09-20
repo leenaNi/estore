@@ -15,6 +15,20 @@
 @import url("vmap.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
+button.lno-btn-toggle {
+	position: absolute;
+    left: -15px;
+    bottom: 32%;
+    float: left;
+    z-index: 9;
+    background: transparent;
+    border: 0;
+    padding: 0;
+}
+button.lno-btn-toggle span {
+	font-size: 25px;
+}
+
 button.button.new_user_btn.guestCheckoutBtn.full-width-btn.norightMargin {
 	margin-right: 0px !important;
 }
