@@ -103,14 +103,14 @@ class LoyaltyController extends Controller {
                     $discountOnOrder = $detRv;
             }
             $users = User::with("userCashback")->whereIn("user_type", [2, 1])->where("status", 1)->get();
-//           print_r($users);
+           print_r($users);
             foreach ($users as $user) {
                 if (!empty($user->referal_code)) {
                     $refUsedOrders = Order::where('referal_code_used', "=", $user->referal_code)
                                     ->where('created_at', '<=', date('Y-m-d', strtotime("now -$activate_duration days")))
                                     ->whereIn('order_status', [2, 3])
                                     ->where('ref_flag', '=', 0)->where("store_id", $this->jsonString['store_id'])->get();
-//                    dd($refUsedOrders);
+                    dd($refUsedOrders);
 
                     $refToAdd = 0;
                    
