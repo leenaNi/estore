@@ -366,7 +366,7 @@ class MiscellaneousController extends Controller {
 
         Helper::saveSettings($productconfig);
         // $path = storage_path() . "/json/storeSetting.json";
-        Session::put('storeName', $storeName);
+        Session::put('storeName', Input::get('store_name'));
     }
 
     function returnPolicy() {

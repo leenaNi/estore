@@ -103,7 +103,6 @@ class LoyaltyController extends Controller {
                     $discountOnOrder = $detRv;
             }
             $users = User::with("userCashback")->whereIn("user_type", [2, 1])->where("status", 1)->get();
-           print_r($users);
             foreach ($users as $user) {
                 if (!empty($user->referal_code)) {
                     $refUsedOrders = Order::where('referal_code_used', "=", $user->referal_code)
