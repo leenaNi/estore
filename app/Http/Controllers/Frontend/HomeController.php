@@ -466,7 +466,16 @@ class HomeController extends Controller {
                             DB::table($prefix . "_general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0]);
                         }
                     }
-
+                    
+                    //Update Email Setting for mandrill and SMTP
+                    $emailSett = array("mandrill", "smtp");
+                    foreach ($emailSett as $email) {
+                        $emaildetails = json_decode(DB::table($prefix . "_general_setting")->where('url_key', $email)->first()->details);
+                        $emaildetails->name = $storeName;
+                        DB::table($prefix . "_general_setting")->where('url_key', $email)->update(["details" => json_encode($emaildetails)]);
+                    }
+                    //End Email Setting Update
+                    
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
