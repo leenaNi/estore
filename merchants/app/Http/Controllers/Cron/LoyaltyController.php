@@ -110,8 +110,6 @@ class LoyaltyController extends Controller {
                                     ->where('created_at', '<=', date('Y-m-d', strtotime("now -$activate_duration days")))
                                     ->whereIn('order_status', [2, 3])
                                     ->where('ref_flag', '=', 0)->where("store_id", $this->jsonString['store_id'])->get();
-                    dd($refUsedOrders);
-
                     $refToAdd = 0;
                    
                     if (count($refUsedOrders) > 0) {
