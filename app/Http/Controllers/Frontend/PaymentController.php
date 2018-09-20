@@ -288,7 +288,9 @@ class PaymentController extends Controller {
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
        // dd(Crypt::decrypt($storeid));
 //       dd(Input::all());
-        $merchant=Store::find($storeid)->getmerchant()->first()->id;
+           
+             
+            $merchant=Store::find($storeid)->getmerchant()->first()->id;
        
         $payAmt = 1; //Helper::getAmt();
         Session::put('storeId', $storeid);
@@ -331,7 +333,11 @@ class PaymentController extends Controller {
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
             $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info);
-           // $merchantStorePath= base_path() . "/merchants/" . $domainname . "/";
+            $store=Store::find(Session::get("store_id"))->url_key;
+            $merchantStorePath= base_path() . "/merchants/" . $store . "/";         
+            $settings = Helper::getMerchantStoreSettings($merchantStorePath);
+            $settings['expiry_date']= date('Y-m-d', strtotime($settings['expiry_date'] . " + 365 day"));
+            Helper::saveMerchantStoreSettings($merchantStorePath,json_encode($settings));
             $data = [];
 //            $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
 //            $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
