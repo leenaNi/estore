@@ -381,9 +381,7 @@ $(document).keypress(function (e) {
 //                        form.submit();
         });
     });
-    $('div#renewModal').delegate('#storeV', 'change', function ()
-    {
-
+    $('div#renewModal').delegate('#storeV', 'change', function (){
         var version = $(this).val();
         $.ajax({
             url: "{{ route('admin.generalSetting.storeVersion')}}",
@@ -391,12 +389,11 @@ $(document).keypress(function (e) {
             data: {version: version, pagetype: 2},
             success: function (res) {
                 //  alert(res);
-                $('.renewCharge').text(res)
-                $('#store_charge').val(res)
+                $('.renewCharge').text(res.toFixed(2));
+                $('#store_charge').val(res.toFixed(2));
 
             }
         });
-
         getCur();
     });
 </script>
