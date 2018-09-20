@@ -351,7 +351,7 @@ $(document).keypress(function (e) {
                         var trackData = '<td>Advance<input type="hidden" id="storeV" name="store_version"  value="2"></td><td><span class="currency-sym">  </span><span class="priceConvert"> ' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="'+ res.charge + '"></td> ';
                         $('#chargesDetails').append(trackData);
                     } else {
-                        var trackData = ' <td><select name="store_version" id="storeV" class="form-control storeV"><option value="1">Stater</option><option value="2">Advance</option></select></td><td><span class="currency-sym"> </span><span class="priceConvert renewCharge">' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="'+ res.charge + '"></td> ';
+                        var trackData = ' <td><select name="store_version" id="storeV" class="form-control storeV"><option value="1">Starter</option><option value="2">Advance</option></select></td><td><span class="currency-sym"> </span><span class="priceConvert renewCharge">' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="'+ res.charge + '"></td> ';
                         $('#chargesDetails').append(trackData);
                     }
                 }
