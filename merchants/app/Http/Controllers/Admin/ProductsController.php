@@ -216,6 +216,7 @@ class ProductsController extends Controller {
             $saveImgs->catalog_id = $prod->id;
             $saveImgs->filename = is_null($fileName) ? $saveImgs->filename : $fileName;
             $saveImgs->image_type = 1;
+            $saveImgs->alt_text = Input::get('product');
             $saveImgs->image_path = Config('constants.productImgPath');
             $saveImgs->image_mode = 1;
             $saveImgs->save();
