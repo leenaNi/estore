@@ -359,7 +359,7 @@ $address = $order->users->addresses->first();
     </div> 
 </div>
 @endforeach
-<script src="{{ asset('public/Admin/plugins/jQuery/jQuery-2.1.4.min.js') }}"></script>
+<script src="{{ asset(Config('constants.adminPlugins').'/jQuery/jQuery-2.1.4.min.js') }}"></script>
 <script>
 $(document).ready(function () {
     $('.invcontainer').last().css('page-break-after', 'avoid');
