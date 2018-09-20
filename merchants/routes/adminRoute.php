@@ -253,7 +253,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/save-re-order', ['as' => 'admin.orders.saveReOrder', 'uses' => 'OrdersController@save_re_order']);
             Route::any('/add-to-cart', ['as' => 'admin.orders.addToCart', 'uses' => 'OrdersController@add_to_cart']);
             Route::post('/check-order-coupon', ['as' => 'admin.orders.checkOrderCoupon', 'uses' => 'OrdersController@checkOrderCoupon']);
-
+            Route::any('/waybill/{OrderIds?}', ['as' => 'admin.orders.waybill', 'uses' => 'OrdersController@waybill']);
             Route::post('/mallOrderSave', ['as' => 'admin.orders.mallOrderSave', 'uses' => 'OrdersController@mallOrderSave']);
 
             Route::post('/editOrderChkStock', ['as' => 'admin.orders.editOrderChkStock', 'uses' => 'OrdersController@editOrderChkStock']);

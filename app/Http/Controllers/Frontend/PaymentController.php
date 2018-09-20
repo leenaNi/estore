@@ -262,7 +262,7 @@ class PaymentController extends Controller {
 
     public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info) {
         $order = new MerchantOrder();
-        dd(Session::get('merchantid'));
+      //  dd(Session::get('merchantid'));
         $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
         $order->merchant_id = Session::get('merchantid');
         $order->pay_amt = $payAmt;

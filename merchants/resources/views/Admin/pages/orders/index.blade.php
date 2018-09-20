@@ -257,6 +257,7 @@
                                     <a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
                                     <a href="#" data-ordId ="{{ $order->id }}"  class="flage"  ui-toggle-class="" data-toggle="tooltip" title="Flag"><i class="fa fa-flag-o btn-plen"></i></a>
                                     <a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this order?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash "></i></a>
+                                    <a href="{!! route('admin.orders.waybill',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="waybill"><i class="fa fa-barcode fa-fw btnNo-margn-padd"></i></a>
                        <!--                                    <a href="{!! route('admin.orders.orderHistory') !!}?id={{$order->id}}" target="_blank" class="viewHistory"><span class="label label-info label-mini">History</span></a>-->
 
    <!--  <a href="#" data-ordId ="{{ $order->id }}"  class="" ui-toggle-class="" data-toggle="tooltip" title="History"><i class="fa fa-history"></i></a> -->

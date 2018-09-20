@@ -23,6 +23,7 @@ use App\Models\Product;
 use App\Models\ReturnOrder;
 use App\Models\User;
 use App\Models\CurierHistory;
+use App\Models\StaticPage;
 use App\Models\Zone;
 use App\Models\Courier;
 use App\Models\AdditionalCharge;
@@ -50,7 +51,7 @@ class OrdersController extends Controller {
 //      $data=  DB::table('has_industries')->join("general_setting as g",'g.id','=','has_industries.general_setting_id')
 //             ->join("categories",'has_industries1.industry_id','=','categories.id')
 //              ->select('g.id','g.name','g.is_active','g.is_question','g.question_category_id','categories.category')->get();
-     $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
+        $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
@@ -142,7 +143,7 @@ class OrdersController extends Controller {
         Session::forget("codCharges");
         Session::forget('shippingCost');
         $jsonString = Helper::getSettings();
-        $prodTab=$jsonString['prefix'].'_products';
+        $prodTab = $jsonString['prefix'] . '_products';
         $order = Order::findOrFail(Input::get('id'));
         $payment_method = PaymentMethod::get()->toArray();
         $payment_methods = [];
@@ -183,12 +184,12 @@ class OrdersController extends Controller {
             Cart::instance("shopping")->destroy();
             $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
             $additional = json_decode($order->additional_charge, true);
-            $prodTab=$jsonString['prefix'].'_products';
-            $prods= HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'.id','=','has_products.prod_id')->where("prefix",$this->jsonString['prefix'])
-                ->select($prodTab.".*",'has_products.order_id','has_products.disc','has_products.prod_id','has_products.qty','has_products.price as hasPrice','has_products.product_details','has_products.sub_prod_id')->get();
-          
-           // $prod_id = HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'id','=','has_prodducts.prod_id')->where("prefix",$this->jsonString['prefix']);
-           $products= $prods;
+            $prodTab = $jsonString['prefix'] . '_products';
+            $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')->where("prefix", $this->jsonString['prefix'])
+                            ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
+
+            // $prod_id = HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'id','=','has_prodducts.prod_id')->where("prefix",$this->jsonString['prefix']);
+            $products = $prods;
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
             // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users', 
@@ -410,7 +411,7 @@ class OrdersController extends Controller {
                 $cart_ids[$cart->id]["order_id"] = Input::get('id');
                 $cart_ids[$cart->id]["prod_id"] = $prd->id;
                 $cart_ids[$cart->id]["order_status"] = 1;
-                $cart_ids[$cart->id]["order_source"] =2;
+                $cart_ids[$cart->id]["order_source"] = 2;
                 HasProducts::insert($cart_ids);
                 //$orderUpdateCart->products()->attach($cart->id, $cart_ids[$cart->id]);
             }
@@ -1084,7 +1085,7 @@ class OrdersController extends Controller {
     function order_return() {
         $return = ReturnOrder::with('reason', 'opened', 'product_id', 'order_id', 'return_status_id')->with(['order_id' => function($q) {
                         $q->with('user');
-                    }])->where("store_id",$this->jsonString['store_id'])->orderBy('id', 'desc')->get()->toArray();
+                    }])->where("store_id", $this->jsonString['store_id'])->orderBy('id', 'desc')->get()->toArray();
         return view(Config('constants.adminOrderView') . '.returnOrders', compact('return'));
     }
 
@@ -1185,19 +1186,18 @@ class OrdersController extends Controller {
     }
 
     public function updateUserCashback($uid, $ammount, $quantity) {
-          $usercashback = HasCashbackLoyalty::where("user_id", $uid)->where("store_id", $this->jsonString['store_id'])->first();
-            if (count($usercashback) > 0) {
-                $usercashback->cashback = $usercashback->cashback + ($ammount * $quantity);
-                
-                $usercashback->save();
-            } else {
-                $usercashback = new HasCashbackLoyalty;
-                $usercashback->user_id = $data->uid;
-                $usercashback->store_id = $this->jsonString['store_id'];
-                $usercashback->cashback = round(($ammount * $quantity),2);             
-                $usercashback->save();
-            }
+        $usercashback = HasCashbackLoyalty::where("user_id", $uid)->where("store_id", $this->jsonString['store_id'])->first();
+        if (count($usercashback) > 0) {
+            $usercashback->cashback = $usercashback->cashback + ($ammount * $quantity);
 
+            $usercashback->save();
+        } else {
+            $usercashback = new HasCashbackLoyalty;
+            $usercashback->user_id = $data->uid;
+            $usercashback->store_id = $this->jsonString['store_id'];
+            $usercashback->cashback = round(($ammount * $quantity), 2);
+            $usercashback->save();
+        }
     }
 
     public function export() {
@@ -2484,6 +2484,110 @@ class OrdersController extends Controller {
         $data['referalCodeAmt'] = Session::get('referalCodeAmt') * Session::get('currency_val');
         $data['ReferalCode'] = Session::get('ReferalCode');
         return $data;
+    }
+
+    public function waybill($id = null) {
+
+        $allids = $id;
+      
+        $storeName=$this->jsonString['storeName'];
+        $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
+        $storeContact = json_decode($contact);
+      
+        $orders = Order::where('id',$allids)->with('currency')->get();
+      
+        foreach ($orders as $key => $saveorder) {
+            $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
+            // dd($saveorder);
+            $headers = array();
+            $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+            $headers[] = 'USER_ID:I8837';
+            $headers[] = 'API_KEY:xqdH';
+            $headers[] = 'API_SECRET:jubLW';
+
+            $reqArray = [];
+            $reqArray['order_code'] = $saveorder->id;
+            $reqArray['product_id'] = '1';
+            $reqArray['parcel'] = 'insert';
+            $reqArray['ep_name'] = 'test';
+            $reqArray['pick_contact_person'] =$storeContact->mobile;
+            $reqArray['pick_division'] = '';
+            $reqArray['pick_district'] = 'test';
+            $reqArray['pick_thana'] = 'Adabor Thana';
+            $reqArray['pick_union'] = 'test';
+            $reqArray['pick_address'] = $storeContact->address_line1;
+            $reqArray['pick_mobile'] = $storeContact->mobile;
+            $reqArray['recipient_name'] = $saveorder->first_name . '' . $saveorder->last_name;
+            $reqArray['recipient_mobile'] = $saveorder->phone_no;
+            $reqArray['recipient_division'] = '';
+            $reqArray['recipient_district'] = '';
+            $reqArray['recipient_city'] = $saveorder->zone->name;
+            $reqArray['recipient_area'] = 'test';
+            $reqArray['recipient_thana'] = 'Adabor Thana';
+            $reqArray['recipient_union'] = 'test';
+            $reqArray['weight'] = 'Up To 500gm';
+
+            $reqArray['upazila'] = '';
+            if ($saveorder->zone_id == '322') {
+                $reqArray['delivery_timing'] = 'Next Day(24hr)';
+                $reqArray['package_code'] = '#2443';
+            } else {
+                $reqArray['delivery_timing'] = 'Next Day(48hr)';
+                $reqArray['package_code'] = '#2444';
+            }
+
+            $reqArray['product_id'] = '';
+            $reqArray['recipient_address'] = 'test';
+            $reqArray['shipping_price'] = '1';
+            $reqArray['parcel_detail'] = '';
+            $reqArray['no_of_items'] = '';
+            $reqArray['product_price'] = '1';
+            $reqArray['payment_method'] = '1';
+            $reqArray['ep_id'] = '1';
+
+            $url = "http://ecourier.com.bd/apiv2/";
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
+            $output = curl_exec($ch);
+            curl_close($ch);
+            $data = json_decode($output);
+
+            if ($data->response_code == 200) {
+                $saveorder->shiplabel_tracking_id = $data->ID;
+                $saveorder->order_status = 2;
+                $saveorder->update();
+                $curierHistory = new CurierHistory();
+                $curierHistory->order_id = $ordid;
+                $curierHistory->courier_id = 4;
+                $curierHistory->waybill_no = $data->ID;
+                $curierHistory->prefix = $this->jsonString['prefix'];
+                $curierHistory->store_id = $this->jsonString['store_id'];
+                $curierHistory->save();
+                $contactEmail = Config::get('mail.from.address');
+                $contactName = Config::get('mail.from.name');
+                $email = $saveorder->users->email;
+                $name = $saveorder->first_name . ' ' . $saveorder->last_name;
+                $data = ['username' => $name, 'awbno' => $saveorder->shiplabel_tracking_id, 'created_at' => $saveorder->updated_at, 'order' => $saveorder];
+                if (Mail::send(Config('constants.adminEmails') . '.dispatch_email', $data, function($message) use ($contactEmail, $contactName, $email, $name, $data) {
+
+                            $message->from($contactEmail, $contactName);
+                            $message->to($email, $name)->subject($storeName. "- Order Dispatched");
+                            // $message->cc(['indranath.sgupta@gmail.com','arijit@asgleather.com']);
+                        }))
+                    ;
+            } else {
+                echo $data->errors;
+                die;
+            }
+        }
+        $viewname = Config('constants.adminOrderView') . '.invoiceAws';
+        $data = ['orders' => $orders,'storeName'=>$storeName,'storeContact'=>$storeContact,'allids'=>$allids];
+        return Helper::returnView($viewname, $data);
+        // return view(Config('constants.adminOrderView') . '.invoiceAws', compact('result','allids' , 'orders','params','awbno')); //users
     }
 
     public function getECourier() {
