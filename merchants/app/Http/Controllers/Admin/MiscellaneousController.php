@@ -362,7 +362,7 @@ class MiscellaneousController extends Controller {
         $store_configuration['logo'] = $logo;
         $store_configuration['currencyId'] = $currency;
         $store_configuration['store_version'] = $store_version;
-        $store_configuration['expiry_date'] = date('Y-m-d', strtotime($store_configuration['expiry_date'] . " - 355 day"));
+//        $store_configuration['expiry_date'] = date('Y-m-d', strtotime($store_configuration['expiry_date'] . " - 355 day"));
         $productconfig = json_encode($store_configuration);
 
         Helper::saveSettings($productconfig);
