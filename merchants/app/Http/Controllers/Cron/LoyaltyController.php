@@ -33,7 +33,7 @@ class LoyaltyController extends Controller {
                 $orderId = Order::find($ordVal['id']);
                 $orderId->loyalty_cron_status = 1;
                 $orderId->update();
-                $overall_pay_amt = DB::table('orders')
+                $overall_pay_amt = DB::connection('mysql2')->table('orders')
                                 ->select('id', 'cashback_earned', 'currency_value', 'pay_amt')
                                 ->where('user_id', $ordVal['user_id'])
                                 ->where('loyalty_cron_status', 1)->where("store_id", $this->jsonString['store_id'])->get();
@@ -106,7 +106,7 @@ class LoyaltyController extends Controller {
            
             foreach ($users as $user) {
                 if (!empty($user->referal_code)) {
-                    $refUsedOrders = Order::where('referal_code_used', "=", $user->referal_code)
+                    $refUsedOrders = Order::connection('mysql2')->where('referal_code_used', "=", $user->referal_code)
                                     ->where('created_at', '<=', date('Y-m-d', strtotime("now -$activate_duration days")))
                                     ->whereIn('order_status', [2, 3])
                                     ->where('ref_flag', '=', 0)->where("store_id", $this->jsonString['store_id'])->get();
