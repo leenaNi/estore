@@ -109,7 +109,7 @@ class LoyaltyController extends Controller {
                     $refUsedOrders = Order::where('referal_code_used', "=", $user->referal_code)
                                     ->where('created_at', '<=', date('Y-m-d', strtotime("now -$activate_duration days")))
                                     ->whereIn('order_status', [2, 3])
-                                    ->where('ref_flag', '=', 0)->where("store_id", $this->jsonString['store_id'])->get();
+                                    ->where('ref_lag', '=', 0)->where("store_id", $this->jsonString['store_id'])->get();
                     dd($refUsedOrders);
 
                     $refToAdd = 0;
