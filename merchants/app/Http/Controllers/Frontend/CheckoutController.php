@@ -1739,7 +1739,8 @@ class CheckoutController extends Controller {
         $order->payment_status = $paymentStatus;
         $order->transaction_id = $trasactionId;
         $order->transaction_status = $transactionStatus;
-        $order->description = $des;
+        if ($des)
+            $order->description = $des;
         $order->currency_id = Session::get("currency_id");
         $order->currency_value = Session::get("currency_val");
         $order->cart = json_encode(Cart::instance('shopping')->content());
