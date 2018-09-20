@@ -389,8 +389,8 @@ $(document).keypress(function (e) {
             data: {version: version, pagetype: 2},
             success: function (res) {
                 //  alert(res);
-                $('.renewCharge').text(res.toFixed(2));
-                $('#store_charge').val(res.toFixed(2));
+                $('.renewCharge').text(parseFloat(res).toFixed(2));
+                $('#store_charge').val(parseFloat(res).toFixed(2));
 
             }
         });
