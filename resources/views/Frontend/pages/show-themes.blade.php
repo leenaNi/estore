@@ -3,7 +3,7 @@
 <section id="page-title" class=" page-title-center" style=" padding: 50px 0;" data-stellar-background-ratio="0.3">
 
     <div class="container clearfix">
-        <h1 class="">Themes for your online store</h1>
+        <h1 class="">Themes for your online store </h1>
         <span class="">Easily customizable and mobile friendly themes to match your brand</span>
     </div>
 
@@ -46,7 +46,7 @@
                                 <div class="portfolio-overlay">
                                     <div class="center-text" >
                                         <h3 class="nobottommargin white-text">{{$theme->name}}</h3>
-                                <a type="button" href="{{ asset('themes/'.strtolower($theme->name)."_home.php") }}" target="_blank" class="btn btn-block marginauto btn-trans-whiteborder">View Demo</a>
+                                <a type="button" href="{{ asset('themes/'.strtolower($theme->name)."_home.php") }}?theme=fs1" target="_blank" class="btn btn-block marginauto btn-trans-whiteborder">View Demo</a>
                                     </div>
                                 </div>
                     </div>
