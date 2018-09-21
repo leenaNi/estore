@@ -34,8 +34,9 @@ class PaymentSettlementController extends Controller {
             $orders->where('settled_status', 1);
         } else {
             $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", "=", "has_products.store_id")
+                    ->join("orders", "orders.id", "=", "has_products.order_id")
                     ->select('has_products.*', 'stores.store_name', 'stores.percent_to_charge');
-            $orders->where('settled_status', 0);
+            $orders->where('settled_status', 0)->where('orders.order_status', 3)->where('orders.payment_status', 4);
         }
         if ($storeId) {
             $orders->where('has_products.store_id', $storeId);
