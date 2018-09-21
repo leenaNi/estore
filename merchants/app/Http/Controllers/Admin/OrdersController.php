@@ -1190,13 +1190,13 @@ class OrdersController extends Controller {
         $usercashback = HasCashbackLoyalty::where("user_id", $uid)->where("store_id", $this->jsonString['store_id'])->first();
         if (count($usercashback) > 0) {
             $usercashback->cashback = $usercashback->cashback + ($ammount * $quantity);
-
             $usercashback->save();
         } else {
             $usercashback = new HasCashbackLoyalty;
             $usercashback->user_id = $data->uid;
             $usercashback->store_id = $this->jsonString['store_id'];
             $usercashback->cashback = round(($ammount * $quantity), 2);
+            $usercashback->loyalty_group = 1;
             $usercashback->save();
         }
     }

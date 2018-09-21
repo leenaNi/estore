@@ -43,7 +43,7 @@ class LoyaltyController extends Controller {
                 $total_pay_amt = 0;
 
                 foreach ($overall_pay_amt as $add_pay_amt) {
-                    $total_pay_amt = $total_pay_amt + ($add_pay_amt->pay_amt * $add_pay_amt->currency_value);
+                    $total_pay_amt = $total_pay_amt + ($add_pay_amt->pay_amt);
                 }
                 //echo "total ".$total_pay_amt;
                 $loyalty = Loyalty::all()->toArray();
@@ -61,15 +61,16 @@ class LoyaltyController extends Controller {
                 $user = User::with("userCashback")->find($ordVal['user_id']);
                   if ($user->userCashback) {
                             $user->userCashback->loyalty_group = $loyaltyId;
-                            $user->userCashback->cashback = ($orderId->cashback_earned * $orderId->currency_value) + $user->userCashback->cashback; 
+                            $user->userCashback->cashback = ($orderId->cashback_earned) + $user->userCashback->cashback; 
                             $user->userCashback->total_purchase_till_now = number_format($total_pay_amt, 2, '.', '');
                             $user->userCashback->save();
                         } else {
                             $usercashback = new HasCashbackLoyalty;
                             $usercashback->user_id = $user->id;
                             $usercashback->store_id = $this->jsonString['store_id'];
-                            $usercashback->cashback =$orderId->cashback_earned * $orderId->currency_value;
+                            $usercashback->cashback =$orderId->cashback_earned;
                             $usercashback->total_purchase_till_now = number_format($total_pay_amt, 2, '.', '');
+                            $user->userCashback->loyalty_group = $loyaltyId;
                             $usercashback->save();
                         }
            
@@ -126,6 +127,7 @@ class LoyaltyController extends Controller {
                             $usercashback->user_id = $user->id;
                             $usercashback->store_id = $this->jsonString['store_id'];
                             $usercashback->cashback = round($refToAdd);
+                            $user->userCashback->loyalty_group = 1;
                             $usercashback->save();
                         }
                     }
