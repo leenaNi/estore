@@ -22,7 +22,7 @@ class PaymentSettlementController extends Controller {
 //     $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
 //                leftjoin("payment_settlement", "payment_settlement.order_id", '=', "has_products.id")
 //                ->select(DB::raw('sum(has_products.pay_amt) as totalOrder' ), 'stores.store_name', DB::raw('sum(payment_settlement.settled_amt) as totalPaid'),  DB::raw('sum(payment_settlement.order_amt) as orderAmt'))->groupBy("has_products.store_id")->get();
-//         dd($orders);
+//         dd($orders);courier
         $stores = Store::where("status", 1)->pluck("store_name", "id");
         $settle = Input::get('settlement') ? Input::get('settlement') : 0;
         $storeId = Input::get('storeId');
@@ -36,7 +36,8 @@ class PaymentSettlementController extends Controller {
             $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", "=", "has_products.store_id")
                     ->join("orders", "orders.id", "=", "has_products.order_id")
                     ->select('has_products.*', 'stores.store_name', 'stores.percent_to_charge');
-            $orders->where('settled_status', 0)->where('orders.order_status', 3)->where('orders.payment_status', 4);
+            $orders->where('settled_status', 0)->where('orders.order_status', 3)
+                    ->where('orders.payment_status', 4)->whereIn('orders.courier', [1]);
         }
         if ($storeId) {
             $orders->where('has_products.store_id', $storeId);
@@ -102,6 +103,7 @@ class PaymentSettlementController extends Controller {
     public function settlementSummary() {
         $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
                 leftjoin("payment_settlement", "payment_settlement.order_id", '=', "has_products.id")
+                 ->join("orders", "order.id", '=', "has_products.id")->whereIn('orders.courier', [1])
                 ->select(DB::raw('sum(has_products.pay_amt) as totalOrder'), 'stores.store_name', DB::raw('sum(payment_settlement.settled_amt) as totalPaid'), DB::raw('sum(payment_settlement.order_amt) as orderAmt'))
                 ->groupBy("has_products.store_id");
         $orders = $orders->paginate(Config('constants.AdminPaginateNo'));
