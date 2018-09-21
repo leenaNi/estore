@@ -26,9 +26,9 @@
 					<!-- Logo
 					============================================= -->
 					<div id="logo">
-						<a href="fs1_home.php?theme=<?php echo $_GET['theme']; ?>" class="standard-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
+						<a href="<?php echo $_GET['theme']; ?>_home.php?theme=<?php echo $_GET['theme']; ?>" class="standard-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
 						
-						<a href="fs1_home.php?theme=<?php echo $_GET['theme']; ?>" class="retina-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
+						<a href="<?php echo $_GET['theme']; ?>_home.php?theme=<?php echo $_GET['theme']; ?>" class="retina-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
 					</div><!-- #logo end -->
 
 					<!-- Primary Navigation
