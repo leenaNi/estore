@@ -129,11 +129,11 @@
 						</div> -->
 					</div>
 
-					<div class="col_half col_last tright">
+<!--					<div class="col_half col_last tright">
 						<div class="fright clearfix">
 							<img src="{{ Config('constants.frontendPublicImgPath').'/payment-mode.png'}}" alt="payment Mode"/>
 						</div>
-					</div>
+					</div>-->
 
 				</div>
 
