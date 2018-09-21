@@ -114,8 +114,8 @@
 
                                 @if($setting->status ==1)
                                 <?php 
-                                    $group=$customer->userCashback->loyalty_group?$customer->userCashback->loyalty_group:0;
-                               ?>           
+                                    $group=@$customer->userCashback->loyalty_group?@$customer->userCashback->loyalty_group:0;
+                                ?>         
                                 <td>{{ isset($group)?ucfirst(strtolower(@$loyalty["$group"])):'' }}</td>
                                 <td><span class="currency-sym"> </span> {{ number_format((@$customer->userCashback->cashback * Session::get('currency_val')), 2) }}</td>
                                 @endif
