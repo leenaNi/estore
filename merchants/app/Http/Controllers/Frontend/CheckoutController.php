@@ -1791,12 +1791,6 @@ class CheckoutController extends Controller {
         if ($usercashback) {
             $usercashback->cashback = $usercashback->cashback - (@Session::get('checkbackUsedAmt') / Session::get('currency_val'));
             $usercashback->save();
-        } else {
-            $usercashback = new HasCashbackLoyalty();
-            $usercashback->user_id = $user->id;
-            $usercashback->store_id = $jsonString['store_id'];
-            $usercashback->cashback = 0;
-            $usercashback->save();
         }
 
         $tempName = Session::get('login_user_first_name');
