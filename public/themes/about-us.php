@@ -7,14 +7,14 @@
 	============================================= -->
   <div id="wrapper" class="clearfix">
   <?php
-    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3' ||  $_GET['theme'] == 'ac1' ||  $_GET['theme'] == 'ac3')
-     include( 'includes/header_style1.php');
+     if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3' || $_GET['theme'] == 'ac1' ||  $_GET['theme'] == 'ac3' ||  $_GET['theme'] == 'bs1' ||  $_GET['theme'] == 'bs3')
+     include( 'includes/footer_style1.php');
 
-     if($_GET['theme'] == 'fs2' ||  $_GET['theme'] == 'ac2')
-     include( 'includes/header_style2.php');
+     if($_GET['theme'] == 'fs2' || $_GET['theme'] == 'ac2' ||  $_GET['theme'] == 'bs2')
+     include( 'includes/footer_style2.php');
      
      
-     ?>
+     ?> 
     <section id="page-title">
       <div class="container clearfix">
         <h1>About Us</h1>
@@ -45,14 +45,16 @@
     </section>
     <!-- #content end -->
     <?php
-    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3')
+   
+    if($_GET['theme'] == 'fs1' ||  $_GET['theme'] == 'fs3' || $_GET['theme'] == 'ac1' ||  $_GET['theme'] == 'ac3' ||  $_GET['theme'] == 'bs1' ||  $_GET['theme'] == 'bs3')
      include( 'includes/footer_style1.php');
 
-     if($_GET['theme'] == 'fs2')
+     if($_GET['theme'] == 'fs2' || $_GET['theme'] == 'ac2' ||  $_GET['theme'] == 'bs2')
      include( 'includes/footer_style2.php');
      
      
-     ?> </div>
+     ?>
+  </div>
   <!-- #wrapper end -->
   <?php include( 'includes/foot.php'); ?> </body>
 

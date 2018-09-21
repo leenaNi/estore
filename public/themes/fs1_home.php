@@ -5,9 +5,11 @@
 
 <body class="stretched">
   <!-- Document Wrapper
+  
 	============================================= -->
   <div id="wrapper" class="clearfix">
     <?php include( 'includes/header_style1.php'); ?>
+       
     <section id="slider" class="slider-parallax full-screen clearfix">
       <div class="slider-parallax-inner">
         <div class="fslider" data-arrows="true" data-pagi="false">

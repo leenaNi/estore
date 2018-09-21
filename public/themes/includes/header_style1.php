@@ -14,6 +14,7 @@
     $theme= substr($serv[2],0,3);
     ?>
           <?php $url=$theme."_home.php"; ?>
+                    
                     <!-- <div class="applyTheme-stickyHeader"><div class="text-center">If you wish to apply theme please <a href="#" data-mId="2" class="applythemelink">click here</a></div></div> -->
                    <?php //} ?>
                     <div id="header-wrap">
@@ -25,9 +26,9 @@
 					<!-- Logo
 					============================================= -->
 					<div id="logo">
-						<a href="fs1_home.php" class="standard-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
+						<a href="fs1_home.php?theme=<?php echo $_GET['theme']; ?>" class="standard-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
 						
-						<a href="fs1_home.php" class="retina-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
+						<a href="fs1_home.php?theme=<?php echo $_GET['theme']; ?>" class="retina-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
 					</div><!-- #logo end -->
 
 					<!-- Primary Navigation

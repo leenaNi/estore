@@ -84,6 +84,7 @@ class CancelOrderController extends Controller {
                 $usercashback->user_id = $data->uid;
                 $usercashback->store_id = $this->jsonString['store_id'];
                 $usercashback->cashback = round($data->return_amount,2);
+                $usercashback->loyalty_group = 1;
                 $usercashback->timestamps = false;
                 $usercashback->save();
             }
