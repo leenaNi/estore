@@ -41,6 +41,7 @@
 
                          
                             <th>Store Name</th>
+                            <!--total sales, paid via veestores, settled amt, unsettled amt, commision-->
                             <th>Total Amt</th>
                             <th>Settled Amt</th>
                             <!--<th>Commision</th>-->
