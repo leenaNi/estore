@@ -135,18 +135,13 @@ class CustomersController extends Controller {
 
     public function update() {
         $user = User::with("userCashback")->find(Input::get('id'));
-        if (Input::get('loyalty_group') == $user->userCashback->loyalty_group) {
-            //$user->loyalty_group = Input::get('loyalty_group'); 
-        } else {
-            $user->is_manually_updated = 1;
-            $user->userCashback->loyalty_group = Input::get('loyalty_group');
-        }
+
         if (Input::get('password')) {
             $password = Hash::make(Input::get('password'));
         } else {
             $password = Hash::make(mt_rand(100000, 999999));
         }
-        $user->userCashback->cashback = Input::get('cashback');
+      
         $user->firstname = Input::get('firstname');
         $user->lastname = Input::get('lastname');
         $user->telephone = Input::get('telephone');
@@ -156,7 +151,24 @@ class CustomersController extends Controller {
         $user->user_type = 2;
         $user->status = 1;
         $user->update();
-        $user->userCashback->save();
+        if ($user->userCashback) {
+            if (Input::get('loyalty_group') == $user->userCashback->loyalty_group) {
+                //$user->loyalty_group = Input::get('loyalty_group'); 
+            } else {
+                $user->is_manually_updated = 1;
+                $user->userCashback->loyalty_group = Input::get('loyalty_group');
+                $user->userCashback->cashback = Input::get('cashback');
+                $user->userCashback->save();
+            }
+        } else {
+            $usercashback = new HasCashbackLoyalty;
+            $usercashback->user_id = $user->id;
+            $usercashback->store_id = $this->jsonString['store_id'];
+            $usercashback->cashback = Input::get('cashback');
+            $usercashback->loyalty_group = Input::get('loyalty_group');
+            $usercashback->save();
+        }
+      
         Session::flash("updatesuccess", "Customer updated successfully.");
         $viewname = Config('constants.adminCustomersView') . '.index';
         $data = ['status' => 'success', 'msg' => 'Customer updated successfully.'];
