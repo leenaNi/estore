@@ -111,8 +111,11 @@ select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transfo
                 <td>{{ $customer->email }}</td>
                 <td>{{ $customer->telephone }}</td>
                 <td>{{ date("d-M-Y",strtotime($customer->created_at)) }}</td>
+                
                 @if($setting->status ==1)
-                <td>{{ isset($customer->loyalty)?ucfirst(strtolower($customer->loyalty->group)):'' }}</td>
+                <?php $group=@$customer->userCashback->loyalty_group; ?>
+           
+                <td>{{ isset($customer->loyalty)?ucfirst(strtolower(@$loyalty["$group"])):'' }}</td>
                 <td><span class="currency-sym"> </span> {{ number_format((@$customer->userCashback->cashback * Session::get('currency_val')), 2) }}</td>
                 @endif
                 <td>@if($customer->status==1)

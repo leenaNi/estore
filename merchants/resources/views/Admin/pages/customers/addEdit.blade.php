@@ -66,14 +66,14 @@
                        <div class="col-md-6">
                         <div class="form-group">
                             {!!Form::label('Loyalty Point','Loyalty Point ') !!}<span class="red-astrik"> *</span>
-                                {!! Form::number('cashback',null, ["class"=>'form-control', "id" => 'loyalty-point' ,"placeholder"=>'Loyalty Point', "required" ,"readonly"]) !!}
+                                {!! Form::number('cashback',@$user->userCashback->cashback, ["class"=>'form-control priceConvertTextBox', "id" => 'loyalty-point' ,"placeholder"=>'Loyalty Point', "required" ,"readonly"]) !!}
                             </div>                           
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <?php //$attr_Sets = $attrs->attributesets->toArray(); ?>
                                 {!! Form::label('Loyalty Group', 'Loyalty Group ') !!}<span class="red-astrik">*</span>
-                                {!! Form::select('loyalty_group',$loyalty, $user->loyalty_group, ["class"=>'form-control',"required"] ) !!}
+                                {!! Form::select('loyalty_group',$loyalty, @$user->userCashback->loyalty_group, ["class"=>'form-control',"required"] ) !!}
                             </div>
                         </div>
                     @endif
