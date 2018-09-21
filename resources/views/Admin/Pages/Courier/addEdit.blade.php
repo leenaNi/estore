@@ -45,7 +45,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             {!! Form::label('Preference', 'Preference ') !!}<span class="red-astrik"> *</span>
-                                            {!! Form::text('pref',null, ["class"=>'form-control validate[required,custom[number]]' ,"placeholder"=>'Preference']) !!}
+                                            {!! Form::number('pref',null, ["class"=>'form-control validate[required,custom[number]]' ,"placeholder"=>'Preference']) !!}
                                             <p style="color: red;" class="errorPrdCode"></p>
                                         </div>
                                     </div>
