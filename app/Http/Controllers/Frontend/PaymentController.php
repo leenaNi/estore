@@ -217,19 +217,19 @@ class PaymentController extends Controller {
     public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info) {
 //        print_r(Session::get('merchantid'));
         print_r($transaction_info);
-        $transaction_info = json_decode($transaction_info, TRUE);
-        echo $transaction_info['OrderDescription'];
+        $transaction_info1 = json_decode($transaction_info, TRUE);
+        echo $transaction_info1['OrderDescription'];
         print_r($transaction_info);
         $order = new MerchantOrder();
-        $getMerchat = json_decode(Merchant::find($transaction_info['OrderDescription'])->register_details);
-        $order->merchant_id = $transaction_info['OrderDescription'];
+        $getMerchat = json_decode(Merchant::find($transaction_info1['OrderDescription'])->register_details);
+        $order->merchant_id = $transaction_info1['OrderDescription'];
         $order->pay_amt = $payAmt;
         $order->order_amt = $payAmt;
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
         $order->transaction_id = $trasactionId;
         $order->transaction_status = $transactionStatus;
-        $order->transaction_info = @$transaction_info;
+        $order->transaction_info = '';
         $order->currency_id = $getMerchat->currency;
         $order->order_status = 1;
         $order->first_name = $getMerchat->firstname;
