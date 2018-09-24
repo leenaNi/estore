@@ -71,7 +71,6 @@ class PaymentController extends Controller {
 
     //for city payment
     public function getCityApproved() {
-
         //  dd($_REQUEST['xmlmsg']);
         if (@$_REQUEST['xmlmsg'] != "") {
 
@@ -181,7 +180,7 @@ class PaymentController extends Controller {
         $data.="<CancelURL>" . htmlentities(Input::get('CancelURL')) . "</CancelURL>";
         $data.="<DeclineURL>" . htmlentities(Input::get('DeclineURL')) . "</DeclineURL>";
         $data.="</Order></Request></TKKPG>";
-
+//        print_r(Input::all());
         $xml = PostQW($data);
 
         $OrderID = $xml->Response->Order->OrderID;
@@ -200,9 +199,9 @@ class PaymentController extends Controller {
         $data.="</Request></TKKPG>";
         $xml = PostQW($data);
         $OrderStatus = $xml->Response->Order->OrderStatus;
-
-
-
+//        echo "===".Session::get('merchantid')."=======";
+//        dd($data);
+        Session::put('merchantid', Input::get('merchantid'));
         if (Input::get('responseType') == 'json') {
             $data = [];
             $data['url'] = $URL . "?ORDERID=" . $OrderID . "&SESSIONID=" . $SessionID . "";
@@ -287,12 +286,7 @@ class PaymentController extends Controller {
         //  print_r($storeid);
         define('DS', DIRECTORY_SEPARATOR);
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
-        // dd(Crypt::decrypt($storeid));
-//       dd(Input::all());
-
-
         $merchant = Store::find($storeid)->getmerchant()->first()->id;
-        dd($merchant);
         $payAmt = 1; //Helper::getAmt();
         Session::put('storeId', $storeid);
         Session::put('merchantid', $merchant);
@@ -303,27 +297,28 @@ class PaymentController extends Controller {
             <input type="hidden" size="25" name="Amount" value="1"/>
             <input type="hidden" size="25" name="Currency" value="050" readonly/>
             <input type="hidden" size="25" name="Description" value="1520"/>  
-            <input type="hidden" size="25" name="merchnatId" value="{{$merchant}}"/>
+            <input type="hidden" size="25" name="merchnatId" value="<?php echo Session::get('merchantid'); ?>"/>
             <input type="hidden" size="50" name="ApproveURL" value="https://www.veestores.com/get-renew-city-approved" readonly/>
             <input type="hidden" size="50" name="CancelURL" value="https://www.veestores.com/get-city-cancelled" readonly/>
             <input type="hidden" size="50" name="DeclineURL" value="https://www.veestores.com/get-city-declined" readonly/>
             <input type="submit" style="display:none;" value="Create Order"/>
         </form>
         <script type="text/javascript">
-            //document.cityPayForm.submit();
+            document.cityPayForm.submit();
         </script>
 
         <?php
     }
 
     public function getRenewCityApproved() {
-
+        print_r(Session::all());
         //  dd($_REQUEST['xmlmsg']);
         if (@$_REQUEST['xmlmsg'] != "") {
 
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
             $array = json_decode($json, TRUE);
+            dd($array);
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
