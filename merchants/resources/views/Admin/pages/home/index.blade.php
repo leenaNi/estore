@@ -121,7 +121,24 @@ span.editicons i {
 									</div>
 								</div>
 							</div>
-
+<div class="box box-solid marginBottom20">
+					<div class="box-header with-border noleftBorder">
+						<h3 class="box-title">Add Taxes</h3>
+						<div class="pull-right box-tools">
+							<button type="button" class="btn btn-defualt btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
+							</button>
+							<button type="button" class="btn btn-defualt btn-sm" data-widget="remove"><i class="fa fa-times"></i>
+							</div>
+						</div>
+						<div class="box-body">
+							<div class="row">
+								<div class="col-sm-12 col-md-12">
+									<p>You can define product specific or product tax classes and assign them to products..</p>
+									<a href="{{ route('admin.tax.view') }}" class="btn btn-default noAllMargin  mobileSpecialfullBTN">Add Taxes</a>
+								</div>
+							</div>
+						</div>
+					</div>
 				<div class="box box-solid marginBottom20">
 					<div class="box-header with-border noleftBorder">
 						<h3 class="box-title">Add Product</h3>
