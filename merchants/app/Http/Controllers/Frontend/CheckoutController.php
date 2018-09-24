@@ -289,7 +289,7 @@ class CheckoutController extends Controller {
 
     public function check_international() {
         $selAdd = Address::find(Session::get('addressSelected'));
-        if (!empty($selAdd) && ($selAdd->country_id != 99 || $selAdd->country_id != 18)) {
+        if (!empty($selAdd) && (in_array($selAdd->country_id, [99, 18]))) {
             $cart = Cart::instance("shopping")->content();
             $prodsInter = [];
             foreach ($cart as $cInfo) {
