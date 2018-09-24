@@ -238,8 +238,6 @@ class PaymentController extends Controller {
         $order->category_id = $getMerchat->business_type;
         $order->store_version = $getMerchat->store_version;
         $order->theme_id = Session::get('theme_id');
-        $order->shipping_amt = is_null(Session::get('shippingAmount')) ? 0 : Session::get('shippingAmount');
-
         $order->save();
         Session::put("orderId", $order->id);
 
