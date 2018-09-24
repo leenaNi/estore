@@ -71,18 +71,16 @@ class PaymentController extends Controller {
 
     //for city payment
     public function getCityApproved() {
-        print_r(Session::all());
         //  dd($_REQUEST['xmlmsg']);
         if (@$_REQUEST['xmlmsg'] != "") {
 
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
             $array = json_decode($json, TRUE);
-            dd($array);
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
-            
+
             $paymentMethod = 9;
             $paymentStatus = 4;
             $payAmt = $array['PurchaseAmountScr'];
@@ -313,13 +311,14 @@ class PaymentController extends Controller {
     }
 
     public function getRenewCityApproved() {
-
+        print_r(Session::all());
         //  dd($_REQUEST['xmlmsg']);
         if (@$_REQUEST['xmlmsg'] != "") {
 
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
             $array = json_decode($json, TRUE);
+            dd($array);
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
