@@ -108,7 +108,7 @@ class PaymentSettlementController extends Controller {
                 leftjoin("payment_settlement", "payment_settlement.order_id", '=', "has_products.id")
                ->join("orders", "orders.id", '=', "has_products.order_id")
 //              , (select sum(has_products.pay_amt) from orders where orders.courier = 0) as c3, (select sum(has_products.pay_amt) from orders where orders.courier = 1) as c4,
-                ->select(DB::raw('sum(Has_products.pay_amt) as totalOrder, stores.store_name, sum(payment_settlement.settled_amt) as totalPaid, sum(payment_settlement.order_amt) as orderAmt'))
+                ->select(DB::raw('sum(has_products.pay_amt) as totalOrder, stores.store_name, sum(payment_settlement.settled_amt) as totalPaid, sum(payment_settlement.order_amt) as orderAmt'))
               ->groupBy("has_products.store_id");
        
         $orders = $order->paginate(Config('constants.AdminPaginateNo'));
