@@ -137,8 +137,8 @@ class PaymentController extends Controller {
             $transaction_info = json_encode($array);
             $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
             $store = Store::where('merchant_id', $array['OrderDescription'])->first();
-            print_r($store);
-            echo "Seems you have cancelled transaction. <a href='" . $store->domain . "/admin'>Click here</a> to go back.";
+//            print_r($store);
+            echo "Seems you have cancelled transaction. <a href='" . $store->store_domain . "/admin'>Click here</a> to go back.";
 
             // return redirect()->route('orderFailure');
         }
@@ -341,7 +341,7 @@ class PaymentController extends Controller {
             $settings['expiry_date'] = date('Y-m-d', strtotime($settings['expiry_date'] . " + 365 day"));
             Helper::saveMerchantStoreSettings($merchantStorePath, json_encode($settings));
             $data = [];
-            echo "Thank you for choosing us, Your store has been renewed. <a href='" . $store->domain . "/admin'>Click here</a> to go back.";
+            echo "Thank you for choosing us, Your store has been renewed. <a href='" . $store->store_domain . "/admin'>Click here</a> to go back.";
             ?>
             <?php
 //            $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
