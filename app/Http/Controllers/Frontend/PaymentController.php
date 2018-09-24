@@ -216,9 +216,10 @@ class PaymentController extends Controller {
 
     public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info) {
         print_r(Session::get('merchantid'));
+        $transaction_info = json_decode($transaction_info);
         $order = new MerchantOrder();
         $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
-        $order->merchant_id = Session::get('merchantid');
+        $order->merchant_id = $transaction_info['OrderDescription'];
         $order->pay_amt = $payAmt;
         $order->order_amt = $payAmt;
         $order->payment_method = $paymentMethod;
@@ -296,7 +297,7 @@ class PaymentController extends Controller {
             <input type="hidden" size="25" name="Merchant" value="11122333" readonly/>
             <input type="hidden" size="25" name="Amount" value="1"/>
             <input type="hidden" size="25" name="Currency" value="050" readonly/>
-            <input type="hidden" size="25" name="Description" value="1520"/>  
+            <input type="hidden" size="25" name="Description" value="<?php echo Session::get('merchantid'); ?>"/>  
             <input type="hidden" size="25" name="merchnatId" value="<?php echo Session::get('merchantid'); ?>"/>
             <input type="hidden" size="50" name="ApproveURL" value="https://www.veestores.com/get-renew-city-approved" readonly/>
             <input type="hidden" size="50" name="CancelURL" value="https://www.veestores.com/get-city-cancelled" readonly/>
