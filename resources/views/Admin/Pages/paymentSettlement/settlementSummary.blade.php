@@ -59,7 +59,7 @@
                             <td><span class="currency-sym"> </span><span class="priceConvert">{{ @$orderWithCourier[$key]->totalOrder?$orderWithCourier[$key]->totalOrder:'0' }}</span></td>
                             <td><span class="currency-sym"> </span><span class="priceConvert"> {{ $order->totalPaid ?$order->totalPaid:'0'}}</span></td>
                             <!--<td><span class="currency-sym"> </span><span class="priceConvert"> {{ ($order->totalPaid)-($order->totalPaid) }}</span></td>-->
-                            <td><span class="currency-sym"> </span><span class="priceConvert">{{ @$orderWithCourier[$key]->totalOrder?$orderWithCourier[$key]->totalOrder - ($order->totalPaid:'0') }}</span></td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert">{{ @$orderWithCourier[$key]->totalOrder?($orderWithCourier[$key]->totalOrder - ($order->totalPaid)):'0' }}</span></td>
                             <td><span class="currency-sym"> </span><span class="priceConvert">{{ ($order->orderAmt) - ($order->totalPaid) }}</span></td>
                             </td>
                         </tr>
