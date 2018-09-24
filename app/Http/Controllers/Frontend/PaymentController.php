@@ -68,8 +68,7 @@ class PaymentController extends Controller {
 
         <?php
     }
-    
-    
+
     //for city payment
     public function getCityApproved() {
 
@@ -99,7 +98,7 @@ class PaymentController extends Controller {
 
             $data = ['cats' => $cats, 'allinput' => $allinput, 'themeIds' => $themeIds];
             $viewname = Config('constants.frontendView') . ".select-themes";
-            return Helper::returnView($viewname, $data);
+            // return Helper::returnView($viewname, $data);
         }
     }
 
@@ -111,7 +110,7 @@ class PaymentController extends Controller {
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
-           
+
             $paymentMethod = 9;
             $paymentStatus = 1;
             $payAmt = $array['PurchaseAmountScr'];
@@ -184,7 +183,7 @@ class PaymentController extends Controller {
         $data.="</Order></Request></TKKPG>";
 
         $xml = PostQW($data);
-        
+
         $OrderID = $xml->Response->Order->OrderID;
         $SessionID = $xml->Response->Order->SessionID;
         $URL = $xml->Response->Order->URL;
@@ -217,6 +216,7 @@ class PaymentController extends Controller {
     }
 
     public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info) {
+        print_r(Session::get('merchantid'));
         $order = new MerchantOrder();
         $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
         $order->merchant_id = Session::get('merchantid');
@@ -239,7 +239,7 @@ class PaymentController extends Controller {
 
         $order->save();
         Session::put("orderId", $order->id);
-        
+
         return $order;
 //        if (empty($tempName)) {
 //            $parts = explode("@", Session::get('logged_in_user'));
@@ -262,7 +262,7 @@ class PaymentController extends Controller {
 
     public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info) {
         $order = new MerchantOrder();
-      //  dd(Session::get('merchantid'));
+        //  dd(Session::get('merchantid'));
         $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
         $order->merchant_id = Session::get('merchantid');
         $order->pay_amt = $payAmt;
@@ -282,16 +282,17 @@ class PaymentController extends Controller {
         Session::forget("storeId");
         return $order;
     }
-   public function getCityPayRenew($storeid,$type) {
-     //  print_r($storeid);
+
+    public function getCityPayRenew($storeid, $type) {
+        //  print_r($storeid);
         define('DS', DIRECTORY_SEPARATOR);
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
-       // dd(Crypt::decrypt($storeid));
+        // dd(Crypt::decrypt($storeid));
 //       dd(Input::all());
-           
-             
-            $merchant=Store::find($storeid)->getmerchant()->first()->id;
-       
+
+
+        $merchant = Store::find($storeid)->getmerchant()->first()->id;
+        dd($merchant);
         $payAmt = 1; //Helper::getAmt();
         Session::put('storeId', $storeid);
         Session::put('merchantid', $merchant);
@@ -309,11 +310,12 @@ class PaymentController extends Controller {
             <input type="submit" style="display:none;" value="Create Order"/>
         </form>
         <script type="text/javascript">
-            document.cityPayForm.submit();
+            //document.cityPayForm.submit();
         </script>
 
         <?php
     }
+
     public function getRenewCityApproved() {
 
         //  dd($_REQUEST['xmlmsg']);
@@ -333,11 +335,11 @@ class PaymentController extends Controller {
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
             $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info);
-            $store=Store::find(29)->url_key;
-            $merchantStorePath= base_path() . "/merchants/" . $store . "/";         
+            $store = Store::find(29)->url_key;
+            $merchantStorePath = base_path() . "/merchants/" . $store . "/";
             $settings = Helper::getMerchantStoreSettings($merchantStorePath);
-            $settings['expiry_date']= date('Y-m-d', strtotime($settings['expiry_date'] . " + 365 day"));
-            Helper::saveMerchantStoreSettings($merchantStorePath,json_encode($settings));
+            $settings['expiry_date'] = date('Y-m-d', strtotime($settings['expiry_date'] . " + 365 day"));
+            Helper::saveMerchantStoreSettings($merchantStorePath, json_encode($settings));
             $data = [];
 //            $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
 //            $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
@@ -350,10 +352,12 @@ class PaymentController extends Controller {
 //            return Helper::returnView($viewname, $data);
         }
     }
-    public function orderFailure(){
-              $data ="";
-              Session::forget(all());
-            $viewname = Config('constants.frontendView') . ".failure";
-            return Helper::returnView($viewname, $data);   
+
+    public function orderFailure() {
+        $data = "";
+        Session::forget(all());
+        $viewname = Config('constants.frontendView') . ".failure";
+        return Helper::returnView($viewname, $data);
     }
+
 }
