@@ -218,6 +218,7 @@ class PaymentController extends Controller {
 //        print_r(Session::get('merchantid'));
         print_r($transaction_info);
         $transaction_info = json_decode($transaction_info, TRUE);
+        echo $transaction_info['OrderDescription'];
         dd($transaction_info);
         $order = new MerchantOrder();
         $getMerchat = json_decode(Merchant::find($transaction_info['OrderDescription'])->register_details);
