@@ -181,7 +181,7 @@ class PaymentController extends Controller {
         $data.="<CancelURL>" . htmlentities(Input::get('CancelURL')) . "</CancelURL>";
         $data.="<DeclineURL>" . htmlentities(Input::get('DeclineURL')) . "</DeclineURL>";
         $data.="</Order></Request></TKKPG>";
-
+        print_r(Input::all());
         $xml = PostQW($data);
 
         $OrderID = $xml->Response->Order->OrderID;
@@ -200,8 +200,8 @@ class PaymentController extends Controller {
         $data.="</Request></TKKPG>";
         $xml = PostQW($data);
         $OrderStatus = $xml->Response->Order->OrderStatus;
-
-
+        echo Session::get('merchantid');
+        dd($data);
 
         if (Input::get('responseType') == 'json') {
             $data = [];
@@ -287,12 +287,8 @@ class PaymentController extends Controller {
         //  print_r($storeid);
         define('DS', DIRECTORY_SEPARATOR);
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
-        // dd(Crypt::decrypt($storeid));
-//       dd(Input::all());
-
-
         $merchant = Store::find($storeid)->getmerchant()->first()->id;
-        dd($merchant);
+        print_r($merchant);
         $payAmt = 1; //Helper::getAmt();
         Session::put('storeId', $storeid);
         Session::put('merchantid', $merchant);
