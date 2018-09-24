@@ -218,7 +218,7 @@ class PaymentController extends Controller {
         print_r(Session::get('merchantid'));
         $transaction_info = json_decode($transaction_info);
         $order = new MerchantOrder();
-        $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
+        $getMerchat = json_decode(Merchant::find($transaction_info['OrderDescription'])->register_details);
         $order->merchant_id = $transaction_info['OrderDescription'];
         $order->pay_amt = $payAmt;
         $order->order_amt = $payAmt;
