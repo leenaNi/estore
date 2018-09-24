@@ -71,7 +71,7 @@ class PaymentController extends Controller {
 
     //for city payment
     public function getCityApproved() {
-
+        print_r(Session::all());
         //  dd($_REQUEST['xmlmsg']);
         if (@$_REQUEST['xmlmsg'] != "") {
 
@@ -203,7 +203,7 @@ class PaymentController extends Controller {
         $OrderStatus = $xml->Response->Order->OrderStatus;
 //        echo "===".Session::get('merchantid')."=======";
 //        dd($data);
-        Session::put('merchantid', $merchant);
+        Session::put('merchantid', Input::get('merchantid'));
         if (Input::get('responseType') == 'json') {
             $data = [];
             $data['url'] = $URL . "?ORDERID=" . $OrderID . "&SESSIONID=" . $SessionID . "";
