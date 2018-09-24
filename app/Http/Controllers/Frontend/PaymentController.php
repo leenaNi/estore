@@ -78,10 +78,11 @@ class PaymentController extends Controller {
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
             $array = json_decode($json, TRUE);
+            dd($array);
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
-
+            
             $paymentMethod = 9;
             $paymentStatus = 4;
             $payAmt = $array['PurchaseAmountScr'];
@@ -181,7 +182,7 @@ class PaymentController extends Controller {
         $data.="<CancelURL>" . htmlentities(Input::get('CancelURL')) . "</CancelURL>";
         $data.="<DeclineURL>" . htmlentities(Input::get('DeclineURL')) . "</DeclineURL>";
         $data.="</Order></Request></TKKPG>";
-        print_r(Input::all());
+//        print_r(Input::all());
         $xml = PostQW($data);
 
         $OrderID = $xml->Response->Order->OrderID;
@@ -200,8 +201,8 @@ class PaymentController extends Controller {
         $data.="</Request></TKKPG>";
         $xml = PostQW($data);
         $OrderStatus = $xml->Response->Order->OrderStatus;
-        echo "===".Session::get('merchantid')."=======";
-        dd($data);
+//        echo "===".Session::get('merchantid')."=======";
+//        dd($data);
         Session::put('merchantid', $merchant);
         if (Input::get('responseType') == 'json') {
             $data = [];
@@ -288,7 +289,6 @@ class PaymentController extends Controller {
         define('DS', DIRECTORY_SEPARATOR);
         include(app_path() . DS . 'Library' . DS . 'Functions.php');
         $merchant = Store::find($storeid)->getmerchant()->first()->id;
-        print_r($merchant);
         $payAmt = 1; //Helper::getAmt();
         Session::put('storeId', $storeid);
         Session::put('merchantid', $merchant);
@@ -306,7 +306,7 @@ class PaymentController extends Controller {
             <input type="submit" style="display:none;" value="Create Order"/>
         </form>
         <script type="text/javascript">
-            //document.cityPayForm.submit();
+            document.cityPayForm.submit();
         </script>
 
         <?php
