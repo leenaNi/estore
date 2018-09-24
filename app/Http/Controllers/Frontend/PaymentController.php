@@ -136,7 +136,14 @@ class PaymentController extends Controller {
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
             $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
-
+            ?>
+            <script>
+                window.onunload = refreshParent;
+                function refreshParent() {
+                    window.opener.location.reload();
+                }
+            </script>
+            <?php
             // return redirect()->route('orderFailure');
         }
     }
