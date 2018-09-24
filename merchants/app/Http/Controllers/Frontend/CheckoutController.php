@@ -793,8 +793,8 @@ class CheckoutController extends Controller {
         if (!empty($requireReferalCode))
             $allRefCode = User::where("id", "!=", Session::get('loggedin_user_id'))->where("referal_code", "=", $requireReferalCode)->get();
         if (count($allRefCode) > 0) {
-            $ref_disc = number_format(($cart_amount * $discountOnOrder) / 100, 2);
-            $user_referal_points = number_format(($cart_amount * $bonousToReferee) / 100, 2);
+            $ref_disc = round(($cart_amount * $discountOnOrder) / 100, 2);
+            $user_referal_points = round(($cart_amount * $bonousToReferee) / 100, 2);
             Session::put("userReferalPoints", $user_referal_points);
             Session::put("referalCodeAmt", $ref_disc);
             Session::put("ReferalCode", $requireReferalCode);
@@ -804,7 +804,7 @@ class CheckoutController extends Controller {
             $cart = Cart::instance('shopping')->content();
             foreach ($cart as $k => $c) {
                 $productP = (($c->subtotal - $c->options->disc - $c->options->wallet_disc - $c->options->user_disc) / 100);
-                $orderAmtP = round(($orderAmt / 100),2);
+                $orderAmtP = round($orderAmt / 100);
                 $amt = Helper::discForProduct($productP, $orderAmtP, Session::get('referalCodeAmt'));
 
                 Cart::instance('shopping')->update($k, ["options" => ['referral_disc' => $amt]]);
