@@ -217,6 +217,7 @@ class PaymentController extends Controller {
     }
 
     public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info) {
+        dd(Session::get('merchantid'));
         $order = new MerchantOrder();
         $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
         $order->merchant_id = Session::get('merchantid');
