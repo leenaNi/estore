@@ -470,7 +470,7 @@ class Helper {
 
     public static function discForProduct($prodPer, $getOrderAmtPer, $fixedAmtVal) {
         if (($prodPer * $fixedAmtVal) > 0)
-            $amt = $prodPer * $fixedAmtVal / $getOrderAmtPer;
+            $amt = round(($prodPer * $fixedAmtVal / $getOrderAmtPer),2);
         else
             $amt = 0;
         return round($amt, 2);

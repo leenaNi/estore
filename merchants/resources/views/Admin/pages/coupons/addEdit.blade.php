@@ -171,8 +171,9 @@
                                             Selected Customers
                                         </lebel>
                                         <?php
-                                        if (!empty($coupon->userspecific()->get()->toArray())) {
-                                            $arr = $coupon->userspecific()->get()->toArray();
+                                       
+                                        if (!empty($userCoupon)) {
+                                            $arr =$userCoupon;
                                             ?>
                                             <div id="log" style="height: 42px; overflow: auto; padding: 10px;" class="ui-widget-content">
                                                 <?php
