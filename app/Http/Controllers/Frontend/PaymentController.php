@@ -140,6 +140,7 @@ class PaymentController extends Controller {
             <script>
                 window.onunload = refreshParent;
                 function refreshParent() {
+                    alert("closed");
                     window.opener.location.reload();
                 }
             </script>
