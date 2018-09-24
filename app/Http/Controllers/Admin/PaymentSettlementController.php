@@ -106,7 +106,8 @@ class PaymentSettlementController extends Controller {
          $courier=Courier::where("status",1)->pluck("id")->toArray();
         $order = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
                 leftjoin("payment_settlement", "payment_settlement.order_id", '=', "has_products.id")
-               ->join("orders", "orders.id", '=', "has_products.order_id")
+               ->join("orders", "orders.id", '=', "has_products.order_id")->where('orders.order_status', 3)
+                    ->where('orders.payment_status', 4)
 //              , (select sum(has_products.pay_amt) from orders where orders.courier = 0) as c3, (select sum(has_products.pay_amt) from orders where orders.courier = 1) as c4,
                 ->select(DB::raw('sum(has_products.pay_amt) as totalOrder, stores.store_name, sum(payment_settlement.settled_amt) as totalPaid, sum(payment_settlement.order_amt) as orderAmt'))
               ->groupBy("has_products.store_id");
@@ -116,7 +117,8 @@ class PaymentSettlementController extends Controller {
      //   $orderWithoutCourier=$ord->whereNotIn("orders.courier",$courier)->paginate(Config('constants.AdminPaginateNo'));
   //  dd($orderWithoutCourier);
           $orderWithoutCourier = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
-               join("orders", "orders.id", '=', "has_products.order_id")
+               join("orders", "orders.id", '=', "has_products.order_id")->where('orders.order_status', 3)
+                    ->where('orders.payment_status', 4)
                 ->select(DB::raw('sum(has_products.pay_amt) as totalOrder, stores.store_name'))
               ->groupBy("has_products.store_id")->whereNotIn("orders.courier",$courier)->paginate(Config('constants.AdminPaginateNo'));
         $data = ['orders' => $orders,'orderWithCourier'=>$orderWithCourier,'orderWithoutCourier'=>$orderWithoutCourier];
