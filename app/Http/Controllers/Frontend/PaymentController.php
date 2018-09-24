@@ -202,7 +202,7 @@ class PaymentController extends Controller {
         $OrderStatus = $xml->Response->Order->OrderStatus;
         echo Session::get('merchantid');
         dd($data);
-
+        Session::put('merchantid', $merchant);
         if (Input::get('responseType') == 'json') {
             $data = [];
             $data['url'] = $URL . "?ORDERID=" . $OrderID . "&SESSIONID=" . $SessionID . "";
@@ -299,7 +299,7 @@ class PaymentController extends Controller {
             <input type="hidden" size="25" name="Amount" value="1"/>
             <input type="hidden" size="25" name="Currency" value="050" readonly/>
             <input type="hidden" size="25" name="Description" value="1520"/>  
-            <input type="hidden" size="25" name="merchnatId" value="{{$merchant}}"/>
+            <input type="hidden" size="25" name="merchnatId" value="<?php echo $merchant; ?>"/>
             <input type="hidden" size="50" name="ApproveURL" value="https://www.veestores.com/get-renew-city-approved" readonly/>
             <input type="hidden" size="50" name="CancelURL" value="https://www.veestores.com/get-city-cancelled" readonly/>
             <input type="hidden" size="50" name="DeclineURL" value="https://www.veestores.com/get-city-declined" readonly/>
