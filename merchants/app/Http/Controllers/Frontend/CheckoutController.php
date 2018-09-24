@@ -1714,6 +1714,7 @@ class CheckoutController extends Controller {
         $chkReferal = GeneralSetting::where('url_key', 'referral')->first();
         $chkLoyalty = GeneralSetting::where('url_key', 'loyalty')->first();
         $stock_status = GeneralSetting::where('url_key', 'stock')->first()->status;
+        $courier_status = GeneralSetting::where('url_key', 'default-courier')->first()->status;
         $user = User::find(Session::get('loggedin_user_id'));
         $order = Order::find(Session::get('orderId'));
         $iscod = 0;
@@ -1722,8 +1723,12 @@ class CheckoutController extends Controller {
         }
 
         if ($this->courierService == 1 && $this->pincodeStatus == 1) {
-            $courierServe = Helper::assignCourier($order->postal_code, $iscod);
-            $order->courier = $courierServe;
+            if ($courier_status == 1) {
+                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
+                $order->courier = $courier->courier_id;
+                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
+                // $courierServe = Helper::assignCourier($order->postal_code, $iscod);
+            }
         }
         $cart_data = Helper::calAmtWithTax();
         $order->user_id = $user->id;
