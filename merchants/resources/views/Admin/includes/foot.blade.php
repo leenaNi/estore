@@ -170,7 +170,7 @@ $(document).keypress(function (e) {
 
 <script  type="text/javascript">
     $(document).ready(function () {
-//        $(".fa-rupee").toggleClass("fa-rupee fa-<?php //echo Session::get("currency_code")        ?>")
+//        $(".fa-rupee").toggleClass("fa-rupee fa-<?php //echo Session::get("currency_code")         ?>")
     })
 
 //    var currentCurrency = parseFloat("<?= Session::get("currency_val") ?>");
@@ -349,6 +349,8 @@ $(document).keypress(function (e) {
                     if (res.status == 2) {
                         var trackData = '<td>Advance<input type="hidden" id="storeV" name="store_version"  value="2"></td><td><span class="currency-sym">  </span><span class="priceConvert"> ' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="' + res.charge + '"></td> ';
                         $('#chargesDetails').append(trackData);
+                        var vrsn = $('#storeV').val();
+                        $('#storerenewSubmit').attr("href", 'https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn);
                     } else {
                         var trackData = ' <td><select name="store_version" id="storeV" class="form-control storeV"><option value="1">Starter</option><option value="2">Advance</option></select></td><td><span class="currency-sym"> </span><span class="priceConvert renewCharge">' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="' + res.charge + '"></td> ';
                         $('#chargesDetails').append(trackData);
@@ -381,7 +383,7 @@ $(document).keypress(function (e) {
 //                        form.submit();
         });
     });
-    $('div#renewModal').delegate('#storeV', 'change', function (){
+    $('div#renewModal').delegate('#storeV', 'change', function () {
         var version = $(this).val();
         $.ajax({
             url: "{{ route('admin.generalSetting.storeVersion')}}",
@@ -391,7 +393,8 @@ $(document).keypress(function (e) {
                 //  alert(res);
                 $('.renewCharge').text(parseFloat(res).toFixed(2));
                 $('#store_charge').val(parseFloat(res).toFixed(2));
-
+                var vrsn = $('#storeV').val();
+                $('#storerenewSubmit').attr("href", 'https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn);
             }
         });
         getCur();
