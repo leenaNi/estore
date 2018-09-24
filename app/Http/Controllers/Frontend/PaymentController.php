@@ -312,14 +312,14 @@ class PaymentController extends Controller {
     }
 
     public function getRenewCityApproved() {
-        print_r(Session::all());
+//        print_r(Session::all());
         //  dd($_REQUEST['xmlmsg']);
         if (@$_REQUEST['xmlmsg'] != "") {
 
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
             $array = json_decode($json, TRUE);
-            dd($array);
+//            dd($array);
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
