@@ -813,7 +813,7 @@ class OrdersController extends Controller {
                     /* Order history */
 
                     if ($orderUser->users['telephone']) {
-                        $msgOrderSucc = "Your order from " . Session::put('storeName') . " with id " . $orderid . " is delivered successfully. Happy Shopping!";
+                        $msgOrderSucc = "Your order from " . $settings['storeName'] . " with id " . $orderid . " is delivered successfully. Happy Shopping!";
                         Helper::sendsms($orderUser->users['telephone'], $msgOrderSucc, $orderUser->users['country_code']);
                     }
 
