@@ -237,7 +237,6 @@ class PaymentController extends Controller {
         $order->email = $getMerchat->email;
         $order->category_id = $getMerchat->business_type;
         $order->store_version = $getMerchat->store_version;
-        $order->theme_id = Session::get('theme_id');
         $order->save();
         Session::put("orderId", $order->id);
 
