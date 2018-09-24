@@ -804,7 +804,7 @@ class CheckoutController extends Controller {
             $cart = Cart::instance('shopping')->content();
             foreach ($cart as $k => $c) {
                 $productP = (($c->subtotal - $c->options->disc - $c->options->wallet_disc - $c->options->user_disc) / 100);
-                $orderAmtP = ($orderAmt / 100);
+                $orderAmtP = round(($orderAmt / 100),2);
                 $amt = Helper::discForProduct($productP, $orderAmtP, Session::get('referalCodeAmt'));
 
                 Cart::instance('shopping')->update($k, ["options" => ['referral_disc' => $amt]]);
