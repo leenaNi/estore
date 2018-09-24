@@ -55,7 +55,7 @@
                 <div class="col_one_fourth marginBottom15">
                     <div class="feautreBox">
                         <h4>Free Account</h4>
-                        <p>All the customers of the stores created by the merchants on VeeStores get an account which is free forver.</p>
+                        <p>All the customers of the stores created by the merchants on VeeStores get an account which is free forever.</p>
                     </div>
                 </div>
                 <div class="col_one_fourth marginBottom15">
