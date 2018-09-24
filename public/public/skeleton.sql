@@ -847,7 +847,8 @@ INSERT INTO `tblprfx_general_setting` (`id`, `name`, `status`, `details`, `url_k
 (49, 'Would you like to use "Minimum Order Quantity"?', 1, '', 'minimum-order', 0, 25, 0, 0, 5,''),
 (50, 'Would you like to use "SEO (Search Engine Optimization)"?', '0', '', 'sco', '1', '12', '1', '0', '1','SEO (Search Engine Optimization) helps to increase the online visibility of a website and its products in the web search engines like Google'),
 (52, 'Would you like to use "Guest Checkout" feature?', 1, '', 'guest-checkout', 1, 23, 1, 0, 0,'This feature allows customer to checkout without logging in/registering on the website. Only email is asked from the customer for future communication.'),
-(53, 'Bank Account Details', '1', '{\"bank_name\":\"bank_name \",\"branch_name\":\"branch_name\",\"ifsc\":\"ifsc\",\"bank_address\":\"asdf sdff sdf asdfa sdfa dfa dasd asdf asdfa dfad asdf asdfa dfa sda d\",\"city\":\"mum\",\"state\":\"1504\",\"country\":\"99\",\"acc_type\":\"1\",\"acc_no\":\"123123123123123123123\"}', 'bank_acc_details', '8', '1', '1', '0', '3', 'Bank account information.');
+(53, 'Bank Account Details', '1', '{\"bank_name\":\"bank_name \",\"branch_name\":\"branch_name\",\"ifsc\":\"ifsc\",\"bank_address\":\"asdf sdff sdf asdfa sdfa dfa dasd asdf asdfa dfad asdf asdfa dfa sda d\",\"city\":\"mum\",\"state\":\"1504\",\"country\":\"99\",\"acc_type\":\"1\",\"acc_no\":\"123123123123123123123\"}', 'bank_acc_details', '8', '1', '1', '0', '3', 'Bank account information.'),
+(54,'would you like to use default courier services provided by veestores', '1','', 'default-courier', '1', '12', '1', '1', '2', '')
  
 -- --------------------------------------------------------
 
@@ -1146,7 +1147,12 @@ INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`)
 (111, 39, 1),
 (112, 39, 2),
 (113, 39, 4),
-(114, 39, 5);
+(114, 39, 5),
+(115, 54 ,1),
+(116, 54, 2),
+(117, 54, 3),
+(118, 54, 4),
+(119, 54, 5);
 
 -- --------------------------------------------------------
 
