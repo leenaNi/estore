@@ -106,8 +106,8 @@ Session::put('storelogo', $data->logo);
                         </div>
 
                         <div class="col-md-4">
-                            <!--<button type="submit" class="btn btn-primary storerenewSubmit">Submit</button>-->
-                            <a class="btn btn-primary " id="storerenewSubmit" target="_blank">Submit</a>
+                            <button type="submit" class="btn btn-primary storerenewSubmit">Submit</button>
+                            <!--<a class="btn btn-primary " id="storerenewSubmit" target="_blank">Submit</a>-->
 
                         </div >
                     </div >

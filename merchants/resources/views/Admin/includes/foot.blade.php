@@ -349,8 +349,8 @@ $(document).keypress(function (e) {
                     if (res.status == 2) {
                         var trackData = '<td>Advance<input type="hidden" id="storeV" name="store_version"  value="2"></td><td><span class="currency-sym">  </span><span class="priceConvert"> ' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="' + res.charge + '"></td> ';
                         $('#chargesDetails').append(trackData);
-                        var vrsn = $('#storeV').val();
-                        $('#storerenewSubmit').attr("href", 'https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn);
+//                        var vrsn = $('#storeV').val();
+//                        $('#storerenewSubmit').attr("href", 'https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn);
                     } else {
                         var trackData = ' <td><select name="store_version" id="storeV" class="form-control storeV"><option value="1">Starter</option><option value="2">Advance</option></select></td><td><span class="currency-sym"> </span><span class="priceConvert renewCharge">' + res.charge + '</span><input type="hidden" name="store_charge" id="store_charge" value="' + res.charge + '"></td> ';
                         $('#chargesDetails').append(trackData);
@@ -370,17 +370,6 @@ $(document).keypress(function (e) {
             // window.open('http://192.168.2.47:8025/get-city-pay-renew/{{Crypt::encrypt(Session::get("store_id"))}}', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
             window.open('https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn, 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
             //            alert("adsd");
-
-//            var form = document.createElement("form");
-//            var element1 = document.createElement("input");
-//            form.method = "POST";
-//            form.action = "#";
-//            element1.value = "{{Session::get('store_id')}}";
-//            element1.name = "store_id";
-//            form.appendChild(element1);
-//            alert(form);
-//            document.body.appendChild(form);
-//                        form.submit();
         });
     });
     $('div#renewModal').delegate('#storeV', 'change', function () {
@@ -393,8 +382,8 @@ $(document).keypress(function (e) {
                 //  alert(res);
                 $('.renewCharge').text(parseFloat(res).toFixed(2));
                 $('#store_charge').val(parseFloat(res).toFixed(2));
-                var vrsn = $('#storeV').val();
-                $('#storerenewSubmit').attr("href", 'https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn);
+//                var vrsn = $('#storeV').val();
+//                $('#storerenewSubmit').attr("href", 'https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn);
             }
         });
         getCur();
