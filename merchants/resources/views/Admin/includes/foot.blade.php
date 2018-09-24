@@ -366,7 +366,7 @@ $(document).keypress(function (e) {
             e.preventDefault();
             var vrsn = $('#storeV').val();
             // window.open('http://192.168.2.47:8025/get-city-pay-renew/{{Crypt::encrypt(Session::get("store_id"))}}', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
-            window.open('https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn, '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
+            window.open('https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn, 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
             //            alert("adsd");
 
 //            var form = document.createElement("form");
