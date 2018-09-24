@@ -45,6 +45,31 @@
                         <p>Get the freedom of choosing either simple (Starter) or complex (Advanced) version of the online store.</p>
                     </div>
                 </div>
+                 <div class="clear"></div>
+                <div class="line-new"></div>
+                <div class="col_one_fourth marginBottom15">
+                    <div class="">
+                        <h2 class="nobottommargin">One Account. All of VeeStores</h2>
+                    </div>
+                </div>
+                <div class="col_one_fourth marginBottom15">
+                    <div class="feautreBox">
+                        <h4>Free Account</h4>
+                        <p>All the customers of the stores created by the merchants on VeeStores get an account which is free forver.</p>
+                    </div>
+                </div>
+                <div class="col_one_fourth marginBottom15">
+                    <div class="feautreBox">
+                        <h4>Quick Registration</h4>
+                        <p>Customers can register themselves just by giving few basic information. It’s easy and quick.</p>
+                    </div>
+                </div>
+                <div class="col_one_fourth col_last marginBottom15">
+                    <div class="feautreBox">
+                        <h4>One account for all Veestores </h4>
+                        <p> Customers can login on any store created on VeeStores with their VeeStores  Account. No need to remember new login passwords for different ecommerce website.</p>
+                    </div>
+                </div>
                 <div class="clear"></div>
                 <div class="line-new"></div>
                 <div class="col_one_fourth marginBottom15">
@@ -191,7 +216,13 @@
                 <div class="col_one_fourth marginBottom15">
                     <div class="feautreBox">
                         <h4>Easy &amp; Fast</h4>
-                        <p>Engaged with multiple shipping and logistics partners for easy and fast delivery of orders to the customers</p>
+                        <p>Engaged with multiple shipping and logistics partners for easy and fast delivery of orders to the customers.</p>
+                    </div>
+                </div>
+                <div class="col_one_fourth col_last marginBottom15">
+                    <div class="feautreBox">
+                        <h4>Preferential rates</h4>
+                        <p>Enjoy pre-negotiated shipping rates with the logistics partners and get better savings each time.</p>
                     </div>
                 </div>
                 <div class="clear"></div>
