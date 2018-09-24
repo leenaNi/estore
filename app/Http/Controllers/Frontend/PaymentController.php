@@ -97,7 +97,7 @@ class PaymentController extends Controller {
 
             $data = ['cats' => $cats, 'allinput' => $allinput, 'themeIds' => $themeIds];
             $viewname = Config('constants.frontendView') . ".select-themes";
-            // return Helper::returnView($viewname, $data);
+            return Helper::returnView($viewname, $data);
         }
     }
 
@@ -216,10 +216,10 @@ class PaymentController extends Controller {
 
     public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info) {
 //        print_r(Session::get('merchantid'));
-        print_r($transaction_info);
+//        print_r($transaction_info);
         $transaction_info1 = json_decode($transaction_info, TRUE);
-        echo $transaction_info1['OrderDescription'];
-        print_r($transaction_info);
+//        echo $transaction_info1['OrderDescription'];
+//        print_r($transaction_info);
         $order = new MerchantOrder();
         $getMerchat = json_decode(Merchant::find($transaction_info1['OrderDescription'])->register_details);
         $order->merchant_id = $transaction_info1['OrderDescription'];
@@ -337,6 +337,15 @@ class PaymentController extends Controller {
             $settings['expiry_date'] = date('Y-m-d', strtotime($settings['expiry_date'] . " + 365 day"));
             Helper::saveMerchantStoreSettings($merchantStorePath, json_encode($settings));
             $data = [];
+            echo "Thank you for choosing us, Your store has been renewed. kindly close this window.";
+            ?>
+            <script>
+                window.onunload = refreshParent;
+                function refreshParent() {
+                    window.opener.location.reload();
+                }
+            </script>
+            <?php
 //            $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
 //            $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
 //          
