@@ -947,7 +947,7 @@ class CheckoutController extends Controller {
             $suc = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus);
         }
         if (!empty($suc['email']))
-        //$this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
+         $this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
             return redirect()->route('orderSuccess');
 
         // } 

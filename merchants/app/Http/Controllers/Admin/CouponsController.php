@@ -81,6 +81,7 @@ class CouponsController extends Controller {
         $coupon = Coupon::find(Input::get('id'));
         $coupon->updated_by = Session::get('loggedinAdminId');
         $products = Product::all();
+      //   $userCoupon=DB::table("coupons_users")->join("users->get()->toArray();
         /* Orders that used this coupon */
         $orders = Order::where('coupon_used', Input::get('id'))->sortable()->where("orders.order_status", "!=", 0)->orderBy("id", "desc")->get();
         $action = route("admin.coupons.save");
