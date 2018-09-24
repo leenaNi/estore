@@ -97,7 +97,7 @@ class PaymentController extends Controller {
 
             $data = ['cats' => $cats, 'allinput' => $allinput, 'themeIds' => $themeIds];
             $viewname = Config('constants.frontendView') . ".select-themes";
-            // return Helper::returnView($viewname, $data);
+            return Helper::returnView($viewname, $data);
         }
     }
 
@@ -136,7 +136,15 @@ class PaymentController extends Controller {
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
             $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
-
+            ?>
+            <script>
+                window.onunload = refreshParent;
+                function refreshParent() {
+                    alert("closed");
+                    window.opener.location.reload();
+                }
+            </script>
+            <?php
             // return redirect()->route('orderFailure');
         }
     }
@@ -215,17 +223,21 @@ class PaymentController extends Controller {
     }
 
     public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info) {
-        print_r(Session::get('merchantid'));
+//        print_r(Session::get('merchantid'));
+//        print_r($transaction_info);
+        $transaction_info1 = json_decode($transaction_info, TRUE);
+//        echo $transaction_info1['OrderDescription'];
+//        print_r($transaction_info);
         $order = new MerchantOrder();
-        $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
-        $order->merchant_id = Session::get('merchantid');
+        $getMerchat = json_decode(Merchant::find($transaction_info1['OrderDescription'])->register_details);
+        $order->merchant_id = $transaction_info1['OrderDescription'];
         $order->pay_amt = $payAmt;
         $order->order_amt = $payAmt;
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
         $order->transaction_id = $trasactionId;
         $order->transaction_status = $transactionStatus;
-        $order->transaction_info = @$transaction_info;
+        $order->transaction_info = '';
         $order->currency_id = $getMerchat->currency;
         $order->order_status = 1;
         $order->first_name = $getMerchat->firstname;
@@ -233,9 +245,6 @@ class PaymentController extends Controller {
         $order->email = $getMerchat->email;
         $order->category_id = $getMerchat->business_type;
         $order->store_version = $getMerchat->store_version;
-        $order->theme_id = Session::get('theme_id');
-        $order->shipping_amt = is_null(Session::get('shippingAmount')) ? 0 : Session::get('shippingAmount');
-
         $order->save();
         Session::put("orderId", $order->id);
 
@@ -260,10 +269,11 @@ class PaymentController extends Controller {
     }
 
     public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info) {
+        $transaction_info1 = json_decode($transaction_info, TRUE);
         $order = new MerchantOrder();
         //  dd(Session::get('merchantid'));
-        $getMerchat = json_decode(Merchant::find(Session::get('merchantid'))->register_details);
-        $order->merchant_id = Session::get('merchantid');
+        $getMerchat = json_decode(Merchant::find($transaction_info1['OrderDescription'])->register_details);
+        $order->merchant_id = $transaction_info1['OrderDescription'];
         $order->pay_amt = $payAmt;
         $order->order_amt = $payAmt;
         $order->payment_method = $paymentMethod;
@@ -296,7 +306,7 @@ class PaymentController extends Controller {
             <input type="hidden" size="25" name="Merchant" value="11122333" readonly/>
             <input type="hidden" size="25" name="Amount" value="1"/>
             <input type="hidden" size="25" name="Currency" value="050" readonly/>
-            <input type="hidden" size="25" name="Description" value="1520"/>  
+            <input type="hidden" size="25" name="Description" value="<?php echo Session::get('merchantid'); ?>"/>  
             <input type="hidden" size="25" name="merchnatId" value="<?php echo Session::get('merchantid'); ?>"/>
             <input type="hidden" size="50" name="ApproveURL" value="https://www.veestores.com/get-renew-city-approved" readonly/>
             <input type="hidden" size="50" name="CancelURL" value="https://www.veestores.com/get-city-cancelled" readonly/>
@@ -311,14 +321,14 @@ class PaymentController extends Controller {
     }
 
     public function getRenewCityApproved() {
-        print_r(Session::all());
+//        print_r(Session::all());
         //  dd($_REQUEST['xmlmsg']);
         if (@$_REQUEST['xmlmsg'] != "") {
 
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
             $array = json_decode($json, TRUE);
-            dd($array);
+//            dd($array);
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
@@ -336,6 +346,15 @@ class PaymentController extends Controller {
             $settings['expiry_date'] = date('Y-m-d', strtotime($settings['expiry_date'] . " + 365 day"));
             Helper::saveMerchantStoreSettings($merchantStorePath, json_encode($settings));
             $data = [];
+            echo "Thank you for choosing us, Your store has been renewed. kindly close this window.";
+            ?>
+            <script>
+                window.onunload = refreshParent;
+                function refreshParent() {
+                    window.opener.location.reload();
+                }
+            </script>
+            <?php
 //            $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
 //            $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
 //          
