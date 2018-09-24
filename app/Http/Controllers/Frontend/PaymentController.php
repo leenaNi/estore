@@ -138,6 +138,9 @@ class PaymentController extends Controller {
             $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
             ?>
             <script>
+                if(window.opener){
+                    window.opener.location.reload();
+                }
                 window.onunload = refreshParent;
                 function refreshParent() {
                     alert("closed");
