@@ -7,15 +7,16 @@
 
 </head>
 <body style="overflow-x: hidden;">
-<p>Dear Admin,</p>  
+<p>Hello Veestores Admin,</p>  
 <br />
 <p>
-    We have got a new enquiry email. User Details are given Below. <br>
- Name {{$name}}
+   We have got a new enquiry. User Details are as follows: 
+    <br>
+ Name : {{$name}}
  <br>
- Mobile  {{$telephone}} <br>
- Email {{$email}} <br>
- Meaasge  {{$messages }}
+ Mobile : {{$telephone}} <br>
+ Email : {{$email}} <br>
+ Message : {{$messages }}
  
 </p>
   
