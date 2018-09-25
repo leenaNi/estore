@@ -55,10 +55,10 @@ class CouponsController extends Controller {
         $coupon->created_by = Session::get('loggedinAdminId');
         $coupon->updated_by = Session::get('loggedinAdminId');
         $products = Product::all();
-        $userCoupon=DB::table("coupons_users")->get()->toArray();
+        $userCoupon = DB::table("coupons_users")->get()->toArray();
         $action = route("admin.coupons.save");
         //return view(Config('constants.adminCouponView') . '.addEdit', compact('coupon', 'products', 'action'));
-        $data = ['status' => '1', 'products' => $products, 'action' => $action, 'coupon' => $coupon,'userCoupon'=>$userCoupon];
+        $data = ['status' => '1', 'products' => $products, 'action' => $action, 'coupon' => $coupon, 'userCoupon' => $userCoupon];
         $viewname = Config('constants.adminCouponView') . '.addEdit';
         return Helper::returnView($viewname, $data);
     }
@@ -81,12 +81,12 @@ class CouponsController extends Controller {
         $coupon = Coupon::find(Input::get('id'));
         $coupon->updated_by = Session::get('loggedinAdminId');
         $products = Product::all();
-       $userIds=DB::table("coupons_users")->pluck("user_id");
-       $userCoupon=User::whereIn("id",$userIds)->get()->toArray();
+        $userIds = DB::table("coupons_users")->pluck("user_id");
+        $userCoupon = User::whereIn("id", $userIds)->get()->toArray();
         $orders = Order::where('coupon_used', Input::get('id'))->sortable()->where("orders.order_status", "!=", 0)->orderBy("id", "desc")->get();
         $action = route("admin.coupons.save");
 //        return view(Config('constants.adminCouponView') . '.addEdit', compact('coupon', 'products', 'orders', 'action'));
-        $data = ['status' => '1', 'products' => $products, 'action' => $action, 'coupon' => $coupon, 'orders' => $orders,'userCoupon'=>$userCoupon];
+        $data = ['status' => '1', 'products' => $products, 'action' => $action, 'coupon' => $coupon, 'orders' => $orders, 'userCoupon' => $userCoupon];
         $viewname = Config('constants.adminCouponView') . '.addEdit';
         return Helper::returnView($viewname, $data);
     }
@@ -121,12 +121,12 @@ class CouponsController extends Controller {
         $couponNew->no_times_allowed = Input::get('no_times_allowed');
         $couponNew->allowed_per_user = Input::get('allowed_per_user');
         $couponNew->start_date = Input::get('start_date');
-        $couponNew->end_date = Input::get('end_date').' 23:59:59';
+        $couponNew->end_date = Input::get('end_date') . ' 23:59:59';
         $couponNew->status = 1;
 //dd($couponNew);
         $couponNew->user_specific = Input::get('user_specific');
         if (Input::hasFile('c_image')) {
-            $destinationPath =  Config('constants.couponImgUploadPath')."/";
+            $destinationPath = Config('constants.couponImgUploadPath') . "/";
             $fileName = date("dmYHis") . "." . Input::File('c_image')->getClientOriginalExtension();
             $upload_success = Input::File('c_image')->move($destinationPath, $fileName);
         } else {
@@ -163,10 +163,14 @@ class CouponsController extends Controller {
         else
             $couponNew->products()->detach();
 
-        if (!empty(Input::get('uid')))
-            $couponNew->userspecific()->sync(Input::get('uid'));
-        else
-            $couponNew->userspecific()->detach();
+        if (!empty(Input::get('uid'))) {
+            DB::table("coupons_users")->whereIn("user_id", Input::get('uid'))->where("c_id", $couponNew->id);
+            foreach (Input::get('uid') as $key => $uid) {
+                DB::table("coupons_users")->Insert(["user_id" => $uid, "c_id" => $couponNew->id]);
+            }
+           // $couponNew->userspecific()->sync(Input::get('uid'));
+        } else
+            DB::table("coupons_users")->where("c_id", $couponNew->id)->delete();
         if (Input::get('id') == '') {
             Session::flash('msg', 'Coupon added successfully.');
         } else {
@@ -194,7 +198,7 @@ class CouponsController extends Controller {
         $couponNew->no_times_allowed = Input::get('no_times_allowed');
         $couponNew->allowed_per_user = Input::get('allowed_per_user');
         $couponNew->start_date = Input::get('start_date');
-        $couponNew->end_date = IInput::get('end_date').' 23:59:59';
+        $couponNew->end_date = IInput::get('end_date') . ' 23:59:59';
         $couponNew->user_specific = Input::get('user_specific');
         $couponNew->save();
         Session::flash('', 'Coupon deleted successfully.');
@@ -211,7 +215,8 @@ class CouponsController extends Controller {
         if ($getcount == 0) {
             $coupon->categories()->sync([]);
             $coupon->products()->sync([]);
-            $coupon->userspecific()->sync([]);
+             DB::table("coupons_users")->where("c_id", $coupon->id)->delete();
+           // $coupon->userspecific()->sync([]);
             $coupon->delete();
             Session::flash('message', 'Coupon deleted successfully.');
             $data = ['status' => '1', "message" => "Coupon deleted successfully."];
