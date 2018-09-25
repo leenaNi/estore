@@ -1,5 +1,7 @@
 body{overflow-x: hidden;}
-
+div#top-search form input {
+    color: #444 !important;
+}
 .mobDisplay{display:none !important;}
 .mobileLoginRegister{display: none !important;}
 .mobileCart{display: none !important;}
