@@ -484,14 +484,14 @@ class HomeController extends Controller {
         $trackingId = Input::get("trackingId");
        // dd($trackingId);
         $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-        $headers[] = 'USER_ID:D2788';
-        $headers[] = 'API_KEY:F3DT';
-        $headers[] = 'API_SECRET:fCcBb';
+        $headers[] ='USER_ID:I8837';
+        $headers[] = 'API_KEY:xqdH';
+        $headers[] = 'API_SECRET:jubLW';
         $reqArray = [];
         $reqArray['parcel'] = 'track';
         $reqArray['ecr'] =$trackingId;
 
-        $url = "http://103.239.254.146/apiv2/";
+        $url = "http://ecourier.com.bd/apiv2/";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
