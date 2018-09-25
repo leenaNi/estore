@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="css/style_fs2.css" type="text/css" />
+
 <!-- Header
 ============================================= -->
 <header id="header">
