@@ -71,7 +71,7 @@
 
 					</div>
 
-					<div class="col_one_fourth col_last">
+					<!-- <div class="col_one_fourth col_last">
 
 						<div class="widget clearfix">
 
@@ -79,7 +79,7 @@
 
 						</div>
 
-					</div>
+					</div> -->
 
 				</div><!-- .footer-widgets-wrap end -->
 
@@ -91,16 +91,16 @@
 
 				<div class="container clearfix">
 
-					<div class="col_half">
+					<div class="col_full text-center nobottommargin">
 					Copyright © <?php echo date("Y"); ?>. <a href="#">Your Store Name</a>. Powered by <a href="http://www.veestores.com/" target="_blank">Veestores</a>.
 						<div class="clearfix"></div>					
 					</div>
 
-					<div class="col_half col_last tright">
+					<!-- <div class="col_half col_last tright">
 						<div class="fright clearfix">
 							<img src="images/payment-mode.png" alt="payment Mode"/>
 						</div>
-					</div>
+					</div> -->
 
 				</div>
 
