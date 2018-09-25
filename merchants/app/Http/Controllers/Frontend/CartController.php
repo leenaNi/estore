@@ -447,7 +447,7 @@ class CartController extends Controller {
         //print_r($orderAmount);
         // die;
 
-        $couponID = Coupon::where("coupon_code", "=", $couponCode)->first();
+        $couponID = Coupon::where("coupon_code", "=", $couponCode)->where("status",1)->first();
 //        print_r($couponID);
 //        echo "<br/>=========================================<br/>";
         @$usedCouponCountOrders = @Order::where('coupon_used', '=', $couponID->id)->where("order_status", "=", 1)->count();
@@ -455,7 +455,7 @@ class CartController extends Controller {
             if ($couponID->user_specific === 1) {
 
                 if (!empty(Session::get('loggedin_user_id'))) {
-                    $chkUserSp = Coupon::find($couponID->id)->userspecific()->get(['user_id']);
+                    $chkUserSp = DB::table("coupons_users")->where("c_id",$couponID->id)->get(['user_id']);
                     // dd($chkUserSp);
                     $cuserids = [];
                     if (count($chkUserSp) > 0) {
@@ -469,7 +469,7 @@ class CartController extends Controller {
                             if ($couponID->allowed_per_user > 0) {
                                 $checkForUser = Order::where('user_id', Session::get('loggedin_user_id'))->where('coupon_used', '=', $couponID->id)->where("order_status", "=", 1)->count();
                                 if ($checkForUser < $couponID->allowed_per_user) {
-                                    $validCoupon = DB::select(DB::raw("Select * from coupons where coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . str_replace(',', '', $orderAmount) . " and (now() between start_date and end_date)"));
+                                    $validCoupon = DB::select(DB::raw("Select * from coupons where status =1 and coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . str_replace(',', '', $orderAmount) . " and (now() between start_date and end_date)"));
                                     // print_r($validCoupon); die;
                                 } else {
                                     // echo "hrer"; die;
@@ -491,7 +491,7 @@ class CartController extends Controller {
                 }
             } else {
 //                 echo "@@@ ".$usedCouponCountOrders;
-                $validCoupon = DB::select(DB::raw("Select * from " . DB::getTablePrefix() . "coupons where coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . $orderAmount . " and (now() between start_date and end_date)"));
+                $validCoupon = DB::select(DB::raw("Select * from " . DB::getTablePrefix() . "coupons where  status =1 and coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . $orderAmount . " and (now() between start_date and end_date)"));
 //                $msg = "Not user specific";
 //                 $msg = 'Invalid Coupon Code.';
             }
