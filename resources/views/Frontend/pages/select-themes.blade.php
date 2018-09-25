@@ -72,7 +72,7 @@
                                     <input type="hidden" name="domain_name" value="{{$allinput['domain_name']}}">
                                     <input type="hidden" name="currency" value="{{$allinput['currency']}}">
                                     @endif
-                                    <a type="button" href="{{ asset('themes/'.strtolower($theme->name)."_home.php") }}" target="_blank" class="btn btn-block marginauto btn-trans-whiteborder">View Demo</a>
+                                    <a type="button" href="{{ asset('themes/'.strtolower($theme->name)."_home.php") }}?theme={{strtolower($theme->name)}}" target="_blank" class="btn btn-block marginauto btn-trans-whiteborder">View Demo</a>
                                     @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
                                      <button type="submit" class="btn theme-btn btn-block marginauto short-btn applythemebtn"> <?php echo $theme->theme_type==2 && !in_array(Session::get('merchantid'),$themeIds)?'Pay Now':'Apply Theme'  ?></button>
                                     @endif

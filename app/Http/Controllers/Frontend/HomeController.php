@@ -411,6 +411,7 @@ class HomeController extends Controller {
                     $this->replaceFileString($path . "/.env", "%DB_PASSWORD%", env('DB_PASSWORD', ''));
                     $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", $prefix . "_");
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
+                    $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
 
 
                     $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
@@ -542,9 +543,12 @@ class HomeController extends Controller {
                     $baseurl = str_replace("\\", "/", base_path());
                     $domain = 'veestores.com'; //$_SERVER['HTTP_HOST'];
                     $sub = "VeeStores Links for Online Store - " . $storeName;
-                    $mailcontent = "Find links to your Online Store and its Admin given below:" . "\n";
+                    $mailcontent = "Congratulations Storename has been created successfully!" . "\n";
+                    $mailcontent .= "Kindly find the links to view your store:" . "\n";
+                   
                     $mailcontent .= "Store Admin Link: https://" . $domainname . '.' . $domain . "/admin" . "\n";
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n";
+                    $mailcontent .= "For any further assistance/support, contact http://veestores.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }

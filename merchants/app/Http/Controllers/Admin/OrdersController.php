@@ -26,6 +26,7 @@ use App\Models\CurierHistory;
 use App\Models\StaticPage;
 use App\Models\Zone;
 use App\Models\Courier;
+use App\Models\HasCourier;
 use App\Models\AdditionalCharge;
 use App\Models\GeneralSetting;
 use Cart;
@@ -48,7 +49,7 @@ class OrdersController extends Controller {
 
     public function index() {
         $jsonString = Helper::getSettings();
-           
+
 //      $data=  DB::table('has_industries')->join("general_setting as g",'g.id','=','has_industries.general_setting_id')
 //             ->join("categories",'has_industries1.industry_id','=','categories.id')
 //              ->select('g.id','g.name','g.is_active','g.is_question','g.question_category_id','categories.category')->get();
@@ -176,8 +177,12 @@ class OrdersController extends Controller {
         foreach ($flags as $val) {
             $flag_status[$val['id']] = $val['flag'];
         }
-        $courier = Courier::where('status', 1)->get()->toArray();
+        $courierId = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->pluck("courier_id");
+
+        $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
+
         $courier_status = [];
+        $courier_status[0] = "Select Courier";
         foreach ($courier as $val) {
             $courier_status[$val['id']] = $val['name'];
         }
@@ -808,7 +813,7 @@ class OrdersController extends Controller {
                     /* Order history */
 
                     if ($orderUser->users['telephone']) {
-                        $msgOrderSucc = "Your order from " . Session::put('storeName') . " with id " . $orderid . " is delivered successfully. Happy Shopping!";
+                        $msgOrderSucc = "Your order from " . $settings['storeName'] . " with id " . $orderid . " is delivered successfully. Happy Shopping!";
                         Helper::sendsms($orderUser->users['telephone'], $msgOrderSucc, $orderUser->users['country_code']);
                     }
 
@@ -1190,13 +1195,13 @@ class OrdersController extends Controller {
         $usercashback = HasCashbackLoyalty::where("user_id", $uid)->where("store_id", $this->jsonString['store_id'])->first();
         if (count($usercashback) > 0) {
             $usercashback->cashback = $usercashback->cashback + ($ammount * $quantity);
-
             $usercashback->save();
         } else {
             $usercashback = new HasCashbackLoyalty;
             $usercashback->user_id = $data->uid;
             $usercashback->store_id = $this->jsonString['store_id'];
             $usercashback->cashback = round(($ammount * $quantity), 2);
+            $usercashback->loyalty_group = 1;
             $usercashback->save();
         }
     }
@@ -2490,13 +2495,13 @@ class OrdersController extends Controller {
     public function waybill($id = null) {
 
         $allids = $id;
-      
-        $storeName=$this->jsonString['storeName'];
+
+        $storeName = $this->jsonString['storeName'];
         $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
         $storeContact = json_decode($contact);
-      
-        $orders = Order::where('id',$allids)->with('currency')->get();
-      
+
+        $orders = Order::where('id', $allids)->with('currency')->get();
+
         foreach ($orders as $key => $saveorder) {
             $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
             // dd($saveorder);
@@ -2511,7 +2516,7 @@ class OrdersController extends Controller {
             $reqArray['product_id'] = '1';
             $reqArray['parcel'] = 'insert';
             $reqArray['ep_name'] = 'test';
-            $reqArray['pick_contact_person'] =$storeContact->mobile;
+            $reqArray['pick_contact_person'] = $storeContact->mobile;
             $reqArray['pick_division'] = '';
             $reqArray['pick_district'] = 'test';
             $reqArray['pick_thana'] = 'Adabor Thana';
@@ -2576,7 +2581,7 @@ class OrdersController extends Controller {
                 if (Mail::send(Config('constants.adminEmails') . '.dispatch_email', $data, function($message) use ($contactEmail, $contactName, $email, $name, $data) {
 
                             $message->from($contactEmail, $contactName);
-                            $message->to($email, $name)->subject($storeName. "- Order Dispatched");
+                            $message->to($email, $name)->subject($storeName . "- Order Dispatched");
                             // $message->cc(['indranath.sgupta@gmail.com','arijit@asgleather.com']);
                         }))
                     ;
@@ -2586,7 +2591,7 @@ class OrdersController extends Controller {
             }
         }
         $viewname = Config('constants.adminOrderView') . '.invoiceAws';
-        $data = ['orders' => $orders,'storeName'=>$storeName,'storeContact'=>$storeContact,'allids'=>$allids];
+        $data = ['orders' => $orders, 'storeName' => $storeName, 'storeContact' => $storeContact, 'allids' => $allids];
         return Helper::returnView($viewname, $data);
         // return view(Config('constants.adminOrderView') . '.invoiceAws', compact('result','allids' , 'orders','params','awbno')); //users
     }

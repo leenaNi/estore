@@ -15,13 +15,14 @@ class HomeController extends Controller {
 
         if (!empty(config('app.industry'))) {
             $general_setting = GeneralSetting::where('is_question', 1)->where('name', '<>', 'set_popup')->orderBy('sort_order', 'DESC')->whereHas('industry', function($que) {
-                $que->where("industry_id", 2);
+                $que->where("industry_id",config('app.industry'));
             });
         } else {
             $general_setting = GeneralSetting::where('is_question', 1)->where('is_active', 1)->where('name', '<>', 'set_popup')->orderBy('sort_order', 'DESC');
         }
 
         $general_setting = $general_setting->get();
+     //  dd($general_setting);
         $courier = Courier::where("status", 1)->get(["name", "id"]);
         $set_popup = GeneralSetting::where('name', 'set_popup')->first();
         return view('Admin.pages.home.index', ['general_setting' => $general_setting, 'set_popup' => $set_popup, 'courier' => $courier]);

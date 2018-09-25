@@ -31,6 +31,8 @@ class CourierController extends Controller {
     public function save() {
         $courier = Courier::findOrNew(Input::get('id'));
         $courier->charges = Input::get('charges');
+        $courier->name = Input::get('name');
+        $courier->status = Input::get('status');
         $courier->country = Input::get('country');
         $courier->save();
         Session::flash("msg", "Courier service added successfully.");
@@ -48,6 +50,8 @@ class CourierController extends Controller {
         $courier = Courier::find(Input::get('id'));
         $courier->update(Input::except(['details']));
         $courier->charges = Input::get('charges');
+        $courier->name = Input::get('name');
+        $courier->status = Input::get('status');
         $courier->country = Input::get('country');
         $courier->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
         $courier->update();

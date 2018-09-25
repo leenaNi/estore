@@ -121,7 +121,24 @@ span.editicons i {
 									</div>
 								</div>
 							</div>
-
+<div class="box box-solid marginBottom20">
+					<div class="box-header with-border noleftBorder">
+						<h3 class="box-title">Add Taxes</h3>
+						<div class="pull-right box-tools">
+							<button type="button" class="btn btn-defualt btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
+							</button>
+							<button type="button" class="btn btn-defualt btn-sm" data-widget="remove"><i class="fa fa-times"></i>
+							</div>
+						</div>
+						<div class="box-body">
+							<div class="row">
+								<div class="col-sm-12 col-md-12">
+									<p>You can define product specific or product tax classes and assign them to products..</p>
+									<a href="{{ route('admin.tax.view') }}" class="btn btn-default noAllMargin  mobileSpecialfullBTN">Add Taxes</a>
+								</div>
+							</div>
+						</div>
+					</div>
 				<div class="box box-solid marginBottom20">
 					<div class="box-header with-border noleftBorder">
 						<h3 class="box-title">Add Product</h3>
@@ -265,6 +282,7 @@ span.editicons i {
 			<form action="#">
 				<div class="col-md-8 noAllpadding">
 				<div class="panel-body questionPopup">
+                                 
 				@foreach($general_setting as $set)
 					<div class="col-md-8 noAllpadding"><p><a href="javascript:;" data-placement="right" title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
                                                     <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20"></a> {{ $set->name }} </p> </div>
@@ -274,7 +292,7 @@ span.editicons i {
                                 </div>
                                     <div class="col-md-4 courierSelect hide">
 						<select class="form-control" id='courierSelect' name="courier_service">
-                                                    <option>Select</option>
+                                                    <option value="" >Select</option>
                                                    @foreach($courier as $cour)
 							
 							<option value="{{$cour->id}}">{{$cour->name}}</option>
@@ -327,6 +345,7 @@ $(".toggle-two").change(function(){
 	url_data = $(this).attr('data-url');
        
         if(url_data=='default-courier'){
+          
          if($(this).prop("checked") == true){
               $('.courierSelect').removeClass("hide");
                
@@ -349,7 +368,7 @@ $("#courierSelect").change(function(){
 
 	var courierId = $(this).val();
 //        alert(courierId);
-                                      
+              $('#courierSelect').css('color', '#555');                            
 	$.ajax({
         method:"POST",
         data:{'courierId':courierId },
@@ -380,6 +399,15 @@ $( document ).ready(function() {
             } 
 });
 $("#submit").click(function(){
+    if($('.courier-services').prop("checked") == true){
+       if($('#courierSelect').val()==''){
+          
+            $('#courierSelect').attr("placeholder", "Please Selct Courier Services");
+              $('#courierSelect').css('color', '#FF0000');
+            $('#courierSelect').focus();
+           return false;
+        }
+    }
 	
 	  $.ajax({
         method:"POST",

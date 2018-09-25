@@ -41,21 +41,26 @@
 
                          
                             <th>Store Name</th>
-                            <th>Total Amt</th>
+                            <!--total sales, paid via veestores, settled amt, unsettled amt, commision-->
+                            <th>Total Sales</th>
+                            <th>Paid via veestores</th>
                             <th>Settled Amt</th>
-                            <!--<th>Commision</th>-->
-                            <th>Un Settled Amt</th>
+                          
+                            <th>UnSettled Amt</th>
+                            <th>Commision</th>
                            
                         </tr>
-                        @foreach($orders as $order)
+                        @foreach($orders as $key=>$order)
                         <tr>
                            
                          
                             <td>{{ $order->store_name }}</td>
                             <td><span class="currency-sym"> </span><span class="priceConvert">{{ $order->totalOrder }}</span></td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert">{{ @$orderWithCourier[$key]->totalOrder?$orderWithCourier[$key]->totalOrder:'0' }}</span></td>
                             <td><span class="currency-sym"> </span><span class="priceConvert"> {{ $order->totalPaid ?$order->totalPaid:'0'}}</span></td>
                             <!--<td><span class="currency-sym"> </span><span class="priceConvert"> {{ ($order->totalPaid)-($order->totalPaid) }}</span></td>-->
-                            <td><span class="currency-sym"> </span><span class="priceConvert">{{ ($order->totalOrder) - ($order->orderAmt) }}</span></td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert">{{ @$orderWithCourier[$key]->totalOrder?($orderWithCourier[$key]->totalOrder - ($order->totalPaid)):'0' }}</span></td>
+                            <td><span class="currency-sym"> </span><span class="priceConvert">{{ ($order->orderAmt) - ($order->totalPaid) }}</span></td>
                             </td>
                         </tr>
                         @endforeach

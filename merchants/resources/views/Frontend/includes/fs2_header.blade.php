@@ -38,7 +38,7 @@
                         @endif</li>
                     <li>
                     <li class="">
-                        <a href="#" class="label label-success tracking nobg mobilealignmenu" style="cursor:pointor;"> <div>Track Your Order</div></a>
+                        <a href="#" class="label label-success tracking nobg mobilealignmenu" style="cursor:pointor;">Track Your Order</a>
                     </li>
                     <!-- Top Cart
         ============================================= -->

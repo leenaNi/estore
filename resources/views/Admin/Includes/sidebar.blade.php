@@ -127,11 +127,11 @@
                     <i class="fa fa-cogs"></i> <span>Settings</span>
                 </a>
             </li>
-            <li class="{{ (in_array(Route::currentRouteName(),['admin.templates.view'])?'active':'') }}">
+<!--            <li class="{{ (in_array(Route::currentRouteName(),['admin.templates.view'])?'active':'') }}">
                 <a href="{{route('admin.templates.view')}}">
                     <i class="fa fa-laptop"></i> <span>Templates</span>
                 </a>
-            </li>
+            </li>-->
             <li class="treeview {{ in_array(Route::currentRouteName(),['admin.updates.codeUpdate.view','admin.updates.databaseUpdate.view']) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-wrench"></i> <span>Version Upgrade</span>
