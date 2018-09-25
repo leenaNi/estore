@@ -19,6 +19,7 @@ use App\Library\Helper;
 use App\Models\EmailTemplate;
 use App\Models\AttributeValue;
 use App\Models\Pincode;
+use App\Models\HasCourier;
 use App\Models\MallProducts;
 use Input;
 use App\Http\Controllers\Controller;
