@@ -81,12 +81,12 @@ class CouponsController extends Controller {
         $coupon = Coupon::find(Input::get('id'));
         $coupon->updated_by = Session::get('loggedinAdminId');
         $products = Product::all();
-      //   $userCoupon=DB::table("coupons_users")->join("users->get()->toArray();
-        /* Orders that used this coupon */
+       $userIds=DB::table("coupons_users")->pluck("user_id");
+       $userCoupon=User::whereIn("id",$userIds)->get()->toArray();
         $orders = Order::where('coupon_used', Input::get('id'))->sortable()->where("orders.order_status", "!=", 0)->orderBy("id", "desc")->get();
         $action = route("admin.coupons.save");
 //        return view(Config('constants.adminCouponView') . '.addEdit', compact('coupon', 'products', 'orders', 'action'));
-        $data = ['status' => '1', 'products' => $products, 'action' => $action, 'coupon' => $coupon, 'orders' => $orders];
+        $data = ['status' => '1', 'products' => $products, 'action' => $action, 'coupon' => $coupon, 'orders' => $orders,'userCoupon'=>$userCoupon];
         $viewname = Config('constants.adminCouponView') . '.addEdit';
         return Helper::returnView($viewname, $data);
     }
