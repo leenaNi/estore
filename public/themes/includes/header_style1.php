@@ -1,5 +1,6 @@
 <!-- Header
         ============================================= -->
+<link rel="stylesheet" href="https://www.veestores.com/themes/css/style_fs2.css" type="text/css" />
 <style>
     @media (max-width: 991px){
         #primary-menu-trigger {
