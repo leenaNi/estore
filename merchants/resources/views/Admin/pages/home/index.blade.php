@@ -48,14 +48,19 @@
 <section>
     <div class="panel-body">        
         <div class="row">
+
+
             <div class="col-sm-12 text-center marginBottom20">
                 <img src="{{  Config('constants.adminImgPath').'/help-desktop.png' }}" class="mobileFullWidth">	
             </div>
+
             <div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2 marginBottom20">
                 <h1 class="text-center">Great going!</h1>
                 <h4 class="text-center">Here's some help to design and add products to your online store</h4>
             </div>
+
             <div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
+
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Store Logo</h3>
@@ -76,6 +81,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Slider Images</h3>
@@ -96,6 +102,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Select Categories</h3>
@@ -150,6 +157,9 @@
                         </div>
                     </div>
                 </div>
+
+
+
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">About Store</h3>
@@ -168,6 +178,9 @@
                         </div>
                     </div>
                 </div>
+
+
+
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Contact Information</h3>
@@ -189,6 +202,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- <div class="box box-solid marginBottom20">
                         <div class="box-header with-border noleftBorder">
                                 <h3 class="box-title">See all your orders & sales</h3>
@@ -207,6 +221,9 @@
                                         </div>
                                 </div>
                         </div> -->
+
+
+
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Tutorials</h3>
@@ -226,6 +243,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- <div class="box box-solid">
                 <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Dashboard</h3>
@@ -251,6 +269,7 @@
             </div>
         </div>
     </div>
+
     <!-- open popup model -->
     <div class="modal in cstmodal" id="myModal" role="dialog" style="display: none; padding-left: 17px;">
         <div class="modal-dialog modal-lg modalFullWidth">
@@ -263,13 +282,11 @@
                     <form action="#">
                         <div class="col-md-8 noAllpadding">
                             <div class="panel-body questionPopup">
+
                                 @foreach($general_setting as $set)
                                 <div class="col-md-8 noAllpadding"><p><a href="javascript:;" data-placement="right" title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
                                             <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20"></a> {{ $set->name }} </p> </div>
                                 @if($set->url_key =='default-courier')
-                                <script>
-                                    var defaultCourier = 1;
-                                </script>
                                 <div class="col-md-4">
                                     <input type="checkbox" <?php echo $set->status == 1 ? 'checked' : ''; ?> data-id="{{ $set->id }}" data-url="{{ $set->url_key}}"  data-toggle="toggle" name="onOff" data-size="normal" class="toggle-two courier-services" data-on="Yes" data-off="No">
                                 </div>
@@ -289,6 +306,7 @@
                                 @endif	
                                 <hr class="style1">
                                 @endforeach
+
                                 <div class="col-md-8 noAllpadding"><p> <a href="javascript:;" data-placement="right" title="Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." data-toggle="tooltip" class="tooltip-style"> <img src="{{ asset('public/Admin/dist/img/info-icon.png') }}" width="20"> </a> Your products will be inclusive/exclusive of taxes? </p></div>
                                 <div class="col-md-4">
                                     <select class="form-control" name="">
@@ -302,92 +320,100 @@
                         </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn pull-left btn-default" id="submit" >Set Up My Store</button>
+                    <button type="button" class="btn pull-left btn-default" id="submit" data-dismiss="modal">Set Up My Store</button>
                 </div>
                 </form>
             </div>
+
         </div>
     </div>
+
 </section>
+
 @stop
+
 @section('myscripts')
+
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script>
-    if(defaultCourier){
-        alert("courier set");
-    } else{
-        alert("courier not set");
+$(".toggle-two").change(function () {
+    userId = $(this).attr('data-id');
+    url_data = $(this).attr('data-url');
+
+    if (url_data == 'default-courier') {
+
+        if ($(this).prop("checked") == true) {
+            $('.courierSelect').removeClass("hide");
+
+        } else {
+            $('.courierSelect').addClass("hide");
+        }
     }
-                                    $(".toggle-two").change(function () {
-                                        userId = $(this).attr('data-id');
-                                        url_data = $(this).attr('data-url');
-                                        if (url_data == 'default-courier') {
-                                            if ($(this).prop("checked") == true) {
-                                                $('.courierSelect').removeClass("hide");
-                                            } else {
-                                                $('.courierSelect').addClass("hide");
-                                            }
-                                        }
-                                        $.ajax({
-                                            method: "POST",
-                                            data: {'id': userId},
-                                            url: "<?php echo route('admin.generalSetting.changeStatus'); ?>",
-                                            success: function (data) {
-                                                // console.log(data);
-                                                // location.reload();courier-services
-                                            }
-                                        })
-                                    });
+    $.ajax({
+        method: "POST",
+        data: {'id': userId},
+        url: "<?php echo route('admin.generalSetting.changeStatus'); ?>",
+        success: function (data) {
+            // console.log(data);
+            // location.reload();courier-services
+        }
+    })
+});
 
-                                    $("#courierSelect").change(function () {
-                                        var courierId = $(this).val();
+$("#courierSelect").change(function () {
+
+    var courierId = $(this).val();
 //        alert(courierId);
-                                        $('#courierSelect').css('color', '#555');
-                                        $.ajax({
-                                            method: "POST",
-                                            data: {'courierId': courierId},
-                                            url: "<?php echo route('admin.generalSetting.assignCourier'); ?>",
-                                            success: function (data) {
-                                                // console.log(data);
-                                                // location.reload();courier-services
-                                            }
-                                        })
-                                    });
-                                    $(document).ready(function () {
-                                        $(".updateLogo").click(function () {
-                                            $("#logoModal").modal('show');
-                                        });
-                                        var modal = document.getElementById('myModal');
-                                        var is_popup_open = "{{ $set_popup->status }}";
-                                        console.log(is_popup_open);
-                                        if (is_popup_open == 1) {
-                                            modal.style.display = "block";
-                                        } else {
-                                            modal.style.display = "none";
-                                        }
-                                        if ($('.courier-services').prop("checked") == true) {
-                                            $('.courierSelect').removeClass("hide");
+    $('#courierSelect').css('color', '#555');
+    $.ajax({
+        method: "POST",
+        data: {'courierId': courierId},
+        url: "<?php echo route('admin.generalSetting.assignCourier'); ?>",
+        success: function (data) {
+            // console.log(data);
+            // location.reload();courier-services
+        }
+    })
+});
+$(document).ready(function () {
 
-                                        }
-                                    });
-                                    $("#submit").click(function () {
-                                        if ($('.courier-services').prop("checked") == true) {
-                                            if ($('#courierSelect').val() == '') {
-                                                $('#courierSelect').attr("placeholder", "Please Selct Courier Services");
-                                                $('#courierSelect').css('color', '#FF0000');
-                                                $('#courierSelect').focus();
-                                                return false;
-                                            }
-                                        }
-                                        $.ajax({
-                                            method: "POST",
-                                            url: "<?php echo route('admin.home.changePopupStatus'); ?>",
-                                            success: function (data) {
-                                                location.reload();
-                                            }
-                                        })
-                                    })
+    $(".updateLogo").click(function () {
+        $("#logoModal").modal('show');
+    });
+
+    var modal = document.getElementById('myModal');
+    var is_popup_open = "{{ $set_popup->status }}";
+    console.log(is_popup_open);
+    if (is_popup_open == 1) {
+        modal.style.display = "block";
+    } else {
+        modal.style.display = "none";
+    }
+    if ($('.courier-services').prop("checked") == true) {
+        $('.courierSelect').removeClass("hide");
+
+    }
+});
+$("#submit").click(function () {
+    if ($('.courier-services').prop("checked") == true) {
+        if ($('#courierSelect').val() == '') {
+
+            $('#courierSelect').attr("placeholder", "Please Selct Courier Services");
+            $('#courierSelect').css('color', '#FF0000');
+            $('#courierSelect').focus();
+            return false;
+        }
+    }
+
+    $.ajax({
+        method: "POST",
+        url: "<?php echo route('admin.home.changePopupStatus'); ?>",
+        success: function (data) {
+            location.reload();
+        }
+    })
+})
 
 </script>
 
