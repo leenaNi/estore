@@ -136,15 +136,10 @@ class PaymentController extends Controller {
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
             $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $transaction_info);
-            ?>
-            <script>
-                window.onunload = refreshParent;
-                function refreshParent() {
-                    alert("closed");
-                    window.opener.location.reload();
-                }
-            </script>
-            <?php
+            $store = Store::where('merchant_id', $array['OrderDescription'])->first();
+//            print_r($store);
+            echo "Seems you have cancelled transaction. <a href='" . $store->store_domain . "/admin'>Click here</a> to go back.";
+
             // return redirect()->route('orderFailure');
         }
     }
@@ -340,20 +335,14 @@ class PaymentController extends Controller {
             $transactionStatus = $array['OrderStatus'];
             $transaction_info = json_encode($array);
             $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $transaction_info);
-            $store = Store::find(29)->url_key;
-            $merchantStorePath = base_path() . "/merchants/" . $store . "/";
+            $store = Store::where('merchant_id', $array['OrderDescription'])->first();
+            $merchantStorePath = base_path() . "/merchants/" . $store->url_key . "/";
             $settings = Helper::getMerchantStoreSettings($merchantStorePath);
             $settings['expiry_date'] = date('Y-m-d', strtotime($settings['expiry_date'] . " + 365 day"));
             Helper::saveMerchantStoreSettings($merchantStorePath, json_encode($settings));
             $data = [];
-            echo "Thank you for choosing us, Your store has been renewed. kindly close this window.";
+            echo "Thank you for choosing us, Your store has been renewed. <a href='" . $store->store_domain . "/admin'>Click here</a> to go back.";
             ?>
-            <script>
-                window.onunload = refreshParent;
-                function refreshParent() {
-                    window.opener.location.reload();
-                }
-            </script>
             <?php
 //            $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
 //            $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
