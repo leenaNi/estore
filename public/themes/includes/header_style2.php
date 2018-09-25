@@ -12,7 +12,7 @@
 
             <div class="col_half nobottommargin">
 
-                <p class="nobottommargin"><strong>Call:</strong> 1800-547-2145 | <strong>Email:</strong> jigar.shah@infiniteit.biz </p>
+                <p class="nobottommargin"><strong>Call:</strong> 1800-547-2145 | <strong>Email:</strong> yourstore@veestores.com </p>
 
             </div>
 

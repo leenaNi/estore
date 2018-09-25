@@ -2543,7 +2543,7 @@ class OrdersController extends Controller {
             }
 
             $reqArray['product_id'] = '';
-            $reqArray['recipient_address'] = 'test';
+            $reqArray['recipient_address'] =$saveorder->address1 . '' . $saveorder->address2;;
             $reqArray['shipping_price'] = '1';
             $reqArray['parcel_detail'] = '';
             $reqArray['no_of_items'] = '';
