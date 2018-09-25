@@ -48,19 +48,14 @@
 <section>
     <div class="panel-body">        
         <div class="row">
-
-
             <div class="col-sm-12 text-center marginBottom20">
                 <img src="{{  Config('constants.adminImgPath').'/help-desktop.png' }}" class="mobileFullWidth">	
             </div>
-
             <div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2 marginBottom20">
                 <h1 class="text-center">Great going!</h1>
                 <h4 class="text-center">Here's some help to design and add products to your online store</h4>
             </div>
-
             <div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
-
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Store Logo</h3>
@@ -81,7 +76,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Slider Images</h3>
@@ -102,7 +96,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Select Categories</h3>
@@ -157,9 +150,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">About Store</h3>
@@ -178,9 +168,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Contact Information</h3>
@@ -195,14 +182,13 @@
                             <div class="col-sm-12 col-md-12 text-left">
                                     <!-- <center> <img src="{{ asset('public/Admin/dist/img/img-upload-dummy.svg') }}" width="300"> -->
                                 <p>Let people know where can they contact you. This makes communication more simpler. 
-                                </p>										
+                                </p>									
 
                                 <a href="{{ route('admin.staticpages.view') }}" class="btn btn-default noAllMargin  mobileSpecialfullBTN">Update Contact Information</a>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- <div class="box box-solid marginBottom20">
                         <div class="box-header with-border noleftBorder">
                                 <h3 class="box-title">See all your orders & sales</h3>
@@ -221,9 +207,6 @@
                                         </div>
                                 </div>
                         </div> -->
-
-
-
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Tutorials</h3>
@@ -243,7 +226,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- <div class="box box-solid">
                 <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Dashboard</h3>
@@ -269,7 +251,6 @@
             </div>
         </div>
     </div>
-
     <!-- open popup model -->
     <div class="modal in cstmodal" id="myModal" role="dialog" style="display: none; padding-left: 17px;">
         <div class="modal-dialog modal-lg modalFullWidth">
@@ -282,10 +263,13 @@
                     <form action="#">
                         <div class="col-md-8 noAllpadding">
                             <div class="panel-body questionPopup">
-
                                 @foreach($general_setting as $set)
-                                <div class="col-md-8 noAllpadding"><p><a href="javascript:;" data-placement="right" title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
-                                            <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20"></a> {{ $set->name }} </p> </div>
+                                <div class="col-md-8 noAllpadding">
+                                    <p>
+                                        <a href="javascript:;" data-placement="right" title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
+                                            <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20">
+                                        </a> {{ $set->name }} </p>
+                                </div>
                                 @if($set->url_key =='default-courier')
                                 <div class="col-md-4">
                                     <input type="checkbox" <?php echo $set->status == 1 ? 'checked' : ''; ?> data-id="{{ $set->id }}" data-url="{{ $set->url_key}}"  data-toggle="toggle" name="onOff" data-size="normal" class="toggle-two courier-services" data-on="Yes" data-off="No">
@@ -324,14 +308,10 @@
                 </div>
                 </form>
             </div>
-
         </div>
     </div>
-
 </section>
-
 @stop
-
 @section('myscripts')
 
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
