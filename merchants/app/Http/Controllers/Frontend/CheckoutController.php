@@ -947,8 +947,8 @@ class CheckoutController extends Controller {
             $suc = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus);
         }
         if (!empty($suc['email']))
-         $this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
-            return redirect()->route('orderSuccess');
+            $this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
+        return redirect()->route('orderSuccess');
 
         // } 
     }
@@ -1721,14 +1721,17 @@ class CheckoutController extends Controller {
         if ($paymentMethod == 1) {
             $iscod = 1;
         }
-
+        if ($courier_status == 1) {
+            $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
+            $order->courier = $courier->courier_id;
+        }
         if ($this->courierService == 1 && $this->pincodeStatus == 1) {
-            if ($courier_status == 1) {
-                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
-                $order->courier = $courier->courier_id;
-                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
-                // $courierServe = Helper::assignCourier($order->postal_code, $iscod);
-            }
+//            if ($courier_status == 1) {
+//                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
+//                $order->courier = $courier->courier_id;
+//                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
+//                // $courierServe = Helper::assignCourier($order->postal_code, $iscod);
+//            }
         }
         $cart_data = Helper::calAmtWithTax();
         $order->user_id = $user->id;
@@ -2189,7 +2192,7 @@ class CheckoutController extends Controller {
             $email_template = $emailContent[0]['content'];
             $subject = $emailContent[0]['subject'];
 
-            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordet_id]", "[created_at]");
+            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
             $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $order->id, $order->created_at);
             $email_templates = str_replace($replace, $replacewith, $email_template);
             $data_email = ['email_template' => $email_templates];
