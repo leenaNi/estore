@@ -385,6 +385,7 @@
                         <tbody>
                             <?php $i = 0; ?>
                             @foreach($products as $k =>$prd)
+                         
                             <tr> 
                                 <td>{{ @$prd->categories()->first()->category }}</td>
                                 <td>{{ $prd->product }}</td>
@@ -477,7 +478,7 @@
                                 @if($feature['loyalty']==1)
                                 <td><b class="cashbackDisc">{{ number_format((@$fixedCashbackUsed * Session::get('currency_val')), 2)  }}</b></td>
                                 @endif
-    <!--                          
+                             
                                 @if($feature['referral']==1 )
                                 <td><b class="referalDisc">{{ @$fixedReferalUsed  }}</b></td>
                                 @endif

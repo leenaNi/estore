@@ -193,7 +193,7 @@ class OrdersController extends Controller {
             $prodTab = $jsonString['prefix'] . '_products';
             $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')->where("prefix", $this->jsonString['prefix'])
                             ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
-dd($prods);
+
             // $prod_id = HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'id','=','has_prodducts.prod_id')->where("prefix",$this->jsonString['prefix']);
             $products = $prods;
             $coupon = Coupon::find($order->coupon_used);
