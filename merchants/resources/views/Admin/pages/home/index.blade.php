@@ -265,8 +265,8 @@
                             <div class="panel-body questionPopup">
                                 @foreach($general_setting as $set)
                                 <div class="col-md-8 noAllpadding">
-                                    <p>
-                                        <a href="javascript:;" data-placement="right" title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
+                                    <p class="{{Config('constants.adminImgPath')}}">
+                                        <a href="javascript:;" data-placement="right"  title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
                                             <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20">
                                         </a> {{ $set->name }} </p>
                                 </div>
