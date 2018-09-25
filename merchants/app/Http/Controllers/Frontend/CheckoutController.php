@@ -19,6 +19,7 @@ use App\Library\Helper;
 use App\Models\EmailTemplate;
 use App\Models\AttributeValue;
 use App\Models\Pincode;
+use App\Models\HasCourier;
 use App\Models\MallProducts;
 use Input;
 use App\Http\Controllers\Controller;
@@ -1993,10 +1994,11 @@ class CheckoutController extends Controller {
             $cart_ids[$cart->id]["prod_id"] = $cart->id;
             $cart_ids[$cart->id]["order_status"] = 1;
             $cart_ids[$cart->id]["order_source"] = 2;
-            HasProducts::insert($cart_ids);
+           
             // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
             //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
+         HasProducts::insert($cart_ids);
         //  $this->orderSuccess();
     }
 

@@ -107,6 +107,7 @@ class CustomersController extends Controller {
             $user->save();
             if (!empty(Input::get('cashback'))) {
                 if ($user->userCashback) {
+                    if(Input::get('cashback'))
                     $user->userCashback->cashback = Input::get('cashback');
                     $user->userCashback->loyalty_group = Input::get('loyalty_group');
                     $user->userCashback->save();
@@ -114,7 +115,7 @@ class CustomersController extends Controller {
                     $usercashback = new HasCashbackLoyalty;
                     $usercashback->user_id = $user->id;
                     $usercashback->store_id = $this->jsonString['store_id'];
-                    $usercashback->cashback = Input::get('cashback');
+                    $usercashback->cashback = Input::get('cashback')?Input::get('cashback'):0;
                     $usercashback->loyalty_group = Input::get('loyalty_group');
                     $usercashback->save();
                 }
@@ -157,6 +158,7 @@ class CustomersController extends Controller {
             } else {
                 $user->is_manually_updated = 1;
                 $user->userCashback->loyalty_group = Input::get('loyalty_group');
+                if(Input::get('cashback'))
                 $user->userCashback->cashback = Input::get('cashback');
                 $user->userCashback->save();
             }
@@ -164,7 +166,7 @@ class CustomersController extends Controller {
             $usercashback = new HasCashbackLoyalty;
             $usercashback->user_id = $user->id;
             $usercashback->store_id = $this->jsonString['store_id'];
-            $usercashback->cashback = Input::get('cashback');
+            $usercashback->cashback = Input::get('cashback')?Input::get('cashback'):'0';
             $usercashback->loyalty_group = Input::get('loyalty_group');
             $usercashback->save();
         }
