@@ -91,7 +91,7 @@
 
 				<div class="container clearfix">
 
-					<div class="col_full text-center">
+					<div class="col_full text-center nobottommargin">
 					Copyright © <?php echo date("Y"); ?>. <a href="#">Your Store Name</a>. Powered by <a href="http://www.veestores.com/" target="_blank">Veestores</a>.
 						<div class="clearfix"></div>					
 					</div>
