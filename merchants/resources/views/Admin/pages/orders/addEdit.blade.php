@@ -1245,6 +1245,7 @@ $seldel = '<a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;
     var coupon_amt = parseInt($("#coupon_amt_used").val());
     var order_amt = parseFloat($(".ordT").val());
     var order_pay = parseFloat($(".ordP").val());
+    var cod = parseFloat($("#cod_charges").val());
     // var price = order_amt - coupon_amt; 
     var total_amt = 0;
     $.ajax({
@@ -1269,8 +1270,8 @@ $seldel = '<a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;
             } else{
             total_amt = order_pay;
             }
-            $(".additional-charge").append('<tr><th>Total (Included Additional Charges <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?>)</th><td>' + (total_amt ).toFixed(2) + '</td>');
-            $(".ordP").val(total_amt.toFixed(2));
+            $(".additional-charge").append('<tr><th>Total (Included Additional Charges <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?>)</th><td>' + (total_amt+cod ).toFixed(2) + '</td>');
+            $(".ordP").val((total_amt+cod).toFixed(2));
             }
     });
     }
