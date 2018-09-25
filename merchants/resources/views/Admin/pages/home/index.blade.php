@@ -255,10 +255,7 @@
     <div class="modal in cstmodal" id="myModal" role="dialog" style="display: none; padding-left: 17px;">
         <div class="modal-dialog modal-lg modalFullWidth">
             <!-- Modal content-->
-            <?php
-            $imgpath = Config('constants.adminImgPath');
-            ?>
-            <div class="modal-content" style="background-image: url('{{  $imgpath.'/bgimage.jpg' }}'); background-repeat: no-repeat; background-position: right;">
+            <div class="modal-content" style="background-image: url('{{  Config('constants.adminImgPath').'/bgimage.jpg' }}'); background-repeat: no-repeat; background-position: right;">
                 <div class="modal-header">
                     <h4 class="modal-title">Let's set up your store -  Help us with few important questions</h4>
                 </div>
@@ -270,7 +267,7 @@
                                 <div class="col-md-8 noAllpadding">
                                     <p>
                                         <a href="javascript:;" data-placement="right"  title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
-                                            <img src="{{  $imgpath.'/info-icon.png' }}" width="20">
+                                            <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20">
                                         </a> {{ $set->name }} </p>
                                 </div>
                                 @if($set->url_key =='default-courier')
@@ -285,7 +282,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <hr class="style1">
                                 @else
                                 <div class="col-md-4">
                                     <input type="checkbox" <?php echo $set->status == 1 ? 'checked' : ''; ?> data-id="{{ $set->id }}" data-url="{{ $set->url_key}}"  data-toggle="toggle" name="onOff" data-size="normal" class="toggle-two" data-on="Yes" data-off="No">
@@ -294,7 +290,7 @@
                                 <hr class="style1">
                                 @endforeach
 
-                                <div class="col-md-8 noAllpadding"><p> <a href="javascript:;" data-placement="right" title="Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." data-toggle="tooltip" class="tooltip-style"> <img src="{{ asset('public/Admin/dist/img/info-icon.png') }}" width="20"> </a> Your products will be inclusive/exclusive of taxes? </p></div>
+                                <div class="col-md-8 noAllpadding"><p> <a href="javascript:;" data-placement="right" title="Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." data-toggle="tooltip" class="tooltip-style"> <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20"> </a> Your products will be inclusive/exclusive of taxes? </p></div>
                                 <div class="col-md-4">
                                     <select class="form-control" name="">
                                         <option>Select</option>
