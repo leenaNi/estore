@@ -255,7 +255,10 @@
     <div class="modal in cstmodal" id="myModal" role="dialog" style="display: none; padding-left: 17px;">
         <div class="modal-dialog modal-lg modalFullWidth">
             <!-- Modal content-->
-            <div class="modal-content" style="background-image: url('{{  Config('constants.adminImgPath').'/bgimage.jpg' }}'); background-repeat: no-repeat; background-position: right;">
+            <?php
+            $imgpath = Config('constants.adminImgPath');
+            ?>
+            <div class="modal-content" style="background-image: url('{{  $imgpath.'/bgimage.jpg' }}'); background-repeat: no-repeat; background-position: right;">
                 <div class="modal-header">
                     <h4 class="modal-title">Let's set up your store -  Help us with few important questions</h4>
                 </div>
@@ -265,9 +268,9 @@
                             <div class="panel-body questionPopup">
                                 @foreach($general_setting as $set)
                                 <div class="col-md-8 noAllpadding">
-                                    <p class="{{Config('constants.adminImgPath')}}">
+                                    <p>
                                         <a href="javascript:;" data-placement="right"  title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
-                                            <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20">
+                                            <img src="{{  $imgpath.'/info-icon.png' }}" width="20">
                                         </a> {{ $set->name }} </p>
                                 </div>
                                 @if($set->url_key =='default-courier')
