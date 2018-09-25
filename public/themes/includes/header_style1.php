@@ -1,5 +1,6 @@
 <!-- Header
         ============================================= -->
+<link rel="stylesheet" href="https://www.veestores.com/themes/css/style_fs4.css" type="text/css" />
 <style>
     @media (max-width: 991px){
         #primary-menu-trigger {
@@ -27,9 +28,9 @@
             <!-- Logo
             ============================================= -->
             <div id="logo">
-                <a href="<?php echo $_GET['theme']; ?>_home.php?theme=<?php echo $_GET['theme']; ?>" class="standard-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
+                <a href="<?php echo $_GET['theme']; ?>_home.php?theme=<?php echo $_GET['theme']; ?>" class="standard-logo" data-dark-logo="images/yourstorelogo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
 
-                <a href="<?php echo $_GET['theme']; ?>_home.php?theme=<?php echo $_GET['theme']; ?>" class="retina-logo" data-dark-logo="images/logo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
+                <a href="<?php echo $_GET['theme']; ?>_home.php?theme=<?php echo $_GET['theme']; ?>" class="retina-logo" data-dark-logo="images/yourstorelogo.png"><img src="images/yourstorelogo.png" alt="Your Logo"></a>
             </div><!-- #logo end -->
 
             <!-- Primary Navigation

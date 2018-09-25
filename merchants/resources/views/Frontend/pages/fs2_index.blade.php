@@ -41,7 +41,11 @@
                 <a href="#" class="homePage3Boxes edit-menow2" data-info='{{$dynl}}'  data-imgSrc="{{Config('constants.layoutUploadPath').'/'.@$dynl->image}}"><i class="fa fa-pencil  fa-lg"></i></a>
                 @endif
             <a href="{{!empty($dynl->link)?$dynl->link:'javascript:void(0)'}}" target="_blank">
-                <img class="full-width" src="{{Config('constants.layoutUploadPath').'/'.@$dynl->image}}" alt="feature2"></a>
+                <img class="full-width" src="{{Config('constants.layoutUploadPath').'/'.@$dynl->image}}" alt="feature2">
+                <div class="overlayContentBox">
+                    <div><h3 class="nobottommargin text-center">{{@$dynl->name}}</h3></div>
+                </div>
+            </a>
                       @if(Session::get('login_user_type') == 1)
                 <div class="switchBox">
                 	<label class="switch text-center">
@@ -53,9 +57,7 @@
                 
                 <div class="{{($dynl->is_active == 0 )?'overlayFBox':''}}  overL_{{$dynl->id}}"></div>
                   @endif
-                <div class="overlayContentBox">
-                    <div><h3 class="nobottommargin text-center">{{@$dynl->name}}</h3></div>
-                </div>
+               
 
         </div>
         @endforeach
