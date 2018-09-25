@@ -947,8 +947,8 @@ class CheckoutController extends Controller {
             $suc = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus);
         }
         if (!empty($suc['email']))
-         $this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
-            return redirect()->route('orderSuccess');
+            $this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
+        return redirect()->route('orderSuccess');
 
         // } 
     }
@@ -1721,14 +1721,17 @@ class CheckoutController extends Controller {
         if ($paymentMethod == 1) {
             $iscod = 1;
         }
-
+        if ($courier_status == 1) {
+            $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
+            $order->courier = $courier->courier_id;
+        }
         if ($this->courierService == 1 && $this->pincodeStatus == 1) {
-            if ($courier_status == 1) {
-                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
-                $order->courier = $courier->courier_id;
-                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
-                // $courierServe = Helper::assignCourier($order->postal_code, $iscod);
-            }
+//            if ($courier_status == 1) {
+//                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
+//                $order->courier = $courier->courier_id;
+//                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
+//                // $courierServe = Helper::assignCourier($order->postal_code, $iscod);
+//            }
         }
         $cart_data = Helper::calAmtWithTax();
         $order->user_id = $user->id;
