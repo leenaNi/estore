@@ -2,6 +2,9 @@ body{overflow-x: hidden;}
 div#top-search form input {
     color: #444 !important;
 }
+.tracking:hover {
+    color: #666 !important;
+}
 .mobDisplay{display:none !important;}
 .mobileLoginRegister{display: none !important;}
 .mobileCart{display: none !important;}
@@ -151,7 +154,7 @@ body:not(.device-touch):not(.device-xs):not(.device-xxs) .product-overlay2 {
 }
 #top-bar-cart {
     float: right !important;
-    margin: 12px 0 40px 15px !important;
+    margin: 12px 0 0px 15px !important;
 }
 #top-bar-cart a {
     display: block;
