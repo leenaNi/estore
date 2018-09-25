@@ -62,7 +62,7 @@
                 </a> @endif
                 <a href="{{!empty($dynl->link)?$dynl->link:'javascript:void(0)'}}" target="_blank">
                     <img class="full-width" src="{{Config('constants.layoutImgPath').'/'.@$dynl->image}}" alt="feature1">
-                </a> @if(Session::get('login_user_type') == 1)
+                 @if(Session::get('login_user_type') == 1)
                       <div class="switchBox">
                 	<label class="switch text-center">
                             <input data-id='{{$dynl->id}}' class="switch-input 3BoxStatus" name="status"  value="{{$dynl->is_active}}" type="checkbox"  <?php echo ($dynl->is_active == 1)? 'checked="&quot;checked&quot;"':'' ?> >
@@ -78,6 +78,7 @@
                         <h3 class="nobottommargin text-center">{{@$dynl->name}}</h3>
                     </div>
                 </div>
+                </a>
             </div>
             @endforeach @endif
         </div>
