@@ -24,7 +24,7 @@ class LoyaltyController extends Controller {
     $setting = Helper::getSettings();
     $headers[] = 'Content-Type:application/x-www-form-urlencoded';
     $cur=$setting['currencyId'];
-    $curency= HasCurrency::where("iso_code",$cur)->first()->currency_code;
+    $curency= HasCurrency::where("iso_code",$cur)->first();
     $curCode=$curency->currency_code;
     $from_Currency = urlencode("INR");
     $to_Currency = urlencode($curCode);
