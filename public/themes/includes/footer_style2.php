@@ -20,12 +20,12 @@
 								<div class="col_half">
 									<address class="nobottommargin">
 										<strong>Address:</strong><br>
-										C/504, Neelkanth Business Park, Near Vidyavihar Station, Vidyavihar West, Mumbai 400086. <br>
+										C/501, Chocolate Building , Vanila Street Mumbai 400123 <br>
 									</address>
 								</div>
 								<div class="col_half col_last">
-									<strong>Phone:</strong> 1234567890 <br>
-									<strong>Email:</strong> yourstore@veestores.com
+									<strong>Phone:</strong> 09000012345 <br>
+									<strong>Email:</strong> abc@gmail.com
 								</div>
 							</div>
 

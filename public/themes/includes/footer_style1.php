@@ -74,10 +74,10 @@
 								<div class="widget subscribe-widget clearfix">
 							<address class="nobottommargin">
 										<abbr><strong>Address:</strong></abbr><br>
-										C/504, Neelkanth Business Park, Near Vidyavihar Station, Vidyavihar West, Mumbai 400086. 
+										C/501, Chocolate Building , Vanila Street Mumbai 400123 
 									</address>
-									<abbr><strong>Phone:</strong></abbr> 1234567890<br>
-									<abbr><strong>Email:</strong></abbr> yourstore@veestores.com
+									<abbr><strong>Phone:</strong></abbr> 09000012345<br>
+									<abbr><strong>Email:</strong></abbr> abc@gmail.com
 									
 									<div class="si-share clearfix">
 							<span>Connect with Us on:</span>
