@@ -4161,8 +4161,9 @@ body:not(.device-touch) .grid-container {
 }
 
 .portfolio-filter li {
-	float: left;
-	position: relative;
+	float: none !important;
+    position: relative;
+    display: inline !important;
 }
 
 .portfolio-filter li a {
@@ -4249,11 +4250,14 @@ body:not(.device-touch) .grid-container {
 -----------------------------------------------------------------*/
 ul#portfolio-filter {
 	margin-bottom: 15px !important;
+	list-style: none !important;
+	padding: 0 !important;
+	text-align: center !important;
 }
 ul#portfolio-filter li:after {
 	content: '';
 	position: absolute;
-	top: 18px;
+	top: 5px;
 	right: 0;
 	width: 1px;
 	height: 10px;
