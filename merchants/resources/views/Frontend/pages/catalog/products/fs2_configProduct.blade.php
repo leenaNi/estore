@@ -272,6 +272,9 @@
 
 
     });
-
+  $('.attrSel').change(function () {
+        
+        $(".optError").remove();
+    })
 </script>
 @stop

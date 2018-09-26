@@ -241,7 +241,7 @@
             $('#quantity').val(parseInt(currentVal) - 1);
     });
     $('.attrSel').change(function () {
-        alert("sdsf");
+      
         $(".optError").remove();
     })
 
