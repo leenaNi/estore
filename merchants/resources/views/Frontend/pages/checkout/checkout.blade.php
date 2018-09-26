@@ -83,17 +83,14 @@
                                     <form role="form" method='post' class="login_form loginFormNewUser" action='{{ route('new_user_login_new')}}' style="display:none; margin-bottom:20px;" id='checkoutRegisterFormid'>
                                     <div class="row">
                                         <div class="form-group col-md-6">
-                                            <lable>First Name</lable>
                                             <input name='firstname' type="text" class="form-control" placeholder="First Name *">
                                             <div id="firstname_checkout_re_validate" class="newerror"></div>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <lable>Last Name</lable>
                                             <input name='lastname' type="text" class="form-control" placeholder="Last Name">
                                             <div id="lastname_checkout_re_validate" class="newerror"></div>
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <lable>Country Code</lable>
                                             <select class="form-control county_code" required="true" name="country_code">
                                                 <option value="">Select Country Code</option>
                                                 <option value="+91">(+91) India</option>
@@ -103,25 +100,21 @@
                                             <div id="country_code_checkout_re_validate" class="newerror"></div>
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <lable>Mobile</lable>
                                             <input  name='telephone' type="text" id="regtelephone"  class="form-control" placeholder="Mobile *">
                                             <p id="telephone_exists" style="color:red;margin-bottom:0px;"></p>
                                             <div id="telephone_checkout_re_validate" class="newerror"></div>
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <lable>Email</lable>
                                             <input  name='email' type="email" id="regEmail" class="form-control" placeholder="Email">
                                             <div id="email_checkout_re_validate" class="newerror"></div>
                                             <p id="email_exists" style="color:red;margin-bottom:0px;"></p>
                                         </div>                                       
                                         <div class="form-group col-md-12">
-                                            <lable>Password</lable>
                                             <input  name='password' type="password" id='password' class="form-control" placeholder="Password *">
                                             <div id="password_checkout_re_validate" class="newerror"></div>
 
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <lable>Confirm Password</lable>
                                             <input name='cpassword' type="password" class="form-control" placeholder="Confirm Password *">
                                             <div id="cpassword_checkout_re_validate" class="newerror"></div>
                                         </div>
