@@ -94,7 +94,7 @@ i.icon-taka:before {
 .ecomTabContainer{
 	border: 1px solid #ddd;
 	border-top: 0;
-	padding: 30px 15px;
+	padding: 30px 15px !important;
 }
 .ecomtab-nav li:first-child{
 	margin-left: 0px !important;
@@ -103,8 +103,7 @@ i.icon-taka:before {
 	border: 1px soli #ddd;
 }
 .ecomtab-nav li.ui-tabs-active a{
-	border-top: 2px solid #8ab34f;
-	border: 0 !important;
+	border-top: 2px solid #8ab34f !important;
 	border-bottom: 0;
 }
 .setUpStoreBtn a {
