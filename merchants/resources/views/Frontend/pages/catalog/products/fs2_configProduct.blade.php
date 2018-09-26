@@ -217,6 +217,11 @@
 <script>
     $(document).ready(function () {
         $('head').append('<meta property="og:image" content="<?= $product->prodImage ?>" /> ');
+        
+   $( "div" ).delegate( "select", "change", function() {
+   $(".optError").remove();
+});
+ 
     });
     function isNumber(evt) {
         evt = (evt) ? evt : window.event;
@@ -272,6 +277,6 @@
 
 
     });
-
+ 
 </script>
 @stop
