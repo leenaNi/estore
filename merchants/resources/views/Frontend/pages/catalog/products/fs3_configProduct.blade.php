@@ -267,9 +267,8 @@
             if (minvalue != currentVal)
                 $('#quantity').val(parseInt(currentVal) - 1);
         });
-  $('.attrSel').change(function () {
-       
-        $(".optError").remove();
-    });
+     $( "div" ).delegate( "select", "change", function() {
+   $(".optError").remove();
+});
     </script>
     @stop
