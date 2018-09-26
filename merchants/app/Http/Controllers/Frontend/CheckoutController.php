@@ -437,7 +437,7 @@ class CheckoutController extends Controller {
         $toPayment['ebsKey'] = @$ebskey;
         $toPayment['ebsAccountId'] = @$account_id;
         if (Session::get('pay_amt') > 0)
-            $toPayment['frmAction'] = route('ebs');
+            $toPayment['frmAction'] = route('getCityPay');
         else
             $toPayment['frmAction'] = route('order_cash_on_delivery');
 

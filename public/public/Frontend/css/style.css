@@ -88,7 +88,38 @@
 	- Youtube Video Backgrounds
 
 ---------------------------------------------------------------- */
-
+i.icon-taka:before {
+	content: '৳';
+}
+.ecomTabContainer{
+	border: 1px solid #ddd;
+	border-top: 0;
+	padding: 30px 15px !important;
+}
+.ecomtab-nav li:first-child{
+	margin-left: 0px !important;
+}
+.ecomtab-nav li{
+	border: 1px solid #ddd !important;
+}
+.ecomtab-nav li.ui-state-active:first-child {
+	border-right: 0px !important;
+}
+.ecomtab-nav li.ui-tabs-active:first-child {
+	border-left: 1px solid #ddd !important;
+}
+.ecomtab-nav li.ui-state-active {
+	border-left: 0px !important;
+}
+.ecomtab-nav li.ui-tabs-active a{
+	border-top: 2px solid #8ab34f !important;
+	border-left: 0 !important;
+	border-right: 0 !important;
+	border-bottom: 0 !important;
+}
+.ecomTable th{
+	font-size: 18px !important;
+}
 .setUpStoreBtn a {
 	min-width: 200px;
 	margin-right: 10px;
