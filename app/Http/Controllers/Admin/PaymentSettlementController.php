@@ -90,7 +90,7 @@ class PaymentSettlementController extends Controller {
                 Session::flash("msg", "Selected Orders alreay settled");
             }
         } else {
-            $order = DB::table("has_products")->where("id", $id)->where("settled_status", 0)
+            $order = DB::table("has_products")->where("has_products.id", $id)->where("settled_status", 0)
                             ->join("stores", "stores.id", '=', "has_products.store_id")->select('has_products.*', 'stores.percent_to_charge')->first();
             if (count($order) > 0) {
                 $this->saveSettlementHistory($order);
