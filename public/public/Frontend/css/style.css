@@ -108,6 +108,9 @@ i.icon-taka:before {
 	border-right: 0 !important;
 	border-bottom: 0 !important;
 }
+.ecomTable th{
+	font-size: 18px !important;
+}
 .setUpStoreBtn a {
 	min-width: 200px;
 	margin-right: 10px;

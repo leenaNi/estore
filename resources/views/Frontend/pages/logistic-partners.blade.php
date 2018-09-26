@@ -21,7 +21,7 @@
 						<div class="tab-container ecomTabContainer">
 							<div class="tab-content clearfix" id="tabs-bang">
 								<div class="table-responsive">
-									<table class="table table-striped table-hover table-bordered table-comparison nobottommargin">
+									<table class="ecomTable table table-striped table-hover table-bordered table-comparison nobottommargin">
 										<thead>
 										<tr>
 											<th>Area</th>
@@ -47,7 +47,7 @@
 							</div>
 							<div class="tab-content clearfix" id="tabs-ind">
 								<div class="table-responsive">
-									<table class="table table-striped table-hover table-bordered table-comparison nobottommargin">
+									<table class="ecomTable table table-striped table-hover table-bordered table-comparison nobottommargin">
 										<thead>
 										<tr>
 											<th>Area</th>
