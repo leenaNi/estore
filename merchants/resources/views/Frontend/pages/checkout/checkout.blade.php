@@ -15,7 +15,7 @@
     </div>
 </section>
 <div id="content" class="site-content single-product">
-    <input type="hidden" id="pincodeStatus" value="{{ @$pincodeStatus->status}}">
+    <input type="hidden" id="pincodeStatus" value="{{ @$pincodeStatus - > status}}">
     <div class="container">
         <div class="checkout" ng-controller="checkoutController">
             <div class="panel-group"  id="accordion" role="tablist" aria-multiselectable="true">
@@ -328,7 +328,7 @@
                                                 <li>Referral Code: <span class="pull-right referalDiscount">0.00</span></li>
                                                 @endif
                                             </ul>
-                                            <h2>Total <span class="currency-sym-in-braces">(<?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';   ?>)</span><span class="pull-right TotalCartAmt">[[billSummary.finaltotal * billSummary.currency_val| number:2 ]]</span></h2>
+                                            <h2>Total <span class="currency-sym-in-braces">(<?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?>)</span><span class="pull-right TotalCartAmt">[[billSummary.finaltotal * billSummary.currency_val| number:2 ]]</span></h2>
                                         </div>
                                     </div>
                                     <div class="col-md-7 col-sm-6 col-xs-12">
@@ -449,7 +449,7 @@
                                                 <p>[[ toPayment.address.city ]]- [[ toPayment.address.postcode ]]</p> <span><u>[[ toPayment.cod_msg ]]</u></span>
                                                 <p>Mobile No: [[ toPayment.address.phone_no ]]</p>
                                             </div>
-                                            <h5>Bill Amount: <span class="currency-sym"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';   ?></span>  <b class="finalamt">[[ toPayment.payamt | number : 2 ]]</b></h5>
+                                            <h5>Bill Amount: <span class="currency-sym"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?></span>  <b class="finalamt">[[ toPayment.payamt | number : 2 ]]</b></h5>
                                             <p style="display:none;" class="codCharges">0</p>
                                         </div>
                                         @if(@$feature['additional-charge'] == 1)
@@ -462,7 +462,7 @@
                                             <table class="table table-striped table-hover additional-charge">
                                                 @endif
                                                 <tr>
-                                                    <th>Total <span class="currency-sym-in-braces"></span><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';   ?></th>
+                                                    <th>Total <span class="currency-sym-in-braces"></span><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';        ?></th>
                                                     <td><span class="total_amt">[[ toPayment.finalAmt | number: 2]]</span> </td> 
                                                 </tr>
                                             </table>                                       
@@ -484,29 +484,29 @@
                                     <div class="col-md-6" ng-if="toPayment.finalAmt > 0">
                                         <div class="summry_col">
                                             <h4 class="heading-title"><span class="pull-left summry_title">Select Payment Method </span></h4>
-                                            <ul ng-init="payOpt = 1">
-                                                <li ng-show="toPayment.ebsStatus == 1">
-                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_EBS" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioEbs"  name="radio" value="1"><label for="radioEbs"   ><span><span></span></span> EBS</label>
-                                                </li>
-                                                <li ng-show="toPayment.payUmoneyStatus == 1">
-                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_payUmoney" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioPayUmoney"  name="radio" value="2"><label for="radioPayUmoney"   ><span><span></span></span> PayU</label>
-                                                </li>
+                                            <ul ng-init="payOpt = 3">
+                                                <!--                                                <li ng-show="toPayment.ebsStatus == 1">
+                                                                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_EBS" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioEbs"  name="radio" value="1"><label for="radioEbs"   ><span><span></span></span> EBS</label>
+                                                                                                </li>
+                                                                                                <li ng-show="toPayment.payUmoneyStatus == 1">
+                                                                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_payUmoney" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioPayUmoney"  name="radio" value="2"><label for="radioPayUmoney"   ><span><span></span></span> PayU</label>
+                                                                                                </li>-->
                                                 <!--                                                <li ng-show="toPayment.address.country_id == 99 && toPayment.codStatus == 1">-->
                                                 <div ng-show="toPayment.is_cod == 1"> 
                                                     <li>
-                                                        <input  name="paymentMethod" type="radio" ng-model="payOpt" ng-click="paymentmethodChk($event)" class="chk_cod cod codChk" data-method = 'cod' name="radio"  id="radioCod"  value="3"><label for="radioCod"   ><span><span></span></span> CASH ON DELIVERY <span ng-show="toPayment.cod_charges > 0">(<span class="currency-sym"></span> <?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';   ?>[[ toPayment.cod_charges * toPayment.currency_val |number :2 ]])</span></label>
+                                                        <input  name="paymentMethod" type="radio" ng-model="payOpt" ng-click="paymentmethodChk($event)" class="chk_cod cod codChk" data-method = 'cod' name="radio"  id="radioCod"  value="3"><label for="radioCod"   ><span><span></span></span> CASH ON DELIVERY <span ng-show="toPayment.cod_charges > 0">(<span class="currency-sym"></span> <?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?>[[ toPayment.cod_charges * toPayment.currency_val |number :2 ]])</span></label>
                                                     </li> 
                                                 </div>                                                   
+                                                <!--                                                <li>
+                                                                                                    <input   name="paymentMethod" type="radio"  data-method = '' class="chk_cod chk_paypal"  ng-model="payOpt" ng-click="paymentmethodChk($event)"  id="radioPaypal"  name="radio" value="4"><label  for="radioPaypal"   for="radio2"><span><span></span></span> PAYPAL</label>
+                                                                                                </li>
+                                                                                                <li>
+                                                                                                    <input name="paymentMethod" type="radio"  data-method = '' class="chk_cod chk_razPay"  ng-model="payOpt" ng-click="paymentmethodChk($event)"  id="radioRazpay" name="radio" value="5"><label   for="radioRazpay"  for="radio2"><span><span></span></span> RAZORPAY</label>
+                                                                                                </li>
+                                                                                                <li ng-show="toPayment.citrusPayStatus == 1">
+                                                                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_citrus" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioCitrus"  name="radio" value="6"><label for="radioCitrus"   ><span><span></span></span> Citrus</label>
+                                                                                                </li>-->
                                                 <li>
-                                                    <input   name="paymentMethod" type="radio"  data-method = '' class="chk_cod chk_paypal"  ng-model="payOpt" ng-click="paymentmethodChk($event)"  id="radioPaypal"  name="radio" value="4"><label  for="radioPaypal"   for="radio2"><span><span></span></span> PAYPAL</label>
-                                                </li>
-                                                <li>
-                                                    <input name="paymentMethod" type="radio"  data-method = '' class="chk_cod chk_razPay"  ng-model="payOpt" ng-click="paymentmethodChk($event)"  id="radioRazpay" name="radio" value="5"><label   for="radioRazpay"  for="radio2"><span><span></span></span> RAZORPAY</label>
-                                                </li>
-                                                <li ng-show="toPayment.citrusPayStatus == 1">
-                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_citrus" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioCitrus"  name="radio" value="6"><label for="radioCitrus"   ><span><span></span></span> Citrus</label>
-                                                </li>
-                                                <li >
                                                     <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_cit_pay" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioCityPay"  name="radio" value="7"><label for="radioCityPay"   ><span><span></span></span> PayOnline</label>
                                                 </li>
                                             </ul>
