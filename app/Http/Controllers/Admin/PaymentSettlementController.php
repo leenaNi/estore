@@ -56,12 +56,15 @@ class PaymentSettlementController extends Controller {
 
 
         if ($settle == 1) {
-            $orders1 = $orders->paginate(Config('constants.AdminPaginateNo'));
+            $orders = $orders->paginate(Config('constants.AdminPaginateNo'));
         } else {
             $orders = $orders->paginate(Config('constants.AdminPaginateNo'));
             $orderswithCOurier = $orderswithCOurier->paginate(Config('constants.AdminPaginateNo'));
-            $orders1 = $orders->merge($orderswithCOurier);
-            foreach ($orders1 as $order) {
+            if($orderswithCOurier->count() > 0){
+            $orders = $orders->merge($orderswithCOurier);
+            }
+           
+            foreach ($orders as $order) {
                 $commision = $order->pay_amt * $order->percent_to_charge * 0.01;
                 $order->settled_amt = ($order->pay_amt - $commision);
                 $order->commision = $commision;
