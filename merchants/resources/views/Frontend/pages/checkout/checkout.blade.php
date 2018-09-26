@@ -60,7 +60,7 @@
                                         <small class="existUserError field_error" style="color:red;">[[ newUserError ]]</small>
                                     </div>
                                     <form id="loginEX" method='post' action="{{ route('get_exist_user_login_new')}}">
-                                        <div class="loginF login_form" style="display:none; margin-bottom:20px;">
+                                        <div class="loginF login_form" style="margin-bottom:20px;">
                                             <div class="form-group col-md-12">
                                                 <input type="text" name="loginemail" class="form-control ExistEmail"  id="userEmail" placeholder="Mobile / Email *">
                                                 <div id="loginemail_checkout_re_validate" class="newerror"></div>
