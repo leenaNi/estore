@@ -527,7 +527,7 @@ save.addEventListener('click', function (e) {
                     if (imgtodrag) {
                         var imgclone = imgtodrag.clone()
                                 .offset({
-                                    top: imgtodrag.offset().top,
+                                    top: imgtodrag.offset().bottom,
                                     left: imgtodrag.offset().right
                                 })
                                 .css({
@@ -539,7 +539,7 @@ save.addEventListener('click', function (e) {
                                 })
                                 .appendTo($('body'))
                                 .animate({
-                                    'top': cart.offset().top + 10,
+                                    'top': cart.offset().bottom + 10,
                                     'left': cart.offset().right + 10,
                                     'width': 75,
                                     'height': 75
