@@ -101,7 +101,7 @@
                 <!-- Product Single - Quantity & Cart Button End -->
                 <div class="clear"></div>
                 <div class="line"></div>
-                <div class="shortDesc" >[[product.short_desc | removeHTMLTags]]</div> 
+                <div class="shortDesc" ng-show="product.short_desc!=''" >[[product.short_desc | removeHTMLTags]]</div> 
                 <!-- Product Single - Share ============================================= -->
                 <div class="si-share noborder clearfix"> <span class="pull-left">Share:</span>
                   <div class="pull-left">
