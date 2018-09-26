@@ -99,7 +99,11 @@ i.icon-taka:before {
 .ecomtab-nav li:first-child{
 	margin-left: 0px !important;
 }
+.ecomtab-nav li{
+	border: 1px soli #ddd;
+}
 .ecomtab-nav li.ui-tabs-active a{
+	border-top: 2px solid #8ab34f;
 	border: 0 !important;
 	border-bottom: 0;
 }
