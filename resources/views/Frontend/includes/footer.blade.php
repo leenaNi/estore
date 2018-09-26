@@ -28,6 +28,7 @@
 
 
                 <div class="copyright-links"><a href="/about">About</a> / 
+                <a href="/logistic-partners">Logistic Partner</a> / 
                     <!-- <a href="/faqs">FAQs</a> / 
                     <a href="#">Store set-up assistance</a> / <a href="#">Merchant Agreement</a> /  -->
                     <a href="/terms-condition">Terms &amp; Condition</a> / <a href="/privacy-policy">Privacy Policy</a> / <a href="/contact">Contact</a></div>
