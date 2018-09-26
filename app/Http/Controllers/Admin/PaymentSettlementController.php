@@ -58,8 +58,8 @@ class PaymentSettlementController extends Controller {
         if ($settle == 1) {
             $orders = $orders->paginate(Config('constants.AdminPaginateNo'));
         } else {
-            $orders = $orders->paginate(Config('constants.AdminPaginateNo'));
-            $orderswithCOurier = $orderswithCOurier->paginate(Config('constants.AdminPaginateNo'));
+            $orders = $orders->get();
+            $orderswithCOurier = $orderswithCOurier->get();
             $orders = $orders->merge($orderswithCOurier);
             dd($orders);
             foreach ($orders as $order) {
