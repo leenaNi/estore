@@ -484,7 +484,7 @@
                                     <div class="col-md-6" ng-if="toPayment.finalAmt > 0">
                                         <div class="summry_col">
                                             <h4 class="heading-title"><span class="pull-left summry_title">Select Payment Method </span></h4>
-                                            <ul ng-init="payOpt = 3">
+                                            <ul ng-init="payOpt = 7">
                                                 <!--                                                <li ng-show="toPayment.ebsStatus == 1">
                                                                                                     <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_EBS" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioEbs"  name="radio" value="1"><label for="radioEbs"   ><span><span></span></span> EBS</label>
                                                                                                 </li>
