@@ -93,7 +93,8 @@
 	padding: 0;
 	text-align: center !important;
 	float: none !important;
-	position: relative !important
+	position: relative !important;
+	margin-bottom: 15px !important;
 }
 #customFilter li{
 	display: inline;
@@ -110,6 +111,22 @@
 	-o-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 	background: #ccc;
+}
+
+#customFilter li:after {
+	content: '';
+	position: absolute;
+	top: 5px;
+	right: 0;
+	width: 1px;
+	height: 10px;
+	-webkit-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	background: #ccc;
+}
+#customFilter li:last-child:after {
+	width: 0px !important;
 }
 #customFilter li a{
 	display: inline-block;
