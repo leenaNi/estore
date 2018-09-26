@@ -101,7 +101,7 @@
                 <!-- Product Single - Quantity & Cart Button End -->
                 <div class="clear"></div>
                 <div class="line"></div>
-                <div class="shortDesc" >[[product.short_desc | removeHTMLTags]]</div> 
+                <div class="shortDesc" ng-show="product.short_desc!=''" >[[product.short_desc | removeHTMLTags]]</div> 
                 <!-- Product Single - Share ============================================= -->
                 <div class="si-share noborder clearfix"> <span class="pull-left">Share:</span>
                   <div class="pull-left">
@@ -156,7 +156,7 @@
                       <h3><a href="{{route('home').'/'.$relProduct->url_key}}">{{$relProduct->product}}</a></h3> </div>
                        
                     <div class="product-price" >
-                         @if($relProduct->spl_price > 0 && $relProduct->price >$relProduct->spl_price)
+                         @if($relProduct->spl_price > 0 && $relProduct->price > $relProduct->spl_price)
                         <del><span class="currency-sym"></span> {{number_format($relProduct->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span>{{number_format($relProduct->spl_price * Session::get('currency_val'), 2, '.', '')}} </ins>
                          @else 
                         <ins><span class="currency-sym"></span> {{number_format($relProduct->price * Session::get('currency_val'), 2, '.', '')}}</ins>
@@ -192,7 +192,7 @@
                                     <h3><a  href="{{route('home').'/'.$upSellProduct->url_key}}">{{$upSellProduct->product}}</a></h3> </div>
                                
                                     <div class="product-price"> 
-                                             @if($upSellProduct->spl_price >0 && $upSellProduct->price >$upSellProduct->spl_price)
+                                             @if($upSellProduct->spl_price >0 && $upSellProduct->price > $upSellProduct->spl_price)
                                             <del><span class="currency-sym"></span> {{number_format(@$upSellProduct->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$upSellProduct->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins>
                                             @else 
                                             <ins><span class="currency-sym"></span> {{number_format(@$upSellProduct->price * Session::get('currency_val'), 2, '.', '')}}</ins>

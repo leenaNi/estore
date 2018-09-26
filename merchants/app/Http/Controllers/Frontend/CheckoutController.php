@@ -1994,11 +1994,11 @@ class CheckoutController extends Controller {
             $cart_ids[$cart->id]["prod_id"] = $cart->id;
             $cart_ids[$cart->id]["order_status"] = 1;
             $cart_ids[$cart->id]["order_source"] = 2;
-           
+
             // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
             //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
-         HasProducts::insert($cart_ids);
+        HasProducts::insert($cart_ids);
         //  $this->orderSuccess();
     }
 

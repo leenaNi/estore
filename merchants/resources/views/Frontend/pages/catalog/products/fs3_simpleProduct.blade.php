@@ -154,7 +154,7 @@
                             <div class="product-title">
                                 <h3><a href="{{ $relprd->url_key }}">{{ $relprd->product }}</a></h3> </div>
                             <div class="product-price">
-                                @if($relprd->spl_price > 0 && $relprd->spl_price > $relprd->price)
+                                @if($relprd->spl_price > 0 && $relprd->price > $relprd->spl_price)
                                 <del class="nomargin"><span class="currency-sym"></span> {{number_format($relprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins class="leftmargin-xs"><span class="currency-sym"></span> {{number_format(@$relprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 
                                 @else
                                 <ins class="leftmargin-xs"><span class="currency-sym"></span> {{number_format($relprd->price * Session::get('currency_val'), 2, '.', '')}}</ins> 
@@ -188,7 +188,7 @@
                             <div class="product-title">
                                 <h3><a href="{{ $upsellprd->url_key }}">{{ $upsellprd->product }}</a></h3> </div>
                             <div class="product-price">
-                                @if($upsellprd->spl_price > 0 && $upsellprd->spl_price > $upsellprd->price)
+                                @if($upsellprd->spl_price > 0 && $upsellprd->price > $upsellprd->spl_price)
                                 <del class="nomargin"><span class="currency-sym"></span> {{number_format($upsellprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins class="leftmargin-xs"><span class="currency-sym"></span> {{number_format($upsellprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 
                                 @else
                                 <ins class="leftmargin-xs"><span class="currency-sym"></span> {{number_format($upsellprd->price * Session::get('currency_val'), 2, '.', '')}}</ins> 

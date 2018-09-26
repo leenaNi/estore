@@ -14,14 +14,14 @@
 
 				<div class="container clearfix">
 					<div class="tabs tabs-alt tabs-tb clearfix" id="tab-8">
-						<ul class="tab-nav clearfix">
+						<ul class="tab-nav ecomtab-nav clearfix">
 							<li><a href="#tabs-bang">eCommerce(Bangladesh)</a></li>
 							<li><a href="#tabs-ind">eCommerce(India)</a></li>
 						</ul>
-						<div class="tab-container">
+						<div class="tab-container ecomTabContainer">
 							<div class="tab-content clearfix" id="tabs-bang">
 								<div class="table-responsive">
-									<table class="table table-hover table-bordered table-comparison nobottommargin">
+									<table class="ecomTable table table-striped table-hover table-bordered table-comparison nobottommargin">
 										<thead>
 										<tr>
 											<th>Area</th>
@@ -33,13 +33,21 @@
 											<td>1K</td>
 											<td>100 <i class="icon-taka"></i></td>
 										</tr>
+										<tr>
+											<td>2K</td>
+											<td>300 <i class="icon-taka"></i></td>
+										</tr>
+										<tr>
+											<td>3K</td>
+											<td>500 <i class="icon-taka"></i></td>
+										</tr>
 										</tbody>
 									</table>
 								</div>
 							</div>
 							<div class="tab-content clearfix" id="tabs-ind">
 								<div class="table-responsive">
-									<table class="table table-hover table-bordered table-comparison nobottommargin">
+									<table class="ecomTable table table-striped table-hover table-bordered table-comparison nobottommargin">
 										<thead>
 										<tr>
 											<th>Area</th>
@@ -49,7 +57,15 @@
 										<tbody>
 										<tr>
 											<td>1K</td>
-											<td>100 <i class="icon-Rupee"></i></td>
+											<td>100 <i class="icon-rupee"></i></td>
+										</tr>
+										<tr>
+											<td>2K</td>
+											<td>300 <i class="icon-rupee"></i></td>
+										</tr>
+										<tr>
+											<td>3K</td>
+											<td>500 <i class="icon-rupee"></i></td>
 										</tr>
 										</tbody>
 									</table>
