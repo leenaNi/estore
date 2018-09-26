@@ -24,7 +24,7 @@
                 <div class="col_one_fourth marginBottom15">
                     <div class="feautreBox">
                         <h4>Facebook/Mobile Login</h4>
-                        <p>No need to remember a new password. VeeStores allows you to create your online store with Facebook autentication. You can also create your online store by validating your mobile number.</p>
+                        <p>No need to remember a new password. VeeStores allows you to create your online store with Facebook authentication. You can also create your online store by validating your mobile number.</p>
                     </div>
                 </div>
                 <div class="col_one_fourth col_last marginBottom15">
@@ -92,7 +92,7 @@
                 <div class="col_one_fourth col_last marginBottom15">
                     <div class="feautreBox">
                         <h4>Customization &amp; Design</h4>
-                        <p>Unlock your creative potential anddesign your online store the way you want it. Take complete control over your store, make real-time changes to logo, slider images etc.</p>
+                        <p>Unlock your creative potential and design your online store the way you want it. Take complete control over your store, make real-time changes to logo, slider images etc.</p>
                     </div>
                 </div>
                 <div class="clear"></div>
@@ -167,7 +167,7 @@
                 <div class="line-new"></div>
                 <div class="col_one_fourth marginBottom15">
                     <div class="">
-                        <h2 class="nobottommargin">PayPayment Integration</h2>
+                        <h2 class="nobottommargin">Payment Integration</h2>
                     </div>
                 </div>
                 <div class="col_one_fourth marginBottom15">
