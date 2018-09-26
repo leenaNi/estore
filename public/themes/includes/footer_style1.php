@@ -76,8 +76,8 @@
 										<abbr><strong>Address:</strong></abbr><br>
 										C/504, Neelkanth Business Park, Near Vidyavihar Station, Vidyavihar West, Mumbai 400086. 
 									</address>
-									<abbr><strong>Phone:</strong></abbr> 9773303885<br>
-									<abbr><strong>Email:</strong></abbr> chitanlad@infinietit.biz
+									<abbr><strong>Phone:</strong></abbr> 1234567890<br>
+									<abbr><strong>Email:</strong></abbr> yourstore@veestores.com
 									
 									<div class="si-share clearfix">
 							<span>Connect with Us on:</span>

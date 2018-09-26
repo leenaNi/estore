@@ -24,8 +24,8 @@
 									</address>
 								</div>
 								<div class="col_half col_last">
-									<strong>Phone:</strong> 9773303885 <br>
-									<strong>Email:</strong> chitanlad@infinietit.biz
+									<strong>Phone:</strong> 1234567890 <br>
+									<strong>Email:</strong> yourstore@veestores.com
 								</div>
 							</div>
 
