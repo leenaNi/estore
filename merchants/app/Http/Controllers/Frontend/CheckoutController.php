@@ -143,6 +143,7 @@ class CheckoutController extends Controller {
     }
 
     public function new_user_login_new() {
+        $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
         $cartContent = Cart::instance('shopping')->content();
         $chkEmail = User:: where("telephone", "=", Input::get("telephone"))->get()->first();
         if (empty($chkEmail)) {
@@ -175,7 +176,7 @@ class CheckoutController extends Controller {
 
                     $email_templates = str_replace($replace, $replacewith, $email_template);
                     $data1 = ['email_template' => $email_templates];
-                    Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), Input::get('email'), Input::get('firstname') . " " . Input::get('lastname'));
+                    Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $getUserInfo->email, Input::get('firstname') . " " . Input::get('lastname'));
                 }
                 if ($getUserInfo->telephone) {
                     $msgOrderSucc = "you have successfully register with Us. " . $referralCode . ". Contact 1800 3000 2020 for real time support.! Team Cartini";
