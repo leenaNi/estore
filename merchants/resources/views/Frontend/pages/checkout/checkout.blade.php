@@ -33,21 +33,21 @@
                                 <div class="col-md-6 col-sm-8 col-xs-12 login_form_col">
                                     <form role="form" class="login_form_btn">
                                         <div class="form-group">
-                                            
-                                                <a href="#loginEX" class="button login_btn existUserLog full-width-btn marRight-Bottom10">LOGIN</a>
-                                            
+
+                                            <a href="#loginEX" class="button login_btn existUserLog full-width-btn marRight-Bottom10">LOGIN</a>
+
                                             <!--  <div class="col-md-1 col-sm-4 col-xs-12 hidden-lg hidden-md">
                                                  <span class="btn or_btn">OR</span>
                                              </div>
                                              <div class="col-md-1 hidden-xs hidden-sm"><span class="or_small">OR</span></div> -->
-                                            
-                                                <button type="button" class="button new_user_btn newUserB full-width-btn marRight-Bottom10">NEW USER</button> 
-                                           
-                                            <!-- <div class="col-md-1 hidden-xs hidden-sm"><span class="or_small">OR</span></div> -->
+
+                                            <button type="button" class="button new_user_btn newUserB full-width-btn marRight-Bottom10">NEW USER</button> 
+
+ <!-- <div class="col-md-1 hidden-xs hidden-sm"><span class="or_small">OR</span></div> -->
                                             @if(isset($checkGuestCheckoutEnabled) && count($checkGuestCheckoutEnabled)>0)
-                                            
-                                                <button type="button" class="button new_user_btn guestCheckoutBtn full-width-btn marRight-Bottom10">Guest Checkout</button>
-                                            
+
+                                            <button type="button" class="button new_user_btn guestCheckoutBtn full-width-btn marRight-Bottom10">Guest Checkout</button>
+
                                             @endif
                                             <small class="field_error newUserErr" style="color:red;display: none"></small>                                    
                                             <!--  <div class="col-md-12 col-sm-12 col-xs-12">
@@ -91,14 +91,14 @@
                                             <input name='lastname' type="text" class="form-control" placeholder="Last Name">
                                             <div id="lastname_checkout_re_validate" class="newerror"></div>
                                         </div>
-                                          <div class="form-group col-md-12">
+                                        <div class="form-group col-md-12">
                                             <lable>Country Code</lable>
-                                                <select class="form-control county_code" required="true" name="country_code">
-                                     <option value="">Select Country Code</option>
-                                     <option value="+91">(+91) India</option>
-                                      <option value="+880">(+880) Bangladesh</option>
-                                     </select>
-                                      
+                                            <select class="form-control county_code" required="true" name="country_code">
+                                                <option value="">Select Country Code</option>
+                                                <option value="+91">(+91) India</option>
+                                                <option value="+880">(+880) Bangladesh</option>
+                                            </select>
+
                                             <div id="country_code_checkout_re_validate" class="newerror"></div>
                                         </div>
                                         <div class="form-group col-md-12">
@@ -153,7 +153,7 @@
                                 <div class="or_horizantal"></div>
                                 <div class="col-md-5 col-sm-3 col-xs-12">
                                     <span class="oricon hidden-sm hidden-xs"></span>
-                                   <div class="social_media_login">
+                                    <div class="social_media_login">
                                         <?php // route('home')}}/login/facebook/{{Crypt::encrypt(Request::url())?>
                                         <a id="fbLink"  class="col-md-12 col-sm-6 col-xs-12 fb_login_btn"  onclick="fbLogin()">
                                             <img src="{{ Config('constants.frontendPublicImgPath').'/fb_login.jpg'}}" class="fb_login_btn"></img>
@@ -236,6 +236,25 @@
                                             </div>
                                             <div class="clearfix"></div>
                                             <div class="form-group col-md-6">
+                                                <lable>Country *</lable>
+                                                <select name="country_id"   class="form-control" required="true"  ng-change="countryChangedValue(getAddData.countryid)"
+                                                        ng-model="getAddData.countryid">
+                                                    <option value="">Please Select </option>
+                                                    <option ng-repeat="contr in country"  value="[[ contr.id ]]">[[ contr.name  ]] </option>
+                                                </select>
+                                                <div id="country_id_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <lable>State *</lable>
+                                                <select name="state" class="form-control zone" required="true" 
+                                                        ng-model="getAddData.zoneid"> 
+                                                    <option value="">Please Select </option>
+                                                    <option ng-repeat="zone in zones" value="[[ zone.id ]]" >[[ zone.name ]]</option>
+                                                </select>
+                                                <div id="state_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="clearfix"></div>  
+                                            <div class="form-group col-md-6">
                                                 <lable>City *</lable>
                                                 <input type="text" name='city' class="form-control"  required="true"  ng-model="getAddData.city" >
                                                 <div id="city_checkout_new_add_form" class="newerror"></div>
@@ -246,25 +265,6 @@
                                                 <input type="text" name='postal_code' id="pincode_check" class="form-control" autocomplete="false"  ng-model="getAddData.postcode">
                                                 <div id="postal_code_checkout_new_add_form" class="newerror"></div>
                                             </div>
-                                            <div class="clearfix"></div>                                           
-                                            <div class="form-group col-md-6">
-                                                <lable>State *</lable>
-                                                <select name="state" class="form-control zone" required="true" 
-                                                        ng-model="getAddData.zoneid"> 
-                                                    <option value="">Please Select </option>
-                                                    <option ng-repeat="zone in zones" value="[[ zone.id ]]" >[[ zone.name ]]</option>
-                                                </select>
-                                                <div id="state_checkout_new_add_form" class="newerror"></div>
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <lable>Country *</lable>
-                                                <select name="country_id"   class="form-control" required="true"  ng-change="countryChangedValue(getAddData.countryid)"
-                                                        ng-model="getAddData.countryid">
-                                                    <option value="">Please Select </option>
-                                                    <option ng-repeat="contr in country"  value="[[ contr.id ]]">[[ contr.name  ]] </option>
-                                                </select>
-                                                <div id="country_id_checkout_new_add_form" class="newerror"></div>
-                                            </div> 
                                             <div class="clearfix"></div>
                                             <div class="form-group col-md-6">
                                                 <lable>Mobile No. *</lable>
@@ -283,9 +283,9 @@
                                     </div>
                                     <div class="hidden-lg hidden-md" style="float:left; width:100%;"><br></div>
                                     <div class="col-md-12 form-group continue-cancel-btnbox mobPadd0-15">     
-                                    <input type="submit" ng-click="addressContinue()" class="button new_user_btn toBillSummary continueStep" data-continue="shippingPanel" value="CONTINUE">
+                                        <input type="submit" ng-click="addressContinue()" class="button new_user_btn toBillSummary continueStep" data-continue="shippingPanel" value="CONTINUE">
                                         <a href="{{ route('cart')}}" class="button new_user_btn pull-right">BACK</a>    
-                                       
+
                                     </div>
                                     </form>
                                 </div>
@@ -328,7 +328,7 @@
                                                 <li>Referral Code: <span class="pull-right referalDiscount">0.00</span></li>
                                                 @endif
                                             </ul>
-                                            <h2>Total <span class="currency-sym-in-braces">(<?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';  ?>)</span><span class="pull-right TotalCartAmt">[[billSummary.finaltotal * billSummary.currency_val| number:2 ]]</span></h2>
+                                            <h2>Total <span class="currency-sym-in-braces">(<?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';   ?>)</span><span class="pull-right TotalCartAmt">[[billSummary.finaltotal * billSummary.currency_val| number:2 ]]</span></h2>
                                         </div>
                                     </div>
                                     <div class="col-md-7 col-sm-6 col-xs-12">
@@ -377,27 +377,27 @@
                                                         @endif
                                                     </div>
                                                     @if(@$feature['manual-discount'] == 1)
-<!--                                                    <li>   
-                                                        <div class="form-group">
-                                                            <label for="email" class="col-md-12 lbl-discount">Discount</label>
-                                                            <span class="col-md-4">
-                                                                <select class="form-control full-width" name="user-level-disc-type" id="user-level-disc" >
-                                                                    <option >Please Select</option>
-                                                                    <option value="1">Percentage</option>
-                                                                    <option value="2">Absolute</option>
-                                                                </select> 
-                                                            </span>
-                                                            <span class="col-md-4">
-                                                                <input name="user_level_discount" type="text" class="form-control userLevelDiscount full-width" placeholder="Enter value for discount">
-                                                            </span>
-                                                            <span class="col-md-4">
-                                                                <button type="button" class="btn new_user_btn full-width" ng-click="userlevelDiscApply()" id="userlevelDiscApply">APPLY</button>
-                                                            </span>
-                                                            <div class="col-sm-12 col-xs-12">
-                                                                <p class="dMsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p>
-                                                            </div>
-                                                        </div>
-                                                    </li> -->
+                                                    <!--                                                    <li>   
+                                                                                                            <div class="form-group">
+                                                                                                                <label for="email" class="col-md-12 lbl-discount">Discount</label>
+                                                                                                                <span class="col-md-4">
+                                                                                                                    <select class="form-control full-width" name="user-level-disc-type" id="user-level-disc" >
+                                                                                                                        <option >Please Select</option>
+                                                                                                                        <option value="1">Percentage</option>
+                                                                                                                        <option value="2">Absolute</option>
+                                                                                                                    </select> 
+                                                                                                                </span>
+                                                                                                                <span class="col-md-4">
+                                                                                                                    <input name="user_level_discount" type="text" class="form-control userLevelDiscount full-width" placeholder="Enter value for discount">
+                                                                                                                </span>
+                                                                                                                <span class="col-md-4">
+                                                                                                                    <button type="button" class="btn new_user_btn full-width" ng-click="userlevelDiscApply()" id="userlevelDiscApply">APPLY</button>
+                                                                                                                </span>
+                                                                                                                <div class="col-sm-12 col-xs-12">
+                                                                                                                    <p class="dMsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </li> -->
                                                     @endif
                                                 </div>
                                                 <li>
@@ -415,10 +415,10 @@
                                 <div class="clearfix"></div>
                                 <div class="form-group">
                                     <div class="col-md-12 form-group continue-cancel-btnbox">    
-                                                               
-                                            <button type="button" class="btn new_user_btn continueStep checkcod_yesno" ng-click="toPaymentF()" data-continue="billPanel" style="margin:5px 0 0 0;">CONTINUE</button>    
-                                            <button ng-click="backToAddress()" class="button login_btn">BACK</button>  
-                                        
+
+                                        <button type="button" class="btn new_user_btn continueStep checkcod_yesno" ng-click="toPaymentF()" data-continue="billPanel" style="margin:5px 0 0 0;">CONTINUE</button>    
+                                        <button ng-click="backToAddress()" class="button login_btn">BACK</button>  
+
                                     </div>
                                 </div>
                             </div>
@@ -449,7 +449,7 @@
                                                 <p>[[ toPayment.address.city ]]- [[ toPayment.address.postcode ]]</p> <span><u>[[ toPayment.cod_msg ]]</u></span>
                                                 <p>Mobile No: [[ toPayment.address.phone_no ]]</p>
                                             </div>
-                                            <h5>Bill Amount: <span class="currency-sym"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';  ?></span>  <b class="finalamt">[[ toPayment.payamt | number : 2 ]]</b></h5>
+                                            <h5>Bill Amount: <span class="currency-sym"><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';   ?></span>  <b class="finalamt">[[ toPayment.payamt | number : 2 ]]</b></h5>
                                             <p style="display:none;" class="codCharges">0</p>
                                         </div>
                                         @if(@$feature['additional-charge'] == 1)
@@ -462,7 +462,7 @@
                                             <table class="table table-striped table-hover additional-charge">
                                                 @endif
                                                 <tr>
-                                                    <th>Total <span class="currency-sym-in-braces"></span><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';  ?></th>
+                                                    <th>Total <span class="currency-sym-in-braces"></span><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';   ?></th>
                                                     <td><span class="total_amt">[[ toPayment.finalAmt | number: 2]]</span> </td> 
                                                 </tr>
                                             </table>                                       
@@ -494,7 +494,7 @@
                                                 <!--                                                <li ng-show="toPayment.address.country_id == 99 && toPayment.codStatus == 1">-->
                                                 <div ng-show="toPayment.is_cod == 1"> 
                                                     <li>
-                                                        <input  name="paymentMethod" type="radio" ng-model="payOpt" ng-click="paymentmethodChk($event)" class="chk_cod cod codChk" data-method = 'cod' name="radio"  id="radioCod"  value="3"><label for="radioCod"   ><span><span></span></span> CASH ON DELIVERY <span ng-show="toPayment.cod_charges > 0">(<span class="currency-sym"></span> <?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';  ?>[[ toPayment.cod_charges * toPayment.currency_val |number :2 ]])</span></label>
+                                                        <input  name="paymentMethod" type="radio" ng-model="payOpt" ng-click="paymentmethodChk($event)" class="chk_cod cod codChk" data-method = 'cod' name="radio"  id="radioCod"  value="3"><label for="radioCod"   ><span><span></span></span> CASH ON DELIVERY <span ng-show="toPayment.cod_charges > 0">(<span class="currency-sym"></span> <?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';   ?>[[ toPayment.cod_charges * toPayment.currency_val |number :2 ]])</span></label>
                                                     </li> 
                                                 </div>                                                   
                                                 <li>
@@ -515,11 +515,11 @@
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="form-group">  
-                                
-                                    <div class="col-md-12 form-group continue-cancel-btnbox">                         
-                                            <input type="button" ng-click="placeOrder($event)" value="PLACE ORDER" class="btn new_user_btn">  
 
-                                            <button type="button"  class="btn login_btn" ng-click="backToBill()">BACK</button> 
+                                    <div class="col-md-12 form-group continue-cancel-btnbox">                         
+                                        <input type="button" ng-click="placeOrder($event)" value="PLACE ORDER" class="btn new_user_btn">  
+
+                                        <button type="button"  class="btn login_btn" ng-click="backToBill()">BACK</button> 
                                     </div>  
                                 </div>
                             </form>
@@ -543,7 +543,7 @@
                         </div>
                     </div>
                 </div>
-                  <div id="internationallyProdPopUp" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div id="internationallyProdPopUp" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-body">
                             <div class="modal-content">
@@ -573,10 +573,10 @@
         $(".pincodeMessageLoader").hide();
         setTimeout(function () {
             var pincode = $('#pincode_check').val();
-          if(pincode==''){
-              $(".pincodeMessage").css('color', "");
-              return false;
-          }
+            if (pincode == '') {
+                $(".pincodeMessage").css('color', "");
+                return false;
+            }
             console.log(pincode);
             $.ajax({
                 url: "{{route('checkPincodeHome')}}",
@@ -836,7 +836,7 @@
 //        console.log("is email");
 //        if (eml.test(ep_emailval) == false) {
 //    alert("Invalid Email/Phone.");
-//   // $("#<%=txtEmail.ClientID %>").focus();
+//   // $("#<%= txtEmail . ClientID %>").focus();
 //    //return false;
 // }
 //    }
@@ -844,8 +844,8 @@
 
     $('#regEmail').blur(function () {
         var email = $(this).val();
-        if(email==''){
-             $('#regEmail').removeClass('error');
+        if (email == '') {
+            $('#regEmail').removeClass('error');
             return false;
         }
         $.ajax({
@@ -871,8 +871,8 @@
 
     $('#regtelephone').blur(function () {
         var telephone = $(this).val();
-        if(telephone==''){
-             $('#regtelephone').removeClass('error');
+        if (telephone == '') {
+            $('#regtelephone').removeClass('error');
             return false;
         }
         $.ajax({
