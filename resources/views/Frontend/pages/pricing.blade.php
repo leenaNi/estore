@@ -3,7 +3,7 @@
 <section id="page-title" class="page-title-parallax page-title-center" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/static.jpg') }}') 0px; padding: 103px 0;">
 
 	<div class="container clearfix">
-				<h2 class="white-text bottommargin-xs" data-animate="fadeInUp">Pricing that puts you first</h2>
+				<h2 class="white-text bottommargin-xs" data-animate="fadeInUp">Pricing that puts you firsts</h2>
 				<span class="white-text" data-animate="fadeInUp" data-delay="300">One powerful platform. Two simple plans.</span>
 			</div>
 </section>
