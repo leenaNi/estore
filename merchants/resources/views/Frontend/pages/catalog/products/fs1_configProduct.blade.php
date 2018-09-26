@@ -198,7 +198,9 @@
 <script>
     $(document).ready(function () {
         $('head').append('<meta property="og:image" content="<?= $product->prodImage ?>" /> ');
-    });
+   
+  
+ });
     function isNumber(evt) {
         evt = (evt) ? evt : window.event;
         var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -240,11 +242,7 @@
         if (minvalue != currentVal)
             $('#quantity').val(parseInt(currentVal) - 1);
     });
-    $('.attrSel').change(function () {
-      
-        $(".optError").remove();
-    })
-
+    
     
 </script>
 @stop
