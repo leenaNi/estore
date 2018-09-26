@@ -60,7 +60,7 @@
                                         <small class="existUserError field_error" style="color:red;">[[ newUserError ]]</small>
                                     </div>
                                     <form id="loginEX" method='post' action="{{ route('get_exist_user_login_new')}}">
-                                        <div class="loginF login_form" style="margin-bottom:20px;">
+                                        <div class="loginF login_form row" style="margin-bottom:20px;">
                                             <div class="form-group col-md-12">
                                                 <input type="text" name="loginemail" class="form-control ExistEmail"  id="userEmail" placeholder="Mobile / Email *">
                                                 <div id="loginemail_checkout_re_validate" class="newerror"></div>
@@ -81,6 +81,7 @@
                                         </div>
                                     </form>
                                     <form role="form" method='post' class="login_form loginFormNewUser" action='{{ route('new_user_login_new')}}' style="display:none; margin-bottom:20px;" id='checkoutRegisterFormid'>
+                                    <div class="row">
                                         <div class="form-group col-md-6">
                                             <lable>First Name</lable>
                                             <input name='firstname' type="text" class="form-control" placeholder="First Name *">
@@ -130,9 +131,11 @@
                                                 <input type="button" value="CANCEL" class="button login_btn newUserCancel">
                                             </div>    
                                         </div>
+</div>
                                     </form>
                                     <form id="guestCheckoutFrm" method="post">
                                         <div class="guestCheckoutFrm" style="display:none; margin-bottom:20px;">
+                                        <div class="row">
                                             <div class="form-group col-md-12">
                                                 <input name="guestemail" type="text" class="form-control ExistGEmail"  id="guestEmail" placeholder="E-mail">
                                                 <div id="guestemail_checkout_re_validate" class="newerror"></div>
@@ -143,6 +146,7 @@
                                                     <button type="button" ng-click="loginExistingCancel1()" class="button login_btn guestCheckoutCancel">CANCEL</button>
                                                 </div>
                                             </div>
+</div>
                                         </div>
                                     </form>
                                 </div>
