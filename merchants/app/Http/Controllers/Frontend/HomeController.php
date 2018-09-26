@@ -482,39 +482,43 @@ class HomeController extends Controller {
 
     public function ecurierTracking() {
         $trackingId = Input::get("trackingId");
-       // dd($trackingId);
+        // dd($trackingId);
         $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-        $headers[] ='USER_ID:I8837';
+        $headers[] = 'USER_ID:I8837';
         $headers[] = 'API_KEY:xqdH';
         $headers[] = 'API_SECRET:jubLW';
         $reqArray = [];
         $reqArray['parcel'] = 'track';
-        $reqArray['ecr'] =$trackingId;
+        $reqArray['ecr'] = $trackingId;
+        $order = Order::where("store_id", $this->jsonString['store_id'])->where("shiplabel_tracking_id", $trackingId)->count();
+        if ($order > 0) {
+            $url = "http://ecourier.com.bd/apiv2/";
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
 
-        $url = "http://ecourier.com.bd/apiv2/";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
-
-        $output = curl_exec($ch);
-       // echo "==eerrno=" . curl_errno($ch) . "<br>";
-      //  echo "output===" . print_r($output);
-        if (curl_errno($ch)) {
-          //  echo 'Error:' . curl_error($ch);
-        } else {
-          //  echo "ggg";
-        }
-      //  dd(json_decode($output));
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-      //  echo 'HTTP code: ' . $httpcode;
-        if(json_decode($output)->query_data=='No Data Found'){
-             $data=['status'=>0,'trackdata'=>json_decode($output)->query_data]; 
+            $output = curl_exec($ch);
+            // echo "==eerrno=" . curl_errno($ch) . "<br>";
+            //  echo "output===" . print_r($output);
+            if (curl_errno($ch)) {
+                //  echo 'Error:' . curl_error($ch);
+            } else {
+                //  echo "ggg";
+            }
+            //  dd(json_decode($output));
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            //  echo 'HTTP code: ' . $httpcode;
+            if (json_decode($output)->query_data == 'No Data Found') {
+                $data = ['status' => 0, 'trackdata' => json_decode($output)->query_data];
+            } else {
+                $data = ['status' => 1, 'trackdata' => json_decode($output)->query_data[0]->status];
+            }
         }else{
-         $data=['status'=>1,'trackdata'=>json_decode($output)->query_data[0]->status];   
+             $data = ['status' => 0, 'trackdata' =>"This Tracking id does not exists in our system please check and try again!."];
         }
         return $data;
     }
