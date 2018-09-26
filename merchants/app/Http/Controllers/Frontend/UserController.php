@@ -92,7 +92,7 @@ class UserController extends Controller {
         $returnProductStatus = GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
         $orderReturnReason = OrderReturnReason::pluck('reason', 'id');
         $getid = $id;
-        $order = Order::where('orders.id', $getid)->with('currency', 'orderStatHist')->first();
+        $order = Order::where('orders.id', $getid)->with('orderStatHist')->first();
 
 
         $prod_id = HasProducts::where('order_id', $getid)->where("prefix", $this->jsonString['prefix'])->pluck("prod_id");

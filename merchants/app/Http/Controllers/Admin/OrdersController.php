@@ -590,7 +590,7 @@ class OrdersController extends Controller {
             $allids = Input::get('OrderIds');
         }
 
-        $orders = Order::whereIn('id', explode(",", $allids))->with('currency')->get();
+        $orders = Order::whereIn('id', explode(",", $allids))->get();
         foreach ($orders as $key => $order) {
             $catlogs = json_decode($order->cart, true);
             $orders[$key]->previous_order = [];
@@ -2500,7 +2500,7 @@ class OrdersController extends Controller {
         $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
         $storeContact = json_decode($contact);
 
-        $orders = Order::where('id', $allids)->with('currency')->get();
+        $orders = Order::where('id', $allids)->get();
 
         foreach ($orders as $key => $saveorder) {
             $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
