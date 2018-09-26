@@ -81,7 +81,7 @@
                             <td> <span class="currency-sym"> </span><span class="priceConvert"> {{ $order->pay_amt }}<span></td>
                                         <td> <span class="currency-sym"> </span> <span class="priceConvert"> {{ $order->settled_amt? $order->settled_amt:'0'}}</span></td>
                                         <td> <span class="currency-sym"> </span> <span class="priceConvert"> {{ $order->commision? $order->commision:'0'}}</span></td>
-                                        <td > {{$order->settled_date}}{{@$order->settled_date? date('d-M-Y',strtotime(@$order->settled_date)):'--' }}</td>
+                                        <td>{{@$order->settled_date? date('d-M-Y',strtotime(@$order->settled_date)):'--' }}</td>
 
 
                                         <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
