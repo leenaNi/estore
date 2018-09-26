@@ -528,7 +528,7 @@ save.addEventListener('click', function (e) {
                         var imgclone = imgtodrag.clone()
                                 .offset({
                                     top: imgtodrag.offset().top,
-                                    right: imgtodrag.offset().right
+                                    left: imgtodrag.offset().left
                                 })
                                 .css({
                                     'opacity': '0.5',
@@ -540,7 +540,7 @@ save.addEventListener('click', function (e) {
                                 .appendTo($('body'))
                                 .animate({
                                     'top': cart.offset().top + 10,
-                                    'right': cart.offset().right + 10,
+                                    'left': cart.offset().left + 10,
                                     'width': 75,
                                     'height': 75
                                 }, 800, 'easeInOutExpo');
