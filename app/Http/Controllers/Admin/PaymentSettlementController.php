@@ -70,7 +70,7 @@ class PaymentSettlementController extends Controller {
                 $order->commision = $commision;
             }
         }
-        $data = ['orders' => $orders1, 'stores' => $stores];
+        $data = ['orders' => $orders, 'stores' => $stores];
         $viewname = Config('constants.AdminPagesPaymentettlement') . ".index";
         return Helper::returnView($viewname, $data);
     }
