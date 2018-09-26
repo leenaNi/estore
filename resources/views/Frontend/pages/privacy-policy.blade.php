@@ -23,7 +23,7 @@
 			<div class="content-wrap">
 
 				<div class="container clearfix staticPageContent">
-					<p>VEESTORES is a business unit of Chain Fintech Solutions Ltd, (“CFS”)  and powers / manages the website <a href="#">http://www.veestores.com</a> and its sub-domains thereof.</p>
+					<p>VeeStores is a business unit of Chain Fintech Solutions Ltd, (“CFS”)  and powers / manages the website <a href="#">http://www.veestores.com</a> and its sub-domains thereof.</p>
 					<p>CFS respects the privacy of its users and is committed to protect it in all respects. With a view to offer most enriching and holistic internet experience to its users CFS offers a vast repository of Online Sites and variety of community services. The information about the user as collected by CFS is: (a) information supplied by users and (b) information automatically tracked while navigation (Information).</p>
 					<p>By using CFS's website or its services, you consent to collection, storage, and use of the personal information you provide (including any changes thereto as provided by you) for any of the services that we offer.</p>
 
