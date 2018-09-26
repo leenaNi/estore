@@ -31,7 +31,7 @@ class PaymentSettlementController extends Controller {
         if ($settle == 1) {
             $orders = DB::table("has_products")->orderBy("has_products.id", "desc")->join("stores", "stores.id", '=', "has_products.store_id")->
                     leftjoin("payment_settlement as ps", "ps.order_id", '=', "has_products.id")
-                    ->select('has_products.*', 'stores.store_name', 'stores.percent_to_charge', 'ps.settled_amt', 'ps.settled_date', 'ps.commision');
+                    ->select('has_products.*', 'stores.store_name', 'stores.percent_to_charge', 'ps.settled_amt', 'ps.settled_date', 'ps.commission');
 
             $orders->where('settled_status', 1);
         } else {
@@ -65,9 +65,9 @@ class PaymentSettlementController extends Controller {
             }
            
             foreach ($orders as $order) {
-                $commision = $order->pay_amt * $order->percent_to_charge * 0.01;
-                $order->settled_amt = ($order->pay_amt - $commision);
-                $order->commision = $commision;
+                $commission = $order->pay_amt * $order->percent_to_charge * 0.01;
+                $order->settled_amt = ($order->pay_amt - $commission);
+                $order->commission = $commission;
             }
         }
         $data = ['orders' => $orders, 'stores' => $stores];
@@ -103,15 +103,15 @@ class PaymentSettlementController extends Controller {
 
     public function saveSettlementHistory($order) {
 
-        $commision = $order->pay_amt * $order->percent_to_charge * 0.01;
-        $settleAmt = ($order->pay_amt - $commision);
+        $commission = $order->pay_amt * $order->percent_to_charge * 0.01;
+        $settleAmt = ($order->pay_amt - $commission);
         $history = [];
         $history['order_id'] = $order->id;
         $history['store_id'] = $order->store_id;
         $history['order_amt'] = $order->pay_amt;
         $history['settled_amt'] = round($settleAmt, 2);
         $history['percent'] = $order->percent_to_charge;
-        $history['commision'] = $commision;
+        $history['commission'] = $commission;
         $history['settled_date'] = date('Y-m-d h:i');
         DB::table("payment_settlement")->insert($history);
         DB::table("has_products")->where("id", $order->id)->update(['settled_status' => 1]);
