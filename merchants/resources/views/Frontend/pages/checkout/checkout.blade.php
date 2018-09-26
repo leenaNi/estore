@@ -34,14 +34,14 @@
                                     <form role="form" class="login_form_btn">
                                         <div class="form-group">
 
-                                            <a href="#loginEX" class="button login_btn existUserLog full-width-btn marRight-Bottom10" style="margin-right:10px;">LOGIN</a>
+                                            <a href="#loginEX" class="button login_btn existUserLog full-width-btn marRight-Bottom10" style="margin-right:10px !important;">LOGIN</a>
 
                                             <!--  <div class="col-md-1 col-sm-4 col-xs-12 hidden-lg hidden-md">
                                                  <span class="btn or_btn">OR</span>
                                              </div>
                                              <div class="col-md-1 hidden-xs hidden-sm"><span class="or_small">OR</span></div> -->
 
-                                            <button type="button" class="button new_user_btn newUserB full-width-btn marRight-Bottom10" style="margin-right:10px;">NEW USER</button> 
+                                            <button type="button" class="button new_user_btn newUserB full-width-btn marRight-Bottom10" style="margin-right:10px !important;">NEW USER</button> 
 
  <!-- <div class="col-md-1 hidden-xs hidden-sm"><span class="or_small">OR</span></div> -->
                                             @if(isset($checkGuestCheckoutEnabled) && count($checkGuestCheckoutEnabled)>0)
