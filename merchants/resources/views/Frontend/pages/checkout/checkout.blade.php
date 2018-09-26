@@ -15,7 +15,7 @@
     </div>
 </section>
 <div id="content" class="site-content single-product">
-    <input type="hidden" id="pincodeStatus" value="{{ @$pincodeStatus - > status}}">
+    <input type="hidden" id="pincodeStatus" value="{{ @$pincodeStatus->status}}">
     <div class="container">
         <div class="checkout" ng-controller="checkoutController">
             <div class="panel-group"  id="accordion" role="tablist" aria-multiselectable="true">
