@@ -145,7 +145,7 @@ print_r(App\Library\Helper::socialShareIcon($social));
                   <div class="product-desc">
                     <div class="product-title">
                       <h3><a href="{{$relprd->url_key}}">{{$relprd->product}}</a></h3> </div>
-                   @if($relprd->spl_price > 0 && $relprd->spl_price > $relprd->price)
+                   @if($relprd->spl_price > 0 && $relprd->price > $relprd->spl_price)
                     <div class="product-price"><del><span class="currency-sym"></span>{{number_format($relprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format($relprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> </div>
                     @else 
                      <div class="product-price"> <ins><span class="currency-sym"></span> {{number_format($relprd->price * Session::get('currency_val'), 2, '.', '')}}</ins> </div>
@@ -184,7 +184,7 @@ print_r(App\Library\Helper::socialShareIcon($social));
                                     <h3><a href="{{ $upsellprd->url_key }}">{{ $upsellprd->product }}</a></h3> </div>
 
                                 <div class="product-price">
-                                    @if($upsellprd->spl_price > 0 && $upsellprd->spl_price > $upsellprd->price)
+                                    @if($upsellprd->spl_price > 0 && $upsellprd->price > $upsellprd->spl_price)
                                     <del><span class="currency-sym"></span> {{number_format($upsellprd->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format($upsellprd->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins> 
                                     @else
                                     <ins><span class="currency-sym"></span> {{number_format($upsellprd->price * Session::get('currency_val'), 2, '.', '')}}</ins> 

@@ -50,6 +50,7 @@ class HomeController extends Controller {
     }
 
     public function index() {
+   
 //      $users = User::with("userCashback")->find( 1);
 //     dd($users);
 //$chkEmail = DB::select(DB::raw("select * from users"));

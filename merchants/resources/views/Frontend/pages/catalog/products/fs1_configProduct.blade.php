@@ -92,7 +92,7 @@
                                 <div class="clear"></div>
                                 <div class="line"></div>
                                 <!-- Product Single - Short Description  ============================================= -->
-                                <div class="shortDesc" >[[product.short_desc | removeHTMLTags]]</div>            
+                                <div class="shortDesc" ng-show="product.short_desc!=''">[[product.short_desc | removeHTMLTags]]</div>            
                                 <!-- AddToAny BEGIN -->
                                 <div class="shareSociIconBox">
                                 <strong>Share:</strong> 
@@ -143,7 +143,7 @@
                                         <div class="product-title">
                                             <h3><a href="">{{$relProduct->product}}</a></h3> </div>
                                         <div class="product-price"> 
-                                            @if($relProduct->spl_price >0 && $relProduct->price >$relProduct->spl_price)
+                                            @if($relProduct->spl_price >0 && $relProduct->price > $relProduct->spl_price)
                                             <del><span class="currency-sym"></span>  {{number_format(@$relProduct->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relProduct->spl_price * Session::get('currency_val'), 2, '.', '')}} </ins>
                                             @else 
                                             <ins><span class="currency-sym"></span>  {{number_format(@$relProduct->price * Session::get('currency_val'), 2, '.', '')}}</ins>
