@@ -14,14 +14,14 @@
 
 				<div class="container clearfix">
 					<div class="tabs tabs-alt tabs-tb clearfix" id="tab-8">
-						<ul class="tab-nav clearfix">
+						<ul class="tab-nav ecomtab-nav clearfix">
 							<li><a href="#tabs-bang">eCommerce(Bangladesh)</a></li>
 							<li><a href="#tabs-ind">eCommerce(India)</a></li>
 						</ul>
-						<div class="tab-container">
+						<div class="tab-container ecomTabContainer">
 							<div class="tab-content clearfix" id="tabs-bang">
 								<div class="table-responsive">
-									<table class="table table-hover table-bordered table-comparison nobottommargin">
+									<table class="table table-striped table-hover table-bordered table-comparison nobottommargin">
 										<thead>
 										<tr>
 											<th>Area</th>
@@ -39,7 +39,7 @@
 							</div>
 							<div class="tab-content clearfix" id="tabs-ind">
 								<div class="table-responsive">
-									<table class="table table-hover table-bordered table-comparison nobottommargin">
+									<table class="table table-striped table-hover table-bordered table-comparison nobottommargin">
 										<thead>
 										<tr>
 											<th>Area</th>

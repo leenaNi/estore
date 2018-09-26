@@ -91,6 +91,18 @@
 i.icon-taka:before {
 	content: '৳';
 }
+.ecomTabContainer{
+	border: 1px solid #ddd;
+	border-top: 0;
+	padding: 30px 15px;
+}
+.ecomtab-nav li:first-child{
+	margin-left: 0px !important;
+}
+.ecomtab-nav li.ui-tabs-active a{
+	border: 0 !important;
+	border-bottom: 0;
+}
 .setUpStoreBtn a {
 	min-width: 200px;
 	margin-right: 10px;
