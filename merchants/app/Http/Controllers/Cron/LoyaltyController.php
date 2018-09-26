@@ -8,7 +8,9 @@ use App\Models\Loyalty;
 use App\Models\Order;
 use App\Models\HasCashbackLoyalty;
 use App\Models\GeneralSetting;
+use App\Models\HasCurrency;
 use App\Http\Requests;
+use App\Library\Helper;
 use App\Http\Controllers\Controller;
 use DB;
 
@@ -19,7 +21,20 @@ class LoyaltyController extends Controller {
     }
 
     public function indexCron() {
+    $setting = Helper::getSettings();
+    $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+    $cur=$setting['currencyId'];
+   $curCode= HasCurrency::where("iso_code",$cur)->first()->currency_code;
+    $from_Currency = urlencode("INR");
+    $to_Currency = urlencode($curCode);
+     $query =  "{$from_Currency}_{$to_Currency}";
 
+     $json = file_get_contents("https://api.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
+     $obj = json_decode($json, true);
+
+  $val = floatval($obj["$query"]);
+dd($val);
+     
         $days = GeneralSetting::where('url_key', 'loyalty')->first();
 
         $order = Order::where('loyalty_cron_status', 1)
@@ -135,5 +150,26 @@ class LoyaltyController extends Controller {
             }
         }
     }
+public function getRealTimeCurrency(){
+ 
 
+  
+    
+    
+ $setting = Helper::getSettings();
+    $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+    $cur=$setting['currencyId'];
+     $url = "https://free.currencyconverterapi.com/api/v6/convert?q=INR_".$cur.",INR_".$cur."&compact=ultra";
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+           // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
+
+            $output = curl_exec($ch);
+           
+            curl_close($ch);
+
+}
 }
