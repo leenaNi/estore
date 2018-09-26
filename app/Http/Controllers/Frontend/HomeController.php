@@ -618,6 +618,12 @@ class HomeController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
+    public function logisticPartners() {
+        $data = [];
+        $viewname = Config('constants.frontendView') . ".logistic-partners";
+        return Helper::returnView($viewname, $data);
+    }
+
     public function infiniSys() {
         $data = [];
         $viewname = Config('constants.frontendView') . ".infini";

@@ -23,6 +23,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/thankyou', ['as' => 'thankYou', 'uses' => 'HomeController@thankYou']);
     Route::any('/wait-process', ['as' => 'waitProcess', 'uses' => 'HomeController@waitProcess']);
     Route::any('/pricing', ['as' => 'pricing', 'uses' => 'HomeController@pricing']);
+    Route::any('/logistic-partners', ['as' => 'logistic-partners', 'uses' => 'HomeController@logisticPartners']);
     Route::post('/check-existing-user', ['as' => 'checkExistingUser', 'uses' => 'HomeController@checkExistingUser']);
     Route::post('/check-existing-phone', ['as' => 'checkExistingphone', 'uses' => 'HomeController@checkExistingphone']);
     Route::any('/infinisys', ['as' => 'home1', 'uses' => 'HomeController@infiniSys']);
