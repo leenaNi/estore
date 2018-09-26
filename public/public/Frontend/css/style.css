@@ -102,6 +102,12 @@ i.icon-taka:before {
 .ecomtab-nav li{
 	border: 1px solid #ddd !important;
 }
+.ecomtab-nav li.ui-state-active:first-child {
+	border-right: 0px !important;
+}
+.ecomtab-nav li.ui-state-active {
+	border-left: 0px !important;
+}
 .ecomtab-nav li.ui-tabs-active a{
 	border-top: 2px solid #8ab34f !important;
 	border-left: 0 !important;
