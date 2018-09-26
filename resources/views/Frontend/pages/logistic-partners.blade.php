@@ -33,6 +33,14 @@
 											<td>1K</td>
 											<td>100 <i class="icon-taka"></i></td>
 										</tr>
+										<tr>
+											<td>2K</td>
+											<td>300 <i class="icon-taka"></i></td>
+										</tr>
+										<tr>
+											<td>3K</td>
+											<td>500 <i class="icon-taka"></i></td>
+										</tr>
 										</tbody>
 									</table>
 								</div>
@@ -49,7 +57,15 @@
 										<tbody>
 										<tr>
 											<td>1K</td>
-											<td>100 <i class="icon-Rupee"></i></td>
+											<td>100 <i class="icon-rupee"></i></td>
+										</tr>
+										<tr>
+											<td>2K</td>
+											<td>300 <i class="icon-rupee"></i></td>
+										</tr>
+										<tr>
+											<td>3K</td>
+											<td>500 <i class="icon-rupee"></i></td>
 										</tr>
 										</tbody>
 									</table>

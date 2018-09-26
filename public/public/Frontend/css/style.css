@@ -100,7 +100,7 @@ i.icon-taka:before {
 	margin-left: 0px !important;
 }
 .ecomtab-nav li{
-	border: 1px soli #ddd;
+	border: 1px soli #ddd !important;
 }
 .ecomtab-nav li.ui-tabs-active a{
 	border-top: 2px solid #8ab34f !important;
