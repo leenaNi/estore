@@ -24,7 +24,8 @@ class LoyaltyController extends Controller {
     $setting = Helper::getSettings();
     $headers[] = 'Content-Type:application/x-www-form-urlencoded';
     $cur=$setting['currencyId'];
-   $curCode= HasCurrency::where("iso_code",$cur)->first()->currency_code;
+    $curency= HasCurrency::where("iso_code",$cur)->first()->currency_code;
+    $curCode=$curency->currency_code;
     $from_Currency = urlencode("INR");
     $to_Currency = urlencode($curCode);
      $query =  "{$from_Currency}_{$to_Currency}";
@@ -33,7 +34,9 @@ class LoyaltyController extends Controller {
      $obj = json_decode($json, true);
 
   $val = floatval($obj["$query"]);
-dd($val);
+  $curency->currency_val=$val;
+  $curency->save();
+
      
         $days = GeneralSetting::where('url_key', 'loyalty')->first();
 
@@ -152,24 +155,21 @@ dd($val);
     }
 public function getRealTimeCurrency(){
  
-
-  
-    
-    
- $setting = Helper::getSettings();
+$setting = Helper::getSettings();
     $headers[] = 'Content-Type:application/x-www-form-urlencoded';
     $cur=$setting['currencyId'];
-     $url = "https://free.currencyconverterapi.com/api/v6/convert?q=INR_".$cur.",INR_".$cur."&compact=ultra";
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-           // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
+    $curency= HasCurrency::where("iso_code",$cur)->first()->currency_code;
+    $curCode=$curency->currency_code;
+    $from_Currency = urlencode("INR");
+    $to_Currency = urlencode($curCode);
+     $query =  "{$from_Currency}_{$to_Currency}";
 
-            $output = curl_exec($ch);
-           
-            curl_close($ch);
+     $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
+     $obj = json_decode($json, true);
+
+  $val = floatval($obj["$query"]);
+  $curency->currency_val=$val;
+  $curency->save();
 
 }
 }
