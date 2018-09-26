@@ -29,7 +29,7 @@ class LoyaltyController extends Controller {
     $to_Currency = urlencode($curCode);
      $query =  "{$from_Currency}_{$to_Currency}";
 
-     $json = file_get_contents("https://api.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
+     $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
      $obj = json_decode($json, true);
 
   $val = floatval($obj["$query"]);
