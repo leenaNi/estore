@@ -1,7 +1,7 @@
 @extends('Frontend.layouts.default') 
 @section('content')
-<section id="slider" class="slider-parallax full-screen clearfix">
-    <div class="slider-parallax-inner">
+<section id="slider" class="full-screen clearfix">
+    <div class="">
         <div class="fslider" data-arrows="true" data-pagi="false">
             <div class="flexslider">
                 <div class="slider-wrap">
