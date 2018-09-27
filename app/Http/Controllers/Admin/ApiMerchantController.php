@@ -76,8 +76,8 @@ class ApiMerchantController extends Controller {
         $merchant->lastname = Input::get("lastname");
         $oldPassword = Input::get("oldPassword");
         $password=Input::get("password");
-          $check = (Hash::check($oldPassword, $merchant->password));
-        $users = DB::table($store->prefix . '_users')->where('email',$merchant->email)->first();
+        $check = (Hash::check($oldPassword, $merchant->password));
+        $users = DB::table('users')->where('email',$merchant->email)->first();
         if(!empty($oldPassword) && !empty($password)){
         if ($check == true) {
             $merchant->password = Hash::make(Input::get("password"));
@@ -86,7 +86,7 @@ class ApiMerchantController extends Controller {
             return $data = ["status" =>"0", "msg" => "Give old password is incorrect"];
         }
         }
-         $user = DB::table($store->prefix . '_users')->where('email',$merchant->email)->update($user);
+         $user = DB::table('users')->where('email',$merchant->email)->update($user);
         //  $merchant->email = Input::get("email");
         //  $merchant->phone = Input::get("phone");
         $merchant->save();
@@ -193,8 +193,8 @@ class ApiMerchantController extends Controller {
 
             $data['details'] = json_encode($postedData);
 
-            DB::table($merchant->prefix . '_general_setting')->where('url_key', 'bank_acc_details')->update($data
-            );
+            DB::table($merchant->prefix . '_general_setting')->where('url_key', 'bank_acc_details')->update($data);
+           
 
             return $data = ["status" => 1, "msg" => "Bank details updated successfully!"];
         }

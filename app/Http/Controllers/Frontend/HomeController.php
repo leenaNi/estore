@@ -20,7 +20,7 @@ use App\Models\Language;
 use App\Models\MerchantOrder;
 use App\Models\StoreTheme;
 use App\Models\Templates;
-use App\Models\Currency;
+use App\Models\HasCurrency;
 use App\Models\Zone;
 use Illuminate\Support\Facades\Input;
 use Hash;
@@ -124,7 +124,7 @@ class HomeController extends Controller {
         //  dd($availability);
         //  dd($checkdomain);
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
-        $curr = Currency::where('status', 1)->orderBy("currency_code", "asc")->get(['status', 'id', 'name', 'iso_code', 'currency_code']);
+        $curr = HasCurrency::where('status', 1)->orderBy("currency_code", "asc")->get(['status', 'id', 'name', 'iso_code', 'currency_code']);
         $viewname = Config('constants.frontendView') . ".new-store";
         $data = ['cat' => $cat, 'curr' => $curr];
         return Helper::returnView($viewname, $data);
@@ -451,7 +451,7 @@ class HomeController extends Controller {
                         $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
                         $decodeVal['themeid'] = $themeid;
                         $decodeVal['themedata'] = $themedata;
-                        $decodeVal['currencyId'] = @Currency::find($currency)->iso_code;
+                        $decodeVal['currencyId'] = @HasCurrency::find($currency)->iso_code;
                         $decodeVal['store_version'] = @$storeVersion;
                         $newJsonString = json_encode($decodeVal);
                     }
@@ -460,8 +460,8 @@ class HomeController extends Controller {
                     if (!empty($currency)) {
 
                         $decodeVal['currency'] = $currency;
-                        $decodeVal['currency_code'] = @Currency::find($currency)->iso_code;
-                        $currVal = Currency::find($currency);
+                        $decodeVal['currency_code'] = HasCurrency::find($currency)->iso_code;
+                        $currVal = HasCurrency::find($currency);
                         if (!empty($currVal)) {
                             $currJson = json_encode(['name' => $currVal->name, 'iso_code' => $currVal->iso_code]);
                             DB::table($prefix . "_general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0]);
@@ -543,11 +543,11 @@ class HomeController extends Controller {
                     $baseurl = str_replace("\\", "/", base_path());
                     $domain = 'veestores.com'; //$_SERVER['HTTP_HOST'];
                     $sub = "VeeStores Links for Online Store - " . $storeName;
-                    $mailcontent = "Congratulations Storename has been created successfully!" . "\n";
+                    $mailcontent = "<b>Congratulations " . $storeName. " has been created successfully!</b>" . "\n\n";
                     $mailcontent .= "Kindly find the links to view your store:" . "\n";
                    
                     $mailcontent .= "Store Admin Link: https://" . $domainname . '.' . $domain . "/admin" . "\n";
-                    $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n";
+                    $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
                     $mailcontent .= "For any further assistance/support, contact http://veestores.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);

@@ -11,7 +11,7 @@ use App\Models\Document;
 use App\Models\Language;
 use App\Models\StoreTheme;
 use App\Models\Templates;
-use App\Models\Currency;
+use App\Models\HasCurrency;
 use App\Models\Zone;
 use Illuminate\Support\Facades\Input;
 use Hash;
@@ -67,7 +67,7 @@ class ApiCreateStoreController extends Controller {
     public function signUpDropDown() {
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
        
-        $curr = Currency::where('status', 1)->orderBy("iso_code", "asc")->get(['status', 'id', 'name', 'iso_code','currency_code']);
+        $curr = HasCurrency::where('status', 1)->orderBy("iso_code", "asc")->get(['status', 'id', 'name', 'iso_code','currency_code']);
         // $themes = StoreTheme::where("cat_id", 1)->where("status", 1)->get(["id", "name", "image"]);
 //            foreach($themes as $them){
 //               $them->themImage=  asset('public/admin/themes/'.$them->image);
@@ -195,6 +195,7 @@ class ApiCreateStoreController extends Controller {
     public function applyStoreTheme() {
         $merchantId = Input::get("merchantId");
         $getMerchat = Merchant::find($merchantId);
+         $merchantPay = MerchantOrder::where("merchant_id", $merchantId)->where("order_status", 1)->where("payment_status", 4)->first();
         
         $themeId=Input::get('theme_id');
         $registerDetails = json_decode($getMerchat->register_details);
@@ -221,15 +222,22 @@ class ApiCreateStoreController extends Controller {
         $merchantEamil = $getMerchat->email;
         $merchantPassword = $getMerchat->password;
         $firstname = $getMerchat->firstname;
+        if (count($merchantPay) > 0) {
+            $registerDetails->store_version = 2;
+        } else {
+            $registerDetails->store_version = 1;
+        }
         if ($store->save()) {
             Session::put('stid',$store->id);
             
             if (empty($themeInput->id)) {
                 $password = @$registerDetails->password;
                 $appId = @$registerDetails->appId;
-                $this->createInstance($store->prefix, $store->url_key,$registerDetails, $password,  $themeId, $firstname, $domainname, $store->expiry_date, $appId);
+                $this->createInstance($store->id,$store->prefix, $store->url_key,$registerDetails, $password,  $themeId, $firstname, $domainname, $store->expiry_date, $appId);
             }
         }
+        $getMerchat->register_details=json_encode($registerDetails);
+        $getMerchat->save();
 //        $data = [];
 //        $data['id'] = $store->id;
 //        
@@ -246,7 +254,7 @@ class ApiCreateStoreController extends Controller {
         
     }
 
-    public function createInstance($prefix, $urlKey,$registerDetails,$merchantPassword,$themeid,  $firstname, $domainname,$expirydate,$appId=null) {
+    public function createInstance($storeId,$prefix, $urlKey,$registerDetails,$merchantPassword,$themeid,  $firstname, $domainname,$expirydate,$appId=null) {
         $merchantEamil=$registerDetails->email;
         $storeName=$registerDetails->storename;
        $catid= $registerDetails->business_type;
@@ -309,6 +317,7 @@ class ApiCreateStoreController extends Controller {
                     $this->replaceFileString($path . "/.env", "%DB_PASSWORD%", env('DB_PASSWORD', ''));
                     $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", $prefix . "_");
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
+                    $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
                     $insertArr = [
                         "email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname" ];
                     if (!empty($merchantPassword)) {
@@ -323,10 +332,7 @@ class ApiCreateStoreController extends Controller {
                      if ($country_code) {
                         $insertArr["country_code"] = "$country_code";
                     }
-                    $newuserid = DB::table($prefix . "_users")->insertGetId($insertArr);
-
-
-
+                    $newuserid = DB::table("users")->insertGetId($insertArr);
 
                     $json_url = base_path() . "/merchants/" . $domainname . "/storeSetting.json";
                     $json = file_get_contents($json_url);
@@ -334,14 +340,15 @@ class ApiCreateStoreController extends Controller {
                     $decodeVal['industry_id'] = $catid;
                     $decodeVal['storeName'] = $storeName;
                      $decodeVal['expiry_date'] = $expirydate;
+                     $decodeVal['store_id'] =$storeId;
+                      $decodeVal['prefix'] = $prefix;
 
                     if (!empty($themeid)) {
                         $themedata = DB::select("SELECT t.id,c.category,t.name,t.image from themes t left join categories c on t.cat_id=c.id order by c.category");
                         $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->name);
                         $decodeVal['themeid'] =$themeid;
                         $decodeVal['themedata'] = $themedata;
-                        $decodeVal['currencyId'] = @Currency::find($currency)->iso_code;
-                        //$decodeVal['currency_code'] = @Currency::find($currency)->iso_code;
+                        $decodeVal['currencyId'] = @HasCurrency::find($currency)->iso_code;
                         $decodeVal['store_version'] =@$storeVersion;
                         $newJsonString = json_encode($decodeVal);
                     }
@@ -350,14 +357,21 @@ class ApiCreateStoreController extends Controller {
                     if (!empty($currency)) {
 
                         $decodeVal['currency'] = $currency;
-                        $decodeVal['currency_code'] = @Currency::find($currency)->iso_code;
-                        $currVal = Currency::find($currency);
+                        $decodeVal['currency_code'] = @HasCurrency::find($currency)->iso_code;
+                        $currVal = @HasCurrency::find($currency);
                         if (!empty($currVal)) {
                             $currJson = json_encode(['name' => $currVal->name, 'iso_code' => $currVal->iso_code]);
                             DB::table($prefix . "_general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0]);
                         }
                     }
-
+    //Update Email Setting for mandrill and SMTP
+                    $emailSett = array("mandrill", "smtp");
+                    foreach ($emailSett as $email) {
+                        $emaildetails = json_decode(DB::table($prefix . "_general_setting")->where('url_key', $email)->first()->details);
+                        $emaildetails->name = $storeName;
+                        DB::table($prefix . "_general_setting")->where('url_key', $email)->update(["details" => json_encode($emaildetails)]);
+                    }
+                    //End Email Setting Update
                     $fp = fopen( base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
@@ -417,18 +431,20 @@ class ApiCreateStoreController extends Controller {
                         DB::table($prefix . "_has_layouts")->insert($homePageSlider);
                     }
                     }
-                 if($phone) {
-                   $msgOrderSucc ="Congrats! Your new Online Store is ready. Download VeeStores Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
+                  if ($phone) {
+                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Download VeeStores Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
-                    $domain = $_SERVER['HTTP_HOST'];
+                    $domain = 'veestores.com'; //$_SERVER['HTTP_HOST'];
                     $sub = "VeeStores Links for Online Store - " . $storeName;
-                    $mailcontent = "Find links to your Online Store and its Admin given below:" . "\n";
+                    $mailcontent = "<b>Congratulations  " . $storeName ." has been created successfully!</b>" . "\n\n";
+                    $mailcontent .= "Kindly find the links to view your store:" . "\n";
+                    
                     $mailcontent .= "Store Admin Link: http://" . $domainname . '.' . $domain . "/admin" . "\n";
                     $mailcontent .= "Online Store Link: http://" . $domainname . '.' . $domain . "\n";
-
+                    $mailcontent .= "For any further assistance/support, contact http://veestores.com/contact" . "\n\n";
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
