@@ -825,7 +825,7 @@ INSERT INTO `tblprfx_general_setting` (`id`, `name`, `status`, `details`, `url_k
 (25, 'Do you want to maintain purchase records on the platform?', 0, '', 'purchase', 1, 12, 0, 0, 4,'This feature allows you to capture your purchase information.'),
 (26, 'Do you want to manage "Inventory"?', 0, '{"stocklimit":"10"}', 'stock', 1, 13, 1, 0, 4,'This feature helps you to maintain the Inventory of the products. It helps to edit/update the stock of the product. Even the minimum stock limit can be set here so that if the stock goes beyond that number it shows in Running Short or Out of Stock section.'),
 (27, 'Do you want this Admin panel in multi language?', 0, '', 'multi-language', 0, 14, 0, 0, 2,'This feature helps to have the admin in multi-language. For this to work the owner has to define the language and then has to add all the translated word in that language in the Language Translation in the left menu.'),
-(28, 'Do you want to use "Taxes"? Does any of your product have one or more tax (inclusive/exclusive of the price) applicable?', 0, '', 'tax', 1, 15, 1, 1, 2,'This feature allows you to add Taxes. Here you can define the Taxes and their percentage of charge on the order. Also, it allows the product to be tax specific or not. Taxes is under Products in the left menu.'),
+(28, 'Do you want to use "Taxes"? Are your products inclusive/exclusive of taxes?', 0, '', 'tax', 1, 15, 1, 1, 2,'This feature allows you to add Taxes. You can apply taxes to your products either by including the tax amount in the product price (Inclusive) or by assigning it separately (Exclusive).'),
 (29, 'set_popup', 1, '', '', 0, NULL, 1, 0, 0,'This feature is for developers of the platform to identity the bugs/error occurred.'),
 (30, 'Do you have products with Variants? ', 0, '', 'products-with-variants', 1, 16, 1, 1, 5,'This feature allows you to have configurable products/products with variants on the website. Variants are the for example color, sizes etc. Every Variant has multiple Attributes. For example Color variant will have attributes Red, Yellow, and Blue etc. and Size variant will have attributes like Small, Medium, Large etc.'),
 (31, 'Do you want to use table management facility?', 1, '', 'do-you-want-to-use-table-management-facility', 1, 16, 1, 1, 2,''),
@@ -2184,7 +2184,9 @@ INSERT INTO `tblprfx_permissions` (`id`, `name`, `display_name`, `description`, 
 (506, 'admin.orders.mallOrderSave', 'Orders Mallordersave', NULL,57, 0, 0),
 (507, 'admin.generalSetting.assignCourier', 'Generalsetting Assigncourier', NULL,57,0,0),
 (508, 'admin.generalSetting.storeVersion', 'Generalsetting Storeversion', NULL, 57, 0,0),
-(509, 'admin.orders.waybill', 'Orders Waybill', NULL, 57, 0, 0);
+(509, 'admin.orders.waybill', 'Orders Waybill', NULL, 57, 0, 0),
+(510, 'admin.category.catImgDelete', 'Category Catimgdelete', NULL,57,0, 0),
+(511, 'admin.staticpages.imgdelete', 'Staticpages Imgdelete', NULL, 57, 0, 0);
 -- --------------------------------------------------------
 
 --
