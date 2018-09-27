@@ -1,14 +1,14 @@
-<div id="top-bar" class="hidden-xs">
+<div id="top-bar" class="">
 
     <div class="container clearfix">
         @if(count($contactDetails) >0)
-        <div class="col_half nobottommargin">
+        <div class="col_half nobottommargin mobText-center mobFullWidthCol">
             <?php $contact = json_decode($contactDetails->contact_details); ?>
             <p class="nobottommargin"><strong>Call:</strong> {{$contact->mobile}} | <strong>Email:</strong> {{$contact->email}} </p>
 
         </div>
         @endif
-        <div class="col_half col_last fright nobottommargin">
+        <div class="col_half col_last fright nobottommargin mobFullWidthCol">
 
 
             <!-- Top Links
