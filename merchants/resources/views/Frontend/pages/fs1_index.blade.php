@@ -1,7 +1,7 @@
 @extends('Frontend.layouts.default') 
 @section('content')
-<section id="slider" class="slider-parallax full-screen clearfix">
-    <div class="slider-parallax-inner">
+<section id="slider" class="full-screen clearfix">
+    <div class="">
         <div class="fslider" data-arrows="true" data-pagi="false">
             <div class="flexslider">
                 <div class="slider-wrap">
@@ -55,7 +55,7 @@
     <div class="content-wrap">
         <div class="container clearfix">
             @if(count($home_page_3_boxes) >0) @foreach($home_page_3_boxes as $k => $dynl)
-            <div class="col_one_third {{ ($k == 2)?'col_last':''}}">
+            <div class="col_one_third {{ ($k == 2)?'col_last nobottommargin':''}}">
                 @if(Session::get('login_user_type') == 1)
                 <a href="#" class="homePage3Boxes edit-menow" data-info='{{$dynl}}' data-imgSrc="{{Config('constants.layoutImgPath').'/'.@$dynl->image}}">
                     <i class="fa fa-pencil  fa-lg"></i>
