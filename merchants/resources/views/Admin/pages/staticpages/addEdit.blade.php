@@ -52,7 +52,7 @@
                     <div class="col-md-2 text-right">
                         {!!Form::label('image','Image ',['class'=>'control-label ']) !!}<span class="red-astrik"> *</span>
 </div>
-<div class="col-md-10">
+<div class="col-md-8">
                             <input type="file" name="image" id="image" onchange="readURL(this);" />
 
                             @if ($errors->has('image'))
@@ -65,7 +65,17 @@
 <div class="col-md-10 col-md-offset-2">
                             <img id="select_image" src="#" alt="Selected Image" style="display: none;" />
 </div>
+             @if($page->image)
+                        <div class="form-group col-md-2 pull-right">
+                                                <div class='col-md-12'>
+                                                    <button class="deleteImages btn btn denger" catImgId="{{$page->id}}"  >Delete</button>     
+                                                </div>
+                                                    
+                                            </div>  
+             @endif
+                        
                         </div>
+                     
                     @endif
               
 
@@ -246,6 +256,31 @@
     }
     });
     });  
+    
+     $("body").delegate('.deleteImages', 'click', function (e) {
+            var ele = $(this);
+            $('#select_image').attr("src",'');
+            var imagId = ele.attr("catImgId");
+             $.ajax({
+            type: "POST",
+            url: "{{ route('admin.staticpages.imgdelete') }}",
+            data: {imgId: imagId},
+            cache: false,
+            success: function (response) {
+               
+                if (response['status'] == 'success') {
+                   
+                  location.reload();
+                } else{
+                    
+                }
+                  
+            }, error: function (e) {
+                console.log(e.responseText);
+            }
+        });
+          
+    });
 </script>
 
 

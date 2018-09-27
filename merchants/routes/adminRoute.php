@@ -42,6 +42,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::any('/category-bulk-image-upload', ['as' => 'admin.category.catBulkImgUpload', 'uses' => 'CategoryController@catBulkImgUpload']);
                 Route::any('/category-check', ['as' => 'admin.category.checkcat', 'uses' => 'CategoryController@checkCatName']);
                 Route::any('/change-status', ['as' => 'admin.category.changeStatus', 'uses' => 'CategoryController@changeStatus']);
+                 Route::any('/category-img-delete', ['as' => 'admin.category.catImgDelete', 'uses' => 'CategoryController@catImgDelete']);
                 Route::any('/size-chart', ['as' => 'admin.category.sizeChart', 'uses' => 'CategoryController@sizeChart']);
             });
 
@@ -580,6 +581,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/update', ['as' => 'admin.staticpages.update', 'uses' => 'StaticPageController@update']);
                 Route::get('/edit', ['as' => 'admin.staticpages.edit', 'uses' => 'StaticPageController@edit']);
                 Route::get('/delete', ['as' => 'admin.staticpages.delete', 'uses' => 'StaticPageController@delete']);
+                 Route::any('/staticpages-img-delete', ['as' => 'admin.staticpages.imgdelete', 'uses' => 'StaticPageController@imgDelete']);
                 Route::get('/change-status', ['as' => 'admin.staticpages.changeStatus', 'uses' => 'StaticPageController@changeStatus']);
                 Route::post('/get_description', ['as' => 'admin.staticpages.getdesc', 'uses' => 'StaticPageController@getDescription']);
             });

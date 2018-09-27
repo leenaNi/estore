@@ -21,22 +21,22 @@
               <div class="col-md-4">                 
                 <div class="fontawesome-icon-list">
                   <h4 class="page-header">General shortcuts</h4>
-                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
+<!--                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">?</button> Keyboard help
-                  </div>
-                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
+                  </div>-->
+<!--                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">S</button> Focus Search bar
-                  </div>
-                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
+                  </div>-->
+<!--                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">F</button> Focus Filter bar
-                  </div>
+                  </div>-->
                   <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">B</button>
                     <button type="button" class="btn btn-default btn-flat ksbtn">Y</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">E</button> 
                     Log Out
                   </div>
-                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
+<!--                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">M</button>
                     <button type="button" class="btn btn-default btn-flat ksbtn">E</button>  Your Profile
                   </div>
@@ -46,7 +46,7 @@
                     <button type="button" class="btn btn-default btn-flat ksbtn">S</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">S</button> Pretend to be working
                   </div>
-                </div>
+                </div>-->
 
                 <div class="clearfix"></div>
 
@@ -62,35 +62,35 @@
                     <button type="button" class="btn btn-default btn-flat ksbtn">C</button> 
                     Add Collection
                   </div>
-                  <div class="col-md-12 col-sm-12 marginBottom10">
+<!--                  <div class="col-md-12 col-sm-12 marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">A</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">D</button> 
                     Add Discount
-                  </div>
-                  <div class="col-md-12 col-sm-12 marginBottom10">
+                  </div>-->
+<!--                  <div class="col-md-12 col-sm-12 marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">A</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">O</button> 
                     Add Order
-                  </div>
+                  </div>-->
                   <div class="col-md-12 col-sm-12 marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">A</button>
                     <button type="button" class="btn btn-default btn-flat ksbtn">U</button>  Add Customer
                   </div>
-                  <div class="col-md-12 col-sm-12 marginBottom10">
+<!--                  <div class="col-md-12 col-sm-12 marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">A</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">B</button> 
                     Add Blog post
-                  </div>
-                  <div class="col-md-12 col-sm-12 marginBottom10">
+                  </div>-->
+<!--                  <div class="col-md-12 col-sm-12 marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">A</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">L</button> 
                     Add Blog
-                  </div>
-                  <div class="col-md-12 col-sm-12 marginBottom10">
+                  </div>-->
+<!--                  <div class="col-md-12 col-sm-12 marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">A</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">G</button> 
                     Add Page
-                  </div>
+                  </div>-->
                 </div>
               </div>
             </section>
@@ -116,7 +116,7 @@
                     <button type="button" class="btn btn-default btn-flat ksbtn">P</button>   
                     Go to Products
                   </div>
-                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
+<!--                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">G</button>
                     <button type="button" class="btn btn-default btn-flat ksbtn">C</button> 
                      Go to Customers
@@ -135,8 +135,8 @@
                     <button type="button" class="btn btn-default btn-flat ksbtn">G</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">L</button>   
                       Go to sales channels
-                  </div>
-                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
+                  </div>-->
+<!--                  <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
                     <button type="button" class="btn btn-default btn-flat ksbtn">G</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">A</button>   
                       Go to Apps
@@ -193,11 +193,11 @@
                     <button type="button" class="btn btn-default btn-flat ksbtn">W</button> 
                     <button type="button" class="btn btn-default btn-flat ksbtn">P</button> 
                     Go to Online Store: Pages
-                  </div>
+                  </div>-->
                 </div>
                 </div>
 
-                <div class="col-md-6 noAllpadding">   
+<!--                <div class="col-md-6 noAllpadding">   
                  <h4 class="page-header">&nbsp;&nbsp;</h4>            
                 <div class="fontawesome-icon-list">
                   <div class="col-md-12 col-sm-12 noAllpadding marginBottom10">
@@ -303,7 +303,7 @@
                       Go to Settings: sales channels
                   </div>
                 </div>
-                </div>
+                </div>-->
               </section>
           </div>
         </div>

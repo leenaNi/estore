@@ -464,5 +464,11 @@ class CategoryController extends Controller {
             return Helper::returnView($viewname, $data, $url = 'admin.category.view');
         }
     }
-
+   public function catImgDelete(){
+        $id=Input::get('catImgId');
+       $catImage= CatalogImage::find($id);
+       $catImage->delete();
+       Session::flash("messege","Category image deleted successfully!");
+       return $data=["status" => "success"];
+    }
 }

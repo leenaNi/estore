@@ -114,6 +114,7 @@
                         </div>
                     </div>
                 </div>
+                @if($feature['tax']==1)
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Add Taxes</h3>
@@ -126,12 +127,13 @@
                     <div class="box-body">
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
-                                <p>You can define product specific or product tax classes and assign them to products..</p>
+                                <p>Add taxes and their information which are applicable to your business/products.</p>
                                 <a href="{{ route('admin.tax.view') }}" class="btn btn-default noAllMargin  mobileSpecialfullBTN">Add Taxes</a>
                             </div>
                         </div>
                     </div>
                 </div>
+                @endif
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Add Product</h3>

@@ -131,6 +131,12 @@
                                                     {!! Form::text('alt_text[]',$cImg->alt_text,["class"=>'form-control',"placeholder"=>"Alt Text"]) !!}     
                                                 </div>
                                             </div>
+                                            <div class="form-group col-md-1">
+                                                <div class='col-md-12'>
+                                                    <button class="deleteImage btn btn denger" catImgId="{{$cImg->id}}"  >Delete</button>     
+                                                </div>
+                                                    
+                                            </div>
                                             {!! Form::hidden('catImgs[]',$cImg->id)  !!}
                                             @endforeach
                                             @else
@@ -384,5 +390,28 @@
      });
  });
 
+ $("body").delegate('.deleteImage', 'click', function (e) {
+            var ele = $(this);
+            var imagId = ele.attr("catImgId");
+             $.ajax({
+            type: "POST",
+            url: "{{ route('admin.category.catImgDelete') }}",
+            data: {catImgId: imagId},
+            cache: false,
+            success: function (response) {
+               
+                if (response['status'] == 'success') {
+                   
+                  location.reload();
+                } else{
+                    
+                }
+                  
+            }, error: function (e) {
+                console.log(e.responseText);
+            }
+        });
+          
+    });
 </script>
 @stop

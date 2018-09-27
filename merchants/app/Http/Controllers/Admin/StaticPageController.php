@@ -173,5 +173,12 @@ class StaticPageController extends Controller {
         $page = StaticPage::find($request->page_id);
         return response()->json(['description' => $page->description]);
     }
-
+ public function imgDelete(){
+        $id=Input::get('imgId');
+       $catImage= StaticPage::find($id);
+       $catImage->image='';
+       $catImage->save();
+       Session::flash("msg","Image deleted successfully!");
+       return $data=["status" => "success"];
+    }
 }
