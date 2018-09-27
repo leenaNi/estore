@@ -4,7 +4,7 @@
 @section('og-title',$product->metaDesc)
 @section('meta-description',$product->metaTitle)
 @section('content')
-
+<div class="clearfix"></div>
 <section id="content">
     <input type="hidden" value="{{Request::url()}}" class="fbShareUrl" />
     <input type="hidden" value="{{@$product->images[0]->img}}" class="fbShareImg" />

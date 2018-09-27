@@ -7,6 +7,7 @@
 @section('content')
 <div  ng-controller="configProductController">
     <form id="form[[product.id]]" action="{{ route('addToCart')}}">
+    <div class="clearfix"></div>
         <section id="content">
             <input type="hidden" value="{{Request::url()}}" class="fbShareUrl" />
             <input type="hidden" value="[[product.images[0].img]]" class="fbShareImg" />
