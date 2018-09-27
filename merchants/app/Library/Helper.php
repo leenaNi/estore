@@ -849,7 +849,7 @@ class Helper {
                             $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
                         }
                         $tableContant = $tableContant . '</td>
-        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
+        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> ' . $cart["name"] . '
             <br>
           <small><a href="#"> ';
                         if (!empty($cart['options']['options'])) {
