@@ -8,7 +8,8 @@
   <div id="wrapper" class="clearfix">
     <?php include( 'includes/header_style1.php'); ?>
     <!-- Content
-		============================================= -->
+    ============================================= -->
+    <div class="clearfix"></div>
     <section id="content">
       <div class="content-wrap">
         <div class="container clearfix">

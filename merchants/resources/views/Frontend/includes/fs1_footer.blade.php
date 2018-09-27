@@ -88,7 +88,7 @@
 							<div class="widget clearfix">
 								<h4>Contact</h4>
 								
-								<div class="widget subscribe-widget clearfix">
+								<div class="widget subscribe-widget clearfix footaddresstopMargin">
 									@if(count($contactDetails) >0)
 									<?php    $contact =json_decode($contactDetails->contact_details); ?>
 									
