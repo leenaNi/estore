@@ -135,9 +135,9 @@ $currency_sym = $ordCurrency->css_code;
                                     </td>
 
                                     <td class="headerText" style="border-left: 2px solid #ddd; padding-left: 10px;">
-                                        Invoice No.:{{$order->id}}  <br>
+                                        Invoice No.: {{$order->id}}  <br>
                                             Invoice Date:{{ date('d-M-Y',strtotime($order->updated_at)) }} <br>
-                                                GST NO: 19AAECA1796L1Z7
+<!--                                                GST NO:19AAECA1796L1Z7-->
 
                                                 </td>
                                                 </tr>
