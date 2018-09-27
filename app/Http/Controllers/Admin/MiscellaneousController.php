@@ -15,6 +15,7 @@ use Config;
 use DB;
 use Illuminate\Http\Response;
 use App\Models\Merchant;
+use App\Models\HasCurrency;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class MiscellaneousController extends Controller {
