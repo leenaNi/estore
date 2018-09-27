@@ -203,6 +203,7 @@ class CheckoutController extends Controller {
             $newAdd->address1 = Input::get('address1');
             $newAdd->address2 = Input::get('address2');
             $newAdd->postcode = Input::get('postal_code');
+            $newAdd->thana = Input::get('thana');
             $newAdd->city = Input::get('city');
             $newAdd->zone_id = Input::get('state');
             $newAdd->country_id = Input::get('country_id');
