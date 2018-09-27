@@ -1,4 +1,25 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!--[if !mso]><!-- -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!--<![endif]-->
+        <title>Veestores</title>
+    </head>
+    <body>
+        {!! $email_template !!}
+    </body>
+
+
+
+
+
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
@@ -45,12 +66,12 @@
                                             <td align="left" valign="top" style="color:#58595B; text-align:justify; font-family:Source Sans Pro Light, Geneva, sans-serif;">
                                                 This is to inform you that your order has been dispatched from our warehouse. Below is a table with the summary of your order. <br/>
 
-                                                <!-- We are pleased to inform you that the following item/s in your order {{ $order->id }}  with tracking number {{ $order->shiplabel_tracking_id }} have been dispatched.
+                                                 We are pleased to inform you that the following item/s in your order {{ $order->id }}  with tracking number {{ $order->shiplabel_tracking_id }} have been dispatched.
                             
                                                 
                                     To track your order please click on the link below:<br/>
                                     <a href="#">Click here</a>
-                                                -->
+                                                
 
                                             </td>
                                         </tr>
@@ -59,7 +80,7 @@
 
 
 
-<!--            <tr>
+            <tr>
                 <td style="color:#58595B;">
                     <h4 style="font-family:Source Sans Pro, Geneva, sans-serif;">ADDRESS:</h4>
 
@@ -88,7 +109,7 @@
 
                         @endif
                 </td>
-            </tr>-->
+            </tr>
 
 
 
@@ -112,12 +133,12 @@
                                             </td>
                                         </tr>
 
-<!--            <tr>
+            <tr>
     <td style="color:#58595B;">
         You can track your shipment at any time by going to <a href="http://www.fedex.com" target="_blank">www.fedex.com</a> and using your tracking number.
 
     </td>
-</tr>-->
+</tr>
                                         @endif
 
 
@@ -255,9 +276,9 @@
                                             <td style="color:#58595B;">Have a soulful day.<br/>
                                                 Cartini Team</td>
                                         </tr>
-                            <!--            <tr>
+                                        <tr>
                                             <td style="color:#58595B;">PS: If the size you have ordered does not fit you, then go to your account and initiate an exchange for a new size. </td>
-                                        </tr>-->
+                                        </tr>
                                         <tr>
                                             <td><div style="border-bottom:1px #ccc solid;"></div></td>
                                         </tr>
@@ -276,4 +297,4 @@
                                         </body>
                                         </html>
 
-
+-->

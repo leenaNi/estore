@@ -163,7 +163,7 @@ $currency_sym = $ordCurrency->css_code;
 <!--                                                                                                        <b>Weight:</b> 0.50(Kgs)<br>
                                                                                                             <b>Dimensions(Cms): 30 X 25 X 5</b><br>-->
                                                                                                                 <b>Order ID:</b> {{$order->id}}<br>
-                                                                                                                    <b>Order Date:</b>{{ date('d-M-Y',strtotime($order->created_at)) }} <br>
+                                                                                                                    <b>Order Date: </b> {{ date('d-M-Y',strtotime($order->created_at)) }} <br>
                                                                                                                         <!--                                            <b>Pieces:</b> 1-->
                                                                                                                         </td>
                                                                                                                         </tr>
