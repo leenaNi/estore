@@ -12,6 +12,7 @@
     <div class="clearfix"></div>
     <section id="content">
       <div class="content-wrap">
+      <div class="clearfix"></div>
         <div class="container clearfix">
           <div class="single-product">
             <div class="product">
