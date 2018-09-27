@@ -2590,7 +2590,7 @@ class OrdersController extends Controller {
 //                print_r($data->errors);
 //                die;
 //            }
-              $saveorder = Order::find('id', $id)->get();
+              $saveorder = Order::find($id)->first();
                 $contactEmail = Config::get('mail.from.address');
                 $contactName = Config::get('mail.from.name');
                 $email = $saveorder->users->email;
