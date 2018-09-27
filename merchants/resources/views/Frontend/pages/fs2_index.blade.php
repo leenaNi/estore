@@ -36,7 +36,7 @@
     <div class="col_one_fourth nobottommargin col_last">
         @if(count($home_page_3_boxes) >0)
         @foreach($home_page_3_boxes as $k => $dynl)
-        <div class="col_full bottommargin-sm">
+        <div class="col_full bottommargin-sm nobottommarginLastchild">
    @if(Session::get('login_user_type') == 1)
                 <a href="#" class="homePage3Boxes edit-menow2" data-info='{{$dynl}}'  data-imgSrc="{{Config('constants.layoutUploadPath').'/'.@$dynl->image}}"><i class="fa fa-pencil  fa-lg"></i></a>
                 @endif
