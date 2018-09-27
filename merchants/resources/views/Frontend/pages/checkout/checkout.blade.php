@@ -192,7 +192,8 @@
                                                     <p>[[ add.address2 ]]</p>
                                                     <p>[[ add.countryname ]]</p>
                                                     <p>[[ add.statename ]]</p> 
-                                                    <p>[[ add.city ]]- [[ add.postcode ]] <span ng-show="add.codmsg != ''">- <u> [[ add.codmsg ]]</u></span></p>
+                                                    <p>[[ add.city ]]</p> 
+                                                    <p>[[ add.thana ]]- [[ add.postcode ]] <span ng-show="add.codmsg != ''">- <u> [[ add.codmsg ]]</u></span></p>
                                                     <p>Mobile No: <span class='chkPhoneNo'>[[ add.phone_no ]]</span></p>
                                                 </div>
 
@@ -257,7 +258,7 @@
                                                 <div id="city_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <lable>Thanna *</lable>                                             
+                                                <lable>Thana *</lable>                                             
                                                  
                                                 <input type="text" name='thana'  class="form-control" autocomplete="false"  ng-model="getAddData.thana">
                                                 <div id="thana_checkout_new_add_form" class="newerror"></div>
