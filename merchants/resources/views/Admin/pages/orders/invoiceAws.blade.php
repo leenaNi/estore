@@ -113,6 +113,7 @@
         <a class="printInvoice" align="left" style=" width: 180px; color: #fff; text-decoration: none; border: 1px solid #ccc; background: #009EDA; text-align: center; padding: 10px 20px; border-radius: 10px; position: relative; top: 25px; left: 30px;" href="#"  data-orderids="{{$allids}}">Print</a>
 <?php   $ordCurrency = App\Models\HasCurrency::where('id', Session::get('currency_id'))->first();
 $currency_val = $ordCurrency->currency_val;
+$currency-sym = $ordCurrency->css_code;
 ?>
 
         @foreach($orders as $order)
@@ -134,8 +135,8 @@ $currency_val = $ordCurrency->currency_val;
                                     </td>
 
                                     <td class="headerText" style="border-left: 2px solid #ddd; padding-left: 10px;">
-                                        Invoice No.: <br>
-                                            Invoice Date: <br>
+                                        Invoice No.:{{$order->id}}  <br>
+                                            Invoice Date:{{ date('d-M-Y',strtotime($order->updated_at)) }} <br>
                                                 GST NO: 19AAECA1796L1Z7
 
                                                 </td>
@@ -159,10 +160,10 @@ $currency_val = $ordCurrency->currency_val;
                                                                                                 <table cellpadding="0" cellspacing="0">
 
                                                                                                     <b>AWB No.: {{$order->shiplabel_tracking_id}}</b><br>
-                                                                                                        <b>Weight:</b> 0.50(Kgs)<br>
-                                                                                                            <b>Dimensions(Cms): 30 X 25 X 5</b><br>
+<!--                                                                                                        <b>Weight:</b> 0.50(Kgs)<br>
+                                                                                                            <b>Dimensions(Cms): 30 X 25 X 5</b><br>-->
                                                                                                                 <b>Order ID:</b> {{$order->id}}<br>
-                                                                                                                    <b>Order Date:</b> {{date_format($order->created_at,('Y-m-d'))}}<br>
+                                                                                                                    <b>Order Date:</b>{{ date('d-M-Y',strtotime($order->created_at)) }} <br>
                                                                                                                         <!--                                            <b>Pieces:</b> 1-->
                                                                                                                         </td>
                                                                                                                         </tr>
@@ -218,13 +219,13 @@ $currency_val = $ordCurrency->currency_val;
                                                                                                                                     @if(!empty($order->coupon_amt_used)) 
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Coupan Code Applied</b></td>
-                                                                                                                                        <td><span class="currency-sym"></span> <b> {{ number_format($order->coupon_amt_used*$currency_val,2) }}</b></td>
+                                                                                                                                        <td><span class="{{$currency-sym}}}"></span> <b> {{ number_format($order->coupon_amt_used*$currency_val,2) }}</b></td>
                                                                                                                                     </tr>
                                                                                                                                     @endif
 
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Total</b></td>
-                                                                                                                                        <td> <span class="currency-sym"></span> <b> {{ number_format($order->pay_amt *$currency_val,2) }}</b></td>
+                                                                                                                                        <td> <span class="{{$currency-sym}}"></span> <b> {{ number_format($order->pay_amt *$currency_val,2) }}</b></td>
                                                                                                                                     </tr>
 
                                                                                                                                 </table>
