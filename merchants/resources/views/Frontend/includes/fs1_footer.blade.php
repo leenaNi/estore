@@ -36,7 +36,7 @@
 
 							</div>
 							
-							<div class="{{$cols}} col-sm-6  col-xs-12">
+							<div class="{{$cols2}} col-sm-6  col-xs-12">
 
 								<div class="widget widget_links clearfix">
 
@@ -84,7 +84,7 @@
 						</div>
 						@endif
 						
-						<div class="{{$cols2}} col-sm-6  col-xs-12">
+						<div class="{{$cols}} col-sm-6  col-xs-12">
 							<div class="widget clearfix">
 								<h4>Contact</h4>
 								
