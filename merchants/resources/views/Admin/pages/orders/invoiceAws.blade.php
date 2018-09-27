@@ -111,7 +111,8 @@
 
     <body>
         <a class="printInvoice" align="left" style=" width: 180px; color: #fff; text-decoration: none; border: 1px solid #ccc; background: #009EDA; text-align: center; padding: 10px 20px; border-radius: 10px; position: relative; top: 25px; left: 30px;" href="#"  data-orderids="{{$allids}}">Print</a>
-<?php   $ordCurrency = App\Models\HasCurrency::where('id', Session::get('currency_id'))->first();
+<?php   
+$ordCurrency = App\Models\HasCurrency::where('id', Session::get('currency_id'))->first();
 $currency_val = $ordCurrency->currency_val;
 $currency_sym = $ordCurrency->css_code;
 ?>
@@ -242,8 +243,10 @@ $currency_sym = $ordCurrency->css_code;
                                                                                                                                         </tr>
                                                                                                                                         </table>
                                                                                                                                         </div>
+       
                                                                                                                                         </div>
                                                                                                                                         @endforeach
+    </body>
                                                           <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
                                                                                                                                         <script>
 $(document).ready(function () {
