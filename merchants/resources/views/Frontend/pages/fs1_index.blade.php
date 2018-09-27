@@ -55,7 +55,7 @@
     <div class="content-wrap">
         <div class="container clearfix">
             @if(count($home_page_3_boxes) >0) @foreach($home_page_3_boxes as $k => $dynl)
-            <div class="col_one_third {{ ($k == 2)?'col_last':''}}">
+            <div class="col_one_third {{ ($k == 2)?'col_last nobottommargin':''}}">
                 @if(Session::get('login_user_type') == 1)
                 <a href="#" class="homePage3Boxes edit-menow" data-info='{{$dynl}}' data-imgSrc="{{Config('constants.layoutImgPath').'/'.@$dynl->image}}">
                     <i class="fa fa-pencil  fa-lg"></i>
