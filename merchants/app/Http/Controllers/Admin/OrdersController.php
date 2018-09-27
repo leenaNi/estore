@@ -2504,92 +2504,105 @@ class OrdersController extends Controller {
         $orders = Order::where('id', $allids)->get();
 
         foreach ($orders as $key => $saveorder) {
-            $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
-            // dd($saveorder);
-            $headers = array();
-            $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-            $headers[] = 'USER_ID:I8837';
-            $headers[] = 'API_KEY:xqdH';
-            $headers[] = 'API_SECRET:jubLW';
-
-            $reqArray = [];
-            $reqArray['order_code'] = $saveorder->id;
-            $reqArray['product_id'] = '1';
-            $reqArray['parcel'] = 'insert';
-            $reqArray['ep_name'] = 'test';
-            $reqArray['pick_contact_person'] = $storeContact->mobile;
-            $reqArray['pick_division'] = '';
-            $reqArray['pick_district'] = 'test';
-            $reqArray['pick_thana'] =  $storeContact->thana;
-            $reqArray['pick_union'] = 'test';
-            $reqArray['pick_address'] = $storeContact->address_line1;
-            $reqArray['pick_mobile'] = $storeContact->mobile;
-            $reqArray['recipient_name'] = $saveorder->first_name . '' . $saveorder->last_name;
-            $reqArray['recipient_mobile'] = $saveorder->phone_no;
-            $reqArray['recipient_division'] = '';
-            $reqArray['recipient_district'] = '';
-            $reqArray['recipient_city'] = $saveorder->zone->name;
-            $reqArray['recipient_area'] = 'test';
-            $reqArray['recipient_thana'] = $saveorder->thana;
-            $reqArray['recipient_union'] = 'test';
-            $reqArray['weight'] = 'Up To 500gm';
-
-            $reqArray['upazila'] = '';
-            if ($saveorder->zone_id == '322') {
-                $reqArray['delivery_timing'] = 'Next Day(24hr)';
-                $reqArray['package_code'] = '#2443';
-            } else {
-                $reqArray['delivery_timing'] = 'Next Day(48hr)';
-                $reqArray['package_code'] = '#2444';
-            }
-
-            $reqArray['product_id'] = '';
-            $reqArray['recipient_address'] =$saveorder->address1 . '' . $saveorder->address2;;
-            $reqArray['shipping_price'] = '1';
-            $reqArray['parcel_detail'] = '';
-            $reqArray['no_of_items'] = '';
-            $reqArray['product_price'] = '1';
-            $reqArray['payment_method'] = '1';
-            $reqArray['ep_id'] = '1';
-
-            $url = "http://ecourier.com.bd/apiv2/";
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
-            $output = curl_exec($ch);
-            curl_close($ch);
-            $data = json_decode($output);
-
-            if ($data->response_code == 200) {
-                $saveorder->shiplabel_tracking_id = $data->ID;
-                $saveorder->order_status = 2;
-                $saveorder->update();
-                $curierHistory = new CurierHistory();
-                $curierHistory->order_id = $ordid;
-                $curierHistory->courier_id = 4;
-                $curierHistory->waybill_no = $data->ID;
-                $curierHistory->prefix = $this->jsonString['prefix'];
-                $curierHistory->store_id = $this->jsonString['store_id'];
-                $curierHistory->save();
+//            $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
+//            // dd($saveorder);
+//            $headers = array();
+//            $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+//            $headers[] = 'USER_ID:I8837';
+//            $headers[] = 'API_KEY:xqdH';
+//            $headers[] = 'API_SECRET:jubLW';
+//
+//            $reqArray = [];
+//            $reqArray['order_code'] = $saveorder->id;
+//            $reqArray['product_id'] = '1';
+//            $reqArray['parcel'] = 'insert';
+//            $reqArray['ep_name'] = 'test';
+//            $reqArray['pick_contact_person'] = $storeContact->mobile;
+//            $reqArray['pick_division'] = '';
+//            $reqArray['pick_district'] = 'test';
+//            $reqArray['pick_thana'] =  $storeContact->thana;
+//            $reqArray['pick_union'] = 'test';
+//            $reqArray['pick_address'] = $storeContact->address_line1;
+//            $reqArray['pick_mobile'] = $storeContact->mobile;
+//            $reqArray['recipient_name'] = $saveorder->first_name . '' . $saveorder->last_name;
+//            $reqArray['recipient_mobile'] = $saveorder->phone_no;
+//            $reqArray['recipient_division'] = '';
+//            $reqArray['recipient_district'] = '';
+//            $reqArray['recipient_city'] = $saveorder->zone->name;
+//            $reqArray['recipient_area'] = 'test';
+//            $reqArray['recipient_thana'] = $saveorder->thana;
+//            $reqArray['recipient_union'] = 'test';
+//            $reqArray['weight'] = 'Up To 500gm';
+//
+//            $reqArray['upazila'] = '';
+//            if ($saveorder->zone_id == '322') {
+//                $reqArray['delivery_timing'] = 'Next Day(24hr)';
+//                $reqArray['package_code'] = '#2443';
+//            } else {
+//                $reqArray['delivery_timing'] = 'Next Day(48hr)';
+//                $reqArray['package_code'] = '#2444';
+//            }
+//
+//            $reqArray['product_id'] = '';
+//            $reqArray['recipient_address'] =$saveorder->address1 . '' . $saveorder->address2;;
+//            $reqArray['shipping_price'] = '1';
+//            $reqArray['parcel_detail'] = '';
+//            $reqArray['no_of_items'] = '';
+//            $reqArray['product_price'] = '1';
+//            $reqArray['payment_method'] = '1';
+//            $reqArray['ep_id'] = '1';
+//
+//            $url = "http://ecourier.com.bd/apiv2/";
+//            $ch = curl_init();
+//            curl_setopt($ch, CURLOPT_URL, $url);
+//            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+//            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//            curl_setopt($ch, CURLOPT_POST, true);
+//            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
+//            $output = curl_exec($ch);
+//            curl_close($ch);
+//            $data = json_decode($output);
+//
+//            if ($data->response_code == 200) {
+//                $saveorder->shiplabel_tracking_id = $data->ID;
+//                $saveorder->order_status = 2;
+//                $saveorder->update();
+//                $curierHistory = new CurierHistory();
+//                $curierHistory->order_id = $ordid;
+//                $curierHistory->courier_id = 4;
+//                $curierHistory->waybill_no = $data->ID;
+//                $curierHistory->prefix = $this->jsonString['prefix'];
+//                $curierHistory->store_id = $this->jsonString['store_id'];
+//                $curierHistory->save();
+//                $contactEmail = Config::get('mail.from.address');
+//                $contactName = Config::get('mail.from.name');
+//                $email = $saveorder->users->email;
+//                $name = $saveorder->first_name . ' ' . $saveorder->last_name;
+//                $data = ['username' => $name, 'awbno' => $saveorder->shiplabel_tracking_id, 'created_at' => $saveorder->updated_at, 'order' => $saveorder,'storeName'=>$storeName];
+//                if (Mail::send(Config('constants.adminEmails') . '.dispatch_email', $data, function($message) use ($contactEmail, $contactName, $email, $name, $data) {
+//
+//                            $message->from($contactEmail, $contactName);
+//                            $message->to($email, $name)->subject($data->storeName . "- Order Dispatched");
+//                            // $message->cc(['indranath.sgupta@gmail.com','arijit@asgleather.com']);
+//                        }))
+//                    ;
+//            } else {
+//                print_r($data->errors);
+//                die;
+//            }
+              $saveorder = Order::find($id);
                 $contactEmail = Config::get('mail.from.address');
                 $contactName = Config::get('mail.from.name');
                 $email = $saveorder->users->email;
                 $name = $saveorder->first_name . ' ' . $saveorder->last_name;
                 $data = ['username' => $name, 'awbno' => $saveorder->shiplabel_tracking_id, 'created_at' => $saveorder->updated_at, 'order' => $saveorder];
-                if (Mail::send(Config('constants.adminEmails') . '.dispatch_email', $data, function($message) use ($contactEmail, $contactName, $email, $name, $data) {
+                if (Mail::send(Config('constants.adminEmails') . '.dispatch_email', $data, function($message) use ($contactEmail, $contactName, $email, $name, $data ,$storeName) {
 
                             $message->from($contactEmail, $contactName);
                             $message->to($email, $name)->subject($storeName . "- Order Dispatched");
                             // $message->cc(['indranath.sgupta@gmail.com','arijit@asgleather.com']);
                         }))
-                    ;
-            } else {
-                print_r($data->errors);
-                die;
-            }
+                    ;    
         }
         $viewname = Config('constants.adminOrderView') . '.invoiceAws';
         $data = ['orders' => $orders, 'storeName' => $storeName, 'storeContact' => $storeContact, 'allids' => $allids];

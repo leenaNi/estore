@@ -81,21 +81,21 @@ if (isset($data->expiry_date)) {
                                 <label>Store Name </label><span class="red-astrik"> *</span>
                                 <input type="text" id="store_name" value="{{ $data->storeName }}" name="store_name" class="form-control validate[required]">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group {{$storeViesion}}">
                                 <label> Primary Theme Color</label><span class="red-astrik"> *</span>
                                 <input type="text" id="primary_color" value="{{ $data->primary_color }}"  name="primary_color" class="form-control jscolor validate[required]">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group {{$storeViesion}}">
                                 <label> Left Menu Background Color </label><span class="red-astrik"> *</span>
                                 <input type="text" id="secondary_color" value="{{ $data->secondary_color }}"  name="secondary_color" class="form-control jscolor validate[required]">
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group {{$storeViesion}}">
                                 <label>Primary Button Color </label><span class="red-astrik"> *</span>
                                 <input type="text" id="btn_color" value="{{ @$data->btn_color }}"  name="btn_color" class="form-control jscolor validate[required]">
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group {{$storeViesion}}">
                                 <label>Secondary Button Color </label><span class="red-astrik"> *</span>
                                 <input type="text" id="sbtn_color" value="{{ @$data->sbtn_color }}"  name="sbtn_color" class="form-control jscolor validate[required]">
                             </div>
