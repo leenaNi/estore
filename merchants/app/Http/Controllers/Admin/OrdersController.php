@@ -24,6 +24,7 @@ use App\Models\ReturnOrder;
 use App\Models\User;
 use App\Models\CurierHistory;
 use App\Models\StaticPage;
+use App\Models\HasCurrency;
 use App\Models\Zone;
 use App\Models\Courier;
 use App\Models\HasCourier;

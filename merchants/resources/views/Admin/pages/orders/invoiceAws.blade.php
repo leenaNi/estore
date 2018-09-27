@@ -111,7 +111,9 @@
 
     <body>
         <a class="printInvoice" align="left" style=" width: 180px; color: #fff; text-decoration: none; border: 1px solid #ccc; background: #009EDA; text-align: center; padding: 10px 20px; border-radius: 10px; position: relative; top: 25px; left: 30px;" href="#"  data-orderids="{{$allids}}">Print</a>
-
+<?php   $ordCurrency = App\Models\HasCurrency::where('id', Session::get('currency_id'))->first();
+$currency_val = $ordCurrency->currency_val;
+?>
 
         @foreach($orders as $order)
         <div class="invcontainer">
@@ -194,9 +196,9 @@
                                                                                                                 <!--                        <td>1015</td>-->
                                                                                                                                         <td>{{$prd['name']}}</td>
                                                                                                                                         <td>{{$prd['qty']}}</td>
-                                                                                                                                        <td><i class="fa fa-rupee"></i> {{number_format($prd['subtotal']),2}}</td>
+                                                                                                                                        <td><span class="currency-sym"></span> {{number_format($prd['subtotal']*$currency_val),2}}</td>
                                                                                                                 <!--                        <td>143.00</td>-->
-                                                                                                                                        <td><i class="fa fa-rupee"></i><b> {{number_format($prd['subtotal'],2)}}</b></td>
+                                                                                                                                        <td><span class="currency-sym"></span> <b> {{number_format($prd['subtotal']*$currency_val,2)}}</b></td>
                                                                                                                                     </tr>
                                                                                                                                     <?php
                                                                                                                                     $subtotal += $prd['subtotal'];
@@ -205,24 +207,24 @@
                                                                                                                                     @endforeach
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Subtotal</b></td>
-                                                                                                                                        <td><i class="fa fa-rupee"></i> {{number_format($order->order_amt,2)}}</td>
+                                                                                                                                        <td><span class="currency-sym"></span>  {{number_format($order->order_amt*$currency_val,2)}}</td>
                                                                                                                                     </tr>
                                                                                                                                     @if(!empty($order->shipping_amt)) 
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Shipping</b></td>
-                                                                                                                                        <td><i class="fa fa-rupee"></i> <b>{{ number_format($order->shipping_amt,2) }}</b></td>
+                                                                                                                                        <td><span class="currency-sym"></span>  <b>{{ number_format($order->shipping_amt*$currency_val,2) }}</b></td>
                                                                                                                                     </tr>
                                                                                                                                     @endif
                                                                                                                                     @if(!empty($order->coupon_amt_used)) 
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Coupan Code Applied</b></td>
-                                                                                                                                        <td><i class="fa fa-rupee"></i><b> {{ number_format($order->coupon_amt_used,2) }}</b></td>
+                                                                                                                                        <td><span class="currency-sym"></span> <b> {{ number_format($order->coupon_amt_used*$currency_val,2) }}</b></td>
                                                                                                                                     </tr>
                                                                                                                                     @endif
 
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Total</b></td>
-                                                                                                                                        <td> <i class="fa fa-rupee"></i><b> {{ number_format($order->pay_amt,2) }}</b></td>
+                                                                                                                                        <td> <span class="currency-sym"></span> <b> {{ number_format($order->pay_amt *$currency_val,2) }}</b></td>
                                                                                                                                     </tr>
 
                                                                                                                                 </table>
