@@ -418,7 +418,7 @@
                                 <div class="small ptb10 pull-left red_text" ng-if='billSummary.address.country_id != 99'>*Discounts/Offers Not Applicable on International Orders and Official Merchandise.</div>
                                 <div class="clearfix"></div>
                                 <div class="form-group">
-                                    <div class="col-md-12 form-group continue-cancel-btnbox">    
+                                    <div class="col-md-12 form-group continue-cancel-btnbox mobpl0">    
 
                                         <button type="button" class="btn new_user_btn continueStep checkcod_yesno" ng-click="toPaymentF()" data-continue="billPanel" style="margin:5px 0 0 0;">CONTINUE</button>    
                                         <button ng-click="backToAddress()" class="button login_btn">BACK</button>  
@@ -520,7 +520,7 @@
                                 <div class="clearfix"></div>
                                 <div class="form-group">  
 
-                                    <div class="col-md-12 form-group continue-cancel-btnbox">                         
+                                    <div class="col-md-12 form-group continue-cancel-btnbox mobnopadding">                         
                                         <input type="button" ng-click="placeOrder($event)" value="PLACE ORDER" class="btn new_user_btn">  
 
                                         <button type="button"  class="btn login_btn" ng-click="backToBill()">BACK</button> 
