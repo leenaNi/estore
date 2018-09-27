@@ -258,7 +258,7 @@ class MiscellaneousController extends Controller {
         // $settings = GeneralSetting::where("type", 6)->get()->toArray();
 
         $languages = Language::select('id', 'name')->get();
-        $currency = HasCurrency::where('currency_status', 1)->get();
+        $currency = HasCurrency::where('status', 1)->get();
 
         $themedata = Helper::getSettings()['themedata'];
         $themes = [];
