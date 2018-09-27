@@ -130,7 +130,7 @@ $currency_sym = $ordCurrency->css_code;
                                         <img src="https://{{$_SERVER['HTTP_HOST']}}/uploads/logo/logo.png">
                                     </td>
                                     <td class="headerText">
-
+                                        {{$storeName}}<br>
                                         Email: {{$storeContact->email}}
                                     </td>
 
@@ -152,8 +152,8 @@ $currency_sym = $ordCurrency->css_code;
                                                                 <td>
                                                                     <span style="text-decoration: underline;">DELIVERY TO:</span><br>
                                                                         <b>{{$order->first_name}} {{$order->last_name}}</b><br>
-                                                                            {{$order->address1}}<br>{{$order->address2}}<br> {{$order->address3}}<br>{{$order->city}}
-                                                                                        {{$order->postal_code}} > <br>  {{ $order->country->name}}
+                                                                            {{$order->address1}}<br>{{$order->address2}}<br> {{$order->city}}
+                                                                                       , {{$order->postal_code}}  <br>  {{ $order->country->name}}
                                                                                             </td>
 
                                                                                             <td>
@@ -234,8 +234,8 @@ $currency_sym = $ordCurrency->css_code;
 
                                                                                                                         <tr>
                                                                                                                             <td colspan="2" style="border-top: 1px solid #ddd;">
-                                                                                                                                <b>Return Address:</b> {{$storeContact->address_line1 }}  {{$storeContact->address_line2 }} <br>
-                                                                                                                                  {{$storeContact->city}} {{$storeContact->pincode }}<br>
+                                                                                                                                <b>Return Address:</b> {{$storeContact->address_line1 }} , {{$storeContact->address_line2 }} <br>
+                                                                                                                                  {{$storeContact->city}}, {{$storeContact->pincode }}<br>
                                                                                                                                         {{$storeContact->mobile }}
 
                                                                                                                                         </td>
