@@ -12,7 +12,7 @@
 						<div class="col_full  bottommobileMargin0 bottommobilePadding0">
 							
 							
-							<div class="col-md-3 col-sm-6  col-xs-12">
+							<div class="col-md-4 col-sm-6  col-xs-12">
 
 								<div class="widget clearfix abt-secFooter">
 
@@ -28,7 +28,7 @@
 
 							</div>
 							
-							<div class="col-md-2  col-sm-6  col-xs-12">
+							<div class="col-md-3  col-sm-6  col-xs-12">
 
 								<div class="widget widget_links clearfix">
 
@@ -41,12 +41,6 @@
 										<li><a href="{{route($page->url_key)}}">{{$page->page_name}}</a></li>
 										@endforeach
 										@endif
-<!--									<li><a href="#">Payments Policy</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-									<li><a href="#">Shipping Policy</a></li>
-									<li><a href="#">Return Policy</a></li>
-									<li><a href="#">Terms & Conditions</a></li>
-									<li><a href="#">FAQs</a></li>-->
 								</ul>
 
 							</div>
@@ -81,7 +75,7 @@
 						</div>
 						@endif
 						
-						<div class="col-md-3  col-sm-6  col-xs-12">
+						<div class="col-md-4  col-sm-6  col-xs-12">
 							<div class="widget clearfix">
 								<h4>Contact</h4>
 								
@@ -108,7 +102,6 @@
 									<abbr><strong>Phone: </strong>89989825658</abbr> <br>
 									<abbr><strong>Email: <a href="mailto:support@inficart.com">support@inficart.com</a></strong></abbr>
 									@endif
-									<!--<p>Neelkanth Business Park, Near Vidyavihar Station, Vidyavihar West, Mumbai 400086</p>-->
 									<div class="si-share clearfix">
 										<span>Connect with us on:</span>
 										<div>
@@ -120,14 +113,6 @@
 											</a>
 											@endforeach
 											@endif
-<!--								<a target="_blank" href="https://twitter.com" class="social-icon si-borderless si-text-color si-twitter" title="Twitter">
-									<i class="icon-twitter"></i>
-									<i class="icon-twitter"></i>
-								</a>
-								<a target="_blank" href="https://plus.google.com" class="social-icon si-borderless si-text-color si-gplus" title="Google Plus">
-									<i class="icon-gplus"></i>
-									<i class="icon-gplus"></i>
-								</a>-->
 								
 							</div>
 						</div>
