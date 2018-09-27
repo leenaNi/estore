@@ -2578,11 +2578,11 @@ class OrdersController extends Controller {
                 $contactName = Config::get('mail.from.name');
                 $email = $saveorder->users->email;
                 $name = $saveorder->first_name . ' ' . $saveorder->last_name;
-                $data = ['username' => $name, 'awbno' => $saveorder->shiplabel_tracking_id, 'created_at' => $saveorder->updated_at, 'order' => $saveorder];
+                $data = ['username' => $name, 'awbno' => $saveorder->shiplabel_tracking_id, 'created_at' => $saveorder->updated_at, 'order' => $saveorder,'storeName'=>$storeName];
                 if (Mail::send(Config('constants.adminEmails') . '.dispatch_email', $data, function($message) use ($contactEmail, $contactName, $email, $name, $data) {
 
                             $message->from($contactEmail, $contactName);
-                            $message->to($email, $name)->subject($storeName . "- Order Dispatched");
+                            $message->to($email, $name)->subject($data->storeName . "- Order Dispatched");
                             // $message->cc(['indranath.sgupta@gmail.com','arijit@asgleather.com']);
                         }))
                     ;

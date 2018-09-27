@@ -155,7 +155,7 @@
             </div>
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12 text-center"> 
-            <a href="#" class="button button-black" onclick="window.print()">Print</a> 
+<!--            <a href="#" class="button button-black" onclick="window.print()">Print</a> -->
             <a href="{{route('myProfile')}}" class="button button-default">My Account</a>
         </div>  
     </div>
