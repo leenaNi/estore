@@ -2497,6 +2497,9 @@ class OrdersController extends Controller {
   
         $allids = $id;
 $orders = Order::where('id', $allids)->get();
+       $storeName = $this->jsonString['storeName'];
+       $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
+       $storeContact = json_decode($contact);
 //        $storeName = $this->jsonString['storeName'];
 //        $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
 //        $storeContact = json_decode($contact);
