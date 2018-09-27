@@ -20,7 +20,7 @@
         <div class="container clearfix">
             <!-- Portfolio Filter
             ============================================= -->
-            <ul id="portfolio-filter" class="portfolio-filter  style-4 clearfix " data-container="#portfolio">
+            <ul id="customFilter" class="portfolio-filter  style-4 clearfix " data-container="#portfolio">
                 @if(empty(Session::get('merchantid')))
                 <li class="activeFilter"><a href="#" data-filter=".tab0" data-filter="*">All</a></li>
                 @foreach($cats as $c)
