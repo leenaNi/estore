@@ -135,9 +135,9 @@ $address = $order->users->addresses->first();
 //        $currency_val = $order->currency->currency_val;
 //    }
     if ($order->currency_id != Session::get('currency_id')) {
-        $ordCurrency = DB::table('has_currency')->where('id', Session::get('currency_id'))->first();
+        $ordCurrency = App\Models\HasCurrency::where('id', Session::get('currency_id'))->first();
     } else {
-        $ordCurrency = DB::table('has_currency')->where('id', $order->currency_id)->first();
+        $ordCurrency = App\Models\HasCurrency::where('id', $order->currency_id)->first();
     }
     $currency_val = $ordCurrency->currency_val;
     $currency_code = $ordCurrency->currency;

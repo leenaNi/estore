@@ -192,7 +192,8 @@
                                                     <p>[[ add.address2 ]]</p>
                                                     <p>[[ add.countryname ]]</p>
                                                     <p>[[ add.statename ]]</p> 
-                                                    <p>[[ add.city ]]- [[ add.postcode ]] <span ng-show="add.codmsg != ''">- <u> [[ add.codmsg ]]</u></span></p>
+                                                    <p>[[ add.city ]]</p> 
+                                                    <p>[[ add.thana ]]- [[ add.postcode ]] <span ng-show="add.codmsg != ''">- <u> [[ add.codmsg ]]</u></span></p>
                                                     <p>Mobile No: <span class='chkPhoneNo'>[[ add.phone_no ]]</span></p>
                                                 </div>
 
@@ -257,12 +258,18 @@
                                                 <div id="city_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
+                                                <lable>Thana *</lable>                                             
+                                                 
+                                                <input type="text" name='thana'  class="form-control" autocomplete="false"  ng-model="getAddData.thana">
+                                                <div id="thana_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                              <div class="form-group col-md-6">
                                                 <lable>Pin Code *</lable>                                             
                                                 <i style="display: none" class="icon-refresh fa-spin pincodeMessageLoader "></i>  <span class="pincodeMessage"></span>
                                                 <input type="text" name='postal_code' id="pincode_check" class="form-control" autocomplete="false"  ng-model="getAddData.postcode">
                                                 <div id="postal_code_checkout_new_add_form" class="newerror"></div>
                                             </div>
-                                            <div class="clearfix"></div>
                                             <div class="form-group col-md-6">
                                                 <lable>Mobile No. *</lable>
                                                 <input type="text" name='phone_no' class="form-control"  required="true" ng-model="getAddData.phone_no">

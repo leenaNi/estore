@@ -24,6 +24,7 @@ use App\Models\ReturnOrder;
 use App\Models\User;
 use App\Models\CurierHistory;
 use App\Models\StaticPage;
+use App\Models\HasCurrency;
 use App\Models\Zone;
 use App\Models\Courier;
 use App\Models\HasCourier;
@@ -590,7 +591,7 @@ class OrdersController extends Controller {
             $allids = Input::get('OrderIds');
         }
 
-        $orders = Order::whereIn('id', explode(",", $allids))->with('currency')->get();
+        $orders = Order::whereIn('id', explode(",", $allids))->get();
         foreach ($orders as $key => $order) {
             $catlogs = json_decode($order->cart, true);
             $orders[$key]->previous_order = [];
@@ -2500,7 +2501,7 @@ class OrdersController extends Controller {
         $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
         $storeContact = json_decode($contact);
 
-        $orders = Order::where('id', $allids)->with('currency')->get();
+        $orders = Order::where('id', $allids)->get();
 
         foreach ($orders as $key => $saveorder) {
             $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
@@ -2519,7 +2520,7 @@ class OrdersController extends Controller {
             $reqArray['pick_contact_person'] = $storeContact->mobile;
             $reqArray['pick_division'] = '';
             $reqArray['pick_district'] = 'test';
-            $reqArray['pick_thana'] = 'Adabor Thana';
+            $reqArray['pick_thana'] =  $storeContact->thana;
             $reqArray['pick_union'] = 'test';
             $reqArray['pick_address'] = $storeContact->address_line1;
             $reqArray['pick_mobile'] = $storeContact->mobile;
@@ -2529,7 +2530,7 @@ class OrdersController extends Controller {
             $reqArray['recipient_district'] = '';
             $reqArray['recipient_city'] = $saveorder->zone->name;
             $reqArray['recipient_area'] = 'test';
-            $reqArray['recipient_thana'] = 'Adabor Thana';
+            $reqArray['recipient_thana'] = $saveorder->thana;
             $reqArray['recipient_union'] = 'test';
             $reqArray['weight'] = 'Up To 500gm';
 
