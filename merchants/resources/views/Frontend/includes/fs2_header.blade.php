@@ -8,7 +8,6 @@
 
         </div>
         @endif
-       
         <div class="col_half col_last fright nobottommargin">
 
 
