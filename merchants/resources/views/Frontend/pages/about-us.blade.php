@@ -13,7 +13,7 @@
     <section id="content">
       <div class="content-wrap">
         <div class="container clearfix">
-          <div class="col_half nobottommargin">
+          <div class="col_half nobottommargin text-justify">
             <?php echo html_entity_decode($about->description) ?>
           </div>
           <div class="col_half col_last nobottommargin">
