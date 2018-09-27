@@ -168,7 +168,7 @@
         </div>
         <!-- Testimonial open -->
         @if(@$testimonial_status->status && !$testimonial->isEmpty())
-        <div class="section footer-touch">
+        <div class="section footer-touch  {{$storeViesion}}">
             <h4 class="uppercase center">Testimonials</h4>
             <div class="fslider testimonial testimonial-full" data-animation="fade" data-arrows="false">
                 <div class="flexslider">

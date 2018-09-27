@@ -111,8 +111,10 @@
 
     <body>
         <a class="printInvoice" align="left" style=" width: 180px; color: #fff; text-decoration: none; border: 1px solid #ccc; background: #009EDA; text-align: center; padding: 10px 20px; border-radius: 10px; position: relative; top: 25px; left: 30px;" href="#"  data-orderids="{{$allids}}">Print</a>
-<?php   $ordCurrency = App\Models\HasCurrency::where('id', Session::get('currency_id'))->first();
+<?php   
+$ordCurrency = App\Models\HasCurrency::where('id', Session::get('currency_id'))->first();
 $currency_val = $ordCurrency->currency_val;
+$currency_sym = $ordCurrency->css_code;
 ?>
 
         @foreach($orders as $order)
@@ -129,14 +131,14 @@ $currency_val = $ordCurrency->currency_val;
                                         <img src="https://{{$_SERVER['HTTP_HOST']}}/uploads/logo/logo.png">
                                     </td>
                                     <td class="headerText">
-
+                                        {{$storeName}}<br>
                                         Email: {{$storeContact->email}}
                                     </td>
 
                                     <td class="headerText" style="border-left: 2px solid #ddd; padding-left: 10px;">
-                                        Invoice No.: <br>
-                                            Invoice Date: <br>
-                                                GST NO: 19AAECA1796L1Z7
+                                        Invoice No.: {{$order->id}}  <br>
+                                            Invoice Date:{{ date('d-M-Y',strtotime($order->updated_at)) }} <br>
+<!--                                                GST NO:19AAECA1796L1Z7-->
 
                                                 </td>
                                                 </tr>
@@ -151,18 +153,18 @@ $currency_val = $ordCurrency->currency_val;
                                                                 <td>
                                                                     <span style="text-decoration: underline;">DELIVERY TO:</span><br>
                                                                         <b>{{$order->first_name}} {{$order->last_name}}</b><br>
-                                                                            {{$order->address1}}<br>{{$order->address2}}<br> {{$order->address3}}<br>
-                                                                                        <b> {{$order->postal_code}} </b> <br>  {{ $order->country->name}}
+                                                                            {{$order->address1}}<br>{{$order->address2}}<br> {{$order->city}}
+                                                                                       , {{$order->postal_code}}  <br>  {{ $order->country->name}}
                                                                                             </td>
 
                                                                                             <td>
                                                                                                 <table cellpadding="0" cellspacing="0">
 
                                                                                                     <b>AWB No.: {{$order->shiplabel_tracking_id}}</b><br>
-                                                                                                        <b>Weight:</b> 0.50(Kgs)<br>
-                                                                                                            <b>Dimensions(Cms): 30 X 25 X 5</b><br>
+<!--                                                                                                        <b>Weight:</b> 0.50(Kgs)<br>
+                                                                                                            <b>Dimensions(Cms): 30 X 25 X 5</b><br>-->
                                                                                                                 <b>Order ID:</b> {{$order->id}}<br>
-                                                                                                                    <b>Order Date:</b> {{date_format($order->created_at,('Y-m-d'))}}<br>
+                                                                                                                    <b>Order Date: </b> {{ date('d-M-Y',strtotime($order->created_at)) }} <br>
                                                                                                                         <!--                                            <b>Pieces:</b> 1-->
                                                                                                                         </td>
                                                                                                                         </tr>
@@ -196,9 +198,9 @@ $currency_val = $ordCurrency->currency_val;
                                                                                                                 <!--                        <td>1015</td>-->
                                                                                                                                         <td>{{$prd['name']}}</td>
                                                                                                                                         <td>{{$prd['qty']}}</td>
-                                                                                                                                        <td><span class="currency-sym"></span> {{number_format($prd['subtotal']*$currency_val),2}}</td>
+                                                                                                                                        <td><span class="">{{$currency_sym}}</span> {{number_format($prd['subtotal']*$currency_val),2}}</td>
                                                                                                                 <!--                        <td>143.00</td>-->
-                                                                                                                                        <td><span class="currency-sym"></span> <b> {{number_format($prd['subtotal']*$currency_val,2)}}</b></td>
+                                                                                                                                        <td><span class="">{{$currency_sym}}</span> <b> {{number_format($prd['subtotal']*$currency_val,2)}}</b></td>
                                                                                                                                     </tr>
                                                                                                                                     <?php
                                                                                                                                     $subtotal += $prd['subtotal'];
@@ -207,24 +209,24 @@ $currency_val = $ordCurrency->currency_val;
                                                                                                                                     @endforeach
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Subtotal</b></td>
-                                                                                                                                        <td><span class="currency-sym"></span>  {{number_format($order->order_amt*$currency_val,2)}}</td>
+                                                                                                                                        <td><span class="currency-sym">{{$currency_sym}}</span>  {{number_format($order->order_amt*$currency_val,2)}}</td>
                                                                                                                                     </tr>
                                                                                                                                     @if(!empty($order->shipping_amt)) 
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Shipping</b></td>
-                                                                                                                                        <td><span class="currency-sym"></span>  <b>{{ number_format($order->shipping_amt*$currency_val,2) }}</b></td>
+                                                                                                                                        <td><span class="currency-sym">{{$currency_sym}}</span>  <b>{{ number_format($order->shipping_amt*$currency_val,2) }}</b></td>
                                                                                                                                     </tr>
                                                                                                                                     @endif
                                                                                                                                     @if(!empty($order->coupon_amt_used)) 
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Coupan Code Applied</b></td>
-                                                                                                                                        <td><span class="currency-sym"></span> <b> {{ number_format($order->coupon_amt_used*$currency_val,2) }}</b></td>
+                                                                                                                                        <td><span class="{{$currency_sym}}}">{{$currency_sym}}</span> <b> {{ number_format($order->coupon_amt_used*$currency_val,2) }}</b></td>
                                                                                                                                     </tr>
                                                                                                                                     @endif
 
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Total</b></td>
-                                                                                                                                        <td> <span class="currency-sym"></span> <b> {{ number_format($order->pay_amt *$currency_val,2) }}</b></td>
+                                                                                                                                        <td> <span class="{{$currency_sym}}">{{$currency_sym}}</span> <b> {{ number_format($order->pay_amt *$currency_val,2) }}</b></td>
                                                                                                                                     </tr>
 
                                                                                                                                 </table>
@@ -233,16 +235,18 @@ $currency_val = $ordCurrency->currency_val;
 
                                                                                                                         <tr>
                                                                                                                             <td colspan="2" style="border-top: 1px solid #ddd;">
-                                                                                                                                <b>Return Address:</b> {{$storeContact->address_line1 }}  {{$storeContact->address_line2 }} <br>
-                                                                                                                                    <b>{{$storeContact->city}} {{$storeContact->pincode }}</b><br>
+                                                                                                                                <b>Return Address:</b> {{$storeContact->address_line1 }} , {{$storeContact->address_line2 }} <br>
+                                                                                                                                  {{$storeContact->city}}, {{$storeContact->pincode }}<br>
                                                                                                                                         {{$storeContact->mobile }}
 
                                                                                                                                         </td>
                                                                                                                                         </tr>
                                                                                                                                         </table>
                                                                                                                                         </div>
+       
                                                                                                                                         </div>
                                                                                                                                         @endforeach
+    </body>
                                                           <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
                                                                                                                                         <script>
 $(document).ready(function () {

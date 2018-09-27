@@ -2494,16 +2494,19 @@ class OrdersController extends Controller {
     }
 
     public function waybill($id = null) {
-
+  
         $allids = $id;
-
-        $storeName = $this->jsonString['storeName'];
-        $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
-        $storeContact = json_decode($contact);
-
-        $orders = Order::where('id', $allids)->get();
-
-        foreach ($orders as $key => $saveorder) {
+$orders = Order::where('id', $allids)->get();
+       $storeName = $this->jsonString['storeName'];
+       $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
+       $storeContact = json_decode($contact);
+//        $storeName = $this->jsonString['storeName'];
+//        $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
+//        $storeContact = json_decode($contact);
+//
+//        $orders = Order::where('id', $allids)->get();
+//
+//        foreach ($orders as $key => $saveorder) {
 //            $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
 //            // dd($saveorder);
 //            $headers = array();
@@ -2574,35 +2577,60 @@ class OrdersController extends Controller {
 //                $curierHistory->prefix = $this->jsonString['prefix'];
 //                $curierHistory->store_id = $this->jsonString['store_id'];
 //                $curierHistory->save();
-//                $contactEmail = Config::get('mail.from.address');
-//                $contactName = Config::get('mail.from.name');
-//                $email = $saveorder->users->email;
-//                $name = $saveorder->first_name . ' ' . $saveorder->last_name;
-//                $data = ['username' => $name, 'awbno' => $saveorder->shiplabel_tracking_id, 'created_at' => $saveorder->updated_at, 'order' => $saveorder,'storeName'=>$storeName];
-//                if (Mail::send(Config('constants.adminEmails') . '.dispatch_email', $data, function($message) use ($contactEmail, $contactName, $email, $name, $data) {
 //
-//                            $message->from($contactEmail, $contactName);
-//                            $message->to($email, $name)->subject($data->storeName . "- Order Dispatched");
-//                            // $message->cc(['indranath.sgupta@gmail.com','arijit@asgleather.com']);
-//                        }))
-//                    ;
+//                $tableContant = Helper::getEmailInvoice($id);
+//      
+//        $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
+//      
+//        $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
+//        //$settings = json_decode($str, true);
+//        $settings = Helper::getSettings();
+//        $webUrl = $_SERVER['SERVER_NAME'];
+//         $toEmail = $saveorder->users->email;
+//        $firstName= $saveorder->first_name;
+//        if ($emailStatus == 1) {
+//            $emailContent = EmailTemplate::where('id', 11)->select('content', 'subject')->get()->toArray();
+//            $email_template = $emailContent[0]['content'];
+//            $subject = $emailContent[0]['subject'];
+//
+//            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
+//            $replacewith = array($saveorder->id,$firstName,  $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $saveorder->id, $saveorder->created_at);
+//            $email_templates = str_replace($replace, $replacewith, $email_template);
+//            $data_email = ['email_template' => $email_templates];
+//
+//            Helper::sendMyEmail(Config('constants.adminEmails') . '.dispatch_email', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
+//          //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
+//        }
 //            } else {
 //                print_r($data->errors);
 //                die;
 //            }
-              $saveorder = Order::find($id);
-                $contactEmail = Config::get('mail.from.address');
-                $contactName = Config::get('mail.from.name');
-                $email = $saveorder->users->email;
-                $name = $saveorder->first_name . ' ' . $saveorder->last_name;
-                $data = ['username' => $name, 'awbno' => $saveorder->shiplabel_tracking_id, 'created_at' => $saveorder->updated_at, 'order' => $saveorder];
-                if (Mail::send(Config('constants.adminEmails') . '.dispatch_email', $data, function($message) use ($contactEmail, $contactName, $email, $name, $data ,$storeName) {
+            
+ $saveorder = Order::find($id);
+         $tableContant = Helper::getEmailInvoice($id);
+      
+        $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
+        //$path = Config("constants.adminStorePath"). "/storeSetting.json";
+        //$str = file_get_contents($path);
+        $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
+        //$settings = json_decode($str, true);
+        $settings = Helper::getSettings();
+        $webUrl = $_SERVER['SERVER_NAME'];
+         $toEmail = $saveorder->users->email;
+        $firstName= $saveorder->first_name;
+        if ($emailStatus == 1) {
+            $emailContent = EmailTemplate::where('id', 11)->select('content', 'subject')->get()->toArray();
+            $email_template = $emailContent[0]['content'];
+            $subject = $emailContent[0]['subject'];
 
-                            $message->from($contactEmail, $contactName);
-                            $message->to($email, $name)->subject($storeName . "- Order Dispatched");
-                            // $message->cc(['indranath.sgupta@gmail.com','arijit@asgleather.com']);
-                        }))
-                    ;    
+            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
+            $replacewith = array($saveorder->id,$firstName,  $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $saveorder->id, $saveorder->created_at);
+            $email_templates = str_replace($replace, $replacewith, $email_template);
+            $data_email = ['email_template' => $email_templates];
+
+            Helper::sendMyEmail(Config('constants.adminEmails') . '.dispatch_email', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
+          //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
+  
         }
         $viewname = Config('constants.adminOrderView') . '.invoiceAws';
         $data = ['orders' => $orders, 'storeName' => $storeName, 'storeContact' => $storeContact, 'allids' => $allids];
