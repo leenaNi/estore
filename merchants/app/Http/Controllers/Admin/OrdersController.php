@@ -2520,7 +2520,7 @@ class OrdersController extends Controller {
             $reqArray['pick_contact_person'] = $storeContact->mobile;
             $reqArray['pick_division'] = '';
             $reqArray['pick_district'] = 'test';
-            $reqArray['pick_thana'] = 'Adabor Thana';
+            $reqArray['pick_thana'] =  $storeContact->thana;
             $reqArray['pick_union'] = 'test';
             $reqArray['pick_address'] = $storeContact->address_line1;
             $reqArray['pick_mobile'] = $storeContact->mobile;
@@ -2530,7 +2530,7 @@ class OrdersController extends Controller {
             $reqArray['recipient_district'] = '';
             $reqArray['recipient_city'] = $saveorder->zone->name;
             $reqArray['recipient_area'] = 'test';
-            $reqArray['recipient_thana'] = 'Adabor Thana';
+            $reqArray['recipient_thana'] = $saveorder->thana;
             $reqArray['recipient_union'] = 'test';
             $reqArray['weight'] = 'Up To 500gm';
 

@@ -224,6 +224,7 @@ class CheckoutController extends Controller {
             $newAdd->address2 = Input::get('address2');
             $newAdd->postcode = Input::get('postal_code');
             $newAdd->city = Input::get('city');
+            $newAdd->thana = Input::get('thana');
             $newAdd->zone_id = Input::get('state');
             $newAdd->country_id = Input::get('country_id');
             $newAdd->phone_no = Input::get('phone_no');
@@ -383,6 +384,7 @@ class CheckoutController extends Controller {
             $order->zone_id = ($selAdd) ? $selAdd->zone_id : '';
             $order->postal_code = ($selAdd) ? $selAdd->postcode : '';
             $order->city = ($selAdd) ? $selAdd->city : '';
+            $order->thana = ($selAdd) ? $selAdd->thana : '';
             if ($selAdd) {
                 $order->description = !empty(Input::get('commentText')) ? Input::get('commentText') : ' ';
             }
