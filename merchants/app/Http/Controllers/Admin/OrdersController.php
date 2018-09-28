@@ -2551,7 +2551,7 @@ class OrdersController extends Controller {
             $reqArray['product_price'] = '1';
             $reqArray['payment_method'] = '1';
             $reqArray['ep_id'] = '1';
-
+            dd($reqArray);
             $url = "http://ecourier.com.bd/apiv2/";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
