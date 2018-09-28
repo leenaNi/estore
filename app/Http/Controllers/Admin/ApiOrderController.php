@@ -300,7 +300,7 @@ class ApiOrderController extends Controller {
         foreach ($cartContent as $cart) {
             $subtotal += $cart->subtotal;
         }
-        $orderData->subtotal = $subtotal;
+        $order->subtotal = $subtotal;
         $storePath = base_path() . '/merchants/' . $merchant->url_key;
         $store = Helper::getStoreSettings($storePath)['storeName'];
        $contact = DB::table($prifix . '_static_pages')->where("status", "1")->where("url_key", "contact-us")->first();
@@ -310,7 +310,7 @@ class ApiOrderController extends Controller {
         }
 
         $taxtDetails = DB::table($prifix . '_tax')->where("status", "1")->get();
-        $data = ["status" => "1", "msg" => "order successfully placed", 'order' => $orderData, 'taxtDetails' => $taxtDetails];
+        $data = ["status" => "1", "msg" => "order successfully placed", 'order' => $order, 'taxtDetails' => $taxtDetails];
         $viewname = '';
         return Helper::returnView($viewname, $data);
     }
