@@ -2529,7 +2529,7 @@ class OrdersController extends Controller {
             $reqArray['recipient_division'] = '';
             $reqArray['recipient_district'] = '';
             $reqArray['recipient_city'] = $saveorder->zone->name;
-            $reqArray['recipient_area'] = 'test';
+            $reqArray['recipient_area'] = $saveorder->thana;
             $reqArray['recipient_thana'] = $saveorder->thana;
             $reqArray['recipient_union'] = 'test';
             $reqArray['weight'] = 'Up To 500gm';
@@ -2549,7 +2549,7 @@ class OrdersController extends Controller {
             $reqArray['parcel_detail'] = '';
             $reqArray['no_of_items'] = '';
             $reqArray['product_price'] = '1';
-            $reqArray['payment_method'] = '1';
+            $reqArray['payment_method'] = 'Cash On Delivery - COD';
             $reqArray['ep_id'] = '1';
             print_r($reqArray);
             $url = "http://ecourier.com.bd/apiv2/";
