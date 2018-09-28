@@ -191,7 +191,7 @@ class ApiUserController extends Controller {
         $user->telephone = Input::get("mobile");
         $loyalty= Input::get("loyalty_group");
         $cashback = Input::get("cashback");
-        $cashback= new HasCashbackLoyalty;
+        $cashback= new HasCashbackLoyalty();
            $cashback->cashback=$cashback?$cashback:'0';
            $cashback->loyalty_group=$loyalty;
            $cashback->store_id=$storeId;
