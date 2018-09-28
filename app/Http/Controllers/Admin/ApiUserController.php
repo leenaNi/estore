@@ -180,31 +180,30 @@ class ApiUserController extends Controller {
         $marchantId = Input::get("merchantId");
 
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $user=User::findOrNew(Input::get("id"));
         $prifix = $merchant->prefix;
-        $user["firstname"] = Input::get("firstName");
-        $user["lastname"] = Input::get("lastName");
-        $user["email"] = Input::get("email");
-        $user["country_code"] = Input::get("country_code");
-        $user["telephone"] = Input::get("mobile");
-        $user["loyalty_group"] = Input::get("loyalty_group");
-        $user["cashback"] = Input::get("cashback");
+        $user->firstname= Input::get("firstName");
+        $user->lastname = Input::get("lastName");
+        $user->email = Input::get("email");
+        $user->country_code= Input::get("country_code");
+        $user->telephone = Input::get("mobile");
+        $loyalty= Input::get("loyalty_group");
+        $cashback = Input::get("cashback");
         if (Input::get("id")) {
-            DB::table($prifix . '_users')->where("id", Input::get("id"))->update($user);
-            $users = DB::table($prifix . '_users')->where("id", Input::get("id"))->orderBy("id", "desc")->first();
-
-            $data = ['status' => "1", 'msg' => 'user Updated Successfully', 'customer' => $users];
+            $user->save();
+            $this->updateReferalLoyalty($storeId,$user->id,$loyalty,$cashback);
+            $data = ['status' => "1", 'msg' => 'user Updated Successfully', 'customer' => $user];
         } else {
-            $checkUser = DB::table($prifix . '_users')->where("telephone", Input::get("mobile"))->orderBy("id", "desc")->first();
-            $checkUser1 = DB::table($prifix . '_users')->where("email", Input::get("email"))->orderBy("id", "desc")->first();
+            $checkUser =User::where("telephone", Input::get("mobile"))->orderBy("id", "desc")->first();
+            $checkUser1 = User::where("email", Input::get("email"))->orderBy("id", "desc")->first();
             if (count($checkUser) > 0 || count($checkUser1) > 0) {
                 $data = ['status' => "0", 'error' => "User already Exist"];
             } else {
                 $refCode = rand(11111, 99999);
-                $user['referal_code'] = substr(strtoupper(Input::get("firstName")), 0, 3) . $refCode;
-                $user["user_type"] = 2;
-                DB::table($prifix . '_users')->insert($user);
-                $users = DB::table($prifix . '_users')->where("user_type", 2)->orderBy("id", "desc")->first();
-
+                $user->referal_code = substr(strtoupper(Input::get("firstName")), 0, 3) . $refCode;
+                $user->user_type= 2;
+                $user->save();
+                 $this->updateReferalLoyalty($storeId,$user->id,$loyalty,$cashback);
                 $data = ['status' => "1", 'msg' => "User added successfully", 'systemUser' => $users];
             }
         }
@@ -213,17 +212,33 @@ class ApiUserController extends Controller {
 
         return Helper::returnView($viewname, $data);
     }
-
+  public function updateReferalLoyalty($storeId,$userId,$loyalty,$cashback){
+      $cashbackCount=HasCashbackLoyalty::where("store_id",$storeId)->where("user_id",$userId)->count();
+      if($cashbackCount > 0){
+           $cashback=HasCashbackLoyalty::where("store_id",$storeId)->where("user_id",$userId)->first();
+           $cashback->cashback=$cashback?$cashback:'0';
+           $cashback->loyalty_group=$loyalty;
+           $cashback->save();
+      }else{
+         $cashback= new HasCashbackLoyalty();
+           $cashback->cashback=$cashback?$cashback:'0';
+           $cashback->loyalty_group=$loyalty;
+           $cashback->store_id=$storeId;
+           $cashback->user_id=$userId;
+           $cashback->save();
+      }
+      
+  }
     public function deleteCustomer() {
         $marchantId = Input::get("merchantId");
 
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $user = DB::table($prifix . '_users')->find(Input::get("id"));
-        $getcount = DB::table($prifix . '_orders')->where("user_id", "=", Input::get('id'))->count();
+        $user = User::find(Input::get("id"));
+        $getcount = DB::table('orders')->where("user_id", "=", Input::get('id'))->count();
         // dd($getcount);
         if ($getcount == 0) {
-            $user = DB::table($prifix . '_users')->where("id", Input::get("id"))->delete();
+            $user = User::where("id", Input::get("id"))->delete();
             Session::flash('message', 'Customer deleted successfully.');
             $data = ['status' => '1', "msg" => "Customer deleted successfully."];
         } else {
