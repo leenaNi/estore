@@ -1650,6 +1650,9 @@
 }
 
 @media (max-width: 479px) {
+	.container, #header.full-header .container, .container-fullwidth {
+		width: 98% !important;
+	}
 	#gotoTop {
 		display: block !important;
 	}
