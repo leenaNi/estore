@@ -224,7 +224,7 @@ class ApiUserController extends Controller {
            $cashback->loyalty_group=$loyalty;
            $cashback->save();
       }else{
-         $cashback= new HasCashbackLoyalty();
+         $cashback= new HasCashbackLoyalty;
            $cashback->cashback=$cashback?$cashback:'0';
            $cashback->loyalty_group=$loyalty;
            $cashback->store_id=$storeId;
