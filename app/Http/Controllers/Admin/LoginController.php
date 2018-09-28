@@ -264,8 +264,8 @@ group by vs.order_date,b.id,m.id) t1");
         $prifix = $merchant->getstores()->first();
 
 
-        $user = DB::table($prifix->prefix . '_users')->where("telephone", $merchant->phone)->first();
-        DB::table($prifix->prefix . '_users')->where("id", $user->id)->update(['device_id' => $deviceId]);
+        $user = DB::table('users')->where("telephone", $merchant->phone)->first();
+        DB::table('users')->where("id", $user->id)->update(['device_id' => $deviceId]);
         if ($merchant->update())
             $data = ["status" => 1, "msg" => "Device register successfully!"];
         else

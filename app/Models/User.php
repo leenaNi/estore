@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
-
+  protected $table = 'users';
     /**
      * The attributes that are mass assignable.
      *
@@ -26,4 +26,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+      public function addresses() {
+        return $this->hasMany('App\Models\Address', 'user_id', 'id')->orderBy('id', 'desc');
+    }
+    public function userCashback() {
+        return $this->hasOne('App\Models\HasCashbackLoyalty', 'user_id');
+    }
 }

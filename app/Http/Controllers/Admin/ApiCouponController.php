@@ -262,7 +262,7 @@ class ApiCouponController extends Controller {
         $id = Input::get("id");
         $coupon = DB::table($prifix . '_coupons')->find($id);
 
-        $getcount = DB::table($prifix . '_orders')->where("coupon_used", "=", $id)->count();
+        $getcount = DB::table('orders')->where("coupon_used", "=", $id)->count();
         //dd($getcount);
         if ($getcount == 0) {
             DB::table($prifix . '_coupons_categories')->where("c_id", "=", $id)->delete();

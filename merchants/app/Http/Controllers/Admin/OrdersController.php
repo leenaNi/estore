@@ -2529,16 +2529,18 @@ class OrdersController extends Controller {
             $reqArray['recipient_division'] = '';
             $reqArray['recipient_district'] = '';
             $reqArray['recipient_city'] = $saveorder->zone->name;
-            $reqArray['recipient_area'] = 'test';
+            $reqArray['recipient_area'] = $saveorder->thana;
             $reqArray['recipient_thana'] = $saveorder->thana;
             $reqArray['recipient_union'] = 'test';
-            $reqArray['weight'] = 'Up To 500gm';
+          
 
             $reqArray['upazila'] = '';
             if ($saveorder->zone_id == '322') {
+                  $reqArray['weight'] = 'Up To 1Kg';
                 $reqArray['delivery_timing'] = 'Next Day(24hr)';
-                $reqArray['package_code'] = '#2443';
+                $reqArray['package_code'] = '#2506';
             } else {
+                  $reqArray['weight'] = 'Up To 500gm';
                 $reqArray['delivery_timing'] = 'Next Day(48hr)';
                 $reqArray['package_code'] = '#2444';
             }
@@ -2548,10 +2550,10 @@ class OrdersController extends Controller {
             $reqArray['shipping_price'] = '1';
             $reqArray['parcel_detail'] = '';
             $reqArray['no_of_items'] = '';
-            $reqArray['product_price'] = '1';
-            $reqArray['payment_method'] = '1';
+            $reqArray['product_price'] = $saveorder->pay_amt;
+            $reqArray['payment_method'] = 'Cash On Delivery - COD';
             $reqArray['ep_id'] = '1';
-
+            print_r($reqArray);
             $url = "http://ecourier.com.bd/apiv2/";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
