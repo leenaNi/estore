@@ -29,4 +29,7 @@ class User extends Authenticatable
       public function addresses() {
         return $this->hasMany('App\Models\Address', 'user_id', 'id')->orderBy('id', 'desc');
     }
+    public function userCashback() {
+        return $this->hasOne('App\Models\HasCashbackLoyalty', 'user_id');
+    }
 }

@@ -2532,13 +2532,15 @@ class OrdersController extends Controller {
             $reqArray['recipient_area'] = $saveorder->thana;
             $reqArray['recipient_thana'] = $saveorder->thana;
             $reqArray['recipient_union'] = 'test';
-            $reqArray['weight'] = 'Up To 500gm';
+          
 
             $reqArray['upazila'] = '';
             if ($saveorder->zone_id == '322') {
+                  $reqArray['weight'] = 'Up To 1Kg';
                 $reqArray['delivery_timing'] = 'Next Day(24hr)';
                 $reqArray['package_code'] = '#2506';
             } else {
+                  $reqArray['weight'] = 'Up To 500gm';
                 $reqArray['delivery_timing'] = 'Next Day(48hr)';
                 $reqArray['package_code'] = '#2444';
             }
