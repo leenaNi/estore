@@ -77,7 +77,7 @@
                                 <input type="button" value="-" class="minus">
                                 <input type="text" step="1" min="1" name="quantity" id="quantity" value="1" title="Qty" max="{{$maxValue }}" class="qty" size="4" onkeypress="return isNumber(event);" onkeypress="return isNumber(event);" />
                                 <input type="button" value="+" class="plus"> </div>
-                            <button  form-id='{{ $product->id }}'type="button" class="add-to-cart button nomargin addToCartB addToCart">Add to cart</button>
+                            <button  form-id='{{ $product->id }}'type="button" class="add-to-cart button nomargin addToCartB addToCart mobMB15">Add to cart</button>
                             <!--<button type="button" class="add-to-cart button nomargin">Buy Now</button>-->
                             <button type="button"  data-prodid="{{ $product->id }}" class="add-to-wishlist button nomargin"><i id="wish{{ $product->id}}" class="{{($product->wishlist == 1) ? 'icon-heart3 red-heart' : 'icon-heart'}}" style="margin-right:0px;"></i></button>
                     </form>
