@@ -29,7 +29,7 @@ class ApiUserController extends Controller {
         $prifix = $merchant->prefix;
         $search = !empty(Input::get("empSearch")) ? Input::get("empSearch") : '';
         $search_fields = ['firstname', 'lastname', 'email', 'telephone'];
-        $users = DB::table($prifix . '_users')->where("user_type", 1)->orderBy("id", "desc");
+        $users = User::where("user_type", 1)->orderBy("id", "desc");
         $roles = DB::table($prifix . '_roles')->get();
         if (!empty(Input::get('empSearch'))) {
             $users = $users->where(function($query) use($search_fields, $search) {

@@ -595,7 +595,7 @@ class ApiProductController extends Controller {
     public function getAllOrder() {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $orders = DB::table($merchant->prefix . '_orders')->where("order_status", "!=", 0)->orderBy("id", "asc")->get();
+        $orders = DB::table('orders')->where("order_status", "!=", 0)->where('store_id',$merchant->id)->orderBy("id", "asc")->get();
     }
 
     public function getConfigProduct() {
