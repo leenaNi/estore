@@ -222,14 +222,14 @@ class ApiUserController extends Controller {
       if($cashbackCount > 0){
            $cashback=HasCashbackLoyalty::where("store_id",$storeId)->where("user_id",$userId)->first();
            $cashback->cashback=$cashback?$cashback:'0';
-           $cashback->loyalty_group=$loyalty;
+           $cashback->loyalty_group=$loyalty?$loyalty:'1';
            $cashback->save();
       }else{
             $usercashback = new HasCashbackLoyalty;
                 $usercashback->user_id = $userId;
                 $usercashback->store_id =$storeId;
                 $usercashback->cashback =$cashback?$cashback:'0';
-                $usercashback->loyalty_group =$cashback?$cashback:'1';
+                $usercashback->loyalty_group =$loyalty?$loyalty:'1';
                 $usercashback->timestamps = false;
                 $usercashback->save();
              
