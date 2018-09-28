@@ -73,30 +73,31 @@ class ApiUserController extends Controller {
         $marchantId = Input::get("merchantId");
 
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $user=User::findOrNew(Input::get("id"));
         $prifix = $merchant->prefix;
-        $user["firstname"] = Input::get("firstName");
-        $user["lastname"] = Input::get("lastName");
-        $user["email"] = Input::get("email");
-        $user["country_code"] = Input::get("country_code");
-        $user["telephone"] = Input::get("mobile");
-        $user["status"] = Input::get("status");
+        $user->firstname = Input::get("firstName");
+        $user->lastname= Input::get("lastName");
+        $user->email= Input::get("email");
+        $user->country_code = Input::get("country_code");
+        $user->telephone= Input::get("mobile");
+        $user->status= Input::get("status");
         if (Input::get("password")) {
-            $user["password"] = Hash::make(Input::get("password"));
+            $user->password = Hash::make(Input::get("password"));
         }
+       
         if (Input::get("id")) {
-            DB::table($prifix . '_users')->where("id", Input::get("id"))->update($user);
-            $users = DB::table($prifix . '_users')->where("id", Input::get("id"))->orderBy("id", "desc")->first();
+             $user->save();
             $role["role_id"] = Input::get("roleId");
             DB::table($prifix . '_role_user')->where("user_id", Input::get("id"))->update($role);
-            $data = ['status' => "1", 'msg' => 'user Updated Successfully', 'systemUser' => $users];
+            $data = ['status' => "1", 'msg' => 'user Updated Successfully', 'systemUser' => $user];
         } else {
-            $checkUser = DB::table($prifix . '_users')->where("telephone", Input::get("mobile"))->orderBy("id", "desc")->first();
-            $checkUser1 = DB::table($prifix . '_users')->where("email", Input::get("email"))->orderBy("id", "desc")->first();
+            $checkUser =User::where("telephone", Input::get("mobile"))->orderBy("id", "desc")->first();
+            $checkUser1 = User::where("email", Input::get("email"))->orderBy("id", "desc")->first();
             if (count($checkUser) > 0 || count($checkUser1) > 0) {
                 $data = ['status' => "0", 'msg' => "User already Exist"];
             } else {
-                $user["user_type"] = 1;
-                DB::table($prifix . '_users')->insert($user);
+                $user->status=1;
+                $user->save();
                 $users = DB::table($prifix . '_users')->where("user_type", 1)->orderBy("id", "desc")->first();
                 $role["user_id"] = $users->id;
                 $role["role_id"] = Input::get("roleId");

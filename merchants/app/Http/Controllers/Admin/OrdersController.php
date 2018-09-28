@@ -2537,7 +2537,7 @@ class OrdersController extends Controller {
             $reqArray['upazila'] = '';
             if ($saveorder->zone_id == '322') {
                 $reqArray['delivery_timing'] = 'Next Day(24hr)';
-                $reqArray['package_code'] = '#2443';
+                $reqArray['package_code'] = '#2506';
             } else {
                 $reqArray['delivery_timing'] = 'Next Day(48hr)';
                 $reqArray['package_code'] = '#2444';
@@ -2548,7 +2548,7 @@ class OrdersController extends Controller {
             $reqArray['shipping_price'] = '1';
             $reqArray['parcel_detail'] = '';
             $reqArray['no_of_items'] = '';
-            $reqArray['product_price'] = '1';
+            $reqArray['product_price'] = $saveorder->pay_amt;
             $reqArray['payment_method'] = 'Cash On Delivery - COD';
             $reqArray['ep_id'] = '1';
             print_r($reqArray);
