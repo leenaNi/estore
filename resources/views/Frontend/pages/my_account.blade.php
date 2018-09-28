@@ -54,7 +54,7 @@
 
             <!-- Sidebar
             ============================================= -->
-            <div class="sidebar nobottommargin">
+            <div class="sidebar nobottommargin sidbarCustomwidth">
                 <div class="sidebar-widgets-wrap">
                     <div class="profile-box">
                         <div class="profile-name text-center topmargin-xs clearfix">{{$merchant->firstname}} {{$merchant->lastname}}</div>
@@ -79,7 +79,7 @@
             </div><!-- .sidebar end -->
             <!-- Post Content
             ============================================= -->
-            <div class="postcontent nobottommargin col_last" id="myprofile">
+            <div class="postcontent nobottommargin col_last widthAuto" id="myprofile">
                 <div class="col_full"> <span id="profileUpdate" style="color: #1B2987"></span> </div>
                 <div class="profile-content">
                     <div class="account-heading">
