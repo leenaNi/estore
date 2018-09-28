@@ -31,8 +31,8 @@ class ApiSalesController extends Controller {
         // dd(DB::getTablePrefix());
      $marchantId=Input::get("merchantId");
      $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-     $ordTab=$merchant->prefix.'_orders';
-     $UserTab=$merchant->prefix.'_users'; 
+     $ordTab='orders';
+     $UserTab='users'; 
         $where = '';
         if (!empty(Input::get('month'))) {
             $select = "DATE_FORMAT(created_at, '%M %Y') as created_at";
@@ -57,10 +57,10 @@ class ApiSalesController extends Controller {
 //            $where = "where ord.order_status NOT IN(0,4,6,10)";
 //        }
  $allorder = DB::select(DB::raw("SELECT count(*) AS ordcount, SUM(pay_amt) AS sales,date(created_at) orddate "
-                                . " from " . $merchant->prefix . "_orders where order_status NOT IN(0,4,6,10) group by orddate order by sales desc"));
+                                . " from orders where order_status NOT IN(0,4,6,10) group by orddate order by sales desc"));
  
         $order = DB::select(DB::raw("SELECT ord.id AS orderId, SUM( ord.pay_amt ) AS sales, COUNT( hp.prod_id )  as prdCount"
-                                . " from " . $merchant->prefix . "_orders as ord inner join " . $merchant->prefix . "_has_products as hp on(ord.id = hp.order_id) $where group by hp.order_id"));
+                                . " from orders as ord inner join has_products as hp on(ord.id = hp.order_id) $where and hp.store_id='.$merchant->id.' group by hp.order_id"));
        //dd($order);
         $salesTotal = 0;
         $ordProdTot = 0;
@@ -112,7 +112,7 @@ class ApiSalesController extends Controller {
      $marchantId=Input::get("merchantId");
      $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
      $prodTab=$merchant->prefix.'_products';  
-     $hasProdTab=$merchant->prefix.'_has_products';  
+//     $hasProdTab=$merchant->prefix.'_has_products';  
      $ordTab=$merchant->prefix.'_orders';  
      $hasCatTab=$merchant->prefix.'_has_categories';  
      $catTab=$merchant->prefix.'_categories'; 
@@ -123,7 +123,7 @@ class ApiSalesController extends Controller {
         $prods = DB::table($prodTab)->where('is_individual', '=', '1')->orderBy("product", "asc")->get();
          foreach($prods as $prod){
            $prod->category=  @DB::table($hasCatTab)->join($catTab,$catTab.".id","=",$hasCatTab.".cat_id")->where($hasCatTab.".prod_id",$prod->id)->first()->category;
-           $sales= DB::table($hasProdTab)->join($ordTab,$ordTab.".id","=",$hasProdTab.".order_id")->where($hasProdTab.".prod_id",$prod->id)->get();
+           $sales= DB::table('has_products')->join($ordTab,$ordTab.".id","=","has_products.order_id")->where("has_products.prod_id",$prod->id)->where("has_products.store_id",$merchant->id)->get();
             $prod->TotalQty=$sales->sum('qty');
            $prod->TotalSale=$sales->sum('price');
              
@@ -151,10 +151,15 @@ class ApiSalesController extends Controller {
         })->orderBy("category", "asc")->get();
 
      foreach($categories as $cat){
+         
         $prodIds=  DB::table($hasCatTab)->join($prodTab,$prodTab.".id","=",$hasCatTab.".prod_id")->where($hasCatTab.".cat_id",$cat->id)->pluck($prodTab.".id");   
-        $sales= DB::table($hasProdTab)->join($ordTab,$ordTab.".id","=",$hasProdTab.".order_id")->whereIn($hasProdTab.".prod_id",$prodIds)->get();
+        if(is_array($prodIds)){
+        $sales= DB::table("has_products")->join("orders","orders.id","=","has_products.order_id")->whereIn("has_products.prod_id",$prodIds)->whereIn("has_products.store_id",$merchant->id)->get();
             $cat->TotalQty=$sales->sum('qty');
            $cat->TotalSale=$sales->sum('price');
+        }
+          $cat->TotalQty=0;
+           $cat->TotalSale=0;
         }
          return $categories;
       //  return view(Config('constants.saleView') . '.by_categories', compact('categories','categoryCount'));
@@ -165,9 +170,7 @@ class ApiSalesController extends Controller {
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $catTab=$merchant->prefix.'_categories';  
         $prodTab=$merchant->prefix.'_products'; 
-        $ordTab=$merchant->prefix.'_orders';
-        
-        $hasProdTab=$merchant->prefix.'_has_products';  
+      
          $hasCatTab=$merchant->prefix.'_has_categories';
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['product', 'short_desc', 'long_desc'];
@@ -187,10 +190,11 @@ class ApiSalesController extends Controller {
           $subProduct=DB::table($prodTab)->where('parent_prod_id', $prod->id)->get(["id","product"]);
         
           foreach($subProduct as $subProd){
-              $orderCount = DB::table($hasProdTab)->leftjoin($ordTab, $ordTab.".id", "=",$hasProdTab.".order_id")
-                                  ->whereNotIn($ordTab.".order_status", [0, 4, 6, 10])
-                                  ->where($hasProdTab.".sub_prod_id", "=", $subProd->id)
-                               ->select($hasProdTab.".created_at", $hasProdTab.".qty");
+              $orderCount = DB::table("has_products")->leftjoin("orders","orders.id", "=","has_products.order_id")
+                                  ->whereNotIn("orders.order_status", [0, 4, 6, 10])
+                                  ->where("has_products.sub_prod_id", "=", $subProd->id)
+                                ->where("has_products.store_id", "=",$merchant->id )
+                               ->select("has_products.created_at","has_products.qty");
               $subProd->Qty=$orderCount->sum('qty');
               $subProd->total=$orderCount->sum('price');
           }

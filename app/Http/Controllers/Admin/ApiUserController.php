@@ -97,7 +97,7 @@ class ApiUserController extends Controller {
             if (count($checkUser) > 0 || count($checkUser1) > 0) {
                 $data = ['status' => "0", 'msg' => "User already Exist"];
             } else {
-                $user->status = 1;
+                $user->user_type = 1;
                 $user->prefix = $prifix;
                  $user->store_id = $merchant->id;
                 $user->save();
