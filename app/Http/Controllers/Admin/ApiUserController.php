@@ -147,9 +147,9 @@ class ApiUserController extends Controller {
                 }
             });
         }
-           $users = $users->with('userCashback', function($q) use($storeId) {
+           $users = $users->with(['userCashback'=>function($q) use($storeId) {
                     $q->where('store_id', '=', $storeId);
-                });
+                }]);
         $users = $users->get();
         $userCount = $users->count();
 //        foreach ($users as $user) {
