@@ -11,7 +11,7 @@ class Address extends Model {
      *
      * @var string
      */
-    protected $connection = 'mysql2';
+  
     protected $table = 'has_addresses';
 
     public function users() {
