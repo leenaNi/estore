@@ -1211,7 +1211,9 @@
 		width: 80px !important;
 		height: 60px !important;
 	}
-
+.mobMarginbottom15{
+	margin-bottom: 15px !important;
+}
 	.postcontent,
 	.postcontent.bothsidebar,
 	.sidebar,
