@@ -145,9 +145,9 @@
                                         @foreach($orders as $ord)  
                                         <?php
                                         if ($ord->currency_id != Session::get('currency_id')) {
-                                            $ordCurrency = DB::table('has_currency')->where('id', Session::get('currency_id'))->first();
+                                            $ordCurrency = App\Models\HasCurrency::where('id', Session::get('currency_id'))->first();
                                         } else {
-                                            $ordCurrency = DB::table('has_currency')->where('id', $ord->currency_id)->first();
+                                            $ordCurrency = App\Models\HasCurrency::where('id', $ord->currency_id)->first();
                                         }
                                         ?>
                                         <tr>
