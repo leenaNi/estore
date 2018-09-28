@@ -94,14 +94,14 @@ class ApiSalesController extends Controller {
         $fromDate = date('Y-m-d', strtotime(Input::get('from_date')));
         $fromD=$fromDate .' 00:00:00';
          $toD= $toDate .' 23:59:59';
-        $byUser = DB::table($UserTab)->where($where)->where("status",1)->get();
-        $newusers = DB::table($UserTab)->where($where)->whereBetween('created_at', [$fromD, $toD])->select(DB::raw('count(id) as newOrdCount'))->get();
-        $oldusers = DB::table($UserTab)->where($where)->select(DB::raw('count(id) as oldOrdCount'))->get();
-        $newrevenue =DB::table($ordTab)->join($UserTab, $ordTab.'.user_id', '=', $UserTab.'.id')
-                       ->whereBetween($UserTab.'.created_at', [$fromD, $toD])
+        $byUser =User::where($where)->where("status",1)->get();
+        $newusers = User::where($where)->whereBetween('created_at', [$fromD, $toD])->select(DB::raw('count(id) as newOrdCount'))->get();
+        $oldusers = User::where($where)->select(DB::raw('count(id) as oldOrdCount'))->get();
+        $newrevenue =Order::join("users",'users.id', '=','users.id')->where("orders.store_id",$merchant->id)
+                       ->whereBetween('users.created_at', [$fromD, $toD])
                         ->select(DB::raw('sum(pay_amt) as newPayAmt'))->get();
         //dd($newrevenue);
-        $oldrevenue = DB::table($ordTab)->select(DB::raw('sum(pay_amt) as oldpayAmt'))->whereNotIn('order_status',[4,0,10])->get();
+        $oldrevenue = Order::select(DB::raw('sum(pay_amt) as oldpayAmt'))->whereNotIn('order_status',[4,0,10])->where('store_id',$merchant->id)->get();
        // $cashRevenue = DB::table($ordTab)->select(DB::raw('sum(pay_amt) as cashpayAmt'))->whereNotIn('order_status',[4,0,10])->where($ordTab.'.payment_method',1)->get();
        // $cardRevenue = DB::table($ordTab)->select(DB::raw('sum(pay_amt) as cardpayAmt'))->whereNotIn('order_status',[4,0,10])->where($ordTab.'.payment_method',"!=",1)->get();
        // $creditRevenue = DB::table($ordTab)->select(DB::raw('sum(pay_amt) as creditpayAmt'))->where('order_status','!=',0)->where($ordTab.'.payment_method',8)->get();

@@ -67,6 +67,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('/get-bank-details', ["as" => "admin.merchants.getBankDetails", "uses" => "ApiMerchantController@getBankDetails"]);
             Route::post('/update-bank-details', ["as" => "admin.merchants.updateBankDetails", "uses" => "ApiMerchantController@updateBankDetails"]);
             Route::post('/store-info', ["as" => "admin.merchants.storeInfo", "uses" => "MerchantController@storeInfo"]);
+            Route::any('/get-courier', ["as" => "admin.merchants.getCourier", "uses" => "MerchantController@getCourier"]);
         });
         Route::group(['prefix' => 'stores'], function () {
             Route::get('/', ["as" => "admin.stores.view", "uses" => "StoreController@index"]);
