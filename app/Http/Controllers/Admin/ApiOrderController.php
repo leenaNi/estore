@@ -226,10 +226,10 @@ class ApiOrderController extends Controller {
 
             if (Input::get("address_id")) {
 
-                DB::table($prifix . '_has_addresses')->where("id", Input::get("address_id"))->update($address);
+                DB::table('has_addresses')->where("id", Input::get("address_id"))->update($address);
             } else {
                 $address['created_at'] = \Carbon\Carbon::now();
-                DB::table($prifix . '_has_addresses')->insert($address);
+                DB::table('has_addresses')->insert($address);
             }
             //$dfgdf= DB::table($prifix.'_orders')->get();
             // dd($dfgdf);
@@ -264,7 +264,7 @@ class ApiOrderController extends Controller {
             $userCashback = Helper::getUserCashBack($prifix, Input::get('mobile'), Input::get('user_id'));
 
             if ($userCashback['status'] == 1 && $userCashback['cashback'] > 0) {
-                $user = DB::table($prifix . '_users')->where('telephone$user', Input::get('mobile')); //GET USER
+                $user = DB::table('users')->where('telephone$user', Input::get('mobile')); //GET USER
                 if ($userCashback['cashback'] >= $payAmt) {
                     $order->pay_amt = 0;
                     $order->cashback_used = $payAmt;
@@ -290,11 +290,8 @@ class ApiOrderController extends Controller {
         $order->shipping_amt = Input::get("delivery_charges") ? Input::get("delivery_charges") : '0';
         $order->prefix = $prifix;
         $order->store_id = $merchant->id;
-
         $order->save();
-
-
-        $orderData = DB::table($prifix . '_orders')->orderBy("id", "desc")->first();
+        
         $this->updateStock($cartData, $prifix, $order->id,$merchant->id);
         $cartContent = json_decode($cartData);
         $subtotal = 0;
