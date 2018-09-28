@@ -122,14 +122,16 @@ class ApiOrderController extends Controller {
             //  ->join($addtable,$prifix.'_users.id','=',$addtable.'.user_id')->select($prifix.'_users.*',$addtable.'.firstname', $addtable.'.lastname', $addtable.'.address1', $addtable.'.address2', $addtable.'.phone_no', $addtable.'.city', $addtable.'.postcode', $addtable.'.country_id')->first();
 
             if (!is_null($user)) {
-                $address = Address::find('user_id', $user->id);
+                $address = Address::where('user_id', $user->id)->first();
 
                 if (count($address) > 0) {
                     $address->countryName = @DB::table($prifix . "_countries")->where("id", $address->country_id)->first()->name;
                     $address->stateName = @DB::table($prifix . "_zones")->where("id", $address->zone_id)->first()->name;
                     $user->address = @$address;
                 }
+                
                 $cashBack = DB::table("has_cashback_loyalty")->where("store_id", $merchant->id)->where("user_id", $user->id)->first();
+           
                 $data = ['status' => 1, 'cashback' => @$cashBack->cashback, 'user' => $user];
             } else {
                 $password = Hash::make('asdf1234');
@@ -157,7 +159,7 @@ class ApiOrderController extends Controller {
         // dd($cartData);
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $order = Order::findOrNew(Input::get("id"));
+        $order = new Order();
         $order->user_id = 0;
         $order->order_amt = $orderAmt;
         $order->pay_amt = $payAmt;
@@ -208,7 +210,7 @@ class ApiOrderController extends Controller {
         // dd($cartData);
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $order = Order::findOrNew(Input::get("id"));
+        $order =new Order();
         if (Input::get("address1")) {
             $address['user_id'] = Input::get("user_id");
             $address['firstname'] = Input::get("fname") ? Input::get("fname") : '';
