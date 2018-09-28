@@ -251,6 +251,9 @@
     width: 100% !important;
     margin: 0 37px 0px 0 !important;
 	}
+	.widthAuto{
+		width: auto !important;
+	}
 	.customDomainfield {
     width: calc(100% - 50px);
     text-align: left;
