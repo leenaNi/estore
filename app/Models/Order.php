@@ -9,7 +9,7 @@ class Order extends Model {
 
     use Sortable;
 
-    protected $connection = 'mysql2';
+  
     protected $table = 'orders';
     protected $guarded = array('id');
     //protected $fillable = ['id', 'user_id', 'order_amt', 'pay_amt', 'cod_charges', 'gifting_charges' , 'payment_method', 'payment_status', 'description', 'cart', 'cashback_used', 'cashback_earned', 'cashback_credited', 'voucher_used', 'coupon_used', 'shipping_amt', 'voucher_amt_used', 'coupon_amt_used', 'shiplabel_tracking_id', 'referal_code_used', 'referal_code_amt', 'user_ref_points', 'ref_flag', 'order_status', 'ship_date', 'order_comment', 'first_name', 'last_name', 'address1', 'address2', 'address3', 'phone_no', 'country_id', 'zone_id', 'postal_code', 'city'];
