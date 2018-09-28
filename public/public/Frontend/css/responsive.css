@@ -243,8 +243,8 @@
 
 @media (max-width: 991px) {
 	.sidbarCustomwidth{
-		width: auto;
-		float: left;
+		width: auto !important;
+		float: left !important;
 	}
 	.customDomainfield {
     width: calc(100% - 50px);
@@ -283,7 +283,7 @@
 	.sidebar {
 		width: 100%;
 		margin-right: 0;
-		float: none !important;
+		float: none;
 		margin-bottom: 40px !important;
 		padding-bottom: 40px;
 		border-bottom: 1px solid #EEE;
