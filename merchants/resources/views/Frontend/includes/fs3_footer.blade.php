@@ -4,13 +4,21 @@
 	<footer id="footer" class="dark">
 
 		<div class="container">
+		<?php  	if($notificationStatus==1) {
+	$cols='col-md-3';
+	$cols2='col-md-3';
+}else{
+	$cols='col-md-4';
+	$cols2='col-md-5';
 
+}
+	?>
 				<!-- Footer Widgets
 					============================================= -->
 					<div class="footer-widgets-wrap clearfix nobottompaddingMob nobottompaddingMob">
 
 						<div class="col_full nobottompaddingMob">
-							<div class="col-md-3 col-sm-6">
+							<div class="{{$cols}} col-sm-6  col-xs-12">
 
 								<div class="widget clearfix abt-secFooter">
 
@@ -27,7 +35,7 @@
 
 							</div>
 
-							<div class="col-md-2 col-sm-6">
+							<div class="col-md-2 col-sm-6  col-xs-12">
 
 								<div class="widget widget_links clearfix">
 
@@ -72,7 +80,7 @@
 							</div>
 							@endif
 
-							<div class="col-md-3 col-sm-6">
+							<div class="{{$cols2}}  col-sm-6  col-xs-12">
 								<div class="widget clearfix nobottompaddingMob nobottommarginMob">
 									<h4>Contact Us</h4>
 
