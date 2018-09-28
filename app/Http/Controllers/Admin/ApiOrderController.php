@@ -275,7 +275,7 @@ class ApiOrderController extends Controller {
                     $cashbackRemained = 0;
                 }
 
-                DB::table($prifix . '_users')->where("id", Input::get("user_id"))->update(['cashback' => $cashbackRemained]);
+                DB::table('users')->where("id", Input::get("user_id"))->update(['cashback' => $cashbackRemained]);
             } else {
                 $order->cashback_used = 0;
             }

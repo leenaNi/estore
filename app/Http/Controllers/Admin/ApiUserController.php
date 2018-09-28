@@ -182,6 +182,7 @@ class ApiUserController extends Controller {
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $user=User::findOrNew(Input::get("id"));
         $prifix = $merchant->prefix;
+        $storeId = $merchant->id;
         $user->firstname= Input::get("firstName");
         $user->lastname = Input::get("lastName");
         $user->email = Input::get("email");
@@ -202,6 +203,8 @@ class ApiUserController extends Controller {
                 $refCode = rand(11111, 99999);
                 $user->referal_code = substr(strtoupper(Input::get("firstName")), 0, 3) . $refCode;
                 $user->user_type= 2;
+                $user->prefix= $prifix;
+                $user->store_id= $storeId;
                 $user->save();
                  $this->updateReferalLoyalty($storeId,$user->id,$loyalty,$cashback);
                 $data = ['status' => "1", 'msg' => "User added successfully", 'systemUser' => $users];
