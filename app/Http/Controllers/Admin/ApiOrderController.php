@@ -7,6 +7,7 @@ use App\Library\Helper;
 use App\Models\Address;
 use App\Models\Category;
 use App\Models\Country;
+use App\Models\User;
 use App\Models\Coupon;
 use App\Models\Merchant;
 use App\Models\HasProducts;
@@ -29,12 +30,12 @@ class ApiOrderController extends Controller {
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
         $order_options = '';
-        $order_status = DB::table($prifix . '_order_status')->where('status', 1)->orderBy('order_status', 'asc')->get();
-        $orders = DB::table($prifix . '_orders')->where($prifix . '_orders.order_status', "!=", 0)->orderBy($prifix . '_orders.id', "desc")->select("*");
+        $order_status = DB::table('order_status')->where('status', 1)->orderBy('order_status', 'asc')->get();
+        $orders = Order::where('orders.order_status', "!=", 0)->where('orders.store_id', $merchant->id)->orderBy('orders.id', "desc")->select("*");
 
 
-        $payment_method = DB::table($prifix . '_payment_method')->get();
-        $payment_stuatus = DB::table($prifix . '_payment_status')->get();
+        $payment_method = DB::table('payment_method')->get();
+        $payment_stuatus = DB::table('payment_status')->get();
         if (!empty(Input::get('order_ids'))) {
             $mulIds = explode(",", Input::get('order_ids'));
             $orders = $orders->whereIn("orders.id", $mulIds);
@@ -91,16 +92,16 @@ class ApiOrderController extends Controller {
 
         $orders = $orders->paginate(10);
         $ordersCount = $orders->total();
-        foreach($orders as $order){
-            if($order->zone_id){
-            $order->stateName=DB::table($prifix . '_zones')->where("id", $order->zone_id)->first()->name;
+        foreach ($orders as $order) {
+            if ($order->zone_id) {
+                $order->stateName = DB::table($prifix . '_zones')->where("id", $order->zone_id)->first()->name;
             }
-         }
+        }
         //$flags = Flags::all();
-          // $state = DB::table($prifix . '_zones')->where("status", 1)->orderBy("name", "asc")->get(["id", "name", "country_id"]);
-            $country = DB::table($prifix . '_countries')->where("status", 1)->get(["id", "name"]);
+        // $state = DB::table($prifix . '_zones')->where("status", 1)->orderBy("name", "asc")->get(["id", "name", "country_id"]);
+        $country = DB::table($prifix . '_countries')->where("status", 1)->get(["id", "name"]);
         $viewname = Config('constants.adminOrderView') . '.index';
-        $data = ['orders' => $orders, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options,'country'=>$country];
+        $data = ['orders' => $orders, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options, 'country' => $country];
         return Helper::returnView($viewname, $data);
     }
 
@@ -114,38 +115,33 @@ class ApiOrderController extends Controller {
         $phone = Input::get('mobile');
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $addtable = $prifix . '_has_addresses';
+        $addtable = 'has_addresses';
         //$selectAddress= $addtable.'.firstname', $addtable.'.lastname', $addtable.'.address1', $addtable.'.address2', $addtable.'.phone_no', $addtable.'.city';
         if (!is_null($phone)) {
-            $user = DB::table($prifix . '_users')->where('telephone', $phone)->first();
+            $user = User::where('telephone', $phone)->first();
             //  ->join($addtable,$prifix.'_users.id','=',$addtable.'.user_id')->select($prifix.'_users.*',$addtable.'.firstname', $addtable.'.lastname', $addtable.'.address1', $addtable.'.address2', $addtable.'.phone_no', $addtable.'.city', $addtable.'.postcode', $addtable.'.country_id')->first();
 
             if (!is_null($user)) {
-                $address = DB::table($prifix . '_has_addresses')->where('user_id', $user->id)->first();
-              
-                if(count($address) > 0){
-                $address->countryName = @DB::table($prifix . "_countries")->where("id",$address->country_id)->first()->name;
-                $address->stateName = @DB::table($prifix . "_zones")->where("id",$address->zone_id)->first()->name;
-                $user->address = $address;
+                $address = Address::find('user_id', $user->id)->first();
+
+                if (count($address) > 0) {
+                    $address->countryName = @DB::table($prifix . "_countries")->where("id", $address->country_id)->first()->name;
+                    $address->stateName = @DB::table($prifix . "_zones")->where("id", $address->zone_id)->first()->name;
+                    $user->address = $address;
                 }
-                $data = ['status' => 1, 'cashback' => @$user->cashback, 'user' => $user];
+                $cashBack = DB::table("has_cashback_loyalty")->where("store_id", $merchant->id)->where("user_id", $user->id)->first();
+                $data = ['status' => 1, 'cashback' => $cashBack->cashback, 'user' => $user];
             } else {
                 $password = Hash::make('asdf1234');
-                $insertData['telephone'] = $phone;
-                $insertData['user_type'] = 2;
-                $insertData['password'] = $password;
-                $insertData['status'] = 1;
-                $insertData['created_at'] = \Carbon\Carbon::now();
-                $insertData['updated_at'] = \Carbon\Carbon::now();
-
-                $user = DB::table($prifix . '_users')->insert($insertData);
-                $user = DB::table($prifix . '_users')->orderBy("id", "desc")->first();
+                $user = User::findOrNew(Input::get("id"));
+                $user->telephone = $phone;
+                $user->user_type = 2;
+                $user->password = $password;
+                $user->status = 1;
+                $user->save();
                 $data = ['status' => 0, 'cashback' => 0, 'user' => $user];
             }
 
-            // $user = Helper::getUserCashBack($phone_no);
-            //  $tax = Tax::where('type', 1)->get();
-            // $data = ['status' => '1', 'user' => $user];
             $viewname = '';
             return Helper::returnView($viewname, $data);
         }
@@ -158,52 +154,46 @@ class ApiOrderController extends Controller {
         $cartData = Input::get("cartData");
         $couponCode = Input::get("coupon_code");
         //$cartContent = json_decode(json_encode(Input::get("cartData"),true));
-       // dd($cartData);
+        // dd($cartData);
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        //$dfgdf= DB::table($prifix.'_orders')->get();
-        // dd($dfgdf);
-        $order = [];
-        $order['user_id'] = 0;
-        $order['order_amt'] = $orderAmt;
-        $order['pay_amt'] = $payAmt;
-        $order['payment_method'] = 1;
-        $order['order_status'] = 1;
-        $order['cart'] = $cartData;
-        $order['payment_status'] = 1;
+        $order = Order::findOrNew(Input::get("id"));
+        $order->user_id = 0;
+        $order->order_amt = $orderAmt;
+        $order->pay_amt = $payAmt;
+        $order->payment_method = 1;
+        $order->order_status = 1;
+        $order->cart = $cartData;
+        $order->payment_status = 1;
         if (Input::get('coupon_code') != '') {
             $coupon = DB::table($prifix . '_coupons')->where("coupon_code", "=", $couponCode)->first();
-            $order['coupon_used'] = $coupon->id;
-            $order['coupon_amt_used'] = Input::get('coupon_amt');
+            $order->coupon_used = $coupon->id;
+            $order->coupon_amt_used = Input::get('coupon_amt');
         }
-        $order['additional_charge'] = Input::get("additional_charge");
-        $order['discount_type'] = Input::get("disc_type") ? Input::get("disc_type") : '0';
-        $order['discount_amt'] = Input::get("disc_amt") ? Input::get("disc_amt") : '0';
-        $order['shipping_amt'] = Input::get("delivery_charges") ? Input::get("delivery_charges") : '0';
-        $order['created_at'] = \Carbon\Carbon::now();
-        $order['updated_at'] = \Carbon\Carbon::now();
-        // $order['disc_amt']=Input::get("disc_amt")?Input::get("disc_amt"):'0';
-        // dd($order);
-        DB::table($prifix . '_orders')->insert($order);
-        $orderData = DB::table($prifix . '_orders')->orderBy("id", "desc")->first();
-         $this->updateStock($cartData,$prifix,$orderData->id);
-         $cartContent = json_decode($cartData);
-         $subtotal=0;
-         foreach($cartContent as $cart){
-              $subtotal += $cart->subtotal;
-             
-         }
-          $orderData->subtotal=$subtotal;
-         $storePath=base_path().'/merchants/'.$merchant->url_key;
-           $store=Helper::getStoreSettings($storePath)['storeName']; 
-           $contact = DB::table($prifix . '_contacts')->where("status", "1")->first();
-          $orderData->storeName=$store;
-           if(count($contact) > 0){
-                $orderData->contact=$contact;
-           } 
-       
-        $taxtDetails =DB::table($prifix . '_tax')->where("status", "1")->get();
-        $data = ["status" => "1", "msg" => "order successfully placed", 'order' => $orderData, 'taxtDetails' => $taxtDetails];
+        $order->additional_charge = Input::get("additional_charge");
+        $order->discount_type = Input::get("disc_type") ? Input::get("disc_type") : '0';
+        $order->discount_amt = Input::get("disc_amt") ? Input::get("disc_amt") : '0';
+        $order->shipping_amt = Input::get("delivery_charges") ? Input::get("delivery_charges") : '0';
+        $order->prefix = $prifix;
+        $order->store_id = $merchant->id;
+        $order->save();
+        $this->updateStock($cartData, $prifix, $order->id,$merchant->id);
+        $cartContent = json_decode($cartData);
+        $subtotal = 0;
+        foreach ($cartContent as $cart) {
+            $subtotal += $cart->subtotal;
+        }
+        $order->subtotal = $subtotal;
+        $storePath = base_path() . '/merchants/' . $merchant->url_key;
+        $store = Helper::getStoreSettings($storePath)['storeName'];
+        $contact = DB::table($prifix . '_static_pages')->where("status", "1")->where("url_key", "contact-us")->first();
+        $order->storeName = $store;
+        if (count($contact) > 0) {
+            $order->contact = @$contact->contact_details;
+        }
+
+        $taxtDetails = DB::table($prifix . '_tax')->where("status", "1")->get();
+        $data = ["status" => "1", "msg" => "order successfully placed", 'order' => $order, 'taxtDetails' => $taxtDetails];
         $viewname = '';
         return Helper::returnView($viewname, $data);
     }
@@ -212,116 +202,116 @@ class ApiOrderController extends Controller {
         $marchantId = Input::get("merchantId");
         $payAmt = Input::get("pay_amt");
         $orderAmt = Input::get("order_amt");
-        $cartData =Input::get("cartData");
+        $cartData = Input::get("cartData");
         $couponCode = Input::get("coupon_code");
         //$cartContent = json_decode(json_encode(Input::get("cartData"),true));
         // dd($cartData);
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-         $order = [];
-        if(Input::get("address1")){
-        $address['user_id'] = Input::get("user_id");
-        $address['firstname'] = Input::get("fname") ? Input::get("fname") : '';
-        $address['lastname'] = Input::get("lname") ? Input::get("lname") : '';
+        $order = Order::findOrNew(Input::get("id"));
+        if (Input::get("address1")) {
+            $address['user_id'] = Input::get("user_id");
+            $address['firstname'] = Input::get("fname") ? Input::get("fname") : '';
+            $address['lastname'] = Input::get("lname") ? Input::get("lname") : '';
 
-        $address['address1'] = Input::get("address1");
-         $address['address2']=Input::get("address2")?Input::get("address2"):'';
-         $address['address3']=Input::get("address3")?Input::get("address3"):'';
-        $address['phone_no'] = Input::get("mobile");
-        $address['postcode']=Input::get("postcode")?Input::get("postcode"):''; 
-        $address['city'] = Input::get("city") ? Input::get("city") : '';
-        $address['country_id'] = Input::get("countryId") ? Input::get("countryId") : '';
-        $address['zone_id'] = Input::get("zoneId") ? Input::get("zoneId") : '';
-        $address['updated_at'] = \Carbon\Carbon::now();
+            $address['address1'] = Input::get("address1");
+            $address['address2'] = Input::get("address2") ? Input::get("address2") : '';
+            $address['address3'] = Input::get("address3") ? Input::get("address3") : '';
+            $address['phone_no'] = Input::get("mobile");
+            $address['postcode'] = Input::get("postcode") ? Input::get("postcode") : '';
+            $address['city'] = Input::get("city") ? Input::get("city") : '';
+            $address['country_id'] = Input::get("countryId") ? Input::get("countryId") : '';
+            $address['zone_id'] = Input::get("zoneId") ? Input::get("zoneId") : '';
+            $address['updated_at'] = \Carbon\Carbon::now();
 
-        if (Input::get("address_id")) {
+            if (Input::get("address_id")) {
 
-            DB::table($prifix . '_has_addresses')->where("id", Input::get("address_id"))->update($address);
-        } else {
-            $address['created_at'] = \Carbon\Carbon::now();
-            DB::table($prifix . '_has_addresses')->insert($address);
+                DB::table($prifix . '_has_addresses')->where("id", Input::get("address_id"))->update($address);
+            } else {
+                $address['created_at'] = \Carbon\Carbon::now();
+                DB::table($prifix . '_has_addresses')->insert($address);
+            }
+            //$dfgdf= DB::table($prifix.'_orders')->get();
+            // dd($dfgdf);
+            $order->address1 = Input::get("address1");
         }
-        //$dfgdf= DB::table($prifix.'_orders')->get();
-        // dd($dfgdf);
-         $order['address1'] = Input::get("address1");
-        }
-       
-        $order['user_id'] =Input::get("user_id");
-        $order['order_amt'] = $orderAmt;
-        $order['pay_amt'] = $payAmt;
-        $order['payment_method'] = 1;
-        $order['order_status'] = 1;
-        $order['cart'] = Input::get("cartData");
-        $order['additional_charge'] = Input::get("additional_charge");
-        $order['payment_status'] = 1;
-        $order['first_name'] = Input::get("fname") ? Input::get("fname") : '';
-        $order['last_name'] = Input::get("lname") ? Input::get("lname") : '';
-       
-         $order['address2']=Input::get("address2");
-        $order['address3']=Input::get("address3");
-        $order['phone_no'] = Input::get("mobile");
-         $order['postal_code']=Input::get("postcode"); 
-        $order['city'] = Input::get("city") ? Input::get("city") : '';
-        $order['email'] = Input::get("email") ? Input::get("email") : '';
-        $order['country_id'] = Input::get("countryId") ? Input::get("countryId") : '';
-        $order['zone_id'] = Input::get("zoneId") ? Input::get("zoneId") : '';
+
+        $order->user_id = Input::get("user_id");
+        $order->order_amt = $orderAmt;
+        $order->pay_amt = $payAmt;
+        $order->payment_method = 1;
+        $order->order_status = 1;
+        $order->cart = Input::get("cartData");
+        $order->additional_charge = Input::get("additional_charge");
+        $order->payment_status = 1;
+        $order->first_name = Input::get("fname") ? Input::get("fname") : '';
+        $order->last_name = Input::get("lname") ? Input::get("lname") : '';
+
+        $order->address2 = Input::get("address2");
+        $order->address3 = Input::get("address3");
+        $order->phone_no = Input::get("mobile");
+        $order->postal_code = Input::get("postcode");
+        $order->city = Input::get("city") ? Input::get("city") : '';
+        $order->email = Input::get("email") ? Input::get("email") : '';
+        $order->country_id = Input::get("countryId") ? Input::get("countryId") : '';
+        $order->zone_id = Input::get("zoneId") ? Input::get("zoneId") : '';
         if (Input::get('coupon_code') != '') {
             $coupon = DB::table($prifix . '_coupons')->where("coupon_code", "=", $couponCode)->first();
-            $order['coupon_used'] = $coupon->id;
-            $order['coupon_amt_used'] = Input::get('coupon_amt');
+            $order->coupon_used = $coupon->id;
+            $order->coupon_amt_used = Input::get('coupon_amt');
         }
         if (Input::get('apply-loyalty') == '1') {
-            $userCashback = Helper::getUserCashBack($prifix,Input::get('mobile'), Input::get('user_id'));
+            $userCashback = Helper::getUserCashBack($prifix, Input::get('mobile'), Input::get('user_id'));
 
             if ($userCashback['status'] == 1 && $userCashback['cashback'] > 0) {
-                $user = DB::table($prifix . '_users')->where('telephone', Input::get('mobile')); //GET USER
+                $user = DB::table($prifix . '_users')->where('telephone$user', Input::get('mobile')); //GET USER
                 if ($userCashback['cashback'] >= $payAmt) {
-                    $order['pay_amt'] = 0;
-                    $order['cashback_used'] = $payAmt;
+                    $order->pay_amt = 0;
+                    $order->cashback_used = $payAmt;
                     $cashbackRemained = $userCashback['cashback'] - $payAmt;
                 } else if ($userCashback['cashback'] < $payAmt) {
-                    $order['pay_amt'] = $payAmt - $userCashback['cashback'];
-                    $order['cashback_used'] = $userCashback['cashback'];
+                    $order->pay_amt = $payAmt - $userCashback['cashback'];
+                    $order->cashback_used = $userCashback['cashback'];
                     $cashbackRemained = 0;
                 }
 
-               DB::table($prifix . '_users')->where("id",Input::get("user_id"))->update(['cashback' => $cashbackRemained]);
+                DB::table($prifix . '_users')->where("id", Input::get("user_id"))->update(['cashback' => $cashbackRemained]);
             } else {
-                $order['cashback_used'] = 0;
+                $order->cashback_used = 0;
             }
             //echo "Applied";
         } else {
-            $order['pay_amt'] = $payAmt;
-            //echo "Not Applied";
+            $order->pay_amt = $payAmt;
         }
 
-        $order['discount_type'] = Input::get("disc_type") ? Input::get("disc_type") : '0';
-        $order['discount_amt'] = Input::get("disc_amt") ? Input::get("disc_amt") : '0';
-        $order['cashback_earned'] = Input::get("apply-loyalty") ? Input::get("apply-loyalty") : '0';
-        $order['shipping_amt'] = Input::get("delivery_charges") ? Input::get("delivery_charges") : '0';
-        $order['created_at'] = \Carbon\Carbon::now();
-        $order['updated_at'] = \Carbon\Carbon::now();
+        $order->discount_type = Input::get("disc_type") ? Input::get("disc_type") : '0';
+        $order->discount_amt = Input::get("disc_amt") ? Input::get("disc_amt") : '0';
+        $order->cashback_earned = Input::get("apply-loyalty") ? Input::get("apply-loyalty") : '0';
+        $order->shipping_amt = Input::get("delivery_charges") ? Input::get("delivery_charges") : '0';
+        $order->prefix = $prifix;
+        $order->store_id = $merchant->id;
 
-        DB::table($prifix . '_orders')->insert($order);
+        $order->save();
+
 
         $orderData = DB::table($prifix . '_orders')->orderBy("id", "desc")->first();
-         $this->updateStock($cartData,$prifix,$orderData->id);
-         $cartContent = json_decode($cartData);
-         $subtotal=0;
-         foreach($cartContent as $cart){
-              $subtotal += $cart->subtotal;         
-         }
-          $orderData->subtotal=$subtotal;
-           $storePath=base_path().'/merchants/'.$merchant->url_key;
-           $store=Helper::getStoreSettings($storePath)['storeName']; 
-           $contact = DB::table($prifix . '_contacts')->where("status", "1")->first();
-           $orderData->storeName=$store;
-           if(count($contact) > 0){
-                $orderData->contact=$contact;
-           }
-         
-         $taxtDetails =DB::table($prifix . '_tax')->where("status", "1")->get();
-        $data = ["status" => "1", "msg" => "order successfully placed", 'order' => $orderData,'taxtDetails' =>$taxtDetails];
+        $this->updateStock($cartData, $prifix, $order->id,$merchant->id);
+        $cartContent = json_decode($cartData);
+        $subtotal = 0;
+        foreach ($cartContent as $cart) {
+            $subtotal += $cart->subtotal;
+        }
+        $orderData->subtotal = $subtotal;
+        $storePath = base_path() . '/merchants/' . $merchant->url_key;
+        $store = Helper::getStoreSettings($storePath)['storeName'];
+       $contact = DB::table($prifix . '_static_pages')->where("status", "1")->where("url_key", "contact-us")->first();
+        $order->storeName = $store;
+        if (count($contact) > 0) {
+            $order->contact = $contact->contact_details;
+        }
+
+        $taxtDetails = DB::table($prifix . '_tax')->where("status", "1")->get();
+        $data = ["status" => "1", "msg" => "order successfully placed", 'order' => $orderData, 'taxtDetails' => $taxtDetails];
         $viewname = '';
         return Helper::returnView($viewname, $data);
     }
@@ -747,43 +737,42 @@ class ApiOrderController extends Controller {
     }
 
     public function updateOrderstatus() {
-        $marchantId = Input::get("merchantId");    
+        $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $prifix = $merchant->prefix; 
-        $orderIds =Input::get('orderId');
-      if($orderIds){
-      $order =DB::table($prifix . "_orders")->find($orderIds);
-     $payment['order_status'] = Input::get("order_status");
-     DB::table($prifix . "_orders")->where("id",$orderIds)->update($payment); 
-       $orderStatus =DB::table($prifix . "_order_status")->find(Input::get("order_status"))->order_status;
-      $data=['status'=>1,"msg"=>"Order order status updated sucessfully!",'orderStatus'=>$orderStatus];
-    }else{
-         $data=['status'=>0,"msg"=>"Opps something went wrong!"];
-    }
-           
-   return $data;
-       // $statusHistory = ['order_id' => $id, 'status_id' => $orderStatus, 'remark' => $remark, 'notify' => $notify, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
-       // OrderStatusHistory::insert($statusHistory);
+        $prifix = $merchant->prefix;
+        $orderIds = Input::get('orderId');
+        if ($orderIds) {
+            $order = DB::table($prifix . "_orders")->find($orderIds);
+            $payment['order_status'] = Input::get("order_status");
+            DB::table($prifix . "_orders")->where("id", $orderIds)->update($payment);
+            $orderStatus = DB::table($prifix . "_order_status")->find(Input::get("order_status"))->order_status;
+            $data = ['status' => 1, "msg" => "Order order status updated sucessfully!", 'orderStatus' => $orderStatus];
+        } else {
+            $data = ['status' => 0, "msg" => "Opps something went wrong!"];
+        }
+
+        return $data;
+        // $statusHistory = ['order_id' => $id, 'status_id' => $orderStatus, 'remark' => $remark, 'notify' => $notify, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
+        // OrderStatusHistory::insert($statusHistory);
     }
 
     public function updatePaymentStatus() {
-      $marchantId = Input::get("merchantId");    
+        $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $prifix = $merchant->prefix; 
-        $orderIds =Input::get('orderId');
+        $prifix = $merchant->prefix;
+        $orderIds = Input::get('orderId');
 
-    if($orderIds){
-      $order =DB::table($prifix . "_orders")->find($orderIds);
-     $payment['payment_status'] = Input::get("payment_status");
-     DB::table($prifix . "_orders")->where("id",$orderIds)->update($payment); 
-        $paymentStatus =DB::table($prifix . "_payment_status")->find(Input::get("payment_status"))->payment_status;
-      $data=['status'=>1,"msg"=>"Order Payment status updated sucessfully!",'paymentStatus'=>$paymentStatus];
-    }else{
-         $data=['status'=>0,"msg"=>"Opps something went wrong!"];
-    }
-           
-   return $data;
-      
+        if ($orderIds) {
+            $order = DB::table($prifix . "_orders")->find($orderIds);
+            $payment['payment_status'] = Input::get("payment_status");
+            DB::table($prifix . "_orders")->where("id", $orderIds)->update($payment);
+            $paymentStatus = DB::table($prifix . "_payment_status")->find(Input::get("payment_status"))->payment_status;
+            $data = ['status' => 1, "msg" => "Order Payment status updated sucessfully!", 'paymentStatus' => $paymentStatus];
+        } else {
+            $data = ['status' => 0, "msg" => "Opps something went wrong!"];
+        }
+
+        return $data;
     }
 
     public function sendShippedMail($id, $notify) {
@@ -925,17 +914,19 @@ class ApiOrderController extends Controller {
         return $data['payment_stuatus'] = PaymentStatus::get()->toArray();
     }
 
-    public function updateStock($cartData, $prifix,$orderId) {
+    public function updateStock($cartData, $prifix, $orderId,$storeId) {
         //$orderId = 5;
         // $is_stockable = GeneralSetting::where('id', 26)->first();
-    //$cartContent = json_decode(json_encode(Input::get("cartData"),true));
+        //$cartContent = json_decode(json_encode(Input::get("cartData"),true));
         $stock_limit = DB::table($prifix . "_general_setting")->where('url_key', 'stock')->first();
- //  dd($cartData);
+        //  dd($cartData);
         $cartContent = json_decode($cartData);
-        $order = DB::table($prifix . "_orders")->find($orderId);
+        $order = DB::table("orders")->find($orderId);
         $cart_ids = [];
-     // dd($cartContent);
+        // dd($cartContent);
         //  $order->products()->detach();
+          DB::table("has_products")->where("order_id", $orderId)->delete();
+       
         foreach ($cartContent as $cart) {
             $product = DB::table($prifix . "_products")->find($cart->id);
             //  dd($cartContent);
@@ -959,7 +950,8 @@ class ApiOrderController extends Controller {
 //            } else {
             $subtotal = $cart->subtotal;
             //   }
-            $cart_ids[$cart->id] = ["order_id"=>$orderId,"prod_id"=>$cart->id,"qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax)];
+            $cart_ids[$cart->id] = ["order_id" => $orderId, "prod_id" => $cart->id, "qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 
+                'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),'store_id' =>$storeId, 'prefix' =>$prifix];
 //            $market_place = Helper::generalSetting(35);
 //            if (isset($market_place) && $market_place->status == 1) {
 //                $prior_vendor = $product->vendorPriority()->first();
@@ -981,13 +973,13 @@ class ApiOrderController extends Controller {
                 $proddetails['is_cod'] = $prddataS->is_cod;
                 $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);
                 //$date = $cart->options->eNoOfDaysAllowed;
-               // $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                // $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
                 $prd = DB::table($prifix . "_products")->find($cart->options->sub_prod);
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
-                    DB::table($prifix . "_products")->where("id",$cart->options->sub_prod)->update(['stock'=>$prd->stock]);
-                   // $prd->update();
+                    DB::table($prifix . "_products")->where("id", $cart->options->sub_prod)->update(['stock' => $prd->stock]);
+                    // $prd->update();
                 }
 
 //                $stockLimit = json_decode($stock_limit->details, TRUE);
@@ -1003,8 +995,8 @@ class ApiOrderController extends Controller {
                         $prd = DB::table($prifix . "_products")->find($val['sub_prod']);
                         $prd->stock = $prd->stock - $cart->qty;
                         if ($prd->is_stock == 1) {
-                            DB::table($prifix . "_products")->where("id",$val['sub_prod'])->update(['stock'=>$prd->stock]);
-                           // $prd->update();
+                            DB::table($prifix . "_products")->where("id", $val['sub_prod'])->update(['stock' => $prd->stock]);
+                            // $prd->update();
                         };
 //                        $stockLimit = json_decode($stock_limit->details, TRUE);
 //
@@ -1015,8 +1007,8 @@ class ApiOrderController extends Controller {
                         $prd = DB::table($prifix . "_products")->find($key);
                         $prd->stock = $prd->stock - $cart->qty;
                         if ($prd->is_stock == 1) {
-                              DB::table($prifix . "_products")->where("id",$key)->update(['stock'=>$prd->stock]);
-                          //  $prd->update();
+                            DB::table($prifix . "_products")->where("id", $key)->update(['stock' => $prd->stock]);
+                            //  $prd->update();
                         }
 //                        $stockLimit = json_decode($stock_limit->details, TRUE);
 //
@@ -1032,20 +1024,20 @@ class ApiOrderController extends Controller {
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
-                $proddetailsp['price'] = $cart->price ;
+                $proddetailsp['price'] = $cart->price;
                 $proddetailsp['qty'] = $cart->qty;
                 $proddetailsp['subtotal'] = $subtotal;
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
                 $cart_ids[$cart->id]["product_details"] = json_encode($proddetailsp);
                 //$cart_ids[$cart->id]["eCount"] = $cart->options->eCount;
-               // $date = $cart->options->eNoOfDaysAllowed;
-               // $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                // $date = $cart->options->eNoOfDaysAllowed;
+                // $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
                 $prd = DB::table($prifix . "_products")->find($cart->id);
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
-                     DB::table($prifix . "_products")->where("id",$cart->id)->update(['stock'=>$prd->stock]);
-                 //   $prd->update();
+                    DB::table($prifix . "_products")->where("id", $cart->id)->update(['stock' => $prd->stock]);
+                    //   $prd->update();
                 }
 //                $stockLimit = json_decode($stock_limit->details, TRUE);
 //
@@ -1053,9 +1045,12 @@ class ApiOrderController extends Controller {
 //                    $this->AdminStockAlert($prd->id);
 //                }
             }
-           // $order->products()->attach($cart_ids);    
+           
+            $cart_ids[$cart->id]["order_status"] = 1;
+            $cart_ids[$cart->id]["order_source"] = 2;
+            // $order->products()->attach($cart_ids);    
             //$order->products()->attach($cart->id, $cart_ids[$cart->id]);
-             DB::table($prifix . "_has_products")->insert($cart_ids[$cart->id]);
+            DB::table("has_products")->insert($cart_ids[$cart->id]);
         }
         return 1;
         //  $this->orderSuccess();
@@ -1063,7 +1058,7 @@ class ApiOrderController extends Controller {
 
     public static function getUserCashBack($phone = null) {
         if (!is_null($phone)) {
-            $user = DB::table($prifix . "_users")->where('telephone', $phone)->with('addresses')->first();
+            $user =User::where('telephone', $phone)->with('addresses')->first();
             if (!is_null($user)) {
                 $data = ['status' => 1, 'cashback' => $user->cashback, 'user' => $user];
             } else {
@@ -1080,109 +1075,107 @@ class ApiOrderController extends Controller {
         return $data;
     }
 
-    public function returnOrder(){
-        $marchantId = Input::get("merchantId");    
+    public function returnOrder() {
+        $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $prifix = $merchant->prefix; 
-         $returnOrders = DB::table($prifix . "_return_order")->get();       
-         foreach($returnOrders as $returnOrder){
-             $returnOrder->product=DB::table($prifix . "_products")->where("id",$returnOrder->product_id)->first()->product;
-             $returnOrder->reason=DB::table($prifix . "_order_return_reason")->where("id",$returnOrder->reason_id)->first()->reason;
-             $returnOrder->return_status=DB::table($prifix . "_order_return_status")->where("id",$returnOrder->return_status)->first()->status;
-             $returnOrder->user=DB::table($prifix . "_users")->find(DB::table($prifix . "_orders")->where("id",$returnOrder->order_id)->pluck("user_id"));
-         }
-         return $data=['returnOrder'=>$returnOrders];
-    }
-    
-      public function editReturnOrder(){
-        $marchantId = Input::get("merchantId");    
-        $returnId = Input::get("returnId");    
-        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $prifix = $merchant->prefix; 
-        $returnOrder = DB::table($prifix . "_return_order")->where("id",$returnId)->first(); 
-         $order=DB::table($prifix . "_orders")->where("id",$returnOrder->order_id)->first();
-         $order->country=@DB::table($prifix . "_countries")->where("id",$order->country_id)->first()->name;
-         $order->state=@DB::table($prifix . "_zones")->where("id",$order->zone_id)->first()->name;
-         
-         $returnOrder->order= $order; 
-         $returnOrder->reason=DB::table($prifix . "_order_return_reason")->where("id",$returnOrder->reason_id)->first()->reason;
-         $returnOrder->product=DB::table($prifix . "_products")->where("id",$returnOrder->product_id)->first()->product;
-         $returnOrder->return_status=DB::table($prifix . "_order_return_status")->where("id",$returnOrder->return_status)->first()->status;
-         if($returnOrder->order_status==3){
-         $returnOrder->exchange_info=@DB::table($prifix . "_products")->where("id",$returnOrder->exchange_product_id)->first()->product;
-         }else{
-             $returnOrder->exchange_info=''; 
-         }
-        
-         return $data=['editreturnOrder'=>$returnOrder];
-    }
-    
-      public function cancelOrder(){
-        $marchantId = Input::get("merchantId");    
-        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $prifix = $merchant->prefix; 
-         $returnOrders = DB::table($prifix . "_order_cancelled")->get();
-          foreach($returnOrders as $returnOrder){
-            
-             $returnOrder->reason=DB::table($prifix . "_order_return_reason")->where("id",$returnOrder->reason_id)->first()->reason;
-            
-             $returnOrder->user=DB::table($prifix . "_users")->find($returnOrder->uid);
-          }
-         return $data=['cancelOrder'=>$returnOrders];
-    }
-    
-    public function orderSuccessEmail(){
-        $ordId=Input::get("id");
-        $marchantId = Input::get("merchantId");    
-        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $prifix = $merchant->prefix; 
-        $order =DB::table($prifix . "_orders")->find($ordId);
-      
-       
-            $website = 'www.cartini.com';
-          
-            $orderID = $ordId;
-            $userData = DB::table($prifix . "_users")->find($order->user_id);
-            $name =$order->first_name;
-            $email_id =$order->email;
-            $data = array('order' => $order, 'userData' => $userData);
-           
-            //  dd($data);
-                    $email_template = DB::table($prifix . "_email_template")->where('id', 2)->first()->content;
-                    $tableContant = Helper::getEmailInvoice($orderID,$prifix);
-                    $replace = ["[firstName]", "[orderId]", "[invoice]"];
-                    $replacewith = [ucfirst($name), $orderID, $tableContant];
-                    $subject = "Your Order Successfully placed with (Order ID: " . $orderID;
-                    $email_templates = str_replace($replace, $replacewith, $email_template);
-                  // echo $email_templates;
-               //    die;
-                    $data1 = ['email_template' => $email_templates];
-                    Helper::sendMyEmail('Frontend.emails.orderSuccess', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
-                return $data=["status"=>1,"msg","Order success mail successfully send to your register email Id"];
-                    
-    }
-    
-        public function calAditionalCharge(){   
-               
-        $cartTotal=Input::get("cartTotal"); 
-        $marchantId = Input::get("merchantId");    
-       $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $addCharge =DB::table($prifix . "_general_setting")->where('url_key','additional-charge')->first()->status;
+        $returnOrders = DB::table($prifix . "_return_order")->get();
+        foreach ($returnOrders as $returnOrder) {
+            $returnOrder->product = DB::table($prifix . "_products")->where("id", $returnOrder->product_id)->first()->product;
+            $returnOrder->reason = DB::table($prifix . "_order_return_reason")->where("id", $returnOrder->reason_id)->first()->reason;
+            $returnOrder->return_status = DB::table($prifix . "_order_return_status")->where("id", $returnOrder->return_status)->first()->status;
+            $returnOrder->user = DB::table($prifix . "_users")->find(DB::table($prifix . "_orders")->where("id", $returnOrder->order_id)->pluck("user_id"));
+        }
+        return $data = ['returnOrder' => $returnOrders];
+    }
+
+    public function editReturnOrder() {
+        $marchantId = Input::get("merchantId");
+        $returnId = Input::get("returnId");
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix;
+        $returnOrder = DB::table($prifix . "_return_order")->where("id", $returnId)->first();
+        $order = DB::table($prifix . "_orders")->where("id", $returnOrder->order_id)->first();
+        $order->country = @DB::table($prifix . "_countries")->where("id", $order->country_id)->first()->name;
+        $order->state = @DB::table($prifix . "_zones")->where("id", $order->zone_id)->first()->name;
+
+        $returnOrder->order = $order;
+        $returnOrder->reason = DB::table($prifix . "_order_return_reason")->where("id", $returnOrder->reason_id)->first()->reason;
+        $returnOrder->product = DB::table($prifix . "_products")->where("id", $returnOrder->product_id)->first()->product;
+        $returnOrder->return_status = DB::table($prifix . "_order_return_status")->where("id", $returnOrder->return_status)->first()->status;
+        if ($returnOrder->order_status == 3) {
+            $returnOrder->exchange_info = @DB::table($prifix . "_products")->where("id", $returnOrder->exchange_product_id)->first()->product;
+        } else {
+            $returnOrder->exchange_info = '';
+        }
+
+        return $data = ['editreturnOrder' => $returnOrder];
+    }
+
+    public function cancelOrder() {
+        $marchantId = Input::get("merchantId");
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix;
+        $returnOrders = DB::table($prifix . "_order_cancelled")->get();
+        foreach ($returnOrders as $returnOrder) {
+
+            $returnOrder->reason = DB::table($prifix . "_order_return_reason")->where("id", $returnOrder->reason_id)->first()->reason;
+
+            $returnOrder->user = DB::table($prifix . "_users")->find($returnOrder->uid);
+        }
+        return $data = ['cancelOrder' => $returnOrders];
+    }
+
+    public function orderSuccessEmail() {
+        $ordId = Input::get("id");
+        $marchantId = Input::get("merchantId");
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix;
+        $order = DB::table($prifix . "_orders")->find($ordId);
+
+
+        $website = 'www.cartini.com';
+
+        $orderID = $ordId;
+        $userData = DB::table($prifix . "_users")->find($order->user_id);
+        $name = $order->first_name;
+        $email_id = $order->email;
+        $data = array('order' => $order, 'userData' => $userData);
+
+        //  dd($data);
+        $email_template = DB::table($prifix . "_email_template")->where('id', 2)->first()->content;
+        $tableContant = Helper::getEmailInvoice($orderID, $prifix);
+        $replace = ["[firstName]", "[orderId]", "[invoice]"];
+        $replacewith = [ucfirst($name), $orderID, $tableContant];
+        $subject = "Your Order Successfully placed with (Order ID: " . $orderID;
+        $email_templates = str_replace($replace, $replacewith, $email_template);
+        // echo $email_templates;
+        //    die;
+        $data1 = ['email_template' => $email_templates];
+        Helper::sendMyEmail('Frontend.emails.orderSuccess', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
+        return $data = ["status" => 1, "msg", "Order success mail successfully send to your register email Id"];
+    }
+
+    public function calAditionalCharge() {
+
+        $cartTotal = Input::get("cartTotal");
+        $marchantId = Input::get("merchantId");
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix;
+        $addCharge = DB::table($prifix . "_general_setting")->where('url_key', 'additional-charge')->first()->status;
         $data = [];
-        $price=$cartTotal;
-        if($addCharge == 0)
-        {
+        $price = $cartTotal;
+        if ($addCharge == 0) {
             $data['total_amt'] = 0;
             return json_encode($data);
         }
-           
+
 
         $amount = 0;
 //        $charge_list = [];
         $arr = [];
         if ($addCharge == 1) {
-            $charges = DB::table($prifix . "_additional_charges")->where('status',1)->get();
+            $charges = DB::table($prifix . "_additional_charges")->where('status', 1)->get();
             foreach ($charges as $key => $charge) {
 
                 $charge_list = [];
@@ -1219,9 +1212,7 @@ class ApiOrderController extends Controller {
                     array_push($arr, $charge_list);
 //                    print_r($charge_list);
                 }
-
             }
-
         } else {
             $amount = 0;
         }
@@ -1234,7 +1225,8 @@ class ApiOrderController extends Controller {
         $data['total'] = $total_with_price;
 
         return $data;
-        }
+    }
+
 //         $cartTotal=Input::get("cartTotal"); 
 //        $marchantId = Input::get("merchantId");    
 //        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
@@ -1278,7 +1270,6 @@ class ApiOrderController extends Controller {
 //        }
 //        return $data;
 //    }
-    
 }
 
 ?>
