@@ -242,6 +242,22 @@
 
 
 @media (max-width: 991px) {
+	.sidbarCustomwidth{
+		width: 220px !important;
+		float: left !important;
+	}
+	sidbarCustomwidth .sidebar-widgets-wrap .widget{
+		float: left !important;
+    width: 100% !important;
+    margin: 0 37px 0px 0 !important;
+	}
+	.widthAuto{
+		width: auto !important;
+	}
+	.sidebar.nobottommargin.sidbarCustomwidth .sidebar-widgets-wrap .widget {
+		width: 260px !important;
+		margin-right: 0px !important;
+	}
 	.customDomainfield {
     width: calc(100% - 50px);
     text-align: left;
@@ -279,7 +295,7 @@
 	.sidebar {
 		width: 100%;
 		margin-right: 0;
-		float: none !important;
+		float: none;
 		margin-bottom: 40px !important;
 		padding-bottom: 40px;
 		border-bottom: 1px solid #EEE;
