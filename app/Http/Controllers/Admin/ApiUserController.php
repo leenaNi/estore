@@ -191,6 +191,13 @@ class ApiUserController extends Controller {
         $user->telephone = Input::get("mobile");
         $loyalty= Input::get("loyalty_group");
         $cashback = Input::get("cashback");
+        $cashback= new HasCashbackLoyalty;
+           $cashback->cashback=$cashback?$cashback:'0';
+           $cashback->loyalty_group=$loyalty;
+           $cashback->store_id=$storeId;
+           $cashback->user_id=$userId;
+           $cashback->save();
+           dd($cashback);
         if (Input::get("id")) {
             $user->save();
             $this->updateReferalLoyalty($storeId,$user->id,$loyalty,$cashback);
@@ -207,7 +214,7 @@ class ApiUserController extends Controller {
                 $user->prefix= $prifix;
                 $user->store_id= $storeId;
                 $user->save();
-                 $this->updateReferalLoyalty($storeId,$user->id,$loyalty,$cashback);
+                $this->updateReferalLoyalty($storeId,$user->id,$loyalty,$cashback);
                 $data = ['status' => "1", 'msg' => "User added successfully", 'systemUser' => $users];
             }
         }
@@ -224,7 +231,7 @@ class ApiUserController extends Controller {
            $cashback->loyalty_group=$loyalty;
            $cashback->save();
       }else{
-         $cashback= new HasCashbackLoyalty;
+           $cashback= new HasCashbackLoyalty;
            $cashback->cashback=$cashback?$cashback:'0';
            $cashback->loyalty_group=$loyalty;
            $cashback->store_id=$storeId;
