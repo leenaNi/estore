@@ -122,7 +122,7 @@ class ApiOrderController extends Controller {
             //  ->join($addtable,$prifix.'_users.id','=',$addtable.'.user_id')->select($prifix.'_users.*',$addtable.'.firstname', $addtable.'.lastname', $addtable.'.address1', $addtable.'.address2', $addtable.'.phone_no', $addtable.'.city', $addtable.'.postcode', $addtable.'.country_id')->first();
 
             if (!is_null($user)) {
-                $address = Address::find('user_id', $user->id)->first();
+                $address = Address::find('user_id', $user->id);
 
                 if (count($address) > 0) {
                     $address->countryName = @DB::table($prifix . "_countries")->where("id", $address->country_id)->first()->name;
