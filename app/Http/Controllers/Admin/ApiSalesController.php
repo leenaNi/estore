@@ -151,10 +151,15 @@ class ApiSalesController extends Controller {
         })->orderBy("category", "asc")->get();
 
      foreach($categories as $cat){
+         
         $prodIds=  DB::table($hasCatTab)->join($prodTab,$prodTab.".id","=",$hasCatTab.".prod_id")->where($hasCatTab.".cat_id",$cat->id)->pluck($prodTab.".id");   
+        if(is_array($prodIds)){
         $sales= DB::table("has_products")->join("orders","orders.id","=","has_products.order_id")->whereIn("has_products.prod_id",$prodIds)->whereIn("has_products.store_id",$merchant->id)->get();
             $cat->TotalQty=$sales->sum('qty');
            $cat->TotalSale=$sales->sum('price');
+        }
+          $cat->TotalQty=0;
+           $cat->TotalSale=0;
         }
          return $categories;
       //  return view(Config('constants.saleView') . '.by_categories', compact('categories','categoryCount'));
@@ -165,9 +170,7 @@ class ApiSalesController extends Controller {
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $catTab=$merchant->prefix.'_categories';  
         $prodTab=$merchant->prefix.'_products'; 
-        $ordTab=$merchant->prefix.'_orders';
-        
-        $hasProdTab=$merchant->prefix.'_has_products';  
+      
          $hasCatTab=$merchant->prefix.'_has_categories';
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['product', 'short_desc', 'long_desc'];
@@ -187,7 +190,7 @@ class ApiSalesController extends Controller {
           $subProduct=DB::table($prodTab)->where('parent_prod_id', $prod->id)->get(["id","product"]);
         
           foreach($subProduct as $subProd){
-              $orderCount = DB::table("has_products")->leftjoin($ordTab, $ordTab.".id", "=","has_products.order_id")
+              $orderCount = DB::table("has_products")->leftjoin("orders","orders.id", "=","has_products.order_id")
                                   ->whereNotIn("orders.order_status", [0, 4, 6, 10])
                                   ->where("has_products.sub_prod_id", "=", $subProd->id)
                                 ->where("has_products.store_id", "=",$merchant->id )
