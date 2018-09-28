@@ -209,7 +209,7 @@ class ApiUserController extends Controller {
                 $user->store_id= $storeId;
                 $user->save();
                 $this->updateReferalLoyalty($storeId,$user->id,$loyalty,$cashback);
-                $data = ['status' => "1", 'msg' => "User added successfully", 'systemUser' => $users];
+                $data = ['status' => "1", 'msg' => "User added successfully", 'systemUser' => $user];
             }
         }
 
