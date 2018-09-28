@@ -54,7 +54,7 @@ ul.profile-account-pagelist li:last-child {
 				<div class="container clearfix">
 <!-- Sidebar
                     ============================================= -->
-                    <div class="sidebar nobottommargin">
+                    <div class="sidebar nobottommargin sidbarCustomwidth">
                         <div class="sidebar-widgets-wrap">
 
                             <div class="profile-box">
