@@ -195,7 +195,7 @@ class ApiUserController extends Controller {
            $cashback->cashback=$cashback?$cashback:'0';
            $cashback->loyalty_group=$loyalty;
            $cashback->store_id=$storeId;
-           $cashback->user_id=$userId;
+           $cashback->user_id=10;
            $cashback->save();
            dd($cashback);
         if (Input::get("id")) {
