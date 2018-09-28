@@ -519,7 +519,7 @@ class MerchantController extends Controller {
         $storePath = base_path() . '/merchants/' . $merchant->url_key;
         $currencyid = Helper::getStoreSettings($storePath)['currencyId'];
 
-        $currency = DB::table($merchant->prefix . '_has_currency')->where('iso_code', $currencyid)->first();
+        $currency = DB::table('has_currency')->where('iso_code', $currencyid)->first();
         foreach ($settings as $key => $value) {
             $general[strtolower($value->url_key)] = $value->status;
         }
