@@ -242,7 +242,7 @@
 
 
 @media (max-width: 991px) {
-	.sidbarCustomwidth{
+	/* .sidbarCustomwidth{
 		width: 220px !important;
 		float: left !important;
 	}
@@ -257,7 +257,7 @@
 	.sidebar.nobottommargin.sidbarCustomwidth .sidebar-widgets-wrap .widget {
 		width: 260px !important;
 		margin-right: 0px !important;
-	}
+	} */
 	.customDomainfield {
     width: calc(100% - 50px);
     text-align: left;
