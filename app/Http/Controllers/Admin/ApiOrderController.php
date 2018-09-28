@@ -739,10 +739,10 @@ class ApiOrderController extends Controller {
         $prifix = $merchant->prefix;
         $orderIds = Input::get('orderId');
         if ($orderIds) {
-            $order = DB::table($prifix . "_orders")->find($orderIds);
+            $order = DB::table("orders")->find($orderIds);
             $payment['order_status'] = Input::get("order_status");
-            DB::table($prifix . "_orders")->where("id", $orderIds)->update($payment);
-            $orderStatus = DB::table($prifix . "_order_status")->find(Input::get("order_status"))->order_status;
+            DB::table("orders")->where("id", $orderIds)->update($payment);
+            $orderStatus = DB::table("order_status")->find(Input::get("order_status"))->order_status;
             $data = ['status' => 1, "msg" => "Order order status updated sucessfully!", 'orderStatus' => $orderStatus];
         } else {
             $data = ['status' => 0, "msg" => "Opps something went wrong!"];
@@ -760,10 +760,10 @@ class ApiOrderController extends Controller {
         $orderIds = Input::get('orderId');
 
         if ($orderIds) {
-            $order = DB::table($prifix . "_orders")->find($orderIds);
+            $order = DB::table("orders")->find($orderIds);
             $payment['payment_status'] = Input::get("payment_status");
-            DB::table($prifix . "_orders")->where("id", $orderIds)->update($payment);
-            $paymentStatus = DB::table($prifix . "_payment_status")->find(Input::get("payment_status"))->payment_status;
+            DB::table("orders")->where("id", $orderIds)->update($payment);
+            $paymentStatus = DB::table("payment_status")->find(Input::get("payment_status"))->payment_status;
             $data = ['status' => 1, "msg" => "Order Payment status updated sucessfully!", 'paymentStatus' => $paymentStatus];
         } else {
             $data = ['status' => 0, "msg" => "Opps something went wrong!"];
@@ -1076,7 +1076,7 @@ class ApiOrderController extends Controller {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $returnOrders = DB::table($prifix . "_return_order")->get();
+        $returnOrders = DB::table("return_order")->where("store_id",$merchant->id)->get();
         foreach ($returnOrders as $returnOrder) {
             $returnOrder->product = DB::table($prifix . "_products")->where("id", $returnOrder->product_id)->first()->product;
             $returnOrder->reason = DB::table($prifix . "_order_return_reason")->where("id", $returnOrder->reason_id)->first()->reason;

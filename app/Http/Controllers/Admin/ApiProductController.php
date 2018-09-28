@@ -494,7 +494,7 @@ class ApiProductController extends Controller {
         $marchantId = Input::get("merchantId");
         $marchantId = Input::get("prodId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first(); 
-         $count =  DB::table($merchant->prefix . '_has_products')->where("sub_prod_id", Input::get('prodId'))->count();
+         $count =  DB::table('has_products')->where("sub_prod_id", Input::get('prodId'))->where("store_id",$merchant->id)->count();
          if($count <=0){
         $hasOpt = DB::table($merchant->prefix . '_has_options')->where("prod_id",Input::get('prodId'))->get();
         if(count($hasOpt) > 0){
@@ -509,9 +509,9 @@ class ApiProductController extends Controller {
     public function delete() {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $product = DB::table($merchant->prefix . '_has_products')->where("prod_id", Input::get('id'))->get();
+        $productCount = DB::table('has_products')->where("prod_id", Input::get('id'))->where("store_id",$merchant->id)->count();
         //  $count = HasProducts::where("prod_id", Input::get('id'))->count();
-        if (count($product) <= 0) {
+        if ($productCount <= 0) {
             $prod = DB::table($merchant->prefix . '_products')->find(Input::get('id'));
             $hasCat = DB::table($merchant->prefix . '_has_categories')->where("prod_id", Input::get('id'))->count();
 
