@@ -8,6 +8,7 @@ use Route;
 use Input;
 use App\Models\User;
 use App\Models\Merchant;
+use App\Models\HasCashbackLoyalty;
 use Auth;
 use App\Http\Controllers\Controller;
 use Session;
