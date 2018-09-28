@@ -210,7 +210,7 @@ class ApiOrderController extends Controller {
         // dd($cartData);
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $order = Order();
+        $order =new Order();
         if (Input::get("address1")) {
             $address['user_id'] = Input::get("user_id");
             $address['firstname'] = Input::get("fname") ? Input::get("fname") : '';
