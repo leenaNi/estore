@@ -127,10 +127,10 @@ class ApiOrderController extends Controller {
                 if (count($address) > 0) {
                     $address->countryName = @DB::table($prifix . "_countries")->where("id", $address->country_id)->first()->name;
                     $address->stateName = @DB::table($prifix . "_zones")->where("id", $address->zone_id)->first()->name;
-                    $user->address = $address;
+                    $user->address = @$address;
                 }
                 $cashBack = DB::table("has_cashback_loyalty")->where("store_id", $merchant->id)->where("user_id", $user->id)->first();
-                $data = ['status' => 1, 'cashback' => $cashBack->cashback, 'user' => $user];
+                $data = ['status' => 1, 'cashback' => @$cashBack->cashback, 'user' => $user];
             } else {
                 $password = Hash::make('asdf1234');
                 $user = User::findOrNew(Input::get("id"));

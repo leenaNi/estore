@@ -191,13 +191,14 @@ class ApiUserController extends Controller {
         $user->telephone = Input::get("mobile");
         $loyalty= Input::get("loyalty_group");
         $cashback = Input::get("cashback");
-        $cashback= new HasCashbackLoyalty();
-           $cashback->cashback=$cashback?$cashback:'0';
-           $cashback->loyalty_group=$loyalty;
-           $cashback->store_id=$storeId;
-           $cashback->user_id=10;
-           $cashback->save();
-           dd($cashback);
+          $usercashback = new HasCashbackLoyalty;
+                $usercashback->user_id = 10;
+                $usercashback->store_id =$storeId;
+                $usercashback->cashback =10;
+                $usercashback->loyalty_group = 1;
+                $usercashback->timestamps = false;
+                $usercashback->save();
+                dd($usercashback);
         if (Input::get("id")) {
             $user->save();
             $this->updateReferalLoyalty($storeId,$user->id,$loyalty,$cashback);
