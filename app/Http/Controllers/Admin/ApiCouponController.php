@@ -143,7 +143,7 @@ class ApiCouponController extends Controller {
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
         if (!empty(Input::get('mobile'))) {
-            $user = DB::table($prifix . '_users')->where('telephone', Input::get('mobile'))->first();
+            $user = DB::table('users')->where('telephone', Input::get('mobile'))->first();
             if ($user)
                 $userId = $user->id;
             else
@@ -156,8 +156,8 @@ class ApiCouponController extends Controller {
         $cartContent = json_decode(Input::get('cart_content'), true);
         //Cart::instance('shopping')->content()->toArray();
         //$orderAmount = Helper::getAmt("coupon") * Session::get('currency_val');
-        $couponID = DB::table($prifix . '_coupons')->where("coupon_code", "=", $couponCode)->first();
-        @$usedCouponCountOrders = DB::table($prifix . '_orders')->where('coupon_used', '=', $couponID->id)->where("order_status", "=", 1)->count();
+        $couponID = DB::table($prifix . '_coupons')->where("coupon_code", "=", $couponCode)->where("status",1)->first();
+        @$usedCouponCountOrders = DB::table('orders')->where('coupon_used', '=', $couponID->id)->where("order_status", "=", 1)->count();
         if (isset($couponID)) {
             if ($couponID->user_specific == 1) {
                 if ($userId != '') {
@@ -168,11 +168,11 @@ class ApiCouponController extends Controller {
                     }
                     $validuser = in_array($userId, $cuserids);
                     if ($validuser) {
-                        $validCoupon = DB::select(DB::raw("Select * from " . $prifix . "_coupons where coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . $orderAmount . " and (now() between start_date and end_date)"));
+                        $validCoupon = DB::select(DB::raw("Select * from " . $prifix . "_coupons where status=1 and coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . $orderAmount . " and (now() between start_date and end_date)"));
                     }
                 }
             } else {
-                $validCoupon = DB::select(DB::raw("Select * from " . $prifix . "_coupons where coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . $orderAmount . " and (now() between start_date and end_date)"));
+                $validCoupon = DB::select(DB::raw("Select * from " . $prifix . "_coupons where  status=1 and coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . $orderAmount . " and (now() between start_date and end_date)"));
             }
         }
         //dd($validCoupon);

@@ -654,23 +654,23 @@ CREATE TABLE IF NOT EXISTS `tblprfx_coupons_users` (
 -- Table structure for table `tblprfx_currencies`
 --
 
-CREATE TABLE IF NOT EXISTS `tblprfx_currencies` (
-  `id` int(11) NOT NULL,
-  `cname` varchar(3) NOT NULL,
-  `crate` int(11) NOT NULL,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_currencies` (
+--   `id` int(11) NOT NULL,
+--   `cname` varchar(3) NOT NULL,
+--   `crate` int(11) NOT NULL,
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tblprfx_currencies`
 --
 
-INSERT INTO `tblprfx_currencies` (`id`, `cname`, `crate`) VALUES
-(1, 'INR', 1),
-(2, 'USD', 60),
-(3, 'GBP', 100),
-(4, 'EUR', 80);
+-- INSERT INTO `tblprfx_currencies` (`id`, `cname`, `crate`) VALUES
+-- (1, 'INR', 1),
+-- (2, 'USD', 60),
+-- (3, 'GBP', 100),
+-- (4, 'EUR', 80);
 
 -- --------------------------------------------------------
 
@@ -934,58 +934,58 @@ CREATE TABLE IF NOT EXISTS `tblprfx_has_combo_prods` (
 --
 
 
-CREATE TABLE IF NOT EXISTS `tblprfx_has_currency` (
-  `id` int(11) NOT NULL,
-  `iso_code` varchar(3) NOT NULL,
-  `currency_code` varchar(3) NOT NULL,
-  `currency_name` varchar(100) NOT NULL,
-  `currency` varchar(10) NOT NULL,
-  `currency_val` decimal(11,10) NOT NULL,
-  `css_code` varchar(20) NOT NULL,
-  `currency_status` int(11) NOT NULL,
- `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- CREATE TABLE IF NOT EXISTS `tblprfx_has_currency` (
+--   `id` int(11) NOT NULL,
+--   `iso_code` varchar(3) NOT NULL,
+--   `currency_code` varchar(3) NOT NULL,
+--   `currency_name` varchar(100) NOT NULL,
+--   `currency` varchar(10) NOT NULL,
+--   `currency_val` decimal(11,10) NOT NULL,
+--   `css_code` varchar(20) NOT NULL,
+--   `currency_status` int(11) NOT NULL,
+--  `created_at` timestamp NOT NULL DEFAULT NOW(),
+--    `updated_at` timestamp  DEFAULT  NULL
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tblprfx_has_currency`
 --
-INSERT INTO `tblprfx_has_currency` (`id`, `iso_code`, `currency_code`, `currency_name`, `currency`, `currency_val`, `css_code`, `currency_status`) VALUES
-(1, '', 'AUD', 'Australian Dollar', 'usd', '0.0405460000', '$', 0),
-(2, '', 'BGN', '', '', '0.0267770000', '৳', 0),
-(3, '', 'BRL', '', '', '0.0563750000', '', 0),
-(4, '', 'CAD', '', '', '0.0202860000', '', 0),
-(5, '', 'CHF', '', '', '0.0147940000', '', 0),
-(6, '', 'CNY', '', '', '0.0964050000', '', 0),
-(7, '', 'CZK', '', '', '0.3699400000', '', 0),
-(8, '', 'DKK', '', '', '0.1021500000', '', 0),
-(9, 'GBR', 'GBP', 'British Pound', 'gbp', '0.0099053000', '', 1),
-(10, '', 'HKD', '', '', '0.1161200000', '', 0),
-(11, '', 'HRK', '', '', '0.1044500000', '', 0),
-(12, '', 'HUF', '', '', '4.3347000000', '', 0),
-(13, '', 'IDR', '', '', '9.9999999999', '', 0),
-(14, '', 'ILS', '', '', '0.0579260000', '', 0),
-(15, '', 'JPY', '', '', '1.8205000000', '', 0),
-(16, '', 'KRW', '', '', '9.9999999999', '', 0),
-(17, '', 'MXN', '', '', '0.2556500000', '', 0),
-(18, '', 'MYR', '', '', '0.0637980000', '', 0),
-(19, '', 'NOK', '', '', '0.1292000000', '', 0),
-(20, '', 'NZD', '', '', '0.0221670000', '', 0),
-(21, '', 'PHP', '', '', '0.7076500000', '', 0),
-(22, '', 'PLN', '', '', '0.0594030000', '', 0),
-(23, '', 'RON', '', '', '0.0616500000', '', 0),
-(24, '', 'RUB', '', '', '1.0321000000', '', 0),
-(25, '', 'SEK', '', '', '0.1270000000', '', 0),
-(26, '', 'SGD', 'Singapore Dollar', 'usd', '0.0209990000', '$', 0),
-(27, '', 'THB', '', '', '0.5397200000', '', 0),
-(28, '', 'TRY', '', '', '0.0437290000', '', 0),
-(29, 'USA', 'USD', 'United States Dollar', 'usd', '0.0149820000', '$', 1),
-(30, '', 'ZAR', '', '', '0.2288300000', '', 0),
-(31, 'BEL', 'EUR', 'Euro', 'euro', '0.0136910000', '€ ', 1),
-(32, 'IND', 'INR', 'Indian Rupee', 'inr', '1.0000000000', '₹', 1),
-(33, 'BGD', 'BDT', 'Bangladeshi taka', 'bdt', '1.1700000000', '৳', 1),
-(34, 'VNM', 'VND', 'vietnamese dong', 'bdt', '9.9999999999', '₫', 1),
-(35, 'LKA', 'LKR', 'Sri Lankan Rupaya', 'lkr', '2.2500000000', '₨', 1);
+-- INSERT INTO `tblprfx_has_currency` (`id`, `iso_code`, `currency_code`, `currency_name`, `currency`, `currency_val`, `css_code`, `currency_status`) VALUES
+-- (1, '', 'AUD', 'Australian Dollar', 'usd', '0.0405460000', '$', 0),
+-- (2, '', 'BGN', '', '', '0.0267770000', '৳', 0),
+-- (3, '', 'BRL', '', '', '0.0563750000', '', 0),
+-- (4, '', 'CAD', '', '', '0.0202860000', '', 0),
+-- (5, '', 'CHF', '', '', '0.0147940000', '', 0),
+-- (6, '', 'CNY', '', '', '0.0964050000', '', 0),
+-- (7, '', 'CZK', '', '', '0.3699400000', '', 0),
+-- (8, '', 'DKK', '', '', '0.1021500000', '', 0),
+-- (9, 'GBR', 'GBP', 'British Pound', 'gbp', '0.0099053000', '', 1),
+-- (10, '', 'HKD', '', '', '0.1161200000', '', 0),
+-- (11, '', 'HRK', '', '', '0.1044500000', '', 0),
+-- (12, '', 'HUF', '', '', '4.3347000000', '', 0),
+-- (13, '', 'IDR', '', '', '9.9999999999', '', 0),
+-- (14, '', 'ILS', '', '', '0.0579260000', '', 0),
+-- (15, '', 'JPY', '', '', '1.8205000000', '', 0),
+-- (16, '', 'KRW', '', '', '9.9999999999', '', 0),
+-- (17, '', 'MXN', '', '', '0.2556500000', '', 0),
+-- (18, '', 'MYR', '', '', '0.0637980000', '', 0),
+-- (19, '', 'NOK', '', '', '0.1292000000', '', 0),
+-- (20, '', 'NZD', '', '', '0.0221670000', '', 0),
+-- (21, '', 'PHP', '', '', '0.7076500000', '', 0),
+-- (22, '', 'PLN', '', '', '0.0594030000', '', 0),
+-- (23, '', 'RON', '', '', '0.0616500000', '', 0),
+-- (24, '', 'RUB', '', '', '1.0321000000', '', 0),
+-- (25, '', 'SEK', '', '', '0.1270000000', '', 0),
+-- (26, '', 'SGD', 'Singapore Dollar', 'usd', '0.0209990000', '$', 0),
+-- (27, '', 'THB', '', '', '0.5397200000', '', 0),
+-- (28, '', 'TRY', '', '', '0.0437290000', '', 0),
+-- (29, 'USA', 'USD', 'United States Dollar', 'usd', '0.0149820000', '$', 1),
+-- (30, '', 'ZAR', '', '', '0.2288300000', '', 0),
+-- (31, 'BEL', 'EUR', 'Euro', 'euro', '0.0136910000', '€ ', 1),
+-- (32, 'IND', 'INR', 'Indian Rupee', 'inr', '1.0000000000', '₹', 1),
+-- (33, 'BGD', 'BDT', 'Bangladeshi taka', 'bdt', '1.1700000000', '৳', 1),
+-- (34, 'VNM', 'VND', 'vietnamese dong', 'bdt', '9.9999999999', '₫', 1),
+-- (35, 'LKA', 'LKR', 'Sri Lankan Rupaya', 'lkr', '2.2500000000', '₨', 1);
 
 -- --------------------------------------------------------
 
@@ -7069,8 +7069,8 @@ ALTER TABLE `tblprfx_coupons_users`
 --
 -- Indexes for table `tblprfx_currencies`
 --
-ALTER TABLE `tblprfx_currencies`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_currencies`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_downlodable_prods`
@@ -7135,8 +7135,8 @@ ALTER TABLE `tblprfx_has_combo_prods`
 --
 -- Indexes for table `tblprfx_has_currency`
 --
-ALTER TABLE `tblprfx_has_currency`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `tblprfx_has_currency`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblprfx_has_layouts`
@@ -7606,8 +7606,8 @@ ALTER TABLE `tblprfx_coupons_users`
 --
 -- AUTO_INCREMENT for table `tblprfx_currencies`
 --
-ALTER TABLE `tblprfx_currencies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+-- ALTER TABLE `tblprfx_currencies`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `tblprfx_downlodable_prods`
 --
@@ -7662,8 +7662,8 @@ ALTER TABLE `tblprfx_has_combo_prods`
 --
 -- AUTO_INCREMENT for table `tblprfx_has_currency`
 --
-ALTER TABLE `tblprfx_has_currency`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
+-- ALTER TABLE `tblprfx_has_currency`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
 --
 -- AUTO_INCREMENT for table `tblprfx_has_layouts`
 --
