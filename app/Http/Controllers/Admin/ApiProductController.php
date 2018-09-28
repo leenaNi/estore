@@ -53,7 +53,7 @@ class ApiProductController extends Controller {
             $val->productCout = DB::table($merchant->prefix . '_has_categories')->where("cat_id", $val->id)->count();
         }
 
-        $userA = DB::table($merchant->prefix . '_users')->select('id', 'firstname', 'lastname')->get();
+        $userA = DB::table('users')->select('id', 'firstname', 'lastname')->get();
         $user = [];
         foreach ($userA as $val) {
             $user[$val->id] = $val->firstname . ' ' . $val->lastname;
