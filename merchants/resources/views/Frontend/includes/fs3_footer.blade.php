@@ -84,7 +84,7 @@
 								<div class="widget clearfix nobottompaddingMob nobottommarginMob">
 									<h4>Contact Us</h4>
 
-									<div class="widget subscribe-widget clearfix nobottompaddingMob nobottommarginMob">
+									<div class="widget subscribe-widget clearfix footaddresstopMargin">
 										@if(count($contactDetails) >0)
 										<?php    $contact =json_decode($contactDetails->contact_details); ?>
 										<address class="nobottommargin">
