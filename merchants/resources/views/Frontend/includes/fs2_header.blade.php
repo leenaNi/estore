@@ -53,6 +53,7 @@
     </div>
 
 </div>
+<div class="clearfix"></div>
 <!-- Header
 ============================================= -->
 <header id="header">
