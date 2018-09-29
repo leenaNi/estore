@@ -287,6 +287,15 @@ class MerchantController extends Controller {
         foreach ($settingData as $value) {
 
             $status['status'] = $value['status'];
+             if($value['url_key']=='default-courier'){
+                if(Input::get("courier_id")){
+                $courier['courier_id']=Input::get("courier_id");
+                $courier['preference']=1;
+                $courier['store_id']=$merchant->id;
+                $courier['status']=1;
+                DB::table("has_couriers")->insert($courier);
+                }
+            }
             //$ids[]=$value['id'];
             DB::table($merchant->prefix . '_general_setting')->where('id', $value['id'])->update($status);
             // $ids[]=$value['id']; 
@@ -666,7 +675,7 @@ class MerchantController extends Controller {
         $marchantId = Input::get("merchantId");
         $id = Input::get("id");
         $status = Input::get("status");
-        $url_key = Input::get("url_key");
+       
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $featuredata = [];
         if ($id) {
@@ -674,15 +683,7 @@ class MerchantController extends Controller {
             if (!empty(Input::get("details"))) {
                 $featuredata['details'] = Input::get("details");
             }
-            if($url_key=='default-courier'){
-                if(Input::get("courier_id")){
-                $courier['courier_id']=Input::get("courier_id");
-                $courier['preference']=1;
-                $courier['store_id']=$merchant->id;
-                $courier['status']=1;
-                DB::table("has_couriers")->insurt($courier);
-                }
-            }
+           
             DB::table($merchant->prefix . '_general_setting')->where('id', $id)->update($featuredata);
             $feature = DB::table($merchant->prefix . '_general_setting')->find($id);
             $general = [];
