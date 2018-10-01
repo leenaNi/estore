@@ -35,7 +35,7 @@ class ApiProductController extends Controller {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        //$barcode=DB::table($merchant->prefix.'_general_setting')->where("attr_set", 'Default')->get();
+
         $varient = DB::table($prifix . '_general_setting')->where('url_key', 'products-with-variants')->first()->status;
         //$products= DB::table($merchant->prefix.'_products')->where('is_individual', '=', '1')->where('status', '=', '1')->get();
         //$storePath=base_path().'/'.$merchant->url_key;  
@@ -125,8 +125,13 @@ class ApiProductController extends Controller {
             }
             $tax_amt = 0;
             if ($type == 1 || $type == 2) {
-                $taxs = $product->selling_price * $sum / 100;
-                $tax_amt = round($taxs, 2);
+                if ($product->spl_price > 0 && $product->price > $product->spl_price) {
+                    $taxs = $product->spl_price * $sum / 100;
+                    $tax_amt = round($taxs, 2);
+                } else {
+                    $taxs = $product->price * $sum / 100;
+                    $tax_amt = round($taxs, 2);
+                }
             }
             return $tax_amt = ['tax_amt' => $tax_amt, "rate" => $sum];
         } else {
@@ -175,7 +180,7 @@ class ApiProductController extends Controller {
         $prod['spl_price'] = Input::get('selling_price');
         $prod['status'] = Input::get('status');
         $prod['short_desc'] = Input::get('short_desc');
-        if (trim(Input::get('is_tax'))!='') {
+        if (trim(Input::get('is_tax')) != '') {
             $prod['is_tax'] = Input::get('is_tax');
         }
         if (Input::get('trending')) {
@@ -289,13 +294,13 @@ class ApiProductController extends Controller {
             $data = ["status" => 1, "msg" => "Product Added successfully.", 'prod' => $products];
             $url = "admin.apiprod.view";
         } else {
-            $return_url=Input::get("return_url");
-            if($return_url==1){
-            $data = $this->configProdAttrs($products->id, $prifix);
-            $url = "admin.apiprod.view";
-            }else{
-            $data = ["status" => 1, "msg" => "Product Updated successfully.", 'prod' => $products];
-            $url = "admin.apiprod.view";  
+            $return_url = Input::get("return_url");
+            if ($return_url == 1) {
+                $data = $this->configProdAttrs($products->id, $prifix);
+                $url = "admin.apiprod.view";
+            } else {
+                $data = ["status" => 1, "msg" => "Product Updated successfully.", 'prod' => $products];
+                $url = "admin.apiprod.view";
             }
         }
 
@@ -434,10 +439,10 @@ class ApiProductController extends Controller {
         $selectedTax = DB::table($prifix . '_product_has_taxes')->where("product_id", Input::get("prodId"))->pluck("tax_id");
         $selectedCat = DB::table($prifix . '_has_categories')->where("prod_id", Input::get("prodId"))->pluck("cat_id");
         if ($prod->prod_type == 3) {
-            $subproducts = DB::table($prifix . '_products')->where("parent_prod_id", $prod->id)->get(["id", "product", "is_avail", "price", "stock","status"]);
+            $subproducts = DB::table($prifix . '_products')->where("parent_prod_id", $prod->id)->get(["id", "product", "is_avail", "price", "stock", "status"]);
             foreach ($subproducts as $subproduct) {
                 $subproduct->attr = DB::table($prifix . '_has_options')->where("prod_id", $subproduct->id)->join($prifix . '_attribute_values', $prifix . '_attribute_values.id', '=', $prifix . '_has_options.attr_val')
-                       ->join($prifix . '_attributes', $prifix . '_attributes.id', '=', $prifix . '_has_options.attr_id') ->get([$prifix . '_attributes.attr',$prifix . '_attribute_values.id', $prifix . '_attribute_values.option_name']);
+                                ->join($prifix . '_attributes', $prifix . '_attributes.id', '=', $prifix . '_has_options.attr_id')->get([$prifix . '_attributes.attr', $prifix . '_attribute_values.id', $prifix . '_attribute_values.option_name']);
             }
             $prod->subproduct = $subproducts;
         }
@@ -446,7 +451,7 @@ class ApiProductController extends Controller {
         $prod->ImageId = @$catlog->id;
         $prod->selectedTax = $selectedTax;
         $prod->selectedCat = $selectedCat;
-         $tax = DB::table($prifix . '_tax')->where('status', '=', '1')->get();
+        $tax = DB::table($prifix . '_tax')->where('status', '=', '1')->get();
         //   $categories = DB::table($prifix . '_categories')->where("status", '1')->orderBy("id", "asc")->get(["id","category","url_key"]);
 //        foreach ($has_attr as $ah) {
 //            $attr_has[] = $ah->attr_set;
@@ -465,7 +470,7 @@ class ApiProductController extends Controller {
 //        $prod->category = Product::find(Input::get('id'))->categories()->get();
 //
 //        $action = route("admin.apiprod.save");
-        $data = ['prod' => $prod,'tax'=>$tax];
+        $data = ['prod' => $prod, 'tax' => $tax];
         //  return view(Config('constants.adminApiProductView') . '.add', compact('prod', 'prod_types', 'attr_sets', 'categories', 'action'));
         $viewname = Config('constants.adminApiProductView') . '.add';
         return Helper::returnView($viewname, $data);
@@ -477,10 +482,10 @@ class ApiProductController extends Controller {
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
 
         $update["price"] = Input::get("price");
-        if(Input::get("stock")) {
+        if (Input::get("stock")) {
             $update["stock"] = Input::get("stock");
         }
-         if(Input::get("is_avail")) {
+        if (Input::get("is_avail")) {
             $update["is_avail"] = Input::get("is_avail");
         }
         $update["status"] = Input::get("status");
@@ -490,26 +495,27 @@ class ApiProductController extends Controller {
         return $data;
     }
 
-    public function deleteVariant(){
+    public function deleteVariant() {
         $marchantId = Input::get("merchantId");
         $marchantId = Input::get("prodId");
-        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first(); 
-         $count =  DB::table('has_products')->where("sub_prod_id", Input::get('prodId'))->where("store_id",$merchant->id)->count();
-         if($count <=0){
-        $hasOpt = DB::table($merchant->prefix . '_has_options')->where("prod_id",Input::get('prodId'))->get();
-        if(count($hasOpt) > 0){
-            DB::table($merchant->prefix . '_has_options')->where("prod_id",Input::get('prodId'))->delete();
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $count = DB::table('has_products')->where("sub_prod_id", Input::get('prodId'))->where("store_id", $merchant->id)->count();
+        if ($count <= 0) {
+            $hasOpt = DB::table($merchant->prefix . '_has_options')->where("prod_id", Input::get('prodId'))->get();
+            if (count($hasOpt) > 0) {
+                DB::table($merchant->prefix . '_has_options')->where("prod_id", Input::get('prodId'))->delete();
+            }
+            DB::table($merchant->prefix . '_products')->where("id", Input::get('prodId'))->delete();
+            return $data = ['status' => 1, 'msg' => 'Product variant deleted successfully.'];
+        } else {
+            return $data = ['status' => 0, 'msg' => 'Sorry, this product variant is part of  orders. Delete the order first.'];
         }
-        DB::table($merchant->prefix . '_products')->where("id",Input::get('prodId'))->delete();
-             return $data=['status'=>1, 'msg'=>'Product variant deleted successfully.'];  
-         }else{
-            return $data=['status'=>0, 'msg'=>'Sorry, this product variant is part of  orders. Delete the order first.'];  
-         }
     }
+
     public function delete() {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $productCount = DB::table('has_products')->where("prod_id", Input::get('id'))->where("store_id",$merchant->id)->count();
+        $productCount = DB::table('has_products')->where("prod_id", Input::get('id'))->where("store_id", $merchant->id)->count();
         //  $count = HasProducts::where("prod_id", Input::get('id'))->count();
         if ($productCount <= 0) {
             $prod = DB::table($merchant->prefix . '_products')->find(Input::get('id'));
@@ -595,7 +601,7 @@ class ApiProductController extends Controller {
     public function getAllOrder() {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $orders = DB::table('orders')->where("order_status", "!=", 0)->where('store_id',$merchant->id)->orderBy("id", "asc")->get();
+        $orders = DB::table('orders')->where("order_status", "!=", 0)->where('store_id', $merchant->id)->orderBy("id", "asc")->get();
     }
 
     public function getConfigProduct() {
