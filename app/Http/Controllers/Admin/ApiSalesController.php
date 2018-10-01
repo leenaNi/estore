@@ -33,8 +33,7 @@ class ApiSalesController extends Controller {
      $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
      $ordTab='orders';
      $UserTab='users'; 
-     $cashRevenue = DB::table("has_products")->join("orders","orders.id","has_products.order_id")->select(DB::raw('sum(has_products.pay_amt) as cashpayAmt'))->whereNotIn('has_products.order_status',[4,0,10])
-                ->where('orders.payment_method',1)->where("has_products.store_id",$merchant->id)->whereBetween('has_products.created_at', [$fromD, $toD])->get();
+    
         $where = '';
         if (!empty(Input::get('month'))) {
             $select = "DATE_FORMAT(created_at, '%M %Y') as created_at";
