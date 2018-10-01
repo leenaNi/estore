@@ -18,6 +18,9 @@
 span.currency-sym {
 	line-height: 27px;
 }
+.maxPriceBox span.currency-sym {
+	margin-left: 10px;
+}
 .bottommargin-26{
 	margin-bottom: 26px !important;
 }

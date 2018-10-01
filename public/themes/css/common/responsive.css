@@ -1239,6 +1239,12 @@ div.logo .updateLogo {
 
 
 @media (max-width: 767px) {
+	.minPriceBox span.currency-sym {
+    margin-right: 5px !important;
+}
+	.maxPriceBox span.currency-sym {
+    margin-left: 0;
+}
 	.col_full.nobottommarginMobile, .col_half.nobottommarginMobile, .col_one_fourth.nobottommarginMobile {
     margin-bottom: 0px !important;
 }
@@ -1289,7 +1295,7 @@ input.min-price-filter, input.max-price-filter {
 .priceHypen {
 	width: 100%;
 	text-align: center;
-	margin-bottom: 10px;
+	margin: 0px;
 }
 	ul.sumcol-rightlist li .col-sm-12.col-xs-12, ul.sumcol-rightlist li p, ul.sumcol-rightlist li label {
     padding-left: 0;
