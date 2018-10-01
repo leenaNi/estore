@@ -1239,6 +1239,15 @@ div.logo .updateLogo {
 
 
 @media (max-width: 767px) {
+	.col_full.nobottommarginMobile, .col_half.nobottommarginMobile, .col_one_fourth.nobottommarginMobile {
+    margin-bottom: 0px !important;
+}
+	.nobottommarginMobile{
+		margin-bottom: 0px !important;
+	}
+	.nobottompaddingMobile{
+		padding-bottom: 0px !important;
+	}
 	.table-responsive > .table-bordered {
     border: 1px solid #ddd;
 }
@@ -1875,7 +1884,7 @@ input#couponApply {
 	
 	.container,
 	#header.full-header .container,
-	.container-fullwidth { width: 310px !important; }
+	.container-fullwidth { width: 96% !important; }
 
 	.container.vertical-middle { width: 100% !important; }
 
@@ -2074,7 +2083,7 @@ input#couponApply {
 		font-size: 12px !important;
 }
 	.container, #header.full-header .container, .container-fullwidth {
-    width: 230px !important;
+    width: 96% !important;
 }
 input.min-price-filter, input.max-price-filter {
 	width: calc(100% - 20px);
