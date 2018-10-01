@@ -947,10 +947,14 @@ class ApiOrderController extends Controller {
 //                $tax_amt = round($taxeble_amt * $cart->options->taxes / 100, 2);
 //                $subtotal = $cart->subtotal + $tax_amt;
 //            } else {
-            $subtotal = $cart->subtotal;
+           // $subtotal = $cart->subtotal;
             //   }
+            $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
+                $subtotal = $cart->subtotal;
+                $payamt = $subtotal - $getdisc;
+            
             $cart_ids[$cart->id] = ["order_id" => $orderId, "prod_id" => $cart->id, "qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 
-                'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),'store_id' =>$storeId, 'prefix' =>$prifix];
+               'pay_amt' => $payamt, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),'store_id' =>$storeId, 'prefix' =>$prifix];
 //            $market_place = Helper::generalSetting(35);
 //            if (isset($market_place) && $market_place->status == 1) {
 //                $prior_vendor = $product->vendorPriority()->first();
