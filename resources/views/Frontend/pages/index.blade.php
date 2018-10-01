@@ -90,7 +90,7 @@
                         <li><i class="icon-ok-sign"></i> Reports</li>
                         <li><i class="icon-ok-sign"></i> One Page Checkout</li>
                     </ul>
-                    <P class=""><a href="/features" class="btn theme-btn nomargin">View Complete Features List</a></P>
+                    <div class="featuresListButton"><a href="/features" class="btn theme-btn nomargin">View Complete Features List</a></div>
                 </div>
 
                 <div class="col-lg-7  col-md-7 col-sm-6">
