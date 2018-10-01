@@ -33,6 +33,7 @@ class ApiSalesController extends Controller {
      $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
      $ordTab='orders';
      $UserTab='users'; 
+    
         $where = '';
         if (!empty(Input::get('month'))) {
             $select = "DATE_FORMAT(created_at, '%M %Y') as created_at";
@@ -48,10 +49,10 @@ class ApiSalesController extends Controller {
             $groupby = "group by DATE(created_at)";
         }
         // if (!empty(Input::get('dateSearch'))) {
-        $toDate = date('Y-m-d', strtotime('2018-10-20'));
-       // $toDate = date('Y-m-d', strtotime(Input::get('to_date')));
-       // $fromDate = date('Y-m-d', strtotime(Input::get('from_date')));
-        $fromDate = date('Y-m-d', strtotime('2018-6-20'));
+        //$toDate = date('Y-m-d', strtotime('2018-10-20'));
+        $toDate = date('Y-m-d', strtotime(Input::get('to_date')));
+        $fromDate = date('Y-m-d', strtotime(Input::get('from_date')));
+      //  $fromDate = date('Y-m-d', strtotime('2018-6-20'));
         $fromD=$fromDate .' 00:00:00';
        $toD= $toDate .' 23:59:59';
         $where = "where ord.created_at between '$fromDate 00:00:00' and '$toDate  23:59:59' and ord.order_status NOT IN(0,4,6,10)";
@@ -59,9 +60,9 @@ class ApiSalesController extends Controller {
 //            $where = "where ord.order_status NOT IN(0,4,6,10)";
 //        }
  $allorder = DB::select(DB::raw("SELECT count(DISTINCT (order_id)) AS ordcount, SUM(pay_amt) AS sales,date(created_at) orddate "
-                                . " from has_products where  store_id=$merchant->id and order_status NOT IN(0,4,6,10) group by orddate  order by sales desc"));
+                                . " from has_productss where  store_id=$merchant->id and order_status NOT IN(0,4,6,10) group by orddate  order by sales desc"));
  
-        $order = DB::select(DB::raw("SELECT ord.id AS orderId, SUM( ord.pay_amt ) AS sales, COUNT( hp.prod_id )  as prdCount"
+        $order = DB::select(DB::raw("SELECT ord.id AS orderId, SUM( hp.pay_amt ) AS sales, COUNT( hp.prod_id )  as prdCount"
                                 . " from orders as ord inner join has_products as hp on(ord.id = hp.order_id) $where and hp.store_id=$merchant->id group by hp.order_id"));
        //dd($order);
         $salesTotal = 0;
