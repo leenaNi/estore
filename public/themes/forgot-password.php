@@ -14,7 +14,7 @@
      include( 'includes/header_style2.php');
      
      
-     ?>
+     ?> 
     <section id="page-title">
       <div class="container clearfix">
         <h1>Forgot Password</h1>
