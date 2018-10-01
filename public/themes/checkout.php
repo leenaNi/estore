@@ -93,29 +93,23 @@
                             <form role="form" method="post" class="login_form loginFormNewUser" style="display: block; margin-bottom: 20px;" id="checkoutRegisterFormid">
                               <div class="row">
                                         <div class="form-group col-md-6">
-                                            <lable>First Name</lable>
                                             <input name="firstname" type="text" class="form-control" placeholder="First Name *">
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <lable>Last Name</lable>
                                             <input name="lastname" type="text" class="form-control" placeholder="Last Name">
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <lable>Mobile</lable>
                                             <input name="telephone" type="text" id="regtelephone" class="form-control" placeholder="Mobile *">
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <lable>Email</lable>
                                             <input name="email" type="email" id="regEmail" class="form-control" placeholder="Email">
                                             
                                         </div>                                       
                                         <div class="form-group col-md-12">
-                                            <lable>Password</lable>
                                             <input name="password" type="password" id="password" class="form-control" placeholder="Password *">
 
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <lable>Confirm Password</lable>
                                             <input name="cpassword" type="password" class="form-control" placeholder="Confirm Password *">
                                         </div>
                                         <div class="form-group">
@@ -310,7 +304,7 @@
                                                   </div>
                                                   <li>
                                                     <div class="form-group">
-                                                        <p class="col-md-12">
+                                                        <p class="col-md-12 nomargin">
                                                             <textarea name="commentText" id="commentTT" class="form-control full-width" style="margin: 0px;width: 352px;height: 99px; resize: none;" placeholder="Enter additional comment if any."></textarea>
                                                         </p>
                                                     </div>
