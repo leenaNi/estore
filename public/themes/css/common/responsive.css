@@ -1239,7 +1239,7 @@ div.logo .updateLogo {
 
 
 @media (max-width: 767px) {
-	.col_full.nobottommarginMobile {
+	.col_full.nobottommarginMobile, .col_half.nobottommarginMobile, .col_one_fourth.nobottommarginMobile {
     margin-bottom: 0px !important;
 }
 	.nobottommarginMobile{
