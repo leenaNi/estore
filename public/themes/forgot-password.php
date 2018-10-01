@@ -31,7 +31,7 @@
       <div class="content-wrap">
         <div class="container clearfix">
           <div class="col_full_fourth nobottommargin">
-            <div class="ordersuccess-block center"> <span class="divcenter">You will soon recive an e-mail.</span>
+            <div class="ordersuccess-block forget-reset-pass-box center"> <span class="divcenter">You will soon recive an e-mail.</span>
               <br>
               <form class="nobottommargin forgot-password" action="#" method="post">
                 <div class="col_full">
