@@ -8,7 +8,7 @@
 				============================================= -->
 				<div class="footer-widgets-wrap clearfix">
 
-					<div class="col_half">
+					<div class="col_half nobottommarginMobile">
 
 						<div class="widget clearfix">
 
@@ -17,22 +17,22 @@
 							<p>Your Store Name about page is an opportunity to tell a story that will help you to stick in your customer's minds. You can describe your History, Vision & Mission, and Your Global Presence etc....<span><a href="/about-us?theme=fs1">Read more.</a></span></p>
 
 							<div class="clearfix">
-								<div class="col_half">
+								<div class="col_half nobottommarginMobile">
 									<address class="nobottommargin">
 										<strong>Address:</strong><br>
 										C/501, Chocolate Building , Vanila Street Mumbai 400123 <br>
 									</address>
 								</div>
-								<div class="col_half col_last">
+								<div class="col_half col_last nobottommarginMobile">
 									<strong>Phone:</strong> 09000012345 <br>
 									<strong>Email:</strong> abc@gmail.com
 								</div>
 							</div>
 
-							<div class="widget clearfix topmargin-sm nobottommargin">
+							<div class="widget clearfix topmargin-sm nobottommargin nobottommarginMobile nobottompaddingMobile">
 								<h4>Newsletter</h4>
 
-								<div class="widget subscribe-widget clearfix">
+								<div class="widget subscribe-widget clearfix nobottommarginMobile nobottompaddingMobile">
 							<h5><strong>Subscribe</strong> to Our Newsletter to get News, Update & Amazing Offers</h5>
 							<div class="widget-subscribe-form-result"></div>
 							<form id="widget-subscribe-form" action="include/subscribe.php" role="form" method="post" class="nobottommargin">
@@ -51,9 +51,9 @@
 
 					</div>
 
-					<div class="col_one_fourth">
+					<div class="col_one_fourth nobottommarginMobile">
 
-						<div class="widget widget_links clearfix">
+						<div class="widget widget_links clearfix nobottommarginMobile">
 
 								<h4>Links</h4>
 

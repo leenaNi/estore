@@ -1239,6 +1239,12 @@ div.logo .updateLogo {
 
 
 @media (max-width: 767px) {
+	.nobottommarginMobile{
+		margin-bottom: 0px !important;
+	}
+	.nobottompaddingMobile{
+		padding-bottom: 0px !important;
+	}
 	.table-responsive > .table-bordered {
     border: 1px solid #ddd;
 }

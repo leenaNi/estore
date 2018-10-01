@@ -8,7 +8,7 @@
 				============================================= -->
 				<div class="footer-widgets-wrap clearfix">
 
-					<div class="col_full">
+					<div class="col_full nobottommarginMobile">
 					
 
 						<div class="col-md-3 col-sm-6">
@@ -17,7 +17,7 @@
 
 								<h4>About</h4>
 
-								<p>Your Store Name about page is an opportunity to tell a story that will help you to stick in your customer's minds. You can describe your History, Vision & Mission, and Your Global Presence etc....<span><a href="/about-us?theme=fs1">Read more.</a></span></p>
+								<p class="nobottommarginMobile">Your Store Name about page is an opportunity to tell a story that will help you to stick in your customer's minds. You can describe your History, Vision & Mission, and Your Global Presence etc....<span><a href="/about-us?theme=fs1">Read more.</a></span></p>
 
 
 							</div>
@@ -46,7 +46,7 @@
 
 						<div class="col-md-4 col-sm-6">
 
-							<div class="widget clearfix bottommargin-sm">
+							<div class="widget clearfix bottommargin-sm nobottommarginMobile">
 								<h4>Newsletter</h4>
 
 								<div class="widget subscribe-widget clearfix">
@@ -68,10 +68,10 @@
 
 					
 					<div class="col-md-3 col-sm-6">
-						<div class="widget clearfix">
+						<div class="widget clearfix nobottommarginMobile">
 								<h4>Contact</h4>
 
-								<div class="widget subscribe-widget clearfix">
+								<div class="widget subscribe-widget clearfix nobottommarginMobile">
 							<address class="nobottommargin">
 										<abbr><strong>Address:</strong></abbr><br>
 										C/501, Chocolate Building , Vanila Street Mumbai 400123 
