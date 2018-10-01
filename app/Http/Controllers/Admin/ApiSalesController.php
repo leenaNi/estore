@@ -33,8 +33,8 @@ class ApiSalesController extends Controller {
      $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
      $ordTab='orders';
      $UserTab='users'; 
-    
-        $where = '';
+     
+     $where = '';
         if (!empty(Input::get('month'))) {
             $select = "DATE_FORMAT(created_at, '%M %Y') as created_at";
             $groupby = "group by MONTH(created_at)";
@@ -60,7 +60,7 @@ class ApiSalesController extends Controller {
 //            $where = "where ord.order_status NOT IN(0,4,6,10)";
 //        }
  $allorder = DB::select(DB::raw("SELECT count(DISTINCT (order_id)) AS ordcount, SUM(pay_amt) AS sales,date(created_at) orddate "
-                                . " from has_productss where  store_id=$merchant->id and order_status NOT IN(0,4,6,10) group by orddate  order by sales desc"));
+                                . " from has_products where  store_id=$merchant->id and order_status NOT IN(0,4,6,10) group by orddate  order by sales desc"));
  
         $order = DB::select(DB::raw("SELECT ord.id AS orderId, SUM( hp.pay_amt ) AS sales, COUNT( hp.prod_id )  as prdCount"
                                 . " from orders as ord inner join has_products as hp on(ord.id = hp.order_id) $where and hp.store_id=$merchant->id group by hp.order_id"));
@@ -72,12 +72,12 @@ class ApiSalesController extends Controller {
             $salesTotal += $orderval->sales;
            $ordProdTot += $orderval->prdCount;
         }
-        $cashRevenue = DB::table("has_products")->join("orders","orders.id","has_products.order_id")->select(DB::raw('sum(has_products.pay_amt) as cashpayAmt'))->whereNotIn('has_products.order_status',[4,0,10])
-                ->where('orders.payment_method',1)->where("has_products.store_id",$merchant->id)->whereBetween('has_products.created_at', [$fromD, $toD])->get();
-        $cardRevenue = DB::table("has_products")->join("orders","orders.id","has_products.order_id")->select(DB::raw('sum(has_products.pay_amt) as cardpayAmt'))->whereNotIn('has_products.order_status',[4,0,10])
-                ->where('orders.payment_method',"!=",1)->where("has_products.store_id",$merchant->id)->whereBetween('has_products.created_at', [$fromD, $toD])->get();
-        $creditRevenue = DB::table("has_products")->join("orders","orders.id","has_products.order_id")->select(DB::raw('sum(has_products.pay_amt) as creditpayAmt'))->where('has_products.order_status','!=',0)
-                ->where('orders.payment_method',8)->where("has_products.store_id",$merchant->id)->whereBetween('has_products.created_at', [$fromD, $toD])->get();
+        $cashRevenue = DB::table("has_products as hp")->join("orders","orders.id","hp.order_id")->select(DB::raw('sum(hp.pay_amt) as cashpayAmt'))->whereNotIn('hp.order_status',[4,0,10])
+                ->where('orders.payment_method',1)->where("hp.store_id",$merchant->id)->whereBetween('hp.created_at', [$fromD, $toD])->get();
+        $cardRevenue = DB::table("has_products as hp")->join("orders","orders.id","hp.order_id")->select(DB::raw('sum(hp.pay_amt) as cardpayAmt'))->whereNotIn('hp.order_status',[4,0,10])
+                ->where('orders.payment_method',"!=",1)->where("hp.store_id",$merchant->id)->whereBetween('hp.created_at', [$fromD, $toD])->get();
+        $creditRevenue = DB::table("has_products as hp")->join("orders","orders.id","hp.order_id")->select(DB::raw('sum(hp.pay_amt) as creditpayAmt'))->where('hp.order_status','!=',0)
+                ->where('orders.payment_method',8)->where("hp.store_id",$merchant->id)->whereBetween('hp.created_at', [$fromD, $toD])->get();
         return $data = ['order' => count($order),'allorder' => $allorder,'salesTotal'=>$salesTotal,'ordProdTot'=>$ordProdTot,'cashSale'=>$cashRevenue[0]->cashpayAmt,'cardSale'=>$cardRevenue[0]->cardpayAmt,'creditSale'=>$creditRevenue[0]->creditpayAmt];
     }
 
