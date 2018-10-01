@@ -1239,6 +1239,9 @@ div.logo .updateLogo {
 
 
 @media (max-width: 767px) {
+	.col_full.nobottommarginMobile {
+    margin-bottom: 0px !important;
+}
 	.nobottommarginMobile{
 		margin-bottom: 0px !important;
 	}
