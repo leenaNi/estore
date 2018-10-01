@@ -44,12 +44,12 @@
                 <!-- Product Single - Quantity & Cart Button
 								============================================= -->
                 <form class="cart nobottommargin clearfix" method="post" enctype='multipart/form-data'>
-                  <div class="quantity clearfix">
+                  <div class="quantity clearfix mobMB15">
                     <input type="button" value="-" class="minus">
                     <input type="text" step="1" min="1" name="quantity" value="1" title="Qty" class="qty" size="4" />
                     <input type="button" value="+" class="plus"> </div>
-                  <a class="add-to-cart button nomargin" onclick="location.href='cart.php';">Add to cart</a>
-                  <button type="submit" class="add-to-cart button nomargin"><i class="icon-heart" style="margin-right:0px;"></i></button>
+                  <a class="add-to-cart button nomargin addToCartB addToCart mobMB15" onclick="location.href='cart.php';">Add to cart</a>
+                  <button type="submit" class="add-to-wishlist button nomargin"><i class="icon-heart" style="margin-right:0px;"></i></button>
                 </form>
                 <!-- Product Single - Quantity & Cart Button End -->
                 <div class="clear"></div>
