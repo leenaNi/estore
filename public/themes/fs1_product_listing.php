@@ -213,6 +213,7 @@
                 </div>
               </div>
             </div>
+            <div class="clearfix"></div>
             <div class="text-center col-md-12"><a href="#" class="button button-large button-dark  topmargin-sm">Load More</a> </div>
           </div>
           <div class="clearfix"></div>

@@ -1867,7 +1867,11 @@ input.min-price-filter, input.max-price-filter {
 input#couponApply {
 	width: 100%;
 }
-	ul.tab-nav:not(.tab-nav-lg) li{width: 100%; margin:0px !important; }
+	ul.tab-nav:not(.tab-nav-lg) li{
+		width: 100% !important;
+    margin: 0px !important;
+		margin-bottom: 15px !important;
+	}
 	
 	.container,
 	#header.full-header .container,

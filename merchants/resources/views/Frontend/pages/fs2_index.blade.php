@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <div class="col_one_fourth nobottommargin col_last">
+    <div class="col_one_fourth nobottommargin col_last nobottommarginMobile">
         @if(count($home_page_3_boxes) >0)
         @foreach($home_page_3_boxes as $k => $dynl)
         <div class="col_full bottommargin-sm nobottommarginLastchild">
