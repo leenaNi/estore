@@ -87,7 +87,7 @@
 					</div>
 </div>
           <!-- .sidebar end -->
-          <div id="shop" class="shop col-md-9 product-3 clearfix bottommargin-sm">
+          <div id="shop" class="shop col-md-9 product-3 clearfix bottommargin-sm  noRightPadding">
 
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">

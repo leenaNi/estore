@@ -83,7 +83,7 @@
           </div>
 </div>
           <!-- .sidebar end -->
-          <div id="shop" class="shop col-md-9 product-3 clearfix bottommargin-sm">
+          <div id="shop" class="shop col-md-9 product-3 clearfix bottommargin-sm noRightPadding">
           <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
                 <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
