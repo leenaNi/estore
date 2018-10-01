@@ -280,6 +280,13 @@ input.min-price-filter, input.max-price-filter {
 
 
 @media (max-width: 991px) {
+	.mobMB15 {
+    margin-bottom: 15px !important;
+}
+.quantity.clearfix.mobMB15 {
+	min-width: 130px;
+	margin-right: 0px !important;
+}
 	.product-price ins {
     font-size: 75%;
 }

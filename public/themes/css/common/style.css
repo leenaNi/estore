@@ -7425,6 +7425,7 @@ body:not(.device-touch):not(.device-xs):not(.device-xxs) .product-overlay a {
 .single-product .add-to-cart.button {
 	height: 40px;
 	line-height: 40px;
+	background-color: #1abc9c !important;
 }
 
 .product-meta {
