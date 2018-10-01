@@ -15,6 +15,15 @@
 @import url("vmap.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 /*header backgaround*/
+.button {
+	background-color: #1ABC9C !important;
+}
+span.currency-sym {
+	line-height: 27px;
+}
+.maxPriceBox span.currency-sym {
+	margin-left: 10px;
+}
 .bottommargin-26{
 	margin-bottom: 26px !important;
 }
@@ -7419,6 +7428,7 @@ body:not(.device-touch):not(.device-xs):not(.device-xxs) .product-overlay a {
 .single-product .add-to-cart.button {
 	height: 40px;
 	line-height: 40px;
+	background-color: #1abc9c !important;
 }
 
 .product-meta {

@@ -37,9 +37,9 @@
                                 <h4 class="widget-title pricerange-titlebox">Filter By Price </h4>
                                 <div class="f-price price-rangebox">
                                     <span> <strong id="amount" ></strong></span>
-                                    <div class="minPriceBox"><span class="currency-sym"></span>
+                                    <div class="minPriceBox"><span class="currency-sym"><i class="icon-rupee"></i></span>
                                         <input type="text" id="min_price" name="min_price" min="0" placeholder="Min price" class="min-price-filter"></div><div class="priceHypen">-</div>
-                                        <div class="maxPriceBox"><span class="currency-sym"></span> 
+                                        <div class="maxPriceBox"><span class="currency-sym"><i class="icon-rupee"></i></span> 
                                             <input type="text" id="max_price" name="max_price" placeholder="Max price" class="max-price-filter">
                                         </div>
                                         <div class="clearfix"></div>
