@@ -68,7 +68,7 @@
         <div class="container clearfix nobottommargin">
             <div class="row clearfix">
 
-                <div class="col-lg-5">
+                <div class="col-lg-5 col-md-5 col-sm-6">
                     <h2>Features</h2>
                     <!--                     <form action="{{route('newstore')}}" id="getStartedForm" method="post">
                                              <input type="text" class="form-control required not-dark" required="true"  name="store_name" placeholder="Store Name">
@@ -90,10 +90,10 @@
                         <li><i class="icon-ok-sign"></i> Reports</li>
                         <li><i class="icon-ok-sign"></i> One Page Checkout</li>
                     </ul>
-                    <P class="nomargin"><a href="/features" class="btn theme-btn nomargin">View Complete Features List</a></P>
+                    <P class=""><a href="/features" class="btn theme-btn nomargin">View Complete Features List</a></P>
                 </div>
 
-                <div class="col-lg-7">
+                <div class="col-lg-7  col-md-7 col-sm-6">
 
                     <div style="position: relative;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">

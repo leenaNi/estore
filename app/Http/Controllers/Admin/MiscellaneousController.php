@@ -247,7 +247,7 @@ class MiscellaneousController extends Controller {
         $prifix = $merchant->prefix;
        
         $languages = DB::table($prifix . '_language')->select('id', 'name')->get();
-        $currency =DB::table($prifix . '_has_currency')->where('currency_status', 1)->get();
+        $currency =HasCurrency::where('status', 1)->get();
         $storePath = base_path() . '/merchants/' . $merchant->url_key;
         $store = Helper::getStoreSettings($storePath);
         $themeData=$store['themedata'];
@@ -280,7 +280,7 @@ class MiscellaneousController extends Controller {
         $newSoter = json_encode($store);
         Helper::updateStoreSettings($storePath, $newSoter);
         $store1 = Helper::getStoreSettings($storePath);
-        $currency=DB::table($prifix . '_has_currency')->where("iso_code",Input::get("currencyId"))->where('currency_status', 1)->select('currency_val', 'css_code')->first();
+        $currency=HasCurrency::where("iso_code",Input::get("currencyId"))->where('status', 1)->select('currency_val', 'css_code')->first();
        // $languages = DB::table($prifix . '_language')->select('id', 'name')->get();
        $storeName=Input::get("storeName");
        $data = ["status" => 1, "msg" => "Store Setting Updated successfully.","currency"=>$currency,'logo'=>$logoImage,'storeName'=>$storeName];

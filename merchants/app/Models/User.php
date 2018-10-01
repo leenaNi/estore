@@ -58,7 +58,5 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     function hasOrder() {
         return $this->hasMany('App\Models\Order', 'user_id')->groupBy('user_id')->count();
     }
-public static function rtvItem($id) {
- dd($id);
-}
+
 }

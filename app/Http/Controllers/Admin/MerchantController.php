@@ -287,6 +287,15 @@ class MerchantController extends Controller {
         foreach ($settingData as $value) {
 
             $status['status'] = $value['status'];
+             if($value['url_key']=='default-courier'){
+                if(Input::get("courier_id")){
+                $courier['courier_id']=Input::get("courier_id");
+                $courier['preference']=1;
+                $courier['store_id']=$merchant->id;
+                $courier['status']=1;
+                DB::table("has_couriers")->insert($courier);
+                }
+            }
             //$ids[]=$value['id'];
             DB::table($merchant->prefix . '_general_setting')->where('id', $value['id'])->update($status);
             // $ids[]=$value['id']; 
@@ -519,7 +528,7 @@ class MerchantController extends Controller {
         $storePath = base_path() . '/merchants/' . $merchant->url_key;
         $currencyid = Helper::getStoreSettings($storePath)['currencyId'];
 
-        $currency = DB::table($merchant->prefix . '_has_currency')->where('iso_code', $currencyid)->first();
+        $currency = DB::table('has_currency')->where('iso_code', $currencyid)->first();
         foreach ($settings as $key => $value) {
             $general[strtolower($value->url_key)] = $value->status;
         }
@@ -666,6 +675,7 @@ class MerchantController extends Controller {
         $marchantId = Input::get("merchantId");
         $id = Input::get("id");
         $status = Input::get("status");
+       
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $featuredata = [];
         if ($id) {
@@ -673,7 +683,7 @@ class MerchantController extends Controller {
             if (!empty(Input::get("details"))) {
                 $featuredata['details'] = Input::get("details");
             }
-
+           
             DB::table($merchant->prefix . '_general_setting')->where('id', $id)->update($featuredata);
             $feature = DB::table($merchant->prefix . '_general_setting')->find($id);
             $general = [];
@@ -701,5 +711,10 @@ class MerchantController extends Controller {
         //dd($storeData);
         return $data;
     }
-
+   public function getCourier() {
+       
+         $couriers = DB::table('couriers')->where("status", "1")->get(["id","name"]);
+          $data['couriers'] =$couriers;
+          return $data;
+    }
 }

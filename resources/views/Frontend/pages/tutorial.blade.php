@@ -54,7 +54,7 @@ ul.profile-account-pagelist li:last-child {
 				<div class="container clearfix">
 <!-- Sidebar
                     ============================================= -->
-                    <div class="sidebar nobottommargin">
+                    <div class="sidebar nobottommargin sidbarCustomwidth">
                         <div class="sidebar-widgets-wrap">
 
                             <div class="profile-box">
@@ -80,7 +80,7 @@ ul.profile-account-pagelist li:last-child {
                     </div><!-- .sidebar end -->
 					<!-- Post Content
 					============================================= -->
-					<div class="postcontent nobottommargin col_last">
+					<div class="postcontent nobottommargin col_last widthAuto">
 							<div class="profile-content">
 								<!-- <div class="account-heading">
 							<h2>Tutorials</h2>

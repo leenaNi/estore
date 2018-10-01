@@ -16,9 +16,11 @@
           <div class="col_half nobottommargin text-justify">
             <?php echo html_entity_decode($about->description) ?>
           </div>
+            @if($about->image)
           <div class="col_half col_last nobottommargin">
             <img src="{{ asset(Config('constants.frontendStaticpage').$about->image)}}" class="img-responsive"/>
           </div>
+            @endif
         </div>
       </div>
     </section>
