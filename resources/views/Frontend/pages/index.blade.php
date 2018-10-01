@@ -69,7 +69,7 @@
             <div class="row clearfix">
 
                 <div class="col-lg-5 col-md-5 col-sm-6">
-                    <h2>Features</h2>
+                    <h2 class="marginBottom10">Features</h2>
                     <!--                     <form action="{{route('newstore')}}" id="getStartedForm" method="post">
                                              <input type="text" class="form-control required not-dark" required="true"  name="store_name" placeholder="Store Name">
                                             <input class="btn theme-btn btn-block nomargin" id="create_store" value="Get Started" type="submit" style="" >
