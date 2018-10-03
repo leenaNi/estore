@@ -2550,7 +2550,7 @@ class OrdersController extends Controller {
             $reqArray['shipping_price'] = '1';
             $reqArray['parcel_detail'] = '';
             $reqArray['no_of_items'] = '';
-            $reqArray['product_price'] = $saveorder->pay_amt;
+            $reqArray['product_price'] = "$saveorder->pay_amt";
             if($saveorder->payment_method==1){
              $reqArray['payment_method'] = '1';
             }else{
