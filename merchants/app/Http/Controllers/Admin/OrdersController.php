@@ -2544,13 +2544,13 @@ class OrdersController extends Controller {
                 $reqArray['delivery_timing'] = 'Next Day(48hr)';
                 $reqArray['package_code'] = '#2444';
             }
-
+             $payamt=$saveorder->pay_amt * Session::get('currency_val');
             $reqArray['product_id'] = '';
             $reqArray['recipient_address'] =$saveorder->address1 . '' . $saveorder->address2;;
             $reqArray['shipping_price'] = '1';
             $reqArray['parcel_detail'] = '';
             $reqArray['no_of_items'] = '';
-            $reqArray['product_price'] = "$saveorder->pay_amt";
+            $reqArray['product_price'] = "$payamt";
             if($saveorder->payment_method==1){
              $reqArray['payment_method'] = '1';
             }else{
