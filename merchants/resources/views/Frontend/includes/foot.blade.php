@@ -1207,7 +1207,7 @@ function getFbUserData(){
                             data: {trackingId:trackingId},
           
                             success: function (res) {
-                             console.log(JSON.stringyify(res.trackdata));
+                             console.log(JSON.stringify(res.trackdata));
                                $('#trackingDetails').empty();
                                $('.tableVaglignMiddle').removeClass("hide");
                                if(res.status==1){
