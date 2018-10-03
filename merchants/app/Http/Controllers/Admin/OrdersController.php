@@ -2551,7 +2551,12 @@ class OrdersController extends Controller {
             $reqArray['parcel_detail'] = '';
             $reqArray['no_of_items'] = '';
             $reqArray['product_price'] = $saveorder->pay_amt;
-            $reqArray['payment_method'] = 'Cash On Delivery - COD';
+            if($saveorder->payment_method==1){
+             $reqArray['payment_method'] = '1';
+            }else{
+             $reqArray['payment_method'] = '2';     
+            }
+            
             $reqArray['ep_id'] = '1';
             print_r($reqArray);
             $url = "http://ecourier.com.bd/apiv2/";
