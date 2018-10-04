@@ -2506,60 +2506,129 @@ class OrdersController extends Controller {
         foreach ($orders as $key => $saveorder) {
             $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
             // dd($saveorder);
-            $headers = array();
-            $headers[] ='Postman-Token:c74cf735-9bd9-4ca5-9cd9-dd41df455e3d';
-            $headers[] ='Cache-Control:no-cache';
-            $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-            $headers[] = 'USER_ID:I8837';
-            $headers[] = 'API_KEY:xqdH';
-            $headers[] = 'API_SECRET:jubLW';
-
-            $reqArray = [];
-            $reqArray['order_code'] = $saveorder->id;
-            $reqArray['product_id'] = '1';
-            $reqArray['parcel'] = 'insert';
-            $reqArray['ep_name'] = 'test';
-            $reqArray['pick_contact_person'] = $storeContact->mobile;
-            $reqArray['pick_division'] = '';
-            $reqArray['pick_district'] = 'test';
-            $reqArray['pick_thana'] =  $storeContact->thana;
-            $reqArray['pick_union'] = 'test';
-            $reqArray['pick_address'] = $storeContact->address_line1;
-            $reqArray['pick_mobile'] = $storeContact->mobile;
-            $reqArray['recipient_name'] = $saveorder->first_name . '' . $saveorder->last_name;
-            $reqArray['recipient_mobile'] = $saveorder->phone_no;
-            $reqArray['recipient_division'] = '';
-            $reqArray['recipient_district'] = '';
-            $reqArray['recipient_city'] = $saveorder->zone->name;
-            $reqArray['recipient_area'] = $saveorder->thana;
-            $reqArray['recipient_thana'] = $saveorder->thana;
-            $reqArray['recipient_union'] = 'test';
-          
-
-            $reqArray['upazila'] = '';
             if ($saveorder->zone_id == '322') {
-                  $reqArray['weight'] = 'Up To 1Kg';
-                $reqArray['delivery_timing'] = 'Next Day(24hr)';
-                $reqArray['package_code'] = '#2506';
+                $weight = 'Up To 1Kg';
+                $delivery_timing= 'Next Day(24hr)';
+                $package_code= '#2506';
             } else {
-                  $reqArray['weight'] = 'Up To 500gm';
-                $reqArray['delivery_timing'] = 'Next Day(48hr)';
-                $reqArray['package_code'] = '#2444';
+                $weight  = 'Up To 500gm';
+                $delivery_timing = 'Next Day(48hr)';
+               $package_code = '#2444';
             }
-             $payamt=$saveorder->pay_amt * Session::get('currency_val');
-            $reqArray['product_id'] = '';
-            $reqArray['recipient_address'] =$saveorder->address1 . '' . $saveorder->address2;;
-            $reqArray['shipping_price'] = '1';
-            $reqArray['parcel_detail'] = '';
-            $reqArray['no_of_items'] = '';
-            $reqArray['product_price'] = "$payamt";
             if($saveorder->payment_method==1){
-             $reqArray['payment_method'] = '1';
+             $payment_method = '1';
             }else{
-             $reqArray['payment_method'] = '2';     
+            $payment_method = '2';     
             }
+            $client = new http\Client;
+$request = new http\Client\Request;
+
+$body = new http\Message\Body;
+$body->append(new http\QueryString(array(
+  'order_code' => $saveorder->id,
+  'product_id' => '1',
+  'parcel' => 'insert',
+  'ep_name' => 'test',
+  'pick_contact_person' =>  $storeContact->mobile,
+  'pick_division' => '',
+  'pick_district' => 'test',
+  'pick_thana' =>  $storeContact->thana,
+  'pick_union' => 'test',
+  'pick_address' => $storeContact->address_line1,
+  'pick_mobile' =>  $storeContact->mobile,
+  'recipient_name' => $saveorder->first_name . '' . $saveorder->last_name,
+  'recipient_mobile' => $saveorder->phone_no,
+  'recipient_division' => '',
+  'recipient_district' => '',
+  'recipient_city' => $saveorder->zone->name,
+  'recipient_area' => $saveorder->thana,
+  'recipient_thana' => $saveorder->thana,
+  'recipient_union' => 'test',
+  'upazila' => '',
+    'weight' =>$weight,
+  'delivery_timing' =>$delivery_timing,
+  'package_code' => $package_code,
+  'recipient_address' => $saveorder->address1 . '' . $saveorder->address2,
+  'shipping_price' => '1',
+  'parcel_detail' => '',
+  'no_of_items' => '',
+  'product_price' => $payamt,
+  'payment_method' => $payment_method,
+  'ep_id' => '1'
+)));
+$request->setRequestUrl('http://103.239.254.146/apiv2/');
+$request->setRequestMethod('POST');
+$request->setBody($body);
+
+$request->setHeaders(array(
+  'Postman-Token' => 'c74cf735-9bd9-4ca5-9cd9-dd41df455e3d',
+  'Cache-Control' => 'no-cache',
+  'Content-Type' => 'application/x-www-form-urlencoded',
+  'USER_ID' => 'I8837',
+  'API_KEY' => 'xqdH',
+  'API_SECRET' => 'jubLW'
+));
+$client->enqueue($request)->send();
+$response = $client->getResponse();
+
+$data= $response->getBody();
+dd($data);
             
-            $reqArray['ep_id'] = '1';
+//            
+//            $headers = array();
+//            $headers[] ='Postman-Token:c74cf735-9bd9-4ca5-9cd9-dd41df455e3d';
+//            $headers[] ='Cache-Control:no-cache';
+//            $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+//            $headers[] = 'USER_ID:I8837';
+//            $headers[] = 'API_KEY:xqdH';
+//            $headers[] = 'API_SECRET:jubLW';
+//
+//            $reqArray = [];
+//            $reqArray['order_code'] = $saveorder->id;
+//            $reqArray['product_id'] = '1';
+//            $reqArray['parcel'] = 'insert';
+//            $reqArray['ep_name'] = 'test';
+//            $reqArray['pick_contact_person'] = $storeContact->mobile;
+//            $reqArray['pick_division'] = '';
+//            $reqArray['pick_district'] = 'test';
+//            $reqArray['pick_thana'] =  $storeContact->thana;
+//            $reqArray['pick_union'] = 'test';
+//            $reqArray['pick_address'] = $storeContact->address_line1;
+//            $reqArray['pick_mobile'] = $storeContact->mobile;
+//            $reqArray['recipient_name'] = $saveorder->first_name . '' . $saveorder->last_name;
+//            $reqArray['recipient_mobile'] = $saveorder->phone_no;
+//            $reqArray['recipient_division'] = '';
+//            $reqArray['recipient_district'] = '';
+//            $reqArray['recipient_city'] = $saveorder->zone->name;
+//            $reqArray['recipient_area'] = $saveorder->thana;
+//            $reqArray['recipient_thana'] = $saveorder->thana;
+//            $reqArray['recipient_union'] = 'test';
+//          
+//
+//            $reqArray['upazila'] = '';
+//            if ($saveorder->zone_id == '322') {
+//                  $reqArray['weight'] = 'Up To 1Kg';
+//                $reqArray['delivery_timing'] = 'Next Day(24hr)';
+//                $reqArray['package_code'] = '#2506';
+//            } else {
+//                  $reqArray['weight'] = 'Up To 500gm';
+//                $reqArray['delivery_timing'] = 'Next Day(48hr)';
+//                $reqArray['package_code'] = '#2444';
+//            }
+//             $payamt=$saveorder->pay_amt * Session::get('currency_val');
+//            $reqArray['product_id'] = '';
+//            $reqArray['recipient_address'] =$saveorder->address1 . '' . $saveorder->address2;
+//            $reqArray['shipping_price'] = '1';
+//            $reqArray['parcel_detail'] = '';
+//            $reqArray['no_of_items'] = '';
+//            $reqArray['product_price'] = $payamt;
+//            if($saveorder->payment_method==1){
+//             $reqArray['payment_method'] = '1';
+//            }else{
+//             $reqArray['payment_method'] = '2';     
+//            }
+//            
+//            $reqArray['ep_id'] = '1';
           //  dd($reqArray);
             $url = "http://ecourier.com.bd/apiv2/";
             $ch = curl_init();
