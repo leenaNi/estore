@@ -49,7 +49,7 @@
                                                                      
                                                                 @endif
 							</div>
-                                       
+                                        @if($notificationStatus==1)
 					<div class="widget clearfix topmargin-sm nobottommargin  bottommobileMargin0 bottommobilePadding0">
                                             <h4>Newsletter</h4>
 
@@ -68,7 +68,7 @@
 							</form>
 						</div>
 					</div>
-                                      
+                                        @endif
 
 						</div>
 
