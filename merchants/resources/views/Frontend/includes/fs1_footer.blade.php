@@ -57,7 +57,7 @@
 						</div>
 						
 <div class="clearfix visible-sm bottommargin-sm"></div>
-						@if($notificationStatus==1)
+					
 						<div class="col-md-4  col-sm-6  col-xs-12" ng-controller="myctrl">
 							<div class="widget clearfix bottommargin-sm  bottommobileMargin0 bottommobilePadding0">
 								<h4>Newsletter</h4>
@@ -82,7 +82,7 @@
 							</div>
 
 						</div>
-						@endif
+					
 						
 						<div class="{{$cols2}}  col-sm-6  col-xs-12">
 							<div class="widget clearfix">
