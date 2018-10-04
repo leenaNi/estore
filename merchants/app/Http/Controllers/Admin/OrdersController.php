@@ -43,6 +43,7 @@ use Form;
 use Request;
 use DateTime;
 use App\Models\MallProducts;
+use http\Client;
 
 class OrdersController extends Controller {
 
@@ -2498,6 +2499,7 @@ class OrdersController extends Controller {
         $allids = $id;
 
         $storeName = $this->jsonString['storeName'];
+        $storeId = $this->jsonString['store_id'];
         $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
         $storeContact = json_decode($contact);
 
@@ -2528,7 +2530,7 @@ $body->append(new http\QueryString(array(
   'order_code' => $saveorder->id,
   'product_id' => '1',
   'parcel' => 'insert',
-  'ep_name' => 'test',
+  'ep_name' => $storeName,
   'pick_contact_person' =>  $storeContact->mobile,
   'pick_division' => '',
   'pick_district' => 'test',
@@ -2554,7 +2556,7 @@ $body->append(new http\QueryString(array(
   'no_of_items' => '',
   'product_price' => $payamt,
   'payment_method' => $payment_method,
-  'ep_id' => '1'
+  'ep_id' =>$storeId
 )));
 $request->setRequestUrl('http://103.239.254.146/apiv2/');
 $request->setRequestMethod('POST');
