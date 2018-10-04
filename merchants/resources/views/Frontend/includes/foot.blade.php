@@ -1207,12 +1207,12 @@ function getFbUserData(){
                             data: {trackingId:trackingId},
           
                             success: function (res) {
-                             
+                             console.log(JSON.stringify(res.trackdata));
                                $('#trackingDetails').empty();
                                $('.tableVaglignMiddle').removeClass("hide");
                                if(res.status==1){
                              
-                               var trackData=' <td>'+res.trackdata[0][1]+'</td><td>'+res.trackdata[0][2]+'</td> ';                     
+                               var trackData=' <td>'+res.trackdata[0][0]+'</td><td>'+res.trackdata[0][2]+'</td> ';                     
                               $('#trackingDetails').append(trackData);  
                           }else{
                               var trackData='<td>'+res.trackdata+'</td>';
