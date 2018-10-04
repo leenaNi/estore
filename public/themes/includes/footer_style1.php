@@ -32,12 +32,9 @@
 
 								<ul>
 									<li><a href="about-us.php?theme=fs1">About Us</a></li>
-									<li><a href="payment-policy.php?theme=fs1">Payments Policy</a></li>
 									<li><a href="privacy-policy.php?theme=fs1">Privacy Policy</a></li>
-									<li><a href="shipping-policy.php?theme=fs1">Shipping Policy</a></li>
-									<li><a href="return-policy.php?theme=fs1">Return Policy</a></li>
 									<li><a href="terms-condition.php?theme=fs1">Terms & Conditions</a></li>
-									<li><a href="faqs.php?theme=fs1">FAQs</a></li>
+									<li><a href="contact-us.php?theme=fs1">FAQs</a></li>
 								</ul>
 
 							</div>

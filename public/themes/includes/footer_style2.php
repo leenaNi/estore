@@ -58,13 +58,10 @@
 								<h4>Links</h4>
 
 								<ul>
-								<li><a href="about-us.php?theme=fs2">About Us</a></li>
-									<li><a href="payment-policy.php?theme=fs2">Payments Policy</a></li>
-									<li><a href="privacy-policy.php?theme=fs2">Privacy Policy</a></li>
-									<li><a href="shipping-policy.php?theme=fs2">Shipping Policy</a></li>
-									<li><a href="return-policy.php?theme=fs2">Return Policy</a></li>
-									<li><a href="terms-condition.php?theme=fs2">Terms & Conditions</a></li>
-									<li><a href="faqs.php?theme=fs2">FAQs</a></li>
+								<li><a href="about-us.php?theme=fs1">About Us</a></li>
+									<li><a href="privacy-policy.php?theme=fs1">Privacy Policy</a></li>
+									<li><a href="terms-condition.php?theme=fs1">Terms & Conditions</a></li>
+									<li><a href="contact-us.php?theme=fs1">FAQs</a></li>
 								</ul>
 
 							</div>
