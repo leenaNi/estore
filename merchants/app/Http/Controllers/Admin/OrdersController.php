@@ -2507,6 +2507,8 @@ class OrdersController extends Controller {
             $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
             // dd($saveorder);
             $headers = array();
+            $headers[] ='Postman-Token:c74cf735-9bd9-4ca5-9cd9-dd41df455e3d';
+            $headers[] ='Cache-Control:no-cache';
             $headers[] = 'Content-Type:application/x-www-form-urlencoded';
             $headers[] = 'USER_ID:I8837';
             $headers[] = 'API_KEY:xqdH';
@@ -2558,7 +2560,7 @@ class OrdersController extends Controller {
             }
             
             $reqArray['ep_id'] = '1';
-            dd($reqArray);
+          //  dd($reqArray);
             $url = "http://ecourier.com.bd/apiv2/";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
