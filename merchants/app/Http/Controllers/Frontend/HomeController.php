@@ -105,7 +105,7 @@ class HomeController extends Controller {
                 $data[str_replace("-", "_", $value->url_key)] = HasLayout::where('is_active', 1)->where('layout_id', $value->id)->orderBy("sort_order", "asc")->get();
             }
         }
-        $data[str_replace("-", "_", $value->url_key)] = HasLayout::where('is_active', 1)->where('layout_id', $value->id)->orderBy("sort_order", "asc")->get();
+       // $data[str_replace("-", "_", $value->url_key)] = HasLayout::where('is_active', 1)->where('layout_id', $value->id)->orderBy("sort_order", "asc")->get();
 
         $data['attr_sets'] = $attr_sets;
         $data['prod_types'] = $prod_types;

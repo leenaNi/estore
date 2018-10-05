@@ -361,6 +361,7 @@
                                                                     <p class="" style="color:red;font-size:13px;margin-top:15px" >asdf</p>
                                                                 </div>
                                                                 <label for="email" class="col-md-12">REFERRAL</label>
+                                                                  <p class="referalMsg"  ></p>
                                                                 <p class="col-md-8"><input name="require_referal" type="text" class="form-control requireReferal cartinput" placeholder="Enter Referral Code"></p>
                                                                 <p class="col-md-4"><button type="button" class="btn new_user_btn full-width referalCodeClass" ng-model="referalCode" ng-click="applyReferal()" id="requireReferalApply">APPLY</button></p>
 
