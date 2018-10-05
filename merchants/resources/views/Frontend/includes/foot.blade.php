@@ -1101,7 +1101,7 @@ jQuery('.boxSizeImage').css({'height':pw+'px'});
   
 
 $(document).ready(function() { 
-    // $('p:empty').remove(); 
+    $('p:empty').remove(); 
     $('.shortDesc:empty').remove(); 
     });
 </script>
