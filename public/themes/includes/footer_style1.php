@@ -31,10 +31,10 @@
 								<h4>Links</h4>
 
 								<ul>
-									<li><a href="about-us.php?theme=fs1">About Us</a></li>
-									<li><a href="privacy-policy.php?theme=fs1">Privacy Policy</a></li>
-									<li><a href="terms-condition.php?theme=fs1">Terms & Conditions</a></li>
-									<li><a href="contact-us.php?theme=fs1">FAQs</a></li>
+									<li><a href="about-us.php?theme=<?php echo $_GET['theme']; ?>">About Us</a></li>
+									<li><a href="privacy-policy.php?theme=<?php echo $_GET['theme']; ?>">Privacy Policy</a></li>
+									<li><a href="terms-condition.php?theme=<?php echo $_GET['theme']; ?>">Terms & Conditions</a></li>
+									<li><a href="contact-us.php?theme=<?php echo $_GET['theme']; ?>">FAQs</a></li>
 								</ul>
 
 							</div>
