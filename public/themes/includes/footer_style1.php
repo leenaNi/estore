@@ -17,7 +17,7 @@
 
 								<h4>About</h4>
 
-								<p class="nobottommarginMobile">Your Store Name about page is an opportunity to tell a story that will help you to stick in your customer's minds. You can describe your History, Vision & Mission, and Your Global Presence etc....<span><a href="/about-us?theme=fs1">Read more.</a></span></p>
+								<p class="nobottommarginMobile">Your Store Name about page is an opportunity to tell a story that will help you to stick in your customer's minds. You can describe your History, Vision & Mission, and Your Global Presence etc....<span><a href="about-us.php?theme=<?php echo $_GET['theme']; ?>">Read more.</a></span></p>
 
 
 							</div>
@@ -31,10 +31,10 @@
 								<h4>Links</h4>
 
 								<ul>
-									<li><a href="about-us.php?theme=fs1">About Us</a></li>
-									<li><a href="privacy-policy.php?theme=fs1">Privacy Policy</a></li>
-									<li><a href="terms-condition.php?theme=fs1">Terms & Conditions</a></li>
-									<li><a href="contact-us.php?theme=fs1">FAQs</a></li>
+									<li><a href="about-us.php?theme=<?php echo $_GET['theme']; ?>">About Us</a></li>
+									<li><a href="privacy-policy.php?theme=<?php echo $_GET['theme']; ?>">Privacy Policy</a></li>
+									<li><a href="terms-condition.php?theme=<?php echo $_GET['theme']; ?>">Terms & Conditions</a></li>
+									<li><a href="contact-us.php?theme=<?php echo $_GET['theme']; ?>">FAQs</a></li>
 								</ul>
 
 							</div>
