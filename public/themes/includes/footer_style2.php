@@ -54,7 +54,7 @@
 
 					<div class="col_one_fourth col_last">
 
-						<div class="widget clearfix topmargin-sm nobottommargin nobottommarginMobile nobottompaddingMobile">
+						<div class="widget clearfix nobottommargin nobottommarginMobile nobottompaddingMobile">
 								<h4>Newsletter</h4>
 
 								<div class="widget subscribe-widget clearfix nobottommarginMobile nobottompaddingMobile">
