@@ -16,19 +16,19 @@
           <div class="flexslider">
             <div class="slider-wrap">
               <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/1.jpg" alt="Shop Image"> 
+                <a href="#"> <img src="images/fash/slider/1.jpg" alt=""> 
                 <div class="flex-caption">
                                 <h2>Fashions fade, style is eternal</h2>
                             </div></a>
               </div>
               <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/2.jpg" alt="Shop Image"> 
+                <a href="#"> <img src="images/fash/slider/2.jpg" alt=""> 
                 <div class="flex-caption">
                                 <h2>Dress Like A Boss</h2>
                             </div></a>
               </div>
               <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/3.jpg" alt="Shop Image"> 
+                <a href="#"> <img src="images/fash/slider/3.jpg" alt=""> 
                 <div class="flex-caption">
                                 <h2>Shop It As You Watch It</h2>
                             </div></a>
@@ -46,7 +46,7 @@
         <div class="container clearfix">
           <div class="col_one_third">
            
-            <a href="fs1_product_listing.php"><img src="images/fashion/featurebox/1.jpg" alt="">
+            <a href="fs1_product_listing.php"><img src="images/fash/featurebox/1.jpg" alt="">
             </a>
             <div class="overlayContentBox">
                     <div>
@@ -55,7 +55,7 @@
                 </div>
           </div>
           <div class="col_one_third">
-            <a href="fs1_product_listing.php"><img src="images/fashion/featurebox/2.jpg" alt="">
+            <a href="fs1_product_listing.php"><img src="images/fash/featurebox/2.jpg" alt="">
             </a>
             <div class="overlayContentBox">
                     <div>
@@ -64,7 +64,7 @@
                 </div>
           </div>
           <div class="col_one_third col_last">
-            <a href="fs1_product_listing.php"><img src="images/fashion/featurebox/3.jpg" alt="">
+            <a href="fs1_product_listing.php"><img src="images/fash/featurebox/3.jpg" alt="">
             </a>
             <div class="overlayContentBox">
                     <div>
@@ -77,167 +77,10 @@
           <div class="fancy-title title-dotted-border title-center">
             <h3>Trending</h3> </div>
           <div id="shop" class="shop clearfix">
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-            
             
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div><div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
-                </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
-              </div>
-              <div class="product-desc">
-                <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
-                </div>
-                <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
-                </div>
-              </div>
-            </div>
-
-            <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
