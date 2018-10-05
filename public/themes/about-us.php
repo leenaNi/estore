@@ -38,7 +38,7 @@
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi quidem minus id omnis, nam expedita, ea fuga commodi voluptas iusto, hic autem deleniti dolores explicabo labore enim repellat earum perspiciatis.</p>
           </div>
           <div class="col_half col_last nobottommargin">
-            <img src="images/fashion/slider/1.jpg" class="img-responsive">
+            <img src="images/fash/slider/1.jpg" class="img-responsive">
           </div>
         </div>
       </div>
