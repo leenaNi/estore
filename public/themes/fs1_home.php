@@ -16,7 +16,7 @@
           <div class="flexslider">
             <div class="slider-wrap">
               <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/1.jpg" alt=""> 
+                <a href="#"> <img src="images/electronics/slider/1.jpg" alt=""> 
                 <div class="flex-caption">
                                 <h2>Fashions fade, style is eternal</h2>
                             </div></a>
