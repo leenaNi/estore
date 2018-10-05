@@ -8,7 +8,7 @@
 				============================================= -->
 				<div class="footer-widgets-wrap clearfix">
 
-					<div class="col_three_fifth bottommobileMargin0">
+					<div class="col_half nobottommarginMobile">
 
 						<div class="widget clearfix">
 
@@ -29,7 +29,32 @@
 								</div>
 							</div>
 
-							<div class="widget clearfix topmargin-sm nobottommargin nobottommarginMobile nobottompaddingMobile">
+							
+
+						</div>
+
+					</div>
+
+					<div class="col_one_fourth nobottommarginMobile">
+
+						<div class="widget widget_links clearfix nobottommarginMobile">
+
+								<h4>Links</h4>
+
+								<ul>
+								<li><a href="about-us.php?theme=<?php echo $_GET['theme']; ?>">About Us</a></li>
+									<li><a href="privacy-policy.php?theme=<?php echo $_GET['theme']; ?>">Privacy Policy</a></li>
+									<li><a href="terms-condition.php?theme=<?php echo $_GET['theme']; ?>">Terms & Conditions</a></li>
+									<li><a href="contact-us.php?theme=<?php echo $_GET['theme']; ?>">FAQs</a></li>
+								</ul>
+
+							</div>
+
+					</div>
+
+					<div class="col_one_fourth col_last">
+
+						<div class="widget clearfix topmargin-sm nobottommargin nobottommarginMobile nobottompaddingMobile">
 								<h4>Newsletter</h4>
 
 								<div class="widget subscribe-widget clearfix nobottommarginMobile nobottompaddingMobile">
@@ -47,36 +72,7 @@
 								</div>
 							</div>
 
-						</div>
-
 					</div>
-
-					<div class="col_one_fifth nobottommarginMobile">
-
-						<div class="widget widget_links clearfix nobottommarginMobile">
-
-								<h4>Links</h4>
-
-								<ul>
-								<li><a href="about-us.php?theme=<?php echo $_GET['theme']; ?>">About Us</a></li>
-									<li><a href="privacy-policy.php?theme=<?php echo $_GET['theme']; ?>">Privacy Policy</a></li>
-									<li><a href="terms-condition.php?theme=<?php echo $_GET['theme']; ?>">Terms & Conditions</a></li>
-									<li><a href="contact-us.php?theme=<?php echo $_GET['theme']; ?>">FAQs</a></li>
-								</ul>
-
-							</div>
-
-					</div>
-
-					<!-- <div class="col_one_fourth col_last">
-
-						<div class="widget clearfix">
-
-							<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Finfinisystems%2F&tabs=timeline&width=250&height=350&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" style="border:none;overflow:hidden; min-width:220px !important; height:350px;" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
-
-						</div>
-
-					</div> -->
 
 				</div><!-- .footer-widgets-wrap end -->
 
