@@ -16,19 +16,19 @@
           <div class="flexslider">
             <div class="slider-wrap">
               <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/1.jpg" alt="Shop Image"> 
+                <a href="#"> <img src="images/fashion/slider/1.jpg" alt=""> 
                 <div class="flex-caption">
                                 <h2>Fashions fade, style is eternal</h2>
                             </div></a>
               </div>
               <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/2.jpg" alt="Shop Image"> 
+                <a href="#"> <img src="images/fashion/slider/2.jpg" alt=""> 
                 <div class="flex-caption">
                                 <h2>Dress Like A Boss</h2>
                             </div></a>
               </div>
               <div class="slide">
-                <a href="#"> <img src="images/fashion/slider/3.jpg" alt="Shop Image"> 
+                <a href="#"> <img src="images/fashion/slider/3.jpg" alt=""> 
                 <div class="flex-caption">
                                 <h2>Shop It As You Watch It</h2>
                             </div></a>
