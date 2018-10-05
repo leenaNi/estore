@@ -17,7 +17,7 @@
 
 								<h4>About</h4>
 
-								<p class="nobottommarginMobile">Your Store Name about page is an opportunity to tell a story that will help you to stick in your customer's minds. You can describe your History, Vision & Mission, and Your Global Presence etc....<span><a href="/about-us?theme=fs1">Read more.</a></span></p>
+								<p class="nobottommarginMobile">Your Store Name about page is an opportunity to tell a story that will help you to stick in your customer's minds. You can describe your History, Vision & Mission, and Your Global Presence etc....<span><a href="about-us.php?theme=<?php echo $_GET['theme']; ?>">Read more.</a></span></p>
 
 
 							</div>
