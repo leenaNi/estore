@@ -2581,12 +2581,12 @@ class OrdersController extends Controller {
             $headers[] = 'Postman-Token:c74cf735-9bd9-4ca5-9cd9-dd41df455e3d';
             $headers[] = 'Cache-Control:no-cache';
             $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-            $headers[] = 'USER_ID:I8837';
-            $headers[] = 'API_KEY:xqdH';
-            $headers[] = 'API_SECRET:jubLW';
-//            $headers[] = 'USER_ID:D2788';
-//            $headers[] = 'API_KEY:F3DT';
-//            $headers[] = 'API_SECRET:fCcBb';
+//            $headers[] = 'USER_ID:I8837';
+//            $headers[] = 'API_KEY:xqdH';
+//            $headers[] = 'API_SECRET:jubLW';
+            $headers[] = 'USER_ID:D2788';
+            $headers[] = 'API_KEY:F3DT';
+            $headers[] = 'API_SECRET:fCcBb';
 
 
 
@@ -2648,7 +2648,7 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
-            echo "================output= kkkk=================";
+            echo "================output= mmmmmmm=================";
             print_r($output);
             echo "================output==================";
             curl_close($ch);
