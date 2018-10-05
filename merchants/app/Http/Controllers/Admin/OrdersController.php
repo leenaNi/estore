@@ -2584,9 +2584,6 @@ class OrdersController extends Controller {
             $headers[] = 'USER_ID:I8837';
             $headers[] = 'API_KEY:xqdH';
             $headers[] = 'API_SECRET:jubLW';
-//            $headers[] = 'USER_ID:D2788';
-//            $headers[] = 'API_KEY:F3DT';
-//            $headers[] = 'API_SECRET:fCcBb';
 
 
 
@@ -2609,7 +2606,7 @@ class OrdersController extends Controller {
             $reqArray['recipient_district'] = '';
             $reqArray['recipient_city'] = $saveorder->zone->name;
             $reqArray['recipient_area'] = $saveorder->thana;
-            $reqArray['recipient_thana'] = $saveorder->thana;
+            $reqArray['recipient_thana'] = 'Adabor Thana';
             $reqArray['recipient_union'] = 'test';
 
 
@@ -2617,7 +2614,7 @@ class OrdersController extends Controller {
             if ($saveorder->zone_id == '322') {
                 $reqArray['weight'] = 'Up To 1Kg';
                 $reqArray['delivery_timing'] = 'Next Day(24hr)';
-                $reqArray['package_code'] = '#2506';
+                $reqArray['package_code'] = '#2443';
             } else {
                 $reqArray['weight'] = 'Up To 500gm';
                 $reqArray['delivery_timing'] = 'Next Day(48hr)';
@@ -2637,8 +2634,8 @@ class OrdersController extends Controller {
             }
 
             $reqArray['ep_id'] = $storeId;
-            echo "================request Array==================";
-            print_r($reqArray);
+          //echo "================request Array==================";
+            //print_r($reqArray);
 
             $url = "http://103.239.254.146/apiekom";
             $ch = curl_init();
@@ -2648,9 +2645,9 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
-            echo "================output= 12345=================";
+           // echo "================output= rrr=================";
             print_r($output);
-            echo "================output==================";
+           // echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
             dd($data);
