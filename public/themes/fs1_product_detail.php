@@ -38,7 +38,7 @@
                 <div class="product-rating">
                   <p>PRODUCT CODE: BAER 0045</p>
                 </div>
-                <div class="product-price"> <del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins></div> <span class="span2" style="color:red;">STOCK LEFT - 6</span>
+                <div class="product-price prodDetailPrice"> <del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins></div> <span class="span2" style="color:red;">STOCK LEFT - 6</span>
                 <div class="clear"></div>
                 <div class="line"></div>
                 <!-- Product Single - Quantity & Cart Button

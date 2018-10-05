@@ -105,7 +105,7 @@
 										</div>
 										<div class="product-desc product-desc-transparent">
 											<div class="product-title"><h3><a href="fs2_product_detail.php">Your Product Name</a></h3></div>
-											<div class="product-price"><del><i class="icon-rupee"></i>  499</del> <ins><i class="icon-rupee"></i>  399</ins></div>
+											<div class="product-price prodDetailPrice"><del><i class="icon-rupee"></i>  499</del> <ins><i class="icon-rupee"></i>  399</ins></div>
 										</div>
 											<div class="add-to-cart-btn">
 												<a href="fs2_product_detail.php" class="button button-grey full-width-btn"><span>View Detail</span></a>
