@@ -1012,7 +1012,7 @@ class HomeController extends Controller {
                 //$m->cc('madhuri@infiniteit.biz');
             });
         } else if ($login_type == 'phone') {
-            $msgOrderSucc = "Click on the link to reset your password. " . $linktosend . ". Contact 1800 3000 2020 for real time support. Happy Learning! Team Cartini";
+            $msgOrderSucc = "Click on the link to reset your password. " . $linktosend . "Happy Learning! Team VeeStores";
             Helper::sendsms($userDetails->phone, $msgOrderSucc, $userDetails->country_code);
         }
     }

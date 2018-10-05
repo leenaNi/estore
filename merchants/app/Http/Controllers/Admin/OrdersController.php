@@ -2640,7 +2640,7 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
            // echo "================output= rrr=================";
-            print_r($output);
+           // print_r($output);
            // echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
