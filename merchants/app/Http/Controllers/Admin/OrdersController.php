@@ -2631,7 +2631,7 @@ class OrdersController extends Controller {
             }
             
             $reqArray['ep_id'] = $storeId;
-            print_r($reqArray);
+           // print_r($reqArray);
             $url = "http://ecourier.com.bd/apiekom/";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -2642,7 +2642,7 @@ class OrdersController extends Controller {
             $output = curl_exec($ch);
             curl_close($ch);
             $data = json_decode($output);
-dd($data);
+
             if ($data->response_code == 200) {
                 $saveorder->shiplabel_tracking_id = $data->ID;
                 $saveorder->order_status = 2;
