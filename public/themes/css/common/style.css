@@ -15,6 +15,10 @@
 @import url("vmap.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 /*header backgaround*/
+.product-price.prodDetailPrice del {
+	margin-left: 0px !important;
+	margin-right: 10px !important;
+}
 .noRightPadding{
 	padding-right: 0px !important;
 }
