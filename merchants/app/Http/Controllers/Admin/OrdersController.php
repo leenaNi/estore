@@ -2495,7 +2495,7 @@ class OrdersController extends Controller {
     }
 
     public function waybill($id = null) {
-  
+
         $allids = $id;
 
         $storeName = $this->jsonString['storeName'];
@@ -2510,17 +2510,17 @@ class OrdersController extends Controller {
             // dd($saveorder);
             if ($saveorder->zone_id == '322') {
                 $weight = 'Up To 1Kg';
-                $delivery_timing= 'Next Day(24hr)';
-                $package_code= '#2506';
+                $delivery_timing = 'Next Day(24hr)';
+                $package_code = '#2506';
             } else {
-                $weight  = 'Up To 500gm';
+                $weight = 'Up To 500gm';
                 $delivery_timing = 'Next Day(48hr)';
-               $package_code = '#2444';
+                $package_code = '#2444';
             }
-            if($saveorder->payment_method==1){
-             $payment_method = 1;
-            }else{
-            $payment_method = '2';     
+            if ($saveorder->payment_method == 1) {
+                $payment_method = 1;
+            } else {
+                $payment_method = '2';
             }
 //            $client = new http\Client;
 //$request = new http\Client\Request;
@@ -2575,15 +2575,21 @@ class OrdersController extends Controller {
 //
 //$data= $response->getBody();
 //dd($data);
-            
-            
+
+
             $headers = array();
-            $headers[] ='Postman-Token:c74cf735-9bd9-4ca5-9cd9-dd41df455e3d';
-            $headers[] ='Cache-Control:no-cache';
+            $headers[] = 'Postman-Token:c74cf735-9bd9-4ca5-9cd9-dd41df455e3d';
+            $headers[] = 'Cache-Control:no-cache';
             $headers[] = 'Content-Type:application/x-www-form-urlencoded';
             $headers[] = 'USER_ID:I8837';
             $headers[] = 'API_KEY:xqdH';
             $headers[] = 'API_SECRET:jubLW';
+//            $headers[] = 'USER_ID:D2788';
+//            $headers[] = 'API_KEY:F3DT';
+//            $headers[] = 'API_SECRET:fCcBb';
+
+
+
 
             $reqArray = [];
             $reqArray['order_code'] = $saveorder->id;
@@ -2593,7 +2599,7 @@ class OrdersController extends Controller {
             $reqArray['pick_contact_person'] = $storeContact->mobile;
             $reqArray['pick_division'] = '';
             $reqArray['pick_district'] = 'test';
-            $reqArray['pick_thana'] =  $storeContact->thana;
+            $reqArray['pick_thana'] = $storeContact->thana;
             $reqArray['pick_union'] = 'test';
             $reqArray['pick_address'] = $storeContact->address_line1;
             $reqArray['pick_mobile'] = $storeContact->mobile;
@@ -2605,35 +2611,35 @@ class OrdersController extends Controller {
             $reqArray['recipient_area'] = $saveorder->thana;
             $reqArray['recipient_thana'] = $saveorder->thana;
             $reqArray['recipient_union'] = 'test';
-          
+
 
             $reqArray['upazila'] = '';
             if ($saveorder->zone_id == '322') {
-                  $reqArray['weight'] = 'Up To 1Kg';
+                $reqArray['weight'] = 'Up To 1Kg';
                 $reqArray['delivery_timing'] = 'Next Day(24hr)';
                 $reqArray['package_code'] = '#2506';
             } else {
-                  $reqArray['weight'] = 'Up To 500gm';
+                $reqArray['weight'] = 'Up To 500gm';
                 $reqArray['delivery_timing'] = 'Next Day(48hr)';
                 $reqArray['package_code'] = '#2444';
             }
-             $payamt=$saveorder->pay_amt * Session::get('currency_val');
+            $payamt = $saveorder->pay_amt * Session::get('currency_val');
             $reqArray['product_id'] = '';
-            $reqArray['recipient_address'] =$saveorder->address1 . '' . $saveorder->address2;
+            $reqArray['recipient_address'] = $saveorder->address1 . '' . $saveorder->address2;
             $reqArray['shipping_price'] = '1';
             $reqArray['parcel_detail'] = '';
             $reqArray['no_of_items'] = '';
             $reqArray['product_price'] = $payamt;
-            if($saveorder->payment_method==1){
-             $reqArray['payment_method'] = 1;
-            }else{
-             $reqArray['payment_method'] = 2;     
+            if ($saveorder->payment_method == 1) {
+                $reqArray['payment_method'] = 1;
+            } else {
+                $reqArray['payment_method'] = 2;
             }
-            
+
             $reqArray['ep_id'] = $storeId;
             echo "================request Array==================";
             print_r($reqArray);
-            
+
             $url = "http://103.239.254.146/apiekom";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -2642,52 +2648,53 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
-            echo "================output==================";
+            echo "================output= 12345=================";
             print_r($output);
-             echo "================output==================";
+            echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
+            dd($data);
 
-            if ($data->response_code == 200) {
-                $saveorder->shiplabel_tracking_id = $data->ID;
-                $saveorder->order_status = 2;
-                $saveorder->update();
-                $curierHistory = new CurierHistory();
-                $curierHistory->order_id = $ordid;
-                $curierHistory->courier_id = 4;
-                $curierHistory->waybill_no = $data->ID;
-                $curierHistory->prefix = $this->jsonString['prefix'];
-                $curierHistory->store_id = $this->jsonString['store_id'];
-                $curierHistory->save();
+//            if ($data->response_code == 200) {
+//                $saveorder->shiplabel_tracking_id = $data->ID;
+//                $saveorder->order_status = 2;
+//                $saveorder->update();
+//                $curierHistory = new CurierHistory();
+//                $curierHistory->order_id = $ordid;
+//                $curierHistory->courier_id = 4;
+//                $curierHistory->waybill_no = $data->ID;
+//                $curierHistory->prefix = $this->jsonString['prefix'];
+//                $curierHistory->store_id = $this->jsonString['store_id'];
+//                $curierHistory->save();
+//
+//                $tableContant = Helper::getEmailInvoice($id);
+//
+//                $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
+//
+//                $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
+//                //$settings = json_decode($str, true);
+//                $settings = Helper::getSettings();
+//                $webUrl = $_SERVER['SERVER_NAME'];
+//                $toEmail = $saveorder->users->email;
+//                $firstName = $saveorder->first_name;
+//                if ($emailStatus == 1) {
+//                    $emailContent = EmailTemplate::where('id', 11)->select('content', 'subject')->get()->toArray();
+//                    $email_template = $emailContent[0]['content'];
+//                    $subject = $emailContent[0]['subject'];
+//
+//                    $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
+//                    $replacewith = array($saveorder->id, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $saveorder->id, $saveorder->created_at);
+//                    $email_templates = str_replace($replace, $replacewith, $email_template);
+//                    $data_email = ['email_template' => $email_templates];
+//
+//                    Helper::sendMyEmail(Config('constants.adminEmails') . '.dispatch_email', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
+//                    //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
+//                }
+//            } else {
+//                print_r($data->errors);
+//                die;
+//            }
 
-                $tableContant = Helper::getEmailInvoice($id);
-      
-        $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
-      
-        $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
-        //$settings = json_decode($str, true);
-        $settings = Helper::getSettings();
-        $webUrl = $_SERVER['SERVER_NAME'];
-         $toEmail = $saveorder->users->email;
-        $firstName= $saveorder->first_name;
-        if ($emailStatus == 1) {
-            $emailContent = EmailTemplate::where('id', 11)->select('content', 'subject')->get()->toArray();
-            $email_template = $emailContent[0]['content'];
-            $subject = $emailContent[0]['subject'];
-
-            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
-            $replacewith = array($saveorder->id,$firstName,  $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $saveorder->id, $saveorder->created_at);
-            $email_templates = str_replace($replace, $replacewith, $email_template);
-            $data_email = ['email_template' => $email_templates];
-
-            Helper::sendMyEmail(Config('constants.adminEmails') . '.dispatch_email', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
-          //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
-        }
-            } else {
-                print_r($data->errors);
-                die;
-            }
-            
 // $saveorder = Order::find($id);
 //         $tableContant = Helper::getEmailInvoice($id);
 //      
