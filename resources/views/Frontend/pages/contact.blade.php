@@ -43,7 +43,7 @@
             <div class="sidebar col_last nobottommargin">
                 <address>
                     <strong>Dhaka</strong><br>
-                    AZ Consultant Ltd.
+                    AZ Consultant Ltd.<br/>
 House# 373 (2nd Floor), Road# 28,
 Mohakhali DOHS, Dhaka-1212, Bangladesh.
                     <!-- 8th Floor, Haque Tower, IA - 28/8 – D, Mohakhali, C/A Dhaka 1212<br> -->
