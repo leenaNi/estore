@@ -23,7 +23,7 @@
 							<div class="clearfix  topmargin-sm">
                                                                @if(count($contactDetails) >0)
                                                                   <?php    $contact =json_decode($contactDetails->contact_details); ?>
-								<div class="col_half bottommobileMargin0 bottommobilePadding0">
+								<div class="col_half bottommobileMargin0 bottommobilePadding0 mt15Mobile">
 									<address class="nobottommargin">
 										<abbr><strong>Address:</strong></abbr><br>
 									{{$contact->address_line1}} , {{$contact->address_line2}} {{$contact->city}} {{$contact->pincode}}
