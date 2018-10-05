@@ -358,7 +358,7 @@
                                                             <div class="form-group"  >
                                                                 <div class="col-sm-12 col-xs-12"> 
                                                                     <p class="blue_text">Applicable only for first time users.</p>
-                                                                    <p class="referalMsg" style="color:red;font-size:13px;margin-top:15px" ></p>
+                                                                    <p class="" style="color:red;font-size:13px;margin-top:15px" >asdf</p>
                                                                 </div>
                                                                 <label for="email" class="col-md-12">REFERRAL</label>
                                                                 <p class="col-md-8"><input name="require_referal" type="text" class="form-control requireReferal cartinput" placeholder="Enter Referral Code"></p>
