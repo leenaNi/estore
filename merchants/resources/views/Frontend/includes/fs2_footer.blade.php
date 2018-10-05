@@ -81,18 +81,11 @@
 								<h4>Links</h4>
 
 								<ul>
-                                                                      @if(count($staticPages) >0)
-                                                                    @foreach($staticPages as $page)
-                                                                    @endforeach
-                                                                    <li><a href="{{route($page->url_key)}}">{{$page->page_name}}</a></li>
-                                                                    @endif
-<!--									<li><a href="#">About Us</a></li>-->
-<!--									<li><a href="#">Payments Policy</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-									<li><a href="#">Shipping Policy</a></li>
-									<li><a href="#">Return Policy</a></li>
-									<li><a href="#">Terms & Conditions</a></li>
-									<li><a href="#">FAQs</a></li>-->
+								@if(count($staticPages) >0)
+										@foreach($staticPages as $page)
+										<li><a href="{{route($page->url_key)}}">{{$page->page_name}}</a></li>
+										@endforeach
+										@endif
 								</ul>
 
 							</div>
