@@ -2581,12 +2581,12 @@ class OrdersController extends Controller {
             $headers[] = 'Postman-Token:c74cf735-9bd9-4ca5-9cd9-dd41df455e3d';
             $headers[] = 'Cache-Control:no-cache';
             $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-//            $headers[] = 'USER_ID:I8837';
-//            $headers[] = 'API_KEY:xqdH';
-//            $headers[] = 'API_SECRET:jubLW';
-            $headers[] = 'USER_ID:D2788';
-            $headers[] = 'API_KEY:F3DT';
-            $headers[] = 'API_SECRET:fCcBb';
+            $headers[] = 'USER_ID:I8837';
+            $headers[] = 'API_KEY:xqdH';
+            $headers[] = 'API_SECRET:jubLW';
+//            $headers[] = 'USER_ID:D2788';
+//            $headers[] = 'API_KEY:F3DT';
+//            $headers[] = 'API_SECRET:fCcBb';
 
 
 
@@ -2648,51 +2648,52 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
-            echo "================output==================";
+            echo "================output= 12345=================";
             print_r($output);
             echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
+            dd($data);
 
-            if ($data->response_code == 200) {
-                $saveorder->shiplabel_tracking_id = $data->ID;
-                $saveorder->order_status = 2;
-                $saveorder->update();
-                $curierHistory = new CurierHistory();
-                $curierHistory->order_id = $ordid;
-                $curierHistory->courier_id = 4;
-                $curierHistory->waybill_no = $data->ID;
-                $curierHistory->prefix = $this->jsonString['prefix'];
-                $curierHistory->store_id = $this->jsonString['store_id'];
-                $curierHistory->save();
-
-                $tableContant = Helper::getEmailInvoice($id);
-
-                $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
-
-                $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
-                //$settings = json_decode($str, true);
-                $settings = Helper::getSettings();
-                $webUrl = $_SERVER['SERVER_NAME'];
-                $toEmail = $saveorder->users->email;
-                $firstName = $saveorder->first_name;
-                if ($emailStatus == 1) {
-                    $emailContent = EmailTemplate::where('id', 11)->select('content', 'subject')->get()->toArray();
-                    $email_template = $emailContent[0]['content'];
-                    $subject = $emailContent[0]['subject'];
-
-                    $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
-                    $replacewith = array($saveorder->id, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $saveorder->id, $saveorder->created_at);
-                    $email_templates = str_replace($replace, $replacewith, $email_template);
-                    $data_email = ['email_template' => $email_templates];
-
-                    Helper::sendMyEmail(Config('constants.adminEmails') . '.dispatch_email', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
-                    //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
-                }
-            } else {
-                print_r($data->errors);
-                die;
-            }
+//            if ($data->response_code == 200) {
+//                $saveorder->shiplabel_tracking_id = $data->ID;
+//                $saveorder->order_status = 2;
+//                $saveorder->update();
+//                $curierHistory = new CurierHistory();
+//                $curierHistory->order_id = $ordid;
+//                $curierHistory->courier_id = 4;
+//                $curierHistory->waybill_no = $data->ID;
+//                $curierHistory->prefix = $this->jsonString['prefix'];
+//                $curierHistory->store_id = $this->jsonString['store_id'];
+//                $curierHistory->save();
+//
+//                $tableContant = Helper::getEmailInvoice($id);
+//
+//                $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
+//
+//                $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
+//                //$settings = json_decode($str, true);
+//                $settings = Helper::getSettings();
+//                $webUrl = $_SERVER['SERVER_NAME'];
+//                $toEmail = $saveorder->users->email;
+//                $firstName = $saveorder->first_name;
+//                if ($emailStatus == 1) {
+//                    $emailContent = EmailTemplate::where('id', 11)->select('content', 'subject')->get()->toArray();
+//                    $email_template = $emailContent[0]['content'];
+//                    $subject = $emailContent[0]['subject'];
+//
+//                    $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
+//                    $replacewith = array($saveorder->id, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $saveorder->id, $saveorder->created_at);
+//                    $email_templates = str_replace($replace, $replacewith, $email_template);
+//                    $data_email = ['email_template' => $email_templates];
+//
+//                    Helper::sendMyEmail(Config('constants.adminEmails') . '.dispatch_email', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
+//                    //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
+//                }
+//            } else {
+//                print_r($data->errors);
+//                die;
+//            }
 
 // $saveorder = Order::find($id);
 //         $tableContant = Helper::getEmailInvoice($id);
