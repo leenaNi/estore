@@ -29,23 +29,7 @@
 								</div>
 							</div>
 
-							<div class="widget clearfix topmargin-sm nobottommargin nobottommarginMobile nobottompaddingMobile">
-								<h4>Newsletter</h4>
-
-								<div class="widget subscribe-widget clearfix nobottommarginMobile nobottompaddingMobile">
-							<h5><strong>Subscribe</strong> to Our Newsletter to get News, Update & Amazing Offers</h5>
-							<div class="widget-subscribe-form-result"></div>
-							<form id="widget-subscribe-form" action="include/subscribe.php" role="form" method="post" class="nobottommargin">
-								<div class="input-group divcenter">
-									<span class="input-group-addon"><i class="icon-email2"></i></span>
-									<input type="email" id="widget-subscribe-form-email" name="widget-subscribe-form-email" class="form-control required email" placeholder="Enter your email address">
-									<span class="input-group-btn">
-										<button class="btn btn-success" id="btn-subscribe" type="submit">Subscribe</button>
-									</span>
-								</div>
-							</form>
-						</div>
-							</div>
+							
 
 						</div>
 
@@ -68,15 +52,27 @@
 
 					</div>
 
-					<!-- <div class="col_one_fourth col_last">
+					<div class="col_one_fourth col_last">
 
-						<div class="widget clearfix">
+						<div class="widget clearfix topmargin-sm nobottommargin nobottommarginMobile nobottompaddingMobile">
+								<h4>Newsletter</h4>
 
-							<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Finfinisystems%2F&tabs=timeline&width=250&height=350&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" style="border:none;overflow:hidden; min-width:220px !important; height:350px;" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+								<div class="widget subscribe-widget clearfix nobottommarginMobile nobottompaddingMobile">
+									<h5><strong>Subscribe</strong> to Our Newsletter to get News, Update & Amazing Offers</h5>
+									<div class="widget-subscribe-form-result"></div>
+									<form id="widget-subscribe-form" action="include/subscribe.php" role="form" method="post" class="nobottommargin">
+										<div class="input-group divcenter">
+											<span class="input-group-addon"><i class="icon-email2"></i></span>
+											<input type="email" id="widget-subscribe-form-email" name="widget-subscribe-form-email" class="form-control required email" placeholder="Enter your email address">
+											<span class="input-group-btn">
+												<button class="btn btn-success" id="btn-subscribe" type="submit">Subscribe</button>
+											</span>
+										</div>
+									</form>
+								</div>
+							</div>
 
-						</div>
-
-					</div> -->
+					</div> 
 
 				</div><!-- .footer-widgets-wrap end -->
 
