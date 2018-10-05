@@ -2578,9 +2578,7 @@ class OrdersController extends Controller {
 
 
             $headers = array();
-            $headers[] = 'Postman-Token:c74cf735-9bd9-4ca5-9cd9-dd41df455e3d';
-            $headers[] = 'Cache-Control:no-cache';
-            $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+            
             $headers[] = 'USER_ID:I8837';
             $headers[] = 'API_KEY:xqdH';
             $headers[] = 'API_SECRET:jubLW';
@@ -2637,7 +2635,7 @@ class OrdersController extends Controller {
           //echo "================request Array==================";
             //print_r($reqArray);
 
-            $url = "http://103.239.254.146/apiekom";
+            $url = "http://103.239.254.146/apiekom/";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
