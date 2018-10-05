@@ -91,7 +91,7 @@
 
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -109,7 +109,7 @@
 									
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -127,7 +127,7 @@
 									
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -145,7 +145,7 @@
 									
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -163,7 +163,7 @@
 
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -181,7 +181,7 @@
 									
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -199,7 +199,7 @@
 									
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -217,7 +217,7 @@
 									
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -235,7 +235,7 @@
 									
 									<div class="product clearfix product-item productbox">
 										<div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>

@@ -21,11 +21,11 @@
                   <div class="fslider" data-pagi="false" data-autoplay="false" data-arrows="false" data-thumbs="true">
                     <div class="flexslider">
                       <div class="slider-wrap" data-lightbox="gallery" style="width:100% !important;">
-                        <div class="slide" data-thumb="images/fashion/products/default-product.jpg">
-                          <a href="images/fashion/products/default-product.jpg" title="" data-lightbox="gallery-item"><img src="images/fashion/products/default-product.jpg" alt="" class="zoom-me zoom-me1" data-zoom-image="images/fashion/products/default-product.jpg"> </a>
+                        <div class="slide" data-thumb="images/fash/products/default-product.jpg">
+                          <a href="images/fash/products/default-product.jpg" title="" data-lightbox="gallery-item"><img src="images/fash/products/default-product.jpg" alt="" class="zoom-me zoom-me1" data-zoom-image="images/fash/products/default-product.jpg"> </a>
                         </div>
-                        <div class="slide" data-thumb="images/fashion/products/default-product.jpg">
-                          <a href="images/fashion/products/default-product.jpg" title="" data-lightbox="gallery-item"><img src="images/fashion/products/default-product.jpg" alt="" class="zoom-me zoom-me1" data-zoom-image="images/fashion/products/default-product.jpg"> </a>
+                        <div class="slide" data-thumb="images/fash/products/default-product.jpg">
+                          <a href="images/fash/products/default-product.jpg" title="" data-lightbox="gallery-item"><img src="images/fash/products/default-product.jpg" alt="" class="zoom-me zoom-me1" data-zoom-image="images/fash/products/default-product.jpg"> </a>
                         </div>
                       </div>
                     </div>
@@ -96,7 +96,7 @@
               <div class="oc-item">
                 <div class="product clearfix mobwidth100 relatedProduct">
                 <div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -115,7 +115,7 @@
               <div class="oc-item">
                 <div class="product clearfix mobwidth100 relatedProduct">
                 <div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -134,7 +134,7 @@
               <div class="oc-item">
                 <div class="product clearfix mobwidth100 relatedProduct">
                 <div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -153,7 +153,7 @@
               <div class="oc-item">
                 <div class="product clearfix mobwidth100 relatedProduct">
                 <div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
@@ -172,7 +172,7 @@
               <div class="oc-item">
                 <div class="product clearfix mobwidth100 relatedProduct">
                 <div class="product-image">
-										<a href="fs2_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+										<a href="fs2_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
 											<div class="product-overlay2">
 											<a href="fs2_product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
