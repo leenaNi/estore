@@ -2518,7 +2518,7 @@ class OrdersController extends Controller {
                $package_code = '#2444';
             }
             if($saveorder->payment_method==1){
-             $payment_method = '1';
+             $payment_method = 1;
             }else{
             $payment_method = '2';     
             }
@@ -2625,14 +2625,14 @@ class OrdersController extends Controller {
             $reqArray['no_of_items'] = '';
             $reqArray['product_price'] = $payamt;
             if($saveorder->payment_method==1){
-             $reqArray['payment_method'] = '1';
+             $reqArray['payment_method'] = 1;
             }else{
-             $reqArray['payment_method'] = '2';     
+             $reqArray['payment_method'] = 2;     
             }
             
             $reqArray['ep_id'] = $storeId;
             print_r($reqArray);
-            $url = "http://ecourier.com.bd/apiv2/";
+            $url = "http://ecourier.com.bd/apiekom/";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);

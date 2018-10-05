@@ -1024,7 +1024,7 @@ class HomeController extends Controller {
         Session::put('otp', $otp);
 
         if ($mobile) {
-            $msgOrderSucc = "Your one time password is. " . $otp . ". Contact 1800 3000 2020 for real time support.! Team Veestores";
+            $msgOrderSucc = "Your one time password is. " . $otp . " Team Veestores";
             Helper::sendsms($mobile, $msgOrderSucc, $country);
         }
         $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber"];
