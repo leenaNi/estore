@@ -89,19 +89,6 @@
 
                 <div class="content-wrap">
 
-                    <div class="container clearfix bottommargin-sm">
-                        <div class="fancy-title title-bottom-border">
-                            <h3>About Us</h3>
-                        </div>
-
-                        <div class="Col_full text-justify">
-                            <p>Your Store Name about page is an opportunity to tell a story that will help you to stick in your customer's minds. You can describe your History, Vision &amp; Mission, and Your Global Presence etc.</p>
-                            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            <p><a href="about-us">Read more →</a></p>
-                        </div>
-
-                    </div>
-
                     <div class="container clearfix">
                         <div class="fancy-title title-bottom-border">
                             <h3>Trending Products</h3>
