@@ -49,11 +49,11 @@
                                     <p>PRODUCT CODE: [[product.product_code]]</p>
                                 </div>   
                                                        
-                                <div class="product-price" ng-show="product.spl_price > 0"> 
+                                <div class="product-price prodDetailPrice" ng-show="product.spl_price > 0"> 
                                     <del><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</del> <span class="currency-sym"></span><ins class="mrp_price"> [[product.spl_price * currencyVal |number :2 ]]</ins>
                                     <input type="hidden" name="price" value="[[product.spl_price]]" class="parent_price">
                                 </div>
-                                <div class="product-price" ng-show="product.spl_price == 0"> 
+                                <div class="product-price prodDetailPrice" ng-show="product.spl_price == 0"> 
                                     <ins class="mrp_price"><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</ins>
                                 </div>
                                 @if($isstock==1)

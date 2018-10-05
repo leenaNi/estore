@@ -54,11 +54,11 @@
                   <p>PRODUCT CODE: [[product.product_code]]</p>
                 </div>
 
-                <div class="product-price" ng-show="product.spl_price > 0 && product.price > product.spl_price">
+                <div class="product-price  prodDetailPrice" ng-show="product.spl_price > 0 && product.price > product.spl_price">
                 <del><span class="currency-sym"></span>  [[product.price  * currencyVal |number :2]]</del>
                     <span class="currency-sym"></span><ins class="mrp_price">[[product.spl_price  * currencyVal |number :2]]</ins>
                 </div> 
-                  <div class="product-price" ng-show="product.spl_price == 0">
+                  <div class="product-price  prodDetailPrice" ng-show="product.spl_price == 0">
                     <span class="currency-sym"></span><ins class="mrp_price">[[product.price * currencyVal |number :2]] </ins>
                 </div> 
                    <input type="hidden" name="price" value="[[product.spl_price]]" class="parent_price">
