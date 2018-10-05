@@ -85,8 +85,8 @@
           <!-- .sidebar end -->
           <div id="shop" class="shop col-md-9 product-3 clearfix bottommargin-sm noRightPadding">
           <div class="product clearfix">
-              <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+              <div class="product-image producImgBoxSize_4Col"> 
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
@@ -100,7 +100,7 @@
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
@@ -114,7 +114,7 @@
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
@@ -129,7 +129,7 @@
 
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
@@ -145,7 +145,7 @@
             
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
@@ -160,7 +160,7 @@
 
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
@@ -173,7 +173,7 @@
               </div>
             </div><div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
@@ -187,7 +187,7 @@
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
@@ -201,7 +201,7 @@
             </div>
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fashion/products/default-product.jpg" alt="">
+                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
                 <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
