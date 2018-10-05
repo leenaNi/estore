@@ -2634,8 +2634,8 @@ class OrdersController extends Controller {
             }
 
             $reqArray['ep_id'] = $storeId;
-            echo "================request Array==================";
-            print_r($reqArray);
+          //echo "================request Array==================";
+            //print_r($reqArray);
 
             $url = "http://103.239.254.146/apiekom";
             $ch = curl_init();
@@ -2645,9 +2645,9 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
-            echo "================output= rrr=================";
-            print_r($output);
-            echo "================output==================";
+           // echo "================output= rrr=================";
+          //  print_r($output);
+           // echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
             dd($data);
