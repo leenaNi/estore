@@ -2640,7 +2640,7 @@ class OrdersController extends Controller {
             echo "================request Array==================";
             print_r($reqArray);
 
-            $url = "http://103.239.254.146/apiv2/";
+            $url = "http://103.239.254.146/apiekom";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -2648,7 +2648,7 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
-            echo "================output= mmmmmmm=================";
+            echo "================output= rrr=================";
             print_r($output);
             echo "================output==================";
             curl_close($ch);
