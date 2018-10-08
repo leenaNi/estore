@@ -57,10 +57,10 @@
                             </div>
                             @endif
                             @if($product->spl_price > 0 && $product->spl_price < $product->price)
-                            <div class="product-price"> <del><span class="currency-sym"></span> {{number_format(@$product->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span>  {{number_format(@$product->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins></div>   
+                            <div class="product-price  prodDetailPrice"> <del><span class="currency-sym"></span> {{number_format(@$product->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span>  {{number_format(@$product->spl_price * Session::get('currency_val'), 2, '.', '')}}</ins></div>   
 
                             @else 
-                            <div class="product-price"> <ins><span class="currency-sym"></span> {{number_format(@$product->price * Session::get('currency_val'), 2, '.', '')}}</ins></div>
+                            <div class="product-price  prodDetailPrice"> <ins><span class="currency-sym"></span> {{number_format(@$product->price * Session::get('currency_val'), 2, '.', '')}}</ins></div>
                             @endif
                             @if($product->is_stock == 1 && $isstock==1)
 

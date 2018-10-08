@@ -50,10 +50,10 @@
                             </div>
                             @endif
                             @if($product->spl_price > 0 && $product->spl_price < $product->price)
-                            <div class="product-price"> <span class="currency-sym"></span> {{number_format($product->spl_price * Session::get('currency_val'), 2, '.', '')}} <del> <span class="currency-sym"></span> {{number_format($product->price * Session::get('currency_val'), 2, '.', '')}}</del></div> 
+                            <div class="product-price  prodDetailPrice"> <span class="currency-sym"></span> {{number_format($product->spl_price * Session::get('currency_val'), 2, '.', '')}} <del> <span class="currency-sym"></span> {{number_format($product->price * Session::get('currency_val'), 2, '.', '')}}</del></div> 
 
                             @else
-                            <div class="product-price"> <span class="currency-sym"></span> {{number_format($product->price * Session::get('currency_val'), 2, '.', '')}}  </div> 
+                            <div class="product-price  prodDetailPrice"> <span class="currency-sym"></span> {{number_format($product->price * Session::get('currency_val'), 2, '.', '')}}  </div> 
                             @endif
                             @if($product->is_stock == 1 && $isstock==1)
                             <span class="span2" style="color:red;">@if($product->stock < $stocklimit){{ 'STOCK LEFT : '.$product->stock }} @endif</span>
