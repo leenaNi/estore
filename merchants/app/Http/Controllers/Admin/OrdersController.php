@@ -2608,7 +2608,7 @@ class OrdersController extends Controller {
             if ($saveorder->zone_id == '322') {
                 $reqArray['weight'] = 'Up To 1Kg';
                 $reqArray['delivery_timing'] = 'Next Day(24hr)';
-                $reqArray['package_code'] = '#2443';
+                $reqArray['package_code'] = '#2506';
             } else {
                 $reqArray['weight'] = 'Up To 500gm';
                 $reqArray['delivery_timing'] = 'Next Day(48hr)';
