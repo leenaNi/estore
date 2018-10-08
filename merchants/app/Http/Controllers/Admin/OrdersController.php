@@ -2586,7 +2586,7 @@ class OrdersController extends Controller {
             $reqArray['order_code'] = $saveorder->id;
             $reqArray['product_id'] = '1';
             $reqArray['parcel'] = 'insert';
-            $reqArray['ep_name'] = "Archana Creations";// $storeName;
+            $reqArray['ep_name'] ="Eachana Creation";//$storeName;
             $reqArray['pick_contact_person'] = $storeContact->mobile;
             $reqArray['pick_division'] = '';
             $reqArray['pick_district'] = 'test';
@@ -2627,7 +2627,7 @@ class OrdersController extends Controller {
                 $reqArray['payment_method'] = 2;
             }
 
-            $reqArray['ep_id'] =99999;//$storeId;
+            $reqArray['ep_id'] ='99999';
           //echo "================request Array==================";
             //print_r($reqArray);
 
@@ -2644,7 +2644,8 @@ class OrdersController extends Controller {
           //  echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
-        
+            print_r($output);
+            echo "================output==================";
 
             if ($data->response_code == 200) {
                 $saveorder->shiplabel_tracking_id = $data->ID;
