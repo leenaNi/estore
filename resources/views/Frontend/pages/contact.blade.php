@@ -14,7 +14,7 @@
         <div class="container clearfix">
             <!-- Postcontent
                             ============================================= -->
-            <div class=" nobottommargin">
+            <div class="postcontent nobottommargin">
                 <h3>Get in Touch with Us</h3>
                  <div id='contactMsg'></div>
                 <div class="">
