@@ -2592,7 +2592,7 @@ class OrdersController extends Controller {
             $reqArray['pick_district'] = 'test';
             $reqArray['pick_thana'] = $storeContact->thana;
             $reqArray['pick_union'] = 'test';
-            $reqArray['pick_address'] = $storeContact->address_line1;
+            $reqArray['pick_address'] = $storeContact->address_line1. ' ' . $storeContact->address_line2;
             $reqArray['pick_mobile'] = $storeContact->mobile;
             $reqArray['recipient_name'] = $saveorder->first_name . '' . $saveorder->last_name;
             $reqArray['recipient_mobile'] = $saveorder->phone_no;
@@ -2600,7 +2600,7 @@ class OrdersController extends Controller {
             $reqArray['recipient_district'] = '';
             $reqArray['recipient_city'] = $saveorder->zone->name;
             $reqArray['recipient_area'] = $saveorder->thana;
-            $reqArray['recipient_thana'] = 'Adabor Thana';
+            $reqArray['recipient_thana'] =  $saveorder->thana;
             $reqArray['recipient_union'] = 'test';
 
 
@@ -2640,8 +2640,8 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
            // echo "================output= rrr=================";
-            print_r($output);
-            echo "================output==================";
+          //  print_r($output);
+          //  echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
         
