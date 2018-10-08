@@ -2631,7 +2631,7 @@ class OrdersController extends Controller {
           //echo "================request Array==================";
             //print_r($reqArray);
 
-            $url = "http://103.239.254.146/apiekom/";
+            $url = " https://ecourier.com.bd/apiekom/";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
