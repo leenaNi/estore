@@ -39,7 +39,7 @@
 
                 <ul>
                     <li class="current"><a href="<?php echo $_GET['theme']; ?>_home.php?theme=<?php echo $_GET['theme']; ?>"><div>Home</div></a></li>
-                    <li><a href="fs1_product_listing.php?theme=<?php echo $_GET['theme']; ?>"><div>Shop</div></a>
+                    <li><a href="product_listing.php?theme=<?php echo $_GET['theme']; ?>"><div>Shop</div></a>
                         <!-- <ul class="submenulisting">
                                 <li><a href="fs1_product_listing.php"><div>Formal</div></a></li>
                                 <li><a href="fs1_product_listing.php"><div>Casual</div></a></li>

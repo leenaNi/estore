@@ -37,7 +37,7 @@
 
 					<div class="col_one_fourth nobottommarginMobile">
 
-						<div class="widget widget_links clearfix nobottommarginMobile">
+						<div class="widget widget_links clearfix">
 
 								<h4>Links</h4>
 
@@ -52,7 +52,7 @@
 
 					</div>
 
-					<div class="col_one_fourth col_last">
+					<div class="col_one_fourth col_last nobottommarginMobile">
 
 						<div class="widget clearfix nobottommargin nobottommarginMobile nobottompaddingMobile">
 								<h4>Newsletter</h4>
