@@ -844,7 +844,7 @@ class CheckoutController extends Controller {
             $finalamt = $cart_data['total'];
             Session::put('pay_amt', $finalamt);
 //            echo "Invalid:-" . $referalCodeAmt . ":-" . Session::get('pay_amt');
-            return ['status' => 0, 'msg' => "Invalid", 'referalCodeAmt' => 0.00, "finalAmt" => (Session::get('pay_amt') * Session::get('currency_val') )];
+            return ['status' => 0, 'msg' => "Invalid", 'referalCodeAmt' => 0.00, "finalAmt" => round(Session::get('pay_amt') * Session::get('currency_val'),2)];
         }
     }
 
