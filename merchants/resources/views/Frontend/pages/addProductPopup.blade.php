@@ -120,7 +120,7 @@
     <input type="hidden" name="is_stock" value="0">
     @endif
    
-    <div class="form-group col-md-12 text-right mobile-text-left">
+    <div class="form-group col-md-12 text-center topmargin-xs">
               {!! Form::submit('Add',["class" => "btn btn-primary saveButton"]) !!}
            
         
