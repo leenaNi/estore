@@ -2631,7 +2631,7 @@ class OrdersController extends Controller {
           //echo "================request Array==================";
             //print_r($reqArray);
 
-            $url = " https://ecourier.com.bd/apiekom/";
+            $url = "https://ecourier.com.bd/apiekom/";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -2640,8 +2640,8 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
            // echo "================output= rrr=================";
-           // print_r($output);
-           // echo "================output==================";
+            print_r($output);
+            echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
         
