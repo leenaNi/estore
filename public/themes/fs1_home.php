@@ -80,13 +80,13 @@
             
             <div class="product clearfix">
               <div class="product-image producImgBoxSize_4Col">
-                <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
+                <a href="product_detail.php"><img src="images/fash/products/default-product.jpg" alt="">
                 </a>
-                <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+                <div class="product-overlay"> <a href="product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
               </div>
               <div class="product-desc">
                 <div class="product-title">
-                  <h3><a href="fs1_product_detail.php">Your Product Name</a></h3>
+                  <h3><a href="product_detail.php">Your Product Name</a></h3>
                 </div>
                 <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins>
                 </div>
