@@ -2586,7 +2586,7 @@ class OrdersController extends Controller {
             $reqArray['order_code'] = $saveorder->id;
             $reqArray['product_id'] = '1';
             $reqArray['parcel'] = 'insert';
-            $reqArray['ep_name'] = $storeName;
+            $reqArray['ep_name'] = "Archana Creations";// $storeName;
             $reqArray['pick_contact_person'] = $storeContact->mobile;
             $reqArray['pick_division'] = '';
             $reqArray['pick_district'] = 'test';
@@ -2627,7 +2627,7 @@ class OrdersController extends Controller {
                 $reqArray['payment_method'] = 2;
             }
 
-            $reqArray['ep_id'] = $storeId;
+            $reqArray['ep_id'] =99999;//$storeId;
           //echo "================request Array==================";
             //print_r($reqArray);
 
