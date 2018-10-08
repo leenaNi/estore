@@ -96,19 +96,19 @@
                         <div id="shop" class="shop clearfix">
                             <div class="product clearfix product-item productbox">
                                 <div class="product-image">
-                                    <a href="product_detail.php"><img src="images/restaurant/products/default-product.jpg" alt="">
+                                    <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>"><img src="images/restaurant/products/default-product.jpg" alt="">
                                     </a>
                                     <div class="product-overlay2">
-                                        <a href="product_detail.php" class="center-icon"><i class="icon-line-plus"></i></a>
+                                        <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>" class="center-icon"><i class="icon-line-plus"></i></a>
 
                                     </div>
                                 </div>
                                 <div class="product-desc product-desc-transparent">
-                                    <div class="product-title"><h3><a href="product_detail.php">Your Product Name</a></h3></div>
+                                    <div class="product-title"><h3><a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>">Your Product Name</a></h3></div>
                                     <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins></div>
                                 </div>
                                 <div class="add-to-cart-btn">
-                                    <a href="product_detail.php" class="button button-grey full-width-btn"><span>View Detail</span></a>
+                                    <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>" class="button button-grey full-width-btn"><span>View Detail</span></a>
                                 </div>
                             </div>
 

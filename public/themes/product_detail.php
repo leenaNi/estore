@@ -105,12 +105,12 @@
               <div class="oc-item">
                 <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
-                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+                    <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                      <h3><a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>">Your Product Name</a></h3> </div>
                     <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
@@ -118,12 +118,12 @@
               <div class="oc-item">
               <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
-                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+                    <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                      <h3><a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>">Your Product Name</a></h3> </div>
                     <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
@@ -131,12 +131,12 @@
               <div class="oc-item">
               <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
-                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+                    <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                      <h3><a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>">Your Product Name</a></h3> </div>
                     <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
@@ -144,12 +144,12 @@
               <div class="oc-item">
               <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
-                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+                    <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                      <h3><a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>">Your Product Name</a></h3> </div>
                     <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
@@ -157,12 +157,12 @@
               <div class="oc-item">
               <div class="product clearfix mobwidth100 relatedProduct">
                   <div class="product-image">
-                    <a href="fs1_product_detail.php"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
-                    <div class="product-overlay"> <a href="fs1_product_detail.php" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
+                    <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>"><img src="images/fash/products/default-product.jpg" alt="" class="boxSizeImage"> </a>
+                    <div class="product-overlay"> <a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>" class="add-to-cart"><i class="icon-eye"></i><span> View Details</span></a></div>
                   </div>
                   <div class="product-desc">
                     <div class="product-title">
-                      <h3><a href="fs1_product_detail.php">Your Product Name</a></h3> </div>
+                      <h3><a href="product_detail.php?theme=<?php echo $_GET['theme']; ?>">Your Product Name</a></h3> </div>
                     <div class="product-price"><del><i class="icon-rupee"></i> 499</del> <ins><i class="icon-rupee"></i> 399</ins> </div>
                   </div>
                 </div>
