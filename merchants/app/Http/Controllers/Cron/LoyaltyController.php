@@ -21,21 +21,21 @@ class LoyaltyController extends Controller {
     }
 
     public function indexCron() {
-    $setting = Helper::getSettings();
-    $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-    $cur=$setting['currencyId'];
-    $curency= HasCurrency::where("iso_code",$cur)->first();
-    $curCode=$curency->currency_code;
-    $from_Currency = urlencode("INR");
-    $to_Currency = urlencode($curCode);
-     $query =  "{$from_Currency}_{$to_Currency}";
-
-     $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
-     $obj = json_decode($json, true);
-
-  $val = floatval($obj["$query"]);
-  $curency->currency_val=$val;
-  $curency->save();
+//    $setting = Helper::getSettings();
+//    $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+//    $cur=$setting['currencyId'];
+//    $curency= HasCurrency::where("iso_code",$cur)->first();
+//    $curCode=$curency->currency_code;
+//    $from_Currency = urlencode("INR");
+//    $to_Currency = urlencode($curCode);
+//     $query =  "{$from_Currency}_{$to_Currency}";
+//
+//     $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
+//     $obj = json_decode($json, true);
+//
+//  $val = floatval($obj["$query"]);
+//  $curency->currency_val=$val;
+//  $curency->save();
 
      
         $days = GeneralSetting::where('url_key', 'loyalty')->first();
