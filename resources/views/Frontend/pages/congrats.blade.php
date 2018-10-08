@@ -10,7 +10,7 @@
         <div class="container vertical-middle clearfix" style="top: 45% !important;">
             <div class="heading-block center nobottomborder nobottommargin">
                 <h1 data-animate="fadeInUp">Congrats!</h1>
-                <span data-animate="fadeInUp" data-delay="300">Your Online Store <strong><u>{{$storedata->store_name}}</u></strong> is ready</span>
+                <span data-animate="fadeInUp" data-delay="300">Your Online Store <strong><u>{{@$storedata->store_name}}</u></strong> is ready</span>
             </div>
             
             <div class="clearfix text-center setUpStoreBtn">

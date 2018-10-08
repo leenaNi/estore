@@ -318,7 +318,7 @@
                                                 <!--<li>Voucher: <span class="pull-right voucherUsedAmount">0</span></li>-->
 
                                                 @if(@$feature['coupon'] == 1)
-                                                <li>Coupon: <span class="pull-right">[[billSummary.coupon* billSummary.currency_val | number: 2]]</span></li>
+                                                <li ng-show="billSummary.coupon > 0">Coupon: <span class="pull-right">[[billSummary.coupon* billSummary.currency_val | number: 2]]</span></li>
                                                 @endif
 
                                                 @if(@$feature['manual-discount'] == 1)
@@ -718,10 +718,11 @@
                 data: {RefCode: couponCode},
                 cache: false,
                 success: function (msg) {
+                   // console.log(JSON.stringify(msg.finalAmt));
                     $(".referalMsg").css("display", "block");
-                    var Cmsg = msg.split(":-")[1];
-                    if (msg.split(":-")[1].length > 0) {
-                        var newCartAmt = msg.split(":-")[2];
+                    var newCartAmt =msg.finalAmt;
+                    if (newCartAmt > 0) {
+                  
                         $(".TotalCartAmt").text(newCartAmt);
 
                     }
