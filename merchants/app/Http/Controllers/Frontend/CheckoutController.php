@@ -2199,7 +2199,7 @@ class CheckoutController extends Controller {
             $subject = $emailContent[0]['subject'];
 
             $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
-            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $order->id, $order->created_at);
+            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $order->id,  date('d-M-Y',strtotime($order->created_at)));
             $email_templates = str_replace($replace, $replacewith, $email_template);
             $data_email = ['email_template' => $email_templates];
 
