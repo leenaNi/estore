@@ -24,7 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
+         $schedule->call('App\Http\Controllers\Cron\UpdateCurrencyController@index')->hourly();
+// $schedule->command('inspire')
         //          ->hourly();
     }
 
