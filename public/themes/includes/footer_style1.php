@@ -34,7 +34,7 @@
 									<li><a href="about-us.php?theme=<?php echo $_GET['theme']; ?>">About Us</a></li>
 									<li><a href="privacy-policy.php?theme=<?php echo $_GET['theme']; ?>">Privacy Policy</a></li>
 									<li><a href="terms-condition.php?theme=<?php echo $_GET['theme']; ?>">Terms & Conditions</a></li>
-									<li><a href="contact-us.php?theme=<?php echo $_GET['theme']; ?>">FAQs</a></li>
+									<li><a href="faqs.php?theme=<?php echo $_GET['theme']; ?>">FAQs</a></li>
 								</ul>
 
 							</div>
