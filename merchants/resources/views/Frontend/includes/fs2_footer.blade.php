@@ -50,7 +50,7 @@
                                                                 @endif
 							</div>
                                         @if($notificationStatus==1)
-					<div class="widget clearfix topmargin-sm nobottommargin  bottommobileMargin0 bottommobilePadding0">
+					<div class="widget clearfix topmargin-sm mt15Mobile nobottommargin  bottommobileMargin0 bottommobilePadding0">
                                             <h4>Newsletter</h4>
 
 						<div class="widget subscribe-widget clearfix">
@@ -74,7 +74,7 @@
 
 					</div>
 
-					<div class="col_one_fifth bottommobileMargin0 bottommobilePadding0">
+					<div class="col_one_fifth mt15Mobile bottommobileMargin0 bottommobilePadding0">
 
 						<div class="widget widget_links clearfix bottommobileMargin0 bottommobilePadding0">
 
