@@ -58,7 +58,7 @@ class HomeController extends Controller {
     }
 
     public function cleardb() {
-        $stores = Store::distinct('prefix')->get(['prefix', 'id']);
+        $stores = Store::distinct('prefix')->where("id",'!=',31)->get(['prefix', 'id']);
         //$stores = ['Mina690392','news230032','Nick288366','Pari390829','Prad855708','Pran329195','Pran329195'];
 
         foreach ($stores as $st) {
@@ -91,7 +91,7 @@ class HomeController extends Controller {
     }
 
     public function clear_db() {
-        $stores = Store::distinct('prefix')->get(['prefix']);
+        $stores = Store::distinct('prefix')->where("id",'!=',31)->get(['prefix']);
         //$stores = ['Mina690392','news230032','Nick288366','Pari390829','Prad855708','Pran329195','Pran329195'];
 
         foreach ($stores as $st) {
