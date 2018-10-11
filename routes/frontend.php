@@ -9,7 +9,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
 
     Route::any('/', ['as' => 'home', 'uses' => 'HomeController@index']);
     Route::any('/new-store', ['as' => 'newstore', 'uses' => 'HomeController@newStore']);
-     Route::any('/clear-db', ['as' => 'clear_db', 'uses' => 'HomeController@clear_db']);
+   //  Route::any('/clear-db', ['as' => 'clear_db', 'uses' => 'HomeController@clear_db']);
     
     Route::any('/check-user', ['as' => 'checkUser', 'uses' => 'HomeController@checkUser']);
     Route::any('/check-fbuser', ['as' => 'checkFbUser', 'uses' => 'HomeController@checkFbUser']);
