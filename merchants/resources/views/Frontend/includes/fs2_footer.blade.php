@@ -20,17 +20,17 @@
 																												@endif
 																												<span><a href="/about-us">Read more.</a></span>
 																												<div class="clearfix"></div>
-							<div class="clearfix  topmargin-sm">
+							<div class="clearfix topmargin-xs">
                                                                @if(count($contactDetails) >0)
                                                                   <?php    $contact =json_decode($contactDetails->contact_details); ?>
-								<div class="col_half bottommobileMargin0 bottommobilePadding0 mt15Mobile">
+								<div class="col_half topmobileMargin0 bottommobileMargin0 bottommobilePadding0 mt15Mobile">
 									<address class="nobottommargin">
 										<abbr><strong>Address:</strong></abbr><br>
 									{{$contact->address_line1}} , {{$contact->address_line2}} {{$contact->city}} {{$contact->pincode}}
                                                                                 <br>
 									</address>
 								</div>
-								<div class="col_half col_last bottommobileMargin0 bottommobilePadding0">
+								<div class="col_half col_last bottommobileMargin0 bottommobilePadding0 ">
 									<abbr><strong>Phone:</strong></abbr> {{$contact->mobile}}<br>
 									<abbr><strong>Email:</strong></abbr> <a href="mailto:{{$contact->email}}">{{$contact->email}}</a>
 								</div>
@@ -50,7 +50,7 @@
                                                                 @endif
 							</div>
                                         @if($notificationStatus==1)
-					<div class="widget clearfix topmargin-sm nobottommargin  bottommobileMargin0 bottommobilePadding0">
+					<div class="widget clearfix topmargin-sm mt15Mobile nobottommargin  bottommobileMargin0 bottommobilePadding0">
                                             <h4>Newsletter</h4>
 
 						<div class="widget subscribe-widget clearfix">
@@ -74,7 +74,7 @@
 
 					</div>
 
-					<div class="col_one_fifth bottommobileMargin0 bottommobilePadding0">
+					<div class="col_one_fifth mt15Mobile bottommobileMargin0 bottommobilePadding0">
 
 						<div class="widget widget_links clearfix bottommobileMargin0 bottommobilePadding0">
 
