@@ -30,7 +30,7 @@
                                                                                 <br>
 									</address>
 								</div>
-								<div class="col_half col_last bottommobileMargin0 bottommobilePadding0 mt15Mobile">
+								<div class="col_half col_last bottommobileMargin0 bottommobilePadding0 ">
 									<abbr><strong>Phone:</strong></abbr> {{$contact->mobile}}<br>
 									<abbr><strong>Email:</strong></abbr> <a href="mailto:{{$contact->email}}">{{$contact->email}}</a>
 								</div>
