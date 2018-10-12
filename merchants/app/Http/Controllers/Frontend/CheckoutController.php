@@ -440,11 +440,12 @@ class CheckoutController extends Controller {
         $toPayment['ebsMode'] = @$mode;
         $toPayment['ebsKey'] = @$ebskey;
         $toPayment['ebsAccountId'] = @$account_id;
-        if (Session::get('pay_amt') > 0)
-            $toPayment['frmAction'] = route('getCityPay');
-        else
+        if (Session::get('pay_amt') > 0){
+//            $toPayment['frmAction'] = route('getCityPay');
+               $toPayment['frmAction'] = route('order_cash_on_delivery');
+        }else{
             $toPayment['frmAction'] = route('order_cash_on_delivery');
-
+        }
 
 
         $ad_charge = AdditionalCharge::ApplyAdditionalCharge($cart_amt['total']);

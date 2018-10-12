@@ -498,7 +498,7 @@
                                                 <!--                                                <li ng-show="toPayment.address.country_id == 99 && toPayment.codStatus == 1">-->
                                                 <div ng-show="toPayment.is_cod == 1"> 
                                                     <li>
-                                                        <input  name="paymentMethod" type="radio" ng-model="payOpt" ng-click="paymentmethodChk($event)" class="chk_cod cod codChk" data-method = 'cod' name="radio"  id="radioCod"  value="3"><label for="radioCod"   ><span><span></span></span> CASH ON DELIVERY <span ng-show="toPayment.cod_charges > 0">(<span class="currency-sym"></span> <?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';        ?>[[ toPayment.cod_charges * toPayment.currency_val |number :2 ]])</span></label>
+                                                        <input  name="paymentMethod" type="radio" ng-model="payOpt" ng-click="paymentmethodChk($event)" class="chk_cod cod codChk" data-method = 'cod' name="radio"  id="radioCod"  value="3"><label for="radioCod"   ><span><span></span></span> CASH ON DELIVERY <span ng-show="toPayment.cod_charges > 0">(<span class="currency-sym"></span>[[ toPayment.cod_charges * toPayment.currency_val |number :2 ]])</span></label>
                                                     </li> 
                                                 </div>                                                   
                                                 <!--                                                <li>
@@ -510,9 +510,9 @@
                                                                                                 <li ng-show="toPayment.citrusPayStatus == 1">
                                                                                                     <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_citrus" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioCitrus"  name="radio" value="6"><label for="radioCitrus"   ><span><span></span></span> Citrus</label>
                                                                                                 </li>-->
-                                                <li>
+<!--                                                <li>
                                                     <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_cit_pay" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioCityPay"  name="radio" value="7"><label for="radioCityPay"   ><span><span></span></span> PayOnline</label>
-                                                </li>
+                                                </li>-->
                                             </ul>
                                         </div>
                                     </div>
