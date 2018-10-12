@@ -544,7 +544,7 @@ class HomeController extends Controller {
                     $baseurl = str_replace("\\", "/", base_path());
                     $domain = 'veestores.com'; //$_SERVER['HTTP_HOST'];
                     $sub = "VeeStores Links for Online Store - " . $storeName;
-                    $mailcontent = "<b>Congratulations " . $storeName. " has been created successfully!</b>" . "\n\n";
+                    $mailcontent = "Congratulations " . $storeName. " has been created successfully!" . "\n\n";
                     $mailcontent .= "Kindly find the links to view your store:" . "\n";
                    
                     $mailcontent .= "Store Admin Link: https://" . $domainname . '.' . $domain . "/admin" . "\n";

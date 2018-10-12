@@ -250,6 +250,13 @@
                         {!! Form::text('city',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'City']) !!}
                     </div>
                 </div>
+                  <div class="form-group">
+                <div class="col-md-2 text-right mobTextLeft">
+                    {!! Form::label('thana', 'Thana ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
+                    <div class="col-md-10">
+                        {!! Form::text('thana',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Thana']) !!}
+                    </div>
+                </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
                 <div class="col-md-2 text-right mobTextLeft">

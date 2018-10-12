@@ -2202,9 +2202,10 @@ class CheckoutController extends Controller {
             $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $order->id,  date('d-M-Y',strtotime($order->created_at)));
             $email_templates = str_replace($replace, $replacewith, $email_template);
             $data_email = ['email_template' => $email_templates];
-
+            if($toEmail){
             Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
             return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
+            }
         }
     }
 
