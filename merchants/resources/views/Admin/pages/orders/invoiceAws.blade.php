@@ -198,7 +198,7 @@ $currency_sym = $ordCurrency->css_code;
                                                                                                                 <!--                        <td>1015</td>-->
                                                                                                                                         <td>{{$prd['name']}}</td>
                                                                                                                                         <td>{{$prd['qty']}}</td>
-                                                                                                                                        <td><span class="">{{$currency_sym}}</span> {{number_format($prd['subtotal']*$currency_val),2}}</td>
+                                                                                                                                        <td><span class="">{{$currency_sym}}</span> {{number_format($prd['subtotal']*$currency_val,2)}}</td>
                                                                                                                 <!--                        <td>143.00</td>-->
                                                                                                                                         <td><span class="">{{$currency_sym}}</span> <b> {{number_format($prd['subtotal']*$currency_val,2)}}</b></td>
                                                                                                                                     </tr>
@@ -215,6 +215,12 @@ $currency_sym = $ordCurrency->css_code;
                                                                                                                                     <tr class="item">
                                                                                                                                         <td colspan="4" align="right"><b>Shipping</b></td>
                                                                                                                                         <td><span class="currency-sym">{{$currency_sym}}</span>  <b>{{ number_format($order->shipping_amt*$currency_val,2) }}</b></td>
+                                                                                                                                    </tr>
+                                                                                                                                    @endif
+                                                                                                                                      @if(!empty($order->cod_charges)) 
+                                                                                                                                    <tr class="item">
+                                                                                                                                        <td colspan="4" align="right"><b>COD Charges</b></td>
+                                                                                                                                        <td><span class="currency-sym">{{$currency_sym}}</span>  <b>{{ number_format($order->cod_charges*$currency_val,2) }}</b></td>
                                                                                                                                     </tr>
                                                                                                                                     @endif
                                                                                                                                     @if(!empty($order->coupon_amt_used)) 

@@ -7,6 +7,7 @@ use Input;
 use App\Models\StaticPage;
 use App\Models\Country;
 use App\Models\Zone;
+use App\Models\Store;
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
 use Session;
@@ -119,8 +120,19 @@ class StaticPageController extends Controller {
          $page->sort_order=Input::get('sort_order');
          $page->is_menu=Input::get('is_menu');
          $page->contact_details=json_encode(Input::get('details'));
-           
-
+         $store=Store::find($this->jsonString['store_id']);
+          
+$store->contact_firstname=Input::get('details')['contact_person'];
+$store->contact_phone=Input::get('details')['mobile'];
+$store->contact_email=Input::get('details')['email'];
+$store->address=Input::get('details')['address_line1'];
+$store->address2=Input::get('details')['address_line2'];
+$store->thana=Input::get('details')['thana'];
+$store->city=Input::get('details')['city'];
+$store->country_id=Input::get('details')['country'];
+$store->zone_id=Input::get('details')['state'];
+$store->pin=Input::get('details')['pincode'];
+$store->save();
 //         if(Input::get('url_key')=='contact-us'){
 //            $page->map_url=Input::get('map_url');  
 //            $page->email_list=Input::get('email_list');

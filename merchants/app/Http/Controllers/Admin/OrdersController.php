@@ -2644,8 +2644,8 @@ class OrdersController extends Controller {
           //  echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
-            print_r($output);
-            echo "================output==================";
+            //print_r($output);
+          //  echo "================output==================";
 
             if ($data->response_code == 200) {
                 $saveorder->shiplabel_tracking_id = $data->ID;
