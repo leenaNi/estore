@@ -15,6 +15,7 @@ use App\Models\EmailTemplate;
 use App\Models\Language;
 use App\Models\Zone;
 use App\Models\Country;
+use App\Models\Store;
 use App\Models\HasCourier;
 use App\Models\StoreCharge;
 use App\Library\Helper;
@@ -280,7 +281,7 @@ class MiscellaneousController extends Controller {
         foreach ($themedata1 as $td) {
             $themes[$td['id']] = strtolower($td['name']);
         }
-
+        $store = Store::find($this->jsonString['store_id']);
         $store_configuration = Helper::getSettings();
         $industry_id = Helper::getSettings()['industry_id'];
 
@@ -313,6 +314,7 @@ class MiscellaneousController extends Controller {
 
         if (!empty(Input::get('store_name'))) {
             $store_configuration['storeName'] = Input::get('store_name');
+            $store->store_name = Input::get('store_name');
         }
 
         if (!empty(Input::get('primary_color'))) {
@@ -357,8 +359,9 @@ class MiscellaneousController extends Controller {
             $index = (int) Input::get('theme');
             $store_configuration['theme'] = $themes[$index];
             $store_configuration['themeid'] = Input::get('theme');
+            $store->template_id = Input::get('theme');
         }
-
+        $store->save();
         $store_configuration['logo'] = $logo;
         $store_configuration['currencyId'] = $currency;
         $store_configuration['store_version'] = $store_version;
