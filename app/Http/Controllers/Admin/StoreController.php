@@ -12,6 +12,7 @@ use App\Models\Document;
 use App\Models\Language;
 use App\Models\Templates;
 use App\Models\Zone;
+use App\Models\StoreTheme;
 use Illuminate\Support\Facades\Input;
 use Hash;
 use File;
@@ -114,7 +115,7 @@ class StoreController extends Controller {
     public function addEdit() {
         $id = Input::get('id');
         $store = Store::findOrNew($id);
-        $templa = Templates::orderBy("id", "asc")->get();
+        $templa = StoreTheme::where("cat_id",$store->category_id)->orderBy("id", "asc")->get();
         $templates = ['' => 'Select template'];
         foreach ($templa as $val) {
             $templates[$val->id] = $val->name;
