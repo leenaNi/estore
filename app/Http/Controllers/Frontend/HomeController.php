@@ -306,8 +306,10 @@ class HomeController extends Controller {
         $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
         if (count($merchantPay) > 0) {
             $themeInput->store_version = 2;
+            $store->store_version = 2;
         } else {
             $themeInput->store_version = 1;
+            $store->store_version = 1;
         }
         if (empty($themeInput->id)) {
             if (!empty($themeInput->url_key)) {

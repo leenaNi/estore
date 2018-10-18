@@ -347,6 +347,7 @@ class MiscellaneousController extends Controller {
 
         if (!empty(Input::get('store_version'))) {
             $store_version = Input::get('store_version');
+              $store->store_version =Input::get('store_version');
         }
 
         if (!empty(Input::get('currency'))) {
