@@ -204,7 +204,7 @@ class ApiCreateStoreController extends Controller {
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
         $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
         $store =  Store::findOrNew(Session::get('stid'));
-        $store->store_name = str_replace(" ", "-", (strtolower($registerDetails->storename)));
+        $store->store_name = str_replace(" ", "-", (strtolower($registerDetails->store_name)));
         $store->url_key = $domainname;
         $store->merchant_id = $getMerchat->id;
         $store->category_id = Input::get('business_type');

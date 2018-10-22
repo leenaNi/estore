@@ -294,7 +294,7 @@ class HomeController extends Controller {
         $getMerchat = Merchant::find(Session::get('merchantid'));
          $registerDetails = json_decode($getMerchat->register_details);
         $store = new Store();
-        $store->store_name = $registerDetails->storename;
+        $store->store_name = $registerDetails->store_name;
         $store->url_key = $domainname;
         $store->merchant_id = $getMerchat->id;
         $store->category_id = $themeInput->cat_id;
