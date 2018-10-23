@@ -15,16 +15,16 @@
 		<section id="content">
 			<div class="content-wrap">
 				<div class="container clearfix">
-					
+					<div id="yTubeVideo">
 						<iframe style="max-width:100%; height:400px;"  src="https://www.youtube.com/embed/P2tEViNXn4Q" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-					
+						</div>
 					<div class="clearfix"></div>
 				</div>
 			</div>
 		</section>
 	<script>
 	$( document ).ready(function() {
-    $('div .fluid-width-video-wrapper').removeClass('fluid-width-video-wrapper');
+   
 });
 	</script>
 		@stop
