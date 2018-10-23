@@ -24,7 +24,7 @@
 		</section>
 	<script>
 	$( document ).ready(function() {
-   
+		$('#yTubeVideo .fluid-width-video-wrapper').removeClass('fluid-width-video-wrapper');
 });
 	</script>
 		@stop
