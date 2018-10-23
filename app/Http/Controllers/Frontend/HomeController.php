@@ -934,7 +934,7 @@ class HomeController extends Controller {
     public function videoTutorials() {
         // $data = [];
         $viewname = Config('constants.frontendView') . ".video-tutorials";
-        // return Helper::returnView($viewname, $data);
+        return Helper::returnView($viewname);
     }
 
     public function contactUs() {
