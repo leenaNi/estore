@@ -1,10 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
-<style>
-.fluid-width-video-wrapper {
-    padding-top: 480px !important;
-}
-</style>
+
   <!-- Document Wrapper
 	============================================= -->
 
