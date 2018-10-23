@@ -22,10 +22,6 @@
 				</div>
 			</div>
 		</section>
-		<script>
-		$(document).ready(function() {
-            $("div .fluid-width-video-wrapper").removeClass(".fluid-width-video-wrapper");
-         });
-	</script>
+	
 		@stop
 
