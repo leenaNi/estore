@@ -2,7 +2,7 @@
 @section('content')
 <style>
 .fluid-width-video-wrapper {
-    padding-top: 410px !important;
+    padding-top: 480px !important;
 }
 </style>
   <!-- Document Wrapper
