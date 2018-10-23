@@ -1,5 +1,10 @@
 @extends('Frontend.layouts.default')
 @section('content')
+<style>
+.fluid-width-video-wrapper {
+    padding-top: 410px !important;
+}
+</style>
   <!-- Document Wrapper
 	============================================= -->
 
@@ -13,7 +18,7 @@
 		</section>
 	<!-- #page-title end -->
 		<section id="content">
-			<div class="content-wrap">
+			<div class="">
 				<div class="container clearfix">
 					<div class="col_full nobottommargin">
 						<iframe style="max-width:100%; height:400px;"  src="https://www.youtube.com/embed/P2tEViNXn4Q" frameborder="0"></iframe>
