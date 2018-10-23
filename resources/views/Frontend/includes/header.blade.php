@@ -28,6 +28,7 @@
                     <!-- <li><a href="{{ route('pricing') }}" class="smooth-me"><div>Pricing</div></a></li> -->
                     <!-- <li><a href="http://www.veestores.com/#howitwork" class="smooth-me"><div>How It Works </div></a></li> -->
                     <li><a href="{{ route('selectThemes') }}"><div>Themes</div></a></li>
+                    <li><a href="{{ route('video-tutorials') }}"><div>Tutorial</div></a></li>
                       
                     @if(Session::get('merchantid'))
                      <li><a href="{{ route('veestoreMyaccount') }}" ><div>My Account</div></a></li>
