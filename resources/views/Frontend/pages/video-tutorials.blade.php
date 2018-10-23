@@ -2,10 +2,7 @@
 @section('content')
   <!-- Document Wrapper
 	============================================= -->
-<style>
-.fluid-width-video-wrapper {
-    padding-top: 35.333% !important;
-}</style>
+
     <!-- Page Title
 		============================================= -->
 		<section id="page-title" class="page-title-parallax page-title-center" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/static.jpg') }}') 0px; padding: 103px 0;">
@@ -25,6 +22,10 @@
 				</div>
 			</div>
 		</section>
-	
+	<script>
+	$( document ).ready(function() {
+    $('div .fluid-width-video-wrapper').removeClass('fluid-width-video-wrapper');
+});
+	</script>
 		@stop
 
