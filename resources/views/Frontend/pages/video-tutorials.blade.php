@@ -18,7 +18,7 @@
 
 <div class="container clearfix aboutPage">
 <div class="col_full nobottommargin">
-<iframe style="width:100%; height:450px;"  src="https://www.youtube.com/embed/P2tEViNXn4Q" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<iframe style="width:500; height:auto; margin:0 auto;"  src="https://www.youtube.com/embed/P2tEViNXn4Q" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 					</div>
 					<div class="clearfix"></div>
 </div>
