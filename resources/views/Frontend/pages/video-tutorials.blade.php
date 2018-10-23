@@ -2,7 +2,16 @@
 @section('content')
   <!-- Document Wrapper
 	============================================= -->
-
+<style>
+.fluid-width-video-wrapper {
+    width: 100%;
+    position: relative;
+    padding: 0;
+    max-height: 420px !important;
+    padding: 0px !important;
+    clear: both;
+}
+</style>
     <!-- Page Title
 		============================================= -->
 		<section id="page-title" class="page-title-parallax page-title-center" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/static.jpg') }}') 0px; padding: 103px 0;">
