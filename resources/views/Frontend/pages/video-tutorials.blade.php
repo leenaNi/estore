@@ -11,6 +11,9 @@
     padding: 0px !important;
     clear: both;
 }
+div#yTubeVideo {
+    height: 400px !important;
+}
 </style>
     <!-- Page Title
 		============================================= -->
