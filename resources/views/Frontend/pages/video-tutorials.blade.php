@@ -16,7 +16,8 @@
 			<div class="content-wrap">
 				<div class="container clearfix">
 					<div class="col_full nobottommargin">
-						<iframe style="max-width:100%; height:400px;"  src="https://www.youtube.com/embed/P2tEViNXn4Q" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+					<embed src="https://www.youtube.com/embed/P2tEViNXn4Q" wmode="transparent" type="application/x-shockwave-flash" width="100%" height="100%" allowfullscreen="true" title="Adobe Flash Player">
+						
 					</div>
 					<div class="clearfix"></div>
 				</div>
