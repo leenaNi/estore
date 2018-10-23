@@ -23,11 +23,9 @@
 			</div>
 		</section>
 		<script>
-		$('div, .fluid-width-video-wrapper').load(
-    function()
-    {
-        $(this).removeClass('.fluid-width-video-wrapper').addClass('.nothing');
-    }
-);</script>
+		$(document).ready(function() {
+            $("div .fluid-width-video-wrapper").removeClass(".fluid-width-video-wrapper");
+         });
+	</script>
 		@stop
 
