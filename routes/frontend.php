@@ -51,6 +51,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/terms-condition', ['as' => 'terms-condition', 'uses' => 'HomeController@termCondition']);
     Route::any('/privacy-policy', ['as' => 'privacy-policy', 'uses' => 'HomeController@privacyPolicy']);
     Route::any('/about', ['as' => 'about', 'uses' => 'HomeController@aboutUs']);
+    Route::any('/video-tutorials', ['as' => 'video-tutorials', 'uses' => 'HomeController@videoTutorials']);
     Route::any('/contact', ['as' => 'contact', 'uses' => 'HomeController@contactUs']);
     Route::any('/contact-send', ['as' => 'contactSend', 'uses' => 'HomeController@contactSend']);
     Route::any('/faqs', ['as' => 'faqs', 'uses' => 'HomeController@faqS']);
