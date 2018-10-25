@@ -19,20 +19,20 @@ class UpdateCurrencyController extends Controller {
         $allCurrency = HasCurrency::where("status", 1)->where("iso_code",'!=',"IND")->get();
         $headers[] = 'Content-Type:application/x-www-form-urlencoded';
         $from_Currency = urlencode("INR");
-//        foreach ($allCurrency as $curency) {
-//            $curCode = $curency->currency_code;
-//
-//            $to_Currency = urlencode($curCode);
-//            $query = "{$from_Currency}_{$to_Currency}";
-//
-//            $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
-//            $obj = json_decode($json, true);
-//
-//            $val = floatval($obj["$query"]);
-//            $curency->currency_val = $val;
-//            $curency->save();
-//        }
-        echo Helper::sendsms('8655591372', "test","+91");
+        foreach ($allCurrency as $curency) {
+            $curCode = $curency->currency_code;
+
+            $to_Currency = urlencode($curCode);
+            $query = "{$from_Currency}_{$to_Currency}";
+
+            $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
+            $obj = json_decode($json, true);
+
+            $val = floatval($obj["$query"]);
+            $curency->currency_val = $val;
+            $curency->save();
+        }
+      //  echo Helper::sendsms('8655591372', "test","+91");
     }
 
 }

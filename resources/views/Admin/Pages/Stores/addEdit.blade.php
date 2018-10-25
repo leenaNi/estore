@@ -437,7 +437,7 @@
             },
             status: {
                 required: true
-            },
+            }
             //language_id: {
               //  required: true
             //}
@@ -454,7 +454,7 @@
             },
             status: {
                 required: "Status is required"
-            },
+            }
            // language_id: {
                 //required: "Language is required"
             //}
@@ -595,9 +595,9 @@
                         $('.nav-tabs a[href="#storeBusiness"]').tab('show');
                         addParamToCurrentURL('id', data.id);
                     } else {
-                        res = JSON.parse(data);
-                        console.log(res);
-                        $.each(res, function (k, v) {
+                       
+                        console.log(data);
+                        $.each(data, function (k, v) {
                             var eltype = $('[name="' + k + '"]').prop('tagName').toLowerCase();
                             var msg = $('<div style="color:red;" class="serverValid">' + v + '</div>');
                             $("#storeContactForm " + eltype + "[name='" + k + "']").parent().find("div.serverValid").remove();

@@ -203,6 +203,15 @@ class StoreController extends Controller {
             $store->language_id = 1; //Input::get('language_id');
             $store->template_id = Input::get('template_id');
             $store->status = Input::get('status');
+        $storePath = base_path() . '/merchants/' . $store->url_key;
+        $storedata = Helper::getStoreSettings($storePath);
+      
+        $storedata['storeName'] = $store->store_name;  
+        $storedata['themeid'] = Input::get('template_id');
+       
+        $newSoter = json_encode($storedata);
+        Helper::updateStoreSettings($storePath, $newSoter);
+        Helper::getStoreSettings($storePath);
             if (Input::hasFile('logo')) {
                 $logo = Input::file('logo');
                 $destinationPath = public_path() . '/public/admin/uploads/logos/';
@@ -210,24 +219,25 @@ class StoreController extends Controller {
                 $upload_success = $logo->move($destinationPath, $fileName);
                 $store->logo = @$fileName;
             }
-            if (empty(Input::get('id'))) {
-                if (!empty(Input::get('url_key'))) {
-                    $chkUrlKey = Store::where("url_key", Input::get('url_key'))->count();
-                    if ($chkUrlKey == 0)
-                        $store->url_key = Input::get('url_key');
-                }
-                $store->prefix = $this->getPrefix(Input::get('store_name'));
-            }
-            $getMerchat = Merchant::find($store->merchant_id);
-            $merchantEamil = $getMerchat->email;
-            $merchantPassword = $getMerchat->password;
-            $template = Templates::find($store->template_id);
-            $templateFile = $template->file;
-            if ($store->save()) {
-                if (empty(Input::get('id'))) {
-                    $this->createInstance($store->prefix, $store->url_key, $merchantEamil, $merchantPassword, $templateFile, Input::get('category_id'));
-                }
-            }
+//            if (empty(Input::get('id'))) {
+//                if (!empty(Input::get('url_key'))) {
+//                    $chkUrlKey = Store::where("url_key", Input::get('url_key'))->count();
+//                    if ($chkUrlKey == 0)
+//                        $store->url_key = Input::get('url_key');
+//                }
+//                $store->prefix = $this->getPrefix(Input::get('store_name'));
+//            }
+//            $getMerchat = Merchant::find($store->merchant_id);
+//            $merchantEamil = $getMerchat->email;
+//            $merchantPassword = $getMerchat->password;
+//            $template = Templates::find($store->template_id);
+//            $templateFile = $template->file;
+//            $store->save();
+//            if ($store->save()) {
+//                if (empty(Input::get('id'))) {
+//                    $this->createInstance($store->prefix, $store->url_key, $merchantEamil, $merchantPassword, $templateFile, Input::get('category_id'));
+//                }
+//            }
             $data = [];
             $data['id'] = $store->id;
             $data['storedata'] = $store;
@@ -271,7 +281,21 @@ class StoreController extends Controller {
         } else {
             $store = Store::find(Input::get('id'));
             $store->fill(Input::all())->save();
-            $data = [];
+       $contact=DB::table($store->prefix.'_static_pages')->where("url_key","contact-us")->first()->contact_details;
+       $contachDetals=(json_decode($contact));
+       $contachDetals->contact_person=$store->contact_firstname;
+       $contachDetals->mobile=$store->contact_phone;
+       $contachDetals->email=$store->contact_email;
+       $contachDetals->address_line1=$store->address;
+       $contachDetals->address_line2=$store->address2;
+       $contachDetals->thana=$store->thana;
+       $contachDetals->city=$store->city; 
+       $contachDetals->country=$store->country_id;
+       $contachDetals->state=$store->zone_id;
+       $contachDetals->pincode=$store->pin;   
+       DB::table($store->prefix.'_static_pages')->where("url_key","contact-us")->update(['contact_details'=>json_encode($contachDetals)]);
+           
+       $data = [];
             $data['id'] = $store->id;
             $data['status'] = 'success';
             $data['storedata'] = $store;

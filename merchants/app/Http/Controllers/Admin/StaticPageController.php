@@ -127,7 +127,7 @@ class StaticPageController extends Controller {
             $store->contact_email = Input::get('details')['email'];
             $store->address = Input::get('details')['address_line1'];
             $store->address2 = Input::get('details')['address_line2'];
-            $store->thana = Input::get('details')['thana'];
+            $store->thana = Input::get('details')['Thana'];
             $store->city = Input::get('details')['city'];
             $store->country_id = Input::get('details')['country'];
             $store->zone_id = Input::get('details')['state'];
