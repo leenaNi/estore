@@ -20,21 +20,7 @@ class SetTheme {
      * @return mixed
      */
     public function handle($request, Closure $next) {
-//        return new Response(view('Frontend.pages.store_expire'));
-//        $data = (array) Helper::getSettings();
-//        if (array_key_exists('expiry_date', $data)) {
-//            $today = date("Y-m-d");
-//            
-//            $expdate= new DateTime($data['expiry_date']);
-//            $today = new DateTime();
-//            
-//            
-//            $dateDiff = date_diff($today, $expdate);
-//            $getDiff = $dateDiff->format("%d");
-//            if ($getDiff <= 0) {
-//                return new Response(view('Frontend.pages.store_expire'));
-//            }
-//        }
+
 
         $theme = Helper::getSettings()['theme'];
        // $theme = "fs2";
