@@ -22,16 +22,16 @@ class SetTheme {
      */
     public function handle($request, Closure $next) {
        
-        $expiry = date_create(App\Library\Helper::getSettings()['expiry_date']);
-        $date2 = date_create(date("Y-m-d"));
-       
-        $expiryd = date_diff($date2, $expiry);
-
-        $expirydate = $expiryd->format("%a");
-
-        if ($expiryd <= 0) {
-                return new Response(view('Frontend.pages.store_expire'));
-            }
+//        $expiry = date_create(App\Library\Helper::getSettings()['expiry_date']);
+//        $date2 = date_create(date("Y-m-d"));
+//       
+//        $expiryd = date_diff($date2, $expiry);
+//
+//        $expirydate = $expiryd->format("%a");
+//
+//        if ($expiryd <= 0) {
+//                return new Response(view('Frontend.pages.store_expire'));
+//            }
           
 //        return new Response(view('Frontend.pages.store_expire'));
 //        $data = (array) Helper::getSettings();
