@@ -269,11 +269,9 @@ WHERE c.cat_id IN ($cats)
             }
             }
             $checkCartPrd = Cart::instance("shopping")->search(array('id' => "$prd->id"));
-            $image=DB::table('catalog_images')->where('catalog_id',$prd->id)->where('image_type',1)->first();
-            
             $prd->checkExists = $checkCartPrd;
-            $prd->mainImage = Config('constants.productImgPath').'/' . @$image->filename;
-            $prd->alt_text = $image->alt_text;
+            $prd->mainImage = Config('constants.productImgPath').'/' . @$prd->mainimg()->first()->filename;
+            $prd->alt_text = @$prd->mainimg()->first()->alt_text;
             $prd->getPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? $prd->spl_price : $prd->price;
             $prd->actualPF = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? "spl_price" : "price";
             $prd->delPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? 1 : 0;
