@@ -189,7 +189,7 @@ class CartController extends Controller {
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
         }
-        if(($product->spl_price) > 0 && ($product->spl_price < $product->price)){
+        if((($product->spl_price) > 0.00) && ($product->spl_price < $product->price)){
              $price = $product->price;
         }else{
             $price = $product->selling_price; //$product->price;
