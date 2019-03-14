@@ -189,6 +189,11 @@ class CartController extends Controller {
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
         }
+        if(($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)){
+             $price = $product->price;
+        }else{
+            $price = $product->selling_price; //$product->price;
+        }
         $price = $product->selling_price; //$product->price;
         $pname = $product->product;
         $prod_type = $product->prod_type;
@@ -335,7 +340,12 @@ class CartController extends Controller {
         $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
         $imagPath = Config("constants.productImgPath") . '/' . $images;
         $subProd = Product::where("id", "=", $sub_prod)->first();
-        $price = $subProd->price + $product->selling_price;
+          if(($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)){
+             $price = $product->price;
+        }else{
+            $price = $product->selling_price; //$product->price;
+        }
+        $price = $subProd->price + $price;
         $options = [];
         $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
 

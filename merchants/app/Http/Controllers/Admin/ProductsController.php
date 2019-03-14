@@ -1815,6 +1815,7 @@ class ProductsController extends Controller {
 
     public function exportWishlist() {
         $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc")->get();
+       $dd=[];
         foreach ($products as $prod)
             if (count($prod->wishlist) > 0) {
                 $dd[$prod->product] = $prod->wishlist;

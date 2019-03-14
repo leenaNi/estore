@@ -2590,7 +2590,7 @@ class OrdersController extends Controller {
             $reqArray['pick_contact_person'] = $storeContact->mobile;
             $reqArray['pick_division'] = '';
             $reqArray['pick_district'] = 'test';
-            $reqArray['pick_thana'] = $storeContact->thana;
+            $reqArray['pick_thana'] = $storeContact->Thana;
             $reqArray['pick_union'] = 'test';
             $reqArray['pick_address'] = $storeContact->address_line1. ' ' . $storeContact->address_line2;
             $reqArray['pick_mobile'] = $storeContact->mobile;

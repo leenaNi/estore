@@ -163,7 +163,7 @@ class HomeController extends Controller {
         if ($prod->prod_type == 1) {
             $prod->attr_set = "1";
         }
-        if (Input::get('selling_price')) {
+        if (Input::get('price')) {
 
             if (Input::get('price') > Input::get('selling_price')) {
                 $prod->spl_price = Input::get('selling_price');
