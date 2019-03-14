@@ -269,7 +269,8 @@ WHERE c.cat_id IN ($cats)
             }
             }
             $checkCartPrd = Cart::instance("shopping")->search(array('id' => "$prd->id"));
-            $image=$prd->catalogimgs()->first();
+            $image=DB::table('catalog_images')->where('catalog_id',$prd->id)->where('image_type',1)->first();
+            
             $prd->checkExists = $checkCartPrd;
             $prd->mainImage = Config('constants.productImgPath').'/' . @$image->filename;
             $prd->alt_text = $image->alt_text;
