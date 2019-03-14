@@ -189,12 +189,12 @@ class CartController extends Controller {
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
         }
-        if(($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)){
+        if(($product->spl_price) > 0 && ($product->spl_price < $product->price)){
              $price = $product->price;
         }else{
             $price = $product->selling_price; //$product->price;
         }
-        $price = $product->selling_price; //$product->price;
+        //$price = $product->selling_price; //$product->price;
         $pname = $product->product;
         $prod_type = $product->prod_type;
         $images = @$product->catalogimgs()->where("image_type", "=", 1)->first()->filename;
