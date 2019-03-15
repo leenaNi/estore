@@ -70,7 +70,19 @@ Mohakhali DOHS, Dhaka-1212, Bangladesh.
 @section("myscripts")
 
  <script>
-
+ $(document).ready(function () {
+        /* JQUERY FORM VALIDATION */
+        jQuery.validator.addMethod("phonevalidate", function (telephone, element) {
+            telephone = telephone.replace(/\s+/g, "");
+            return this.optional(element) || telephone.length > 9 &&
+                    telephone.match(/^[\d\-\+\s/\,]+$/);
+        }, "Please specify a valid phone number");
+        jQuery.validator.addMethod("emailvalidate", function (email, element) {
+            // email = email.replace(/\s+/g, "");
+            return this.optional(element) || email.length > 12 &&
+                    email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/);
+        }, "Please specify a valid Email Id");
+    });
 
     $("#contactform").validate({
         // Specify the validation rules
@@ -79,11 +91,11 @@ Mohakhali DOHS, Dhaka-1212, Bangladesh.
             useremail: {
                 required: true,
                 email: true,
-                //emailvalidate: true
+                emailvalidate: true
             },
             telephone: {
                 required: true,
-               //  phonevalidate: true
+               phonevalidate: true
             },
             message: {
                 required: true,
