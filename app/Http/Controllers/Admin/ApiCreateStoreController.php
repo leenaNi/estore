@@ -346,7 +346,7 @@ class ApiCreateStoreController extends Controller {
 
                     if (!empty($themeid)) {
                         $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
-                        $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->name);
+                        $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
                         $decodeVal['themeid'] =$themeid;
                         $decodeVal['themedata'] = $themedata;
                         $decodeVal['currencyId'] = @HasCurrency::find($currency)->iso_code;
