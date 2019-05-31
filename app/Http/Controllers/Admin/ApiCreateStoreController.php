@@ -265,7 +265,7 @@ class ApiCreateStoreController extends Controller {
         ini_set('max_execution_time', 600);
 
 
-        $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.127.69.238","ttl": 3600}]';
+        $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
         $fields = array(
             'data' => $messagearray
         );
