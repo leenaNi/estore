@@ -106,8 +106,8 @@
 							</tr>
 							<tr>
 							  <td><h4 class="nobottommargin">Price</h4></td>
-							  <td><h4 class="nobottommargin">Free</h4></td>
-							  <td><h4 class="nobottommargin">Free</h4></td>
+							  <td><h4 class="nobottommargin"><a href="/contact">Contact Us</a></h4></td>
+							  <td><h4 class="nobottommargin"></h4><a href="/contact">Contact Us</a></td>
 							</tr>
 						  </tbody>
 						</table>
