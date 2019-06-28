@@ -812,7 +812,7 @@ INSERT INTO `tblprfx_general_setting` (`id`, `name`, `status`, `details`, `url_k
 (8, 'Citrus Pay', 1, '{"post_url":"https:\\/\\/sandbox.citruspay.com\\/sslperf\\/o0c4dxl6ck","secret_key":"beeef7dae541c87a6497ec5e5843b359c1f7eb66","vanity_url":"o0c4dxl6ck"}', 'citrus', 2, NULL, 0, 0, 0,''),
 (9, 'Do you offer "Cash on Delivery" option?', 1, '{"charges":"25"}', 'cod', 1, 90, 1, 1, 3,'The Cash on Delivery (COD) feature allows the customer to pay for the goods at the time of delivery at their footstep. You can charge extra amount in COD, if needed. If you do not wish to charge extra to your customers for COD facility write ‘0’ (zero) in the popup.'),
 (10, 'Would you like to use "Coupons" codes to offer discounts?', 1, '', 'coupon', 1, 7, 1, 1, 1,'This feature allows you to create Coupons/discount codes. You can also create coupon codes specific to a user. Coupon codes can be fixed or in percentage.'),
-(11, 'Mandrill', 1, '{"key":"vdFj0shlhNQZnXSQdIsU-A","from":"noreply@cartini.com","name":"Cartini"}', 'mandrill', 4, NULL, 0, 0, 0,''),
+(11, 'Mandrill', 1, '{"key":"YScTkmt11OtZ39I0sNRnYw","from":"noreply@cartini.com","name":"Cartini"}', 'mandrill', 4, NULL, 0, 0, 0,''),
 (12, 'SMTP', 1, '{"host":"smtp.gmail.com","port":"587","from":"madhuri@infiniteit.biz","name":"cartini","encryption":"tls","username":"support@infiniteit.biz","password":"asdf1234"}', 'smtp', 4, NULL, 0, 0, 0,''),
 (13, 'Would you like to send Push Notification to the Customers for any Sales Promotion, etc?', 0, '', 'notification', 1, 2, 0, 0, 2,'This feature allows you send push notifications to the customers using the mobile app.'),
 (14, 'Register Template', 1, '', 'register-template', 5, NULL, 0, 0, 0,''),
