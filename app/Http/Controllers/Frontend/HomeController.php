@@ -700,9 +700,10 @@ class HomeController extends Controller {
             $merchantPassword = $getMerchat1->password;
             if ($store->save()) {
                 Session::put("storeId", $store->id);
-                if (empty(Input::get('id'))) {
-                    $this->createInstance($store->prefix, $store->url_key, $merchantEamil, $merchantPassword, Input::get('store_name'), $firstname);
-                }
+                // if (empty(Input::get('id'))) {
+                //     $this->createInstance($store->prefix, $store->url_key, $merchantEamil, $merchantPassword, Input::get('store_name'), $firstname);
+                // }
+                // commented coz of mail not going to send 
             }
             $data = [];
             $data['id'] = $store->id;
