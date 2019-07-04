@@ -31,7 +31,7 @@
                             <td colspan="2">Online Store Link<br/><a target="_blank" href="{{$storedata->store_domain}}">{{$storedata->store_domain}}</a></td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="text-center">To manage your online store, click on the Store Admin link or download VeeStores Merchant app and login with the same credentials used to create the store.
+                            <td colspan="2" class="text-center">To manage your online store, click on the Store Admin link or download eStorifi Merchant app and login with the same credentials used to create the store.
                                <div class="clearfix androidBtn">
                             <a href="https://play.google.com/store/apps/details?id=com.app.veestores" target="_blank"><img src="https://veestores.com/public/Frontend/images//androidapp.png" alt="Download App Image"></a></div></td>
                         </tr>

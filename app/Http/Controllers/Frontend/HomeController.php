@@ -540,19 +540,19 @@ class HomeController extends Controller {
                         }
                     }
                     if ($phone) {
-                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Download VeeStores Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
+                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
-                    $domain = 'veestores.com'; //$_SERVER['HTTP_HOST'];
-                    $sub = "VeeStores Links for Online Store - " . $storeName;
+                    $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
+                    $sub = "eStorifi Links for Online Store - " . $storeName;
                     $mailcontent = "Congratulations " . $storeName. " has been created successfully!" . "\n\n";
                     $mailcontent .= "Kindly find the links to view your store:" . "\n";
                    
                     $mailcontent .= "Store Admin Link: https://" . $domainname . '.' . $domain . "/admin" . "\n";
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
-                    $mailcontent .= "For any further assistance/support, contact http://veestores.com/contact" . "\n";
+                    $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
@@ -953,7 +953,7 @@ class HomeController extends Controller {
 
         $emailData = ['name' => $firstname, 'email' => $useremail, 'telephone' => $telephone, 'messages' => $message];
         Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
-            $m->to("chintanlad@infiniteit.biz", $firstname)->subject('Veestores Contact form!');
+            $m->to("chintanlad@infiniteit.biz", $firstname)->subject('eStorifi Contact form!');
             $m->cc('madhuri@infiniteit.biz');
         });
         return 1;
@@ -1023,7 +1023,7 @@ class HomeController extends Controller {
                 //$m->cc('madhuri@infiniteit.biz');
             });
         } else if ($login_type == 'phone') {
-            $msgOrderSucc = "Click on the link to reset your password. " . $linktosend . "Happy Learning! Team VeeStores";
+            $msgOrderSucc = "Click on the link to reset your password. " . $linktosend . "Happy Learning! Team eStorifi";
             Helper::sendsms($userDetails->phone, $msgOrderSucc, $userDetails->country_code);
         }
     }
@@ -1035,7 +1035,7 @@ class HomeController extends Controller {
         Session::put('otp', $otp);
 
         if ($mobile) {
-            $msgOrderSucc = "Your one time password is. " . $otp . " Team Veestores";
+            $msgOrderSucc = "Your one time password is. " . $otp . " Team eStorifi";
             Helper::sendsms($mobile, $msgOrderSucc, $country);
         }
         $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber"];

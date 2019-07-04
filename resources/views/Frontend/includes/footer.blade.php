@@ -42,7 +42,7 @@
 
         <div class="container center clearfix">
 
-            <div style="color: #aaa;"> Copyright @ <?php echo date("Y"); ?>. VeeStores. All Rights Reserved.</div>
+            <div style="color: #aaa;"> Copyright @ <?php echo date("Y"); ?>. eStorifi. All Rights Reserved.</div>
 
         </div>
 
