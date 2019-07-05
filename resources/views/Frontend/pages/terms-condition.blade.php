@@ -74,7 +74,7 @@ Before using the services rendered by eStorifi-CFS through this website, you are
 					<div class="clear"></div>
 					<h4>Cancellation and Termination</h4>
 					<ul>
-						<li>You may cancel your account at any time by emailing <a href="mailto:info@infiniteit.biz" target="_blank">info@infiniteit.biz</a></li>
+						<li>You may cancel your account at any time by emailing <a href="mailto:info@estorifi.com" target="_blank">info@estorifi.com</a></li>
 						<li>Once your account is cancelled all of your Content will be immediately deleted from the Service. Since deletion of all data is final please be sure that you do in fact want to cancel your account before doing so.</li>
 						<li>If you cancel the Service in the middle of the month, you will receive one final invoice via email. Once that invoice has been paid you will not be charged again.</li>
 						<li>We reserve the right to modify or terminate the ESTORIFI-CFS service of CFS service, without notice at any time.</li>
@@ -216,7 +216,7 @@ You agree not to post, distribute, transmit or otherwise make available any data
 					<p>By using ESTORIFI-CFS’s sites and services, you signify your acceptance of this Privacy Statement. If you do not agree or are not comfortable with any policy described in this Privacy statement, your only remedy is to discontinue use of ESTORIFI-CFS sites. ESTORIFI-CFS reserve the right, to modify this Privacy Statement at any time.</p>
 					<div class="clear"></div>
 					<h4>Notice of Copyright Infringement</h4>
-					<p>ESTORIFI-CFS  is not liable for any infringement of copyright arising out of materials posted on or transmitted through the site, or items advertised on the site, by end users or any other third parties.br> Redressal Mechanism: Any complaints, abuse or concerns with regards to content and or comment or breach of these terms shall be immediately informed to the designated Grievance Officer as mentioned below via in writing or through email signed with the electronic signature to info@infiniteit.biz (“Grievance Officer”)</p>
+					<p>ESTORIFI-CFS  is not liable for any infringement of copyright arising out of materials posted on or transmitted through the site, or items advertised on the site, by end users or any other third parties.br> Redressal Mechanism: Any complaints, abuse or concerns with regards to content and or comment or breach of these terms shall be immediately informed to the designated Grievance Officer as mentioned below via in writing or through email signed with the electronic signature to info@estorifi.com (“Grievance Officer”)</p>
 					<div class="clear"></div>
 					<p class="addressP">Mr. Chintan Lad<br/>
 Grievance Officer <br/>
