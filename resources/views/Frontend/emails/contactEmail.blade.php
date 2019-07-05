@@ -3,11 +3,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
-        <title>VeeStores</title>
+        <title>eStorifi</title>
 
     </head>
     <body style="overflow-x: hidden;">
-        <p>Hello Veestores Admin,</p>  
+        <p>Hello eStorifi Admin,</p>  
         <br />
         <p>
             We have got a new enquiry. User Details are as follows: 
@@ -22,7 +22,7 @@
                             <br></br>
                             <p>
                                 Regards, <br>
-                                    Veestores
+                                    eStorifi
                             </p>
                             </body>
                             </html>

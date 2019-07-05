@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
-<title>VeeStores</title>
+<title>eStorifi</title>
 
 </head>
 <body style="overflow-x: hidden;">
@@ -11,7 +11,7 @@
 <p>Dear {{ $name }},</p>  
 <br />
 <p>
-  We have received a request from you to reset your VeeStores account password.
+  We have received a request from you to reset your eStorifi account password.
 </p>
  <p><a href="{{$newlink}}">Click here</a> to reset your password. </p>
   
