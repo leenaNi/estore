@@ -24,7 +24,7 @@
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
                         <h4>Facebook/Mobile Login</h4>
-                        <p>No need to remember a new password. VeeStores allows you to create your online store with Facebook authentication. You can also create your online store by validating your mobile number.</p>
+                        <p>No need to remember a new password. eStorifi allows you to create your online store with Facebook authentication. You can also create your online store by validating your mobile number.</p>
                     </div>
                 </div>
                 <div class="col_one_fourth col_last marginBottom15 mobMarginbottom15">
@@ -49,13 +49,13 @@
                 <div class="line-new"></div>
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
                     <div class="">
-                        <h2 class="nobottommargin">One Account. All of VeeStores</h2>
+                        <h2 class="nobottommargin">One Account. All of eStorifi</h2>
                     </div>
                 </div>
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
                         <h4>Free Account</h4>
-                        <p>All the customers of the stores created by the merchants on VeeStores get an account which is free forever.</p>
+                        <p>All the customers of the stores created by the merchants on eStorifi get an account which is free forever.</p>
                     </div>
                 </div>
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
@@ -66,8 +66,8 @@
                 </div>
                 <div class="col_one_fourth col_last marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
-                        <h4>One account for all Veestores </h4>
-                        <p> Customers can login on any store created on VeeStores with their VeeStores  Account. No need to remember new login passwords for different ecommerce website.</p>
+                        <h4>One account for all eStorifi </h4>
+                        <p> Customers can login on any store created on eStorifi with their eStorifi  Account. No need to remember new login passwords for different ecommerce website.</p>
                     </div>
                 </div>
                 <div class="clear"></div>
@@ -160,7 +160,7 @@
                 <div class="col_one_fourth col_last marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
                         <h4>Mobile App</h4>
-                        <p>Manage your store anywhere and anytime with VeeStores Merchant App. It is simple, efficient and easy to use.</p>
+                        <p>Manage your store anywhere and anytime with eStorifi Merchant App. It is simple, efficient and easy to use.</p>
                     </div>
                 </div>
                 <div class="clear"></div>
@@ -285,7 +285,7 @@
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
                         <h4>Create Store</h4>
-                        <p>Create your own online store in less than 5 minutes from VeeStores Merchant App. No technical skills required.</p>
+                        <p>Create your own online store in less than 5 minutes from eStorifi Merchant App. No technical skills required.</p>
                     </div>
                 </div>
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
@@ -297,7 +297,7 @@
                 <div class="col_one_fourth col_last marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
                         <h4>Manage Store</h4>
-                        <p>Manage your entire online business on the go on VeeStores Merchant App.</p>
+                        <p>Manage your entire online business on the go on eStorifi Merchant App.</p>
                     </div>
                 </div>
                 <div class="clear"></div>
@@ -578,13 +578,13 @@
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
                         <h4>GoDaddy Domain</h4>
-                        <p>Connect your VeeStores store with GoDaddy domain. Easy to understand steps are given to assit you.</p>
+                        <p>Connect your eStorifi store with GoDaddy domain. Easy to understand steps are given to assit you.</p>
                     </div>
                 </div>
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
                         <h4>Other Domain</h4>
-                        <p>Connect your VeeStores store with any other domain provider. Easy to understand steps are given to assit you.</p>
+                        <p>Connect your eStorifi store with any other domain provider. Easy to understand steps are given to assit you.</p>
                     </div>
                 </div>
                 <div class="clear"></div>
