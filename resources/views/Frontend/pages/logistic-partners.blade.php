@@ -78,7 +78,7 @@
 								</div>
 							</div> -->
 							<div class="noteBox">
-								<p><strong>Note:</strong>  Only when VeeStores Logistic Partner service is used, delivery of the Order and COD (Cash On Delivery) will be managed by VeeStores. These payments will be settled to the Merchant’s bank account within Transaction + 2 working days. The amount transferred will be Amount Transferred = Transaction Amount - Shipping Charges - VeeStores Commission. If Merchant uses his/her own logistic partner, the Merchant will be responsible for delivery of the Order and COD (Cash On Delivery).</p>
+								<p><strong>Note:</strong>  Only when eStorifi Logistic Partner service is used, delivery of the Order and COD (Cash On Delivery) will be managed by eStorifi. These payments will be settled to the Merchant’s bank account within Transaction + 2 working days. The amount transferred will be Amount Transferred = Transaction Amount - Shipping Charges - VeeStores Commission. If Merchant uses his/her own logistic partner, the Merchant will be responsible for delivery of the Order and COD (Cash On Delivery).</p>
 								
 							</div>
 	

@@ -22,14 +22,14 @@
 						<!-- <div class="heading-block1 center">
 								<h3>Our story:</h3>
 						</div> -->
-						<h2 class="text-center ">VeeStores - a technology created to make millions of small businesses flourish by being online through their own webstore.</h3>
+						<h2 class="text-center ">eStorifi - a technology created to make millions of small businesses flourish by being online through their own webstore.</h3>
 						<p class="text-left text-justify">Whether you sell on social media, out of your garage, from the comfort of your home, or in a store, we make sure you reach your buyers anywhere. We wish to make E-commerce easy and better for everyone. </p>
-						<p class="text-left text-justify">VeeStores was created from the challenges voiced by small business owners whether selling through a store, social media or market place:</p>
+						<p class="text-left text-justify">eStorifi was created from the challenges voiced by small business owners whether selling through a store, social media or market place:</p>
 						<p class="text-left text-italic text-justify">"The hassles of managing orders through social media, the offline coordination with customers, difficulties in collecting payments, managing deliveries &amp; inventory, maintaining a daily sales &amp; purchase register, expanding business beyond city limits, not having exclusivity on a market place and most importantly difficulties in getting loans from banks".</p>
 						<p class="text-left text-justify">All these small and medium businesses wish to be online but they don't know if they can do so from the comfort of their home without going through the complexities of putting together the many technological aspects of building an ecommerce store.</p>
-						<p class="text-left text-justify">At VeeStores, therefore, we created a DIY mechanism and with the help of the many videos and tutorials, a business owner or a budding entrepreneur can create an online e-commerce store in just 5 mins. Not only that, we have integrated logistics and payment gateways to make the entire journey, from setting up the shop to getting paid for the sale, a smooth sailing &amp; hassle free experience.</p>
+						<p class="text-left text-justify">At eStorifi, therefore, we created a DIY mechanism and with the help of the many videos and tutorials, a business owner or a budding entrepreneur can create an online e-commerce store in just 5 mins. Not only that, we have integrated logistics and payment gateways to make the entire journey, from setting up the shop to getting paid for the sale, a smooth sailing &amp; hassle free experience.</p>
 						<p class="text-left text-justify">In this digital world, the only way you can grow is to match up the fast pace. We will handle the entire hassles of maintaining your webstore, while you focus on growing your business online.</p>
-						<p class="text-left text-justify">Happy VeeStores to you!!</p>
+						<p class="text-left text-justify">Happy eStorifi to you!!</p>
 					</div>
 					<div class="clearfix"></div>
 </div>
