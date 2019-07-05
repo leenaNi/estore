@@ -19,6 +19,13 @@
 
 <script src="{{ asset(Config('constants.AdminDistJsPath').'jquery.validate.min.js') }}"></script>
 <script>
+        jQuery(window).load(function() {
+        // will first fade out the loading animation
+    jQuery("#status").fadeOut();
+        // will fade out the whole DIV that covers the website.
+    jQuery("#preloader").delay(1000).fadeOut("slow");
+})
+
     
     $('#modal-content').on('shown.bs.modal', function() {
     $("#errorMessage").text(" ");
@@ -26,10 +33,10 @@
 window.fbAsyncInit = function() {
     // FB JavaScript SDK configuration and setup
     FB.init({
-      appId      : '644176742612237', // FB App ID
+      appId      : '964048603765450', // FB App ID
       cookie     : true,  // enable cookies to allow the server to access the session
       xfbml      : true,  // parse social plugins on this page
-      version    : 'v3.0' // use graph api version 2.8
+      version    : 'v3.3' // use graph api version 2.8
     });
     
     // Check whether the user already logged in

@@ -5,6 +5,9 @@
         @yield('mystyles')
     </head>
     <body>
+        <div id="preloader">
+          <div id="status"></div>
+        </div>
         <div class="">
             <div id="wrapper" class="shop">
                 <div class="w1">

@@ -1,6 +1,6 @@
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
-    Developed by <a href="http://infinisystem.com" target="_blank" class="wight-color">Infini Systems</a>
+    Powered by <a href="http://estorifi.com" target="_blank" class="wight-color">eStorifi</a>
     </div>
      &copy; <?php echo date("Y"); ?>. All Rights Reserved.
 </footer>
