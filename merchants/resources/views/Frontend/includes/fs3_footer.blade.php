@@ -150,7 +150,7 @@
 
 						<div class="col_half col_last tright">
 							<div class="fright clearfix">
-								Powered by <a href="http://www.veestores.com/" target="_blank">Veestores</a>.
+								Powered by <a href="http://www.eStorifi.com/" target="_blank">eStorifi</a>.
 							<!-- <div class="copyrights-menu copyright-links nobottommargin">
 								<a href="{{route('home')}}">Home</a>/<a href="#">T &amp; C</a>/<a href="#">Disclaimer</a>/<a href="{{route('contact-us')}}">Contact</a>
 							</div> -->
