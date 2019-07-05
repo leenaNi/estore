@@ -5,7 +5,7 @@
 <section id="page-title" class=" page-title-center" style=" padding: 50px 0;" data-stellar-background-ratio="0.3">
     @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
     <div class="container clearfix">
-        <h1 class="">Welcome to the VeeStores family</h1>
+        <h1 class="">Welcome to the Estorifi family</h1>
         <span class=""> Select a theme for your online {{ ucwords($cats->first()->category) }}  store</span>
     </div>
     @else

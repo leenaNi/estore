@@ -210,7 +210,7 @@
                     <div class="slider-wrap">
                         <div class="slide">
                             <div class="testi-content">
-                                <p>I am seriously happy about running my store on VeeStores. Powerful features and easy to set up, running an online store shouldn’t be this much fun!</p>
+                                <p>I am seriously happy about running my store on eStorifi. Powerful features and easy to set up, running an online store shouldn’t be this much fun!</p>
                                 <div class="testi-meta">
                                     Naresh Guntuka
                                     <span>Radian Stores</span>
@@ -219,7 +219,7 @@
                         </div>
                         <div class="slide">
                             <div class="testi-content">
-                                <p>VeeStores has helped me grow my business amazingly. It’s been a pleasure because everything has been easier than I ever imagined.</p>
+                                <p>eStorifi has helped me grow my business amazingly. It’s been a pleasure because everything has been easier than I ever imagined.</p>
                                 <div class="testi-meta">
                                     Deepak Hase
                                     <span>Interlink Electronic</span>
@@ -228,7 +228,7 @@
                         </div>
                         <div class="slide">
                             <div class="testi-content">
-                                <p>The best thing about VeeStores is that it’s made me not have to worry about anything that has to do with ecommerce.</p>
+                                <p>The best thing about eStorifi is that it’s made me not have to worry about anything that has to do with ecommerce.</p>
                                 <div class="testi-meta">
                                     Avinash Sharma
                                     <span>Kirti Stores</span>
