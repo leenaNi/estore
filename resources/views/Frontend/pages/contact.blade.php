@@ -53,13 +53,13 @@ Mohakhali DOHS, Dhaka-1212, Bangladesh.
                     C/504, Neelkanth Business Park, Near Vidyavihar Station, 
                     Vidyavihar West, Mumbai 400086.<br>
                 </address>
-                <abbr><strong>Email:</strong></abbr> info@infiniteit.biz 
-                <div class="widget noborder notoppadding">
+                <abbr><strong>Email:</strong></abbr> info@estorifi.com 
+              <!--   <div class="widget noborder notoppadding">
                     <a href="https://www.facebook.com/VeestoresGlobal/" target="_blank" class="social-icon si-small si-dark si-facebook">
                         <i class="icon-facebook"></i>
                         <i class="icon-facebook"></i>
                     </a>
-                </div>
+                </div> -->
             </div><!-- .sidebar end -->
             <div class="clearfix"></div>
         </div>

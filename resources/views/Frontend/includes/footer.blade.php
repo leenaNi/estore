@@ -10,21 +10,21 @@
                 <!-- <div class="footer-androidappbox text-center bottommargin-sm">
                     <a href="{{ asset(Config('constants.frontendPublicImgPath').'/veestores-merchant-app.apk') }}" target="_blank"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/androidapp.png') }}" alt="Image"></a>
                 </div> -->
-                <div class="copyright-social bottommargin-xs">
+              <!--   <div class="copyright-social bottommargin-xs">
                     <a href="https://www.facebook.com/VeestoresGlobal/" target="_blank" class="social-icon-footer" style="color: #fff;">
                         <i class="icon-facebook"></i>
                     </a>
 
-                    <!-- <a href="https://twitter.com" target="_blank" class="social-icon-footer" style="color: #fff;">
+                    <a href="https://twitter.com" target="_blank" class="social-icon-footer" style="color: #fff;">
                         <i class="icon-twitter"></i>
                     </a>
 
                     <a href="https://plus.google.com" target="_blank" class="social-icon-footer" style="color: #fff;">
                         <i class="icon-gplus"></i>
-                    </a> -->
+                    </a>
 
 
-                </div>
+                </div> -->
 
 
                 <div class="copyright-links"><a href="/about">About</a> / 

@@ -66,7 +66,7 @@
 					<p>We use third-party advertising companies to serve ads when you visit our Web site. These companies may use information (not including your name, address, email address or telephone number) about your visits to this and other Web sites in order to provide advertisements about goods and services of interest to you. Any complaints or request or concerns with regards to content or to report any abuse of laws or breach of these terms may be taken up with the designated grievance officer as mentioned below via post or by sending an email to <a href="mailto:support@estorifi.com" target="_blank">support@estorifi.com</a> to Mr. Chintan Lad (‘Grievance Officer’). </p>
 
 					<h4>Grievance Redressal</h4>
-					<p>Redressal Mechanism: Any complaints, abuse or concerns with regards to content and or comment or breach of these terms shall be immediately informed to the designated Grievance Officer as mentioned below via in writing or through email signed with the electronic signature to <a href="mailto:info@infiniteit.biz" target="_blank">info@infiniteit.biz</a>  to Mr. Chintan Lad ("Grievance Officer").<br/>Chain Fintech Solutions Ltd,<br/>
+					<p>Redressal Mechanism: Any complaints, abuse or concerns with regards to content and or comment or breach of these terms shall be immediately informed to the designated Grievance Officer as mentioned below via in writing or through email signed with the electronic signature to <a href="mailto:info@estorifi.com" target="_blank">info@estorifi.com</a>  to Mr. Chintan Lad ("Grievance Officer").<br/>Chain Fintech Solutions Ltd,<br/>
 Chintan Lad, <br/>
 Grievance Redressal Officer, <br/>
 8th Floor, <br/>
