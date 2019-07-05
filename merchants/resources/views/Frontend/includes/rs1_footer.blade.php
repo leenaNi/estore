@@ -11,7 +11,7 @@
 				<div class="container clearfix">
 
 					<div class="col_half">
-						Copyrights &copy; <?php echo date("Y"); ?> All Rights Reserved by Veestores.
+						Copyrights &copy; <?php echo date("Y"); ?> All Rights Reserved by eStorifi.
 					</div>
 
 					<div class="col_half col_last tright">

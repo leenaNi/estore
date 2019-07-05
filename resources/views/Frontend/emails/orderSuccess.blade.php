@@ -8,7 +8,7 @@
         <!--[if !mso]><!-- -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <!--<![endif]-->
-        <title>VeeStores</title>
+        <title>eStorifi</title>
     </head>
     <body>
        <?php echo $email_template; ?>
