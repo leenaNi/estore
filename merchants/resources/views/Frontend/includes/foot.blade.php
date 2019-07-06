@@ -1112,10 +1112,10 @@ $(document).ready(function() {
 window.fbAsyncInit = function() {
     // FB JavaScript SDK configuration and setup
     FB.init({
-      appId      : '644176742612237', // FB App ID
+      appId      : '964048603765450', // FB App ID
       cookie     : true,  // enable cookies to allow the server to access the session
       xfbml      : true,  // parse social plugins on this page
-      version    : 'v3.0' // use graph api version 2.8
+      version    : 'v3.3' // use graph api version 2.8
     });
     
     // Check whether the user already logged in
