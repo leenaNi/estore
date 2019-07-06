@@ -8,7 +8,7 @@
         <!--[if !mso]><!-- -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <!--<![endif]-->
-        <title>Cartini</title>
+        <title>eStorifi Mall</title>
     </head>
     <body>
         {!! $email_template !!}

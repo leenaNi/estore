@@ -1,5 +1,5 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="author" content="Veestores" />
+<meta name="author" content="eStorifiMall" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="@yield('meta-description')">
 <meta name="og:image" content="@yield('og:image')">
@@ -11,7 +11,7 @@
 
 
 
-<title>Veestore Mall</title>
+<title>eStorifi Mall</title>
 <link rel="icon" type="image/png" href="{{ Config('constants.frontendThemeImagePath').'/favicon.png' }}">
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
 <link rel="stylesheet" href="{{Config('constants.adminDistCssPath').'/bootstrap-select.css' }}">

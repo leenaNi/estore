@@ -5,5 +5,5 @@
 </p>
 
 <p>Regards,<br/>
-   Team VeeStores.<br/>
+   Team eStorifi Mall.<br/>
 </p>
