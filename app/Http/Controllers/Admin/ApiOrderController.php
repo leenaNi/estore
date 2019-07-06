@@ -266,7 +266,7 @@ class ApiOrderController extends Controller {
             $userCashback = Helper::getUserCashBack($prifix, Input::get('mobile'), Input::get('user_id'));
 
             if ($userCashback['status'] == 1 && $userCashback['cashback'] > 0) {
-                $user = DB::table('users')->where('telephone$user', Input::get('mobile')); //GET USER
+                $user = DB::table('users')->where('telephone', Input::get('mobile')); //GET USER
                 if ($userCashback['cashback'] >= $payAmt) {
                     $order->pay_amt = 0;
                     $order->cashback_used = $payAmt;
