@@ -119,7 +119,7 @@ class ApiSalesController extends Controller {
      $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
      $prodTab=$merchant->prefix.'_products';  
 //     $hasProdTab=$merchant->prefix.'_has_products';  
-     $ordTab=$'orders';  
+     $ordTab='orders';  
      $hasCatTab=$merchant->prefix.'_has_categories';  
      $catTab=$merchant->prefix.'_categories'; 
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
