@@ -92,6 +92,20 @@
                                     <input type="text" id="telephone" name="telephone" value="{{$user->telephone}}" class="sm-form-control" readonly="">
                                     <b><div id="telephone_editProfileform" class="newerror"></div></b>
                                 </div>
+                                <?php
+                                    if(isset($newsLetter) && $newsLetter == 1){
+                                        $checkval = 1;
+                                        $checked = 'checked';
+                                    }else{
+                                        $checkval = 0;
+                                        $checked = ''; 
+                                    }
+                                    ?>
+                                <div class="col_half">
+                                    <label for="template-contactform-newsletter">NewsLetter
+                                    </label><input type="checkbox" name="newsletchk" class="newsletchk" value="{{ $checkval }}" {{ $checked }}>
+                                    <b><div id="newsletchk_editProfileform" class="newerror"></div></b>
+                                </div>
 
 
                                 <div class="col_full noMobBottMargin nobottommargin">
@@ -231,6 +245,16 @@
     $(document).on("click", '.closeModal', function () {
         $(".viewDetailModal").modal("hide");
     })
+
+    $(".newsletchk").change(function() {
+        if($(this).is(":checked")) {
+            $(this).val(1);
+        }else{
+            $(this).val(0);
+        }
+        
+    });
+
     $(document).ready(function () {
         jQuery.validator.addMethod("phonevalidate", function (phone_number, element) {
             phone_number = phone_number.replace(/\s+/g, "");

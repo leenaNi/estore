@@ -148,6 +148,7 @@ $adminConstants = [
     'adminDynamicLayoutView' => 'Admin.pages.miscellaneous.dynamic_layout',
     'adminSizeChartView' => 'Admin.pages.sizechart',
     'layoutImgPath' => asset('uploads/layout/'),
+    'newletterImgPath' => asset('uploads/newsletter/'),
     'layoutUploadPath' => 'uploads/layout/',
     'adminOrderView' => 'Admin.pages.orders',
     'saleView' => 'Admin.pages.sales',

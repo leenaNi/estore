@@ -16,6 +16,7 @@ use App\Models\HasProducts;
 use App\Models\DownlodableProd;
 use App\Models\TempDownload;
 use App\Models\GeneralSetting;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Auth;
 use App\Http\Controllers\Controller;
@@ -51,11 +52,12 @@ class UserController extends Controller {
         $orderReturnReason = OrderReturnReason::pluck('reason', 'id');
         $user = User::find(@Session::get('loggedin_user_id'));
         $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
-        //  dd($userWishlist);
+        $newsLetter = @User::find(Session::get('loggedin_user_id'))->newsletter;
+        //  dd($newsLetter);
         $orders = Order::where("user_id", "=", @Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->orderBy('id', 'desc')->get();
         //$ordersCurrency = HasCurrency::where('id',$orders->currency_id)->first();
         $viewname = Config('constants.frontendMyAccView') . '.myaccount';
-        $data = ['orders' => $orders, 'user' => $user, 'wishlist' => $userWishlist, 'orderReturnReason' => $orderReturnReason];
+        $data = ['orders' => $orders, 'user' => $user, 'wishlist' => $userWishlist, 'orderReturnReason' => $orderReturnReason,'newsLetter' => $newsLetter];
         return Helper::returnView($viewname, $data);
     }
 
@@ -272,11 +274,15 @@ class UserController extends Controller {
 
             public function updateProfile() {
                 // return User::where('id',Session::get('loggedin_user_id'))->get(['firstname','lastname','telephone']);
-
+                $newlet = 0;
+                if(Input::has('newsletchk')){
+                    $newlet = Input::get('newsletchk');
+                }
                 $userupdate = User::find(Session::get('loggedin_user_id'));
                 $userupdate->firstname = Input::get('firstname');
                 $userupdate->lastname = Input::get('lastname');
                 $userupdate->telephone = Input::get('telephone');
+                $userupdate->newsletter = $newlet;
                 //dd($userupdate->email);
                 if (empty($userupdate->email)) {
                     if (count(User::where("email", Input::get('email'))->get()) == 0) {
@@ -288,6 +294,16 @@ class UserController extends Controller {
                 }
 
                 $userupdate->update();
+                if($newlet == 0){
+                    $usernotification = Notification::where('email',Input::get('email'))->first();
+                    $usernotification->deleted_at = 1;
+                    $usernotification->update();
+                }else{
+                    $usernotification = Notification::where('email',Input::get('email'))->first();
+                    $usernotification->deleted_at = 0;
+                    $usernotification->update();
+                }
+                
                 Session::flash('updateSucess', "Profile updated successfully");
                 $data = ['status' => 'success', 'msg' => "Profile updated successfully", 'user' => $userupdate];
                 return $data;

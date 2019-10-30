@@ -76,7 +76,7 @@ abstract class Controller extends BaseController {
 //        View::share('footerContent', $this->getFooterContent());
         View::share('homePageAbout', $this->gethomePageAbout());
         View::share('layoutPage', HasLayout::where('layout_id', 1)->get());
-
+        View::share('newsletterPage', GeneralSetting::select('details')->where('url_key', 'notification')->where('status',1)->first());
         $this->courierService = GeneralSetting::where('url_key', 'courier-services')->first()->status;
         view()->share('courierService', $this->courierService);
         $this->getEmailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;

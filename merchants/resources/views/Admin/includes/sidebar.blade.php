@@ -154,6 +154,8 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                         @endif 
                         <!-- <li class="{{ preg_match("/admin.smsSubscription/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.smsSubscription.view') }}"><i class="fa fa-angle-right"></i>SMS</a></li> -->
                     <?php } ?>
+
+                    {{-- <li class="{{ preg_match("/admin.newsletter/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.smsSubscription.view') }}"><i class="fa fa-angle-right"></i>NewsLetter</a></li> --}}
                         
 <!--                             <li class="treeview {{ preg_match("/admin.marketing.emails|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
