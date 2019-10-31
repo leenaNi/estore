@@ -297,10 +297,12 @@ class UserController extends Controller {
                 if($newlet == 0){
                     $usernotification = Notification::where('email',Input::get('email'))->first();
                     $usernotification->deleted_at = 1;
+                    $usernotification->status = 0;
                     $usernotification->update();
                 }else{
                     $usernotification = Notification::where('email',Input::get('email'))->first();
                     $usernotification->deleted_at = 0;
+                    $usernotification->status = 1;
                     $usernotification->update();
                 }
                 
