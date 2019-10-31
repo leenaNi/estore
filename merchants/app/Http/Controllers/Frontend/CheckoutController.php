@@ -51,7 +51,7 @@ class CheckoutController extends Controller {
         Session::forget('voucherUsedAmt');
         Session::forget('referalCodeAmt');
         Session::forget('discAmt');
-
+ 
 
         $cart = Cart::instance('shopping')->content();
         if (empty($cart->toArray())) {
@@ -194,7 +194,81 @@ class CheckoutController extends Controller {
         }
     }
 
+    public function change_default_status()
+    {
+        $address = Address::find(Input::get('addid'));
+        if(Input::get('type')==1)
+        {
+            $address->is_default_billing = 1;
+        }
+        else if(Input::get('type')==2)
+        {
+            $address->is_default_shipping = 1;
+        }
+        $address->update();
+    }
+
     public function save_address() {
+        if (!empty(Input::get('id') && Input::get('is_shipping')==1)) {
+            $newAdd = Address::find(Input::get('id'));
+            $newAdd->user_id = Session::get('loggedin_user_id');
+            $newAdd->firstname = Input::get('firstname');
+            $newAdd->lastname = Input::get('lastname');
+            $newAdd->address1 = Input::get('address1');
+            $newAdd->address2 = Input::get('address2');
+            $newAdd->postcode = Input::get('postal_code');
+            $newAdd->thana = Input::get('thana');
+            $newAdd->city = Input::get('city');
+            $newAdd->zone_id = Input::get('state');
+            $newAdd->country_id = Input::get('country_id');
+            $newAdd->phone_no = Input::get('phone_no');
+            $newAdd->update();
+        } else {
+            $newAdd = new Address();
+            $user = User::find(Session::get('loggedin_user_id'));
+            if (empty($user->firstname)) {
+                $user->firstname = Input::get('firstname');
+                $user->lastname = Input::get('lastname');
+                $user->save();
+            }
+            $addressesCount = User::find(Session::get('loggedin_user_id'))->addresses()->get();
+            if(count($addressesCount)>0)
+            {
+                $is_shipping = 0;
+            }
+            else{
+                $is_shipping = 1;
+            }
+            $newAdd->user_id = Session::get('loggedin_user_id');
+            $newAdd->firstname = Input::get('firstname');
+            $newAdd->lastname = Input::get('lastname');
+            $newAdd->address1 = Input::get('address1');
+            $newAdd->address2 = Input::get('address2');
+            $newAdd->postcode = Input::get('postal_code');
+            $newAdd->city = Input::get('city');
+            $newAdd->thana = Input::get('thana');
+            $newAdd->zone_id = Input::get('state');
+            $newAdd->country_id = Input::get('country_id');
+            $newAdd->phone_no = Input::get('phone_no');
+            $newAdd->is_shipping = 1;
+            $newAdd->is_default_shipping = $is_shipping;
+            $newAdd->save();
+        }
+        $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
+
+        foreach ($addressesData as $address) {
+            $address->countryname = $address->country['name'];
+            $address->statename = $address->zone['name'];
+        }
+
+        $data['addressdata'] = $addressesData;
+        $data['curaddid'] = $newAdd->id;
+        return $data;
+    }
+
+    public function save_billing_address() {
+        //dd(Input::all());
+
         if (!empty(Input::get('id'))) {
             $newAdd = Address::find(Input::get('id'));
             $newAdd->user_id = Session::get('loggedin_user_id');
@@ -217,6 +291,14 @@ class CheckoutController extends Controller {
                 $user->lastname = Input::get('lastname');
                 $user->save();
             }
+            $addressesCount = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
+            if(count($addressesCount)>0)
+            {
+                $is_billing = 0;
+            }
+            else{
+                $is_billing = 1;
+            }
             $newAdd->user_id = Session::get('loggedin_user_id');
             $newAdd->firstname = Input::get('firstname');
             $newAdd->lastname = Input::get('lastname');
@@ -228,6 +310,8 @@ class CheckoutController extends Controller {
             $newAdd->zone_id = Input::get('state');
             $newAdd->country_id = Input::get('country_id');
             $newAdd->phone_no = Input::get('phone_no');
+            $newAdd->is_billing = 1;
+            $newAdd->is_default_billing = $is_billing;
             $newAdd->save();
         }
         $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
@@ -245,6 +329,34 @@ class CheckoutController extends Controller {
     public function del_address() {
         Address::find(Input::get('addid'))->delete();
         $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
+        foreach ($addressesData as $address) {
+            $pincodeStatus = Helper::checkCodPincode($address->postcode);
+            $address->countryname = $address->country['name'];
+            $address->statename = $address->zone['name'];
+            if ($pincodeStatus == 1) {
+                $address->cod = 1;
+                $address->codmsg = "COD available for this pincode.";
+            } else if ($pincodeStatus == 2) {
+                $address->cod = 0;
+                $address->codmsg = "COD not available for this pincode.";
+            } else if ($pincodeStatus == 3) {
+                $address->cod = 3;
+                $address->codmsg = "Pincode not available for delivery.";
+            } else if ($pincodeStatus == 5) {
+                $address->cod = '';
+                $address->codmsg = "Pincode available for delivery.";
+            } else {
+                $address->cod = '';
+                $address->codmsg = "";
+            }
+        }
+
+        return $addressesData;
+    }
+
+    public function del_bill_address() {
+        Address::find(Input::get('addid'))->delete();
+        $addressesData = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
         foreach ($addressesData as $address) {
             $pincodeStatus = Helper::checkCodPincode($address->postcode);
             $address->countryname = $address->country['name'];
@@ -522,6 +634,41 @@ class CheckoutController extends Controller {
         if (!empty(Session::get('loggedin_user_id'))) {
             $checkCod = GeneralSetting::where('url_key', 'cod')->first();
             $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
+            $pincodeStatus = GeneralSetting::where('url_key', 'pincode')->first();
+
+            foreach ($addressesData as $key => $address) {
+                $pincodeStatus = Helper::checkCodPincode($address->postcode);
+                $address->countryname = $address->country['name'];
+                $address->statename = $address->zone['name'];
+                if ($pincodeStatus == 1) {
+                    $address->cod = 1;
+                    $address->codmsg = "COD available for this pincode.";
+                } else if ($pincodeStatus == 2) {
+                    $address->cod = 0;
+                    $address->codmsg = "COD not available for this pincode.";
+                } else if ($pincodeStatus == 3) {
+                    $address->cod = 3;
+                    $address->codmsg = "Pincode not available for delivery.";
+                } else if ($pincodeStatus == 5) {
+                    $address->cod = '';
+                    $address->codmsg = "Pincode available for delivery.";
+                } else {
+                    $address->cod = '';
+                    $address->codmsg = "";
+                }
+            }
+
+            return $addressesData;
+        } else {
+            return "Invalid";
+        }
+    }
+
+    public function get_billingdata() {
+
+        if (!empty(Session::get('loggedin_user_id'))) {
+            $checkCod = GeneralSetting::where('url_key', 'cod')->first();
+            $addressesData = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
             $pincodeStatus = GeneralSetting::where('url_key', 'pincode')->first();
 
             foreach ($addressesData as $key => $address) {
@@ -2138,7 +2285,7 @@ class CheckoutController extends Controller {
             $user->save();
             Helper::newUserInfo($user->id);
 
-            $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
+            $addressesData = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
 
             foreach ($addressesData as $address) {
                 $address->countryname = $address->country['name'];

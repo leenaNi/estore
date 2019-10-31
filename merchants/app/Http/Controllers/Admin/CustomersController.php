@@ -187,9 +187,13 @@ class CustomersController extends Controller {
         }
         $action = "admin.customers.update";
         $setting = GeneralSetting::where('url_key', '=', 'loyalty')->first();
+        $shippingAddress = User::find(Input::get('id'))->addresses()->get();
+        $BillingAddress = User::find(Input::get('id'))->billingaddresses()->get();
         // return view(Config('constants.adminCustomersView') . '.addEdit', compact('user', 'action','loyalty'));
+        //dd($BillingAddress);
         $viewname = Config('constants.adminCustomersView') . '.addEdit';
-        $data = ['user' => $user, 'action' => $action, 'loyalty' => $loyalty, 'setting' => $setting];
+        $data = ['user' => $user, 'action' => $action, 'loyalty' => $loyalty, 'setting' => $setting,'shippingAddress'=>$shippingAddress,'BillingAddress'=>$BillingAddress];
+
         return Helper::returnView($viewname, $data);
     }
 

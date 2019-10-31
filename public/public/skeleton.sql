@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_additional_charges` (
   `status` tinyint(4) DEFAULT NULL,
   `min_order_amt` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
   
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_attributes` (
   `att_sort_order` int(2) DEFAULT NULL,
   `status` enum('1','0') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_attribute_sets` (
   `attr_set` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `status` int(11) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_attribute_types` (
   `id` bigint(20) unsigned NOT NULL,
   `attr_type` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_attribute_values` (
   `is_active` tinyint(4) NOT NULL,
   `sort_order` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_catalog_images` (
   `sort_order` int(11) NOT NULL,
   `image_path` varchar(180) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_categories` (
   `other_meta` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `status` int(11) NOT NULL,
 `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_cities` (
   `cod_status` int(11) NOT NULL,
   `status` int(11) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_couriers` (
   `pref` int(11) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL,
+   `updated_at` timestamp  DEFAULT  NOW(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
@@ -274,7 +274,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_comments` (
   `comment` text NOT NULL,
   `notify` int(11) NOT NULL,
 `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Order History';
 
 -- --------------------------------------------------------
@@ -299,7 +299,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_contacts` (
   `url_key` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
 `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; 
 --
 -- Dumping data for table `tblprfx_contacts`
@@ -605,7 +605,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_coupons` (
   `created_by` int(11) NOT NULL,
   `updated_by` int(11) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -659,7 +659,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_coupons_users` (
 --   `cname` varchar(3) NOT NULL,
 --   `crate` int(11) NOT NULL,
 --  `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
+--    `updated_at` timestamp  DEFAULT  NOW()
 -- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
@@ -685,7 +685,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_downlodable_prods` (
   `sort_order_d` int(11) NOT NULL,
   `alt_text` varchar(255) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
- `updated_at` timestamp  DEFAULT  NULL
+ `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 --
@@ -709,7 +709,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_dynamic_layout` (
   `name` varchar(100) NOT NULL,
   `status` tinyint(4) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL,
+   `updated_at` timestamp  DEFAULT  NOW(),
   `sort_order` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -728,7 +728,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_email_template` (
   `created_by` int(11) NOT NULL,
   `updated_by` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
@@ -762,7 +762,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_flags` (
   `desc` varchar(100) NOT NULL,
   `status` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 --
@@ -794,7 +794,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_general_setting` (
 `question_category_id` int(11) NOT NULL,
  `info`  text NOT NULL,
 `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 
 --
@@ -865,7 +865,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_gifts` (
   `limit` smallint(4) NOT NULL,
   `valid_upto` date NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -900,7 +900,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_has_attribute_values` (
   `attribute_type_id` int(11) NOT NULL,
   `value` text NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -944,7 +944,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_has_combo_prods` (
 --   `css_code` varchar(20) NOT NULL,
 --   `currency_status` int(11) NOT NULL,
 --  `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
+--    `updated_at` timestamp  DEFAULT  NOW()
 -- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1004,7 +1004,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_has_layouts` (
   `is_active` int(11) NOT NULL,
   `sort_order` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1102,7 +1102,7 @@ INSERT INTO `tblprfx_has_industries` (`general_setting_id`, `industry_id`) VALUE
 --   `vendor_id` int(11) DEFAULT NULL,
 -- `qty_exchange` int(11) DEFAULT NULL,
 --  `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
+--    `updated_at` timestamp  DEFAULT  NOW()
 -- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -1185,7 +1185,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_language` (
   `name` text NOT NULL,
   `status` int(11) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
@@ -1210,7 +1210,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_layout` (
   `is_active` int(11) NOT NULL,
   `is_del` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
@@ -1238,7 +1238,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_loyalty` (
   `range_amt` varchar(250) NOT NULL,
   `status` int(11) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
@@ -1260,7 +1260,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_newsletter` (
   `id` bigint(20) NOT NULL,
   `email` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -1273,7 +1273,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_notification` (
   `id` int(11) NOT NULL,
   `email` varchar(230) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1321,7 +1321,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_offers` (
   `user_specific` int(11) NOT NULL,
   `status` int(11) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
@@ -1401,7 +1401,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_order_flag_history` (
   `flag_id` int(11) NOT NULL,
   `remark` varchar(500) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -1428,7 +1428,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_order_history` (
   `remark` varchar(500) NOT NULL,
   `additional_charge` text,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1441,7 +1441,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_order_return_action` (
   `id` int(11) NOT NULL,
   `action` varchar(255) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
@@ -1466,7 +1466,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_order_return_cashback_history` (
   `qty` int(11) NOT NULL,
   `cron_status` enum('0','1','2') NOT NULL DEFAULT '2',
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -1479,7 +1479,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_order_return_open_unopen` (
   `id` int(11) NOT NULL,
   `status` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
@@ -1500,7 +1500,7 @@ INSERT INTO `tblprfx_order_return_open_unopen` (`id`, `status`) VALUES
 --   `id` int(11) NOT NULL,
 --   `reason` varchar(255) NOT NULL,
 -- `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
+--    `updated_at` timestamp  DEFAULT  NOW()
 -- ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 --
@@ -1537,7 +1537,7 @@ INSERT INTO `tblprfx_order_return_open_unopen` (`id`, `status`) VALUES
 --   `id` int(11) NOT NULL,
 --   `status` varchar(255) NOT NULL,
 -- `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
+--    `updated_at` timestamp  DEFAULT  NOW()
 -- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
@@ -1561,7 +1561,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_order_status` (
   `order_status` varchar(255) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1',
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 --
@@ -1593,7 +1593,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_order_status_history` (
   `remark` varchar(500) NOT NULL,
   `notify` tinyint(4) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1618,7 +1618,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_password_resets` (
 --   `id` int(11) NOT NULL,
 --   `name` varchar(255) NOT NULL,
 --   `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
+--    `updated_at` timestamp  DEFAULT  NOW()
 -- ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
@@ -1644,7 +1644,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_password_resets` (
 --   `id` int(11) NOT NULL,
 --   `payment_status` varchar(255) NOT NULL,
 --  `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
+--    `updated_at` timestamp  DEFAULT  NOW()
 -- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
@@ -1672,7 +1672,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_permissions` (
   `parent_id` int(11) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
 `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=33130 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -2212,7 +2212,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_pincodes` (
   `pref` int(4) DEFAULT '0',
   `status` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL,
+   `updated_at` timestamp  DEFAULT  NOW(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
@@ -2305,7 +2305,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_products` (
   `min_order_quantity` int(11) DEFAULT '1',
   `is_share_on_mall` tinyint(4) NOT NULL DEFAULT '0',
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -2335,7 +2335,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_product_types` (
   `desc` text COLLATE utf8_unicode_ci NOT NULL,
   `status` tinyint(4) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -2377,7 +2377,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_restaurant_tables` (
   `status` tinyint(4) NOT NULL,
   `ostatus` tinyint(4) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -2401,7 +2401,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_restaurant_tables` (
 --   `order_status` int(11) DEFAULT NULL,
 -- `exchange_product_id` int(11) DEFAULT NULL,
 -- `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
+--    `updated_at` timestamp  DEFAULT  NOW()
 -- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -2416,7 +2416,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_roles` (
   `display_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -2463,7 +2463,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_sections` (
   `name` varchar(255) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
 
 --
@@ -2540,7 +2540,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_settings` (
   `value` varchar(255) NOT NULL,
   `url_key` varchar(50) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
@@ -2562,7 +2562,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_sizechart` (
   `image` varchar(200) NOT NULL,
   `status` int(11) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -2581,7 +2581,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_slider` (
   `alt` text NOT NULL,
   `slider_id` int(11) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2596,7 +2596,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_slider_master` (
   `is_active` enum('0','1') NOT NULL DEFAULT '0' COMMENT '0=active,1=deactive',
   `delete_master` enum('0','1') NOT NULL DEFAULT '0',
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
@@ -2626,7 +2626,7 @@ INSERT INTO `tblprfx_slider_master` (`id`, `slider`, `is_active`, `delete_master
 --   `remark` text NOT NULL,
 --   `status` int(11) DEFAULT NULL COMMENT '0:No,1: Yes',
 --  `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL,
+--    `updated_at` timestamp  DEFAULT  NOW(),
 --   PRIMARY KEY (`id`),
 --   KEY `order_id` (`order_id`)
 -- ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -2638,7 +2638,7 @@ CREATE TABLE `tblprfx_question_category` (
   `status` tinyint(4) NOT NULL,
   `sort_order` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-  `updated_at` timestamp  DEFAULT  NULL
+  `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `tblprfx_question_category` (`id`, `category`, `status`, `sort_order`) VALUES
@@ -2659,7 +2659,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_sms_subscription` (
   `purchased_by` int(11) NOT NULL,
   `status` int(11) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2676,7 +2676,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_social_media_links` (
   `status` int(11) NOT NULL DEFAULT '0',
 `sort_order` int(11) NOT NULL DEFAULT '0',
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -2704,7 +2704,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_states` (
   `country_id` tinyint(4) DEFAULT NULL,
   `state_name` varchar(50) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
@@ -2735,7 +2735,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_static_pages` (
  `contact_details` text COLLATE utf8_unicode_ci NOT NULL,
   `sort_order` int(11) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -2767,7 +2767,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_stock_update_history` (
   `update_qty` int(11) NOT NULL,
   `total_qty` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -2813,7 +2813,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_tax` (
   `tax_number` varchar(255) NOT NULL,
   `status` tinyint(1) NOT NULL COMMENT '0- deleted, 1 - Enabled, 2-disabled',
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `tblprfx_tax` (`id`, `type`, `name`, `label`, `rate`, `tax_number`, `status`) VALUES
@@ -2836,7 +2836,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_testimonials` (
   `sort_order` int(11) NOT NULL,
   `status` tinyint(4) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `tblprfx_testimonials` (`id`, `user_id`, `image`, `customer_name`, `testimonial`, `gender`, `sort_order`, `status`) VALUES
@@ -2860,7 +2860,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_translation` (
   `translate_for` varchar(255) DEFAULT NULL,
   `is_specific` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=MyISAM AUTO_INCREMENT=875 DEFAULT CHARSET=latin1;
 
 
@@ -2879,7 +2879,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_unit_measures` (
   `unit` varchar(50) NOT NULL,
   `status` int(11) NOT NULL,
 `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
@@ -2922,7 +2922,7 @@ INSERT INTO `tblprfx_unit_measures` (`id`, `unit`, `status`) VALUES
 --   `ip` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
 --   `device_id` text COLLATE utf8_unicode_ci NOT NULL,
 --  `created_at` timestamp NOT NULL DEFAULT NOW(),
---    `updated_at` timestamp  DEFAULT  NULL
+--    `updated_at` timestamp  DEFAULT  NOW()
 -- ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 -- 
 -- --
@@ -2958,7 +2958,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_vendors` (
   `city` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `zip` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -2972,7 +2972,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_wishlist` (
   `prod_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
  `created_at` timestamp NOT NULL DEFAULT NOW(),
-   `updated_at` timestamp  DEFAULT  NULL
+   `updated_at` timestamp  DEFAULT  NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

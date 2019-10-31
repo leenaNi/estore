@@ -166,17 +166,145 @@
                         </div>
                     </div>
                 </div>
+                <div class="panel billingaddressPanel panel-default">
+                    <div class="panel-heading" role="tab" id="headingBilling">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseBA" aria-expanded="false" aria-controls="collapseBA">
+                                <span class=" ">2.</span> Billing Address
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseBA" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingBilling">
+                        <div class="panel-body">
+                            <div class="shpng_addrs_col">
+                                <h5>SELECT ADDRESS</h5>
+                                <div class="row">
+                                    <div id='forBillAddress' class="" >
+                                        <div class="col-md-4"   ng-repeat="add in billaddressData">
+                                            <div class="adrs_col"  ng-init="addid = add.id" > 
+                                                <h1 class="bxtitle">
+                                                    <div class="pull-left"><input ng-init="adddata = billaddressData[0].id" data-cod="[[ add.cod ]]" codmsg="[[ add.codmsg ]]" class="pincod" type="radio" phno='[[ add.phone_no ]]' addCodMsg="[[ add.codmsg ]]" name="adddata" ng-model="adddata" value="[[ add.id ]]"  ng-click="addSel(addid)" /><label class="addL m100none" for="radio2" ><span><span></span></span>Address  ([[$index +1]])</label></div><div class="pull-right"> 
+                                                        <a href="#addNewBillAddForm" data-ng-click="editBillAdd(addid)" class="box_action"><i class="icon-edit"></i> </a><a href=""  data-ng-click="deleteBillAdd(addid)" class="box_action"><i class="icon-trash"></i> </a></div>
+                                                    <div class="clearfix"></div></h1>
+                                                <div class="adrs_cont" ng-click="selAddB(addid)" style="cursor:pointer;" codmsg="[[add.codmsg]]" id="adrs_[[addid]]" >
+                                                    <p> [[ add.firstname ]] [[ add.lastname ]] </p> 
+                                                    <p>[[ add.address1 ]]</p>
+                                                    <p>[[ add.address2 ]]</p>
+                                                    <p>[[ add.countryname ]]</p>
+                                                    <p>[[ add.statename ]]</p> 
+                                                    <p>[[ add.city ]]</p> 
+                                                    <p>[[ add.thana ]]- [[ add.postcode ]] <span ng-show="add.codmsg != ''">- <u> [[ add.codmsg ]]</u></span></p>
+                                                    <p>Mobile No: <span class='chkPhoneNo'>[[ add.phone_no ]]</span></p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <span id="editAdd"></span> -->
+                                    <div class="col-md-4" id="continueStep">
+                                        <div class="add_adrs_col">
+                                            <a data-ng-click="showNewBillAddDiv();">
+                                                <i class="icon-line-circle-plus plus_icon"></i><br>
+                                                Add Address 
+                                            </a>
+                                        </div>
+                                    </div>  
+                                    <div class="clearfix"></div>                              
+                                    <div class="col-lg-12 newBillAddFormDiv" style="display:none;">
+                                        <form role="form" class="login_form" id='addNewBillAddForm' novalidate method='post' style="margin:0px;">
+                                            <div class="form-group col-md-6">
+                                                <lable>First Name *</lable>
+                                                <input type="hidden" name="id" id="addI" ng-value="getAddData.id">
+                                                <input type="hidden" name="is_billing" id="addI" ng-value="getAddData.is_billing">
+                                                <input type="text" id="bfirstname" class="form-control" name='firstname' required="true" ng-model="getAddData.firstname">
+                                                <div id="firstname_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <lable>Last Name </lable>
+                                                <input type="text" id="blastname" class="form-control" name='lastname'  ng-model="getAddData.lastname">
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="form-group col-md-6">
+                                                <lable>Address Line 1 *</lable>
+                                                <input type="text" class="form-control" name='address1' id="baddress1"  required="true" maxlength='35'  ng-model="getAddData.address1">
+                                                <div id="address1_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <lable>Address Line 2 </lable>
+                                                <input type="text" class="form-control" name='address2' id="baddress2" maxlength='35'  ng-model="getAddData.address2"> 
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="form-group col-md-6">
+                                                <lable>Country *</lable>
+                                                <select name="country_id"   class="form-control" required="true"  ng-change="countryChangedValue(getAddData.countryid)"
+                                                        ng-model="getAddData.countryid">
+                                                    <option value="">Please Select </option>
+                                                    <option ng-repeat="contr in country"  value="[[ contr.id ]]">[[ contr.name  ]] </option>
+                                                </select>
+                                                <div id="country_id_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <lable>State *</lable>
+                                                <select name="state" class="form-control zone" required="true" 
+                                                        ng-model="getAddData.zoneid"> 
+                                                    <option value="">Please Select </option>
+                                                    <option ng-repeat="zone in zones" value="[[ zone.id ]]" >[[ zone.name ]]</option>
+                                                </select>
+                                                <div id="state_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="clearfix"></div>  
+                                            <div class="form-group col-md-6">
+                                                <lable>City *</lable>
+                                                <input type="text" name='city' class="form-control" id="bcity" required="true"  ng-model="getAddData.city" >
+                                                <div id="city_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <lable>Thana *</lable>                                             
+                                                 
+                                                <input type="text" id="bthana" name='thana'  class="form-control" autocomplete="false"  ng-model="getAddData.thana">
+                                                <div id="thana_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                              <div class="form-group col-md-6">
+                                                <lable>Pin Code *</lable>                                             
+                                                <i style="display: none" class="icon-refresh fa-spin pincodeMessageLoader "></i>  <span class="pincodeMessage"></span>
+                                                <input type="text" name='postal_code' id="pincode_check" class="form-control" autocomplete="false"  ng-model="getAddData.postcode">
+                                                <div id="postal_code_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <lable>Mobile No. *</lable>
+                                                <input type="text" name='phone_no' class="form-control" id="bmobile" required="true" ng-model="getAddData.phone_no">
+                                                <div id="phone_no_checkout_new_add_form" class="newerror"></div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="form-group">
+                                            </div>
+                                    </div>
+                                    <div class="hidden-lg hidden-md" style="float:left; width:100%;"><br></div>
+                                    <div class="col-md-12 form-group continue-cancel-btnbox mobPadd0-15">     
+                                        <input type="submit" ng-click="billAddressContinue()" class="button new_user_btn toBillSummary continueStep" data-continue="shippingPanel" value="CONTINUE">
+                                        <a href="{{ route('cart')}}" class="button new_user_btn pull-right">BACK</a>    
+
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="panel addressPanel panel-default">
                     <div class="panel-heading" role="tab" id="headingTwo">
                         <h4 class="panel-title">
                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                <span class=" ">2.</span> Shipping Address
+                                <span class=" ">3.</span> Shipping Address
                             </a>
                         </h4>
                     </div>
                     <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                         <div class="panel-body">
                             <div class="shpng_addrs_col">
+                                <input type="checkbox" id="same_as_billing" name="same_address">
+                                <label>Same as billing address</label>
                                 <h5>SELECT ADDRESS</h5>
                                 <div class="row">
                                     <div id='forAddress' class="" >
@@ -215,22 +343,22 @@
                                             <div class="form-group col-md-6">
                                                 <lable>First Name *</lable>
                                                 <input type="hidden" name="id" id="addI" ng-value="getAddData.id">
-                                                <input type="text" class="form-control" name='firstname' required="true" ng-model="getAddData.firstname">
+                                                <input type="text" id="sfirstname" class="form-control" name='firstname' required="true" ng-model="getAddData.firstname">
                                                 <div id="firstname_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <lable>Last Name </lable>
-                                                <input type="text" class="form-control" name='lastname'  ng-model="getAddData.lastname">
+                                                <input type="text" id="slastname" class="form-control" name='lastname'  ng-model="getAddData.lastname">
                                             </div>
                                             <div class="clearfix"></div>
                                             <div class="form-group col-md-6">
                                                 <lable>Address Line 1 *</lable>
-                                                <input type="text" class="form-control" name='address1'  required="true" maxlength='35'  ng-model="getAddData.address1">
+                                                <input type="text" class="form-control" name='address1' id="saddress1" required="true" maxlength='35'  ng-model="getAddData.address1">
                                                 <div id="address1_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <lable>Address Line 2 </lable>
-                                                <input type="text" class="form-control" name='address2' maxlength='35'  ng-model="getAddData.address2"> 
+                                                <input type="text" id="saddress2" class="form-control" name='address2' maxlength='35'  ng-model="getAddData.address2"> 
                                             </div>
                                             <div class="clearfix"></div>
                                             <div class="form-group col-md-6">
@@ -254,42 +382,35 @@
                                             <div class="clearfix"></div>  
                                             <div class="form-group col-md-6">
                                                 <lable>City *</lable>
-                                                <input type="text" name='city' class="form-control"  required="true"  ng-model="getAddData.city" >
+                                                <input type="text" name='city' class="form-control" id="scity" required="true"  ng-model="getAddData.city" >
                                                 <div id="city_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <lable>Thana *</lable>                                             
                                                  
-                                                <input type="text" name='thana'  class="form-control" autocomplete="false"  ng-model="getAddData.thana">
+                                                <input type="text" id="sthana" name='thana'  class="form-control" autocomplete="false"  ng-model="getAddData.thana">
                                                 <div id="thana_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="clearfix"></div>
                                               <div class="form-group col-md-6">
                                                 <lable>Pin Code *</lable>                                             
                                                 <i style="display: none" class="icon-refresh fa-spin pincodeMessageLoader "></i>  <span class="pincodeMessage"></span>
-                                                <input type="text" name='postal_code' id="pincode_check" class="form-control" autocomplete="false"  ng-model="getAddData.postcode">
+                                                <input type="text" name='postal_code' id="spincode_check" class="form-control" autocomplete="false"  ng-model="getAddData.postcode">
                                                 <div id="postal_code_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <lable>Mobile No. *</lable>
-                                                <input type="text" name='phone_no' class="form-control"  required="true" ng-model="getAddData.phone_no">
+                                                <input type="text" name='phone_no' class="form-control" id="smobile" required="true" ng-model="getAddData.phone_no">
                                                 <div id="phone_no_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="clearfix"></div>
                                             <div class="form-group">
-                                                <!--                                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                                                                                  <button type="submit" id="newAdFB" ng-click="addNewAddSubmit()" class="btn new_user_btn" style="margin:5px 0;">SUBMIT</button>
-                                                                                                </div>-->
-                                                <!--                                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                                                                                  <a href="#shippingPanel"><button type="button"  ng-click="addNewAddCancel()" class="btn login_btn" style="margin:5px 0 0 0">CANCEL</button></a>
-                                                                                                </div>-->
                                             </div>
                                     </div>
                                     <div class="hidden-lg hidden-md" style="float:left; width:100%;"><br></div>
                                     <div class="col-md-12 form-group continue-cancel-btnbox mobPadd0-15">     
                                         <input type="submit" ng-click="addressContinue()" class="button new_user_btn toBillSummary continueStep" data-continue="shippingPanel" value="CONTINUE">
-                                        <a href="{{ route('cart')}}" class="button new_user_btn pull-right">BACK</a>    
-
+                                        <button ng-click="backToBillingAddress()" class="button login_btn">BACK</button>  
                                     </div>
                                     </form>
                                 </div>
@@ -301,7 +422,7 @@
                     <div class="panel-heading" role="tab" id="headingThree">
                         <h4 class="panel-title">
                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                <span class=" ">3.</span> Bill Summary
+                                <span class=" ">4.</span> Bill Summary
                             </a>
                         </h4>
                     </div>
@@ -370,38 +491,11 @@
                                                     @endif
                                                     <div ng-if="billSummary.checkVoucher == 1">
                                                         @if(@$feature['des'] == 1)
-                                                        <!--                                                        <li> 
-                                                                                                                    <div class="form-group">
-                                                                                                                        <label for="email" class="col-md-12">GIFT VOUCHER</label>
-                                                                                                                        <p class="col-md-8"><input name="user_voucher_code" type="text" class="form-control userVoucherCode cartinput" placeholder="Enter Voucher Code"></p>
-                                                                                                                        <p class="col-md-4"><button type="button" class="btn new_user_btn" ng-click="voucherApply()" id="voucherApply">APPLY</button></p>
-                                                                                                                        <div class="col-sm-12 col-xs-12"><p class="vMsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p></div>
-                                                                                                                    </div>
-                                                                                                                </li>-->
+                                                    
                                                         @endif
                                                     </div>
                                                     @if(@$feature['manual-discount'] == 1)
-                                                    <!--                                                    <li>   
-                                                                                                            <div class="form-group">
-                                                                                                                <label for="email" class="col-md-12 lbl-discount">Discount</label>
-                                                                                                                <span class="col-md-4">
-                                                                                                                    <select class="form-control full-width" name="user-level-disc-type" id="user-level-disc" >
-                                                                                                                        <option >Please Select</option>
-                                                                                                                        <option value="1">Percentage</option>
-                                                                                                                        <option value="2">Absolute</option>
-                                                                                                                    </select> 
-                                                                                                                </span>
-                                                                                                                <span class="col-md-4">
-                                                                                                                    <input name="user_level_discount" type="text" class="form-control userLevelDiscount full-width" placeholder="Enter value for discount">
-                                                                                                                </span>
-                                                                                                                <span class="col-md-4">
-                                                                                                                    <button type="button" class="btn new_user_btn full-width" ng-click="userlevelDiscApply()" id="userlevelDiscApply">APPLY</button>
-                                                                                                                </span>
-                                                                                                                <div class="col-sm-12 col-xs-12">
-                                                                                                                    <p class="dMsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </li> -->
+                                                   
                                                     @endif
                                                 </div>
                                                 <li>
@@ -433,7 +527,7 @@
                     <div class="panel-heading" role="tab" id="headingFour">
                         <h4 class="panel-title">
                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                <span class=" ">4.</span>  Payment 
+                                <span class=" ">5.</span>  Payment 
                             </a>
                         </h4>
                     </div>
@@ -489,30 +583,13 @@
                                         <div class="summry_col">
                                             <h4 class="heading-title"><span class="pull-left summry_title">Select Payment Method </span></h4>
                                             <ul ng-init="payOpt = 7">
-                                                <!--                                                <li ng-show="toPayment.ebsStatus == 1">
-                                                                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_EBS" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioEbs"  name="radio" value="1"><label for="radioEbs"   ><span><span></span></span> EBS</label>
-                                                                                                </li>
-                                                                                                <li ng-show="toPayment.payUmoneyStatus == 1">
-                                                                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_payUmoney" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioPayUmoney"  name="radio" value="2"><label for="radioPayUmoney"   ><span><span></span></span> PayU</label>
-                                                                                                </li>-->
-                                                <!--                                                <li ng-show="toPayment.address.country_id == 99 && toPayment.codStatus == 1">-->
+                                             
                                                 <div ng-show="toPayment.is_cod == 1"> 
                                                     <li>
                                                         <input  name="paymentMethod" type="radio" ng-model="payOpt" ng-click="paymentmethodChk($event)" class="chk_cod cod codChk" data-method = 'cod' name="radio"  id="radioCod"  value="3"><label for="radioCod"   ><span><span></span></span> CASH ON DELIVERY <span ng-show="toPayment.cod_charges > 0">(<span class="currency-sym"></span>[[ toPayment.cod_charges * toPayment.currency_val |number :2 ]])</span></label>
                                                     </li> 
                                                 </div>                                                   
-                                                <!--                                                <li>
-                                                                                                    <input   name="paymentMethod" type="radio"  data-method = '' class="chk_cod chk_paypal"  ng-model="payOpt" ng-click="paymentmethodChk($event)"  id="radioPaypal"  name="radio" value="4"><label  for="radioPaypal"   for="radio2"><span><span></span></span> PAYPAL</label>
-                                                                                                </li>
-                                                                                                <li>
-                                                                                                    <input name="paymentMethod" type="radio"  data-method = '' class="chk_cod chk_razPay"  ng-model="payOpt" ng-click="paymentmethodChk($event)"  id="radioRazpay" name="radio" value="5"><label   for="radioRazpay"  for="radio2"><span><span></span></span> RAZORPAY</label>
-                                                                                                </li>
-                                                                                                <li ng-show="toPayment.citrusPayStatus == 1">
-                                                                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_citrus" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioCitrus"  name="radio" value="6"><label for="radioCitrus"   ><span><span></span></span> Citrus</label>
-                                                                                                </li>-->
-<!--                                                <li>
-                                                    <input name="paymentMethod"   data-method = '' type="radio" class="chk_cod chk_cit_pay" ng-model="payOpt" ng-click="paymentmethodChk($event)" id="radioCityPay"  name="radio" value="7"><label for="radioCityPay"   ><span><span></span></span> PayOnline</label>
-                                                </li>-->
+                                               
                                             </ul>
                                         </div>
                                     </div>
@@ -624,48 +701,38 @@
         $("#internationallyProdPopUp").modal("hide");
     }
 
-    $(document).ready(function () {
-//        $("html body").on('keyup change keydown', '#pincode_check', function () {
-//            //   $("#pincode_check").keydown(function(){
-//            if ($(this).val().length > 5) {
-//                var pincode = $(this).val();
-//                $.ajax({
-//                    url: "{{ route('checkPincode')}}",
-//                    type: 'POST',
-//                    data: {'pincode': pincode, 'type': '0'},
-//                    cache: false,
-//                    success: function (msg) {
-//                        if (msg == '1') {
-//                            $("#postal_code_checkout_new_add_form").text('COD Available');
-//                        } else {
-//                            $("#postal_code_checkout_new_add_form").text('COD Not Available');
-//                        }
-//                    }
-//                });
-//            } else if ($(this).val().length < 6) {
-//                $("#postal_code_checkout_new_add_form").text('');
-//            }
-//        });
+    $("#same_as_billing").click(copyDate);
 
-        // $("html body").on('click', '.pincod', function () {
-        //     var pin_status = $("#pincodeStatus").val();
-        //    // if(pin_status == 1){
-        //         var pintype = $(this).attr('data-cod');
-        //         $.ajax({
-        //             url: "{{ route('checkPincode')}}",
-        //             type: 'POST',
-        //             data: {'pintype': pintype, 'type': '1'},
-        //             cache: false,
-        //             success: function (msg) {
-        //                 if (msg == '1') {
-        //                     $("#postal_code_checkout_new_add_form").text('COD Available');
-        //                 } else {
-        //                     $("#postal_code_checkout_new_add_form").text('COD Not Available');
-        //                 }
-        //             }
-        //         });
-        //  //  }
-        // });
+    function copyDate()
+    {
+       var fname=$("#bfirstname").val();
+       var lname=$("#blastname").val();
+       var address1=$("#baddress1").val();
+       var address2=$("#baddress2").val();
+       var city=$("#bcity").val();
+       var phone=$("#bmobile").val();
+       var thana=$("#bthana").val();
+       var pincode=$("#pincode_check").val();
+       if (this.checked==true)
+       {
+            $(".newAddFormDiv").show();
+            $("#sfirstname").val(fname);
+            $("#slastname").val(lname);
+            $("#saddress1").val(address1);
+            $("#saddress2").val(address2);
+            $("#scity").val(city);
+            $("#smobile").val(phone);
+            $("#sthana").val(thana);
+            $("#spincode_check").val(pincode);
+       }
+       else if(this.checked==false){
+            $(".newAddFormDiv").hide();
+       }
+         
+    }
+
+    $(document).ready(function () {
+
         $(".newUserB").click(function () {
             $(".loginF").css("display", "none");
             $(".guestCheckoutFrm").css("display", "none");

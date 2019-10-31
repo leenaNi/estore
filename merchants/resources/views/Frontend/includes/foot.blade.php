@@ -1228,5 +1228,5 @@ function getFbUserData(){
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.js"></script>
 
-<script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/ng-app.js' }}"></script>
+<script type="text/javascript" src="{{Config('constants.frontendNGAPPJsPath').'/ng-app.js' }}"></script>
 

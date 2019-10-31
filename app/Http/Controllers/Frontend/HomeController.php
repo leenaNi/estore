@@ -362,7 +362,7 @@ class HomeController extends Controller {
         ini_set('max_execution_time', 600);
         $merchantd = Merchant::find(Session::get('merchantid')); 
 
-        $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
+        /*$messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
         $fields = array(
             'data' => $messagearray
         );
@@ -391,7 +391,7 @@ class HomeController extends Controller {
         if ($result === FALSE) {
             die('Curl failed: ' . curl_error($ch));
         }
-        curl_close($ch);
+        curl_close($ch);*/
 //        //stop Curl
 
 
@@ -402,6 +402,9 @@ class HomeController extends Controller {
             $path = base_path() . "/merchants/" . "$domainname";
 
             $mk = File::makeDirectory($path, 0777, true, true);
+            if(chmod($path, 0777)){
+                chmod($path, 0777);
+            }
             if ($mk) {
                 $file = public_path() . '/public/skeleton.zip';
                 $zip = new ZipArchive;
@@ -410,6 +413,7 @@ class HomeController extends Controller {
                 if ($res == true) {
                     $zip->extractTo($path);
                     $zip->close();
+                    $this->replaceFileString($path . "/.env", "%DB_HOST%", env('DB_HOST', ''));
                     $this->replaceFileString($path . "/.env", "%DB_DATABASE%", env('DB_DATABASE', ''));
                     $this->replaceFileString($path . "/.env", "%DB_USERNAME%", env('DB_USERNAME', ''));
                     $this->replaceFileString($path . "/.env", "%DB_PASSWORD%", env('DB_PASSWORD', ''));
