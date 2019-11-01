@@ -31,7 +31,7 @@
 <?php
 $jsonString = App\Library\Helper::getSettings();
 $data = (object) $jsonString;
-//    print_r($data);
+    //echo "<pre>";print_r($data);die;
 ?>
 
 
@@ -169,6 +169,49 @@ if (isset($data->expiry_date)) {
 
                             </div>
 
+
+                            {{--- seo starts --}}
+                            <div class="form-group">
+                                {!! Form::label('meta_title', 'Meta Title',['class'=>'control-label']) !!}
+                                {!! Form::text('meta_title',$data->meta_title, ["class"=>'form-control' ,"placeholder"=>'Enter Meta Title']) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('meta_keys', 'Meta Keywords',['class'=>'control-label']) !!}
+                                {!! Form::text('meta_keys',$data->meta_keys,["class"=>'form-control',"placeholder"=>"Enter Meta Keywords"]) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('meta_desc', 'Meta Description',['class'=>'control-label']) !!}
+                                {!! Form::text('meta_desc',$data->meta_desc,["class"=>'form-control',"placeholder"=>"Enter Meta Description"]) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('meta_robot', 'Meta Robots',['class'=>'control-label']) !!}
+                                {!! Form::text('meta_robot',$data->meta_robot,["class"=>'form-control',"placeholder"=>"Enter Meta Robots"]) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('canonical', 'Canonical',['class'=>'control-label']) !!}
+                                {!! Form::text('canonical',$data->canonical,["class"=>'form-control',"placeholder"=>"Enter Meta Canonical"]) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('Social Shared Title', 'Social Shared Title',['class'=>'control-label']) !!}
+                                {!! Form::text('title',$data->title,["class"=>'form-control',"placeholder"=>"Enter Social Shared Title"]) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('Social Shared Description', 'Social Shared Description',['class'=>'control-label']) !!}
+                                {!! Form::text('desc',$data->desc,["class"=>'form-control',"placeholder"=>"Enter Social Shared Description"]) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('Social Shared Image URL', 'Social Shared Image URL',['class'=>'control-label']) !!}
+                                {!! Form::text('image',$data->image,["class"=>'form-control',"placeholder"=>"Enter Social Shared Image URL"]) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('Social Shared URL', 'Social Shared URL',['class'=>'control-label']) !!}
+                                {!! Form::text('url',$data->url,["class"=>'form-control',"placeholder"=>"Enter Social Shared URL"]) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('other_meta', 'Other Scripts (Don\'t include script tag)',['class'=>'control-label']) !!}
+                                {!! Form::textarea('other_meta',$data->other_meta,["class"=>'form-control',"placeholder"=>"Enter Other Meta"]) !!}
+                            </div>
+                            {{--- seo ends --}}
                             <div class="form-group">
                                 <input type="submit" value="Save" id="saveLogo1" class="btn noLeftMargin btn-primary pull-left">
                             </div>
@@ -267,7 +310,6 @@ $(document).ready(function () {
                     // $("#barerr" + id).text('Please wait');
                 },
                 success: function (res) {
-                    //  alert(res);
                     window.location.href = "";
                 }
             });

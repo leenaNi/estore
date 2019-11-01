@@ -25,7 +25,7 @@
             <li class="{{ in_array(Route::currentRouteName(),['admin.category.add']) ? 'active' : '' }}"><a href="{!! route('admin.category.add',['parent_id'=>Input::get('parent_id')]) !!}"  aria-expanded="false">Category Add/Edit</a></li>
             @endif
             @if($feature['sco'] == 1)
-            <li class="{{ in_array(Route::currentRouteName(),['admin.category.catSeo']) ? 'active' : '' }} {{$storeViesion}}"><a href="{!! (Input::get('id'))?route('admin.category.catSeo',['id'=>Input::get('id')]):'#' !!}"      aria-expanded="false">SEO</a></li>
+            <li class="{{ in_array(Route::currentRouteName(),['admin.category.catSeo']) ? 'active' : '' }}"><a href="{!! (Input::get('id'))?route('admin.category.catSeo',['id'=>Input::get('id')]):'#' !!}"      aria-expanded="false">SEO</a></li>
             @endif
         </ul>
 

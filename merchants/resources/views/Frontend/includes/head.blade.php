@@ -1,8 +1,25 @@
+<?php
+$jsonString = App\Library\Helper::getSettings();
+$data = (object) $jsonString;
+$meta_title = $data->meta_title;
+$meta_keys = $data->meta_keys;
+$meta_desc = $data->meta_desc;
+$canonical = $data->canonical;
+$title = $data->title;
+$desc = $data->desc;
+$image = $data->image;
+$url = $data->url;
+$other_meta = $data->other_meta;
+?>
+@section('title',$meta_title)
+@section('og-title',$meta_title)
+@section('meta-description',$meta_desc)
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="author" content="Veestores" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="@yield('meta-description')">
 <meta name="og:image" content="@yield('og:image')">
+
 
 <!--<meta property="og:image" content="http://cartini.cruxservers.in/public/Admin/uploads/layout/20180131131939.jpg"/>-->
 <link rel="stylesheet" href="{{ Config('constants.frontendThemeCssCommonPath').'/style.css' }}" type="text/css" />	

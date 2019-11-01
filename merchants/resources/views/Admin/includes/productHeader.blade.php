@@ -45,7 +45,7 @@
      <li class="{{ in_array(Route::currentRouteName(),['admin.products.upsell.product']) ? 'active' : '' }}"><a href="{!! route('admin.products.upsell.product',['id'=>$id]) !!}"  aria-expanded="false">You may also like</a></li>
      @endif
      @if($feature['sco'] == 1)
-    <li class="{{ in_array(Route::currentRouteName(),['admin.products.prodSeo']) ? 'active' : '' }} {{$storeViesion}}"><a href="{!! route('admin.products.prodSeo',['id'=>$id]) !!}"  aria-expanded="false"> SEO </a></li>
+    <li class="{{ in_array(Route::currentRouteName(),['admin.products.prodSeo']) ? 'active' : '' }}"><a href="{!! route('admin.products.prodSeo',['id'=>$id]) !!}"  aria-expanded="false"> SEO </a></li>
     @endif
    
 
