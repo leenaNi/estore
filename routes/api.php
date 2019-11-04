@@ -142,6 +142,12 @@ Route::group(['namespace' => 'Admin'], function () {
           
             // Route::get('/search-user', ['as' => 'admin.coupons.searchUser', 'uses' => 'CouponsController@searchUser']);
         });
+
+
+            Route::group(['prefix' => 'newsletter'], function() {
+              Route::get('/', ["as" => "admin.newsletter.view", "uses" => "ApiNewsletterController@index"]);
+              Route::post('/saveNewsLetter', ["as" => "admin.newsletter.save", "uses" => "ApiNewsletterController@saveNewsLetter"]);
+            });
         
             Route::group(['prefix' => 'loyalty'], function() {
             Route::get('/', array('as' => 'admin.loyalty.view', 'uses' => 'ApiCouponController@getLoyalty'));
