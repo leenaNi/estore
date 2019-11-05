@@ -6972,7 +6972,7 @@ INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`)
 
 INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`) VALUES (NULL, '13', '2');
 
-
+UPDATE `tblprfx_general_setting` SET `status` = '1' WHERE `tblprfx_general_setting`.`id` in (13,50);
 --
 -- Indexes for dumped tables
 --
