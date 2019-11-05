@@ -33,7 +33,7 @@ class RouteServiceProvider extends ServiceProvider {
      * @return void
      */
     public function map() {
-        $req_uri = $_SERVER['REQUEST_URI'];
+        $req_uri = \URL::to('/');
        
         $path = explode('/admin', $req_uri);
         

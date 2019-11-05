@@ -39,7 +39,7 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
     Route::get('/contact_us', array('as' => 'contactUs1', 'uses' => 'HomeController@contactUs1'));
     Route::any('/home-edit', ['as' => 'updateHomeSettings', 'uses' => 'HomeEditController@updateStoreSettings']);
     Route::any('/home-banner-add', ['as' => 'addHomeBanner', 'uses' => 'HomeEditController@addHomeBanner']);
-    Route::any('/home-banner-edit', ['as' => 'updateHomeBanner', 'uses' => 'HomeEditController@updateHomeBanner']);
+    Route::any('/home-banner-edit', ['as' => 'updateHomeBanner', 'uses' => 'HomeEditController@updateHomeBanner']); 
 //Route::group(array('before' => 'auth.account'), function() {
     Route::group(['prefix' => 'myaccount', 'middleware' => ['web', 'auth']], function() {
         Route::get('/', array('as' => 'myProfile', 'uses' => 'UserController@my_profile'));
@@ -92,14 +92,18 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
     Route::any('/order-without-product', ['as' => 'orderWithoutProduct', 'uses' => 'CheckoutController@orderWithoutProduct']);
     Route::post('/save-order-without-product', ['as' => 'saveOrderwithproduct', 'uses' => 'CheckoutController@saveOrderwithproduct']);
     Route::post('/check-loyalty', ['as' => 'checkLoyalty', 'uses' => 'CheckoutController@checkLoyalty']);
+    Route::any('/change_default_status', ['as' => 'change_default_status', 'uses' => 'CheckoutController@change_default_status']);
     Route::any('/check-stock/', ['as' => 'checkStock', 'uses' => 'ProductController@checkStock']);
 
     Route::any('/fb_details_checkout_new', array('as' => 'fb_details_checkout_new', 'uses' => 'CheckoutController@fb_details_checkout_new'));
     Route::any('/save_address', array('as' => 'save_address', 'uses' => 'CheckoutController@save_address'));
+    Route::any('/save_billing_address', array('as' => 'save_billing_address', 'uses' => 'CheckoutController@save_billing_address'));
     Route::any('/get_address', array('as' => 'get_address', 'uses' => 'CheckoutController@get_address'));
     Route::any('/get_zone', array('as' => 'get_zone', 'uses' => 'CheckoutController@get_zone'));
+
     Route::any('/get_country_zone', array('as' => 'get_country_zone', 'uses' => 'CheckoutController@get_country_zone'));
     Route::any('/del_address', array('as' => 'del_address', 'uses' => 'CheckoutController@del_address'));
+    Route::any('/del_bill_address', array('as' => 'del_bill_address', 'uses' => 'CheckoutController@del_bill_address'));
     Route::any('/sel_address', array('as' => 'sel_address', 'uses' => 'CheckoutController@sel_address'));
     Route::any('/getBillSummary', array('as' => 'getBillSummary', 'uses' => 'CheckoutController@getBillSummary'));
     Route::any('/check_voucher/{id?}', array('as' => 'check_voucher', 'uses' => 'CheckoutController@check_voucher'));
@@ -116,6 +120,7 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
     Route::get('/paypal_cancel', array('as' => 'paypal_cancel', 'uses' => 'CheckoutController@paypal_cancel'));
     Route::any('/toPayment', array('as' => 'toPayment', 'uses' => 'CheckoutController@toPayment'));
     Route::any('/get_loggedindata', array('as' => 'get_loggedindata', 'uses' => 'CheckoutController@get_loggedindata'));
+    Route::any('/get_billingdata', array('as' => 'get_billingdata', 'uses' => 'CheckoutController@get_billingdata'));
     Route::any('/update_pay', array('as' => 'update_pay', 'uses' => 'CheckoutController@update_pay'));
     Route::any('/get_g_plus_login', array('as' => 'get_g_plus_login', 'uses' => 'CheckoutController@get_g_plus_login'));
     Route::any('/apply_gift_wrap', array('as' => 'apply_gift_wrap', 'uses' => 'CheckoutController@apply_gift_wrap'));
@@ -142,6 +147,9 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
     Route::any('/get-config-prod', ['as' => 'getConfigProd', 'uses' => 'ProductController@getConfigProd']);
     Route::any('/get-avail-prod', ['as' => 'getAvailProd', 'uses' => 'ProductController@getAvailProd']);
     Route::any('/get-prod-varient', ['as' => 'get-prod-varient', 'uses' => 'ProductController@getProdVarient']);
+    Route::any('/get_billing_address', array('as' => 'get_billing_address', 'uses' => 'UserController@get_billing_address'));
+    Route::any('/get_shipping_address', array('as' => 'get_shipping_address', 'uses' => 'UserController@get_shipping_address'));
+    Route::any('/get_states', array('as' => 'get_states', 'uses' => 'UserController@get_zone'));
     Route::post('/save-wishlist', ['as' => 'addToWishlist', 'uses' => 'UserController@addToWishlist']);
     Route::post('/remove-wishlist', ['as' => 'removeWishlist', 'uses' => 'UserController@removeWishlist']);
     Route::post('/get-sub-prod', ['as' => 'getSubProd', 'uses' => 'ProductController@getSubProd']);

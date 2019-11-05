@@ -1,5 +1,26 @@
 @extends('Admin.layouts.default')
 @section('content')
+<style type="text/css">
+    .adrs_col{
+    background: none;
+    max-height: 390px;
+    margin-bottom: 30px;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    }
+    h1.bxtitle {
+    padding: 5px 10px;
+    margin: 0;
+    background: #fff;
+    color: #000;
+    border-bottom: 1px #eee solid;
+}
+.adrs_col h1 {
+    font-size: 25px !important;
+
+}
+
+</style>
 <section class="content-header">
     <h1>
         Customers
@@ -82,8 +103,94 @@
                                 {!! Form::submit('Submit',["class" => "btn btn-primary pull-right", "id" => " submit"]) !!}
                                 {!! Form::close() !!}     
                             </div>
-                        </div>
+                        </div> 
                         </form>
+
+                            <div class="row">
+                                    <div class="col-md-12">
+                                   <label>BILLING ADDRESSES</label>
+                                </div>
+                                    <!--   -->
+                                    <div id='forBillAddress' class="shippingadd">
+                                        @php
+                                        $count = 1;
+                                        @endphp
+                                        @foreach($BillingAddress as $sadddress)
+                                        
+                                        <div class="col-md-4">
+                                            <div class="adrs_col"> 
+                                                <h1 class="bxtitle">
+                                                    <div class="pull-left"><label for="radio2" ><input type="radio" value="{{$sadddress->id}}" name="default_billing" {{$sadddress->is_default_billing==1?'checked':''}} disabled><label style="font-size: medium;">Address ({{$count}})</label> </label></div><div class="pull-right"> 
+                                                        <a href="#addNewBillAddForm" onclick="editAddress('{{$sadddress->id}}','shipping')" class="box_action"><i class="icon-edit"></i> </a><a href="" onclick="deleteAdd('{{$sadddress->id}}','shipping');" class="box_action"><i class="icon-trash"></i> </a></div>
+                                                        
+                                                    <div class="clearfix"></div></h1>
+                                                <div class="adrs_cont"  style="cursor:pointer;padding: 15px">
+                                                    <p>{{$sadddress->firstname}} {{$sadddress->lastname}}</p> 
+                                                    <p>{{$sadddress->address1}}</p>
+                                                    <p>{{$sadddress->address2}}</p>
+                                                    @php
+                                                    $country = App\Models\Country::find($sadddress->country_id);
+                                                    $zone = App\Models\Zone::find($sadddress->zone_id);
+                                                    @endphp
+                                                    <p>{{$country->name}}</p>
+                                                    <p>{{$zone->name}}</p> 
+                                                    <p>{{$sadddress->city}}</p> 
+                                                    <p>{{$sadddress->thana}} - {{$sadddress->postcode}}</p>
+                                                    <p>Mobile No:{{$sadddress->phone_no}}</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        @php
+                                        $count++;
+                                        @endphp
+                                        @endforeach
+                                    </div>
+                                  
+                                </div>
+                       
+                                <div class="row">
+                                    <div class="col-md-12">
+                                   <label>SHIPPING ADDRESSES</label>
+                                </div>
+                                    <!--   -->
+                                    <div id='forBillAddress' class="shippingadd">
+                                        @php
+                                        $count = 1;
+                                        @endphp
+                                        @foreach($shippingAddress as $sadddress)
+                                        
+                                        <div class="col-md-4">
+                                            <div class="adrs_col"> 
+                                                <h1 class="bxtitle">
+                                                    <div class="pull-left"><label for="radio2" ><input type="radio" value="{{$sadddress->id}}" name="default_shipping" {{$sadddress->is_default_shipping==1?'checked':''}} disabled><label style="font-size: medium;">Address ({{$count}})</label> </label></div><div class="pull-right"> 
+                                                        <a href="#addNewBillAddForm" onclick="editAddress('{{$sadddress->id}}','shipping')" class="box_action"><i class="icon-edit"></i> </a><a href="" onclick="deleteAdd('{{$sadddress->id}}','shipping');" class="box_action"><i class="icon-trash"></i> </a></div>
+                                                        
+                                                    <div class="clearfix"></div></h1>
+                                                <div class="adrs_cont"  style="cursor:pointer;padding: 15px">
+                                                    <p>{{$sadddress->firstname}} {{$sadddress->lastname}}</p> 
+                                                    <p>{{$sadddress->address1}}</p>
+                                                    <p>{{$sadddress->address2}}</p>
+                                                    @php
+                                                    $country = App\Models\Country::find($sadddress->country_id);
+                                                    $zone = App\Models\Zone::find($sadddress->zone_id);
+                                                    @endphp
+                                                    <p>{{$country->name}}</p>
+                                                    <p>{{$zone->name}}</p> 
+                                                    <p>{{$sadddress->city}}</p> 
+                                                    <p>{{$sadddress->thana}} - {{$sadddress->postcode}}</p>
+                                                    <p>Mobile No:{{$sadddress->phone_no}}</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        @php
+                                        $count++;
+                                        @endphp
+                                        @endforeach
+                                    </div>
+                                  
+                                </div>
                     </div>
                     </div>
                 </div>

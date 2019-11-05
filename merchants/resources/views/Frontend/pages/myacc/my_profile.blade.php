@@ -1,5 +1,5 @@
 @extends('Frontend.layouts.default')
-
+ 
 @section('content')
 <!--<div class="page-heading bc-type-3">
     <div class="bc-type-profile bg-pos-crumb">

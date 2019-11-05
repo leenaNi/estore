@@ -5,6 +5,9 @@
     .orderReturnSelect{
         width:22%;
     }
+    .adrs_cont p{
+        line-height: 1.1 !important;
+    }   
 </style>
 <section id="page-title">
     <div class="container clearfix">
@@ -59,6 +62,8 @@
                     <ul class="tab-nav clearfix" role="tablist">
                         <li><a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1"> My Profile</a>
                         </li>
+                        <li><a href="#tabs-5" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-4"> Address Book</a>
+                        </li>
                         <li><a href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-3"> My Orders</a>
                         </li>
                         <li><a href="#tabs-3" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-4"> My Wishlist</a>
@@ -96,6 +101,237 @@
 
                                 <div class="col_full noMobBottMargin nobottommargin">
                                     <button class="button nomargin">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-content clearfix" id="tabs-5">
+                            <p class="update-success" style="color:green">  </p>
+                            <div class="col_full nobottommargin"> <span id="profileUpdate" style="color: #1B2987"></span> </div>
+                            <div class="panel-body">
+                            <div class="shpng_addrs_col">
+                                <h5>BILLING ADDRESS</h5>
+                                <div class="row">
+                                    <div id='forBillAddress' class="billadd" >
+                                        @php
+                                        $count = 1;
+                                        @endphp
+                                        @foreach($BillingAddress as $badddress)
+                                        
+                                        <div class="col-md-4">
+                                            <div class="adrs_col"> 
+                                                <h1 class="bxtitle">
+                                                    <div class="pull-left"><label class="addL m100none"><input type="radio" name="default_billing" {{$badddress->is_default_billing==1?'checked':''}} value="{{$badddress->id}}"><span></span>Address ({{$count}}) </label></div><div class="pull-right"> 
+                                                        <a href="#addNewBillAddForm" onclick="editAddress('{{$badddress->id}}','billing')"  class="box_action"><i class="icon-edit"></i> </a><a href=""  onclick="deleteAdd('{{$badddress->id}}','billing')" class="box_action"><i class="icon-trash"></i> </a></div>
+                                                    <div class="clearfix"></div></h1>
+                                                <div class="adrs_cont"  style="cursor:pointer;">
+                                                    <p>{{$badddress->firstname}} {{$badddress->lastname}}</p> 
+                                                    <p>{{$badddress->address1}}</p>
+                                                    <p>{{$badddress->address2}}</p>
+                                                    @php
+                                                    $country = App\Models\Country::find($badddress->country_id);
+                                                    $zone = App\Models\Zone::find($badddress->zone_id);
+                                                    @endphp
+                                                    <p>{{$country->name}}</p>
+                                                    <p>{{$zone->name}}</p> 
+                                                    <p>{{$badddress->city}}</p> 
+                                                    <p>{{$badddress->thana}} - {{$badddress->postcode}}</p>
+                                                    <p>Mobile No:{{$badddress->phone_no}}</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        @php
+                                        $count++;
+                                        @endphp
+                                        @endforeach
+                                    </div>
+                                    <!-- <span id="editAdd"></span> -->
+                                    <div class="col-md-4" id="continueStep">
+                                        <div class="add_adrs_col">
+                                            <a onclick="showNewAddDiv('billing');">
+                                                <i class="icon-line-circle-plus plus_icon"></i><br>
+                                                Add Address 
+                                            </a>
+                                        </div>
+                                    </div>  
+                                    <div class="clearfix"></div>
+                                </div>
+                                <form class="nobottommargin" id="BillingAddressForm"  method="post" novalidate="novalidate" style="display: none">
+                                <input type="hidden" name="id">
+                                <div class="col_half">
+                                    <label for="template-contactform-name">First Name <small>*</small>
+                                    </label>
+                                    <input type="text" name="firstname" id="bfirstname" value="{{$user->firstname}}" class="sm-form-control">
+                                    <b><div id="firstname_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">Last Name </label>
+                                    <input type="text" name="lastname" id="blastname" value="{{$user->lastname}}" class="sm-form-control"> 
+                                </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-name">Address Line1 <small>*</small>
+                                    </label>
+                                    <input type="text" name="address1" id="baddress1" value="" class="sm-form-control">
+                                    <b><div id="baddress1_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">Address Line2 </label>
+                                    <input type="text" name="address2" id="baddress2" value="" class="sm-form-control"> 
+                                </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-name">Country </label><select name="country_id" id="bcountry_id" class="sm-form-control"required="true" onchange="getZones(this.value)">
+                                        <option value="">Please Select </option>
+                                        @foreach($countries as $country)
+                                        <option value="{{$country->id}}">{{$country->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">State </label>
+                                    <select name="state" id="state" class="sm-form-control"required="true" >
+                                        <option value="">Please Select </option>
+                                        @foreach($states as $state)
+                                        <option value="{{$state->id}}">{{$state->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-name">City <small>*</small>
+                                    </label>
+                                    <input type="text" name="city" id="bcity" value="" class="sm-form-control">
+                                    <b><div id="firstname_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">Thana  <small>*</small></label>
+                                    <input type="text" name="thana" id="bthana" value="" class="sm-form-control"> 
+                                </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-name">Pincode <small>*</small>
+                                    </label>
+                                    <input type="text" name="postal_code" id="bpincode" value="" class="sm-form-control">
+                                    <b><div id="firstname_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">Mobile No.  <small>*</small></label>
+                                    <input type="text" name="phone_no" id="bmobile" value="" class="sm-form-control"> 
+                                </div>
+
+                                <div class="col_full noMobBottMargin nobottommargin">
+                                    <input type="button" value="Submit" class="button nomargin billingbtn">
+                                </div>
+                            </form>
+                            <br>
+                                <h5>SHIPPING ADDRESS</h5>
+                                <div class="row">
+                                    <div id='forBillAddress' class="shippingadd">
+                                        @php
+                                        $count = 1;
+                                        @endphp
+                                        @foreach($ShippingAddress as $sadddress)
+                                        
+                                        <div class="col-md-4">
+                                            <div class="adrs_col"> 
+                                                <h1 class="bxtitle">
+                                                    <div class="pull-left"><label class="addL m100none" for="radio2" ><input type="radio" value="{{$sadddress->id}}" name="default_shipping" {{$sadddress->is_default_shipping==1?'checked':''}}><span></span>Address ({{$count}}) </label></div><div class="pull-right"> 
+                                                        <a href="#addNewBillAddForm" onclick="editAddress('{{$sadddress->id}}','shipping')" class="box_action"><i class="icon-edit"></i> </a><a href="" onclick="deleteAdd('{{$sadddress->id}}','shipping');" class="box_action"><i class="icon-trash"></i> </a></div>
+                                                        
+                                                    <div class="clearfix"></div></h1>
+                                                <div class="adrs_cont"  style="cursor:pointer;">
+                                                    <p>{{$sadddress->firstname}} {{$sadddress->lastname}}</p> 
+                                                    <p>{{$sadddress->address1}}</p>
+                                                    <p>{{$sadddress->address2}}</p>
+                                                    @php
+                                                    $country = App\Models\Country::find($sadddress->country_id);
+                                                    $zone = App\Models\Zone::find($sadddress->zone_id);
+                                                    @endphp
+                                                    <p>{{$country->name}}</p>
+                                                    <p>{{$zone->name}}</p> 
+                                                    <p>{{$sadddress->city}}</p> 
+                                                    <p>{{$sadddress->thana}} - {{$sadddress->postcode}}</p>
+                                                    <p>Mobile No:{{$sadddress->phone_no}}</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        @php
+                                        $count++;
+                                        @endphp
+                                        @endforeach
+                                    </div>
+                                    <!-- <span id="editAdd"></span> -->
+                                    <div class="col-md-4" id="continueStep">
+                                        <div class="add_adrs_col">
+                                            <a onclick="showNewAddDiv('shipping');">
+                                                <i class="icon-line-circle-plus plus_icon"></i><br>
+                                                Add Address 
+                                            </a>
+                                        </div>
+                                    </div>  
+                                    <div class="clearfix"></div>
+                                </div>
+                            <form class="nobottommargin" id="ShippingAddressForm"  method="post" novalidate="novalidate" style="display: none">
+                                <input type="hidden" name="id">
+                                <div class="col_half">
+                                    <label for="template-contactform-name">First Name <small>*</small>
+                                    </label>
+                                    <input type="text" name="firstname" id="sfirstname" value="{{$user->firstname}}" class="sm-form-control">
+                                    <b><div id="firstname_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">Last Name </label>
+                                    <input type="text" name="lastname" id="slastname" value="{{$user->lastname}}" class="sm-form-control"> 
+                                </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-name">Address Line1 <small>*</small>
+                                    </label>
+                                    <input type="text" name="address1" id="saddress1" value="" class="sm-form-control">
+                                    <b><div id="saddress1_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">Address Line2 </label>
+                                    <input type="text" name="address2" id="saddress2" value="" class="sm-form-control"> 
+                                </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-name">Country </label><select name="country_id" id="scountry_id" class="sm-form-control"required="true" onchange="getZones(this.value)">
+                                        <option value="">Please Select </option>
+                                        @foreach($countries as $country)
+                                        <option value="{{$country->id}}">{{$country->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">State </label>
+                                    <select name="state" id="sstate" class="sm-form-control"required="true" >
+                                        <option value="">Please Select </option>
+                                        @foreach($states as $state)
+                                        <option value="{{$state->id}}">{{$state->name}}</option>
+                                        @endforeach
+                                        
+                                    </select>
+                                </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-name">City <small>*</small>
+                                    </label>
+                                    <input type="text" name="city" id="scity" value="" class="sm-form-control">
+                                    <b><div id="firstname_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">Thana  <small>*</small></label>
+                                    <input type="text" name="thana" id="sthana" value="" class="sm-form-control"> 
+                                </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-name">Pincode <small>*</small>
+                                    </label>
+                                    <input type="text" name="postal_code" id="spincode" value="" class="sm-form-control">
+                                    <b><div id="firstname_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-name">Mobile No.  <small>*</small></label>
+                                    <input type="text" name="phone_no" id="smobile" value="" class="sm-form-control"> 
+                                </div>
+
+                                <div class="col_full noMobBottMargin nobottommargin">
+                                    <button class="button nomargin shippingaddressbtn">Submit</button>
                                 </div>
                             </form>
                         </div>
@@ -227,7 +463,165 @@
 @stop
 @section("myscripts")
 
-<script>
+<script type="text/javascript">
+    $.ajaxSetup({
+
+        headers: {
+
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+
+        }
+
+    });
+    $(".billingbtn").click(function(e){
+
+        e.preventDefault();
+        var formdata = $("#BillingAddressForm").serialize();
+        $.ajax({
+           type:'POST',
+           url:domain + '/save_billing_address',
+           data:formdata,
+           success:function(data){
+              $("#BillingAddressForm")[0].reset();
+              $("#BillingAddressForm").hide();
+              billing_addresses();
+           }
+        });
+    });
+
+    
+    $(".shippingaddressbtn").click(function(e){
+
+        e.preventDefault();
+        var formdata = $("#ShippingAddressForm").serialize();
+        //alert(formdata);
+        $.ajax({
+           type:'POST',
+           url:domain + '/save_address',
+           data:formdata,
+           success:function(data){
+              $("#ShippingAddressForm")[0].reset();
+              $("#ShippingAddressForm").hide();
+              shipping_addresses();
+           }
+        });
+    });
+
+    $("input[name='default_billing']").on("change", function () {
+       var id = this.value;
+       $.ajax({
+            type: "POST",
+            url: domain + "/change_default_status",
+            data: {addid: id,type:1},
+            cache: false,
+            success: function (data) {
+                alert('success');
+            }
+        });
+    });
+
+    $("input[name='default_shipping']").on("change", function () {
+       var id = this.value;
+       $.ajax({
+            type: "POST",
+            url: domain + "/change_default_status",
+            data: {addid:id,type:2},
+            cache: false,
+            success: function (data) {
+                alert('success');
+            }
+        });
+    });
+
+    function editAddress(id,type)
+    {
+        if(type=='billing')
+        {
+            $("#BillingAddressForm").show();
+        }
+        else if(type=='shipping')
+        {
+            $("#ShippingAddressForm").show();
+        }
+        $.ajax({
+            type: "POST",
+            url: domain + "/get_address",
+            data: {addid: id},
+            cache: false,
+            success: function (data) {
+                //alert(data.addData.firstname);
+                if(type=='billing')
+                {
+                    $("#bfirstname").val(data.addData.firstname);
+                    $("#blastname").val(data.addData.lastname);
+                    $("#baddress1").val(data.addData.address1);
+                    $("#baddress2").val(data.addData.address2);
+                    $("#bcity").val(data.addData.city);
+                    $("#bthana").val(data.addData.thana);
+                    $("#bpincode").val(data.addData.postcode);
+                    $("#bmobile").val(data.addData.phone_no);
+                    $("#bcountry_id").val(data.addData.country_id);
+                    $("#state").val(data.addData.zone_id);
+                    $("input[name='id']").val(data.addData.id);
+                }
+                else if(type=='shipping')
+                {
+                    $("#sfirstname").val(data.addData.firstname);
+                    $("#slastname").val(data.addData.lastname);
+                    $("#saddress1").val(data.addData.address1);
+                    $("#saddress2").val(data.addData.address2);
+                    $("#scity").val(data.addData.city);
+                    $("#sthana").val(data.addData.thana);
+                    $("#spincode").val(data.addData.postcode);
+                    $("#smobile").val(data.addData.phone_no);
+                    $("#scountry_id").val(data.addData.country_id);
+                    $("#sstate").val(data.addData.zone_id);
+                    $("input[name='id']").val(data.addData.id);
+                }
+            }
+        });
+    }
+
+    function getZones(countryid)
+    {
+        $.ajax({
+            type: "POST",
+            url: domain + "/get_states",
+            data: {country: countryid},
+            cache: false,
+            success: function (data) {
+                $("#state").html(data);
+                $("#sstate").html(data);
+            }
+        });
+    }
+
+    function billing_addresses()
+    {
+        $.ajax({
+            type: "POST",
+            url: domain + "/get_billing_address",
+            
+            cache: false,
+            success: function (data) {
+                $(".billadd").html(data);
+            }
+        });
+    }
+
+    function shipping_addresses()
+    {
+        $.ajax({
+            type: "POST",
+            url: domain + "/get_shipping_address",
+            
+            cache: false,
+            success: function (data) {
+                $(".shippingadd").html(data);
+            }
+        });
+    }
+
     $(document).on("click", '.closeModal', function () {
         $(".viewDetailModal").modal("hide");
     })
@@ -311,7 +705,50 @@
         return false;
     });
 
+    function deleteAdd(addid,type) {
+        if(type = 'billing')
+        {
+            url_path = domain + "/del_bill_address";
+        }
+        else if(type = 'shipping')
+        {
+            url_path = domain + "/del_address";
+        }
+        chk = confirm("Do you want to delete this address?");
 
+        if (chk) {
+            $.ajax({
+                type: "POST",
+                url: url_path,
+                data: {addid: addid},
+                success: function (data) {
+                    billing_addresses();
+                    shipping_addresses();
+                }
+            });
+        } else {
+            return false;
+        }
+    }
+
+    function showNewAddDiv(addtype) {
+        if(addtype=='billing')
+        {
+            $("#BillingAddressForm")[0].reset();
+            $("#BillingAddressForm").show();
+            $("#postal_code_checkout_new_add_form").text('');
+            $(".pincodeMessage").text("");
+            // $("#forBillAddress input[type='radio']").each(function () {
+            //     $(this).prop('checked', false);
+            // });
+        }
+        else
+        {
+            $("#ShippingAddressForm")[0].reset();
+            $("#ShippingAddressForm").show();
+        }
+        
+    }
 
     $("#resetPasswordAccount").validate({
         // Specify the validation rules

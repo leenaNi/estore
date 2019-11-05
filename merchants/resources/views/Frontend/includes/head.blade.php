@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="@yield('meta-description')">
 <meta name="og:image" content="@yield('og:image')">
-
+<meta name="csrf-token" content="{{ csrf_token() }}" />
 <!--<meta property="og:image" content="http://cartini.cruxservers.in/public/Admin/uploads/layout/20180131131939.jpg"/>-->
 <link rel="stylesheet" href="{{ Config('constants.frontendThemeCssCommonPath').'/style.css' }}" type="text/css" />	
 <link rel="stylesheet" href="{{ Config('constants.frontendThemeCssCommonPath').'/responsive.css' }}" type="text/css" />

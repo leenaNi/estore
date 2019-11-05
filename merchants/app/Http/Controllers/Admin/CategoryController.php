@@ -12,7 +12,7 @@ use App\Models\CatalogImage;
 use App\Models\Tax;
 use App\Models\Product;
 use App\Models\HasTaxes;
-use App\Models\Sizechart;
+use App\Models\Sizechart; 
 use Illuminate\Http\Request;
 use DB;
 use Session;

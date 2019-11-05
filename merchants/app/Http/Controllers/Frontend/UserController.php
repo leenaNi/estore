@@ -23,10 +23,12 @@ use Session;
 use App\Models\WishList;
 use App\Models\Coupon;
 use App\Models\CancelOrder;
+use App\Models\Country;
+use App\Models\Zone;
 use Hash;
 use Mail;
 use DB;
-use Response;
+use Response; 
 
 class UserController extends Controller {
 
@@ -51,12 +53,97 @@ class UserController extends Controller {
         $orderReturnReason = OrderReturnReason::pluck('reason', 'id');
         $user = User::find(@Session::get('loggedin_user_id'));
         $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
+
+        $countries = @Country::where('status',1)->get();
+        $ShippingAddress = User::find(Session::get('loggedin_user_id'))->addresses()->get();
+        $BillingAddress = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
+        $countries = Country::where("status", "=", 1)->get(['id', 'name']);
+        $zoneData = Zone::where("status", "=", 1)->get(['id', 'name']);
         //  dd($userWishlist);
         $orders = Order::where("user_id", "=", @Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->orderBy('id', 'desc')->get();
         //$ordersCurrency = HasCurrency::where('id',$orders->currency_id)->first();
         $viewname = Config('constants.frontendMyAccView') . '.myaccount';
-        $data = ['orders' => $orders, 'user' => $user, 'wishlist' => $userWishlist, 'orderReturnReason' => $orderReturnReason];
+        $data = ['orders' => $orders, 'user' => $user, 'wishlist' => $userWishlist, 'orderReturnReason' => $orderReturnReason,'countries'=>$countries,'ShippingAddress'=>$ShippingAddress,'BillingAddress'=>$BillingAddress,'countries'=>$countries,'states'=>$zoneData];
         return Helper::returnView($viewname, $data);
+    }
+
+    public function get_zone() {
+        $html = '<option value="">Please Select </option>';
+        if (!empty(Input::get('country'))) {
+            $country_id = Country::where("id", "=", Input::get('country'))->get(['id'])->first();
+
+            $zone = Zone::where("country_id", "=", $country_id->id)->get(['id', 'name']);
+            foreach ($zone as $key => $state) {
+                $html .= '<option value="'.$state->id.'">'.$state->name.'</option>';
+            }
+        } else {
+            $html = '<option value="">No States Found </option>';
+        }
+        return $html;
+    }
+
+    public function get_billing_address()
+    {
+        $html = '';
+        $addressesData = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
+        foreach ($addressesData as $key => $badddress) {
+            $html .= '<div class="col-md-4">
+                    <div class="adrs_col"> 
+                        <h1 class="bxtitle">
+                            <div class="pull-left"><label class="addL m100none" for="radio2" ><input type="radio" name="default_billing" '.($badddress->is_default_billing==1?'checked':'').'><span></span>Address  </label></div><div class="pull-right"> 
+                                <a href="#addNewBillAddForm" onclick="editAddress("'.$badddress->id.'","billing")" class="box_action"><i class="icon-edit"></i> </a><a href=""  onclick="deleteAdd('.$badddress->id.',billing)" class="box_action"><i class="icon-trash"></i> </a></div>
+                            <div class="clearfix"></div></h1>
+                        <div class="adrs_cont"  style="cursor:pointer;">';
+            $html .=    '<p>'.$badddress->firstname.' '.$badddress->lastname.'</p>
+                        <p>'.$badddress->address1.'</p>
+                        <p>'.$badddress->address2.'</p>';
+                           
+                            $country = Country::find($badddress->country_id);
+                            $zone = Zone::find($badddress->zone_id);
+                           
+            $html .=        '<p>'.$country->name.'</p>
+                            <p>'.$zone->name.'</p> 
+                            <p>'.$badddress->city.'</p> 
+                            <p>'.$badddress->thana. ' - '.$badddress->postcode.'</p>
+                            <p>Mobile No:'.$badddress->phone_no.'</p>
+                        </div>
+
+                    </div>
+                </div>';
+        }
+        return $html;
+    }
+
+    public function get_shipping_address()
+    {
+        $html = '';
+        $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
+        foreach ($addressesData as $key => $sadddress) {
+            $html .= '<div class="col-md-4">
+                    <div class="adrs_col"> 
+                        <h1 class="bxtitle">
+                            <div class="pull-left"><label class="addL m100none" for="radio2"><input type="radio" name="default_shipping" '.($sadddress->is_default_shipping==1?'checked':'').'><span></span>Address  </label></div><div class="pull-right"> 
+                                <a href="#addNewBillAddForm"  class="box_action"><i class="icon-edit"></i> </a><a href=""  onclick="deleteAdd('.$sadddress->id.',shipping);" class="box_action"><i class="icon-trash"></i> </a></div>
+                            <div class="clearfix"></div></h1>
+                        <div class="adrs_cont"  style="cursor:pointer;">';
+            $html .=    '<p>'.$sadddress->firstname.' '.$sadddress->lastname.'</p>
+                        <p>'.$sadddress->address1.'</p>
+                        <p>'.$sadddress->address2.'</p>';
+                           
+                            $country = Country::find($sadddress->country_id);
+                            $zone = Zone::find($sadddress->zone_id);
+                           
+            $html .=        '<p>'.$country->name.'</p>
+                            <p>'.$zone->name.'</p> 
+                            <p>'.$sadddress->city.'</p> 
+                            <p>'.$sadddress->thana. ' - '.$sadddress->postcode.'</p>
+                            <p>Mobile No:'.$sadddress->phone_no.'</p>
+                        </div>
+
+                    </div>
+                </div>';
+        }
+        return $html;
     }
 
     public function addToWishlist() {

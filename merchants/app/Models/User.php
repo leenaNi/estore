@@ -28,7 +28,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     public function addresses() {
-        return $this->hasMany('App\Models\Address', 'user_id', 'id')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\Address', 'user_id', 'id')->orderBy('is_default_shipping', 'desc')->where('is_shipping',1);
+    }
+
+    public function billingaddresses() {
+        return $this->hasMany('App\Models\Address', 'user_id', 'id')->orderBy('is_default_billing', 'desc')->where('is_billing',1);
     }
 
     public function orders() {
