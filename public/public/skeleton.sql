@@ -6967,6 +6967,12 @@ INSERT INTO `tblprfx_zones` (`id`, `country_id`, `name`, `code`, `status`) VALUE
 (4035, 99, 'Chhatisgarh', 'CHG', 1),
 (4036, 99, 'Jharkhand', 'JH', 1);
 
+
+INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`) VALUES (NULL, '50', '1');
+
+INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`) VALUES (NULL, '13', '2');
+
+
 --
 -- Indexes for dumped tables
 --

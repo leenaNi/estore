@@ -173,7 +173,7 @@ if (isset($data->expiry_date)) {
                             {{--- seo starts --}}
                             <div class="form-group">
                                 {!! Form::label('meta_title', 'Meta Title',['class'=>'control-label']) !!}
-                                {!! Form::text('meta_title',$data->meta_title, ["class"=>'form-control' ,"placeholder"=>'Enter Meta Title']) !!}
+                                {!! Form::text('meta_title',isset($data->meta_title) ? $data->meta_title : '', ["class"=>'form-control' ,"placeholder"=>'Enter Meta Title']) !!}
                             </div>
                             <div class="form-group">
                                 {!! Form::label('meta_keys', 'Meta Keywords',['class'=>'control-label']) !!}
