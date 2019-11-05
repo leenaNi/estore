@@ -95,6 +95,11 @@ Route::group(['namespace' => 'Admin'], function () {
           Route::post('/delete', ['as' => 'admin.apiprod.delete', 'uses' => 'ApiProductController@delete']);
           Route::post('/delete-variant', ['as' => 'admin.apiprod.deleteVariant', 'uses' => 'ApiProductController@deleteVariant']);
           Route::post('/calculate-tax', ['as' => 'admin.apiprod.calculateTaxWithDis', 'uses' => 'ApiProductController@calculateTaxWithDis']);
+          Route::get('/prodSeo', ['as' => 'admin.apiseo.view', 'uses' => 'ApiProductController@prodSeo']);
+          Route::post('/prodSaveSeo', ['as' => 'admin.apiseo.save', 'uses' => 'ApiProductController@prodSaveSeo']);
+          Route::get('/catSeo', ['as' => 'admin.apicat.catSeo', 'uses' => 'ApiProductController@catSeo']);
+          Route::post('/catSeoSave', ['as' => 'admin.apicat.saveCatSeo', 'uses' => 'ApiProductController@catSeoSave']);
+
         }); 
         
           Route::group(['prefix' => 'order'], function () {
@@ -194,6 +199,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('/get-store-setting', ['as' => 'admin.miscellaneous.getStoreSetting', 'uses' => 'MiscellaneousController@getStoreSetting']);
             Route::post('/update-store-setting', ['as' => 'admin.miscellaneous.updateStoreSetting', 'uses' => 'MiscellaneousController@updateStoreSetting']);
             Route::post('/online-pages-with-key', ['as' => 'admin.miscellaneous.getContactDetails', 'uses' => 'MiscellaneousController@getContactDetails']);
+            Route::get('/storeSeo', ['as' => 'admin.miscellaneous.seoview', 'uses' => 'MiscellaneousController@storeSeo']);
+            Route::post('/storeSaveSeo', ['as' => 'admin.miscellaneous.seosave', 'uses' => 'MiscellaneousController@storeSaveSeo']);
         });
         
             Route::group(['prefix' => 'attributes'], function() {

@@ -298,4 +298,66 @@ class MiscellaneousController extends Controller {
         $onlinePage->filePath = $filePath . $onlinePage->image;
         return $data = ['onlinePage' => $onlinePage];
     }
+
+    public function storeSeo(){
+        $marchantId = Input::get("merchantId");      
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix; 
+        $logoImage = Input::get("logoImage");
+        $storePath = base_path() . '/merchants/' . $merchant->url_key;
+        $store = Helper::getStoreSettings($storePath);
+        
+        $data['seoStoreList']['meta_title'] = $store['meta_title'];
+        $data['seoStoreList']['meta_keys'] = $store['meta_keys'];
+        $data['seoStoreList']['meta_desc'] = $store['meta_desc'];
+        $data['seoStoreList']['meta_robot'] = $store['meta_robot'];
+        $data['seoStoreList']['canonical'] = $store['canonical'];
+        $data['seoStoreList']['social_shared_title'] = $store['title'];
+        $data['seoStoreList']['social_shared_desc'] = $store['desc'];
+        $data['seoStoreList']['social_shared_image'] = $store['image'];
+        $data['seoStoreList']['social_shared_url'] = $store['url'];
+        $data['seoStoreList']['google_analytics'] = $store['other_meta'];
+
+        $viewname = "";
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function storeSaveSeo(){
+
+        $marchantId = Input::get("merchantId");      
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix; 
+        $logoImage = Input::get("logoImage");
+        $storePath = base_path() . '/merchants/' . $merchant->url_key;
+        $store = Helper::getStoreSettings($storePath);
+        
+        $store["meta_title"] = Input::get("meta_title");
+        $store["meta_keys"] = Input::get("meta_keys");
+        $store["meta_desc"] = Input::get("meta_desc");
+        $store["meta_robot"] = Input::get("meta_robot");
+        $store["canonical"] = Input::get("canonical");
+        $store["title"] = Input::get("title");
+        $store["desc"] = Input::get("desc");
+        $store["image"] = Input::get("image");
+        $store["url"] = Input::get("url");
+        $store["other_meta"] = Input::get("other_meta");
+
+        $storeList["meta_title"] = $store["meta_title"];
+        $storeList["meta_keys"] = $store["meta_keys"];
+        $storeList["meta_desc"] = $store["meta_desc"];
+        $storeList["canonical"] = $store["canonical"];
+        $storeList["title"] = $store["title"];
+        $storeList["desc"] = $store["desc"];
+        $storeList["image"] = $store["image"];
+        $storeList["url"] = $store["url"];
+        $storeList["other_meta"] = $store["other_meta"];
+        
+        $newSoter = json_encode($store);
+        Helper::updateStoreSettings($storePath, $newSoter);
+        
+        $data = ["status" => 'Success', "msg" => "Store Seo updated Successfully!.", 'store' => $storeList];
+
+        return $data;
+
+    }
 }
