@@ -1,15 +1,15 @@
 <?php
 $jsonString = App\Library\Helper::getSettings();
 $data = (object) $jsonString;
-$meta_title = $data->meta_title;
-$meta_keys = $data->meta_keys;
-$meta_desc = $data->meta_desc;
-$canonical = $data->canonical;
-$title = $data->title;
-$desc = $data->desc;
-$image = $data->image;
-$url = $data->url;
-$other_meta = $data->other_meta;
+$meta_title = isset($data->meta_title) ? $data->meta_title : '';
+$meta_keys = isset($data->meta_keys) ? $data->meta_keys : '';
+$meta_desc = isset($data->meta_desc) ? $data->meta_desc : '';
+$canonical = isset($data->canonical) ? $data->canonical : '';
+$title = isset($data->title) ? $data->title : '';
+$desc = isset($data->desc) ? $data->desc : '';
+$image = isset($data->image) ? $data->image : '';
+$url = isset($data->url) ? $data->url : '';
+$other_meta = isset($data->other_meta) ? $data->other_meta : '';
 ?>
 @section('title',$meta_title)
 @section('og-title',$meta_title)
