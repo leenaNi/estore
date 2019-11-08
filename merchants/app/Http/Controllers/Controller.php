@@ -55,15 +55,13 @@ abstract class Controller extends BaseController {
 //        Session::put('currency_val', $currency->currency_val);
 //        Session::put('currency_symbol', $currency->css_code);
         View::share('getAllCategories', $this->getAllCategories());
-
-
         //  echo Session::get('currency_id')."===".Session::get('currency_val'); die;
         View::share('menu', $this->getMenu());
         View::share('cart', $this->getCart());
         View::share('langs', $this->getTranslations());
         View::share('industry_id', Helper::getSettings()['industry_id']);
-        View::share('storePincodeCheck', Helper::getSettings()['pincode']);
-        View::share('storeCountryCheck', Helper::getSettings()['countryList']);
+        View::share('storePincodeCheck', isset(Helper::getSettings()['pincode']) ? Helper::getSettings()['pincode'] : '');
+        View::share('storeCountryCheck', isset(Helper::getSettings()['countryList']) ? Helper::getSettings()['countryList'] : '');
         View::share('countryData', Helper::getCountry());
         View::share('store_version_id', Helper::getSettings()['store_version']);
         Session::put("storeName", Helper::getSettings()['storeName']);
