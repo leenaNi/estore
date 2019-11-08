@@ -26,10 +26,11 @@ use App\Models\Coupon;
 use App\Models\CancelOrder;
 use App\Models\Country;
 use App\Models\Zone;
+use App\Models\CustomerReview;
 use Hash;
 use Mail;
 use DB;
-use Response;
+use Response; 
 
 class UserController extends Controller {
 
@@ -50,12 +51,14 @@ class UserController extends Controller {
 //        $user=User::find(Session::get('loggedin_user_id'));
 //        $user->userCashback->cashback=$user->userCashback->cashback+200;
 //      $user->userCashback->save();
-//      dd($user);
+//      dd($user); 
         $orderReturnReason = OrderReturnReason::pluck('reason', 'id');
         $user = User::find(@Session::get('loggedin_user_id'));
         $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
-	$newsLetter = @User::find(Session::get('loggedin_user_id'))->newsletter;
+
+    $newsLetter = @User::find(Session::get('loggedin_user_id'))->newsletter;
         //  dd($newsLetter);
+
         $countries = @Country::where('status',1)->get();
         $ShippingAddress = User::find(Session::get('loggedin_user_id'))->addresses()->get();
         $BillingAddress = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
@@ -65,7 +68,9 @@ class UserController extends Controller {
         $orders = Order::where("user_id", "=", @Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->orderBy('id', 'desc')->get();
         //$ordersCurrency = HasCurrency::where('id',$orders->currency_id)->first();
         $viewname = Config('constants.frontendMyAccView') . '.myaccount';
+
  $data = ['orders' => $orders, 'user' => $user, 'wishlist' => $userWishlist, 'orderReturnReason' => $orderReturnReason,'countries'=>$countries,'ShippingAddress'=>$ShippingAddress,'BillingAddress'=>$BillingAddress,'countries'=>$countries,'states'=>$zoneData,'newsLetter' => $newsLetter];
+
         return Helper::returnView($viewname, $data);
     }
 
@@ -82,6 +87,39 @@ class UserController extends Controller {
             $html = '<option value="">No States Found </option>';
         }
         return $html;
+    }
+
+
+    public function save_review(){
+        $user_id = Session::get('loggedin_user_id');
+
+        $review = CustomerReview::where(['product_id'=>Input::get('pid'),'user_id'=>Session::get('loggedin_user_id'),'order_id' => Input::get('ord_id')])->get();
+        if(count($review)>0)
+        {
+            $data = ['title'=>Input::get('title'),'description'=>Input::get('desc'),'rating'=>Input::get('stars')];
+            CustomerReview::where(['product_id'=>Input::get('pid'),'user_id'=>Session::get('loggedin_user_id'),'order_id' => Input::get('ord_id')])->update($data);
+        }
+        else{
+            $data = CustomerReview::create([
+            'user_id' => $user_id,
+            'order_id' => Input::get('ord_id'),
+            'product_id' => Input::get('pid'),
+            'title' => Input::get('title'),
+            'description' => Input::get('desc'),
+            'rating' => Input::get('stars'),
+            'created_at'=> date('Y-m-d H:i:s')
+            ]);
+        }
+        return $data;
+        
+    }
+
+    public function get_review()
+    {
+        $prod_id = Input::get('id');
+        $orderid = Input::get('orderid');
+        $data = CustomerReview::where(['product_id'=>$prod_id,'user_id'=>Session::get('loggedin_user_id'),'order_id' => $orderid])->first();
+        return $data;
     }
 
     public function get_billing_address()

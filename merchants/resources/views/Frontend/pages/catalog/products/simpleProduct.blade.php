@@ -7,6 +7,7 @@
                 {!! Html::image($product->prodImage, '', array('height' => '200','width' => '200')) !!}
             </a>
         </span>  
+       
         <div>{{$product->product}}</div>
         <div>Description : <?php echo html_entity_decode($product->short_desc); ?></div>
         <div>Price : <span class="currency-sym"></span> {{ number_format($product->selling_price *  Session::get('currency_val'),2)}}</div>

@@ -354,6 +354,10 @@
                                             <div class="clearfix"></div>
                                             <div class="form-group col-md-6">
                                                 <lable>Address Line 1 *</lable>
+<<<<<<< HEAD
+=======
+                                                <input type="text" class="form-control" name='address1' id="saddress1" required="true" maxlength='35'  ng-model="getAddData.address1">
+>>>>>>> addressbook
                                                 <div id="address1_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -395,7 +399,11 @@
                                               <div class="form-group col-md-6">
                                                 <lable>Pin Code @if($storePincodeCheck == 1)*@endif</lable>                                             
                                                 <i style="display: none" class="icon-refresh fa-spin pincodeMessageLoader "></i>  <span class="pincodeMessage"></span>
+<<<<<<< HEAD
 <input type="text" name='postal_code' id="pincodeCheck" class="form-control" autocomplete="false" value="{{ $storePincodeCheck }}" ng-model="getAddData.postcode">
+=======
+                                                <input type="text" name='postal_code' id="spincode_check" class="form-control" autocomplete="false"  ng-model="getAddData.postcode">
+>>>>>>> addressbook
                                                 <div id="postal_code_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -530,7 +538,7 @@
                                 <span class=" ">5.</span>  Payment 
                             </a>
                         </h4>
-                    </div>
+                    </div> 
                     <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                         <div class="panel-body">
                             <form method="post"  action="[[toPayment.frmAction ]]" name="frmTransaction" id="frmTransaction" class="codSubmit">

@@ -12,6 +12,7 @@ use App\Models\AttributeSet;
 use App\Models\Attribute;
 use App\Models\Stocknotify;
 use App\Models\GeneralSetting;
+use App\Models\CustomerReview;
 use Auth;
 use App\Http\Controllers\Controller;
 use Session;
@@ -79,6 +80,7 @@ class ProductController extends Controller {
 
     public function simpleProduct($pId) {
         $is_desc = GeneralSetting::where('url_key', 'des')->first();
+        $CustomerReviews = CustomerReview::all();
         $product = Product::find($pId);
         if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
             $product->wishlist = 1;

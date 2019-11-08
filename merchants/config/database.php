@@ -50,7 +50,7 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', 'localhost'),
-            'database' => env('DB_DATABASE', 'cartini'),
+            'database' => env('DB_DATABASE', 'estorifi'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', 'asdf1234'),
             'charset' => 'utf8',

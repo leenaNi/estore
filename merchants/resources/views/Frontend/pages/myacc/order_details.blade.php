@@ -7,6 +7,72 @@
     .modal-lg{
         width: 83%!important;
     }
+     .rating {
+  /*display: inline-block;*/
+  position: relative;
+  height: 50px;
+  line-height: 50px;
+  font-size: 50px;
+}
+
+.rating label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  cursor: pointer;
+}
+
+.rating label:last-child {
+  position: static;
+}
+
+.rating label:nth-child(1) {
+  z-index: 5;
+}
+
+.rating label:nth-child(2) {
+  z-index: 4;
+}
+
+.rating label:nth-child(3) {
+  z-index: 3;
+}
+
+.rating label:nth-child(4) {
+  z-index: 2;
+}
+
+.rating label:nth-child(5) {
+  z-index: 1;
+}
+
+.rating label input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.rating label .icon {
+  float: left;
+  color: transparent;
+  font-size: xx-large;
+}
+
+.rating label:last-child .icon {
+  color: #000;
+}
+
+.rating:not(:hover) label input:checked ~ .icon,
+.rating:hover label:hover input ~ .icon {
+  color: #09f;
+}
+
+.rating label input:focus:not(:checked) ~ .icon:last-child {
+  color: #000;
+  text-shadow: 0 0 5px #09f;
+}   
 </style>
 <?php
 $currency_val = 1;
@@ -78,7 +144,7 @@ if (isset($order->currency->currency_val)) {
                                                         <th>Tax </th>
                                                         @endif
                                                         <th class="product-subtotal text-center"  style="width:15%;">Subtotal</th>
-                                                    
+                                                        <th>Action</th>
                                                         @if(isset($order->orderstatus['id']) && $order->orderstatus['id']==3)
                                                         <?php $cols=6; ?>
                                                         <th style="width:15%;"></th>
@@ -344,6 +410,10 @@ if (isset($order->currency->currency_val)) {
 
                                         </div>
                                         </div>
+                                        </td>
+                                        <td>
+                                            <button class="button button-3d button-mini button-rounded" data-toggle="modal"  id="rev{{$prd['id']}}" onclick="getReviewData('{{$prd['id']}}','{{$order->id}}')"> Review</button>
+                                           
                                         </td>
                                         </tr>
                                                 @endforeach
@@ -677,9 +747,222 @@ if (isset($order->currency->currency_val)) {
 
     </div>
 </div>
+<!-- Modal -->
+  <div class="modal fade" id="reviewModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <form method="post" id="reviewForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add Review</h4>
+        </div>
+        <div class="modal-body">
+          <div class="col_full">
+            <label for="template-contactform-name">Title <small>*</small>
+            </label>
+            <input type="title" name="title" placeholder="Title" class="sm-form-control required" aria-required="true">
+            <div id="title_validate" style="color:red;"></div>
+        </div>
+        <div class="col_full">
+            <label for="template-contactform-name">Description <small>*</small>
+            </label>
+            <textarea class="sm-form-control required" rows="5" name="desc"></textarea>
+         </div>
+         <input type="hidden" name="pid" id="apid" value="{{$prd['id']}}">
+         <input type="hidden" name="ord_id" id="aoid" value="{{$order->id}}">
+          <div class="col_full">
+         <label for="template-contactform-name">Rating <small>*</small>
+            </label>
+    
+        <div class="rating">
+  <label>
+    <input type="radio" name="stars" value="1" />
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars" value="2" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars" value="3" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>   
+  </label>
+  <label>
+    <input type="radio" name="stars" value="4" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars" value="5" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+</div> </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-primary add_review_btn" value="Submit" name="add_review_btn">  
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+     
+      </div>
+      </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editreviewModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <form method="post" id="editreviewForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Edit Review</h4>
+        </div>
+        <div class="modal-body">
+          <div class="col_full">
+            <label for="template-contactform-name">Title <small>*</small>
+            </label>
+            <input type="title" id="title" name="title" placeholder="Title" class="sm-form-control required" aria-required="true">
+            <div id="title_validate" style="color:red;"></div>
+        </div>
+        <div class="col_full">
+            <label for="template-contactform-name">Description <small>*</small>
+            </label>
+            <textarea class="sm-form-control required" rows="5" name="desc" id="desc"></textarea>
+         </div>
+         <input type="hidden" name="pid" id="epid" value="">
+         <input type="hidden" name="ord_id" id="eoid" value="">
+          <div class="col_full">
+         <label for="template-contactform-name">Rating <small>*</small>
+            </label>
+    
+        <div class="rating">
+  <label>
+    <input type="radio" name="stars" id="stars1" value="1" />
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars" id="stars2" value="2" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars" id="stars3" value="3" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>   
+  </label>
+  <label>
+    <input type="radio" name="stars" id="stars4" value="4" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars" id="stars5" value="5" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+</div> </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-primary edit_review_btn" id="updatebtn" value="Submit">  
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+     
+      </div>
+      </div>
+      </form>
+    </div>
+  </div>
 <script  src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" ></script>
 
 <script>
+
+$(':radio').change(function() {
+  console.log('New star rating: ' + this.value);
+});
+
+$(".add_review_btn").click(function(e){
+        e.preventDefault();
+        var formdata = $("#reviewForm").serialize();
+        //alert(formdata);
+        $.ajax({
+           type:'POST',
+           url:domain + '/save_review',
+           data:formdata,
+           success:function(data){
+              $("#reviewForm")[0].reset();
+              $('#reviewModal').modal('toggle');
+           }
+        });
+    });
+
+$(".edit_review_btn").click(function(e){
+        e.preventDefault();
+        var editformdata = $("#editreviewForm").serialize();
+        //alert(formdata);
+        $.ajax({
+           type:'POST',
+           url:domain + '/save_review',
+           data:editformdata,
+           success:function(data){
+              $('#editreviewModal').modal('toggle');
+           }
+        });
+    });
+
+function getReviewData(pid,orderid)
+{
+    $.ajax({
+       type:'POST',
+       url:domain + '/get_review',
+       data:{id:pid,orderid:orderid},
+       success:function(data){
+        //alert(data.id);
+        if(data !='')
+        {
+            $("#title").val(data.title);
+            $("#desc").val(data.description);
+            $("#epid").val(data.product_id);
+            $("#eoid").val(data.order_id);
+            var rb = data.rating;
+            var status = data.publish;
+            if(status==1 || status==2)
+            {
+                $("#updatebtn").hide();
+            }
+            else{
+                $("#updatebtn").show();
+            }
+            $("input[name=stars][value=" + rb + "]").prop('checked', true); 
+            $('#editreviewModal').modal('show');
+           
+        }
+        else{
+            $("#apid").val(pid);
+            $("#aoid").val(orderid);
+            $('#reviewModal').modal('show');
+            //$('#editreviewModal').modal('toggle');
+        }  
+       }
+    });
+}
+
 $(document).on("click", ".orderCancelled", function () {
 console.log("sdf");
 $("#cancelModal").modal("show");

@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web']], function() {
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web']], function() { 
     Route::get('/', ["as" => "adminLogin", "uses" => "LoginController@index"]);
     Route::get('/unauthorized', ["as" => "unauthorized", "uses" => "LoginController@unauthorized"]);
     Route::post('/check-user', ["as" => "check_admin_user", "uses" => "LoginController@chk_admin_user"]);
@@ -45,6 +45,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::any('/change-status', ['as' => 'admin.category.changeStatus', 'uses' => 'CategoryController@changeStatus']);
                  Route::any('/category-img-delete', ['as' => 'admin.category.catImgDelete', 'uses' => 'CategoryController@catImgDelete']);
                 Route::any('/size-chart', ['as' => 'admin.category.sizeChart', 'uses' => 'CategoryController@sizeChart']);
+            });
+
+            Route::group(['prefix' => 'reviews', 'middlewareGroups' => ['web']], function() {
+                Route::get('/', ['as' => 'admin.reviews.view', 'uses' => 'ReviewController@index']);
+                Route::get('/get_review', array('as' => 'admin.custreview', 'uses' => 'ReviewController@get_review'));
+                Route::any('/review-status', array('as' => 'admin.review.status', 'uses' => 'ReviewController@ReviewStatus'));
             });
 
             Route::group(['prefix' => 'attrSets', 'middlewareGroups' => ['web']], function() {

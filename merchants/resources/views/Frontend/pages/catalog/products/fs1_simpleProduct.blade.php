@@ -4,6 +4,9 @@
 @section('og-title',$product->metaDesc)
 @section('meta-description',$product->metaTitle)
 @section('content')
+@php 
+use App\Models\User;
+@endphp
 <div class="clearfix"></div>
 <section id="content">
     <input type="hidden" value="{{Request::url()}}" class="fbShareUrl" />
@@ -94,7 +97,17 @@
                             <div class="line"></div>
 
                             <div class="shortDesc"><?php echo html_entity_decode($product->short_desc) ?></div>
-
+                            <div><h4>Reviews</h4>
+                               @foreach($CustomerReviews as $review)
+                               @php 
+                               $user = User::find($review->user_id);
+                               @endphp
+                               <span>{{$user->firstname}}</span>
+                               <h5 style="margin-bottom: 0px;">{{$review->title}}</h5>
+                               <span>{{$review->description}}</span><br><br>
+                               <span>{{$review->starts}}</span>
+                               @endforeach
+                            </div>
                             <!-- AddToAny BEGIN -->
                             <div class="shareSociIconBox">
                                 <strong>Share:</strong> 
