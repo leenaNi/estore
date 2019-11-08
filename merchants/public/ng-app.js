@@ -1,4 +1,4 @@
-var app = angular.module('app', []);
+var app = angular.module('app', []); 
 
 //var hostname = location.hostname;
 //var pathname = document.location.pathname;
@@ -229,12 +229,12 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                         console.log(" Bhavana " + data);
                         $("#collapseOne").removeClass("in");
                         $("div .loginPanel").addClass("hidepanel");
-                        $("div .addressPanel").removeClass("hidepanel");
+                        $("div .billingaddressPanel").removeClass("hidepanel");
                         $("#collapseTwo").addClass("in");
                         $("div .loginPanel .panel-heading").removeClass("panel_heading_black");
                         $("div .loginPanel .panel-heading").addClass("panel_heading_grey");
-                        $("div .addressPanel .panel-heading").removeClass("panel_heading_grey");
-                        $("div .addressPanel .panel-heading").addClass("panel_heading_black");
+                        $("div .billingaddressPanel .panel-heading").removeClass("panel_heading_grey");
+                        $("div .billingaddressPanel .panel-heading").addClass("panel_heading_black");
                         $("div .billPanel").addClass("hidepanel");
                         $("div .paymentPanel").addClass("hidepanel");
                         if (isset(data)) {
@@ -349,6 +349,33 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
         });
     };
 
+    $scope.showNewBillAddDiv = function () {
+        $scope.getAddData = {};
+        $(".newBillAddFormDiv").css("display", "block");
+        $("#postal_code_checkout_new_add_form").text('');
+        $(".pincodeMessage").text("");
+        $("#forBillAddress input[type='radio']").each(function () {
+            $(this).prop('checked', false);
+        });
+        // $('#addNewAddForm').find("input[type=text], textarea,input[type=hidden],input[type=select],input[type=email]").val("");
+        $.ajax({
+            type: "POST",
+            url: domain + "/get_country_zone",
+            data: "",
+            cache: false,
+            success: function (data) {
+                var countr = data.countryid;
+                $scope.countryChangedValue(countr);
+                $scope.$apply(function () {
+                    $scope.zones = data.zone;
+                    $scope.countryid = data.countryid;
+                    $scope.getAddData = {'countryid': data.countryid, 'firstname': data.firstname, 'lastname': data.lastname, 'phone_no': data.phone_no};
+                    $scope.country = data.country;
+                });
+            }
+        });
+    };
+
     $scope.countryChangedValue = function (country) {
         $.ajax({
             type: "POST",
@@ -436,6 +463,79 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
         });
     };
 
+    $scope.addNewBillAddSubmit = function () {
+        $("#addNewBillAddForm").attr("action", domain + "/save_billing_address");
+        $("#addNewBillAddForm").validate({
+            // Specify the validation rules
+            rules: {
+                firstname: "required",
+                country_id: "required",
+                state: "required",
+                address1: "required",
+                postal_code: {
+                    required: true,
+                    minlength: 4
+                },
+                city: "required",
+                phone_no: {
+                    phonevalidate: true
+                }
+            },
+            // Specify the validation error messages
+            messages: {
+                firstname: "Please enter your first name",
+                country_id: "Please select country",
+                state: "Please select state",
+                address1: "Please enter address",
+                city: "Please enter city",
+                postal_code: {
+                    required: "Please enter postcode",
+                    minlength: "Your pincode must be at least 4 characters long"
+                },
+                phone_no: {
+                    required: "Please enter phone number"
+                }
+            },
+            submitHandler: function (form) {
+                var chkadd = $("input[name='address1']").val();
+                //  console.log(chkadd);
+                //   var pincode = ("#pincode_check").val();
+                if (chkadd.length > 0) {
+                    $.ajax({
+                        type: $(form).attr('method'),
+                        url: $(form).attr('action'),
+                        data: $(form).serialize(),
+                        success: function (data) {
+                            $("#addNewBillAddForm").attr("action", "");
+                            $scope.$apply(function () {
+                                $scope.addressData = data.addressdata;
+                            });
+                            addidD = data.curaddid;
+                            $.ajax({
+                                type: "POST",
+                                url: domain + "/sel_address",
+                                data: {addid: addidD},
+                                cache: false,
+                                success: function () {
+                                    $scope.pincodecheck();
+                                    // checkPinCode(addidD,2);
+                                    getShippingAddress();
+                                    
+                                }
+                            });
+                            $(".newBillAddFormDiv").css("display", "none");
+                        }
+                    });
+                }
+                return false; // required to block normal submit since you used ajax
+            },
+            errorPlacement: function (error, element) {
+                var name = $(element).attr("name");
+                error.appendTo($("#" + name + "_checkout_new_add_form"));
+            }
+        });
+    };
+
     $scope.addressContinue = function () {
         var chkaddid = $("#addI").val();
         if ($("#forAddress input[type='radio']:checked").length) {
@@ -465,6 +565,38 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
             }
         } else {
             $scope.addNewAddSubmit();
+        }
+    };
+
+    $scope.billAddressContinue = function () {
+        var chkaddid = $("#addI").val();
+        if ($("#forBillAddress input[type='radio']:checked").length) {
+            if (chkaddid.length > 0) {
+                $scope.addNewBillAddSubmit();
+            } else {
+                $("#addNewBillAddForm").submit(function (e) {
+                    e.preventDefault();
+                });
+                $("#forBillAddress input[type='radio']").each(function () {
+                    if ($(this).is(":checked")) {
+                        var chkph = $(this).attr("phno");
+                        var chkPincode = $(this).attr("addCodMsg");
+                        $scope.pincodecheck();
+                        if (chkph == '') {
+                            alert("Invalid phone number.Please edit address");
+                            $scope.editBillAdd($("#forBillAddress input[type='radio']:checked").val());
+                        } else if (chkPincode != "" && chkPincode.indexOf("not") >= 0) {
+                            msgP = chkPincode + " Please edit address";
+                            alert(msgP);
+                            $scope.editBillAdd($("#forBillAddress input[type='radio']:checked").val());
+                        } else {
+                            getShippingAddress();
+                        }
+                    }
+                });
+            }
+        } else {
+            $scope.addNewBillAddSubmit();
         }
     };
 
@@ -547,6 +679,34 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
         });
     };
 
+    $scope.editBillAdd = function (addid) {
+        var $ = jQuery;
+        // $('#addNewAddForm').find("input[type=text], textarea,input[type=hidden],input[type=select],input[type=email]").val("");
+        // $('#addNewAddForm').find("input[type=text], textarea,input[type=hidden],input[type=select],input[type=email]").val("");
+        id = "adrs_" + addid;
+        $("#" + id).parent().find("input[type='radio']").prop("checked", true);
+        //$("#" + id).parent().children("h1").children("input[type='radio']").prop("checked", true);
+        selPrevSelAdd(addid);
+//        $("#" + id).parent().children("h1").children("input[type='radio']").click();
+        $.ajax({
+            type: "POST",
+            url: domain + "/get_address",
+            data: {addid: addid},
+            cache: false,
+            success: function (data) {
+                $(".newBillAddFormDiv").css("display", "block");
+                //  $('#addNewAddForm').find("input[type=text], textarea,input[type=hidden],input[type=select],input[type=email]").val("");
+                $scope.getAddData = null;
+                $scope.$apply(function () {
+                    $scope.getAddData = data.addData;
+                    $scope.country = data.country;
+                    $scope.zones = data.zone;
+                });
+                $scope.pincodecheck();
+            }
+        });
+    };
+
     $scope.deleteAdd = function (addid) {
         chk = confirm("Do you want to delete this address?");
 
@@ -558,6 +718,25 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 success: function (data) {
                     $scope.$apply(function () {
                         $scope.addressData = data;
+                    });
+                }
+            });
+        } else {
+            return false;
+        }
+    };
+
+    $scope.deleteBillAdd = function (addid) {
+        chk = confirm("Do you want to delete this address?");
+
+        if (chk) {
+            $.ajax({
+                type: "POST",
+                url: domain + "/del_bill_address",
+                data: {addid: addid},
+                success: function (data) {
+                    $scope.$apply(function () {
+                        $scope.billaddressData = data;
                     });
                 }
             });
@@ -603,6 +782,55 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
             }
         });
     };
+
+    var getShippingAddress = function(){
+        $.ajax({
+            type: "POST",
+            url: domain + "/get_loggedindata",
+            data: '',
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                if (data != "Invalid") {
+                    $scope.$apply(function () {
+                        $scope.addressData = data;
+                    });
+                    if (typeof ($scope.addressData[0]) != "undefined" && $scope.addressData[0] !== null) {
+                        addid = $scope.addressData[0].id;
+                        selPrevSelAdd(addid);
+                    }
+                    $("div .loginPanel").addClass("hidepanel");
+                    $("#collapseOne").removeClass("in");
+                    $("div .loginPanel .panel-heading").removeClass("panel_heading_black");
+                    $("div .loginPanel .panel-heading").addClass("panel_heading_grey");
+                    $("div .addressPanel").removeClass("hidepanel");
+                    $("#collapseBA").removeClass("in");
+                    $("#collapseTwo").addClass("in");
+                    $("div .addressPanel .panel-heading").removeClass("panel_heading_grey");
+                    $("div .addressPanel .panel-heading").addClass("panel_heading_black");
+                    $("div .billPanel").addClass("hidepanel");
+                    $("div .paymentPanel").addClass("hidepanel");
+
+                    $("div .billingaddressPanel").addClass("hidepanel");
+                    $("div .billingaddressPanel .panel-heading").removeClass("panel_heading_black");
+                    $("div .billingaddressPanel .panel-heading").addClass("panel_heading_grey");
+                } else {
+                    $("div .loginPanel").removeClass("hidepanel");
+                    $("#collapseOne").addClass("in");
+                    $("div .addressPanel").addClass("hidepanel");
+                    $("div .billPanel").addClass("hidepanel");
+                    $("div .paymentPanel").addClass("hidepanel");
+                }
+            },
+            error: function () {
+                $("div .loginPanel").removeClass("hidepanel");
+                $("#collapseOne").addClass("in");
+                $("div .addressPanel").addClass("hidepanel");
+                $("div .billPanel").addClass("hidepanel");
+                $("div .paymentPanel").addClass("hidepanel");
+            }
+        });
+    }
 
     var getBillSummary = function () {
         $("textarea#commentTT").val("");
@@ -863,6 +1091,33 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
         }
     }
 
+    $scope.backToBillingAddress = function () {
+        $.ajax({
+            type: "POST",
+            url: domain + "/back_to_address",
+            data: "",
+            cache: false,
+            success: function (data) {
+                $("#collapseThree").removeClass("in");
+                $("div .billPanel").addClass("hidepanel");
+                $("div .billingaddressPanel").removeClass("hidepanel");
+                $("#collapseTwo").addClass("in");
+                $("div .billPanel .panel-heading").removeClass("panel_heading_black");
+                $("div .billPanel .panel-heading").addClass("panel_heading_grey");
+                $("div .billingaddressPanel .panel-heading").removeClass("panel_heading_grey");
+                $("div .billingaddressPanel .panel-heading").addClass("panel_heading_black");
+                $("div .loginPanel").addClass("hidepanel");
+                $("div .paymentPanel").addClass("hidepanel");
+                $(".toBillSummary").removeAttr('disabled');
+                var selAddid = $('#forAddress input:radio:first').val();
+                $('#forAddress input:radio:first').prop("checked", true);
+                init();
+                selPrevSelAdd(selAddid);
+
+            }
+        });
+    };
+
     $scope.backToAddress = function () {
         $.ajax({
             type: "POST",
@@ -883,7 +1138,7 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 $(".toBillSummary").removeAttr('disabled');
                 var selAddid = $('#forAddress input:radio:first').val();
                 $('#forAddress input:radio:first').prop("checked", true);
-                init();
+                //init();
                 selPrevSelAdd(selAddid);
 
             }
@@ -1035,35 +1290,42 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
         });
     };
     var init = function () {
+
         $.ajax({
             type: "POST",
-            url: domain + "/get_loggedindata",
+            url: domain + "/get_billingdata",
             data: '',
             cache: false,
             success: function (data) {
                 console.log(data);
                 if (data != "Invalid") {
                     $scope.$apply(function () {
-                        $scope.addressData = data;
+                        $scope.billaddressData = data;
                     });
-                    if (typeof ($scope.addressData[0]) != "undefined" && $scope.addressData[0] !== null) {
-                        addid = $scope.addressData[0].id;
+                    if (typeof ($scope.billaddressData[0]) != "undefined" && $scope.billaddressData[0] !== null) {
+                        addid = $scope.billaddressData[0].id;
                         selPrevSelAdd(addid);
                     }
                     $("div .loginPanel").addClass("hidepanel");
                     $("#collapseOne").removeClass("in");
                     $("div .loginPanel .panel-heading").removeClass("panel_heading_black");
                     $("div .loginPanel .panel-heading").addClass("panel_heading_grey");
-                    $("div .addressPanel").removeClass("hidepanel");
-                    $("#collapseTwo").addClass("in");
-                    $("div .addressPanel .panel-heading").removeClass("panel_heading_grey");
-                    $("div .addressPanel .panel-heading").addClass("panel_heading_black");
+                    $("div .billingaddressPanel").removeClass("hidepanel");
+                    $("#collapseTwo").removeClass("in");
+                    $("#collapseBA").addClass("in");
+                    $("div .billingaddressPanel .panel-heading").removeClass("panel_heading_grey");
+                    $("div .billingaddressPanel .panel-heading").addClass("panel_heading_black");
                     $("div .billPanel").addClass("hidepanel");
                     $("div .paymentPanel").addClass("hidepanel");
+
+                    $("div .addressPanel").addClass("hidepanel");
+                    $("div .addressPanel .panel-heading").addClass("panel_heading_grey");
+                    $("div .addressPanel .panel-heading").removeClass("panel_heading_black");
                 } else {
                     $("div .loginPanel").removeClass("hidepanel");
                     $("#collapseOne").addClass("in");
                     $("div .addressPanel").addClass("hidepanel");
+                    $("div .billingaddressPanel").addClass("hidepanel");
                     $("div .billPanel").addClass("hidepanel");
                     $("div .paymentPanel").addClass("hidepanel");
                 }
@@ -1076,6 +1338,8 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 $("div .paymentPanel").addClass("hidepanel");
             }
         });
+
+
     };
     init();
 });
