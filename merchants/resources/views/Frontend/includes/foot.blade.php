@@ -1316,5 +1316,6 @@ function getFbUserData(){
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.js"></script>
 
-<script type="text/javascript" src="{{Config('constants.frontendNGAPPJsPath').'/ng-app.js' }}"></script>
+<script type="text/javascript" src="https://www.google.com/url?q=https://d2102t1lty3x1n.cloudfront.net/Frontend/js/ng-app.js&sa=D&source=hangouts&ust=1573300015498000&usg=AFQjCNF3GdEO5QrairTaUJlAdYnjdN-2hg"></script>
+<!-- <script type="text/javascript" src="{{Config('constants.frontendNGAPPJsPath').'/ng-app.js' }}"></script> -->
 
