@@ -20,6 +20,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::get('/home', ["as" => "admin.home.view", "uses" => "HomeController@index"]);
 //       
         Route::any('/newsletter', ["as" => "admin.home.newsletter", "uses" => "HomeController@newsLetter"]);
+        Route::post('/saveNewsLetter', ["as" => "admin.home.saveNewsLetter", "uses" => "HomeController@saveNewsLetter"]);
         Route::any('/export-newsLetter', ["as" => "admin.home.exportNewsLetter", "uses" => "HomeController@exportNewsLetter"]);
         Route::get('/set-preference', ["as" => "admin.set.preference", "uses" => "HomeController@setPref"]);
         Route::post('/changePopupStatus', ["as" => "admin.home.changePopupStatus", "uses" => "HomeController@changePopupStatus"]);

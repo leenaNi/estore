@@ -16,6 +16,7 @@ use App\Models\HasProducts;
 use App\Models\DownlodableProd;
 use App\Models\TempDownload;
 use App\Models\GeneralSetting;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Auth;
 use App\Http\Controllers\Controller;
@@ -28,7 +29,7 @@ use App\Models\Zone;
 use Hash;
 use Mail;
 use DB;
-use Response; 
+use Response;
 
 class UserController extends Controller {
 
@@ -53,7 +54,8 @@ class UserController extends Controller {
         $orderReturnReason = OrderReturnReason::pluck('reason', 'id');
         $user = User::find(@Session::get('loggedin_user_id'));
         $userWishlist = @User::find(Session::get('loggedin_user_id'))->wishlist;
-
+	$newsLetter = @User::find(Session::get('loggedin_user_id'))->newsletter;
+        //  dd($newsLetter);
         $countries = @Country::where('status',1)->get();
         $ShippingAddress = User::find(Session::get('loggedin_user_id'))->addresses()->get();
         $BillingAddress = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
@@ -63,7 +65,7 @@ class UserController extends Controller {
         $orders = Order::where("user_id", "=", @Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->orderBy('id', 'desc')->get();
         //$ordersCurrency = HasCurrency::where('id',$orders->currency_id)->first();
         $viewname = Config('constants.frontendMyAccView') . '.myaccount';
-        $data = ['orders' => $orders, 'user' => $user, 'wishlist' => $userWishlist, 'orderReturnReason' => $orderReturnReason,'countries'=>$countries,'ShippingAddress'=>$ShippingAddress,'BillingAddress'=>$BillingAddress,'countries'=>$countries,'states'=>$zoneData];
+ $data = ['orders' => $orders, 'user' => $user, 'wishlist' => $userWishlist, 'orderReturnReason' => $orderReturnReason,'countries'=>$countries,'ShippingAddress'=>$ShippingAddress,'BillingAddress'=>$BillingAddress,'countries'=>$countries,'states'=>$zoneData,'newsLetter' => $newsLetter];
         return Helper::returnView($viewname, $data);
     }
 
@@ -359,11 +361,15 @@ class UserController extends Controller {
 
             public function updateProfile() {
                 // return User::where('id',Session::get('loggedin_user_id'))->get(['firstname','lastname','telephone']);
-
+                $newlet = 0;
+                if(Input::has('newsletchk')){
+                    $newlet = Input::get('newsletchk');
+                }
                 $userupdate = User::find(Session::get('loggedin_user_id'));
                 $userupdate->firstname = Input::get('firstname');
                 $userupdate->lastname = Input::get('lastname');
                 $userupdate->telephone = Input::get('telephone');
+                $userupdate->newsletter = $newlet;
                 //dd($userupdate->email);
                 if (empty($userupdate->email)) {
                     if (count(User::where("email", Input::get('email'))->get()) == 0) {
@@ -375,6 +381,18 @@ class UserController extends Controller {
                 }
 
                 $userupdate->update();
+                if($newlet == 0){
+                    $usernotification = Notification::where('email',Input::get('email'))->first();
+                    $usernotification->deleted_at = 1;
+                    $usernotification->status = 0;
+                    $usernotification->update();
+                }else{
+                    $usernotification = Notification::where('email',Input::get('email'))->first();
+                    $usernotification->deleted_at = 0;
+                    $usernotification->status = 1;
+                    $usernotification->update();
+                }
+                
                 Session::flash('updateSucess', "Profile updated successfully");
                 $data = ['status' => 'success', 'msg' => "Profile updated successfully", 'user' => $userupdate];
                 return $data;

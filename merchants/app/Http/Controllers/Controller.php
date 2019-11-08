@@ -55,13 +55,14 @@ abstract class Controller extends BaseController {
 //        Session::put('currency_val', $currency->currency_val);
 //        Session::put('currency_symbol', $currency->css_code);
         View::share('getAllCategories', $this->getAllCategories());
-
-
         //  echo Session::get('currency_id')."===".Session::get('currency_val'); die;
         View::share('menu', $this->getMenu());
         View::share('cart', $this->getCart());
         View::share('langs', $this->getTranslations());
         View::share('industry_id', Helper::getSettings()['industry_id']);
+        View::share('storePincodeCheck', isset(Helper::getSettings()['pincode']) ? Helper::getSettings()['pincode'] : '');
+        View::share('storeCountryCheck', isset(Helper::getSettings()['countryList']) ? Helper::getSettings()['countryList'] : '');
+        View::share('countryData', Helper::getCountry());
         View::share('store_version_id', Helper::getSettings()['store_version']);
         Session::put("storeName", Helper::getSettings()['storeName']);
         Session::put("store_id", Helper::getSettings()['store_id']);
@@ -76,7 +77,7 @@ abstract class Controller extends BaseController {
 //        View::share('footerContent', $this->getFooterContent());
         View::share('homePageAbout', $this->gethomePageAbout());
         View::share('layoutPage', HasLayout::where('layout_id', 1)->get());
-
+        View::share('newsletterPage', GeneralSetting::select('details')->where('url_key', 'notification')->where('status',1)->first());
         $this->courierService = GeneralSetting::where('url_key', 'courier-services')->first()->status;
         view()->share('courierService', $this->courierService);
         $this->getEmailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;

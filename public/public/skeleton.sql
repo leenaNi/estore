@@ -1048,6 +1048,7 @@ INSERT INTO `tblprfx_has_industries` (`general_setting_id`, `industry_id`) VALUE
 (1,14),
 (1,15),
 (1,16),
+(56,1),
 (2,1),
 (2,4),
 (2,5),
@@ -6966,6 +6967,12 @@ INSERT INTO `tblprfx_zones` (`id`, `country_id`, `name`, `code`, `status`) VALUE
 (4035, 99, 'Chhatisgarh', 'CHG', 1),
 (4036, 99, 'Jharkhand', 'JH', 1);
 
+
+INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`) VALUES (NULL, '50', '1');
+
+INSERT INTO `tblprfx_has_industries` (`id`, `general_setting_id`, `industry_id`) VALUES (NULL, '13', '2');
+
+UPDATE `tblprfx_general_setting` SET `status` = '1' WHERE `tblprfx_general_setting`.`id` in (13,50);
 --
 -- Indexes for dumped tables
 --
@@ -7968,6 +7975,11 @@ ALTER TABLE `tblprfx_zones`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4037;
 --
 -- Constraints for dumped tables
+
+
+ALTER TABLE `tblprfx_notification` ADD `deleted_at` INT NULL AFTER `updated_at`;
+
+ALTER TABLE `tblprfx_notification` ADD `status` INT(10) NOT NULL AFTER `email`;
 --
 
 --

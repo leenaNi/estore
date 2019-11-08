@@ -362,6 +362,73 @@ class MiscellaneousController extends Controller {
             $store_configuration['themeid'] = Input::get('theme');
             $store->template_id = Input::get('theme');
         }
+
+        $store_configuration['meta_title'] = '';
+        if (!empty(Input::get('meta_title'))) {
+            $store_configuration['meta_title'] = Input::get('meta_title');
+        }
+
+        $store_configuration['meta_keys'] = '';
+        if (!empty(Input::get('meta_keys'))) {
+            $store_configuration['meta_keys'] = Input::get('meta_keys');
+        }
+
+        $store_configuration['meta_desc'] = '';
+        if (!empty(Input::get('meta_desc'))) {
+            $store_configuration['meta_desc'] = Input::get('meta_desc');
+        }
+
+        $store_configuration['meta_robot'] = '';
+        if (!empty(Input::get('meta_robot'))) {
+            $store_configuration['meta_robot'] = Input::get('meta_robot');
+        }
+
+        $store_configuration['canonical'] = '';
+        if (!empty(Input::get('canonical'))) {
+            $store_configuration['canonical'] = Input::get('canonical');
+        }
+
+        $store_configuration['title'] = '';
+        if (!empty(Input::get('title'))) {
+            $store_configuration['title'] = Input::get('title');
+        }
+
+        $store_configuration['desc'] = '';
+        if (!empty(Input::get('desc'))) {
+            $store_configuration['desc'] = Input::get('desc');
+        }
+
+        $store_configuration['image'] = '';
+        if (!empty(Input::get('image'))) {
+            $store_configuration['image'] = Input::get('image');
+        }
+
+        $store_configuration['url'] = '';
+        if (!empty(Input::get('url'))) {
+            $store_configuration['url'] = Input::get('url');
+        }
+
+
+        $store_configuration['other_meta'] = '';
+        if (!empty(Input::get('other_meta'))) {
+            $store_configuration['other_meta'] = Input::get('other_meta');
+        }
+
+        $store_configuration['countryList'] = '';
+        if (!empty(Input::get('countryList'))) {
+            $store_configuration['countryList'] = Input::get('countryList');
+        }
+
+        $store_configuration['pincode'] = 0;
+        if (!empty(Input::get('pincode'))) {
+            $store_configuration['pincode'] = Input::get('pincode');
+        }
+
+        $store_configuration['logo_img_url'] = '';
+        if (!empty(Input::get('logo_img_url'))) {
+            $store_configuration['logo_img_url'] = Input::get('logo_img_url');
+        }
+        
         $store->save();
         $store_configuration['logo'] = $logo;
         $store_configuration['currencyId'] = $currency;

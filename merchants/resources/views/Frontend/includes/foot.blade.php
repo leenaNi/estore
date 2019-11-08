@@ -96,6 +96,94 @@
     </div>
 </div>
 
+
+@if(Route::currentRouteName() == 'home')
+@if($notificationStatus==1)
+<div id="news_letter" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                {{-- <h4 class="modal-title">NewLetter Model</h4> --}}
+            </div>
+            <div class="modal-body-scroll">
+                <div class="modal-body">
+                    <?php
+                    $imgPath = json_decode($newsletterPage->details,true);
+                    $displayHeader = isset($imgPath['displayHeader']) ? $imgPath['displayHeader'] : '' ;
+                    $displayContent = isset($imgPath['displayContent']) ? $imgPath['displayContent'] : '' ;
+                    $img = '';
+                    if(isset($imgPath)){
+                        $img = $imgPath['img_path'];
+                    }
+                    ?>
+                   <img src="{{asset(Config('constants.newletterImgPath')).'/'.$img}}" id="imagepreview" style="width: 1000px; height: 350px;" > 
+                </div>
+            </div>
+            <div>
+                <h3 style="margin-left: 386px;">{{ $displayHeader }}</h3>
+                <p style="margin-left: 370px;">{{ $displayContent }}</p>
+            </div>
+            <div>
+                <div class="widget-subscribe-form-result"></div>
+                <form  role="form" method="post" class="nobottommargin" id="subscribenews">
+                    <div class="input-group divcenter">
+                        <span class="input-group-addon" id="EmailIconNews"><i class="icon-email2news"></i></span>
+                        <input type="email" id="emailvalue" name="emailvalue" class="form-control required newsletter-email_home" placeholder="Enter your email address">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" id="btn-newssubscribe" type="submit">Subscribe</button>
+                        </span>
+                    </div>
+                    
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                </div id="subscriptionNews-success"  style="color:#449d44" ></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@endif
+@endif
+<script>
+    $(document).ready(function() {
+        $('#news_letter').modal('show');
+        $("#btn-newssubscribe").on("click", function(event) {
+            $('#subscribenews').validate();
+            if (!$('#subscribenews').valid()) {
+                return false;
+            }
+            
+            var email = $('.newsletter-email_home').val();
+            console.log("email value " + email);
+            var pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            $('#subscriptionNews-success').empty();
+            if (!pattern.test(email))
+            {
+                $('#subscriptionNews-success').append("Please enter valid email.");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('subscriptionMail')}}",
+                    data: {email: email},
+                    cache: false,
+                    success: function (data) {
+                        console.log("data: " + data);
+                        $('#subscriptionNews-success').append(data);
+                        $('#EmailIconNews').find('i').removeClass('icon-line-loader icon-spin').addClass('icon-email2news')
+                        //  $(form).find('.input-group-addon')
+                    }
+                });
+            }
+            
+        });
+        
+        console.log( "window loaded" );
+    });
+</script>
 <script>
 //Banner Cropping script
 var resultSlider = document.querySelector('.result-slider'),

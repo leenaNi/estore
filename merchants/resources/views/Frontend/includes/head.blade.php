@@ -1,3 +1,19 @@
+<?php
+$jsonString = App\Library\Helper::getSettings();
+$data = (object) $jsonString;
+$meta_title = isset($data->meta_title) ? $data->meta_title : '';
+$meta_keys = isset($data->meta_keys) ? $data->meta_keys : '';
+$meta_desc = isset($data->meta_desc) ? $data->meta_desc : '';
+$canonical = isset($data->canonical) ? $data->canonical : '';
+$title = isset($data->title) ? $data->title : '';
+$desc = isset($data->desc) ? $data->desc : '';
+$image = isset($data->image) ? $data->image : '';
+$url = isset($data->url) ? $data->url : '';
+$other_meta = isset($data->other_meta) ? $data->other_meta : '';
+?>
+@section('title',$meta_title)
+@section('og-title',$meta_title)
+@section('meta-description',$meta_desc)
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="author" content="Veestores" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />

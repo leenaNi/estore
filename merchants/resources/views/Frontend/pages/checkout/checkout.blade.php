@@ -14,6 +14,7 @@
         </ol>
     </div>
 </section>
+
 <div id="content" class="site-content single-product">
     <input type="hidden" id="pincodeStatus" value="{{ @$pincodeStatus->status}}">
     <div class="container">
@@ -353,7 +354,6 @@
                                             <div class="clearfix"></div>
                                             <div class="form-group col-md-6">
                                                 <lable>Address Line 1 *</lable>
-                                                <input type="text" class="form-control" name='address1' id="saddress1" required="true" maxlength='35'  ng-model="getAddData.address1">
                                                 <div id="address1_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -361,12 +361,12 @@
                                                 <input type="text" id="saddress2" class="form-control" name='address2' maxlength='35'  ng-model="getAddData.address2"> 
                                             </div>
                                             <div class="clearfix"></div>
+                                            
                                             <div class="form-group col-md-6">
                                                 <lable>Country *</lable>
                                                 <select name="country_id"   class="form-control" required="true"  ng-change="countryChangedValue(getAddData.countryid)"
                                                         ng-model="getAddData.countryid">
-                                                    <option value="">Please Select </option>
-                                                    <option ng-repeat="contr in country"  value="[[ contr.id ]]">[[ contr.name  ]] </option>
+                                                    <option ng-selected="[[ contr.id == {{ $storeCountryCheck }} ]]" ng-repeat="contr in country" value="[[ contr.id ]]">[[ contr.name  ]] </option>
                                                 </select>
                                                 <div id="country_id_checkout_new_add_form" class="newerror"></div>
                                             </div>
@@ -393,9 +393,9 @@
                                             </div>
                                             <div class="clearfix"></div>
                                               <div class="form-group col-md-6">
-                                                <lable>Pin Code *</lable>                                             
+                                                <lable>Pin Code @if($storePincodeCheck == 1)*@endif</lable>                                             
                                                 <i style="display: none" class="icon-refresh fa-spin pincodeMessageLoader "></i>  <span class="pincodeMessage"></span>
-                                                <input type="text" name='postal_code' id="spincode_check" class="form-control" autocomplete="false"  ng-model="getAddData.postcode">
+<input type="text" name='postal_code' id="pincodeCheck" class="form-control" autocomplete="false" value="{{ $storePincodeCheck }}" ng-model="getAddData.postcode">
                                                 <div id="postal_code_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">

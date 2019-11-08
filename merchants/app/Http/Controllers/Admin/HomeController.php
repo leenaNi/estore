@@ -8,6 +8,9 @@ use App\Models\GeneralSetting;
 use App\Models\Notification;
 use App\Models\Courier;
 use App\Library\Helper;
+use App\Models\Store;
+use File,DB;
+use Validator;
 
 class HomeController extends Controller {
 
@@ -45,8 +48,65 @@ class HomeController extends Controller {
     public function newsLetter() {
 
         $newsLetters = Notification::paginate(Config('constants.paginateNo'));
+        $img = DB::table("general_setting")->select('details','status')->where('url_key', 'notification')->first();
+        $imgpath = json_decode($img->details,true);
+        $result['status'] = $img->status;
+        $result['img_path'] = Config('constants.newletterImgPath').'/'.$imgpath['img_path'];
+        $result['displayHeader'] = isset($imgpath['displayHeader']) ? $imgpath['displayHeader'] : '';
+        $result['displayContent'] = isset($imgpath['displayContent']) ? $imgpath['displayContent'] : '';
+        return view('Admin.pages.home.newsLetter', ['newsLetters' => $newsLetters,'result' => $result]);
+    }
 
-        return view('Admin.pages.home.newsLetter', ['newsLetters' => $newsLetters]);
+    public function saveNewsLetter(Request $request){
+        
+       $rules = [
+            'enablesub' => 'required',
+            'newsLetterimg' => 'required|file|mimes:jpeg,png,jpg|max:1024',
+        ];
+
+        $messages = array(
+            'enablesub.required' => 'This CheckBox Field is required',
+            'newsLetterimg.required' => 'Please Select Image',
+            'newsLetterimg.max' => 'Upload file size should not be more than 1 MB',
+            'newsLetterimg.mimes' => 'File should of type jpeg,png,jpg',
+            
+        );
+
+       $validator = Validator::make($request->all(), $rules,$messages);
+       if ($validator->fails()) {
+            $errors = $validator->messages();
+            return redirect()->to($this->getRedirectUrl())
+                    ->withInput($request->input())
+                    ->withErrors($errors, $this->errorBag());
+        }else{
+            $currentURL = explode('/',$request->root());
+            $currentURL = explode('.',$currentURL[2]);
+            $domain_name = current($currentURL);
+            $domainname = strtolower($domain_name);
+            $path = base_path() ."/$domainname/public/uploads/newsletter/";
+            $mk = File::makeDirectory($path, 0777, true, true);
+            
+            if ($request->hasFile('newsLetterimg')) {
+                $file = $request->file('newsLetterimg');
+                $name = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $timestp = date("Y-m-d-H-i-s");
+                $newsletter_pic_name = strtolower($timestp.'_pic'.'.'.$extension);
+                $displayHeader = $request->displayHeader;
+                $displayContent = $request->displayContent;
+                $request->newsLetterimg->move($path,$newsletter_pic_name);
+                
+                DB::table("general_setting")->where('url_key', 'notification')->update(["details" => json_encode(["img_path" => $newsletter_pic_name,"displayHeader" => $displayHeader,"displayContent" => $displayContent]),'status' => 1]);
+
+
+                session()->flash('msg', 'Newsletter Added Successfully for Store');
+                return redirect()->to('/admin/newsletter')->withInput($request->input());
+            }
+            
+        }
+       
+        
+
     }
 
     public function exportNewsLetter() {

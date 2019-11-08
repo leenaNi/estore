@@ -635,6 +635,110 @@ class ApiProductController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
+    public function prodSeo(){
+        $marchantId = Input::get("merchantId");
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix;
+        $prodid = Input::get("prodId");
+        $product = DB::table($prifix . '_products')->find($prodid);
+
+        $data['seoProdList']['meta_title'] = $product->meta_title;
+        $data['seoProdList']['meta_keys'] = $product->meta_keys;
+        $data['seoProdList']['meta_desc'] = $product->meta_desc;
+        $data['seoProdList']['meta_robot'] = $product->meta_robot;
+        $data['seoProdList']['canonical'] = $product->canonical;
+        $data['seoProdList']['social_shared_title'] = $product->og_title;
+        $data['seoProdList']['social_shared_desc'] = $product->og_desc;
+        $data['seoProdList']['social_shared_image'] = $product->og_image;
+        $data['seoProdList']['social_shared_url'] = $product->og_url;
+        $data['seoProdList']['google_analytics'] = $product->other_meta;
+        
+        $viewname = "";
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function prodSaveSeo(){
+
+        $marchantId = Input::get("merchantId");
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix;
+        $prodid = Input::get("prodId");
+
+        $update["meta_title"] = Input::get("meta_title");
+        $update["meta_keys"] = Input::get("meta_keys");
+        $update["meta_desc"] = Input::get("meta_desc");
+        $update["meta_robot"] = Input::get("meta_robot");
+        $update["canonical"] = Input::get("canonical");
+        $update["og_title"] = Input::get("og_title");
+        $update["og_desc"] = Input::get("og_desc");
+        $update["og_image"] = Input::get("og_image");
+        $update["og_url"] = Input::get("og_url");
+        $update["twitter_url"] = Input::get("twitter_url");
+        $update["twitter_title"] = Input::get("twitter_title");
+        $update["twitter_desc"] = Input::get("twitter_desc");
+        $update["twitter_image"] = Input::get("twitter_image");
+        $update["other_meta"] = Input::get("other_meta");
+        
+        DB::table($merchant->prefix . '_products')->where("id", Input::get('prodId'))->update($update);
+
+        $product = DB::table($merchant->prefix . '_products')->find(Input::get('prodId'));
+
+        $data = ["status" => 'Success', "msg" => "Products Seo updated Successfully!.", 'prod' => $product];
+
+        return $data;
+    }
+
+    public function catSeo(){
+        $marchantId = Input::get("merchantId");
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix;
+        $catid = Input::get("catId");
+        $categories = DB::table($merchant->prefix . '_categories')->find($catid);
+        
+        $data['seoCatList']['meta_title'] = $categories->meta_title;
+        $data['seoCatList']['meta_keys'] = $categories->meta_keys;
+        $data['seoCatList']['meta_desc'] = $categories->meta_desc;
+        $data['seoCatList']['meta_robot'] = $categories->meta_robot;
+        $data['seoCatList']['canonical'] = $categories->canonical;
+        $data['seoCatList']['social_shared_title'] = $categories->title;
+        $data['seoCatList']['social_shared_desc'] = $categories->desc;
+        $data['seoCatList']['social_shared_image'] = $categories->image;
+        $data['seoCatList']['social_shared_url'] = $categories->url;
+        $data['seoCatList']['google_analytics'] = $categories->other_meta;
+
+        $viewname = "";
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function catSeoSave(){
+
+        $marchantId = Input::get("merchantId");
+        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $prifix = $merchant->prefix;
+        $catid = Input::get("catId");
+        $categories = DB::table($prifix . '_categories')->find($catid);
+
+        $update["meta_title"] = Input::get("meta_title");
+        $update["meta_keys"] = Input::get("meta_keys");
+        $update["meta_desc"] = Input::get("meta_desc");
+        $update["meta_robot"] = Input::get("meta_robot");
+        $update["canonical"] = Input::get("canonical");
+        $update["title"] = Input::get("title");
+        $update["desc"] = Input::get("desc");
+        $update["image"] = Input::get("image");
+        $update["url"] = Input::get("url");
+        $update["other_meta"] = Input::get("other_meta");
+        
+        DB::table($merchant->prefix . '_categories')->where("id", Input::get('catId'))->update($update);
+
+        $categories = DB::table($merchant->prefix . '_categories')->find(Input::get('catId'));
+
+        $data = ["status" => 'Success', "msg" => "Categories Seo updated Successfully!.", 'cat' => $categories];
+
+        return $data;
+
+    }
+
 }
 
 ?>

@@ -251,10 +251,12 @@ class HomeController extends Controller {
         $email = Input::get('email');
         $subscription = Notification::where('email', $email)->first();
         if (count($subscription) > 0) {
+            DB::statement("update users set newsletter = 1 where email = '".$email."'");
             return "You are already subscribed with us!";
         } else {
             $subscription = new Notification();
             $subscription->email = $email;
+            $subscription->status = 1;
             $subscription->timestamps = false;
             $subscription->save();
             $parts = explode("@", Input::get('email'));
@@ -262,6 +264,9 @@ class HomeController extends Controller {
             $contactEmail = Config::get('mail.from.address');
             $contactName = Config::get('mail.from.name');
             $data_email = ['first_name' => $fname];
+
+            DB::statement("update users set newsletter = 1 where email = '".$email."'");
+
             if (Mail::send(Config('constants.frontviewEmailTemplatesPath') . '.subscription', $data_email, function($message) use ($contactEmail, $contactName, $email, $fname, $data_email) {
                         $message->from($contactEmail, $contactName);
                         $message->to($email, $fname)->subject("News Alert Subscription");
