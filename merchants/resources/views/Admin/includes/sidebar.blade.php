@@ -1,6 +1,6 @@
 <?php
 $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
-?>
+?> 
 
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
@@ -96,6 +96,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </a>
                 <ul class="treeview-menu">
                     <li class="{{ preg_match("/admin.products/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.products.view') }}"><i class="fa fa-angle-right"></i>All Products</a></li>
+                    <li class="{{ preg_match("/admin.reviews/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.reviews.view') }}"><i class="fa fa-angle-right"></i>Customer Reviews</a></li>
                     <li class="{{ preg_match("/admin.category/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.category.view') }}"><i class="fa fa-angle-right"></i>Categories</a></li>
 
                     @if($settingStatus['30'] == 1)

@@ -7,7 +7,7 @@
     }
     .adrs_cont p{
         line-height: 1.1 !important;
-    }   
+    }
 </style>
 <section id="page-title">
     <div class="container clearfix">
@@ -334,7 +334,7 @@
                                     <button class="button nomargin shippingaddressbtn">Submit</button>
                                 </div>
                             </form>
-                        </div>
+                        </div></div></div>
                         <div class="tab-content clearfix" id="tabs-4">
                             <p class="password-update-success" style="color:green">  </p>
                             <p class="password-update-fail" style="color:red">  </p>
@@ -392,6 +392,7 @@
                                             <td class="tdfont text-center">{{date("d-M-Y",strtotime($ord->created_at))}} </td>
                                             <td data-th="Subtotal" class="text-center">
                                                 <a href="{{route('orderDetails',$ord->id)}}" class="button button-3d button-mini button-rounded ">View Detail</a>
+                                                
                                             </td>
                                         </tr>
                                         @endforeach
@@ -460,6 +461,7 @@
         </div>
     </div>
 </section>
+
 @stop
 @section("myscripts")
 

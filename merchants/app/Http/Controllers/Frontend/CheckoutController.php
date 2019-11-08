@@ -479,7 +479,7 @@ class CheckoutController extends Controller {
         }
         $cartContent = Cart::instance("shopping")->content();
         if (is_null(Session::get('orderId'))) {
-            $order = new Order();
+            $order = new Order(); 
             $order->user_id = Session::get('loggedin_user_id');
             if (Input::get("commentText")) {
                 $order->remark = Input::get("commentText");

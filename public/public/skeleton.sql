@@ -307,6 +307,46 @@ CREATE TABLE IF NOT EXISTS `tblprfx_contacts` (
 
 
 -- --------------------------------------------------------
+--
+-- Table structure for table `tblprfx_customer_reviews`
+--
+
+CREATE TABLE IF NOT EXISTS `tblprfx_customer_reviews` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `title` varchar(225) NOT NULL,
+  `description` text NOT NULL,
+  `rating` int(11) NOT NULL,
+  `publish` int(11) NOT NULL COMMENT '1=review published',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tblprfx_customer_reviews`
+--
+ALTER TABLE `tblprfx_customer_reviews`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tblprfx_customer_reviews`
+--
+ALTER TABLE `customer_reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
 
 --
 -- Table structure for table `tblprfx_countries`

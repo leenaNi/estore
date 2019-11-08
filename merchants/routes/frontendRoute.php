@@ -39,7 +39,7 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
     Route::get('/contact_us', array('as' => 'contactUs1', 'uses' => 'HomeController@contactUs1'));
     Route::any('/home-edit', ['as' => 'updateHomeSettings', 'uses' => 'HomeEditController@updateStoreSettings']);
     Route::any('/home-banner-add', ['as' => 'addHomeBanner', 'uses' => 'HomeEditController@addHomeBanner']);
-    Route::any('/home-banner-edit', ['as' => 'updateHomeBanner', 'uses' => 'HomeEditController@updateHomeBanner']); 
+    Route::any('/home-banner-edit', ['as' => 'updateHomeBanner', 'uses' => 'HomeEditController@updateHomeBanner']);  
 //Route::group(array('before' => 'auth.account'), function() {
     Route::group(['prefix' => 'myaccount', 'middleware' => ['web', 'auth']], function() {
         Route::get('/', array('as' => 'myProfile', 'uses' => 'UserController@my_profile'));
@@ -149,6 +149,8 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
     Route::any('/get-prod-varient', ['as' => 'get-prod-varient', 'uses' => 'ProductController@getProdVarient']);
     Route::any('/get_billing_address', array('as' => 'get_billing_address', 'uses' => 'UserController@get_billing_address'));
     Route::any('/get_shipping_address', array('as' => 'get_shipping_address', 'uses' => 'UserController@get_shipping_address'));
+    Route::any('/save_review', array('as' => 'save_review', 'uses' => 'UserController@save_review'));
+    Route::any('/get_review', array('as' => 'get_review', 'uses' => 'UserController@get_review'));
     Route::any('/get_states', array('as' => 'get_states', 'uses' => 'UserController@get_zone'));
     Route::post('/save-wishlist', ['as' => 'addToWishlist', 'uses' => 'UserController@addToWishlist']);
     Route::post('/remove-wishlist', ['as' => 'removeWishlist', 'uses' => 'UserController@removeWishlist']);

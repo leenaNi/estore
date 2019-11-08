@@ -530,7 +530,7 @@
                                 <span class=" ">5.</span>  Payment 
                             </a>
                         </h4>
-                    </div>
+                    </div> 
                     <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                         <div class="panel-body">
                             <form method="post"  action="[[toPayment.frmAction ]]" name="frmTransaction" id="frmTransaction" class="codSubmit">

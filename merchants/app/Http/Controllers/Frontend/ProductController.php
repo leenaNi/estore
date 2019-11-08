@@ -12,6 +12,7 @@ use App\Models\AttributeSet;
 use App\Models\Attribute;
 use App\Models\Stocknotify;
 use App\Models\GeneralSetting;
+use App\Models\CustomerReview;
 use Auth;
 use App\Http\Controllers\Controller;
 use Session;
@@ -84,6 +85,7 @@ class ProductController extends Controller {
         $is_rel_prod = GeneralSetting::where('url_key', 'related-products')->first();
         $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
         $product = Product::find($pId);
+        $CustomerReviews = CustomerReview::where('product_id',$pId)->get();
         // return $product;
         $product->prodImage = @Config('constants.productImgPath') .'/'. $product->catalogimgs()->first()->filename;
         if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
@@ -105,7 +107,7 @@ class ProductController extends Controller {
         $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
         $data['curData'] = $currencySetting->setCurrency();
-        $data = ['product' => $product, 'nattrs' => $nattrs, 'is_desc' => $is_desc, 'is_rel_prod' => $is_rel_prod, 'is_like_prod' => $is_like_prod];
+        $data = ['product' => $product, 'nattrs' => $nattrs, 'is_desc' => $is_desc, 'is_rel_prod' => $is_rel_prod, 'is_like_prod' => $is_like_prod,'CustomerReviews'=>$CustomerReviews];
         $viewname = Config('constants.frontendCatlogProducts') . '.simpleProduct';
         return Helper::returnView($viewname, $data, null, 1);
     }
