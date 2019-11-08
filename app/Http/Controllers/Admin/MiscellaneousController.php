@@ -317,6 +317,8 @@ class MiscellaneousController extends Controller {
         $data['seoStoreList']['social_shared_image'] = $store['image'];
         $data['seoStoreList']['social_shared_url'] = $store['url'];
         $data['seoStoreList']['google_analytics'] = $store['other_meta'];
+        $data['seoStoreList']['country_id'] = $store['countryList'];
+        $data['seoStoreList']['pincode_status'] = $store['pincode'];
 
         $viewname = "";
         return Helper::returnView($viewname, $data);
@@ -341,6 +343,9 @@ class MiscellaneousController extends Controller {
         $store["image"] = Input::get("image");
         $store["url"] = Input::get("url");
         $store["other_meta"] = Input::get("other_meta");
+        $store["countryList"] = Input::get("countryList");
+        $store["pincode"] = Input::get("pincode");
+        
 
         $storeList["meta_title"] = $store["meta_title"];
         $storeList["meta_keys"] = $store["meta_keys"];
@@ -351,6 +356,8 @@ class MiscellaneousController extends Controller {
         $storeList["image"] = $store["image"];
         $storeList["url"] = $store["url"];
         $storeList["other_meta"] = $store["other_meta"];
+        $storeList["countryID"] = $store["countryList"];
+        $storeList["pincodeStatus"] = $store["pincode"];
         
         $newSoter = json_encode($store);
         Helper::updateStoreSettings($storePath, $newSoter);

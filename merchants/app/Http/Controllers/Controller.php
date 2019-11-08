@@ -62,6 +62,9 @@ abstract class Controller extends BaseController {
         View::share('cart', $this->getCart());
         View::share('langs', $this->getTranslations());
         View::share('industry_id', Helper::getSettings()['industry_id']);
+        View::share('storePincodeCheck', Helper::getSettings()['pincode']);
+        View::share('storeCountryCheck', Helper::getSettings()['countryList']);
+        View::share('countryData', Helper::getCountry());
         View::share('store_version_id', Helper::getSettings()['store_version']);
         Session::put("storeName", Helper::getSettings()['storeName']);
         Session::put("store_id", Helper::getSettings()['store_id']);

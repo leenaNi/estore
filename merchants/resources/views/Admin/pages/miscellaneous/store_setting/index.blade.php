@@ -31,7 +31,9 @@
 <?php
 $jsonString = App\Library\Helper::getSettings();
 $data = (object) $jsonString;
-    //echo "<pre>";print_r($data);die;
+
+$country = App\Library\Helper::getCountry();
+    //echo "<pre>";print_r($country);die;
 ?>
 
 
@@ -212,6 +214,29 @@ if (isset($data->expiry_date)) {
                                 {!! Form::textarea('other_meta',isset($data->other_meta) ? $data->other_meta : '',["class"=>'form-control',"placeholder"=>"Enter Other Meta"]) !!}
                             </div>
                             {{--- seo ends --}}
+
+                            {{-- Country and pincode changes required starts--}}
+                            <div class="form-group">
+                                <label>Country</label>
+                                <select name="countryList"  class="form-control">
+                                    <option value="">Please Select</option>
+                                    @foreach($country as $con)
+                                        <option value="{{$con->id}}" {{ isset($data->countryList) && $data->countryList == $con->id ?'selected':'' }} >
+                                            {{$con->name}} 
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Is pincode compulsory ?</label>
+                                <select name="pincode"  class="form-control">
+                                    <option value="">Please Select</option>
+                                    <option value="1"  <?= (isset($data->pincode) && $data->pincode == 1) ? 'selected' : ''; ?>  >Yes</option>
+                                    <option value="0" <?= (isset($data->pincode) && $data->pincode == 0) ? 'selected' : ''; ?> >No</option>
+                                </select>
+                            </div>
+                            {{-- Country and pincode changes required ends--}}
+
                             <div class="form-group">
                                 <input type="submit" value="Save" id="saveLogo1" class="btn noLeftMargin btn-primary pull-left">
                             </div>
