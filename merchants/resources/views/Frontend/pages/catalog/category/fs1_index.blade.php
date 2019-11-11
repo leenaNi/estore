@@ -22,7 +22,7 @@
     <!-- Content
         ============================================= -->
     <section id="content">
-        <div class="content-wrap" >
+        <div class="content-wrap"> 
             <div class="container clearfix">
 
                 <div  class="col-md-12 clearfix">
@@ -105,6 +105,14 @@
 
                                 <del ng-show="prd.delPrice == 1"><span class="currency-sym"></span> <span class="priceConvert">[[ prd.price  * currencyVal | number : 2 ]]</span></del>
                                 <ins> <span class="currency-sym"></span> <span class="amount priceConvert">[[ prd.getPrice  * currencyVal | number : 2 ]]</span></ins>
+                            </div>
+                            <div>
+                                <form id="form[[prd.id]]" action="{{ route('addToCart') }}">
+                                <input type="hidden" name='prod_id' value='[[prd.id]]'>
+                                <input type="hidden" name='quantity' value='1'>
+                                <input type="hidden" name='prod_type' value='[[prd.prod_type]]'>    
+                                <input type="button"  form-id='[[prd.id]]' value="Add to cart" class="add-to-cart button nomargin addToCartB addToCart mobMB15">
+                                </form>
                             </div>
                         </div>
                     </div>

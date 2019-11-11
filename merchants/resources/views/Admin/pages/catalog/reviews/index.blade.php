@@ -2,6 +2,7 @@
 @section('content') 
 @php 
 use App\Models\User;
+use App\Models\Order;
 @endphp
 <style type="text/css">
       .rating {
@@ -107,6 +108,7 @@ use App\Models\User;
                                 <th>Product</th>
                                 <th>OrderID</th>
                                 <th>Order Date</th>
+                                <th>Review Date</th>
                                 <th>Status</th>
                                 <th>Action </th>
                             </tr>
@@ -117,6 +119,7 @@ use App\Models\User;
                                 @foreach ($CustomerReviews as $review)
                                 <?php  
                                     $userdata = User::find($review->user_id); 
+                                    $orderdata = Order::find($review->order_id); 
                                     if($review->publish==1)
                                         $status = 'Published';
                                     elseif($review->publish==2)
@@ -128,7 +131,8 @@ use App\Models\User;
                                 <td>{{$userdata->firstname}} {{$userdata->lastname}}</td>
                                 <td width="30%">{{$review->product}}</td>
                                 <td>{{$review->order_id}}</td>
-                                <td>{{$review->created_at}}</td>
+                                <td>{{date("d-M-Y",strtotime($orderdata->created_at))}}</td>
+                                <td>{{date("d-M-Y",strtotime($review->created_at))}}</td>
                                 <td><span>{{$status}}</span></td>
                                 <td>
                                     <button  class="btn sbtn btn-primary" data-toggle="tooltip" onclick="getReviewData('{{$review->id}}');" 

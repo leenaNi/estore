@@ -1,4 +1,4 @@
-var app = angular.module('app', []);
+var app = angular.module('app', []); 
 
 //var hostname = location.hostname;
 //var pathname = document.location.pathname;

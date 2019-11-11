@@ -189,6 +189,7 @@ $frontendConstants = [
     'frontendView' => 'Frontend.pages',
     'frontendPaginateNo' => 10,
     'frontendPublicJsPath' => asset('public/Frontend/js/'),
+    'frontendNGAPPJsPath' => asset('js'),
     'frontendMyAccView' => 'Frontend.pages.myacc',
     'frontendCatlogCategory' => 'Frontend.pages.catalog.category',
     'frontendCatlogProducts' => 'Frontend.pages.catalog.products',
