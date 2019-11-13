@@ -20,7 +20,7 @@ use App\Library\Helper;
 use DB;
 use Cart;
 
-class ProductController extends Controller {
+class ProductController extends Controller { 
 
     public function index($slug) {
         $setting = GeneralSetting::where('url_key', 'debug-option')->first();
@@ -39,6 +39,16 @@ class ProductController extends Controller {
             $view = $this->configProduct($prod->id);
         }
         return $view;
+    }
+
+    public function getAllReviews($pid)
+    {
+        $publishedReviews = CustomerReview::where(['product_id'=>$pid,'publish'=>1])->orderBy('id','desc')->get();
+        $product = Product::find($pid);
+        $totalRatings = CustomerReview::where(['product_id'=>$pid,'publish'=>1])->sum('rating');
+        $data = ['publishedReviews'=>$publishedReviews,'product'=>$product,'totalRatings'=>$totalRatings];
+        $viewname = Config('constants.frontendCatlogProducts') . '.productReview';
+        return Helper::returnView($viewname, $data, null, 1);
     }
 
     public function getSubProd() {
@@ -85,7 +95,7 @@ class ProductController extends Controller {
         $is_rel_prod = GeneralSetting::where('url_key', 'related-products')->first();
         $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
         $product = Product::find($pId);
-        $CustomerReviews = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->orderBy('id','desc')->get();
+        $CustomerReviews = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->orderBy('id','desc')->take(1)->get();
         $totalRatings = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->sum('rating');
         // return $product;
         $product->prodImage = @Config('constants.productImgPath') .'/'. $product->catalogimgs()->first()->filename;

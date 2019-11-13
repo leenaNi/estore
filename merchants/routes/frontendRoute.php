@@ -179,5 +179,6 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
     Route::any('/notify-mail', ['as' => 'notifyMail', 'uses' => 'ProductController@notify_mail']);
     Route::get('/explore/{slug?}', ['as' => 'category', 'uses' => 'CategoriesController@index']);
     Route::get('/{slug}/', ['as' => 'prod', 'uses' => 'ProductController@index']);
+    Route::get('/reviews/{pid}/', ['as' => 'prod', 'uses' => 'ProductController@getAllReviews']);
 });
 
