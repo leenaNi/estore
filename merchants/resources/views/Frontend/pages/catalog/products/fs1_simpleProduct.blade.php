@@ -6,6 +6,7 @@
 @section('content')
 @php 
 use App\Models\User;
+use App\Models\CustomerReview;
 @endphp
 <style type="text/css">
       .rating {
@@ -90,8 +91,7 @@ use App\Models\User;
                 <div class="product">
                     <form id="{{"form".$product->id }}" action="{{ route('addToCart') }}">
                         <div class="col_half">
-                            <!-- Product Single - Gallery
-                                                                            ============================================= -->
+                          
                             <div class="product-image">
                                 <div class="fslider" data-pagi="false" data-autoplay="false" data-arrows="false" data-thumbs="true">
                                     <div class="flexslider">
@@ -166,15 +166,16 @@ use App\Models\User;
 
                             <div class="shortDesc"><?php echo html_entity_decode($product->short_desc) ?></div>
                             @php 
-                             if(count($CustomerReviews)>0)
+                            $publishReviews = CustomerReview::where(['product_id'=>$product->id,'publish'=>1])->orderBy('id','desc')->get();
+                             if(count($publishReviews)>0)
                              {
-                                $ratings = $totalRatings/count($CustomerReviews);
+                                $ratings = $totalRatings/count($publishReviews);
                              }
                              else{
                                 $ratings = $totalRatings;
                              }
                             @endphp
-                            <div><h4>Reviews({{count($CustomerReviews)}} reviews, {{$ratings}} <i class="fa fa-star" aria-hidden="true"></i>)</h4>
+                            <div><h4>Reviews({{count($publishReviews)}} reviews, {{$ratings}} <i class="fa fa-star" aria-hidden="true"></i>)</h4>
                                @foreach($CustomerReviews as $review)
                                @php 
                                $user = User::find($review->user_id);
@@ -214,9 +215,9 @@ use App\Models\User;
   </label>
 </div>
                                <span>{{$review->description}}</span><br><br>
-                               <span>{{$review->starts}}</span>
                                @endforeach
-                            </div>
+                            <a href="{{ route('home')}}/reviews/{{$review->product_id}}"><u>View All Reviews</u></a>
+                            </div><br>
                             <!-- AddToAny BEGIN -->
                             <div class="shareSociIconBox">
                                 <strong>Share:</strong> 

@@ -5,11 +5,9 @@
 @section('meta-description',$metaDesc)
 
 @section('content')
-<!-- <style>
-    .shop .product{
-        height: 279px;
-    }
-</style> -->
+@php 
+use App\Models\CustomerReview;
+@endphp
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
 
 <div  ng-controller="productListingController">
@@ -105,6 +103,10 @@
 
                                 <del ng-show="prd.delPrice == 1"><span class="currency-sym"></span> <span class="priceConvert">[[ prd.price  * currencyVal | number : 2 ]]</span></del>
                                 <ins> <span class="currency-sym"></span> <span class="amount priceConvert">[[ prd.getPrice  * currencyVal | number : 2 ]]</span></ins>
+                            </div>
+                            <div>
+                                
+                                [[prd.reviews]] reviews , [[prd.ratings]]<i class="fa fa-star" aria-hidden="true"></i>
                             </div>
                             <div>
                                 <form id="form[[prd.id]]" action="{{ route('addToCart') }}">
