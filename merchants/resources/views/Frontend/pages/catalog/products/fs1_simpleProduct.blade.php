@@ -176,10 +176,12 @@ use App\Models\CustomerReview;
                              }
                             @endphp
                             <div><h4>Reviews({{count($publishReviews)}} reviews, {{$ratings}} <i class="fa fa-star" aria-hidden="true"></i>)</h4>
+                               @if(count($CustomerReviews)>0)
                                @foreach($CustomerReviews as $review)
                                @php 
                                $user = User::find($review->user_id);
                                @endphp
+
                                <span>{{$user->firstname}}</span>
                                <h5 style="margin-bottom: 0px;">{{$review->title}}</h5>
        <div class="rating" style="    margin-bottom: -35px;line-height: 11px;">
@@ -216,7 +218,11 @@ use App\Models\CustomerReview;
 </div>
                                <span>{{$review->description}}</span><br><br>
                                @endforeach
+
                             <a href="{{ route('home')}}/reviews/{{$review->product_id}}"><u>View All Reviews</u></a>
+                            @else
+                               No reviews found
+                               @endif
                             </div><br>
                             <!-- AddToAny BEGIN -->
                             <div class="shareSociIconBox">
