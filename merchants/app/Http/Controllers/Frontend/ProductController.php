@@ -95,7 +95,7 @@ class ProductController extends Controller {
         $is_rel_prod = GeneralSetting::where('url_key', 'related-products')->first();
         $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
         $product = Product::find($pId);
-        $CustomerReviews = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->orderBy('id','desc')->take(1)->get();
+        $CustomerReviews = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->orderBy('id','desc')->take(2)->get();
         $totalRatings = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->sum('rating');
         // return $product;
         $product->prodImage = @Config('constants.productImgPath') .'/'. $product->catalogimgs()->first()->filename;
