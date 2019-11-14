@@ -216,7 +216,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
                     @endif
                     @if($settingStatus['25'] == 1)   
-<!--                    <li class="{{ preg_match("/admin.vendors/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.view') }}"><i class="fa fa-angle-right"></i>Vendors</a></li>-->
+                    <li class="{{ preg_match("/admin.vendors/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.view') }}"><i class="fa fa-angle-right"></i>Vendors</a></li>
                     @endif
 
                 </ul>
