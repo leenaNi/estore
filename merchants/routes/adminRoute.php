@@ -147,6 +147,15 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/{slug}', array('as' => 'admin.dynamic-layout.view', 'uses' => 'DyLayoutController@index'));
         });
 
+        Route::group(['prefix' => 'campaign', 'middlewareGroups' => ['CheckUser', 'web']], function() {
+            Route::get('/', ['as' => 'admin.campaign.view', 'uses' => 'CampaignController@index']);
+            Route::get('/add', ['as' => 'admin.campaign.add', 'uses' => 'CampaignController@add']);
+            Route::post('/save', ['as' => 'admin.campaign.save', 'uses' => 'CampaignController@save']);
+            Route::get('/edit', ['as' => 'admin.campaign.edit', 'uses' => 'CampaignController@edit']);
+            Route::get('/delete', ['as' => 'admin.campaign.delete', 'uses' => 'CampaignController@delete']);
+            Route::post('/sendsms', ['as' => 'admin.campaign.sendsms', 'uses' => 'CampaignController@sendCampaignSMS']);
+        });
+
         Route::group(['prefix' => 'coupons', 'middlewareGroups' => ['CheckUser', 'web']], function() {
             Route::get('/', ['as' => 'admin.coupons.view', 'uses' => 'CouponsController@index']);
             Route::get('/add', ['as' => 'admin.coupons.add', 'uses' => 'CouponsController@add']);

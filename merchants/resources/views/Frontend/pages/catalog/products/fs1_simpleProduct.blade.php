@@ -218,7 +218,7 @@ use App\Models\CustomerReview;
 </div>
                                <span>{{$review->description}}</span><br><br>
                                @endforeach
-                            @if(count($publishReviews)>1) 
+                            @if(count($publishReviews)>2) 
                             <a href="{{ route('home')}}/reviews/{{$review->product_id}}"><u>View All Reviews</u></a>
                             @endif
                             @else

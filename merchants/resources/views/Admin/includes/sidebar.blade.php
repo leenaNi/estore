@@ -132,15 +132,16 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     @endif
                 </ul>
             </li>
-            <li class="treeview {{ preg_match("/admin.coupons|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
+            <li class="treeview {{ preg_match("/admin.campaign|admin.coupons|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-bullhorn"></i><span>Marketing</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
+                    <li class="{{ preg_match("/admin.campaign/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.campaign.view') }}"><i class="fa fa-angle-right"></i>SMS Campaign</a></li>      
                     @if($feature['coupon']==1)  
                     <li class="{{ preg_match("/admin.coupons/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.coupons.view') }}"><i class="fa fa-angle-right"></i>Coupons</a></li>
-                    @endif                   
+                    @endif             
                     @if($feature['loyalty']==1)  
                     <li class="{{ preg_match("/admin.loyalty/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.loyalty.view') }}"><i class="fa fa-angle-right"></i>Loyalty Program</a></li>                                     
                     @endif   
