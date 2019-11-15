@@ -362,7 +362,7 @@ class HomeController extends Controller {
         ini_set('max_execution_time', 600);
         $merchantd = Merchant::find(Session::get('merchantid')); 
 
-        /*$messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
+        $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
         $fields = array(
             'data' => $messagearray
         );
@@ -391,7 +391,7 @@ class HomeController extends Controller {
         if ($result === FALSE) {
             die('Curl failed: ' . curl_error($ch));
         }
-        curl_close($ch);*/
+        curl_close($ch);
 //        //stop Curl
 
 

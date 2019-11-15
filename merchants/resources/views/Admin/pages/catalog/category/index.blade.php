@@ -71,7 +71,7 @@
                         echo "</ul>";
 
                         function renderNode($node) {
-                            echo "<li class='tree-item fl_left ps_relative_li'>";
+                            echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
                             echo '' . $node->category . '<a href="' . route("admin.category.add", ["parent_id" => $node->id]) . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>'
                             . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>'  ?>
                             <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a>

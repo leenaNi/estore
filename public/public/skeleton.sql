@@ -21,7 +21,38 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
+--
+-- Table structure for table `messages`
+--
 
+CREATE TABLE IF NOT EXISTS `tblprfx_messages` (
+  `id` int(11) NOT NULL,
+  `title` varchar(225) NOT NULL,
+  `content` text NOT NULL,
+  `status` int(11) NOT NULL COMMENT '1=bulk send,2=save as draft',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `tblprfx_messages`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `tblprfx_messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Table structure for table `tblprfx_additional_charges`
 --
