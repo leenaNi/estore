@@ -35,12 +35,13 @@
         <div  class="tab-content" >
             <div class="active tab-pane" id="activity">
                 <div class="row">
-                    <div>
-                        <p style="color: red;text-align: center;">{{ Session::get('messege') }}</p>
-                    </div>
+                    
                     <div class="col-md-12">
                         <div class="box noShadow noBorder">
                             <div class="box-body">
+                               <div class="alert alert-success" style="display: none" role="alert" id="successmsg">
+                     
+                                 </div> 
                                 <!-- <form action="{{$action}}" method="post"> -->
                                     {!! Form::model($smsCampaign, ['method' => 'post', 'files'=> true, 'url' => $action , 'id'=>'save_message' ]) !!}
                                 <div class="row">
@@ -126,8 +127,10 @@
                 data: {contactno: contactno,title:title,content:content},
                 cache: false,
                 success: function (response) {
+                    $('#sendSmsModal').modal('toggle');
+                    $("#successmsg").show();
+                    $("#successmsg").html('SMS Send Successfully');
                    
-                    alert(response);
                 }, error: function (e) {
                     console.log(e.responseText);
                 }

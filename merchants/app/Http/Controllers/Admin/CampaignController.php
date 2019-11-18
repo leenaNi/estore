@@ -27,7 +27,7 @@ class CampaignController extends Controller
     	$contactno = Input::get('contactno');
     	$title = Input::get('title');
     	$content = Input::get('content');
-    	$msg = "Campaign Message ".$content." Team Estorifi";
+    	$msg = $content;
     	$country_code = '+91';
     	Helper::sendsms($contactno, $msg, $country_code);
     	$msg = urlencode($msg);
