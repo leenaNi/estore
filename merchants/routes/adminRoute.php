@@ -373,6 +373,15 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/chk-existing-useremail', ['as' => 'admin.customers.chkExistingUseremail', 'uses' => 'CustomersController@chkExistingUseremail']);
             });
 
+            Route::group(array('prefix' => 'storecontacts', 'middlewareGroups' => ['web']), function() {
+                Route::get('/', array('as' => 'admin.storecontacts.view', 'uses' => 'StoreContactsController@index')); 
+                Route::get('/add', array('as' => 'admin.storecontacts.add', 'uses' => 'StoreContactsController@add'));
+                Route::post('/save', array('as' => 'admin.storecontacts.save', 'uses' => 'StoreContactsController@save'));
+                Route::get('/edit', array('as' => 'admin.storecontacts.edit', 'uses' => 'StoreContactsController@edit'));
+                Route::post('/update', array('as' => 'admin.storecontacts.update', 'uses' => 'StoreContactsController@update'));
+                Route::any('/import', array('as' => 'admin.storecontacts.import', 'uses' => 'StoreContactsController@import'));
+            });
+
             Route::group(array('prefix' => 'loyalty', 'middlewareGroups' => ['web']), function() {
                 Route::get('/', array('as' => 'admin.loyalty.view', 'uses' => 'LoyaltyController@index'));
                 Route::get('/add', array('as' => 'admin.loyalty.add', 'uses' => 'LoyaltyController@add'));

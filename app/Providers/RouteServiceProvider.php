@@ -41,9 +41,7 @@ class RouteServiceProvider extends ServiceProvider {
         $path = explode('/admin', $req_uri);
         
         $getprefix = explode("/",$req_uri);
-      //  echo 'sd';
-    // echo $getprefix[1];
-    // die;
+     
  
         if ($getprefix[1] == 'merchant') {
           
@@ -61,26 +59,7 @@ class RouteServiceProvider extends ServiceProvider {
         }else{
               $this->mapWebRoutes(); 
         }
-        
-//             $req_uri = $_SERVER['REQUEST_URI'];
-//        $path = explode('/admin', $req_uri);
-//        $path[0];
-//
-//        if (strpos($path[0], 'merchant') !== false) {
-//            $this->mapMerchantRoutes();
-//        } elseif (strpos($path[0], 'bank') !== false) {
-//             $this->mapBankRoutes(); 
-//        } elseif (strpos($path[0], 'api') !== false) {
-//             $this->mapApiRoutes();
-//        } else {
-//             $this->mapVswipeRoutes();
-//        }
-        
-        
-
-       // $this->mapApiRoutes();
-
-       // $this->mapWebRoutes();
+     
     }
 
     /**
