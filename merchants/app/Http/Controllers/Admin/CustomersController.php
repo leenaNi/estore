@@ -23,8 +23,9 @@ use Carbon\Carbon;
 class CustomersController extends Controller {
 
     public function index() {
+        $user = User::find(Session::get('loggedinAdminId'));
         $search = !empty(Input::get("custSearch")) ? Input::get("custSearch") : '';
-        $customers = User::with("userCashback")->where('user_type', 2)->where('store_id',Session::get('loggedinAdminId'))->orderBy('id','desc');
+        $customers = User::with("userCashback")->where('user_type', 2)->where('store_id',$user->store_id)->orderBy('id','desc');
         $search_fields = ['firstname', 'lastname', 'email', 'telephone'];
         if (!empty(Input::get('custSearch'))) {
             $customers = $customers->where(function($query) use($search_fields, $search) {

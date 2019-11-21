@@ -96,7 +96,7 @@
                                 <th>Name</th>
                                 <th>Email Id</th>
                                 <th>Mobile</th>
-                                <th>Created By</th>
+                                <th>Contact Type</th>
                                 <th>Anniversary Date</th>
                                 <th>Birth Date</th>
                                 <th>Date Created</th>
@@ -111,9 +111,9 @@
 
                                 <td>{{ $stcon->email }}</td>
                                 <td>{{ $stcon->mobileNo }}</td>
-                                <td>Master</td>
-                                <td>{{ date("d-M-Y",strtotime($stcon->anniversary)) }}</td>
-                                <td>{{ date("d-M-Y",strtotime($stcon->birthDate)) }}</td>
+                                <td>{{ $stcon->contact_type==1?'Master':'Customer' }}</td>
+                                <td>{{ $stcon->birthDate=='0000-00-00 00:00:00'? '':date("d-M-Y",strtotime($stcon->anniversary)) }}</td>
+                                <td>{{ $stcon->birthDate=='0000-00-00 00:00:00'? '':date("d-M-Y",strtotime($stcon->birthDate)) }}</td>
                                 <td>{{ date("d-M-Y",strtotime($stcon->created_at)) }}</td>
                                 <td>
                                     <a href="{!! route('admin.storecontacts.edit',['id'=>$stcon->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn-plen btn btnNo-margn-padd" ></i></a>
@@ -125,25 +125,7 @@
                             @else
                             <tr><td colspan=8> No Record Found.</td></tr>
                             @endif
-                            @if(count($users)>0)
-                            @foreach($users as $customer)
-                            <tr> 
-                                <td>{{$customer->firstname }}</td>
-
-                                <td>{{ $customer->email }}</td>
-                                <td>{{ $customer->telephone }}</td>
-                                <td>Customer</td>
-                                <td></td>
-                                <td></td>
-                                <td>{{ date("d-M-Y",strtotime($customer->created_at)) }}</td>
-                                <td>
-                                    <a href="{!! route('admin.storecontacts.edit',['id'=>$customer->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn-plen btn btnNo-margn-padd" ></i></a>
-                                    <a href="{!! route('admin.storecontacts.view',['contSearch'=> $customer->firstname]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="View Order"> <i class="fa fa-eye btn-plen btn"></i></a>
-
-                                </td>
-                            </tr>
-                            @endforeach
-                            @endif
+                            
                         </tbody>
                     </table>
                 </div><!-- /.box-body -->
