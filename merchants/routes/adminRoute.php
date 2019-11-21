@@ -380,6 +380,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::get('/edit', array('as' => 'admin.storecontacts.edit', 'uses' => 'StoreContactsController@edit'));
                 Route::post('/update', array('as' => 'admin.storecontacts.update', 'uses' => 'StoreContactsController@update'));
                 Route::any('/import', array('as' => 'admin.storecontacts.import', 'uses' => 'StoreContactsController@import'));
+                Route::get('/exportsamplecsv', ['as' => 'admin.storecontacts.exportsamplecsv', 'uses' => 'StoreContactsController@exportsamplecsv']);
             });
 
             Route::group(array('prefix' => 'loyalty', 'middlewareGroups' => ['web']), function() {

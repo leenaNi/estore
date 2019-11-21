@@ -201,7 +201,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
             </li>
 
-            <li class="treeview {{ preg_match("/admin.customers.view|admin.storecontacts.view|admin.storecontacts.add/",Route::currentRouteName())? 'active' : ''}}">
+            <li class="treeview {{ preg_match("/admin.customers.view|admin.storecontacts.view|admin.storecontacts.edit|admin.storecontacts.add/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-users"></i><span>Customers</span>
                     <i class="fa fa-angle-down pull-right"></i>

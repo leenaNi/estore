@@ -24,7 +24,7 @@ class CustomersController extends Controller {
 
     public function index() {
         $search = !empty(Input::get("custSearch")) ? Input::get("custSearch") : '';
-        $customers = User::with("userCashback")->where('user_type', 2)->orderBy('id','desc');
+        $customers = User::with("userCashback")->where('user_type', 2)->where('store_id',Session::get('loggedinAdminId'))->orderBy('id','desc');
         $search_fields = ['firstname', 'lastname', 'email', 'telephone'];
         if (!empty(Input::get('custSearch'))) {
             $customers = $customers->where(function($query) use($search_fields, $search) {

@@ -24,6 +24,7 @@ use Validator;
 class StoreContactsController extends Controller {
 
     public function index() {
+        $users = User::where(['user_type'=>2,'store_id'=>Session::get('loggedinAdminId')])->orderBy('id','desc')->get();
         $contacts = ContactStore::orderBy('id','desc');
         $search = !empty(Input::get("contSearch")) ? Input::get("contSearch") : '';
         $search_fields = ['name', 'email', 'mobileNo'];
@@ -63,7 +64,7 @@ class StoreContactsController extends Controller {
         
         $viewname = Config('constants.adminStoreContactView') . '.index';
         
-        $data = ['storecontacts' => $storecontacts, 'contactsCount' => $contactsCount];
+        $data = ['storecontacts' => $storecontacts,'users'=>$users, 'contactsCount' => $contactsCount];
         return Helper::returnView($viewname, $data);
     }
 
@@ -159,6 +160,15 @@ class StoreContactsController extends Controller {
         return Helper::getCsv($user_data, 'customers.csv', ',');
     }
 
+    public function exportsamplecsv() {
+        
+        $user_data = [];
+        array_push($user_data, ['Name', 'Email', 'Mobile No', 'Anniversary Date', 'Date of Birth']);
+        $details = ['Stefen','stefen@gmail.com','9878765678','12/03/2000','30/04/1986'];
+        array_push($user_data, $details);
+        return Helper::getCsv($user_data, 'contactformat.csv', ',');
+    }
+
     public function import(Request $request) {
         $success = $this->uploadContact($request);
         if($success)
@@ -223,7 +233,6 @@ class StoreContactsController extends Controller {
                 $col[4] = $dateofbirth;
                 
                 $invalidRecords = $this->checkValidRecord($col);
-                
                 if ($invalidRecords['error'] == 'error') {
                     array_push($invalidRecordsArray, $invalidRecords['msg'][0]);
                 }
@@ -237,7 +246,6 @@ class StoreContactsController extends Controller {
             $this->downloadInvalidRecords($invalidRecordsArray);
 
             fclose($handle);
-
             if ($displayRecords == 0) {
                 $message = "Store Contact ".$displayRecords." Records inserted, ".count($invalidRecordsArray)." Records are Invalid.";
             } else {
@@ -373,7 +381,7 @@ class StoreContactsController extends Controller {
             $root = $_SERVER['DOCUMENT_ROOT'].'/uploads/invalid_contacts';
             $file     = '/InvalidRecordsReport_' . time() . '.csv';
             $filename = $root . $file;
-            
+            //dd($root);
             if(chmod($root, 0777)){
                 chmod($root, 0777);
             }

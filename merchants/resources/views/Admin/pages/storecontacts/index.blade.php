@@ -96,6 +96,7 @@
                                 <th>Name</th>
                                 <th>Email Id</th>
                                 <th>Mobile</th>
+                                <th>Created By</th>
                                 <th>Anniversary Date</th>
                                 <th>Birth Date</th>
                                 <th>Date Created</th>
@@ -110,6 +111,7 @@
 
                                 <td>{{ $stcon->email }}</td>
                                 <td>{{ $stcon->mobileNo }}</td>
+                                <td>Master</td>
                                 <td>{{ date("d-M-Y",strtotime($stcon->anniversary)) }}</td>
                                 <td>{{ date("d-M-Y",strtotime($stcon->birthDate)) }}</td>
                                 <td>{{ date("d-M-Y",strtotime($stcon->created_at)) }}</td>
@@ -122,6 +124,25 @@
                             @endforeach
                             @else
                             <tr><td colspan=8> No Record Found.</td></tr>
+                            @endif
+                            @if(count($users)>0)
+                            @foreach($users as $customer)
+                            <tr> 
+                                <td>{{$customer->firstname }}</td>
+
+                                <td>{{ $customer->email }}</td>
+                                <td>{{ $customer->telephone }}</td>
+                                <td>Customer</td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ date("d-M-Y",strtotime($customer->created_at)) }}</td>
+                                <td>
+                                    <a href="{!! route('admin.storecontacts.edit',['id'=>$customer->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn-plen btn btnNo-margn-padd" ></i></a>
+                                    <a href="{!! route('admin.storecontacts.view',['contSearch'=> $customer->firstname]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="View Order"> <i class="fa fa-eye btn-plen btn"></i></a>
+
+                                </td>
+                            </tr>
+                            @endforeach
                             @endif
                         </tbody>
                     </table>
@@ -155,22 +176,16 @@
           <div class="row">
             <div class="form-group">
               {{-- <input type="hidden" name="bankID" id="bankID" value="{{ $bankID }}"> --}}
-              <label for="userName" class="col-sm-2 control-label pull" style="text-align: right; margin-top: 10px;">Add File</label>
+              <label for="userName" class="col-sm-2 control-label pull" style="text-align: right;">Add File</label>
 
-              <div class="input-group col-sm-8">            
-                <input type="text" class="form-control" readonly>
-                <label class="input-group-btn">
-                    <span class="btn btn-grey-custom">
-                       Choose File<input name="contact_file" id="approveUuid" type="file" style="display: none;">
-                    </span>
-                </label>
-              </div> 
+              
+                       <input name="contact_file" id="approveUuid" type="file">
+                
             </div>
           </div>
         </div>
         <div class="modal-footer">
-            <a class="btn btn-primary pull-left" href="{{ Config('constants.contactFilePath') . '/contactformat.ods' }}" download >Download sample CSV</a>
-            
+            <a href="{!! route('admin.storecontacts.exportsamplecsv') !!}" class="btn btn-primary pull-left" target="_" type="button">Download sample CSV</a>
           <button type="submit" class="btn btn-primary submit_upload ladda-button" data-style="zoom-in" >Upload</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
