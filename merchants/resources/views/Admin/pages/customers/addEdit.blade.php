@@ -105,16 +105,17 @@
                             </div>
                         </div> 
                         </form>
-
-                            <div class="row">
-                                    <div class="col-md-12">
+                            @if($user->id)
+                                <div class="col-md-12">
                                    <label>BILLING ADDRESSES</label>
                                 </div>
+                                @if(count($BillingAddress)>0)
                                     <!--   -->
                                     <div id='forBillAddress' class="shippingadd">
                                         @php
                                         $count = 1;
                                         @endphp
+                                        
                                         @foreach($BillingAddress as $sadddress)
                                         
                                         <div class="col-md-4">
@@ -145,16 +146,19 @@
                                         $count++;
                                         @endphp
                                         @endforeach
+                                        
                                     </div>
-                                  
+                                  @else
+                                  <div class="col-md-12">
+                                   <p> No Address Found</p>
                                 </div>
-                       
-                                <div class="row">
+                                       
+                                    @endif
                                     <div class="col-md-12">
                                    <label>SHIPPING ADDRESSES</label>
                                 </div>
-                                    <!--   -->
-                                    <div id='forBillAddress' class="shippingadd">
+                                    @if(count($shippingAddress)>0)
+                                    <div id='forShippingAddress' class="shippingadd">
                                         @php
                                         $count = 1;
                                         @endphp
@@ -189,8 +193,12 @@
                                         @endphp
                                         @endforeach
                                     </div>
-                                  
+                                  @else
+                                  <div class="col-md-12">
+                                   <p> No Address Found</p>
                                 </div>
+                                @endif
+                            @endif    
                     </div>
                     </div>
                 </div>

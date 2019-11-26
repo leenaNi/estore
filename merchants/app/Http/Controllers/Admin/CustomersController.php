@@ -81,10 +81,12 @@ class CustomersController extends Controller {
         foreach ($getloyalty as $getloyaltyval) {
             $loyalty[$getloyaltyval['id']] = ucfirst(strtolower($getloyaltyval['group']));
         }
+        $shippingAddress = [];
+        $BillingAddress = [];
         $setting = GeneralSetting::where('url_key', '=', 'loyalty')->first();
         // return view(Config('constants.adminCustomersView') . '.addEdit', compact('user', 'action','loyalty'));
         $viewname = Config('constants.adminCustomersView') . '.addEdit';
-        $data = ['user' => $user, 'action' => $action, 'loyalty' => $loyalty, 'setting' => $setting];
+        $data = ['user' => $user, 'action' => $action, 'loyalty' => $loyalty, 'setting' => $setting,'shippingAddress'=>$shippingAddress,'BillingAddress'=>$BillingAddress];
         return Helper::returnView($viewname, $data);
     }
 
