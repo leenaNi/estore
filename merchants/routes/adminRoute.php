@@ -154,6 +154,13 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::get('/edit', ['as' => 'admin.campaign.edit', 'uses' => 'CampaignController@edit']);
             Route::get('/delete', ['as' => 'admin.campaign.delete', 'uses' => 'CampaignController@delete']);
             Route::post('/sendsms', ['as' => 'admin.campaign.sendsms', 'uses' => 'CampaignController@sendCampaignSMS']);
+
+            Route::get('/viewemails', ['as' => 'admin.emailcampaign.viewemails', 'uses' => 'CampaignController@viewemails']);
+            Route::get('/addemail', ['as' => 'admin.emailcampaign.addemail', 'uses' => 'CampaignController@addEmail']);
+            Route::post('/saveemail', ['as' => 'admin.emailcampaign.saveemail', 'uses' => 'CampaignController@saveEmail']);
+            Route::get('/editemail', ['as' => 'admin.emailcampaign.editemail', 'uses' => 'CampaignController@editEmail']);
+            Route::get('/deleteemail', ['as' => 'admin.emailcampaign.deleteemail', 'uses' => 'CampaignController@deleteEmail']);
+            Route::post('/sendemail', ['as' => 'admin.emailcampaign.sendemail', 'uses' => 'CampaignController@sendCampaignEmail']);
         });
 
         Route::group(['prefix' => 'coupons', 'middlewareGroups' => ['CheckUser', 'web']], function() {

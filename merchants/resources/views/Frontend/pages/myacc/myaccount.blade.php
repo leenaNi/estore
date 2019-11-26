@@ -97,6 +97,18 @@
                                     <input type="text" id="telephone" name="telephone" value="{{$user->telephone}}" class="sm-form-control" readonly="">
                                     <b><div id="telephone_editProfileform" class="newerror"></div></b>
                                 </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-phone">Anniversary Date<small>*</small>
+                                    </label>
+                                    <input type="date" id="anniversary_date" name="anniversary_date" value="{{$user->anniversary_date}}" class="sm-form-control">
+                                    <b><div id="anniversary_date_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-phone">Date of Birth <small>*</small>
+                                    </label>
+                                    <input type="date" id="dob" name="dob" value="{{$user->date_of_birth}}" class="sm-form-control">
+                                    <b><div id="dob_editProfileform" class="newerror"></div></b>
+                                </div>
                                 <?php
                                     if(isset($newsLetter) && $newsLetter == 1){
                                         $checkval = 1;

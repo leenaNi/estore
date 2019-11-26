@@ -132,13 +132,14 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     @endif
                 </ul>
             </li>
-            <li class="treeview {{ preg_match("/admin.campaign|admin.coupons|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
+            <li class="treeview {{ preg_match("/admin.campaign|admin.coupons|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.emailcampaign.viewemails|admin.emailcampaign.addemail|admin.emailcampaign.editemail|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-bullhorn"></i><span>Marketing</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="{{ preg_match("/admin.campaign/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.campaign.view') }}"><i class="fa fa-angle-right"></i>SMS Campaign</a></li>      
+                    <li class="{{ preg_match("/admin.campaign/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.campaign.view') }}"><i class="fa fa-angle-right"></i>SMS Campaign</a></li>    
+                    <li class="{{ preg_match("/admin.emailcampaign|admin.emailcampaign.editemail/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.emailcampaign.viewemails') }}"><i class="fa fa-angle-right"></i>Email Campaign</a></li>    
                     @if($feature['coupon']==1)  
                     <li class="{{ preg_match("/admin.coupons/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.coupons.view') }}"><i class="fa fa-angle-right"></i>Coupons</a></li>
                     @endif             
@@ -201,7 +202,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
             </li>
 
-            <li class="treeview {{ preg_match("/admin.customers.view|admin.storecontacts.view|admin.storecontacts.edit|admin.storecontacts.add/",Route::currentRouteName())? 'active' : ''}}">
+            <li class="treeview {{ preg_match("/admin.customers.view|admin.customers.edit|admin.customers.add|admin.storecontacts.view|admin.storecontacts.edit|admin.storecontacts.add/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-users"></i><span>Customers</span>
                     <i class="fa fa-angle-down pull-right"></i>

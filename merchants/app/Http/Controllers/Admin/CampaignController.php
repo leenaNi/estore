@@ -8,8 +8,11 @@ use Route;
 use Input;
 use App\Models\Product;
 use App\Models\Message;
+use App\Models\EmailCampaign;
+use App\Models\EmailTemplate;
 use Session;
 use DB;
+use Config;
 use App\Library\Helper;
 
 class CampaignController extends Controller
@@ -19,6 +22,14 @@ class CampaignController extends Controller
       	//dd($messages);
         $data = [ 'messages' => $messages];
         $viewname = Config('constants.adminCampaignView') . '.index';
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function viewemails() {
+        $EmailCampaigns = EmailCampaign::orderBy("id", "desc")->get();
+        //dd($messages);
+        $data = [ 'EmailCampaigns' => $EmailCampaigns];
+        $viewname = Config('constants.adminCampaignView') . '.emailCampaigns';
         return Helper::returnView($viewname, $data);
     }
 
@@ -52,6 +63,40 @@ class CampaignController extends Controller
                 curl_close($ch);
         //return $output;
         return 'SMS send successfully';
+    }
+
+    public function sendCampaignEmail() {
+        $subject = Input::get('subject');
+        $title = Input::get('title');
+        $content = Input::get('content');
+        dd($content);
+        $email_id = Input::get('email');
+        $data = ['email_template' => $content];
+        Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, 'Anita');
+    }
+
+    public function addEmail() {
+        $emailCampaign = new EmailCampaign();
+        $templates = EmailTemplate::find(1);
+        $action = route("admin.emailcampaign.saveemail");
+        $data = ['action' => $action,'emailCampaign' => $emailCampaign,'templates'=>$templates];
+        $viewname = Config('constants.adminCampaignView') . '.emailCampAddEdit';
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function saveEmail() {
+        $EmailCampaign = EmailCampaign::findOrNew(Input::get('id'));
+        $EmailCampaign->title = Input::get('title');
+        $EmailCampaign->subject = Input::get('subject');
+        $EmailCampaign->content = Input::get('content');
+        $EmailCampaign->created_at = date('Y-m-d H:i:s');
+        $EmailCampaign->status = 2;
+        $EmailCampaign->save();
+        
+        $url = 'admin.emailcampaign.viewemails';
+        $data = ['status' => '1', 'msg' => 'Email added/updated successfully.'];
+        $viewname = '';
+        return Helper::returnView($viewname, $data, $url);
     }
 
     public function add() {
@@ -94,6 +139,27 @@ class CampaignController extends Controller
             $data = ['status' => '1', "message" => "Message deleted successfully."];
         }
         $url = 'admin.campaign.view';
+        $viewname = '';
+        return Helper::returnView($viewname, $data, $url);
+    }
+
+    public function editEmail() {
+        $emailCampaign = EmailCampaign::find(Input::get('id'));
+        $action = route("admin.emailcampaign.saveemail");
+        $data = ['status' => '1', 'action' => $action, 'emailCampaign' => $emailCampaign];
+        $viewname = Config('constants.adminCampaignView') . '.emailCampAddEdit';
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function deleteEmail() {
+        $emailcampaign = EmailCampaign::find(Input::get('id'));
+        if(!empty($emailcampaign))
+        {
+            $emailcampaign->delete();
+            Session::flash('message', 'Email deleted successfully.');
+            $data = ['status' => '1', "message" => "Message deleted successfully."];
+        }
+        $url = 'admin.emailcampaign.viewemails';
         $viewname = '';
         return Helper::returnView($viewname, $data, $url);
     }

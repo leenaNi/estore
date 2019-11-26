@@ -24,7 +24,8 @@ use Validator;
 class StoreContactsController extends Controller {
 
     public function index() {
-        $users = User::where(['user_type'=>2,'store_id'=>Session::get('loggedinAdminId')])->orderBy('id','desc')->get();
+        $user = User::find(Session::get('loggedinAdminId'));
+        $users = User::where(['user_type'=>2,'store_id'=>$user->store_id])->orderBy('id','desc')->get();
         $contacts = ContactStore::orderBy('id','desc');
         $search = !empty(Input::get("contSearch")) ? Input::get("contSearch") : '';
         $search_fields = ['name', 'email', 'mobileNo'];
@@ -110,6 +111,7 @@ class StoreContactsController extends Controller {
                 $storeCont->anniversary = Input::get('anniversary');
                 $storeCont->birthDate = Input::get('birthDate');
                 $storeCont->mobileNo = Input::get('mobileNo');
+                $storeCont->contact_type = 1;
                 $storeCont->save();
                 
                 Session::flash("msg", "Store Contact added successfully. ");
