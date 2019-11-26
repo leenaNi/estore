@@ -69,7 +69,6 @@ class CampaignController extends Controller
         $subject = Input::get('subject');
         $title = Input::get('title');
         $content = Input::get('content');
-        dd($content);
         $email_id = Input::get('email');
         $data = ['email_template' => $content];
         Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, 'Anita');
