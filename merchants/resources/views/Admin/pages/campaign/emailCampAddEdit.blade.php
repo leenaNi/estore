@@ -167,10 +167,8 @@ $("#htmlOut").html($("#content").val());
         var title = $("input[name=title]").val();
         var subject = $("input[name=subject]").val();
         var content = $("textarea[name=content]").val();
-        var textAreaByName = $("#content").val();
-
         var email = $("#useremail").val();
-          alert(textAreaByName);
+         
             $.ajax({
                 type: "POST",
                 url: "{{ route('admin.emailcampaign.sendemail') }}",
