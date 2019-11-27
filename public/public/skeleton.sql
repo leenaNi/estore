@@ -22,6 +22,34 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 --
+-- Table structure for table `tblprfx_email_campaigns`
+--
+CREATE TABLE IF NOT EXISTS `tblprfx_email_campaigns` (
+  `id` int(11) NOT NULL,
+  `title` varchar(225) NOT NULL,
+  `subject` varchar(225) NOT NULL,
+  `content` text NOT NULL,
+  `status` int(11) NOT NULL COMMENT '1=published,2=draft',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for table `tblprfx_email_campaigns`
+--
+ALTER TABLE `tblprfx_email_campaigns`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tblprfx_email_campaigns`
+--
+ALTER TABLE `tblprfx_email_campaigns`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- Table structure for table `tblprfx_store_contacts`
 --
 
