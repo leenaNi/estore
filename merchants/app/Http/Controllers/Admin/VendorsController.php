@@ -137,6 +137,7 @@ class VendorsController extends Controller {
 
     public function add(){
          $vendor = new User;
+         
          $action = route("admin.vendors.save");
         return view(Config('constants.adminVendorView') . '.addEdit', compact('vendor','action'));
     }

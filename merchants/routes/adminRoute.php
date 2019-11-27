@@ -672,6 +672,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 // Route::post('/getState', ['as' => 'admin.vendors.state', 'uses' => 'VendorsController@getState']);
             });
 
+            Route::group(['prefix' => 'purchase-requisition', 'middlewareGroups' => ['CheckUser', 'web']], function() {
+                Route::get('/', ['as' => 'admin.requisition.view', 'uses' => 'PurchaseRequisitionController@index']);
+                Route::get('/add', ['as' => 'admin.requisition.add', 'uses' => 'PurchaseRequisitionController@createOrder']);
+            });
+
             // Raw material
             Route::group(['prefix' => 'raw-material', 'middlewareGroups' => ['CheckUser', 'web']], function() {
                 Route::get('/', ['as' => 'admin.raw-material.view', 'uses' => 'RawMaterialController@index']);
