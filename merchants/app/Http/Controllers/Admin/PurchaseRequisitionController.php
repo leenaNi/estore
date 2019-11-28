@@ -145,7 +145,7 @@ class PurchaseRequisitionController extends Controller
         $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
         // dd($coupon);
 
-        $viewname = Config('constants.adminPurcRequisitionView') . '.create-order';
+        $viewname = Config('constants.adminPurcRequisitionView') . '.create-purc-requisition';
         $ordcountries = Country::where("status", 1)->pluck("name", "id")->prepend("Country", "");
         $ordstates = Zone::where("status", 1)->pluck("name", "id")->prepend("State", "");
         $roots = Category::roots()->where('status', 1)->get();
@@ -153,11 +153,85 @@ class PurchaseRequisitionController extends Controller
         return Helper::returnView($viewname, $data);
     }
     
-    public function add() {
-        $order = new Order();
-        //$action = route("admin.order.save");
-        $action = '';
-        return view(Config('constants.adminPurcRequisitionView') . '.addEdit', compact('order', 'products', 'action'));
+    public function view() {
+        Session::forget("discAmt");
+        Session::forget('voucherUsedAmt');
+        Session::forget('voucherAmount');
+        Session::forget('remainingVoucherAmt');
+        Session::forget('checkbackUsedAmt');
+        Session::forget('remainingCashback');
+        Session::forget("ReferalCode");
+        Session::forget("ReferalId");
+        Session::forget("referalCodeAmt");
+        Session::forget("codCharges");
+        Session::forget('shippingCost');
+        $jsonString = Helper::getSettings();
+        $prodTab = $jsonString['prefix'] . '_products';
+        $order = Order::findOrFail(Input::get('id'));
+        $payment_method = PaymentMethod::get()->toArray();
+        $payment_methods = [];
+        foreach ($payment_method as $val) {
+            $payment_methods[$val['id']] = $val['name'];
+        }
+        $payment_stuatusA = PaymentStatus::get()->toArray();
+        $payment_status = [];
+        foreach ($payment_stuatusA as $val) {
+            $payment_status[$val['id']] = $val['payment_status'];
+        }
+        $order_stuatusA = OrderStatus::get()->toArray();
+        $order_status = [];
+        foreach ($order_stuatusA as $val) {
+            $order_status[$val['id']] = $val['order_status'];
+        }
+        $countryA = Country::get()->toArray();
+        $countries = [];
+        foreach ($countryA as $val) {
+            $countries[$val['id']] = $val['name'];
+        }
+        $zoneA = Zone::get()->toArray();
+        $zones = [];
+        foreach ($zoneA as $val) {
+            $zones[$val['id']] = $val['name'];
+        }
+        $flags = Flags::where('status', 1)->get()->toArray();
+        $flag_status[0] = "Select Flag";
+        foreach ($flags as $val) {
+            $flag_status[$val['id']] = $val['flag'];
+        }
+        $courierId = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->pluck("courier_id");
+
+        $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
+
+        $courier_status = [];
+        $courier_status[0] = "Select Courier";
+        foreach ($courier as $val) {
+            $courier_status[$val['id']] = $val['name'];
+        }
+        if ($order->prefix == Helper::getSettings()['prefix']) {
+            Cart::instance("shopping")->destroy();
+            $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
+            $additional = json_decode($order->additional_charge, true);
+            $prodTab = $jsonString['prefix'] . '_products';
+            $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')->where("prefix", $this->jsonString['prefix'])
+                            ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
+
+            // $prod_id = HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'id','=','has_prodducts.prod_id')->where("prefix",$this->jsonString['prefix']);
+            $products = $prods;
+            $coupon = Coupon::find($order->coupon_used);
+            $action = route("admin.orders.save");
+            // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users', 
+            $viewname = Config('constants.adminPurcRequisitionView') . '.view-purc-order';
+            $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'coupon' => $coupon, 'coupons' => $coupons, 'flags' => $flag_status, 'courier' => $courier_status, 'additional' => $additional];
+            return Helper::returnView($viewname, $data);
+        } else {
+            $products = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->first();
+            $action = route("admin.orders.mallOrderSave");
+            $viewname = Config('constants.adminPurcRequisitionView') . '.view-purc-order';
+            // dd($orders);
+            $data = ['order' => $order, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones,
+                'products' => $products, 'courier' => $courier_status];
+            return Helper::returnView($viewname, $data);
+        }
     }
 
     public function edit() {
@@ -227,13 +301,13 @@ class PurchaseRequisitionController extends Controller
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
             // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users', 
-            $viewname = Config('constants.adminOrderView') . '.addEdit';
+            $viewname = Config('constants.adminPurcRequisitionView') . '.edit-purc-requisition';
             $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'coupon' => $coupon, 'coupons' => $coupons, 'flags' => $flag_status, 'courier' => $courier_status, 'additional' => $additional];
             return Helper::returnView($viewname, $data);
         } else {
             $products = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->first();
             $action = route("admin.orders.mallOrderSave");
-            $viewname = Config('constants.adminOrderView') . '.addEditMall';
+            $viewname = Config('constants.adminPurcRequisitionView') . '.edit-purc-requisition';
             // dd($orders);
             $data = ['order' => $order, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones,
                 'products' => $products, 'courier' => $courier_status];

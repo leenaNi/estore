@@ -675,6 +675,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::group(['prefix' => 'purchase-requisition', 'middlewareGroups' => ['CheckUser', 'web']], function() {
                 Route::get('/', ['as' => 'admin.requisition.view', 'uses' => 'PurchaseRequisitionController@index']);
                 Route::get('/add', ['as' => 'admin.requisition.add', 'uses' => 'PurchaseRequisitionController@createOrder']);
+                Route::get('/edit', ['as' => 'admin.requisition.edit', 'uses' => 'PurchaseRequisitionController@edit']);
+                Route::get('/vieworder', ['as' => 'admin.requisition.vieworder', 'uses' => 'PurchaseRequisitionController@view']);
+
             });
 
             // Raw material

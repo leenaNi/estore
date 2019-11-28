@@ -26,9 +26,9 @@
                 </div>
                 @endif
                 <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12 noBorder">                
-                    <form action="{{ route('admin.coupons.view') }}" method="get" >
+                    <form action="{{ route('admin.campaign.view') }}" method="get" >
                         <div class="form-group col-md-8 col-sm-6 col-xs-12">
-                            <input type="text" name="couponSearch"  class="form-control medium pull-right " placeholder="Message Title">
+                            <input type="text" name="smsSearch"  class="form-control medium pull-right " placeholder="Message Title">
                         </div>
                         <div class="form-group col-md-2 col-sm-3 col-xs-12">
                             <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Search</button>

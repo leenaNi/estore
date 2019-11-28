@@ -13,12 +13,12 @@
 @section('content')
 <section class="content-header">
     <h1>
-        All Purchase Requisition (0)
+        All Purchase Orders (0)
         <small></small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
-        <li class="active">All Purchase Requisition</li>
+        <li class="active">All Purchase Orders</li>
     </ol>
 </section>
 <section class="content">
@@ -79,11 +79,11 @@
                 </div>
 
                 <div class="box-header col-md-3 col-xs-12 pull-right mobPadding noMob-leftBorder mob-bottomBorder">
-                    <a href="{{route('admin.requisition.add')}}" target="_blank" class="btn btn-default pull-right col-md-12 fullMobile-width">Create Purchase Requisition</a>
+                    <a href="{{route('admin.requisition.add')}}" target="_blank" class="btn btn-default pull-right col-md-12 fullMobile-width">Create Purchase Order</a>
 
                     
                     <div class="clearfix" style="margin-bottom:15px;"></div>
-                    <a href="{{route('admin.orders.export')}}"  class="btn btn-default pull-right col-md-12 fullMobile-width">Export All Purchase Requisition</a>
+                    <a href="{{route('admin.orders.export')}}"  class="btn btn-default pull-right col-md-12 fullMobile-width">Export All Purchase Order</a>
 
                     <div class="clearfix" style="margin-bottom:15px;"></div>
                     <form action="" class="formMul" method="post" >
@@ -147,15 +147,27 @@
 <!--                                <th>Payment Method</th>-->
                                 <th>@sortablelink ('pay_amt', 'Amount') <?php //echo!empty(Session::get('currency_symbol')) ? '('.Session::get('currency_symbol').')' : '';  ?></th>
                                
-                                @if($feature['courier-services'] == 1)  
-<!--                                <th>Courier Service</th>-->
-                                @endif
                                 <th width="6%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             
-                            <tr><td colspan=14> No Record Found.</td></tr>
+                            <tr>
+                                <td><input type="checkbox" id="checkAll" /></td>
+                                <td>21</td>
+                                <td>21-Nov-2019</td>
+                                <td>Clay Jensen</td>
+                                <td>9878987678</td>
+                                <td>Processing</td>
+                                <td>Pending</td>
+                                <td><span class="currency-sym">₹</span> 647</td>
+                                <td>
+                                    <a href="{!! route('admin.requisition.vieworder',['id'=>1]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="View"><i class="fa fa-eye fa-fw btnNo-margn-padd"></i>
+                                    </a>
+                                    <a href="{!! route('admin.requisition.edit',['id'=>1]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
+
+                                    </td>
+                            </tr>
                            
                         </tbody>
                     </table>
