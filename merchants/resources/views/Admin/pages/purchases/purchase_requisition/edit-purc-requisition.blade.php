@@ -25,10 +25,9 @@
                 {!! Form::model($order, ['method' => 'post', 'files'=> true, 'url' => $action , 'class' => 'form-horizontal' ]) !!}
 
                 <div class="line line-dashed b-b line-lg pull-in"></div>
+
                 <div class="col-md-4">
-                
                     {!! Form::label('payment_method', 'Payment Method ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-               
                         {!! Form::select('payment_method', $payment_methods,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Method']) !!}
                    
                 </div>
@@ -74,6 +73,18 @@
                     {!! Form::label('shiplabel_tracking_id', 'Tracking Id',['class'=>'control-label']) !!}
                         {!! Form::text('shiplabel_tracking_id',null, ["class"=>'form-control' ,"placeholder"=>'Tracking Id']) !!}
                     
+                </div>
+                <div class="col-md-4">
+                    {!! Form::label('po_no', 'PO No. ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                        {!! Form::text('po_no',null, ["class"=>'form-control validate[required,custom[number]]]' ,"placeholder"=>'PO No.']) !!}
+                </div>
+                <div class="col-md-4">
+                    {!! Form::label('billno', 'Bill Number',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                        {!! Form::text('billno',null, ["class"=>'form-control validate[required,custom[number]]]' ,"placeholder"=>'Bill Number']) !!}
+                </div>
+                <div class="col-md-4">
+                    {!! Form::label('billcopy', 'Bill Copy',['class'=>'control-label']) !!}
+                    <input type="file" name="billcopy">
                 </div>
                 <div class="row"></div><br>
           

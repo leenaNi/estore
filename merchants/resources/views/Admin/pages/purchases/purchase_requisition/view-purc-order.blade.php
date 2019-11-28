@@ -37,12 +37,7 @@
                     {!! Form::label('payment_method', 'Payment Method ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
                 </div>
                     <div class="col-md-10">
-                        <select>Select Payment Method</select>
-                        <option>COD</option>
-                        <option>EBS</option>
-                        <option>Paypal</option>
-                        <option>PayU</option>
-                        <option>Citrus</option>
+                        {!! Form::select('payment_method', $payment_methods,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Method','disabled']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -104,8 +99,31 @@
                         {!! Form::text('shiplabel_tracking_id',null, ["class"=>'form-control' ,"placeholder"=>'Tracking Id','disabled']) !!}
                     </div>
                 </div>
-                
-          
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                <div class="col-md-2 text-right mobTextLeft">
+                    {!! Form::label('po_no', 'PO No. ',['class'=>'control-label']) !!}</div>
+                    <div class="col-md-10">
+                        {!! Form::text('po_no',null, ["class"=>'form-control validate[required,custom[number]]]' ,"placeholder"=>'PO No.','disabled']) !!}
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                <div class="col-md-2 text-right mobTextLeft">
+                    {!! Form::label('billno', 'Bill Number',['class'=>'control-label']) !!}</div>
+                    <div class="col-md-10">
+                       {!! Form::text('billno',null, ["class"=>'form-control validate[required,custom[number]]]' ,"placeholder"=>'Bill Number','disabled']) !!}
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                <div class="col-md-2 text-right mobTextLeft">
+                    {!! Form::label('billcopy', 'Bill Copy',['class'=>'control-label']) !!}</div>
+                    <div class="col-md-10">
+                       <input type="file" name="billcopy" disabled="">
+                    </div>
+                </div>
+               
                 <div class="form-group">
                     <div class="col-md-4 col-md-offset-2"> 
                         {!! Form::submit('Submit',["class" => "btn btn-primary margin-left0"]) !!}                            
