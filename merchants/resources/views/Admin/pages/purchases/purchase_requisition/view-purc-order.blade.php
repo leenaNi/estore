@@ -251,32 +251,11 @@
                             @foreach($products as $k =>$prd)
                          
                             <tr> 
-                                <td>{{ @$prd->categories()->first()->category }}</td>
-                                <td>{{ $prd->product }}</td>
-                                @if($prd->prod_type == 3)
-                                <?php
-                                $parentid = App\Models\Product::find($prd->sub_prod_id)->parent_prod_id;
-                                $getSubprods = App\Models\Product::find($parentid)->subproducts()->get();
-                                $configPrds = [];
-                                foreach ($getSubprods as $subp) {
-                                    $nameProd = explode("Variant", $subp->product, 2);
-                                    $filtered_words = array(
-                                        '(',
-                                        ')',
-                                        'frames',
-                                        'posters',
-                                    );
-                                    $gap = '';
-
-                                    $prodSize = str_replace($filtered_words, $gap, $nameProd[1]);
-                                    $configPrds[$subp->id] = $prodSize;
-                                }
-                                ?>
+                                
                                 <td>
                                     
                                 </td>
                                
-                                @endif
                                 <td>
                                     
                                 </td>
