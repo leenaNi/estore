@@ -300,7 +300,7 @@ class PurchaseRequisitionController extends Controller
             $products = $prods;
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
-            // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users', 
+            // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users',  
             $viewname = Config('constants.adminPurcRequisitionView') . '.edit-purc-requisition';
             $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'coupon' => $coupon, 'coupons' => $coupons, 'flags' => $flag_status, 'courier' => $courier_status, 'additional' => $additional];
             return Helper::returnView($viewname, $data);
