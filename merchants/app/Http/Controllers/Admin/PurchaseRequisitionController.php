@@ -167,7 +167,8 @@ class PurchaseRequisitionController extends Controller
         Session::forget('shippingCost');
         $jsonString = Helper::getSettings();
         $prodTab = $jsonString['prefix'] . '_products';
-        $order = Order::findOrFail(Input::get('id'));
+        //$order = Order::findOrFail(Input::get('id'));
+        $order = Order::findOrFail(Input::get(65));
         $payment_method = PaymentMethod::get()->toArray();
         $payment_methods = [];
         foreach ($payment_method as $val) {
