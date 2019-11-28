@@ -31,11 +31,11 @@
 <section class="content-header">
     <h1>
         
-        <small>Create Purchase Requisition</small>
+        <small>Create Purchase Order</small>
     </h1>
     <ol class="breadcrumb">
-        <li> <i class="fa fa-cart-arrow-down"></i> Purchase Requisitions</li>
-        <li class="active">Create Purchase Requisition</li>
+        <li> <i class="fa fa-cart-arrow-down"></i> Purchase Order</li>
+        <li class="active">Create Purchase Order</li>
     </ol>
 </section>
 <section class="content">
@@ -47,29 +47,30 @@
                 <div class="panel-body noMobilePadding">
                             {{ Form::open(['id'=>'custInfo','class'=>'custInfo']) }}
                             <div class="line line-dashed b-b line-lg pull-in"></div>
-                            <div class="form-group col-md-12">
-                                {!! Form::label('Email Id', 'Mobile Number ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                {!! Form::text('s_phone',null, ["autofocus" =>"autofocus","id"=>'customerEmail',"class"=>'form-control customerEmail validate[required]' ,"placeholder"=>'Enter Mobile Number', "required","tabindex"=>1]) !!}
+                            <div class="form-group col-md-4">
+                                {!! Form::label('Email Id', 'Select Vendor ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                                {!! Form::text('s_phone',null, ["autofocus" =>"autofocus","id"=>'customerEmail',"class"=>'form-control customerEmail validate[required]' ,"placeholder"=>'Enter Name /Mobile Number/ Email', "required","tabindex"=>1]) !!}
                             </div>
                             <div class="line line-dashed b-b line-lg pull-in"></div>
-                            <div class="form-group custdata col-md-6 mob-marBottom15" style="display: none;"> 
-                                {!! Form::label('First Name', 'First Name ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                            <div class="form-group custdata col-md-4 mob-marBottom15" style="display: none;"> 
+                                {!! Form::label('First Name', 'Name ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
                                 {!! Form::text('cust_firstname',null, ["class"=>'form-control inpt validate[required]']) !!}
+
                             </div>
                             <div class="line line-dashed b-b line-lg pull-in"></div>
-                            <div class="form-group custdata col-md-6 mob-marBottom15" style="display: none;">
+                            <!-- <div class="form-group custdata col-md-4 mob-marBottom15" style="display: none;">
                                 {!! Form::label('Last Name', 'Last Name',['class'=>'control-label']) !!}
                                 {!! Form::text('cust_lastname',null, ["class"=>'form-control inpt']) !!}  
-                            </div>
+                            </div> -->
                             <div class="line line-dashed b-b line-lg pull-in" ></div>
 
-                            <div class="form-group custdata col-md-6" style="display: none;">
+                            <!-- <div class="form-group custdata col-md-4" style="display: none;">
                                 {!! Form::label('Email Id', 'Email Id',['class'=>'control-label']) !!}
                                 {!! Form::email('email_id',null, ["class"=>'form-control inpt']) !!}
-                            </div>
+                            </div> -->
                             <div class="line line-dashed b-b line-lg pull-in"></div>
 
-                            <div class="form-group custdata col-md-6" style="display: none;">
+                            <div class="form-group custdata col-md-4" style="display: none;">
                                 {!! Form::label('Telephone', 'Mobile Number',['class'=>'control-label']) !!}
                                 {!! Form::text('cust_telephone',null, ["class"=>'form-control inpt']) !!}
                             </div>
@@ -99,7 +100,8 @@
                                 <th width="30%">Product</th>
                                 <th width="20%">Variant</th>
                                 <th width="20%">Quantity </th>
-                                <th width="20%">Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
+                                <th width="20%">Unit Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
+                                <th width="20%">Total Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
                                 @if($feature['tax']==1)
                                 <th width="20%">Tax ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
                                 @endif
@@ -114,7 +116,10 @@
                                             {{ Form::select("cartData[prod_id][sub_prod_id]",[],null,['class'=>'form-control subprodid validate[required]','style'=>"display:none;"]) }}   
                                         </td>
                                         <td width="20%">
-                                            <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span>
+                                            <span class='prodQty'><input type="number" id="pqty" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1" onkeyup="getTotal()"></span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='unitPrice'><input type="number" id="pprice" name='cartData[prod_id][price] validate[required]' class='uprice form-control' min="1" value="0" onkeyup="getTotal()"></span>
                                         </td>
                                         <td width="20%">
                                             <span class='prodPrice'>0</span>
@@ -182,8 +187,7 @@
                                     </td>
                                     @endif
                                     <td width="5%" class="text-center"> 
-                                        <span class="delRow" data-toggle="tooltip" title="Delete" data-original-title="Remove"><i class="fa fa-trash fa-fw"></i></a>
-
+                                        <span class="delRow" data-toggle="tooltip" title="Delete" data-original-title="Remove"><i class="fa fa-trash fa-fw"></i>
                                     </td>
                                 </tr>
                             </tbody>
@@ -205,6 +209,16 @@
 @section('myscripts')
 
 <script>
+    function getTotal()
+    {
+        var qty = $("#pqty").val();
+        var price = $("#pprice").val();
+        var total = qty * price;
+        $(".prodPrice").text(total);
+        $(".subtotal").text(total);
+        $(".finalAmt").text(total);
+    }
+
     jQuery.validator.addMethod("phonevalidate", function (telephone, element) {
         telephone = telephone.replace(/\s+/g, "");
         return this.optional(element) || telephone.length > 9 &&
@@ -297,6 +311,7 @@
                 $.post("{{route('admin.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1}, function (price) {
                     console.log(JSON.stringify(price));
                     prodSel.parent().parent().find('.prodPrice').text((price.price).toFixed(2));
+                    prodSel.parent().parent().find('.unitPrice').text((price.unitPrice).toFixed(2));
                     <?php if ($feature['tax'] == 1) { ?>
                     prodSel.parent().parent().find('.taxAmt').text((price.tax).toFixed(2));
                     <?php } ?>
@@ -559,8 +574,8 @@
          }, */
         minLength: 1,
         select: function (event, ui) {
-            getSubprods(ui.item.id, $(this));
-            $(this).attr('data-prdid', ui.item.id);
+            // getSubprods(ui.item.id, $(this));
+            // $(this).attr('data-prdid', ui.item.id);
 
         }
     });
@@ -575,6 +590,7 @@
         subp.parent().parent().find('.qty').attr('subprod-id', subprdid);
         $.post("{{route('admin.orders.getProdPrice')}}", {subprdid: subprdid, qty: qty, pprd: 0}, function (data) {
             subp.parent().parent().find('.prodPrice').text((data.price).toFixed(2));
+            subp.parent().parent().find('.unitPrice').text((data.unitPrice).toFixed(2));
 <?php if ($feature['tax'] == 1) { ?>
                 subp.parent().parent().find('.taxAmt').text((data.tax).toFixed(2));
 <?php } ?>
@@ -590,9 +606,7 @@
             select: function (event, ui) {
                 getSubprods(ui.item.id, $(this));
                 $(this).attr('data-prdid', ui.item.id);
-                //$("#couponApply").click();
-                // ApplyCoupon();
-                //  clearAllDiscount();
+                
             }
         });
     });
@@ -699,6 +713,7 @@
             cache: false,
             success: function (price) {
                 qtty.parents("td").next().find('.prodPrice').text((price.price).toFixed(2));
+                qtty.parents("td").next().find('.unitPrice').text((price.unitPrice).toFixed(2));
                 <?php if ($feature['tax'] == 1) { ?>
                 qtty.parents("td").next().next().find('.taxAmt').text((price.tax).toFixed(2));
                 <?php } ?>

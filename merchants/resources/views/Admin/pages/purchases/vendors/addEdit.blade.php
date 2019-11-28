@@ -100,7 +100,13 @@
                                 {!! Form::password('password', ["class"=>'form-control' ,"placeholder"=>'Password']) !!}
                         </div>
                     </div> 
-                    
+                    @else
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!!Form::label('Password','Password') !!}<span class="red-astrik"> *</span>
+                                {!! Form::input('password','password','asdfdsasdddddddd', ["class"=>'form-control' ,"placeholder"=>'Password','readonly']) !!}
+                        </div>
+                    </div> 
                     @endif
                     <div class="col-md-6">
                         <div class="form-group">

@@ -3,13 +3,13 @@
 
 <section class="content-header">
     <h1>
-        Orders
-        <small>Add/Edit</small>
+        Purchase Order
+        <small>View</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Orders</li>
-        <li class="active">Add/Edit</li>
+        <li class="active">Purchase Order</li>
+        <li class="active">View</li>
     </ol>
 </section>
 
@@ -17,7 +17,7 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#order-detail" data-toggle="tab" aria-expanded="true">Order Details</a></li>
-            <li class=""><a href="#customer-detail" data-toggle="tab" aria-expanded="true">Customer Details</a></li>
+            <li class=""><a href="#customer-detail" data-toggle="tab" aria-expanded="true">Vendor Details</a></li>
             <li class=""><a href="#product-detail" data-toggle="tab" aria-expanded="true">Product Details</a></li>
         </ul>
         <div  class="tab-content" >
@@ -37,7 +37,7 @@
                     {!! Form::label('payment_method', 'Payment Method ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
                 </div>
                     <div class="col-md-10">
-                        {!! Form::select('payment_method', $payment_methods,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Method']) !!}
+                        {!! Form::select('payment_method', $payment_methods,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Method','disabled']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -46,7 +46,7 @@
                     {!! Form::label('payment_status', 'Payment Status ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
 </div>
                     <div class="col-md-10">
-                        {!! Form::select('payment_status',$payment_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status',]) !!}
+                        {!! Form::select('payment_status',$payment_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status','disabled']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -54,7 +54,7 @@
                 <div class="col-md-2 text-right mobTextLeft">
                     {!! Form::label('order_status', 'Order Status ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::select('order_status',$order_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Order Status']) !!}
+                        {!! Form::select('order_status',$order_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Order Status','disabled']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -62,51 +62,25 @@
                 <div class="col-md-2 text-right mobTextLeft">
                     {!! Form::label('amount', "Order Amount $currencySym",['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('order_amt',null, ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]]' ,"placeholder"=>'Order Amount']) !!}
+                        {!! Form::text('order_amt',null, ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]]' ,"placeholder"=>'Order Amount','disabled']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
                 <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('payamount', "Customer Payable Amount $currencySym",['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
+                    {!! Form::label('payamount', "Vendor Payable Amount $currencySym",['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('pay_amt',null, ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Customer Payable Amount']) !!}
+                        {!! Form::text('pay_amt',null, ["class"=>'form-control priceConvertTextBox validate[required,custom[number]]' ,"placeholder"=>'Vendor Payable Amount','disabled']) !!}
                     </div>
                 </div>
 
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('gifting_charges', "Gifting Charges $currencySym",['class'=>'control-label']) !!}</div>
-                    <div class="col-md-10">
-                        {!! Form::text('gifting_charges',null, ["class"=>'form-control priceConvertTextBox validate[custom[number]]' ,"placeholder"=>'Gifting Charges']) !!}
-                    </div>
-                </div>
-
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('cod charges', "COD Charges $currencySym",['class'=>'control-label']) !!}
-</div>
-                    <div class="col-md-10">
-                        {!! Form::text('cod_charges',null, ["class"=>'form-control priceConvertTextBox validate[custom[number]]' ,"placeholder"=>'COD Charges']) !!}
-                    </div>
-                </div>
-
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('description', 'Description',['class'=>'control-label']) !!}</div>
-                    <div class="col-md-10">
-                        {!! Form::textarea('description',null, ["class"=>'form-control' ,"placeholder"=>'Description']) !!}
-                    </div>
-                </div>
+                
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
                 <div class="col-md-2 text-right mobTextLeft">
                     {!! Form::label('comment', 'Order Comment',['class'=>'control-label']) !!}</div>
                     <div class="col-md-10">
-                        {!! Form::text('order_comment',null, ["class"=>'form-control' ,"placeholder"=>'Order Comment']) !!}
+                        {!! Form::text('order_comment',null, ["class"=>'form-control' ,"placeholder"=>'Order Comment','disabled']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -114,7 +88,7 @@
                 <div class="col-md-2 text-right mobTextLeft">
                     {!! Form::label('shipping_amt', "Shipping Amount $currencySym",['class'=>'control-label']) !!} </div>
                     <div class="col-md-10">
-                        {!! Form::text('shipping_amt',null, ["class"=>'form-control priceConvertTextBox validate[custom[number]]' ,"placeholder"=>'Shipping Amount']) !!}
+                        {!! Form::text('shipping_amt',null, ["class"=>'form-control priceConvertTextBox validate[custom[number]]' ,"placeholder"=>'Shipping Amount','disabled']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -122,64 +96,11 @@
                 <div class="col-md-2 text-right mobTextLeft">
                     {!! Form::label('shiplabel_tracking_id', 'Tracking Id',['class'=>'control-label']) !!}</div>
                     <div class="col-md-10">
-                        {!! Form::text('shiplabel_tracking_id',null, ["class"=>'form-control' ,"placeholder"=>'Tracking Id']) !!}
+                        {!! Form::text('shiplabel_tracking_id',null, ["class"=>'form-control' ,"placeholder"=>'Tracking Id','disabled']) !!}
                     </div>
                 </div>
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('voucher_amt_used', "Voucher Amount Used $currencySym", ['class'=>'control-label']) !!}</div>
-                    <div class="col-md-10">
-                        {!! Form::text('voucher_amt_used',null, ["class"=>'form-control validate[custom[number]]' ,"placeholder"=>'Voucher Amount Used']) !!}
-                    </div>
-                </div>
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('coupon_amt_used', "Coupon Amount Used $currencySym", ['class'=>'control-label']) !!} </div>
-                    <div class="col-md-10">
-                        {!! Form::text('coupon_amt_used',null, ["class"=>'form-control priceConvertTextBox validate[custom[number]]' ,"placeholder"=>'Coupon Amount Used']) !!}
-                    </div>
-                </div>
-
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('referal_code_amt', "Referral Amount Used $currencySym", ['class'=>'control-label']) !!}  </div>
-                    <div class="col-md-10">
-                        {!! Form::text('referal_code_amt',null, ["class"=>'form-control priceConvertTextBox validate[custom[number]]' ,"placeholder"=>'Referral Amount Used']) !!}
-                    </div>
-                </div>
-                @if($feature['flag'] == 1)  
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('flag_id', 'Flag ',['class'=>'control-label']) !!} 
-</div>
-                    <div class="col-md-10">
-                        {!! Form::select('flag_id',$flags ,@$order->flag_id, ["class"=>'form-control ' ,"placeholder"=>'Select flag']) !!}
-                    </div>
-                </div>
-                @endif
-
-                @if($feature['courier-services'] == 1)  
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('courier', 'Courier Service ',['class'=>'control-label']) !!}
-</div>
-                    <div class="col-md-10">
-                        {!! Form::select('courier',$courier ,@$order->courier, ["class"=>'form-control ' ,"placeholder"=>'Select Courier Service']) !!}
-                    </div>
-                </div>
-                @endif
-            <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('remark', "Customer Remark", ['class'=>'control-label']) !!} </div>
-                    <div class="col-md-10">
-                        {!! Form::text('remark',null, ["class"=>'form-control' ,"placeholder"=>'', "readonly"]) !!}
-                    </div>
-                </div>
+                
+          
                 <div class="form-group">
                     <div class="col-md-4 col-md-offset-2"> 
                         {!! Form::submit('Submit',["class" => "btn btn-primary margin-left0"]) !!}                            
@@ -197,7 +118,7 @@
                 <div class="col-md-2 text-right mobTextLeft">
                     {!! Form::label('first_name', 'First Name ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('first_name',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'First Name']) !!}
+                        {!! Form::text('first_name',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'First Name','disabled']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -205,81 +126,27 @@
                 <div class="col-md-2 text-right mobTextLeft">
                     {!! Form::label('last_name', 'Last Name',['class'=>'control-label']) !!}</div>
                     <div class="col-md-10">
-                        {!! Form::text('last_name',null, ["class"=>'form-control' ,"placeholder"=>'Last Name']) !!}
+                        {!! Form::text('last_name',null, ["class"=>'form-control' ,"placeholder"=>'Last Name','disabled']) !!}
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
                 <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('address1', 'Address 1 ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
+                    {!! Form::label('address1', 'Address',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('address1',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Address 1']) !!}
+                        {!! Form::text('address1',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Address','disabled']) !!}
                     </div>
                 </div>
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('address2', 'Address 2 ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
-                    <div class="col-md-10">
-                        {!! Form::text('address2',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Address 2']) !!}
-                    </div>
-                </div>
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('address3', 'Address 3',['class'=>'control-label']) !!}</div>
-                    <div class="col-md-10">
-                        {!! Form::text('address3',null, ["class"=>'form-control' ,"placeholder"=>'Address 3']) !!}
-                    </div>
-                </div>
+                
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
                 <div class="col-md-2 text-right mobTextLeft">
                     {!! Form::label('phone_no', 'Mobile Number ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::text('phone_no',null, ["class"=>'form-control validate[required,custm[phone]]' ,"placeholder"=>'Phone Number']) !!}
+                        {!! Form::text('phone_no',null, ["class"=>'form-control validate[required,custm[phone]]' ,"placeholder"=>'Phone Number','disabled']) !!}
                     </div>
                 </div>
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('city', 'City ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
-                    <div class="col-md-10">
-                        {!! Form::text('city',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'City']) !!}
-                    </div>
-                </div>
-                  <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('thana', 'Thana ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
-                    <div class="col-md-10">
-                        {!! Form::text('thana',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Thana']) !!}
-                    </div>
-                </div>
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('country_id', 'Country ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
-                    <div class="col-md-10">
-                        {!! Form::select('country_id', $countries,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Country']) !!}
-                    </div>
-                </div>
-                <div class="line line-dashed b-b line-lg pull-in"></div>
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('zone_id', 'State/Zone ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
-                    <div class="col-md-10">
-                        {!! Form::select('zone_id', $zones, null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Zone']) !!}
-                    </div>
-                </div> 
-                <div class="form-group">
-                <div class="col-md-2 text-right mobTextLeft">
-                    {!! Form::label('postal_code', 'Pincode ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
-                    <div class="col-md-10">
-                        {!! Form::number('postal_code',null, ["class"=>'form-control validate[required,custom[number]]' ,"placeholder"=>'Pincode']) !!}
-                    </div>
-                </div>
+               
                 <div class="form-group">
                     <div class="col-md-4 col-md-offset-2">
                         {!! Form::submit('Submit',["class" => "btn btn-primary margin-left0"]) !!}                            
@@ -298,75 +165,37 @@
 
                     {{ Form::model($order, ['method' => 'post', 'url' => $action , 'class' => 'bucket-form rtForm', 'id' => 'updateReturnQty', ]) }}
                     {!! Form::hidden('user_id',$order->user_id) !!}
+                    
                     <div class="clear clear_fix clearfix"> </div>
-                    <div class="col-md-6 pull-right form-group text-right">       
-                        {{ Form::button('Reset',["class" => "btn btn-primary resetButton"]) }} &nbsp;
-                        {{ Form::submit('Submit',["class" => "btn btn-info"]) }}
-                    </div>
-                    <div class="clear clear_fix clearfix"> </div>
-                    <div class="col-md-4 form-group">
-                        {{ Form::label('cod_charges', 'COD Charges') }}
-                        {{ Form::text('cod_charges',null,["class"=>'form-control additionalCharges priceConvertTextBox otherAmt validate[required, custom[number]]']) }}
-                    </div>
+                    
                     <div class="col-md-4 form-group">
                         {{ Form::label('shipping_amt', 'Shipping Amount') }}
-                        {{ Form::text('shipping_amt',null,["class"=>'form-control additionalCharges priceConvertTextBox otherAmt validate[required, custom[number]]']) }}
+                        {{ Form::text('shipping_amt',null,["class"=>'form-control additionalCharges priceConvertTextBox otherAmt validate[required, custom[number]]','disabled']) }}
                     </div>
-                    <div class="col-md-4 form-group">
-                        {{ Form::label('Gifting Charges', 'Gifting Charges') }}
-                        {{ Form::text('gifting_charges',null,["class"=>'form-control additionalCharges priceConvertTextBox otherAmt validate[required, custom[number]]']) }}
-                    </div>
-                    <div class="clear clear_fix clearfix"> </div>
-                    @if($feature['coupon']==1)
-                    <div class="col-md-4 form-group">
-                        {{ Form::label('coupon_amt_used', 'Coupon Amount Used') }}
-                        {{ Form::text('coupon_amt_used',null,["class"=>'form-control disc otherAmt priceConvertTextBox validate[required, custom[number]]' ,'readonly'=>'true']) }}
-                    </div>
-                    @endif
-
-
-                    @if($feature['manual-discount']==1)
-                    <div class="col-md-4 form-group">
-                        {{ Form::label('discount_amt', 'User Discount') }}
-                        {{ Form::text('discount_amt',null,["class"=>'form-control disc user_disc priceConvertTextBox validate[required,custom[number]]' , 'readonly'=>'true']) }}
-                    </div>
-                    @endif
-                     @if($feature['referral']==1)
-                    <div class="col-md-4 form-group">
-                        {{ Form::label('referal_code_amt', 'Referral Amount Used') }}
-                        {{ Form::text('referal_code_amt',null,["class"=>'form-control disc eqlDistReff priceConvertTextBox validate[required,custom[number]]' , 'readonly'=>'true']) }}
-                    </div>
-                    @endif
-                     <div class="clear clear_fix clearfix"> </div>
-                    @if($feature['loyalty']==1)
-                    <div class="col-md-4 form-group">
-                        {{ Form::label('Reward Points Usedt', 'Loyalty Points') }}
-                        {{ Form::text('cashback_used',null,["class"=>'form-control disc  eqlDistCash priceConvertTextBox validate[required,custom[number]]' ,'readonly'=>'true']) }}
-
-                    </div>
-                    @endif
+                   
                    
                     <div class="col-md-4 form-group">
                         {{ Form::label('order_amt', 'Order Amount') }}
-                        {{ Form::text('order_amt',null,["class"=>'form-control ordT priceConvertTextBox validate[required, custom[number]]' ,"placeholder"=>'Enter Order Amount','readonly'=>'true']) }}
+                        {{ Form::text('order_amt',null,["class"=>'form-control ordT priceConvertTextBox validate[required, custom[number]]' ,"placeholder"=>'Enter Order Amount','readonly'=>'true','disabled']) }}
                     </div>
 
                     <div class="col-md-4 form-group">
-                        {{ Form::label('pay_amt', 'Customer Payable Amount') }}
-                        {{ Form::text('pay_amt',null,["class"=>'form-control ordP priceConvertTextBox validate[required, custom[number]]' ,'readonly'=>'true']) }}
+                        {{ Form::label('pay_amt', 'Vendor Payable Amount') }}
+                        {{ Form::text('pay_amt','689.00',["class"=>'form-control' ,'readonly'=>'true','disabled']) }}
                     </div>
                     <div class="clear clear_fix clearfix"> </div>
                     {{ Form::hidden('ordereditCal',null) }}
                     {{ Form::hidden('id') }}
                     {{ Form::hidden('cashback_to_add',0) }}
                     <div class="clear clear_fix clearfix"> </div>
-                    <div class="pull-right mob-marBottom15">
+                    <!-- <div class="pull-right mob-marBottom15">
                         <a href="#" class="btn btn-success addProd">Add New Product</a>
-                    </div>
+                    </div> -->
                     
                     <div class="clear clear_fix clearfix"> </div>
                     <div class="table-responsive">
-                    <table class="table table-hover general-table prodETable" id="tableProd">
+                    
+                        <table class="table table-hover general-table prodETable" id="tableProd">
                         <thead>
                             <tr>
                                 <th>Category</th>
@@ -374,17 +203,8 @@
                                 <th>Product Variant</th>
                                 <th>Qty</th>
                                 <th>Unit Price <span class="currency-sym-in-braces"></span></th>
-                                <th>Price <span class="currency-sym-in-braces"></span></th>
-                                @if($feature['coupon']==1)
-                                <th>Coupon <span class="currency-sym-in-braces"></span></th>
-                                @endif
-                                @if($feature['loyalty']==1)
-                                <th>Cashback <span class="currency-sym-in-braces"></span></th>
-                                @endif
-    <!--                            <th>Voucher</th>-->
-                                @if($feature['referral']==1)
-                                <th>Referral <span class="currency-sym-in-braces"></span></th>
-                                @endif
+                                <th>Total Price <span class="currency-sym-in-braces"></span></th>
+                                
                                 <!-- <th>SubTotal</th> -->
                                 <th></th>
                             </tr>
@@ -416,227 +236,41 @@
                                 }
                                 ?>
                                 <td>
-                                    {{ Form::select("cartdata[".$i."][".$prd->id."][subprd]",$configPrds,$prd->sub_prod_id,['class'=>'form-control selConfigProd addPrdVar']) }}
+                                    
                                 </td>
-                                @elseif($prd->prod_type == 2)
-                                <?php
-                                $cmb = json_decode($prd->sub_prod_id);
-                                $comboSub = [];
-                                foreach ($cmb as $combos) {
-                                    $comboSub[Product::find($combos)->parent_prod_id] = $combos;
-                                }
-                                ?>
-                                <td>
-                                    <?php
-                                    foreach ($prd->comboproducts()->get() as $combP) {
-                                        $cprd = Product::find($combP->id);
-                                        if ($cprd->prod_type == 1) {
-                                            echo $cprd->product . "(" . $cprd->categories()->first()->category . ")<br/>";
-                                        }
-                                        if ($cprd->prod_type == 3) {
-                                            echo $cprd->product . "(" . $cprd->categories()->first()->category . ")<br/>";
-                                            $getS = $cprd->subproducts()->get();
-                                            $csub = [];
-                                            foreach ($getS as $getSub) {
-                                                $nameProd1 = explode("Variant", $getSub->product, 2);
-                                                $filtered_words = array(
-                                                    '(',
-                                                    ')',
-                                                    'frames',
-                                                    'posters',
-                                                );
-                                                $gap = '';
-                                                $prodSize1 = str_replace($filtered_words, $gap, $nameProd1[1]);
-                                                $csub[$getSub->id] = $prodSize1;
-                                            }
-                                            ?>
-                                            {{ Form::select("cartdata[".$i."][".$prd->id."][subprd][]",$csub,$comboSub,['class'=>'form-control subComboProd selPrdVar']) }}
-                                            <?php
-                                        }
-                                    }
-                                    ?>
-                                </td>
-                                @else
-                                <td>-</td>
+                               
                                 @endif
                                 <td>
-                                    <input type="hidden" class="pid_{{$prd->id}}" value="{{ $prd->qty }}"  />
-                                    <input  name="{{"cartdata[".$k."][".$prd->id."]"}}[qty]" type="number" min="1" data-ppid="{{$prd->id}}" data-prdType="{{$prd->prod_type}}" {{ $prd->prod_type == 3?' subprod-id='.$prd->sub_prod_id:'' }} class="qtyOrder editqty form-control validate[required, custom[number],,min[1]]" value="{{ $prd->qty }}" />
+                                    
                                 </td>
-                                <td><b class="price">{{ number_format((@$prd->selling_price * Session::get("currency_val")), 2) }}</b></td>
-                                <td><b class="subT">{{ number_format((@$prd->hasPrice * Session::get("currency_val")), 2)}}</b></td>
-                                @if($feature['coupon']==1)
-                                <td><b class="coupDisc">{{  round($prd->disc * Session::get("currency_val"))  }}</b></td>
-                                @endif
-                                <?php
-                                $productP = ($prd->hasPrice / 100);
-                                $orderAmtP = ($order->order_amt / 100);
-                                $fixedVaoucherUsed = $order->voucher_amt_used;
-                                $fixedCashbackUsed = $order->cashback_used;
-                                $fixedReferalUsed = $order->referal_code_amt;
-                                $discCashBackA = 0;
-                                $discVoucherA = 0;
-                                $discReferalA = 0;
-                                // $discCashBackA = App\Library\Helper::discForProduct($productP, $orderAmtP, $fixedCashbackUsed);
-                                // $discVoucherA = App\Library\Helper::discForProduct($productP, $orderAmtP, $fixedVaoucherUsed);
-                                // $discReferalA = App\Library\Helper::discForProduct($productP, $orderAmtP, $fixedReferalUsed);
-                                // $allDiscFor = round($discCashBackA + $discVoucherA + $discReferalA + round($prd->pivot->disc));
-                                ?>
-                                @if($feature['loyalty']==1)
-                                <td><b class="cashbackDisc">{{ number_format((@$fixedCashbackUsed * Session::get('currency_val')), 2)  }}</b></td>
-                                @endif
-                             
-                                @if($feature['referral']==1 )
-                                <td><b class="referalDisc">{{ @$fixedReferalUsed  }}</b></td>
-                                @endif
-                              
+                                <td>
+                                    <input type="number" id="pqty"  class='qty form-control' min="1" value="1" readonly="">
+                                </td>
+                                <td><input type="number" id="pqty"  class='qty form-control' min="1" value="664" readonly=""></td>
+                                <td>664</td>
                                 <td><a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;"></i></a></td>
                             </tr>
                             <?php $i++; ?>
                             @endforeach
                         </tbody>
                     </table>
+
+
+                            <div class="col-md-6 noRightpadding noMobilePadding">
+                                <table class="table tableVaglignMiddle table-hover priceTable">
+                                   
+                                    <tr class="sub-total-amt">
+                                        <th><div class="black-bg">Subtotal: ₹664</div></th>
+
+                                        <td><div class="black-bg"><strong> <span class="amount finalAmt"></span></strong></div></td>
+                                    </tr>
+                                    <tr class="order-total">
+                                    </tr>
+                                </table>
                                 </div>
                     <div class="clear clear_fix clearfix"> </div>
-                    <div class="col-md-6 pull-right form-group text-right mob-marTop15">       
-                        <!-- {{ Form::button('Reset',["class" => "btn btn-primary resetButton"]) }} &nbsp;
-                        {{ Form::submit('Submit',["class" => "btn btn-info"]) }} -->
-                        <input type="hidden" name="attrgetid" class="getArr" value="{{$i}}">
-                        {{ Form::hidden('return_url',Input::get('returnUrl')) }}
-                        {{ Form::button('Submit',["class" => "btn btn-info submitReturn"]) }}
-
-                        {{ Form::close() }}
-                    </div>
-                    <table class="table table-striped table-hover additional-charge">
-                        @if($feature['additional-charge']==1)
-                        @if(isset($order->additional_charge))
-                        <?php $additional_charges = json_decode($order->additional_charge, true); ?>
-                        @foreach($additional_charges['details'] as $key => $val)
-                        <tr class="order-total">
-                            <th>{{ $val['label']  }}</th>
-                            <td>{{ $val['applied'] * Session::get("currency_val") }}</td> 
-                        </tr>
-                        @endforeach
-                        @endif
-                        @endif
-                        <tr>
-                            <th>Total {{$currencySym}}</th>
-                            <td>{{ $order->pay_amt * Session::get("currency_val")}}</td> 
-                        </tr>
-
-                    </table>
-                    <!-- {{ Form::close() }} -->
-
-                    <div class="col-md-12">
-                        <div class="cal-shipping  mar-bot15">
-                            @if($feature['coupon'] == 1)
-                            <h4 class="heading-title">HAVE A COUPON?</h4>
-                            <div class="list-group horizontal-list-group">
-                                <div class="list-group-item">
-                                    <label class="ui-radio-inline">
-                                        <input type="radio" checked name="radioEg" checked value="none"> 
-                                        <span>None</span>
-                                    </label>
-                                    <p class="list-group-item-text">No coupon applicable</p>
-                                </div>
-                                <?php $coupon_id = $coupon ? $coupon->id : null; ?>
-                                @if(!$coupons->isEmpty())
-                                @foreach($coupons as $coupon)
-                                <div class="list-group-item">
-                                    <label class="ui-radio-inline">
-                                        <input type="radio" name="radioEg" <?php echo $coupon_id == $coupon->id ? 'checked' : ''; ?> value="{{ $coupon->coupon_code }}" > 
-                                        <span>{{ $coupon->coupon_code }}</span>
-                                    </label>
-                                    <p class="list-group-item-text">{{ $coupon->coupon_name }}</p>
-                                </div>
-                                @endforeach
-                                @endif
-                            </div>
-                            @endif
-                            <!-- <form class="checkout_coupon" method="post">
-                              <div class="cart-input">
-                              <input name="coupon_code" class="userCouponCode" id="" value="" placeholder="Coupon code"  type="text"> 
-                               </div>
-                            <div class="input-submit">
-                           <input class="button bold default" name="apply_coupon" id="couponApply" value="Apply Coupon" type="button">
-                            </div>
-                           </form> -->
-                            <!-- <div class="col-md-12 col-xs-12 space3">
-                           <p class="cmsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p>
-                             </div>
-                           </div> -->
-                            <!-- .cal-shipping -->
-
-                            <!-- Start voucher refferel Cashback Discount -->
-
-                            <div class="summry_col">
-                                @if($feature['loyalty'] == 1)
-                                <h3>
-                                    <span class="pull-left summry_title">Current Reward Points </span>&nbsp;&nbsp;<span class="currency-sym"></span>
-                                    <span class="rwd_pont curRewPointsOld">&nbsp; {{ number_format(($order->users->cashback * Session::get('currency_val')), 2) }}</span>
-                                    <span class="pull-right rwd_pont curRewPointsNew" style="display:none;"></span>
-                                </h3>
-                                @endif
-                                <ul class="current-list-reward">
-                                    @if($feature['loyalty'] == 1) 
-                                    <li><div class="cashbackAmt"><input id="checkbox1"  class="requireCashback" type="checkbox" name="requireCashback" value="1" ><label for="checkbox1"><span></span>Apply Reward Points <p><a href="" target="_blank" class="blue_text">Check Reward Points</a></p></label>
-                                            <p class="cashbackMsg" style="display:none;" ></p></div>
-                                    </li>
-                                    @endif
-                                    <div>
-                                        <div>
-                                            @if(@$settingStatus['36'] == 1)
-                                            <!--                                                <li> 
-                                                                                                <div class="form-group">
-                                                                                                    <label for="email" class="col-md-12">GIFT VOUCHER</label>
-                                                                                                    <p class="col-md-8"><input name="user_voucher_code" type="text" class="form-control userVoucherCode cartinput" placeholder="Enter Voucher Code"></p>
-                                                                                                    <p class="col-md-4"><button type="button" class="btn new_user_btn" id="voucherApply">APPLY</button></p>
-                                                                                                    <div class="col-sm-12 col-xs-12"><p class="vMsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p></div>
-                                                                                                </div>
-                                                                                            </li>-->
-                                            @endif
-
-                                            @if($feature['des'] == 1)
-                                            <li> 
-                                                <div class="form-group">
-                                                    <label for="email" class="col-md-12 col-sm-12 col-xs-12">Discount</label>
-                                                    <div class="col-md-4 col-sm-4 col-xs-12 mob-marBottom15">
-                                                        <select class="form-control" name="user-level-disc-type" id="user-level-disc" >
-                                                            <option >Please Select</option>
-                                                            <option value="1">Percentage</option>
-                                                            <option value="2">Absolute</option>
-                                                        </select> 
-                                </div>
-                                                    <div class="col-md-4 col-sm-4 col-xs-12 mob-marBottom15">
-                                                        <input name="user_level_discount" type="text" class="form-control userLevelDiscount" placeholder="Enter value for discount">
-                                </div>
-                                                    <div class="col-md-4 col-sm-4 col-xs-12">
-                                                        <button type="button" class="btn new_user_btn mobileSpecialfullBTN noMob-leftmargin" id="userlevelDiscApply">APPLY</button>
-                                </div>
-                                                    <div class="col-sm-12 col-xs-12">
-                                                        <p class="dMsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p>
-                                                    </div>
-                                                </div>
-                                                <div class="clearfix marginBottom15"></div>
-                                            </li>
-                                            @endif
-                                            @if($feature['referral'] == 1)
-                                            <li>
-                                                <div class="form-group">
-                                                    <label for="email" class="col-md-12 col-sm-12 col-xs-12 mob-marBottom15">REFERRAL</label>
-                                                    <div class="col-md-8 col-sm-4 col-xs-12 mob-marBottom15"><input name="require_referal" type="text" class="form-control requireReferal cartinput" placeholder="Enter Referral Code"></div>
-                                                    <div class="col-md-4 col-sm-4 col-xs-12 mob-marBottom15"><button type="button" class="btn new_user_btn referalCodeClass mobileSpecialfullBTN noMob-leftmargin" id="requireReferalApply">APPLY</button></div>
-                                                    <div class="col-sm-12 col-xs-12"> 
-                                                        <p class="blue_text">Applicable only for first time users.</p>
-                                                        <p class="referalMsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </ul>
-                            </div>
+                    
+                    
                         </div>
                     </div>
                 </div>
@@ -1216,7 +850,7 @@ $seldel = '<a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;
     });
     // console.log(prod);
     if (prod.length <= 0){
-    $(".finalAmt").text('0.00');
+    //$(".finalAmt").text('0.00');
     getAdditionalcharge();
     return false;
     }
@@ -1522,62 +1156,6 @@ $seldel = '<a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;
     return true;
     }
     
-        // $("#couponApply").click(function(event){
-    /* function ApplyCoupon(){
-     // event.preventDefault();
-     var prod = [];
-     $.each($(".qtyOrder"),function(qtk,qtv){
-     if($(qtv).attr('data-ppid') != ""){
-     // var subprodid = $(this).parent().parent().find(".addPrdVar").val();
-     var subprodid = $(this).parent().parent().find(".selPrdVar").val();
-     if(subprodid == null){
-     subprodid = "";
-     }
-     var prod_id = $(qtv).attr('data-ppid');
-     var qty = $(qtv).val();
-     var data = {prod_id:prod_id,subprodid:subprodid,qty:qty};
-     prod.push(data);
-     }
-     });
-     // console.log(prod);
-     var couponCode = $(".userCouponCode").val();
-     
-     $.ajax({
-     type: "POST",
-     url: "{{ route('admin.orders.checkOrderCoupon') }}",
-     data: {mycart:prod,couponCode:couponCode},
-     cache: false,
-     success: function (msg) {
-     console.log(msg);
-     $(".cmsg").css("display", "block");
-     $("#order_amt").val(msg['orderAmount'].toFixed(2));
-     if (msg['remove'] == 1) {
-     $(".cmsg").html("Coupon Code Invalid OR Not applicable on current cart value.");
-     
-     $("input[name='coupon_amt_used']").val(0.00);
-     $("#couponApply").removeAttr("disabled");
-     $("#userCouponCode").val('');
-     $("#userCouponCode").removeAttr("disabled");
-     $(".disc_indv").text("0.00");
-     $("#amountallSubtotal").text(msg[4]);
-     
-     } else {
-     $("#couponApply").attr("disabled", "disabled");
-     $(".userCouponCode").attr("disabled", "disabled");
-     coupon_msg = "<span style='color:green;'>Coupon Applied!</span> <a href='javascript:void(0);' style='border-bottom: 1px dashed;' class='clearCoup'>Remove!</a>";
-     var newAmount = msg['new_amt'];
-     var usedCouponAmount = (msg['disc'])
-     
-     $("input[name='coupon_amt_used']").val(usedCouponAmount.toFixed(2));
-     $(".cmsg").html(coupon_msg);
-     }
-     priceTaxUpdate(msg.cart);
-     //  calamt(); 
-     getAdditionalcharge();                  
-     }
-     
-     });
-     };
-     */
+  
 </script>
 @stop
