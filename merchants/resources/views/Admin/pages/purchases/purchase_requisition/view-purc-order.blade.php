@@ -249,8 +249,7 @@
                         <tbody>
                             <?php $i = 0; ?>
                             
-                            @foreach($products as $k =>$prd)
-                         
+                           
                             <tr> 
                                 
                                 <td>
@@ -269,7 +268,7 @@
                                 <td><a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;"></i></a></td>
                             </tr>
                             <?php $i++; ?>
-                            @endforeach
+                           
                         </tbody>
                     </table>
 
