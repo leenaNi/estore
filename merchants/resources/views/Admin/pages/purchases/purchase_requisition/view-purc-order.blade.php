@@ -29,7 +29,7 @@
 //                print_r(Session::all());
                 $currencySym = !empty(Session::get('currency_symbol')) ? '(' . Session::get('currency_symbol') . ')' : '';
                 ?>
-                {!! Form::model($order, ['method' => 'post', 'files'=> true, 'url' => $action , 'class' => 'form-horizontal' ]) !!}
+                {!! Form::model(['method' => 'post', 'files'=> true, 'url' => $action , 'class' => 'form-horizontal' ]) !!}
 
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
@@ -68,7 +68,12 @@
                 <div class="col-md-2 text-right mobTextLeft">
                     {!! Form::label('order_status', 'Order Status ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span></div>
                     <div class="col-md-10">
-                        {!! Form::select('order_status',$order_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Order Status','disabled']) !!}
+                        <select name="payment_status" disabled="">
+                            <option>Select Order Status</option>
+                            <option>Pending</option>
+                            <option>Proccessing</option>
+                           
+                        </select>
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -148,7 +153,7 @@
             </div>
             <div class="tab-pane" id="customer-detail">
 
-                {!! Form::model($order, ['method' => 'post', 'files'=> true, 'url' => $action , 'class' => 'form-horizontal']) !!}
+                {!! Form::model(['method' => 'post', 'files'=> true, 'url' => $action , 'class' => 'form-horizontal']) !!}
 
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="form-group">
