@@ -248,17 +248,19 @@
                         </thead>
                         <tbody>
                             <?php $i = 0; ?>
+                            dd($products);
                             @foreach($products as $k =>$prd)
                          
                             <tr> 
                                 
                                 <td>
-                                    
+                                    sdd
                                 </td>
                                
                                 <td>
-                                    
+                                    ds
                                 </td>
+                                <td></td>
                                 <td>
                                     <input type="number" id="pqty"  class='qty form-control' min="1" value="1" readonly="">
                                 </td>
