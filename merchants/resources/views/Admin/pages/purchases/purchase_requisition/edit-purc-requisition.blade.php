@@ -28,14 +28,26 @@
 
                 <div class="col-md-4">
                     {!! Form::label('payment_method', 'Payment Method ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                        {!! Form::select('payment_method', $payment_methods,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Method']) !!}
+                        <select name="payment_status">
+                            <option>Select Payment Status</option>
+                            <option>Pending</option>
+                            <option>Cancelled</option>
+                            <option>Partially Paid</option>
+                            <option>Paid</option>
+                        </select>
                    
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
                 <div class="col-md-4">
                 
                     {!! Form::label('payment_status', 'Payment Status ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                        {!! Form::select('payment_status',$payment_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status']) !!}
+                        <select name="payment_status">
+                            <option>Select Payment Status</option>
+                            <option>Pending</option>
+                            <option>Cancelled</option>
+                            <option>Partially Paid</option>
+                            <option>Paid</option>
+                        </select>
                    
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
