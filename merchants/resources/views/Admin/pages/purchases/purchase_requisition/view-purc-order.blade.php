@@ -37,7 +37,7 @@
                     {!! Form::label('payment_method', 'Payment Method ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
                 </div>
                     <div class="col-md-10">
-                        <select>
+                        <select name="payment_method" disabled="">
                             <option>Select Payment Method</option>
                             <option>COD</option>
                             <option>EBS</option>
@@ -53,7 +53,14 @@
                     {!! Form::label('payment_status', 'Payment Status ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
 </div>
                     <div class="col-md-10">
-                        {!! Form::select('payment_status',$payment_status ,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Status','disabled']) !!}
+                        <select name="payment_status" disabled="">
+                            <option>Select Payment Status</option>
+                            <option>Pending</option>
+                            <option>Cancelled</option>
+                            <option>Partially Paid</option>
+                            <option>Paid</option>
+                        </select>
+                       
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
