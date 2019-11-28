@@ -37,7 +37,14 @@
                     {!! Form::label('payment_method', 'Payment Method ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
                 </div>
                     <div class="col-md-10">
-                        {!! Form::select('payment_method', $payment_methods,null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Select Payment Method','disabled']) !!}
+                        <select>
+                            <option>Select Payment Method</option>
+                            <option>COD</option>
+                            <option>EBS</option>
+                            <option>Paypal</option>
+                            <option>PayU</option>
+                            <option>Citrus</option>
+                        </select>
                     </div>
                 </div>
                 <div class="line line-dashed b-b line-lg pull-in"></div>
