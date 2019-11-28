@@ -247,7 +247,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = 0; dd($products); ?>
+                            <?php $i = 0; ?>
                             
                             @foreach($products as $k =>$prd)
                          
