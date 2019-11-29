@@ -200,7 +200,6 @@
                                 <th>Inward Quantity</th>
                                 <th>Rejected Quantity</th>
                                 <th>Reason</th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -216,7 +215,6 @@
                                 <td><input type="number" name="" style="width: 80%" value="0" ></td>
                                 <td><input type="text" name="" style="width: 80%" value=""></td>
                                
-                                <td><a href="#" class="delPrd"><i class="fa fa-trash-o" style="color:red;"></i></a></td>
                             </tr>
                         </tbody>
                     </table>
