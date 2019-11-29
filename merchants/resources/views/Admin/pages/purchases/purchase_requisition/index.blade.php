@@ -160,7 +160,7 @@
                                 <td>9878987678</td>
                                 <td>Processing</td>
                                 <td>Pending</td>
-                                <td><span class="currency-sym">₹</span> 647</td>
+                                <td><span class="currency-sym">₹</span> 4000</td>
                                 <td>
                                     <a href="{!! route('admin.requisition.vieworder',['id'=>1]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="View"><i class="fa fa-eye fa-fw btnNo-margn-padd"></i>
                                     </a>
