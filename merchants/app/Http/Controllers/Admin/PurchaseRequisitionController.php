@@ -119,7 +119,7 @@ class PurchaseRequisitionController extends Controller
             }
         }
 
-        $orders = $orders->paginate(Config('constants.paginateNo'));
+        //$orders = $orders->paginate(Config('constants.paginateNo'));
         $ordersCount = $orders->total();
         $flags = Flags::all();
 
