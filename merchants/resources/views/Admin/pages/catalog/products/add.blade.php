@@ -72,14 +72,6 @@
        
     </div>
  @endif
-
-  <div class="form-group col-md-6">
-            <div class="form-group">
-                <label class="control-label"> Product </label>
-                {!! Form::text('all_product', null, array('placeholder' => 'Search Product','class' => 'form-control','id'=>'search_product')) !!}
-            </div>
-        </div>
-
     <div class="form-group col-md-12">
         <label class="control-label">Select Category </label>
         <select name="category[]" class="selectpicker validate[required] sel-cat-multi-drop col-md-12" multiple>
@@ -158,29 +150,3 @@
 
 
 </div>
-
-
-<link href="http://demo.expertphp.in/css/jquery.ui.autocomplete.css" rel="stylesheet">
-<script src="http://demo.expertphp.in/js/jquery.js"></script>
-<script src="http://demo.expertphp.in/js/jquery-ui.min.js"></script>
-
-<script>
-  $(document).ready(function() {
-     src = "{{ route('admin.products.search') }}";
-     $("#search_product").autocomplete({
-        source: function(request, response) {
-            $.ajax({
-                url: src,
-                dataType: "json",
-                data: {
-                    term : request.term
-                },
-                success: function(data) {
-                    response(data);
-                }
-            });
-        },
-        minLength: 3,
-    });
-  });
-</script>
