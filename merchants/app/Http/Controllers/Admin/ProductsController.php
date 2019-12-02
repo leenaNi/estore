@@ -53,21 +53,6 @@ class ProductsController extends Controller {
         $this->pdf = $pdf;
     }
 
-    public function search_product(Request $request) {
-        $query = $request->get('term','');
-
-        #all product
-        $products=Product::where('product','LIKE','%'.$query.'%')->get();
-        $data=array();
-        foreach ($products as $product) {
-                $data[]=array('value'=>$product->product,'id'=>$product->id);
-        }
-        if(count($data))
-             return $data;
-        else
-            return ['value'=>'No Result Found','id'=>''];
-    }
-
     public function index() {
 
         //\Artisan::call("cache:clear");
@@ -130,7 +115,7 @@ class ProductsController extends Controller {
             $products = $products->sortable()->paginate(Config('constants.paginateNo'));
             $productCount = $products->total();
         }
-        
+
         $prod_types = [];
         $prodTy = ProductType::where('status', 1)->get(['id', 'type']);
         $setting = GeneralSetting::where('id', 30)->first();
