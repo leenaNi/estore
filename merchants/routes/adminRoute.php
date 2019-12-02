@@ -75,7 +75,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
 
             Route::group(['prefix' => 'products', 'middlewareGroups' => ['web']], function() {
                 Route::get('/', ['as' => 'admin.products.view', 'uses' => 'ProductsController@index']);
-                Route::get('/search_product', ['as' => 'admin.products.search', 'uses' => 'ProductsController@search_product']);
                 Route::get('/add', ['as' => 'admin.products.add', 'uses' => 'ProductsController@add']);
                 Route::get('/delete', ['as' => 'admin.products.delete', 'uses' => 'ProductsController@delete']);
                 Route::get('/delete-varient', ['as' => 'admin.products.deleteVarient', 'uses' => 'ProductsController@deleteVarient']);
@@ -146,22 +145,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/saveEdit', array('as' => 'admin.dynamic-layout.saveEdit', 'uses' => 'DyLayoutController@saveEdit'));
             Route::any('/change_status', array('as' => 'admin.dynamic-layout.changeStatus', 'uses' => 'DyLayoutController@changeStatus'));
             Route::any('/{slug}', array('as' => 'admin.dynamic-layout.view', 'uses' => 'DyLayoutController@index'));
-        });
-
-        Route::group(['prefix' => 'campaign', 'middlewareGroups' => ['CheckUser', 'web']], function() {
-            Route::get('/', ['as' => 'admin.campaign.view', 'uses' => 'CampaignController@index']);
-            Route::get('/add', ['as' => 'admin.campaign.add', 'uses' => 'CampaignController@add']);
-            Route::post('/save', ['as' => 'admin.campaign.save', 'uses' => 'CampaignController@save']);
-            Route::get('/edit', ['as' => 'admin.campaign.edit', 'uses' => 'CampaignController@edit']);
-            Route::get('/delete', ['as' => 'admin.campaign.delete', 'uses' => 'CampaignController@delete']);
-            Route::post('/sendsms', ['as' => 'admin.campaign.sendsms', 'uses' => 'CampaignController@sendCampaignSMS']);
-
-            Route::get('/viewemails', ['as' => 'admin.emailcampaign.viewemails', 'uses' => 'CampaignController@viewemails']);
-            Route::get('/addemail', ['as' => 'admin.emailcampaign.addemail', 'uses' => 'CampaignController@addEmail']);
-            Route::post('/saveemail', ['as' => 'admin.emailcampaign.saveemail', 'uses' => 'CampaignController@saveEmail']);
-            Route::get('/editemail', ['as' => 'admin.emailcampaign.editemail', 'uses' => 'CampaignController@editEmail']);
-            Route::get('/deleteemail', ['as' => 'admin.emailcampaign.deleteemail', 'uses' => 'CampaignController@deleteEmail']);
-            Route::post('/sendemail', ['as' => 'admin.emailcampaign.sendemail', 'uses' => 'CampaignController@sendCampaignEmail']);
         });
 
         Route::group(['prefix' => 'coupons', 'middlewareGroups' => ['CheckUser', 'web']], function() {
@@ -379,16 +362,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::get('/change-status', array('as' => 'admin.customers.changeStatus', 'uses' => 'CustomersController@changeStatus'));
                 Route::get('/export', ['as' => 'admin.customers.export', 'uses' => 'CustomersController@export']);
                 Route::post('/chk-existing-useremail', ['as' => 'admin.customers.chkExistingUseremail', 'uses' => 'CustomersController@chkExistingUseremail']);
-            });
-
-            Route::group(array('prefix' => 'storecontacts', 'middlewareGroups' => ['web']), function() {
-                Route::get('/', array('as' => 'admin.storecontacts.view', 'uses' => 'StoreContactsController@index')); 
-                Route::get('/add', array('as' => 'admin.storecontacts.add', 'uses' => 'StoreContactsController@add'));
-                Route::post('/save', array('as' => 'admin.storecontacts.save', 'uses' => 'StoreContactsController@save'));
-                Route::get('/edit', array('as' => 'admin.storecontacts.edit', 'uses' => 'StoreContactsController@edit'));
-                Route::post('/update', array('as' => 'admin.storecontacts.update', 'uses' => 'StoreContactsController@update'));
-                Route::any('/import', array('as' => 'admin.storecontacts.import', 'uses' => 'StoreContactsController@import'));
-                Route::get('/exportsamplecsv', ['as' => 'admin.storecontacts.exportsamplecsv', 'uses' => 'StoreContactsController@exportsamplecsv']);
             });
 
             Route::group(array('prefix' => 'loyalty', 'middlewareGroups' => ['web']), function() {
@@ -671,14 +644,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::any('/export-by-order', array('as' => 'admin.vendor.export.order', 'uses' => 'VendorsController@orderExport'));
                 Route::any('/update-order-status', array('as' => 'admin.vendor.order.status', 'uses' => 'VendorsController@updateOrderStatus'));
                 // Route::post('/getState', ['as' => 'admin.vendors.state', 'uses' => 'VendorsController@getState']);
-            });
-
-            Route::group(['prefix' => 'purchase-requisition', 'middlewareGroups' => ['CheckUser', 'web']], function() {
-                Route::get('/', ['as' => 'admin.requisition.view', 'uses' => 'PurchaseRequisitionController@index']);
-                Route::get('/add', ['as' => 'admin.requisition.add', 'uses' => 'PurchaseRequisitionController@createOrder']);
-                Route::get('/edit', ['as' => 'admin.requisition.edit', 'uses' => 'PurchaseRequisitionController@edit']);
-                Route::get('/vieworder', ['as' => 'admin.requisition.vieworder', 'uses' => 'PurchaseRequisitionController@view']);
-
             });
 
             // Raw material
