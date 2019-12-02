@@ -75,6 +75,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
 
             Route::group(['prefix' => 'products', 'middlewareGroups' => ['web']], function() {
                 Route::get('/', ['as' => 'admin.products.view', 'uses' => 'ProductsController@index']);
+                Route::get('/search_product', ['as' => 'admin.products.search', 'uses' => 'ProductsController@search_product']);
                 Route::get('/add', ['as' => 'admin.products.add', 'uses' => 'ProductsController@add']);
                 Route::get('/delete', ['as' => 'admin.products.delete', 'uses' => 'ProductsController@delete']);
                 Route::get('/delete-varient', ['as' => 'admin.products.deleteVarient', 'uses' => 'ProductsController@deleteVarient']);

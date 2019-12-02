@@ -51,8 +51,12 @@ class CheckoutController extends Controller {
         Session::forget('voucherUsedAmt');
         Session::forget('referalCodeAmt');
         Session::forget('discAmt');
- 
-
+        
+        $my_data=[];
+        $json_data=Helper::getSettings();
+        $my_data["country_id"]=(int)$json_data["countryList"];
+        $my_data["pincode_req"]=(int)$json_data["pincode"];
+        
         $cart = Cart::instance('shopping')->content();
         if (empty($cart->toArray())) {
             return redirect()->route('cart');
@@ -62,11 +66,11 @@ class CheckoutController extends Controller {
             }
             //Session::forget("shippingCost");
             $this->revert_cod_charges();
-            $countries = Country::where("status", "=", 1)->get(['id', 'name']);
-            $zoneData = Zone::where("status", "=", 1)->get(['id', 'name']);
+            $countries = Country::where("id", "=", $my_data["country_id"])->get(['id', 'name']);
+            $zoneData = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
             // return view('Frontend.pages.checkout.checkout', compact('countries', 'zoneData'));
             $viewname = Config('constants.frontCheckoutView') . '.checkout';
-            $data = ['countries' => $countries, 'zoneData' => $zoneData, "checkGuestCheckoutEnabled" => $checkGuestCheckoutEnabled];
+            $data = ['my_data' => $my_data,'countries' => $countries, 'zoneData' => $zoneData, "checkGuestCheckoutEnabled" => $checkGuestCheckoutEnabled];
             return Helper::returnView($viewname, $data);
         }
     }
@@ -83,16 +87,21 @@ class CheckoutController extends Controller {
     }
 
     public function get_country_zone() {
-        $country = Country::where("status", "=", 1)->get(['id', 'name']);
-        $zone = Zone::where("status", "=", 1)->get(['id', 'name']);
+        $my_data=[];
+        $json_data=Helper::getSettings();
+        $my_data["country_id"]=(int)$json_data["countryList"];
+
+        $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'name']);
+        $zone = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
+       
         $userD = User::find(Session::get('loggedin_user_id'));
         $count = 99;
         $data['country'] = $country;
-        $data['countryid'] = "{$count}";
+        $data['countryid'] = $my_data["country_id"]; //"{$count}";
         $data['firstname'] = @$userD->firstname;
         $data['lastname'] = @$userD->lastname;
         $data['phone_no'] = @$userD->telephone;
-        $data['zone'] = [];
+        $data['zone'] = @$zone;
         return $data;
     }
 
@@ -276,7 +285,7 @@ class CheckoutController extends Controller {
             $newAdd->lastname = Input::get('lastname');
             $newAdd->address1 = Input::get('address1');
             $newAdd->address2 = Input::get('address2');
-            $newAdd->postcode = Input::get('postal_code');
+            $newAdd->postcode = Input::get('postal_code_bill');
             $newAdd->thana = Input::get('thana');
             $newAdd->city = Input::get('city');
             $newAdd->zone_id = Input::get('state');
@@ -395,8 +404,14 @@ class CheckoutController extends Controller {
         $getAddreses->countryid = "{$getAddreses->country['id']}";
         $getAddreses->statename = $getAddreses->zone['name'];
         $getAddreses->zoneid = "{$getAddreses->zone['id']}";
-        $country = Country::where("status", "=", 1)->get(['id', 'iso_code_3', 'name']);
-        $zone = Zone::where("status", "=", 1)->where('country_id', '=', $getAddreses->country_id)->get(['id', 'name']);
+
+        $my_data=[];
+        $json_data=Helper::getSettings();
+        $my_data["country_id"]=(int)$json_data["countryList"];
+
+        $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'iso_code_3', 'name']);
+        $zone = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
+        
         $addData['addData'] = $getAddreses;
         $addData['country'] = $country;
         $addData['zone'] = $zone;

@@ -236,16 +236,15 @@
                                             <div class="clearfix"></div>
                                             <div class="form-group col-md-6">
                                                 <lable>Country *</lable>
-                                                <select name="country_id"   class="form-control" required="true"  ng-change="countryChangedValue(getAddData.countryid)"
-                                                        ng-model="getAddData.countryid">
-                                                    <option value="">Please Select </option>
-                                                    <option ng-repeat="contr in country"  value="[[ contr.id ]]">[[ contr.name  ]] </option>
+                                                <select name="country_id"   class="form-control" required="true" ng-change="countryChangedValue(getAddData.countryid)"
+                                                        ng-model="selCountryId" >
+                                                    <option ng-repeat="contr in country" selected  value="[[ contr.id ]]">[[ contr.name  ]] </option>
                                                 </select>
                                                 <div id="country_id_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <lable>State *</lable>
-                                                <select name="state" class="form-control zone" required="true" 
+                                                <select name="state" class="form-control zone" required="true"          
                                                         ng-model="getAddData.zoneid"> 
                                                     <option value="">Please Select </option>
                                                     <option ng-repeat="zone in zones" value="[[ zone.id ]]" >[[ zone.name ]]</option>
@@ -268,8 +267,14 @@
                                               <div class="form-group col-md-6">
                                                 <lable>Pin Code *</lable>                                             
                                                 <i style="display: none" class="icon-refresh fa-spin pincodeMessageLoader "></i>  <span class="pincodeMessage"></span>
-                                                <input type="text" name='postal_code' id="pincode_check" class="form-control" autocomplete="false"  ng-model="getAddData.postcode">
-                                                <div id="postal_code_checkout_new_add_form" class="newerror"></div>
+                                                <!-- <input type="text" name='postal_code' id="pincode_check" class="form-control" autocomplete="false"  ng-model="getAddData.postcode"> -->
+                                               <!--  <div id="postal_code_checkout_new_add_form" class="newerror"></div> -->
+                                               @if($my_data["pincode_req"] == 1)
+                                               <input type="text" name='postal_code' class="form-control" id="pincode"  required="true" ng-model="getAddData.postal_code_bill" >
+                                                <div id="postal_code_bill_checkout_new_add_form" class="newerror"></div>
+                                                @else
+                                                 <input type="text" name='postal_code' class="form-control" id="pincode"  ng-model="getAddData.postal_code_bill" >
+                                                @endif
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <lable>Mobile No. *</lable>
@@ -712,7 +717,7 @@
        var city=$("#bcity").val();
        var phone=$("#bmobile").val();
        var thana=$("#bthana").val();
-       var pincode=$("#pincode_check").val();
+       var pincode=$("#pincode").val();
        if (this.checked==true)
        {
             $(".newAddFormDiv").show();

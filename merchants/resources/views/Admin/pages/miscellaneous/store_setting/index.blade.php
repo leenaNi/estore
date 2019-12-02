@@ -58,7 +58,7 @@ if (isset($data->expiry_date)) {
         <div class="col-md-12">
             <div class="box">
                 <div class="box-body">
-                    <div class="col-md-6">
+                    <div >
                         <form id="store_settings_save" enctype="multipart/form"> 
                             <div class="form-group">
                                 <label>Logo (170px W X 100px H)</label>
@@ -79,6 +79,7 @@ if (isset($data->expiry_date)) {
                                 <p class="nobottommargin topMargin5">Note: This is a third party feature and it is paid.</p>
                             </div>
                             <div class="clearfix"></div>
+                            <div class="form-group">
                             <div class="form-group">
                                 <label>Store Name </label><span class="red-astrik"> *</span>
                                 <input type="text" id="store_name" value="{{ $data->storeName }}" name="store_name" class="form-control validate[required]">
@@ -138,34 +139,34 @@ if (isset($data->expiry_date)) {
                                     <option value="2" <?= ($data->store_version == 2) ? 'selected' : ''; ?> >Advance Version</option>
                                 </select>
                             </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <label>Store Currency</label>
+                                    <select name="currency"  class="form-control" >
 
-                            <div class="form-group">
-                                <label>Store Currency</label>
-                                <select name="currency"  class="form-control" >
+                                        @foreach($currency as $currency1)
 
-                                    @foreach($currency as $currency1)
+                                        <option value="{{$currency1->iso_code}}" {{ $data->currencyId== $currency1->iso_code?'selected':'' }} >{{$currency1->currency_code." - ".$currency1->currency_name}} </option>
 
-                                    <option value="{{$currency1->iso_code}}" {{ $data->currencyId== $currency1->iso_code?'selected':'' }} >{{$currency1->currency_code." - ".$currency1->currency_name}} </option>
-
-                                    @endforeach
-                                </select>
-
-                            </div>
-                            <div class="form-group">
-                                <label>Theme</label>
-                                <select name="theme"  class="form-control themes validate[required]"  >
-
-                                    @foreach($themes as $k => $t)
-
-                                    <optgroup label="{{$k}}">
-                                        @foreach($themes[$k] as $th)
-                                        <?php $selected = strtolower($data->theme) == strtolower($th['name']) ? 'selected' : ''; ?> 
-                                        <option value="{{$th['id']}} " {{$selected}} >{{$th['name']}} </option>
                                         @endforeach
-                                    </optgroup>
-                                    @endforeach
-                                </select>
+                                    </select>
 
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>Theme</label>
+                                    <select name="theme"  class="form-control themes validate[required]"  >
+
+                                        @foreach($themes as $k => $t)
+
+                                        <optgroup label="{{$k}}">
+                                            @foreach($themes[$k] as $th)
+                                            <?php $selected = strtolower($data->theme) == strtolower($th['name']) ? 'selected' : ''; ?> 
+                                            <option value="{{$th['id']}} " {{$selected}} >{{$th['name']}} </option>
+                                            @endforeach
+                                        </optgroup>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group" id='demo'>
 
@@ -173,67 +174,79 @@ if (isset($data->expiry_date)) {
 
 
                             {{--- seo starts --}}
-                            <div class="form-group">
-                                {!! Form::label('meta_title', 'Meta Title',['class'=>'control-label']) !!}
-                                {!! Form::text('meta_title',isset($data->meta_title) ? $data->meta_title : '', ["class"=>'form-control' ,"placeholder"=>'Enter Meta Title']) !!}
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    {!! Form::label('meta_title', 'Meta Title',['class'=>'control-label']) !!}
+                                    {!! Form::text('meta_title',isset($data->meta_title) ? $data->meta_title : '', ["class"=>'form-control' ,"placeholder"=>'Enter Meta Title']) !!}
+                                </div>
+                                <div class="col-sm-6">
+                                    {!! Form::label('meta_keys', 'Meta Keywords',['class'=>'control-label']) !!}
+                                    {!! Form::text('meta_keys',isset($data->meta_keys) ? $data->meta_keys : '',["class"=>'form-control',"placeholder"=>"Enter Meta Keywords"]) !!}
+                                </div>
                             </div>
-                            <div class="form-group">
-                                {!! Form::label('meta_keys', 'Meta Keywords',['class'=>'control-label']) !!}
-                                {!! Form::text('meta_keys',isset($data->meta_keys) ? $data->meta_keys : '',["class"=>'form-control',"placeholder"=>"Enter Meta Keywords"]) !!}
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    {!! Form::label('meta_desc', 'Meta Description',['class'=>'control-label']) !!}
+                                    {!! Form::text('meta_desc',isset($data->meta_desc) ? $data->meta_desc : '',["class"=>'form-control',"placeholder"=>"Enter Meta Description"]) !!}
+                                </div>
+                                <div class="col-sm-6">
+                                    {!! Form::label('meta_robot', 'Meta Robots',['class'=>'control-label']) !!}
+                                    {!! Form::text('meta_robot',isset($data->meta_robot) ? $data->meta_robot : '',["class"=>'form-control',"placeholder"=>"Enter Meta Robots"]) !!}
+                                </div>
                             </div>
-                            <div class="form-group">
-                                {!! Form::label('meta_desc', 'Meta Description',['class'=>'control-label']) !!}
-                                {!! Form::text('meta_desc',isset($data->meta_desc) ? $data->meta_desc : '',["class"=>'form-control',"placeholder"=>"Enter Meta Description"]) !!}
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    {!! Form::label('canonical', 'Canonical',['class'=>'control-label']) !!}
+                                    {!! Form::text('canonical',isset($data->canonical) ? $data->canonical : '',["class"=>'form-control',"placeholder"=>"Enter Meta Canonical"]) !!}
+                                </div>
+                                <div class="col-sm-6">
+                                    {!! Form::label('Social Shared Title', 'Social Shared Title',['class'=>'control-label']) !!}
+                                    {!! Form::text('title',isset($data->title) ? $data->title : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared Title"]) !!}
+                                </div>
                             </div>
-                            <div class="form-group">
-                                {!! Form::label('meta_robot', 'Meta Robots',['class'=>'control-label']) !!}
-                                {!! Form::text('meta_robot',isset($data->meta_robot) ? $data->meta_robot : '',["class"=>'form-control',"placeholder"=>"Enter Meta Robots"]) !!}
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    {!! Form::label('Social Shared Description', 'Social Shared Description',['class'=>'control-label']) !!}
+                                    {!! Form::text('desc',isset($data->desc) ? $data->desc : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared Description"]) !!}
+                                </div>
+                                <div class="col-sm-6">
+                                    {!! Form::label('Social Shared Image URL', 'Social Shared Image URL',['class'=>'control-label']) !!}
+                                    {!! Form::text('image',isset($data->image) ? $data->image : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared Image URL"]) !!}
+                                </div>
                             </div>
-                            <div class="form-group">
-                                {!! Form::label('canonical', 'Canonical',['class'=>'control-label']) !!}
-                                {!! Form::text('canonical',isset($data->canonical) ? $data->canonical : '',["class"=>'form-control',"placeholder"=>"Enter Meta Canonical"]) !!}
-                            </div>
-                            <div class="form-group">
-                                {!! Form::label('Social Shared Title', 'Social Shared Title',['class'=>'control-label']) !!}
-                                {!! Form::text('title',isset($data->title) ? $data->title : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared Title"]) !!}
-                            </div>
-                            <div class="form-group">
-                                {!! Form::label('Social Shared Description', 'Social Shared Description',['class'=>'control-label']) !!}
-                                {!! Form::text('desc',isset($data->desc) ? $data->desc : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared Description"]) !!}
-                            </div>
-                            <div class="form-group">
-                                {!! Form::label('Social Shared Image URL', 'Social Shared Image URL',['class'=>'control-label']) !!}
-                                {!! Form::text('image',isset($data->image) ? $data->image : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared Image URL"]) !!}
-                            </div>
-                            <div class="form-group">
-                                {!! Form::label('Social Shared URL', 'Social Shared URL',['class'=>'control-label']) !!}
-                                {!! Form::text('url',isset($data->url) ? $data->url : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared URL"]) !!}
-                            </div>
-                            <div class="form-group">
-                                {!! Form::label('other_meta', 'Other Scripts (Don\'t include script tag)',['class'=>'control-label']) !!}
-                                {!! Form::textarea('other_meta',isset($data->other_meta) ? $data->other_meta : '',["class"=>'form-control',"placeholder"=>"Enter Other Meta"]) !!}
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    {!! Form::label('Social Shared URL', 'Social Shared URL',['class'=>'control-label']) !!}
+                                    {!! Form::text('url',isset($data->url) ? $data->url : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared URL"]) !!}
+                                </div>
+                                <div class="col-sm-6">
+                                    {!! Form::label('other_meta', 'Other Scripts (Don\'t include script tag)',['class'=>'control-label']) !!}
+                                    {!! Form::textarea('other_meta',isset($data->other_meta) ? $data->other_meta : '',["class"=>'form-control',"placeholder"=>"Enter Other Meta"]) !!}
+                                </div>
                             </div>
                             {{--- seo ends --}}
 
                             {{-- Country and pincode changes required starts--}}
-                            <div class="form-group">
-                                <label>Country</label>
-                                <select name="countryList"  class="form-control">
-                                    <option value="">Please Select</option>
-                                    @foreach($country as $con)
-                                        <option value="{{$con->id}}" {{ isset($data->countryList) && $data->countryList == $con->id ?'selected':'' }} >
-                                            {{$con->name}} 
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Is pincode compulsory ?</label>
-                                <select name="pincode"  class="form-control">
-                                    <option value="">Please Select</option>
-                                    <option value="1"  <?= (isset($data->pincode) && $data->pincode == 1) ? 'selected' : ''; ?>  >Yes</option>
-                                    <option value="0" <?= (isset($data->pincode) && $data->pincode == 0) ? 'selected' : ''; ?> >No</option>
-                                </select>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <label>Country</label>
+                                    <select name="countryList"  class="form-control">
+                                        <option value="">Please Select</option>
+                                        @foreach($country as $con)
+                                            <option value="{{$con->id}}" {{ isset($data->countryList) && $data->countryList == $con->id ?'selected':'' }} >
+                                                {{$con->name}} 
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>Is pincode compulsory ?</label>
+                                    <select name="pincode"  class="form-control">
+                                        <option value="">Please Select</option>
+                                        <option value="1"  <?= (isset($data->pincode) && $data->pincode == 1) ? 'selected' : ''; ?>  >Yes</option>
+                                        <option value="0" <?= (isset($data->pincode) && $data->pincode == 0) ? 'selected' : ''; ?> >No</option>
+                                    </select>
+                                </div>
                             </div>
                             {{-- Country and pincode changes required ends--}}
 

@@ -338,7 +338,8 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
             cache: false,
             success: function (data) {
                 var countr = data.countryid;
-                $scope.countryChangedValue(countr);
+                $scope.selCountryId = data.countryid;
+                // $scope.countryChangedValue(countr);
                 $scope.$apply(function () {
                     $scope.zones = data.zone;
                     $scope.countryid = data.countryid;
@@ -472,10 +473,11 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 country_id: "required",
                 state: "required",
                 address1: "required",
-                postal_code: {
-                    required: true,
-                    minlength: 4
-                },
+                postal_code_bill: "required",
+                // postal_code: {
+                //     required: true,
+                //     minlength: 4
+                // },
                 city: "required",
                 phone_no: {
                     phonevalidate: true
@@ -488,10 +490,11 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 state: "Please select state",
                 address1: "Please enter address",
                 city: "Please enter city",
-                postal_code: {
-                    required: "Please enter postcode",
-                    minlength: "Your pincode must be at least 4 characters long"
-                },
+                postal_code_bill: "Please enter Post Code",
+                // postal_code: {
+                //     required: "Please enter postcode",
+                //     minlength: "Your pincode must be at least 4 characters long"
+                // },
                 phone_no: {
                     required: "Please enter phone number"
                 }
@@ -581,7 +584,7 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                     if ($(this).is(":checked")) {
                         var chkph = $(this).attr("phno");
                         var chkPincode = $(this).attr("addCodMsg");
-                        $scope.pincodecheck();
+                        // $scope.pincodecheck();
                         if (chkph == '') {
                             alert("Invalid phone number.Please edit address");
                             $scope.editBillAdd($("#forBillAddress input[type='radio']:checked").val());
@@ -1075,7 +1078,7 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
         $scope.getAddData.address1 = "";
         $scope.getAddData.address2 = "";
         $scope.getAddData.countryid = "";
-        $scope.getAddData.postcode = "";
+        $scope.getAddData.postal_code_bill = "";
         $scope.getAddData.city = "";
         $scope.getAddData.zoneid = "";
         $scope.getAddData.phone_no = "";

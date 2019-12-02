@@ -26,7 +26,7 @@ class ProductController extends Controller {
         $setting = GeneralSetting::where('url_key', 'debug-option')->first();
         $prod = Product::where('url_key', $slug)->first();
 
-        if ($setting->status == 0 && count($prod) == 0) {
+        if ($setting->status == 0 && is_array($prod) && count($prod) == 0) {
             abort(404);
         }
         // dd($prod);

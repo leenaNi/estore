@@ -14,7 +14,7 @@ class AdditionalCharge extends Model {
 
         $data = [];
 
-        if(count($addCharge) <= 0)
+        if( is_array($addCharge) && count($addCharge) <= 0)
         {
             $data['total_amt'] = 0;
             return json_encode($data);
@@ -24,7 +24,8 @@ class AdditionalCharge extends Model {
         $amount = 0;
 //        $charge_list = [];
         $arr = [];
-        if ($addCharge->status == 1) {
+        $charges = [];
+        if ( is_array($addCharge) && $addCharge->status == 1) {
             $charges = AdditionalCharge::where('status', 1)->get();
             foreach ($charges as $key => $charge) {
 //                echo "In Add Charge Model -> ".$charge->label. " Price => ". $price;

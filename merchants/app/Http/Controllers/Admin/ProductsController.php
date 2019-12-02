@@ -53,6 +53,21 @@ class ProductsController extends Controller {
         $this->pdf = $pdf;
     }
 
+    public function search_product(Request $request) {
+        $query = $request->get('term','');
+
+        #all product
+        $products=Product::where('product','LIKE','%'.$query.'%')->get();
+        $data=array();
+        foreach ($products as $product) {
+                $data[]=array('value'=>$product->product,'id'=>$product->id);
+        }
+        if(count($data))
+             return $data;
+        else
+            return ['value'=>'No Result Found','id'=>''];
+    }
+
     public function index() {
 
         //\Artisan::call("cache:clear");
@@ -115,7 +130,7 @@ class ProductsController extends Controller {
             $products = $products->sortable()->paginate(Config('constants.paginateNo'));
             $productCount = $products->total();
         }
-
+        
         $prod_types = [];
         $prodTy = ProductType::where('status', 1)->get(['id', 'type']);
         $setting = GeneralSetting::where('id', 30)->first();
@@ -293,7 +308,10 @@ class ProductsController extends Controller {
         $prod->barcode = Input::get('barcode');
         $prod->min_order_quantity = Input::get('min_order_quantity');
         $prod->is_trending = Input::get('is_trending');
-
+        $prod->length = Input::get('length');
+        $prod->width = Input::get('width');
+        $prod->purchase_price = Input::get('purchase_price');
+        $prod->weight = Input::get('weight');
         $prod->short_desc = Input::get('short_desc');
         if ($is_desc->status) {
             $prod->long_desc = Input::get('long_desc');

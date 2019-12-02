@@ -1,7 +1,6 @@
 <div id="top-bar" class="">
-
     <div class="container clearfix">
-        @if(count($contactDetails) >0)
+        @if( is_array($contactDetails) && count($contactDetails) >0)
         <div class="col_half nobottommargin mobText-center mobFullWidthCol">
             <?php $contact = json_decode($contactDetails->contact_details); ?>
             <p class="nobottommargin"><strong>Call:</strong> {{$contact->mobile}} | <strong>Email:</strong> {{$contact->email}} </p>
@@ -15,8 +14,7 @@
             ============================================= -->
             <div class="top-links">
                 <ul>
-
-                    @if(count($socialMedia) >0)
+                    @if(is_array($socialMedia) && count($socialMedia) >0)
                     <li class="socialDisplay">
                         <div>
                             @foreach($socialMedia as $media)

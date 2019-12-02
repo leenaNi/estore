@@ -780,7 +780,7 @@ class Helper {
                 $codFeature = GeneralSetting::where('url_key', 'cod')->first()->status;
                 $dbPincodes = Pincode::where("pincode", $postcode)->where('status', 1)->first();
                 if ($pincodeFeature == 1 && $codFeature == 1) {
-                    if (count($dbPincodes) > 0) {
+                    if (is_array ($dbPincodes) && count($dbPincodes) > 0) {
                         if ($dbPincodes->cod_status == 1) {
                             return 1; //cod vailable
                         } else {

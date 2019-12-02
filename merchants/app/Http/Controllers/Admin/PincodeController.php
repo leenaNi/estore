@@ -16,9 +16,10 @@ use App\Models\Courier;
 class PincodeController extends Controller {
 
     public function index() {
-
-
-        $pincodes = Pincode::with('cities')->orderBy("id");
+        // $pincodes = Pincode::with('cities')->orderBy("id");
+        // DB::enableQueryLog();
+        $pincodes = Pincode::orderBy("id");
+        // dd($pincodes->toSql());
         $delivary_status = Input::get("delivary_status") != null ? Input::get("delivary_status") : '';
         $cod_status = Input::get("cod_status") != null ? Input::get("cod_status") : '';
         if (!empty(Input::get("pincode"))) {

@@ -138,6 +138,27 @@
                                                 {!! Form::select('is_trending',['0' => 'No','1' => 'Yes'], null,["class"=>'form-control pull-left validate[required]']) !!}
                                             </div>
                                         </div>
+
+                                        <div class="clearfix"></div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {!! Form::label('length', 'Length(cm)',['class'=>'pull-left']) !!}
+                                                {!! Form::text('length',null, ["class"=>'form-control validate[custom[number]]',"placeholder"=>'Enter Length']) !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {!! Form::label('width', 'Width(cm)',['class'=>'pull-left']) !!}
+                                                {!! Form::text('width',null, ["class"=>'form-control validate[custom[number]]',"placeholder"=>'Enter Width']) !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {!! Form::label('weight', 'Weight(kg) ',['class'=>'pull-left']) !!}
+                                                {!! Form::text('weight',null, ["class"=>'form-control validate[custom[number]]',"placeholder"=>'Enter Weight']) !!}
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -151,7 +172,7 @@
                                 <div class="box-body text-center">
                                     <div class="row">
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">                        
 
                                                 {!! Form::label('MRP/Listing Price', 'MRP/Listing Price ',['class'=>'pull-left']) !!}
@@ -160,10 +181,18 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">                      
                                                 {!! Form::label('Selling Price', 'Selling Price',['class'=>'pull-left']) !!}
                                                 {!! Form::text('spl_price',null,["class"=>'form-control priceConvertTextBox  validate[custom[number]]',"placeholder"=>"Selling Price"]) !!}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">                        
+                                                {!! Form::label('Purchase Price', 'Purchase Price ',['class'=>'pull-left']) !!}
+                                                <span class="red-astrik pull-left ml-2">*</span>
+                                                {!! Form::text('purchase_price',null,["class"=>'form-control priceConvertTextBox validate[required,custom[number]] priceConvertTextBox',"placeholder"=>"Purchase Price"]) !!}
                                             </div>
                                         </div>
 

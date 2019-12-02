@@ -21,7 +21,7 @@
 																												<span><a href="/about-us">Read more.</a></span>
 																												<div class="clearfix"></div>
 							<div class="clearfix topmargin-xs">
-                                                               @if(count($contactDetails) >0)
+                                                               @if(is_array($contactDetails) && count($contactDetails) >0)
                                                                   <?php    $contact =json_decode($contactDetails->contact_details); ?>
 								<div class="col_half topmobileMargin0 bottommobileMargin0 bottommobilePadding0 mt15Mobile">
 									<address class="nobottommargin">

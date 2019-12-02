@@ -14,10 +14,13 @@ $other_meta = isset($data->other_meta) ? $data->other_meta : '';
 @section('title',$meta_title)
 @section('og-title',$meta_title)
 @section('meta-description',$meta_desc)
+@section('meta-keyword',$meta_keys)
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="author" content="Veestores" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="title" content="@yield('title')">
 <meta name="description" content="@yield('meta-description')">
+<meta name="keyword" content="@yield('meta-keyword')">
 <meta name="og:image" content="@yield('og:image')">
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <!--<meta property="og:image" content="http://cartini.cruxservers.in/public/Admin/uploads/layout/20180131131939.jpg"/>-->

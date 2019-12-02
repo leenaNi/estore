@@ -1,5 +1,6 @@
 <div class="container">
     <div class="row">
+        {{ dd("-------------")}}
         <div class="col-md-4">
             <ul>
                 @foreach($menu as $getm)

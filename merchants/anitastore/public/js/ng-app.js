@@ -445,7 +445,7 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                                 data: {addid: addidD},
                                 cache: false,
                                 success: function () {
-                                    $scope.pincodecheck();
+                                    // $scope.pincodecheck();
                                     // checkPinCode(addidD,2);
                                     billInterChkSummary();
                                 }
@@ -472,10 +472,10 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 country_id: "required",
                 state: "required",
                 address1: "required",
-                postal_code: {
-                    required: true,
-                    minlength: 4
-                },
+                // postal_code: {
+                //     required: true,
+                //     minlength: 4
+                // },
                 city: "required",
                 phone_no: {
                     phonevalidate: true
@@ -488,10 +488,10 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 state: "Please select state",
                 address1: "Please enter address",
                 city: "Please enter city",
-                postal_code: {
-                    required: "Please enter postcode",
-                    minlength: "Your pincode must be at least 4 characters long"
-                },
+                // postal_code: {
+                //     required: "Please enter postcode",
+                //     minlength: "Your pincode must be at least 4 characters long"
+                // },
                 phone_no: {
                     required: "Please enter phone number"
                 }
@@ -517,7 +517,7 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                                 data: {addid: addidD},
                                 cache: false,
                                 success: function () {
-                                    $scope.pincodecheck();
+                                    // $scope.pincodecheck();
                                     // checkPinCode(addidD,2);
                                     getShippingAddress();
                                     
@@ -549,13 +549,13 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                     if ($(this).is(":checked")) {
                         var chkph = $(this).attr("phno");
                         var chkPincode = $(this).attr("addCodMsg");
-                        $scope.pincodecheck();
+                        // $scope.pincodecheck();
                         if (chkph == '') {
                             alert("Invalid phone number.Please edit address");
                             $scope.editAdd($("#forAddress input[type='radio']:checked").val());
                         } else if (chkPincode != "" && chkPincode.indexOf("not") >= 0) {
                             msgP = chkPincode + " Please edit address";
-                            alert(msgP);
+                            // alert(msgP);
                             $scope.editAdd($("#forAddress input[type='radio']:checked").val());
                         } else {
                             billInterChkSummary();
@@ -579,19 +579,19 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                 });
                 $("#forBillAddress input[type='radio']").each(function () {
                     if ($(this).is(":checked")) {
-                        var chkph = $(this).attr("phno");
-                        var chkPincode = $(this).attr("addCodMsg");
-                        $scope.pincodecheck();
-                        if (chkph == '') {
-                            alert("Invalid phone number.Please edit address");
-                            $scope.editBillAdd($("#forBillAddress input[type='radio']:checked").val());
-                        } else if (chkPincode != "" && chkPincode.indexOf("not") >= 0) {
-                            msgP = chkPincode + " Please edit address";
-                            alert(msgP);
-                            $scope.editBillAdd($("#forBillAddress input[type='radio']:checked").val());
-                        } else {
+                        // var chkph = $(this).attr("phno");
+                        // var chkPincode = $(this).attr("addCodMsg");
+                        // // $scope.pincodecheck();
+                        // if (chkph == '') {
+                        //     alert("Invalid phone number.Please edit address");
+                        //     $scope.editBillAdd($("#forBillAddress input[type='radio']:checked").val());
+                        // } else if (chkPincode != "" && chkPincode.indexOf("not") >= 0) {
+                        //     msgP = chkPincode + " Please edit address";
+                        //     // alert(msgP);
+                        //     $scope.editBillAdd($("#forBillAddress input[type='radio']:checked").val());
+                        // } else {
                             getShippingAddress();
-                        }
+                        // }
                     }
                 });
             }
@@ -674,7 +674,7 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                     $scope.country = data.country;
                     $scope.zones = data.zone;
                 });
-                $scope.pincodecheck();
+                // $scope.pincodecheck();
             }
         });
     };
@@ -702,7 +702,7 @@ app.controller('checkoutController', function ($http, $rootScope, $scope, $filte
                     $scope.country = data.country;
                     $scope.zones = data.zone;
                 });
-                $scope.pincodecheck();
+                // $scope.pincodecheck();
             }
         });
     };

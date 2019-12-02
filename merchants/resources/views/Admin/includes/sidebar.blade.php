@@ -151,7 +151,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                         <li class="{{ preg_match("/admin.referralProgram/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.referralProgram.view') }}"><i class="fa fa-angle-right"></i>Referral Program</a></li>                
                         @endif 
                         @if($feature['notification']==1) 
-                        <li class="{{ preg_match("/admin.home/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.home.newsletter') }}"><i class="fa fa-angle-right"></i>NewsLetters</a></li> 
+                        <li class="{{ preg_match("/admin.home/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.home.newsletter') }}"><i class="fa fa-angle-right"></i>Newsletters</a></li> 
                         @endif 
                         <!-- <li class="{{ preg_match("/admin.smsSubscription/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.smsSubscription.view') }}"><i class="fa fa-angle-right"></i>SMS</a></li> -->
                     <?php } ?>
