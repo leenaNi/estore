@@ -30,7 +30,7 @@
         <div class="login-box text-center">
             <div class="login-logo">
                 <a href="#">
-                    <img src="public/admin/dist/img/veestore-adminLogo.png" alt="Logo">
+                    <img src="https://d2102t1lty3x1n.cloudfront.net/Admin/dist/img/veestore.png" alt="Logo">
                 </a>
                 <div class="login-logo-text">Good to see you again!</div>
             
