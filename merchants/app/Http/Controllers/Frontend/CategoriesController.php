@@ -11,6 +11,7 @@ use App\Library\Helper;
 use App\Models\AttributeValue;
 use App\Models\AttributeSet;
 use App\Models\Attribute;
+use App\Models\CustomerReview;
 use Input;
 use App\Http\Controllers\Controller;
 use DB;
@@ -280,6 +281,19 @@ WHERE c.cat_id IN ($cats)
             } else {
                 $prd->chkwishlist = 0;
             }
+
+            $publishedReviews = CustomerReview::where(['product_id'=>$prd->id,'publish'=>1])->orderBy('id','desc')->get();
+            $totalRatings = CustomerReview::where(['product_id'=>$prd->id,'publish'=>1])->sum('rating');
+
+            if(count($publishedReviews)>0)
+            {
+                $ratings = $totalRatings/count($publishedReviews);
+            }
+            else{
+                $ratings = $totalRatings;
+            }
+            $prd->reviews = count($publishedReviews);
+            $prd->ratings = $ratings;
         }
 
         $filters = [];

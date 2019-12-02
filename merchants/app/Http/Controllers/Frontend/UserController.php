@@ -407,6 +407,8 @@ class UserController extends Controller {
                 $userupdate->firstname = Input::get('firstname');
                 $userupdate->lastname = Input::get('lastname');
                 $userupdate->telephone = Input::get('telephone');
+                $userupdate->anniversary_date = Input::get('anniversary_date');
+                $userupdate->date_of_birth = Input::get('dob');
                 $userupdate->newsletter = $newlet;
                 //dd($userupdate->email);
                 if (empty($userupdate->email)) {
@@ -421,9 +423,13 @@ class UserController extends Controller {
                 $userupdate->update();
                 if($newlet == 0){
                     $usernotification = Notification::where('email',Input::get('email'))->first();
-                    $usernotification->deleted_at = 1;
-                    $usernotification->status = 0;
-                    $usernotification->update();
+                    if($usernotification != null)
+                    {
+                        $usernotification->deleted_at = 1;
+                        $usernotification->status = 0;
+                        $usernotification->update();
+                    }
+                    
                 }else{
                     $usernotification = Notification::where('email',Input::get('email'))->first();
                     $usernotification->deleted_at = 0;

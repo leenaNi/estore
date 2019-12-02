@@ -24,10 +24,25 @@
                 <div class="box-body">
                     {!! Form::model($vendor, ['method' => 'post', 'files'=> true, 'url' => $action ]) !!}
                     {!! Form::hidden('id',null) !!}
+                    <div class="row" style="margin: 0px">
+                        <div class="col-md-6">
+                            <div class="form-group{{ $errors->has('firstname') ? ' has-error' : '' }}">
+                                {!!Form::label('vendorname','Vendor Name ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                                    {!! Form::text('vendorname',null, ["class"=>'form-control',"placeholder"=>'Enter Vendor Name', "required"]) !!}
+
+                                    @if ($errors->has('vendorname'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('vendorname') }}</strong>
+                                        </span>
+                                    @endif
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="col-md-6">
                     <div class="form-group{{ $errors->has('firstname') ? ' has-error' : '' }}">
-                        {!!Form::label('firstname','First Name ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                            {!! Form::text('firstname',null, ["class"=>'form-control',"id"=>'link' ,"placeholder"=>'Enter First Name', "required"]) !!}
+                        {!!Form::label('firstname','Spoc First Name ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                            {!! Form::text('firstname',null, ["class"=>'form-control',"id"=>'link' ,"placeholder"=>'Enter Spoc First Name', "required"]) !!}
 
                             @if ($errors->has('firstname'))
                                 <span class="help-block">
@@ -38,8 +53,8 @@
                     </div>
                      <div class="col-md-6">
                     <div class="form-group{{ $errors->has('lastname') ? ' has-error' : '' }}">
-                        {!!Form::label('lastname','Last Name ',['class'=>'control-label']) !!}<span class="red-astrik">*</span>
-                            {!! Form::text('lastname',null, ["class"=>'form-control',"id"=>'link' ,"placeholder"=>'Enter Last Name', "required"]) !!}
+                        {!!Form::label('lastname','Spoc Last Name ',['class'=>'control-label']) !!}<span class="red-astrik">*</span>
+                            {!! Form::text('lastname',null, ["class"=>'form-control',"id"=>'link' ,"placeholder"=>'Enter Spoc Last Name', "required"]) !!}
 
                             @if ($errors->has('lastname'))
                                 <span class="help-block">
@@ -51,8 +66,8 @@
 
                     <div class="col-md-6">
                     <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                        {!! Form::label('email', 'Email ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                            {!! Form::text('email',null, ["class"=>'form-control',"id"=>'page_name' ,"placeholder"=>'Enter Email', "required"]) !!}
+                        {!! Form::label('email', 'Spoc Email ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                            {!! Form::text('email',null, ["class"=>'form-control',"id"=>'page_name' ,"placeholder"=>'Enter Spoc Email', "required"]) !!}
                             <span id='error_msg'></span>
 
                             @if ($errors->has('email'))
@@ -66,8 +81,8 @@
 
                     <div class="col-md-6">
                     <div class="form-group{{ $errors->has('telephone') ? ' has-error' : '' }}">
-                        {!! Form::label('telephone', 'Phone Number',['class'=>' control-label']) !!}
-                            {!! Form::text('telephone',null, ["class"=>'form-control',"id"=>'page_name' ,"placeholder"=>'Enter Phone']) !!}
+                        {!! Form::label('telephone', 'Spoc Phone Number',['class'=>' control-label']) !!}
+                            {!! Form::text('telephone',null, ["class"=>'form-control',"id"=>'page_name' ,"placeholder"=>'Enter Spoc Phone']) !!}
                             <span id='error_msg'></span>
 
                             @if ($errors->has('telephone'))
@@ -77,6 +92,7 @@
                             @endif
                         </div>
                     </div>
+                    <div class="row" style="margin: 0px">
                     @if($vendor->id == null)
                     <div class="col-md-6">
                         <div class="form-group">
@@ -84,8 +100,42 @@
                                 {!! Form::password('password', ["class"=>'form-control' ,"placeholder"=>'Password']) !!}
                         </div>
                     </div> 
+                    @else
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!!Form::label('Password','Password') !!}<span class="red-astrik"> *</span>
+                                {!! Form::input('password','password','asdfdsasdddddddd', ["class"=>'form-control' ,"placeholder"=>'Password','readonly']) !!}
+                        </div>
+                    </div> 
                     @endif
-                    <div class="clearfix"></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Select Status</label><span class="red-astrik"> *</span>
+                                <select class="form-control">
+                                    <option value="">Select Status</option>
+                                    <option value="1">Active</option>
+                                    <option value="2">Disabled</option>
+                                    <option value="3">Black Listed</option>
+                                </select>
+                        </div>
+                    </div> 
+                </div>
+                    <div class="row" style="margin: 0px">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                        <label class="control-label">Billing Address</label>
+                            <textarea name="address" class="form-control" rows="2" placeholder="Enter Billing Address"></textarea>
+                        </div>
+                    </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+            <label class="control-label">Bank Details</label>
+            <textarea name="bank_data" class="form-control" rows="2" placeholder="Enter Bank Details"></textarea>
+            </div>
+        </div></div>
+     
+                    <div class="clearfix"></div><br>
                     <div class="col-md-12">
                     <div class="form-group">
                         <div class="pull-right">
@@ -104,6 +154,23 @@
 
 @section('myscripts')
 <script type="text/javascript">
+     $(document).ready(function() {
+
+
+      $(".add-more").click(function(){ 
+          var html = $(".copy").html();
+          $(".after-add-more").after(html);
+      });
+
+
+      $("body").on("click",".remove",function(){ 
+          $(this).parents(".control-group").remove();
+      });
+
+
+    });
+
+
   $("#country").change(function(){
     var country_id = $("#country").val();
          $.ajax({

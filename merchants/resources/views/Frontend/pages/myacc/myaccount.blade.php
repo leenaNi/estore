@@ -97,6 +97,18 @@
                                     <input type="text" id="telephone" name="telephone" value="{{$user->telephone}}" class="sm-form-control" readonly="">
                                     <b><div id="telephone_editProfileform" class="newerror"></div></b>
                                 </div>
+                                <div class="col_half">
+                                    <label for="template-contactform-phone">Anniversary Date<small>*</small>
+                                    </label>
+                                    <input type="date" id="anniversary_date" name="anniversary_date" value="{{$user->anniversary_date}}" class="sm-form-control">
+                                    <b><div id="anniversary_date_editProfileform" class="newerror"></div></b>
+                                </div>
+                                <div class="col_half col_last">
+                                    <label for="template-contactform-phone">Date of Birth <small>*</small>
+                                    </label>
+                                    <input type="date" id="dob" name="dob" value="{{$user->date_of_birth}}" class="sm-form-control">
+                                    <b><div id="dob_editProfileform" class="newerror"></div></b>
+                                </div>
                                 <?php
                                     if(isset($newsLetter) && $newsLetter == 1){
                                         $checkval = 1;
@@ -463,7 +475,14 @@
                                                 </div> 
                                                 @endif
                                             </td>
-                                            <td class="cart-product-remove"> <a href="javascript:void(0)" data-prodId="{{$prod->id}}" class="remove removeWishlist" title="Remove this item"><i class="icon-trash2 fa-2x"></i></a> </td>
+                                            <td class="cart-product-remove"> <form id="form{{$prod->id}}" action="{{ route('addToCart') }}">
+                                <input type="hidden" name='prod_id' value='{{$prod->id}}'>
+                                <input type="hidden" name='quantity' value='1'>
+                                <input type="hidden" name='prod_type' value='{{$prod->prod_type}}'>    
+                                <!-- <input type="button"  form-id='{{$prod->id}}' value="Add to cart" class="add-to-cart button nomargin addToCartB addToCart mobMB15"> -->
+                                <button type="button" form-id='{{$prod->id}}' class="add-to-cart button nomargin addToCartB addToCart mobMB15" value=""><i class="fa fa-shopping-cart"></i></button>
+                                </form>
+                                <a href="javascript:void(0)" data-prodId="{{$prod->id}}" class="remove removeWishlist" title="Remove this item"><i class="icon-trash2 fa-2x"></i></a> </td>
                                         </tr>
                                         @endforeach
                                         @else

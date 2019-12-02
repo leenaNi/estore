@@ -8,6 +8,7 @@ use Input;
 use App\Models\User;
 use App\Models\EmailTemplate;
 use App\Models\GeneralSetting;
+use App\Models\ContactStore;
 use Auth;
 use App\Http\Controllers\Controller;
 use Session;
@@ -159,6 +160,14 @@ class LoginController extends Controller {
         $chkEmail = User:: where("telephone", "=", Input::get("telephone"))->get()->first();
         if (empty($chkEmail)) {
             if (Input::get('password') == Input::get('cpassword')) {
+                $cust = new ContactStore();
+                $cust->name = ucfirst(Input::get('firstname')).' '.ucfirst(Input::get('lastname'));
+                $cust->email = Input::get('email');
+                $cust->email = Input::get('email');
+                $cust->mobileNo = Input::get('telephone');
+                $cust->contact_type = 2;
+                $cust->save();
+                //dd($cust);
                 $user = new User();
                 $user->email = Input::get('email');
                 $user->password = Hash::make(Input::get('password'));
