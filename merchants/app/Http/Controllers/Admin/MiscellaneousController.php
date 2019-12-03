@@ -18,6 +18,7 @@ use App\Models\Country;
 use App\Models\Store;
 use App\Models\HasCourier;
 use App\Models\StoreCharge;
+use App\Models\Theme;
 use App\Library\Helper;
 use Mail;
 use DB;
@@ -264,9 +265,10 @@ class MiscellaneousController extends Controller {
         $themedata = Helper::getSettings()['themedata'];
         $themes = [];
         foreach ($themedata as $k => $thed) {
-            //  $themes[$thed['category']]=[];  
+            $theme_type = Theme::where('id',$thed['id'])->pluck('theme_type');
             $themes[$thed['category']][$k]['id'] = $thed['id'];
             $themes[$thed['category']][$k]['name'] = $thed['name'];
+            $themes[$thed['category']][$k]['theme_type'] = $theme_type[0];
         }
         //dd($themes);
 

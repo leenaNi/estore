@@ -161,7 +161,7 @@ if (isset($data->expiry_date)) {
                                         <optgroup label="{{$k}}">
                                             @foreach($themes[$k] as $th)
                                             <?php $selected = strtolower($data->theme) == strtolower($th['name']) ? 'selected' : ''; ?> 
-                                            <option value="{{$th['id']}} " {{$selected}} >{{$th['name']}} </option>
+                                            <option value="{{$th['id']}} " {{$selected}} >{{$th['name']}} {{$th['theme_type']==1?'':'  Get this at $10'}} </option>
                                             @endforeach
                                         </optgroup>
                                         @endforeach
