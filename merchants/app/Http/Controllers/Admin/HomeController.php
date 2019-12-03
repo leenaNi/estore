@@ -64,7 +64,7 @@ class HomeController extends Controller {
         
        $rules = [
             'enablesub' => 'required',
-            'newsLetterimg' => 'required|file|mimes:jpeg,png,jpg|max:1024',
+            'newsLetterimg' => 'file|mimes:jpeg,png,jpg|max:1024',
         ];
 
         $messages = array(
@@ -98,6 +98,17 @@ class HomeController extends Controller {
                 $displayHeader = $request->displayHeader;
                 $displayContent = $request->displayContent;
                 $request->newsLetterimg->move($path,$newsletter_pic_name);
+                DB::table("general_setting")->where('url_key', 'notification')->update(["details" => json_encode(["img_path" => $newsletter_pic_name,"displayHeader" => $displayHeader,"displayContent" => $displayContent]),'is_active' => (int)($request->input("enablesub"))]);
+
+
+                session()->flash('msg', 'Newsletter Added Successfully for Store');
+                return redirect()->to('/admin/newsletter')->withInput($request->input());
+            } else {
+                 $img = DB::table("general_setting")->select('details')->where('url_key', 'notification')->first();
+                $imgpath = json_decode($img->details,true);
+                $newsletter_pic_name = $imgpath["img_path"];
+                $displayHeader = $request->displayHeader;
+                $displayContent = $request->displayContent;
 
                 DB::table("general_setting")->where('url_key', 'notification')->update(["details" => json_encode(["img_path" => $newsletter_pic_name,"displayHeader" => $displayHeader,"displayContent" => $displayContent]),'is_active' => (int)($request->input("enablesub"))]);
 
