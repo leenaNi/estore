@@ -120,7 +120,7 @@ class HomeController extends Controller {
         $data['dynamicLayout'] = DynamicLayout::where("status", 1)->orderBy('sort_order', 'asc')->get();
         $data['testimonial'] = Testimonials::where("status", 1)->orderBy('sort_order', 'asc')->get();
         $data['testimonial_status'] = $testimonial_status;
-        $data['testimonial_status'] = $testimonial_status;
+        $data['is_active'] = $notification_status->is_active;
         // dd($data);
         $viewname = Config('constants.frontendView') . '.index';
 

@@ -98,7 +98,7 @@
 
 
 @if(Route::currentRouteName() == 'home')
-@if($is_active==1)
+@if($is_active == 1)
 <div id="news_letter" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
         <!-- Modal content-->
