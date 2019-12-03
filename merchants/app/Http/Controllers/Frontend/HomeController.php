@@ -118,7 +118,7 @@ class HomeController extends Controller {
         $data['dynamicLayout'] = DynamicLayout::where("status", 1)->orderBy('sort_order', 'asc')->get();
         $data['testimonial'] = Testimonials::where("status", 1)->orderBy('sort_order', 'asc')->get();
         $data['testimonial_status'] = $testimonial_status;
-        // dd($data);s
+        // dd($data);
         $viewname = Config('constants.frontendView') . '.index';
 
         return Helper::returnView($viewname, $data, null, 1);
