@@ -58,6 +58,8 @@ class HomeController extends Controller {
 //          $chkEmail = User::get();
         // print_r(Session::get('currency_val')); die;
         $testimonial_status = GeneralSetting::where("url_key", 'testimonial')->first();
+
+        $notification_status = GeneralSetting::where("url_key", 'notification')->first();
 //        $saveto= "public/Admin/uploads/slider/default_slider.png";
 //        dd(Helper::saveImage("http://www.techhaking.com/wp-content/uploads/2017/09/default-slider-image-300x150.png",$saveto));
 //        $data1 = [];
@@ -117,6 +119,7 @@ class HomeController extends Controller {
         //  $data['slider-page'] = Slider::where("slider_id", 2)->get();
         $data['dynamicLayout'] = DynamicLayout::where("status", 1)->orderBy('sort_order', 'asc')->get();
         $data['testimonial'] = Testimonials::where("status", 1)->orderBy('sort_order', 'asc')->get();
+        $data['testimonial_status'] = $testimonial_status;
         $data['testimonial_status'] = $testimonial_status;
         // dd($data);
         $viewname = Config('constants.frontendView') . '.index';
