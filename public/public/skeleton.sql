@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS `tblprfx_store_contacts` (
   `mobileNo` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `anniversary` datetime NOT NULL,
   `birthDate` datetime NOT NULL,
+  `contact_type` int(11) NOT NULL COMMENT '1=master,2=customer',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
