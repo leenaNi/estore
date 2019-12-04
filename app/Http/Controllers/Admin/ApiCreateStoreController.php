@@ -305,6 +305,9 @@ class ApiCreateStoreController extends Controller {
             $path = base_path() . "/merchants/"."$domainname";
 
             $mk = File::makeDirectory($path, 0777, true, true);
+            if(chmod($path, 0777)){
+                chmod($path, 0777);
+            }
             if ($mk) {
                 $file = public_path() . '/public/skeleton.zip';
                 $zip = new ZipArchive;
@@ -313,14 +316,16 @@ class ApiCreateStoreController extends Controller {
                 if ($res == true) {
                     $zip->extractTo($path);
                     $zip->close();
+                    $this->replaceFileString($path . "/.env", "%DB_HOST%", env('DB_HOST', ''));
                     $this->replaceFileString($path . "/.env", "%DB_DATABASE%", env('DB_DATABASE', ''));
                     $this->replaceFileString($path . "/.env", "%DB_USERNAME%", env('DB_USERNAME', ''));
                     $this->replaceFileString($path . "/.env", "%DB_PASSWORD%", env('DB_PASSWORD', ''));
                     $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", $prefix . "_");
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
+
                     $insertArr = [
-                        "email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname" ];
+                        "email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
