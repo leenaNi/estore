@@ -258,7 +258,11 @@ if (isset($data->expiry_date)) {
                             </div>
                         </form>
                     </div><!-- /.col -->
+<<<<<<< HEAD
                     <!-- <div class="col-md-6" >
+=======
+                   <!--  <div class="col-md-6" >
+>>>>>>> dd5e57af95935e7e454fc12b94b628ed37cfa606
                         <img src="{{ $data->logo }}" height="100" width="150" id="image_upload_preview" />           
 
                     </div> -->
