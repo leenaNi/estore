@@ -31,9 +31,9 @@
 <?php
 $jsonString = App\Library\Helper::getSettings();
 $data = (object) $jsonString;
-
-$country = App\Library\Helper::getCountry();
-    //echo "<pre>";print_r($country);die;
+$country_code = (int)explode("+", $data->country_code)[1]; 
+$country = App\Library\Helper::getCountry($country_code);
+    // echo "<pre>";print_r($country);die;
 ?>
 
 
@@ -60,10 +60,14 @@ if (isset($data->expiry_date)) {
                 <div class="box-body">
                     <div >
                         <form id="store_settings_save" enctype="multipart/form"> 
-                            <div class="form-group">
-                                <label>Logo (170px W X 100px H)</label>
-
-                                <input type="file"  name="logo_img" id="logoF1" class="form-control">
+                            <div class="form-group row">
+                                <div class="col-md-6" >
+                                    <label>Logo (170px W X 100px H)</label>
+                                    <input type="file"  name="logo_img" id="logoF1" class="form-control">
+                                </div>
+                                <div class="col-md-6" >
+                                    <img src="{{ $data->logo }}" height="100" width="150" id="image_upload_preview" />           
+                                </div>
                             </div>
                             <div class="form-group logo-store">
                                 <div class="box-2">
@@ -225,18 +229,17 @@ if (isset($data->expiry_date)) {
                                 </div>
                             </div>
                             {{--- seo ends --}}
-
                             {{-- Country and pincode changes required starts--}}
                             <div class="form-group row">
                                 <div class="col-sm-6">
                                     <label>Country</label>
-                                    <select name="countryList"  class="form-control">
-                                        <option value="">Please Select</option>
-                                        @foreach($country as $con)
+                                    <select name="countryList"  class="form-control" disabled>
+                                        <option value="{{$country[0]->id}}">{{$country[0]->name}}</option>
+                                        <!-- @foreach($country as $con)
                                             <option value="{{$con->id}}" {{ isset($data->countryList) && $data->countryList == $con->id ?'selected':'' }} >
                                                 {{$con->name}} 
                                             </option>
-                                        @endforeach
+                                        @endforeach -->
                                     </select>
                                 </div>
                                 <div class="col-sm-6">
@@ -255,10 +258,10 @@ if (isset($data->expiry_date)) {
                             </div>
                         </form>
                     </div><!-- /.col -->
-                    <div class="col-md-6" >
+                    <!-- <div class="col-md-6" >
                         <img src="{{ $data->logo }}" height="100" width="150" id="image_upload_preview" />           
 
-                    </div>
+                    </div> -->
                     <!--{
                         "primary": "fff",
                         "secondary": "fff",
