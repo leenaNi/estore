@@ -416,7 +416,7 @@ class HomeController extends Controller {
                     $this->replaceFileString($path . "/.env", "%DB_HOST%", env('DB_HOST', ''));
                     $this->replaceFileString($path . "/.env", "%DB_DATABASE%", env('DB_DATABASE', ''));
                     $this->replaceFileString($path . "/.env", "%DB_USERNAME%", env('DB_USERNAME', ''));
-                    $this->replaceFileString($path . "/.env", "%DB_PASSWORD%", env('DB_PASSWORD', ''));
+                    $this->replaceFileString($path . "/.env", "%DB_PASSWORD%", '2xrcJzAvq6GIGqJP');
                     $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", $prefix . "_");
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
