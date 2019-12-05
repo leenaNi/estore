@@ -51,12 +51,18 @@ class CheckoutController extends Controller {
         Session::forget('voucherUsedAmt');
         Session::forget('referalCodeAmt');
         Session::forget('discAmt');
-        
+
+        $jsonString=Helper::getSettings();
+        $data = (object) $jsonString;
+        $country_code = (int)explode("+", $data->country_code)[1]; 
+        $country = Helper::getCountry($country_code);
+
         $my_data=[];
         $json_data=Helper::getSettings();
-        $my_data["country_id"]=(int)$json_data["countryList"];
-        $my_data["pincode_req"]=(int)$json_data["pincode"];
-        
+
+        $my_data["country_id"]= $country[0]->id ;
+        $my_data["pincode_req"]=isset($json_data["pincode"]) ? (int)$json_data["pincode"] : 0 ;
+
         $cart = Cart::instance('shopping')->content();
         if (empty($cart->toArray())) {
             return redirect()->route('cart');
@@ -70,6 +76,7 @@ class CheckoutController extends Controller {
             $zoneData = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
             // return view('Frontend.pages.checkout.checkout', compact('countries', 'zoneData'));
             $viewname = Config('constants.frontCheckoutView') . '.checkout';
+            // dd($countries);
             $data = ['my_data' => $my_data,'countries' => $countries, 'zoneData' => $zoneData, "checkGuestCheckoutEnabled" => $checkGuestCheckoutEnabled];
             return Helper::returnView($viewname, $data);
         }
@@ -88,20 +95,31 @@ class CheckoutController extends Controller {
 
     public function get_country_zone() {
         $my_data=[];
-        $json_data=Helper::getSettings();
-        $my_data["country_id"]=(int)$json_data["countryList"];
 
-        $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'name']);
+        $jsonString=Helper::getSettings();
+        $temp_data = (object) $jsonString;
+        $country_code = (int)explode("+", $temp_data->country_code)[1]; 
+        $cnt = Helper::getCountry($country_code);
+
+        $json_data=Helper::getSettings();
+        $my_data["country_id"]= $cnt[0]->id ;
+        
+
+        $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'name'])->toArray();
+
         $zone = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
        
         $userD = User::find(Session::get('loggedin_user_id'));
         $count = 99;
+      //  dd($country);
         $data['country'] = $country;
+        // dd($data);
         $data['countryid'] = $my_data["country_id"]; //"{$count}";
         $data['firstname'] = @$userD->firstname;
         $data['lastname'] = @$userD->lastname;
         $data['phone_no'] = @$userD->telephone;
         $data['zone'] = @$zone;
+
         return $data;
     }
 
@@ -405,9 +423,15 @@ class CheckoutController extends Controller {
         $getAddreses->statename = $getAddreses->zone['name'];
         $getAddreses->zoneid = "{$getAddreses->zone['id']}";
 
+
+        $jsonString=Helper::getSettings();
+        $data = (object) $jsonString;
+        $country_code = (int)explode("+", $data->country_code)[1]; 
+        $country = Helper::getCountry($country_code);
+
         $my_data=[];
         $json_data=Helper::getSettings();
-        $my_data["country_id"]=(int)$json_data["countryList"];
+        $my_data["country_id"]=isset($json_data["countryList"]) ? (int)$json_data["countryList"] : $country[0]->id;
 
         $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'iso_code_3', 'name']);
         $zone = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
