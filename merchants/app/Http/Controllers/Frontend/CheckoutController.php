@@ -97,24 +97,29 @@ class CheckoutController extends Controller {
         $my_data=[];
 
         $jsonString=Helper::getSettings();
-        $data = (object) $jsonString;
-        $country_code = (int)explode("+", $data->country_code)[1]; 
-        $country = Helper::getCountry($country_code);
+        $temp_data = (object) $jsonString;
+        $country_code = (int)explode("+", $temp_data->country_code)[1]; 
+        $cnt = Helper::getCountry($country_code);
 
         $json_data=Helper::getSettings();
-        $my_data["country_id"]= $country[0]->id ;
+        $my_data["country_id"]= $cnt[0]->id ;
+        
 
-        $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'name']);
+        $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'name'])->toArray();
+
         $zone = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
        
         $userD = User::find(Session::get('loggedin_user_id'));
         $count = 99;
+      //  dd($country);
         $data['country'] = $country;
+        // dd($data);
         $data['countryid'] = $my_data["country_id"]; //"{$count}";
         $data['firstname'] = @$userD->firstname;
         $data['lastname'] = @$userD->lastname;
         $data['phone_no'] = @$userD->telephone;
         $data['zone'] = @$zone;
+
         return $data;
     }
 
