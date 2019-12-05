@@ -422,8 +422,12 @@ class Helper {
         return HasCurrency::where('currency_status', 1)->get();
     }
 
-    public static function getCountry() {
-        $countries = DB::table('countries')->where("status", 1)->get(["id", "name"]);
+    public static function getCountry($country_code=0) {
+        if ($country_code==0) {
+            $countries = DB::table('countries')->where("status", 1)->get(["id", "name","country_code"]);
+        }else{
+            $countries = DB::table('countries')->where("country_code", $country_code)->get(["id", "name","country_code"]);
+        }
         return $countries;
     }
 
