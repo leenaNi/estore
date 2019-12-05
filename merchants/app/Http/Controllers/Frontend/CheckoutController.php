@@ -60,7 +60,7 @@ class CheckoutController extends Controller {
         $my_data=[];
         $json_data=Helper::getSettings();
 
-        $my_data["country_id"]=isset($json_data["countryList"]) ? (int)$json_data["countryList"] : $country[0]->id ;
+        $my_data["country_id"]= $country[0]->id ;
         $my_data["pincode_req"]=isset($json_data["pincode"]) ? (int)$json_data["pincode"] : 0 ;
 
         $cart = Cart::instance('shopping')->content();
@@ -102,7 +102,7 @@ class CheckoutController extends Controller {
         $country = Helper::getCountry($country_code);
 
         $json_data=Helper::getSettings();
-        $my_data["country_id"]=isset($json_data["countryList"]) ? (int)$json_data["countryList"] : $country[0]->id ;
+        $my_data["country_id"]= $country[0]->id ;
 
         $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'name']);
         $zone = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
