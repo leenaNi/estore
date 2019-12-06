@@ -3,6 +3,7 @@
 <style>
     .hidepanel{opacity: .5; pointer-events: none;}
     .pincodeMessage{color:#1ABC9C}
+    .wid43btn{max-width: 43%!important;}
 </style>
 <section id="page-title">
     <div class="container clearfix">
@@ -34,19 +35,16 @@
                                     <form role="form" class="login_form_btn">
                                         <div class="form-group">
 
-                                            <a href="#loginEX" class="button login_btn existUserLog full-width-btn marRight-Bottom10" style="margin-right:10px !important;">LOGIN</a>
+                                            <a href="#loginEX" class="button login_btn existUserLog full-width-btn marRight-Bottom10 wid43btn" style="margin-right:10px !important;">LOGIN</a>
 
-                                            <!--  <div class="col-md-1 col-sm-4 col-xs-12 hidden-lg hidden-md">
-                                                 <span class="btn or_btn">OR</span>
-                                             </div>
-                                             <div class="col-md-1 hidden-xs hidden-sm"><span class="or_small">OR</span></div> -->
+                                             <div class="col-md-1 hidden-xs hidden-sm"><span class="or_small">OR </span></div>
 
-                                            <button type="button" class="button new_user_btn newUserB full-width-btn marRight-Bottom10" style="margin-right:10px !important;">NEW USER</button> 
+                                           <button type="button" class="button new_user_btn newUserB full-width-btn marRight-Bottom10 wid43btn" style="margin-right:10px !important;">NEW USER</button> 
 
  <!-- <div class="col-md-1 hidden-xs hidden-sm"><span class="or_small">OR</span></div> -->
                                             @if(isset($checkGuestCheckoutEnabled) && count($checkGuestCheckoutEnabled)>0)
 
-                                            <button type="button" class="button new_user_btn guestCheckoutBtn full-width-btn marRight-Bottom10">Guest Checkout</button>
+                                            <!-- <button type="button" class="button new_user_btn guestCheckoutBtn full-width-btn marRight-Bottom10">Guest Checkout</button> -->
 
                                             @endif
                                             <small class="field_error newUserErr" style="color:red;display: none"></small>                                    
