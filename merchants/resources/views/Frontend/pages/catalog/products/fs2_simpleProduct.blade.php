@@ -3,6 +3,78 @@
 @section('og-title',$product->metaDesc)
 @section('meta-description',$product->metaTitle)
 @section('content')
+@php 
+use App\Models\User;
+use App\Models\CustomerReview;
+@endphp
+<style type="text/css">
+      .rating {
+  /*display: inline-block;*/
+  position: relative;
+  height: 50px;
+  line-height: 50px;
+  font-size: 50px;
+}
+
+.rating label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  cursor: pointer;
+}
+
+.rating label:last-child {
+  position: static;
+}
+
+.rating label:nth-child(1) {
+  z-index: 5;
+}
+
+.rating label:nth-child(2) {
+  z-index: 4;
+}
+
+.rating label:nth-child(3) {
+  z-index: 3;
+}
+
+.rating label:nth-child(4) {
+  z-index: 2;
+}
+
+.rating label:nth-child(5) {
+  z-index: 1;
+}
+
+.rating label input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.rating label .icon {
+  float: left;
+  color: transparent;
+  font-size: medium;
+}
+
+.rating label:last-child .icon {
+  color: #000;
+}
+
+.rating:not(:hover) label input:checked ~ .icon,
+.rating:hover label:hover input ~ .icon {
+  color: #09f;
+}
+
+.rating label input:focus:not(:checked) ~ .icon:last-child {
+  color: #000;
+  text-shadow: 0 0 5px #09f;
+}   
+</style>
     <section id="content">
        <input type="hidden" value="{{Request::url()}}" class="fbShareUrl" />
        <input type="hidden" value="{{@$product->images[0]->img}}" class="fbShareImg" />
@@ -34,12 +106,7 @@
                           <a href="javascript:void(0);" title="default" data-lightbox="gallery-item"><img src="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}" alt="defaulty img" class="zoom-me zoom-me1 fimg " data-zoom-image="{{ asset(Config('constants.defaultImgPath').'default-product.jpg') }}"> </a>
                         </div>
                                 <?php } ?>
-<!--                        <div class="slide" data-thumb="images/slider/1.jpg">
-                          <a href="images/slider/1.jpg" title="Pink Printed Dress - Side View" data-lightbox="gallery-item"><img src="images/slider/1.jpg" alt="Pink Printed Dress" class="zoom-me zoom-me1" data-zoom-image="images/slider/1.jpg"> </a>
-                        </div>-->
-<!--                        <div class="slide" data-thumb="images/slider/1.jpg">
-                          <a href="images/slider/1.jpg" title="Pink Printed Dress - Back View" data-lightbox="gallery-item"><img src="images/slider/1.jpg" alt="Pink Printed Dress" class="zoom-me zoom-me1" data-zoom-image="images/slider/1.jpg"> </a>
-                        </div>-->
+
                       </div>
                     </div>
                   </div>
@@ -90,8 +157,69 @@
                 <div class="line"></div>
                 <!-- Product Single - Short Description
 								============================================= -->
-                <p><?php echo html_entity_decode($product->short_desc) ?></p>
-               
+                <p><?php echo html_entity_decode($product->short_desc) ?></p><br>
+                
+                <!-- Review module -->
+                @php 
+                $publishReviews = CustomerReview::where(['product_id'=>$product->id,'publish'=>1])->orderBy('id','desc')->get();
+                 if(count($publishReviews)>0)
+                 {
+                    $ratings = $totalRatings/count($publishReviews);
+                 }
+                 else{
+                    $ratings = $totalRatings;
+                 }
+                @endphp
+                <div><h4>Reviews({{count($publishReviews)}} reviews, {{$ratings}} <i class="fa fa-star" aria-hidden="true"></i>)</h4>
+                   @if(count($CustomerReviews)>0)
+                   @foreach($CustomerReviews as $review)
+                   @php 
+                   $user = User::find($review->user_id);
+                   @endphp
+
+                   <span>{{$user->firstname}}</span>
+                   <h5 style="margin-bottom: 0px;">{{$review->title}}</h5>
+       <div class="rating" style="    margin-bottom: -35px;line-height: 11px;">
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="1" {{$review->rating==1?'checked':''}} />
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="2" {{$review->rating==2?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="3" {{$review->rating==3?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>   
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="4" {{$review->rating==4?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="5" {{$review->rating==5?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+</div>
+                               <span>{{$review->description}}</span><br><br>
+                               @endforeach
+                            @if(count($publishReviews)>2) 
+                            <a href="{{ route('home')}}/reviews/{{$review->product_id}}"><u>View All Reviews</u></a>
+                            @endif
+                            @else
+                               No reviews found
+                               @endif
+                            </div><br>
                 <!-- Product Single - Share
 								============================================= -->
                 <div class="si-share noborder clearfix"> <span class="pull-left">Share: </span>
