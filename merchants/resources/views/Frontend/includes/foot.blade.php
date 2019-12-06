@@ -514,7 +514,7 @@ save.addEventListener('click', function (e) {
         }
 
         $("body").delegate('.addToCart', 'click', function (e) {
-            console.log('addtocart');
+            //console.log('addtocart');
             e.preventDefault();
             var getThis = $(this);
             var formId = $(this).attr("form-id");
@@ -535,11 +535,7 @@ save.addEventListener('click', function (e) {
             $('.quantity').css({"border-color": "", "border-weight": "", "border-style": ""});
             $("#form" + formId).find(".attrSel").each(function () {
                 $(this).parent().find(".optError").remove();
-//            if ($(this).val() == "") {
-//                $(this).addClass("addCartError");
-//                $(this).parent().append("<p style='color:red' class='optError'>Please select " + $(this).attr('name') + "!</p>");
-//
-//            }
+
                 if ($(this).is("select")) {
                     if ($(this).val() == "") {
                         console.log("lee " + $(this).attr('name') + " ====" + $(this).hasClass("error") + "==");
@@ -585,8 +581,7 @@ save.addEventListener('click', function (e) {
                 }
 
             });
-            //var attr1=$("#form" + formId).attr('action');
-            //alert("action "+$("#form" + formId).serialize());
+          
             $("#form" + formId).find(".attrSel").each(function () {
                 if ($(this).hasClass("addCartError")) {
                     $(this).removeClass("error");
@@ -608,16 +603,15 @@ save.addEventListener('click', function (e) {
 //                $(".cartDiv").replaceWith(cart_cont[0]);
                     var newCart = result.split("||||||");
                     var cart = $('.shop-cart');
-                    //alert(html());
-                    // var imgtodrag = $("#form" + formId).find(".fimg").eq(0);
+                 
                     var imgtodrag = $("#form" + formId + " img").eq(0);
                     console.log(imgtodrag);
                     if (imgtodrag) {
                         var imgclone = imgtodrag.clone()
-                                .offset({
-                                    top: imgtodrag.offset().top,
-                                    left: imgtodrag.offset().left
-                                })
+                                // .offset({
+                                //     top: imgtodrag.offset().top,
+                                //     left: imgtodrag.offset().left
+                                // })
                                 .css({
                                     'opacity': '0.5',
                                     'position': 'absolute',
@@ -1047,55 +1041,6 @@ save.addEventListener('click', function (e) {
             $(".btns").hide();
         });
 
-//        $('html body').on('submit', '#addSlider', function () {
-//            if ($("#sliderImg").val() == "")
-//            {
-//                $("#error-banner").html("Please choose valid image.");
-//                return false;
-//            } else
-//            {
-//                var fileUpload = $("#sliderImg")[0];
-//                //Check whether the file is valid Image.
-//                var regex = new RegExp("([a-zA-Z0-9()\s_\\.\-:])+(.jpg|.png|.gif)$");
-//                if (regex.test(fileUpload.value.toLowerCase())) {
-//                    //Check whether HTML5 is supported.
-//                    if (typeof (fileUpload.files) != "undefined") {
-//                        var form = $('#addSlider');
-//                        var formdata = false;
-//                        if (window.FormData) {
-//                            formdata = new FormData(form[0]);
-//                        }
-//                        $.ajax({
-//                            url: "{{route('addHomeBanner')}}",
-//                            type: 'post',
-//                            data: formdata,
-//                            processData: false,
-//                            contentType: false,
-//                            //   dataType: 'json',
-//                            beforeSend: function () {
-//                                // $("#barerr" + id).text('Please wait');
-//                            },
-//                            success: function (res) {
-//                                $("#addNewSliderImage").modal('hide');
-//                                $("#manageSlider").load(location.href + " #manageSlider>", "");
-//                            }
-//                        });
-//eurireTraking
-//
-//
-//                    } else
-//                    {
-//                        $("#error-banner").html("This browser does not support HTML5.");
-//                        return false;
-//                    }
-//                } else
-//                {
-//                    $("#error-banner").html("Please select a valid Image file.");
-//                    return false;
-//                }
-//            }
-//
-//        });
 
 
     });
