@@ -31,7 +31,11 @@
 <?php
 $jsonString = App\Library\Helper::getSettings();
 $data = (object) $jsonString;
-$country_code = (int)explode("+", $data->country_code)[1]; 
+if (isset($data->country_code)) {
+    $country_code = (int)explode("+", $data->country_code)[1]; 
+}else{
+    $country_code = 91;
+} 
 $country = App\Library\Helper::getCountry($country_code);
     // echo "<pre>";print_r($country);die;
 ?>

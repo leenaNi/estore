@@ -54,7 +54,13 @@ class CheckoutController extends Controller {
 
         $jsonString=Helper::getSettings();
         $data = (object) $jsonString;
-        $country_code = (int)explode("+", $data->country_code)[1]; 
+
+        if (isset($data->country_code)) {
+            $country_code = (int)explode("+", $data->country_code)[1]; 
+        }else{
+            $country_code = 91;
+        }
+       
         $country = Helper::getCountry($country_code);
 
         $my_data=[];
@@ -98,7 +104,13 @@ class CheckoutController extends Controller {
 
         $jsonString=Helper::getSettings();
         $temp_data = (object) $jsonString;
-        $country_code = (int)explode("+", $temp_data->country_code)[1]; 
+
+        if (isset($data->country_code)) {
+            $country_code = (int)explode("+", $data->country_code)[1]; 
+        }else{
+            $country_code = 91;
+        }
+        
         $cnt = Helper::getCountry($country_code);
 
         $json_data=Helper::getSettings();
@@ -426,7 +438,11 @@ class CheckoutController extends Controller {
 
         $jsonString=Helper::getSettings();
         $data = (object) $jsonString;
-        $country_code = (int)explode("+", $data->country_code)[1]; 
+        if (isset($data->country_code)) {
+            $country_code = (int)explode("+", $data->country_code)[1]; 
+        }else{
+            $country_code = 91;
+        }
         $country = Helper::getCountry($country_code);
 
         $my_data=[];
