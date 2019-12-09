@@ -74,7 +74,7 @@ class ReportController extends Controller {
             if($parsed_data){
                 $ot_data["order_id"] = $ord["id"];
                 $ot_data["order_date"] = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ord["created_at"])
-                ->format('d-m-Y');
+                ->format('d-M-Y');
                 $ot_data["order_amount"] = $ord["pay_amt"];
                 $ot_data["last_name"] = $ord["last_name"];
                 $ot_data["first_name"] = $ord["first_name"];
