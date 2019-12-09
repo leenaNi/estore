@@ -17,7 +17,7 @@ class ReportController extends Controller {
 
     public function ordersIndex() {
        $jsonString = Helper::getSettings();
-       $orders = Order::where("orders.store_id", $jsonString['store_id'])->join("payment_method as pm", "pm.id", '=', 'orders.payment_method')->join("order_status as os", "os.id", '=', 'orders.order_status')->join("payment_status as ps", "ps.id", '=', 'orders.payment_status')->get(["orders.id as order_id","orders.created_at as order_date","orders.first_name","orders.last_name","os.order_status","pm.name as payment_method","ps.payment_status","orders.pay_amt as total_amount","orders.order_amt as amount","orders.cod_charges","orders.gifting_charges","orders.discount_amt","orders.shipping_amt","orders.referal_code_amt","orders.voucher_amt_used","orders.coupon_amt_used"]);
+       $orders = Order::where("orders.store_id", $jsonString['store_id'])->orderBy("orders.created_at", "desc")->join("payment_method as pm", "pm.id", '=', 'orders.payment_method')->join("order_status as os", "os.id", '=', 'orders.order_status')->join("payment_status as ps", "ps.id", '=', 'orders.payment_status')->get(["orders.id as order_id","orders.created_at as order_date","orders.first_name","orders.last_name","os.order_status","pm.name as payment_method","ps.payment_status","orders.pay_amt as total_amount","orders.order_amt as amount","orders.cod_charges","orders.gifting_charges","orders.discount_amt","orders.shipping_amt","orders.referal_code_amt","orders.voucher_amt_used","orders.coupon_amt_used"]);
 
         $data = ['orders' => $orders];
 
@@ -32,12 +32,13 @@ class ReportController extends Controller {
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['product', 'short_desc', 'long_desc'];
         $prods = DB::connection('mysql2')->table($this->jsonString['prefix'].'_products as p')
-                ->where('is_individual', '=', '1')->orderBy("product", "asc")
+                ->where('is_individual', '=', '1')
                 ->join("has_products as hp", "hp.prod_id", '=', 'p.id')->whereNotIn('hp.order_status',[0,4,6,10])
                 ->join($this->jsonString['prefix']."_has_categories as hc", "hc.prod_id", "=", "p.id")
                 ->join($this->jsonString['prefix']."_categories as c", "c.id", "=", "hc.cat_id")
                 ->where("hp.store_id", $this->jsonString['store_id'])
                 ->select('p.id','p.product',DB::raw("SUM(hp.qty) tot_qty"),DB::raw("SUM(hp.pay_amt) sales"), 'c.category')
+                ->orderBy("tot_qty", "desc")
                 ->groupBy('p.id');
 
         if (!empty(Input::get('from_date')) || !empty(Input::get('search')) || !empty(Input::get('to_date'))) {

@@ -22,7 +22,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Category Name</th>
-                                <th>Qunatity</th>
+                                <th>Quantity</th>
                                 <th>Total Amount</th>
                             </tr>
                         </thead>
@@ -63,7 +63,7 @@
                         <th>Order Number</th>
                         <th>Customer Name</th>
                         <th>Order Date</th>
-                        <th>Qunatity</th>
+                        <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Sub Total</th>
                         <th>Total Order Amount</th>

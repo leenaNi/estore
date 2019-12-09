@@ -20,7 +20,7 @@
                     <table class="table orderTable table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
-                                <th>Order Id</th>
+                                <th>Order Number</th>
                                 <th>Date</th>
                                 <th>Name</th>
                                 <th>Order Status</th>
