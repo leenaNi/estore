@@ -21,6 +21,7 @@ use App\Models\AttributeValue;
 use App\Models\Pincode;
 use App\Models\HasCourier;
 use App\Models\MallProducts;
+use App\Models\ContactStore;
 use Input;
 use App\Http\Controllers\Controller;
 use Cart;
@@ -141,7 +142,7 @@ class CheckoutController extends Controller {
             if (Auth::attempt($userdata)) {
                 Helper::postLogin($user->id);
                 $checkCod = GeneralSetting::where('url_key', 'cod')->where('status', 1)->get();
-                $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
+                $addressesData = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
                 $pincodeStatus = GeneralSetting::where('url_key', 'pincode')->first();
                 $pincode = array_column(Pincode::where('status', 1)->get()->toArray(), 'pincode');
                 foreach ($addressesData as $address) {
@@ -175,6 +176,15 @@ class CheckoutController extends Controller {
         $chkEmail = User:: where("telephone", "=", Input::get("telephone"))->get()->first();
         if (empty($chkEmail)) {
             if (Input::get('password') == Input::get('cpassword')) {
+
+                $cust = new ContactStore();
+                $cust->name = ucfirst(Input::get('firstname')).' '.ucfirst(Input::get('lastname'));
+                $cust->email = Input::get('email');
+                $cust->email = Input::get('email');
+                $cust->mobileNo = Input::get('telephone');
+                $cust->contact_type = 2;
+                $cust->save();
+
                 $user = new User();
                 $user->email = Input::get('email');
                 $user->password = Hash::make(Input::get('password'));
@@ -209,12 +219,12 @@ class CheckoutController extends Controller {
                     $msgOrderSucc = "you have successfully register with Us. " . $referralCode . ". Contact 1800 3000 2020 for real time support.! Team Cartini";
                     Helper::sendsms($getUserInfo->telephone, $msgOrderSucc, $getUserInfo->country_code);
                 }
-                $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
-                foreach ($addressesData as $address) {
+                $billaddressesData = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
+                foreach ($billaddressesData as $address) {
                     $address->countryname = $address->country['name'];
                     $address->statename = $address->zone['name'];
                 }
-                return $addressesData;
+                return $billaddressesData;
             }
         } else {
             return "Account already exists.";
