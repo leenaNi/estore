@@ -345,9 +345,10 @@ class ApiCreateStoreController extends Controller {
                     $decodeVal = json_decode($json, true);
                     $decodeVal['industry_id'] = $catid;
                     $decodeVal['storeName'] = $storeName;
-                     $decodeVal['expiry_date'] = $expirydate;
-                     $decodeVal['store_id'] =$storeId;
-                      $decodeVal['prefix'] = $prefix;
+                    $decodeVal['expiry_date'] = $expirydate;
+                    $decodeVal['store_id'] =$storeId;
+                    $decodeVal['prefix'] = $prefix;
+                    $decodeVal['country_code'] = $country_code;
 
                     if (!empty($themeid)) {
                         $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
