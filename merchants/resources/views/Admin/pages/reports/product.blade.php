@@ -51,16 +51,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                             @foreach($prods as $pr)
-                            <tr>
-                                <td>{{ $pr->product }}</td>
-                                <td>{{ $pr->category  }}</td>
-                                <td>
-                                    <a class="label label-default prod-data" data-name="{{$pr->product}}" id="productId">{{ $pr->tot_qty }}</a>
-                                </td>
-                                <td>{{ $pr->sales }}</td>
-                            </tr>
-                            @endforeach
+                            @if (count($prods)>0)
+                                @foreach($prods as $pr)
+                                <tr>
+                                    <td>{{ $pr->product }}</td>
+                                    <td>{{ $pr->category  }}</td>
+                                    <td>
+                                        <a class="label label-default prod-data" data-name="{{$pr->product}}" id="productId">{{ $pr->tot_qty }}</a>
+                                    </td>
+                                    <td>{{ $pr->sales }}</td>
+                                </tr>
+                                @endforeach
+                            @else
+                                <tr><td><important> No Data Found </important></td></tr>
+                            @endif
+
                         </tbody>
                     </table>
                     {{ $prods->links() }}

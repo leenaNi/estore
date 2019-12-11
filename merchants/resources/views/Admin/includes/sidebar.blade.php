@@ -192,7 +192,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
 
 
-            <li class="treeview {{ preg_match("/admin.sales.byorder|admin.sales.byproduct|admin.sales.bycategory|admin.sales.byattribute|admin.report.productIndex|admin.report.ordersIndex|admin.sales.bycustomer/",Route::currentRouteName()) ? 'active' : '' }}">
+            <li class="treeview {{ preg_match("/admin.sales.byorder|admin.sales.byproduct|admin.sales.bycategory|admin.sales.byattribute|admin.sales.bycustomer/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
                     <i class="fa fa-line-chart"></i><span>Analytics</span>
                     <i class="fa fa-angle-down pull-right"></i>

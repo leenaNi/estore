@@ -74,24 +74,28 @@
                             </tr>
                         </thead>
                         <tbody>
-                             @foreach($orders as $order)
-                            <tr>
-                                <td>{{ $order->order_id }}</td>
-                                <td>{{ date('d-M-Y',strtotime($order->order_date)) }}</td>
-                                <td>{{ @$order->first_name }} {{ @$order->last_name }} </td>
-                                <td>{{ $order->order_status }}</td>
-                                <td>{{ $order->payment_method  }}</td>
-                                <td>{{ $order->amount }}</td>
-                                <td>{{ $order->cod_charges }}</td>
-                                <td>{{ $order->gifting_charges }}</td>
-                                <td>{{ $order->discount_amt }}</td>
-                                <td>{{ $order->shipping_amt }}</td>
-                                <td>{{ $order->referal_code_amt }}</td>
-                                <td>{{ $order->voucher_amt_used }}</td>
-                                <td>{{ $order->coupon_amt_used }}</td>
-                                <td>{{ $order->total_amount }}</td>
-                            </tr>
-                            @endforeach
+                             @if (count($orders)>0)
+                                @foreach($orders as $order)
+                                <tr>
+                                    <td>{{ $order->order_id }}</td>
+                                    <td>{{ date('d-M-Y',strtotime($order->order_date)) }}</td>
+                                    <td>{{ @$order->first_name }} {{ @$order->last_name }} </td>
+                                    <td>{{ $order->order_status }}</td>
+                                    <td>{{ $order->payment_method  }}</td>
+                                    <td>{{ $order->amount }}</td>
+                                    <td>{{ $order->cod_charges }}</td>
+                                    <td>{{ $order->gifting_charges }}</td>
+                                    <td>{{ $order->discount_amt }}</td>
+                                    <td>{{ $order->shipping_amt }}</td>
+                                    <td>{{ $order->referal_code_amt }}</td>
+                                    <td>{{ $order->voucher_amt_used }}</td>
+                                    <td>{{ $order->coupon_amt_used }}</td>
+                                    <td>{{ $order->total_amount }}</td>
+                                </tr>
+                                @endforeach
+                            @else
+                                <tr><td><important> No Data Found </important></td></tr>
+                            @endif
                         </tbody>
                     </table>
 
