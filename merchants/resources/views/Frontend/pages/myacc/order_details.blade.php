@@ -762,20 +762,20 @@ if (isset($order->currency->currency_val)) {
           <div class="col_full">
             <label for="template-contactform-name">Title <small>*</small>
             </label>
-            <input type="title" name="title" placeholder="Title" class="sm-form-control required" aria-required="true">
+            <input type="title" name="title" onkeyup="removeMsg('title')" placeholder="Title" class="sm-form-control required" aria-required="true">
             <div id="title_validate" style="color:red;"></div>
         </div>
         <div class="col_full">
             <label for="template-contactform-name">Description <small>*</small>
             </label>
-            <textarea class="sm-form-control required" rows="5" name="desc"></textarea>
+            <textarea class="sm-form-control required" onkeyup="removeMsg('desc')" rows="5" name="desc"></textarea>
+            <div id="desc_validate" style="color:red;"></div>
          </div>
          <input type="hidden" name="pid" id="apid" value="{{$prd['id']}}">
          <input type="hidden" name="ord_id" id="aoid" value="{{$order->id}}">
           <div class="col_full">
          <label for="template-contactform-name">Rating <small>*</small>
             </label>
-    
         <div class="rating">
   <label>
     <input type="radio" name="stars" value="1" />
@@ -807,7 +807,9 @@ if (isset($order->currency->currency_val)) {
     <span class="icon">★</span>
     <span class="icon">★</span>
   </label>
-</div> </div>
+</div><div id="rating_validate" style="color:red;"></div>
+<div id="cust_rating" style="display: none"></div>
+ </div>
         <div class="modal-footer">
           <input type="submit" class="btn btn-primary add_review_btn" value="Submit" name="add_review_btn">  
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -833,13 +835,13 @@ if (isset($order->currency->currency_val)) {
           <div class="col_full">
             <label for="template-contactform-name">Title <small>*</small>
             </label>
-            <input type="title" id="title" name="title" placeholder="Title" class="sm-form-control required" aria-required="true">
+            <input type="title" id="title" onkeyup="removeMsg('title')" name="title" placeholder="Title" class="sm-form-control required" aria-required="true">
             <div id="title_validate" style="color:red;"></div>
         </div>
         <div class="col_full">
             <label for="template-contactform-name">Description <small>*</small>
             </label>
-            <textarea class="sm-form-control required" rows="5" name="desc" id="desc"></textarea>
+            <textarea class="sm-form-control required" onkeyup="removeMsg('desc')" rows="5" name="desc" id="desc"></textarea>
          </div>
          <input type="hidden" name="pid" id="epid" value="">
          <input type="hidden" name="ord_id" id="eoid" value="">
@@ -895,21 +897,48 @@ if (isset($order->currency->currency_val)) {
 
 $(':radio').change(function() {
   console.log('New star rating: ' + this.value);
+  $("#cust_rating").html(this.value);
+  $("#rating_validate").html('');
 });
+
+function removeMsg(type)
+{
+    if(type=='title')
+    {
+        $("#title_validate").html('');
+    }
+    else if(type=='desc')
+    {
+        $("#desc_validate").html('');
+    }
+}
 
 $(".add_review_btn").click(function(e){
         e.preventDefault();
-        var formdata = $("#reviewForm").serialize();
-        //alert(formdata);
-        $.ajax({
-           type:'POST',
-           url:domain + '/save_review',
-           data:formdata,
-           success:function(data){
-              $("#reviewForm")[0].reset();
-              $('#reviewModal').modal('toggle');
-           }
-        });
+        var title = $('input[name=title]').val();
+        var rating = $('#cust_rating').html();
+        var desc = $('textarea[name=desc]').val();
+        if(title ==''){
+            $("#title_validate").html('Title field is required');
+        }
+        if(desc == ''){
+            $("#desc_validate").html('Description field is required');
+        }
+        if(rating==''){
+            $("#rating_validate").html('Rating field is required')
+        }
+        else{
+            var formdata = $("#reviewForm").serialize();
+            $.ajax({
+               type:'POST',
+               url:domain + '/save_review',
+               data:formdata,
+               success:function(data){
+                  $("#reviewForm")[0].reset();
+                  $('#reviewModal').modal('toggle');
+               }
+            });
+        }
     });
 
 $(".edit_review_btn").click(function(e){

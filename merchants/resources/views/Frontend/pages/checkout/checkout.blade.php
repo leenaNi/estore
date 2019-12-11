@@ -256,7 +256,7 @@
                                                 <div id="city_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <lable>Thana *</lable>                                             
+                                                <lable>District *</lable>                                             
                                                  
                                                 <input type="text" id="bthana" name='thana'  class="form-control" autocomplete="false"  ng-model="getAddData.thana">
                                                 <div id="thana_checkout_new_add_form" class="newerror"></div>
@@ -306,8 +306,10 @@
                     <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                         <div class="panel-body">
                             <div class="shpng_addrs_col">
-                                <input type="checkbox" id="same_as_billing" name="same_address">
+<div ng-if="addressData && !addressData.length">
+                                <input type="checkbox" onclick="copyDate()" id="same_as_billing" name="same_address">
                                 <label>Same as billing address</label>
+                            </div>
                                 <h5>SELECT ADDRESS</h5>
                                 <div class="row">
                                     <div id='forAddress' class="" >
@@ -369,7 +371,7 @@
                                                 <select name="country_id"   class="form-control" required="true"  ng-change="countryChangedValue(getAddData.countryid)"
                                                         ng-model="getAddData.countryid">
                                                     <option value="">Please Select </option>
-                                                    <option ng-repeat="contr in country"  value="[[ contr.id ]]">[[ contr.name  ]] </option>
+                                                    <option ng-repeat="contr in country" selected value="[[ contr.id ]]">[[ contr.name  ]] </option>
                                                 </select>
                                                 <div id="country_id_checkout_new_add_form" class="newerror"></div>
                                             </div>
@@ -389,7 +391,7 @@
                                                 <div id="city_checkout_new_add_form" class="newerror"></div>
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <lable>Thana *</lable>                                             
+                                                <lable>District *</lable>                                             
                                                  
                                                 <input type="text" id="sthana" name='thana'  class="form-control" autocomplete="false"  ng-model="getAddData.thana">
                                                 <div id="thana_checkout_new_add_form" class="newerror"></div>
@@ -704,10 +706,10 @@
         $("#internationallyProdPopUp").modal("hide");
     }
 
-    $("#same_as_billing").click(copyDate);
-
+   
     function copyDate()
     {
+        //alert('ffiii');
        var fname=$("#bfirstname").val();
        var lname=$("#blastname").val();
        var address1=$("#baddress1").val();
@@ -716,8 +718,9 @@
        var phone=$("#bmobile").val();
        var thana=$("#bthana").val();
        var pincode=$("#pincode").val();
-       if (this.checked==true)
-       {
+      
+        if($("#same_as_billing").prop('checked') == true)
+        {
             $(".newAddFormDiv").show();
             $("#sfirstname").val(fname);
             $("#slastname").val(lname);
@@ -727,8 +730,8 @@
             $("#smobile").val(phone);
             $("#sthana").val(thana);
             $("#spincode_check").val(pincode);
-       }
-       else if(this.checked==false){
+        }
+       else if($("#same_as_billing").prop('checked')==false){
             $(".newAddFormDiv").hide();
        }
          

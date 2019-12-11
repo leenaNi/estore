@@ -741,6 +741,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/save-email-temp', ['as' => 'admin.marketing.saveEmailTemp', 'uses' => 'MarketingEmailsController@saveEmailTemp']);
             });
         });
+
+        Route::group(['prefix' => 'report', 'middlewareGroups' => ['CheckUser', 'web']], function() {
+            Route::get('/orders', ['as' => 'admin.report.ordersIndex', 'uses' => 'ReportController@ordersIndex']);
+            Route::get('/product', ['as' => 'admin.report.productIndex', 'uses' => 'ReportController@productIndex']);
+            Route::get('/category-wise', ['as' => 'admin.report.categoryWise', 'uses' => 'ReportController@categoryWise']);
+            });
     });
 
     Route::group(['prefix' => 'route-list', 'middlewareGroups' => ['CheckUser', 'web']], function() {

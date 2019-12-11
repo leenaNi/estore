@@ -255,8 +255,6 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </ul>
             </li>      
 
-
-
             <li class="treeview {{ preg_match("/admin.staticpages|admin.testimonial|admin.contact|admin.sliders|admin.dynamic-layout|admin.masterList|admin.socialmedialink|admin.templateSetting/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-pencil-square-o"></i><span>Content</span>
@@ -373,6 +371,18 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <i class="fa fa-question-circle"></i><span>Help</span> <i class=""></i>
                 </a>
             </li>
+
+            <li class="treeview {{ preg_match("/admin.customers|admin.storecontacts/",Route::currentRouteName())? 'active' : ''}}">
+                <a href="#">
+                    <i class="fa fa-users"></i><span>Reports</span>
+                    <i class="fa fa-angle-down pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="{{ preg_match("/admin.report/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.report.ordersIndex') }}"><i class="fa fa-angle-right"></i>Orders</a></li> 
+                    <li class="{{ preg_match("/admin.report/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.report.productIndex') }}"><i class="fa fa-angle-right"></i>Products</a></li> 
+                </ul>
+            </li> 
+
         </ul>
     </section>
 </aside>
