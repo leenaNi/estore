@@ -384,6 +384,7 @@ class SalesController extends Controller {
     }
 
     public function bycustomer() {
+
 //       $where = ['user_type' => '2'];
 //        if (!empty(Input::get('search_name'))) {
 //            $where['users.firstname'] = Input::get('search_name');
@@ -417,6 +418,72 @@ class SalesController extends Controller {
         return view(Config('constants.saleView') . '.by_customer', compact('users','userCount'));
     }
 
+//customer chart view 
+
+     public function bycustomerChart() {
+
+
+
+      //dd(Input::all());
+
+  
+       // $users=User::with("userCashback")->where('user_type',2);
+         if (!empty(Input::get('from_date')) && !empty(Input::get('to_date'))) {
+
+
+           //  $from_date=Input::get('from_date');
+     $orders = Order::where("orders.store_id", "=", Session::get('store_id'))->whereNotIn("orders.order_status", [0, 4, 6, 10])->join('users','orders.user_id','=','users.id')->whereDate('orders.created_at', '>=', Input::get('from_date') )->whereDate('orders.created_at', '<=', Input::get('to_date'))->groupby('orders.user_id')->select(DB::raw("SUM(order_amt) as total"),'users.firstname as firstname','users.lastname as lastname','users.id as user_id')->limit(10)->get(); 
+
+     $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->whereDate('created_at', '>=', Input::get('from_date') )->whereDate('created_at', '<=', Input::get('to_date'))->limit(5)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+
+
+          }
+       else if (!empty(Input::get('from_date'))) {
+         $orders = Order::where("orders.store_id", "=", Session::get('store_id'))->whereNotIn("orders.order_status", [0, 4, 6, 10])->join('users','orders.user_id','=','users.id')->whereDate('orders.created_at', '>=', Input::get('from_date') )->groupby('orders.user_id')->select(DB::raw("SUM(order_amt) as total"),'users.firstname as firstname','users.lastname as lastname','users.id as user_id')->limit(10)->get();
+
+         $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->whereDate('created_at', '>=', Input::get('from_date') )->limit(5)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+
+
+       }
+        else if (!empty(Input::get('to_date'))) {
+             $orders =Order::where("orders.store_id", "=", Session::get('store_id'))->whereNotIn("orders.order_status", [0, 4, 6, 10])->join('users','orders.user_id','=','users.id')->whereDate('orders.created_at', '<=', Input::get('to_date'))->groupby('orders.user_id')->select(DB::raw("SUM(order_amt) as total"),'users.firstname as firstname','users.lastname as lastname','users.id as user_id')->limit(10)->get();
+
+             $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->whereDate('created_at', '<=', Input::get('to_date'))->limit(5)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+
+         }
+         else
+         {
+              $orders = Order::where("orders.store_id", "=", Session::get('store_id'))->whereNotIn("orders.order_status", [0, 4, 6, 10])->join('users','orders.user_id','=','users.id')->groupby('orders.user_id')->select(DB::raw("SUM(order_amt) as total"),'users.firstname as firstname','users.lastname as lastname','users.id as user_id')->limit(10)->get();
+
+              $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->limit(5)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+         }
+       
+       $items = [];
+       $products = [];
+       foreach($orders as $key=> $order)
+       {
+
+         $items[$key]["total"] = $order->total;
+         $items[$key]['customer_name'] = $order->firstname." ".$order->lastname;
+         $items[$key]['color'] = '#'.$this->random_color_part() . $this->random_color_part() . $this->random_color_part();
+       }
+
+       foreach($topProducts as $key => $product)
+       {
+        $products[$key]["product_name"] = $product->product;
+        $products[$key]["quantity"] = $product->quantity;
+        $products[$key]['color'] = '#'.$this->random_color_part() . $this->random_color_part() . $this->random_color_part();
+       }
+
+
+
+  return view(Config('constants.saleView') . '.customer_chart',['items'=>$items, 'products' => $products]);
+
+}
+ public  function random_color_part() {
+    return str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
+    }
+       
     public function order_by_customer_export() {
       $users = User::where('user_type',2)->select('id', 'firstname', 'lastname', 'email', 'telephone', 'total_purchase_till_now','cashback')->get()->toArray();
         $export = [];

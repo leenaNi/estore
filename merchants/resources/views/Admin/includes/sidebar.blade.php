@@ -203,14 +203,22 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.sales.byproduct/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.sales.byproduct') }}"><i class="fa fa-angle-right"></i>By Products</a></li>
                 </ul>
                 <ul class="treeview-menu">
-                    <li class="{{ preg_match("/admin.sales.bycustomer/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.sales.bycustomer') }}"><i class="fa fa-angle-right"></i>By Customers</a></li>
+                    <li class="{{Route::currentRouteName()=='admin.sales.bycustomer' ? 'active' : '' }}"><a  href="{{ route('admin.sales.bycustomer') }}"><i class="fa fa-angle-right"></i>By Customers</a></li>
                 </ul>
+
+              
                 <ul class="treeview-menu">
                     <li class="{{ preg_match("/admin.sales.bycategory/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.sales.bycategory') }}"><i class="fa fa-angle-right"></i>By Category</a></li>
                 </ul>
                 <ul class="treeview-menu">
                     <li class="{{ preg_match("/admin.sales.byattribute/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.sales.byattribute') }}"><i class="fa fa-angle-right"></i>By Attributes</a></li>
                 </ul>
+
+                    <ul class="treeview-menu">
+                    <li class="{{Route::currentRouteName()=='admin.sales.bycustomerchart' ? 'active' : '' }}"><a  href="{{ route('admin.sales.bycustomerchart') }}"><i class="fa fa-angle-right"></i>Charts</a></li>
+                </ul>
+
+
 
             </li>
 
