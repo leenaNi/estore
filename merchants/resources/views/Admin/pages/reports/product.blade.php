@@ -63,7 +63,7 @@
                                 </tr>
                                 @endforeach
                             @else
-                                <tr><td><important> No Data Found </important></td></tr>
+                                <tr><td colspan=10> No Data Found </td></tr>
                             @endif
 
                         </tbody>
