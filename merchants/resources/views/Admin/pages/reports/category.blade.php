@@ -7,13 +7,50 @@
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
-        <li class="active">C</li>
+        <li class="active">  Orders Report </li>
     </ol>
 </section>
 <section class="content">
     <div class="row">
         <div class="col-md-12">
             <div class="box">
+
+                  <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12">              
+                    <form method="get" action=" " id="searchForm">
+                        <input type="hidden" name="attrSetCatalog">
+                        <div class="form-group col-md-8 col-sm-6 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" value="{{ !empty(Input::get('order_number'))?Input::get('order_number'):'' }}" name="order_number" aria-controls="editable-sample" class="form-control medium" placeholder="Order Number">
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" value="{{ !empty(Input::get('customer_name'))?Input::get('customer_name'):'' }}" name="customer_name" aria-controls="editable-sample" class="form-control medium" placeholder="Customer Name">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2 col-sm-3 col-xs-12">
+                            <input type="submit" name="submit" vlaue='Submit' class='form-control btn btn-primary noMob-leftmargin'>
+                        </div>
+                        <div class="from-group col-md-2 col-sm-3 col-xs-12">
+                            <a href="{{ route('admin.report.ordersIndex')}}" class="form-control btn reset-btn noMob-leftmargin">Reset </a>
+                        </div>
+                        <div class="form-group col-md-8 col-sm-6 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                {!! Form::text('datefrom',Input::get('datefrom'), ["class"=>'form-control fromDate', "placeholder"=>"From Date"]) !!}
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                {!! Form::text('dateto',Input::get('dateto'), ["class"=>'form-control toDate', "placeholder"=>"To Date"]) !!}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-8 col-sm-6 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                {!! Form::select('order_status',$o_status,Input::get('order_status'), ["class"=>'form-control filter_type', "placeholder"=>"Order Status"]) !!}
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="box-header col-md-3 col-sm-12 col-xs-12">
+                    <a href="{!! route('admin.report.orderIndexExport') !!}" class="btn btn-primary pull-left" target="_" type="button">Export</a>
+                </div> 
                 <div class="dividerhr"></div>
                 <div style="clear: both"></div>
                 <div class="box-body table-responsive no-padding">
@@ -57,6 +94,9 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    {{ $orders->links() }}
+
                     <!-- <div class="box-footer clearfix">
 
 
@@ -73,4 +113,23 @@
     </div>
 </div>
 </section>
+@stop
+
+@section('myscripts')
+<script>
+    $(document).ready(function () {
+        $(".fromDate").datepicker({
+            dateFormat: "yy-mm-dd",
+            onSelect: function (selected) {
+                $(".toDate").datepicker("option", "minDate", selected);
+            }
+        });
+        $(".toDate").datepicker({
+            dateFormat: "yy-mm-dd",
+            onSelect: function (selected) {
+                $(".fromDate").datepicker("option", "maxDate", selected);
+            }
+        });
+    });
+</script>
 @stop

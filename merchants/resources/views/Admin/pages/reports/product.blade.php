@@ -7,20 +7,44 @@
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
-        <li class="active">C</li>
+        <li class="active">Products Report</li>
     </ol>
 </section>
 <section class="content">
     <div class="row">
         <div class="col-md-12">
             <div class="box">
+
+                <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12">              
+                    <form method="get" action=" " id="searchForm">
+                        <input type="hidden" name="attrSetCatalog">
+                        <div class="form-group col-md-8 col-sm-6 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control medium" placeholder="Product Name">
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                {!! Form::select('category',$categrs,Input::get('category'), ["class"=>'form-control filter_type', "placeholder"=>"Category"]) !!}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2 col-sm-3 col-xs-12">
+                            <input type="submit" name="submit" vlaue='Submit' class='form-control btn btn-primary noMob-leftmargin'>
+                        </div>
+                        <div class="from-group col-md-2 col-sm-3 col-xs-12">
+                            <a href="{{ route('admin.report.productIndex')}}" class="form-control btn reset-btn noMob-leftmargin">Reset </a>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-header col-md-3 col-sm-12 col-xs-12">
+                    <a href="{!! route('admin.report.productIndexExport') !!}" class="btn btn-primary pull-left" target="_" type="button">Export</a>
+                </div> 
+
                 <div class="dividerhr"></div>
                 <div style="clear: both"></div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table orderTable table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th>Product Name</th>
                                 <th>Category Name</th>
                                 <th>Quantity</th>
                                 <th>Total Amount</th>
@@ -39,6 +63,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    {{ $prods->links() }}
                 </div>
             </div>
         </div>
