@@ -105,6 +105,7 @@ $adminConstants = [
     'productUploadImgPath' => 'uploads/catalog/products',
     'catImgUploadPath' => 'uploads/catalog/category/',
     'catImgPath' => asset('uploads/catalog/category/'),    
+    'couponImgUploadPath' =>'public/Admin/uploads/coupons',
     'fileUploadPluginPath' =>'https://d2102t1lty3x1n.cloudfront.net/Admin/fileUploadPlugin',
     'adminImgUploadPath' =>'uploads/dist/img/',
     'adminImgangePath' =>asset('uploads/dist/img/'), 
