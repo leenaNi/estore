@@ -100,7 +100,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                       @if(count($contacts_group)>0) 
+                       @if($contacts_group && count($contacts_group)>0) 
                        @foreach($contacts_group as $group)
                        <button class="btn btn-primary">{{$group->group_name}}</button>
                        @endforeach
