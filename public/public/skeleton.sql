@@ -22,6 +22,37 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 --
+-- Table structure for table `tblprfx_contacts_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `tblprfx_contacts_groups` (
+  `id` int(11) NOT NULL,
+  `group_name` varchar(225) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `tblprfx_contacts_groups`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `tblprfx_contacts_groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- Table structure for table `tblprfx_group_has_contacts`
+--
+CREATE TABLE IF NOT EXISTS `tblprfx_group_has_contacts` (
+  `id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `contact_id` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ALTER TABLE `tblprfx_group_has_contacts`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `tblprfx_group_has_contacts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
 -- Table structure for table `tblprfx_email_campaigns`
 --
 CREATE TABLE IF NOT EXISTS `tblprfx_email_campaigns` (
