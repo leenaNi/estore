@@ -4,6 +4,7 @@
 <section class="content-header">
     <h1>
         Dashboard
+       
     </h1>
     <ol class="breadcrumb">
         <li><i class="fa fa-dashboard"></i> Dashboard </li>
@@ -259,6 +260,88 @@
 
 
 
+<!-- Charts  -->
+
+       <div class="row">
+            <div class="col-md-6 marginBottom20">
+                <div class="box box-success" >
+                    <div class="box-header dashbox-header with-border bg-green">
+                        <h3 class="box-title dashbox-title">Top Selling Products</h3>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                    <center> <canvas id="productCanvas" width="300" height="300"></canvas>  </center>
+                         <div class="table-responsive">
+                    <table class="table no-margin">
+                        
+                        <tbody>
+                                    @foreach($products as $product)
+                                    <tr>
+                                        <td>
+                                        <div style="width: 20px; height: 20px; background-color: {{$product["color"]}}"></div>
+                                    </td>
+                                    <td>
+                                        {{$product["product_name"]->product}}
+                                    </td>
+                                    <td>
+                                       Rs. {{ number_format((@$product["product_name"]->price* Session::get('currency_val')), 2, '.', '')}} 
+                                    </td>
+                                    <td class="pull-left">
+                                        {{$product["quantity"]}}
+                                    </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 marginBottom20">
+                <div class="box box-warning" >
+                    <div class="box-header dashbox-header with-border bg-yellow">
+                        <h3 class="box-title dashbox-title">Top Customers</h3>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                     <center>  <canvas id="mycanvas" width="300" height="300"></canvas>
+                     </canvas> 
+                      <div class="table-responsive">
+                            <table class="table no-margin">
+                            
+                                <tbody>
+                                    @foreach($items as $item)
+                                    <tr>
+                                        <td>
+                                        <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
+                                    </td>
+                                    <td>
+                                        {{$item["customer_name"]}}
+                                    </td>
+                                    <td>
+                                        Rs. {{$item["total"]}} 
+                                    </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div> 
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--piecharts end -->
+
         <div class="row">
             <div class="col-md-6 marginBottom20">
                 <div class="box box-success" >
@@ -356,6 +439,7 @@
                         <div class="chart">
                             <canvas id="areaChart" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -380,6 +464,47 @@
 
 @stop
 @section('myscripts')
+
+<script>
+    $(document).ready(function(){
+       var ctx1 = $("#mycanvas").get(0).getContext("2d");
+         var dataCustomers = [
+            <?php 
+                 foreach($items as $item)
+                    {
+                        ?>
+                        {
+                        value: {{$item['total']}},
+                        color: "{{$item['color']}}",
+                      
+                        label: "{{$item['customer_name']}}",
+                    },
+                        <?php 
+                      }
+                    ?>
+                   
+                ];  
+                var piechartCustomers = new Chart(ctx1).Pie(dataCustomers);
+                var ctx2 = $("#productCanvas").get(0).getContext("2d");
+                var dataProducts = [
+                <?php 
+                 foreach($products as $product)
+                    {
+                        ?>
+                        {
+                        value: {{$product['quantity']}},
+                        color: "{{$product['color']}}",
+                      
+                        label: "{{$product["product_name"]->product}}",
+                    },  
+                        <?php 
+                      }
+                    ?> 
+                ];
+                var piechartProducts = new Chart(ctx2).Pie(dataProducts);
+            });
+        </script>
+
 <script>
 <?php
 $labels = '[';

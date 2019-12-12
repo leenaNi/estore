@@ -309,6 +309,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/users-data', array('as' => 'admin.sales.users', 'uses' => 'SalesController@usersData'));
             Route::get('/by-attr', array('as' => 'admin.sales.byattribute', 'uses' => 'SalesController@attributes'));
             Route::any('/by-customer', array('as' => 'admin.sales.bycustomer', 'uses' => 'SalesController@bycustomer'));
+            Route::any('/by-customer-chart', array('as' => 'admin.sales.bycustomerchart', 'uses' => 'SalesController@bycustomerChart'));
+
+
             Route::any('/order-by-customer/{id}', array('as' => 'admin.sales.orderByCustomer', 'uses' => 'SalesController@order_by_customer'));
             Route::any('/order-by-customer-export', array('as' => 'admin.sales.orderByCustomerExport', 'uses' => 'SalesController@order_by_customer_export'));
         });
