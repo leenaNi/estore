@@ -96,7 +96,32 @@ use App\Models\Order;
                     {{Session::get('msg')}}
                 </div>
                 @endif
-               
+                
+
+                <div class="box-header box-tools filter-box col-md-6 noBorder rightBorder">
+                    {!! Form::open(['method' => 'get', 'route' => 'admin.reviews.view' , 'id' => 'searchForm' ]) !!}
+                    <div class="form-group col-md-6">
+                        {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"Order Id"]) !!}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control ', "placeholder"=>"Order No. From"]) !!}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control ', "placeholder"=>"Order No. To"]) !!}
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-group col-md-4 noBottomMargin">
+                        <div class=" button-filter-search col-md-6 col-xs-12 no-padding mob-marBottom15">
+                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Filter</button>
+                        </div>
+                        <div class=" button-filter col-md-5 col-xs-12 no-padding noBottomMargin">
+                            <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn form-control noMob-leftmargin">Reset</button></a>
+                        </div>
+                    </div>
+                    {!! Form::close() !!}
+                </div>
+
+
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>             
                 <div class="clearfix"></div>

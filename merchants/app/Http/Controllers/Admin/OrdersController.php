@@ -76,37 +76,40 @@ class OrdersController extends Controller {
             $orders = $orders->where('orders.id', '<=', Input::get('order_number_to'));
         }
         if (!empty(Input::get('pricemin'))) {
-            $orders = $orders->where('pay_amt', '>=', Input::get('pricemin'));
+            $orders = $orders->where('orders.pay_amt', '>=', Input::get('pricemin'));
+            // dd($orders->toSql());
         }
         if (!empty(Input::get('pricemax'))) {
-            $orders = $orders->where('pay_amt', '<=', Input::get('pricemax'));
+            $orders = $orders->where('orders.pay_amt', '<=', Input::get('pricemax'));
         }
         if (!empty(Input::get('search'))) {
             //get user id
             $users = User::whereRaw("(CONCAT(firstname,' ',lastname) like ?)", ['%' . Input::get('search') . '%'])->orwhere('email', "like", "%" . Input::get('search') . "%")->orwhere('telephone', "like", "%" . Input::get('search') . "%")->select('id')->get()->toArray();
 
             if (!empty($users)) {
-                $orders = $orders->whereIn('user_id', $users);
+                $orders = $orders->whereIn('orders.user_id', $users);
             }
         }
         if (!empty(Input::get('date'))) {
             $dates = explode(' - ', Input::get('date'));
             $dates[0] = date("Y-m-d", strtotime($dates[0]));
             $dates[1] = date("Y-m-d 23:59:00", strtotime($dates[1]));
-            $orders = $orders->whereBetween('created_at', $dates);
+            $orders = $orders->whereBetween('orders.created_at', $dates);
         }
         /* if (!empty(Input::get('dateto'))) {
           $date = date("Y-m-d", strtotime(Input::get('dateto')));
           $orders = $orders->where('created_at', '<=', $date);
           } */
         if (!empty(Input::get('searchFlag'))) {
+            // $chk = Flags::find(Input::get('searchFlag'))->flag;
             $chk = Flags::find(Input::get('searchFlag'))->flag;
             if (strpos($chk, 'No Flag') !== false) {
-                $orders = $orders->where('flag_id', 0);
+                $orders = $orders->where('orders.flag_id', 0);
             } else {
-                $orders = $orders->WhereHas('orderFlag', function($q) {
-                    $q->where('flag_id', '=', Input::get('searchFlag'));
-                });
+                $orders = $orders->where('orders.flag_id', Input::get('searchFlag'));
+                // $orders = $orders->WhereHas('orderFlag', function($q) {
+                //     $q->where('orders.flag_id', '=', Input::get('searchFlag'));
+                // });
             }
         }
         if (Input::get('searchStatus') !== null) {
@@ -115,7 +118,7 @@ class OrdersController extends Controller {
                 foreach ($order_status as $status) {
                     $order_options .= '<option  value="' . $status->id . '" ' . (in_array($status->id, Input::get('searchStatus')) ? 'selected' : '') . '>' . $status->order_status . '</option>';
                 }
-                $orders = $orders->whereIn('order_status', Input::get('searchStatus'));
+                $orders = $orders->whereIn('orders.order_status', Input::get('searchStatus'));
             }
         }
 
@@ -1091,9 +1094,35 @@ class OrdersController extends Controller {
     }
 
     function order_return() {
+        // $return = ReturnOrder::with('reason', 'opened', 'product_id', 'order_id', 'return_status_id')->with(['order_id' => function($q) {
+        //                 $q->with('user');
+        //             }])->where("store_id", $this->jsonString['store_id'])->orderBy('id', 'desc')->get()->toArray();
+        // return view(Config('constants.adminOrderView') . '.returnOrders', compact('return'));
+
         $return = ReturnOrder::with('reason', 'opened', 'product_id', 'order_id', 'return_status_id')->with(['order_id' => function($q) {
                         $q->with('user');
-                    }])->where("store_id", $this->jsonString['store_id'])->orderBy('id', 'desc')->get()->toArray();
+                    }])->where("store_id", $this->jsonString['store_id'])->orderBy('id', 'desc');
+
+        if (!empty(Input::get('order_ids'))) {
+            $mulIds = explode(",", Input::get('order_ids'));
+            $return = $return->whereIn("order_id", $mulIds);
+        }
+        if (!empty(Input::get('order_number_from'))) {
+            $return = $return->where('order_id', '>=', Input::get('order_number_from'));
+        }
+        if (!empty(Input::get('order_number_to'))) {
+            $return = $return->where('order_id', '<=', Input::get('order_number_to'));
+        }
+        if (!empty(Input::get('search'))) {
+            //get user id
+            $users = User::whereRaw("(CONCAT(firstname,' ',lastname) like ?)", ['%' . Input::get('search') . '%'])->orwhere('email', "like", "%" . Input::get('search') . "%")->orwhere('telephone', "like", "%" . Input::get('search') . "%")->select('id')->get()->toArray();
+
+            if (!empty($users)) {
+                $return = $return->whereIn('orders.user_id', $users);
+            }
+        }
+
+        $return = $return->get()->toArray();
         return view(Config('constants.adminOrderView') . '.returnOrders', compact('return'));
     }
 

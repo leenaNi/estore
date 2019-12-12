@@ -37,7 +37,7 @@
                             <input type="submit" name="submit" class="btn btn-primary form-control" style="margin-left: 0px;" value="Submit">
                         </div>
                         <div class="btn-group col-md-2 noBottomMargin">
-                            <a href="{{route('admin.staticpages.view')}}"><button type="button" class="btn reset-btn form-control" >Reset</button></a>
+                            <a href="{{route('admin.vendors.view')}}"><button type="button" class="btn reset-btn form-control" >Reset</button></a>
                         </div>
 
                     </form> 
