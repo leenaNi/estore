@@ -36,7 +36,7 @@
                 </div>
                 @endif
                 <div class="box-header box-tools filter-box col-md-9 noBorder rightBorder">
-                    {!! Form::open(['method' => 'get', 'route' => 'admin.orders.view' , 'id' => 'searchForm' ]) !!}
+                    {!! Form::open(['method' => 'get', 'route' => 'admin.requisition.view' , 'id' => 'searchForm' ]) !!}
                     <div class="form-group col-md-4">
                         {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"PO No."]) !!}
                     </div>
@@ -70,7 +70,7 @@
                             <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Filter</button>
                         </div>
                         <div class=" button-filter col-md-5 col-xs-12 no-padding noBottomMargin">
-                            <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn form-control noMob-leftmargin">Reset</button></a>
+                            <a href="{{route('admin.requisition.view')}}"><button type="button" class="btn reset-btn form-control noMob-leftmargin">Reset</button></a>
                         </div>
                     </div>
                     {!! Form::close() !!}
