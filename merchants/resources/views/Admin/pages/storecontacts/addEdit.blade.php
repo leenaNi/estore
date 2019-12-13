@@ -20,8 +20,8 @@
                         @if(!empty(Session::get('usenameError')))
                             <p style="color:red;text-align: center;">{{ Session::get('usenameError') }}</p>
                         @endif
-                        {{-- <p style="color:red;text-align: center;">{{ Session::get('usernameErr') }}</p> --}}
-                        {{-- {{ dd(\Carbon\Carbon::parse($contacts->anniversary)->format('d/m/Y')) }} --}}
+                       <p style="color:red;text-align: center;">{{ Session::get('usernameErr') }}</p>
+                     
                         {!! Form::model($contacts, ['method' => 'post', 'route' => $action]) !!}
                         <div class="row">
                         <div class="col-md-6">
@@ -55,8 +55,13 @@
                                 {!! Form::text('mobileNo',null, ["class"=>'form-control validate[required]',"placeholder"=>'Mobile No']) !!}
                             </div>                           
                         </div>
-                        
-                        
+                        <div class="col-md-6">
+                        <div class="form-group">
+                            {!!Form::label('Group','Group Name') !!}<span class="red-astrik"> *</span>
+                                {!! Form::text('group_name',null, ["autofocus" =>"autofocus","id"=>'contactGroup',"class"=>'form-control contactGroup' ,"placeholder"=>'Group Name',"tabindex"=>1]) !!}
+                            </div>                           
+                        </div>
+                          {{ Form::hidden("group_id",null,['class'=>'inpt']) }}
                     <div class="col-md-12">
                         <div class="form-group">
                                 {!! Form::submit('Submit',["class" => "btn btn-primary pull-right", "id" => " submit"]) !!}
@@ -74,6 +79,36 @@
 @stop
 @section("myscripts")
 <script>
+$("#contactGroup").autocomplete({
+    source: "{{ route('admin.storecontacts.contactgroups') }}",
+    minLength: 1,
+    select: function (event, ui) {
+        ele = event.target;
+        setValuesToInpt(ui.item.id, ui.item.group_name);
+    }
+});
+
+$(".contactGroup").on("change", function () {
+        term = $(this).val();
+        $.post("{{route('admin.storecontacts.contactgroups') }}", {term: term}, function (res) {
+            resp = JSON.parse(res);
+            chkLengh = Object.keys(resp).length;
+            if (chkLengh == 1) {
+                setValuesToInpt(resp[0].id, resp[0].group_name);
+            } else if (chkLengh == 0) {
+                
+            }
+
+        });
+
+    });
+
+function setValuesToInpt(grpid, group) {
+        $("input[name='group_name']").val(group);
+        $("input[name='group_id']").val(grpid);
+        
+    }
+
     $(document).ready(function() {
        $(".phone_no").blur(function(){
            $('.phone_error').empty();

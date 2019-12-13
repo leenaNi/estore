@@ -71,7 +71,7 @@
                                 @foreach ($coupons as $coupon)
                                 <tr>
     <!--                                <td>{{$coupon->id}}</td>-->
-                                    <td><img class="img-responsive img-thumbnail admin-profile-picture" src="{{($coupon->coupon_image)?Config('constants.couponImgPath').'/'.$coupon->coupon_image:Config('constants.defaultImgPath').'/no-image.jpg' }}" /></td>
+                                    <td><img class="img-responsive img-thumbnail admin-profile-picture" src="{{($coupon->coupon_image)?asset('public/Admin/uploads/coupons/').'/'.$coupon->coupon_image:Config('constants.defaultImgPath').'/no-image.jpg' }}" /></td>
                                     <td>{{$coupon->coupon_name}}</td>
                                     <td>{{$coupon->coupon_code}}</td>
                                     <td>{{$coupon->discount_type==2?'Fixed':'Percentage'}}</td>

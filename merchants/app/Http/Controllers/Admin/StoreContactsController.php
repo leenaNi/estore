@@ -17,6 +17,8 @@ use App\Models\User;
 use App\Models\GeneralSetting;
 use App\Models\HasCashbackLoyalty;
 use App\Models\ContactStore;
+use App\Models\ContactsGroup;
+use App\Models\GroupHasContact;
 use App\Library\Helper;
 use Carbon\Carbon;
 use Validator;
@@ -27,6 +29,7 @@ class StoreContactsController extends Controller {
         $user = User::find(Session::get('loggedinAdminId'));
         $users = User::where(['user_type'=>2,'store_id'=>$user->store_id])->orderBy('id','desc')->get();
         $contacts = ContactStore::orderBy('id','desc');
+        $contacts_group = ContactsGroup::orderBy('id','desc')->get();
         $search = !empty(Input::get("contSearch")) ? Input::get("contSearch") : '';
         $search_fields = ['name', 'email', 'mobileNo'];
         if (!empty(Input::get('contSearch'))) {
@@ -65,8 +68,25 @@ class StoreContactsController extends Controller {
         
         $viewname = Config('constants.adminStoreContactView') . '.index';
         
-        $data = ['storecontacts' => $storecontacts,'users'=>$users, 'contactsCount' => $contactsCount];
+        $data = ['storecontacts' => $storecontacts,'contacts_group'=>$contacts_group,'users'=>$users, 'contactsCount' => $contactsCount];
         return Helper::returnView($viewname, $data);
+    }
+
+    public function getContactGroups() {
+        $term = Input::get('term');
+      
+        if (!empty($term)) {
+            $result = ContactsGroup::where("group_name", "like", "%$term%")
+                    ->get(['id', 'group_name']);
+        }
+
+        $data = [];
+        foreach ($result as $k => $res) {
+            $data[$k]['id'] = $res->id;
+            $data[$k]['value'] = $res->group_name;
+            
+        }
+        echo json_encode($data);
     }
 
     public function add() {
@@ -79,6 +99,17 @@ class StoreContactsController extends Controller {
     }
 
     public function save(Request $request) {
+      
+        $groupid = Input::get('group_id');
+        if(empty($groupid))
+        {
+            //dd('ddf');
+            $grp = new ContactsGroup();
+            $grp->group_name = Input::get('group_name');
+            $grp->save();
+            $groupid = $grp->id;
+        }
+        
         $chk = ContactStore::where("email", "=", Input::get('email'))->where("mobileNo", "=", Input::get('mobileNo'))->first();
         if (empty($chk)) {
             $rules = [
@@ -100,6 +131,7 @@ class StoreContactsController extends Controller {
 
             $validator = Validator::make($request->all(), $rules,$messages);
             if ($validator->fails()) {
+
                 $errors = $validator->messages();
                 return redirect()->to($this->getRedirectUrl())
                         ->withInput($request->input())
@@ -114,6 +146,11 @@ class StoreContactsController extends Controller {
                 $storeCont->contact_type = 1;
                 $storeCont->save();
                 
+                $groupContacts = new GroupHasContact();
+                $groupContacts->group_id = $groupid;
+                $groupContacts->contact_id = $storeCont->id;
+                $groupContacts->save();
+
                 Session::flash("msg", "Store Contact added successfully. ");
                 $viewname = Config('constants.adminStoreContactView') . '.index';
                 $data = ['status' => 'success', 'msg' => 'Store Contact added successfully.'];
@@ -360,6 +397,7 @@ class StoreContactsController extends Controller {
                 $cont->mobileNo    = $data[2];
                 $cont->anniversary = Carbon::createFromFormat('d/m/Y',$data[3]);
                 $cont->birthDate   = Carbon::createFromFormat('d/m/Y',$data[4]);
+                $cont->contact_type = 1;
                 $cont->save();
             } 
 
