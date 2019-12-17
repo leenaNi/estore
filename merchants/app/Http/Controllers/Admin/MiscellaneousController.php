@@ -421,10 +421,10 @@ class MiscellaneousController extends Controller {
             $store_configuration['countryList'] = Input::get('countryList');
         }
 
-        $store_configuration['pincode'] = 0;
-        if (!empty(Input::get('pincode'))) {
-            $store_configuration['pincode'] = Input::get('pincode');
-        }
+        // $store_configuration['pincode'] = 0;
+        // if (!empty(Input::get('pincode'))) {
+        //     $store_configuration['pincode'] = Input::get('pincode');
+        // }
 
         $store_configuration['logo_img_url'] = '';
         if (!empty(Input::get('logo_img_url'))) {
