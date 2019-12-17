@@ -64,7 +64,11 @@
                                     <option value="0">New Group</option>
                                     @if(count($contacts_group)>0)
                                     @foreach($contacts_group as $group)
-                                    <option value="{{$group->id}}">{{$group->group_name}}</option>
+                                    @foreach($GroupHasContact as $contact)
+                                    @if($group->id==$contact->group_id)
+                                    <option value="{{$group->id}}" {{$group->id==$contact->group_id?'selected':''}}>{{$group->group_name}}</option>
+                                    @endif
+                                    @endforeach
                                     @endforeach
                                     @else
                                     <option value="" disabled="">No Group Found</option>

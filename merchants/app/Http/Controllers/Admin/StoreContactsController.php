@@ -100,13 +100,15 @@ class StoreContactsController extends Controller {
 
     public function save(Request $request) {
       
-        $groupid = Input::get('group_id');
-        if(empty($groupid))
+        $group_ids = Input::get('group_name');
+        
+        if(in_array('0',$group_ids))
         {
             $grp = new ContactsGroup();
-            $grp->group_name = Input::get('group_name');
+            $grp->group_name = Input::get('new_group_name');
             $grp->save();
-            $groupid = $grp->id;
+            $group_ids[] = $grp->id;
+            unset($group_ids[0]);
         }
         
         $chk = ContactStore::where("email", "=", Input::get('email'))->where("mobileNo", "=", Input::get('mobileNo'))->first();
@@ -145,10 +147,12 @@ class StoreContactsController extends Controller {
                 $storeCont->contact_type = 1;
                 $storeCont->save();
                 
-                $groupContacts = new GroupHasContact();
-                $groupContacts->group_id = $groupid;
-                $groupContacts->contact_id = $storeCont->id;
-                $groupContacts->save();
+                foreach ($group_ids as $id) {
+                    $groupContacts = new GroupHasContact();
+                    $groupContacts->group_id = $id;
+                    $groupContacts->contact_id = $storeCont->id;
+                    $groupContacts->save();
+                }
 
                 Session::flash("msg", "Store Contact added successfully. ");
                 $viewname = Config('constants.adminStoreContactView') . '.index';
@@ -165,16 +169,16 @@ class StoreContactsController extends Controller {
     }
 
     public function update() {
-        $groupid = Input::get('group_id');
-        if(empty($groupid))
+        $group_ids = Input::get('group_name');
+        
+        if(in_array('0',$group_ids))
         {
-            //dd('ddf');
             $grp = new ContactsGroup();
-            $grp->group_name = Input::get('group_name');
+            $grp->group_name = Input::get('new_group_name');
             $grp->save();
-            $groupid = $grp->id;
+            $group_ids[] = $grp->id;
+            unset($group_ids[0]);
         }
-
         $storeCont = ContactStore::find(Input::get('id'));
         $storeCont->name = Input::get('name');
         $storeCont->email = Input::get('email');
@@ -182,13 +186,13 @@ class StoreContactsController extends Controller {
         $storeCont->birthDate = Input::get('birthDate');
         $storeCont->mobileNo = Input::get('mobileNo');
         $storeCont->update();
-
-        GroupHasContact::where(['group_id'=>$groupid,'contact_id'=>Input::get('id')])->delete();
-        $groupContacts = new GroupHasContact();
-        $groupContacts->group_id = $groupid;
-        $groupContacts->contact_id = Input::get('id');
-        $groupContacts->save();
-        
+        GroupHasContact::where(['contact_id'=>Input::get('id')])->delete();
+        foreach ($group_ids as $id) {
+            $groupContacts = new GroupHasContact();
+            $groupContacts->group_id = $id;
+            $groupContacts->contact_id = Input::get('id');
+            $groupContacts->save();
+        }
         Session::flash("updatesuccess", "Store Contact updated successfully.");
         $viewname = Config('constants.adminStoreContactView') . '.index';
         $data = ['status' => 'success', 'msg' => 'Store Contact updated successfully.'];
@@ -198,9 +202,49 @@ class StoreContactsController extends Controller {
     public function edit() {
         $contacts = ContactStore::find(Input::get('id'));
         $action = "admin.storecontacts.update";
-        $viewname = Config('constants.adminStoreContactView') . '.addEdit';
-        $data = ['contacts' => $contacts, 'action' => $action];
+        $contacts_group = ContactsGroup::orderBy('id','desc')->get();
+        $GroupHasContact = GroupHasContact::where('contact_id',Input::get('id'))->get();
+        $viewname = Config('constants.adminStoreContactView') . '.edit';
+        $data = ['contacts' => $contacts,'contacts_group'=>$contacts_group,'GroupHasContact'=>$GroupHasContact, 'action' => $action];
         return Helper::returnView($viewname, $data);
+    }
+
+    public function contactgroup(){
+        $group_id = Input::get('group_id');
+        if($group_id == 0)
+        {
+            $grp = new ContactsGroup();
+            $grp->group_name = Input::get('new_group_name');
+            $grp->save();
+            $group_id = $grp->id;
+        }
+        
+        $Contact_Ids = Input::get('Contact_Ids');
+        $cids = explode(',', $Contact_Ids);
+        foreach ($cids as $contactid) {
+            $record = GroupHasContact::where(['contact_id'=>$contactid,'group_id'=>$group_id])->get();
+            if(count($record)==0)
+            {
+                $groupContacts = new GroupHasContact();
+                $groupContacts->group_id = $group_id;
+                $groupContacts->contact_id = $contactid;
+                $groupContacts->save();
+            }
+        }
+        Session::flash("updatesuccess", "Contacts have assigned group successfully.");
+        $viewname = Config('constants.adminStoreContactView') . '.index';
+        $data = ['status' => 'success', 'msg' => 'Contacts have assigned group successfully.'];
+        return Helper::returnView($viewname, $data, $url = 'admin.storecontacts.view');
+    }
+
+    public function renameGroup(){
+        $group_id = Input::get('groupid');
+        $group_name = Input::get('edit_group_name');
+        ContactsGroup::where('id',$group_id)->update(['group_name'=>$group_name]);
+        Session::flash("updatesuccess", "Group Name renamed successfully.");
+        $viewname = Config('constants.adminStoreContactView') . '.index';
+        $data = ['status' => 'success', 'msg' => 'Group Name renamed successfully.'];
+        return Helper::returnView($viewname, $data, $url = 'admin.storecontacts.view');
     }
 
     public function export() {
@@ -221,6 +265,28 @@ class StoreContactsController extends Controller {
         $details = ['Stefen','stefen@gmail.com','9878765678','12/03/2000','30/04/1986'];
         array_push($user_data, $details);
         return Helper::getCsv($user_data, 'contactformat.csv', ',');
+    }
+
+    public function exportGroupContacts() {
+        $group_id = Input::get('id');
+        $group = ContactsGroup::find(Input::get('id'));
+        $user_data = [];
+        array_push($user_data, ['Sr.No.','Name', 'Email', 'Mobile No', 'Anniversary Date', 'Date of Birth']);
+
+        $details = DB::table('group_has_contacts as ghc')
+            ->join('store_contacts as sc', 'sc.id', '=', 'ghc.contact_id')
+            ->select('sc.*')
+            ->where(['ghc.group_id'=>$group_id])
+            ->get();
+        $contactData = array();   $i=1; 
+        foreach ($details as $key => $value) {
+            
+            $contactData = [$i,$value->name,$value->email,$value->mobileNo,$value->anniversary=='0000-00-00 00:00:00'? '-':date("d-M-Y",strtotime($value->anniversary)),$value->birthDate=='0000-00-00 00:00:00'? '-':date("d-M-Y",strtotime($value->birthDate))];
+            
+            array_push($user_data, $contactData);
+            $i++;
+        }
+        return Helper::getCsv($user_data, $group->group_name.'_contacs.csv', ',');
     }
 
     public function import(Request $request) {

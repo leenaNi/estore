@@ -95,7 +95,7 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-yellow"><i class="fa fa-user"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Total Users</span>
+                        <span class="info-box-text">Total Customers</span>
                         <span class="info-box-number">{{ number_format($userCount) }}</span>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-yellow"><i class="fa fa-user"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">New Users This Week</span>
+                        <span class="info-box-text">New Customers This Week</span>
                         <span class="info-box-number">{{ number_format($userThisWeekCount) }}</span>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-yellow"><i class="fa fa-user"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">New Users This Month</span>
+                        <span class="info-box-text">New Customers This Month</span>
                         <span class="info-box-number">{{ number_format($userThisMonthCount) }}</span>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-yellow"><i class="fa fa-user"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">New Users This Year</span>
+                        <span class="info-box-text">New Customers This Year</span>
                         <span class="info-box-number">{{ number_format($userThisYearCount) }}</span>
                     </div>
                 </div>
@@ -158,14 +158,14 @@
                                 <tbody>
                                     @foreach($latestOrders as $order)
                                     <tr>
-                                        <td>{{ @$order->id }}</td>
-                                        <td>{{ ucfirst(@$order->orderDetails->first_name) }} {{ @$order->orderDetails->last_name }} </td>
-                                        <td>{{ @$order->orderDetails->users->email }}  </td>
-                                        <td>{{ @$order->orderDetails->phone_no }}</td>
-                                        <td>{{ @$order->orderDetails->orderstatus['order_status'] }}</td>  
-                                        <td>{{ @$order->orderDetails->paymentstatus['payment_status'] }}</td>
-                                        <td>{{ @$order->orderDetails->paymentmethod['name'] }}</td>
-                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';         ?><span class="currency-sym"></span> {{ number_format((@$order->pay_amt * Session::get('currency_val')), 2, '.', '')}}</td>
+                                        <td>{{ @$order["order_id"] }}</td>
+                                        <td>{{ ucfirst(@$order["first_name"]) }} {{ @$order["last_name"] }} </td>
+                                        <td>{{ @$order["email"] }}  </td>
+                                        <td>{{ @$order["phone_no"] }}</td>
+                                        <td>{{ @$order["order_status"] }}</td>  
+                                        <td>{{ @$order["payment_status"] }}</td>
+                                        <td>{{ @$order["payment_method"] }}</td>
+                                        <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';         ?><span class="currency-sym"></span> {{ @$order["total_amount"] }} </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
