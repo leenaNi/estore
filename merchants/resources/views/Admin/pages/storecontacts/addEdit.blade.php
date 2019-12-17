@@ -1,5 +1,6 @@
 @extends('Admin.layouts.default')
 @section('content')
+<link rel="stylesheet" href="{{  Config('constants.adminPlugins').'/bootstrap-multiselect/bootstrap-multiselect.css' }}">
 <section class="content-header">
     <h1>
         All Contacts
@@ -37,19 +38,19 @@
                                 {!! Form::text('email',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Email']) !!}
                             </div>
                         </div>
-                          <div class="col-md-6">
+                          <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('Anniversary', 'Anniversary Date') !!}
                                 {!! Form::date('anniversary',isset($contacts->anniversary) ? date('Y-m-d',strtotime($contacts->anniversary)) : '', ['class' => 'form-control']) !!}
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                         <div class="form-group">
                             {!!Form::label('BirthDate','BirthDate ') !!}
                             {!! Form::date('birthDate',isset($contacts->birthDate) ? \Carbon\Carbon::parse($contacts->birthDate)->format('Y-m-d') : '', ['class' => 'form-control']) !!}
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                         <div class="form-group">
                             {!!Form::label('MobileNo','Mobile No') !!}<span class="red-astrik"> *</span>
                                 {!! Form::text('mobileNo',null, ["class"=>'form-control validate[required]',"placeholder"=>'Mobile No']) !!}
@@ -58,7 +59,17 @@
                         <div class="col-md-6">
                         <div class="form-group">
                             {!!Form::label('Group','Group Name') !!}<span class="red-astrik"> *</span>
-                                {!! Form::text('group_name',null, ["autofocus" =>"autofocus","id"=>'contactGroup',"class"=>'form-control contactGroup' ,"placeholder"=>'Group Name',"tabindex"=>1]) !!}
+                                <!-- {!! Form::text('group_name',null, ["autofocus" =>"autofocus","id"=>'contactGroup',"class"=>'form-control contactGroup' ,"placeholder"=>'Group Name',"tabindex"=>1]) !!} -->
+                                <select  name="group_name[]" class="multiselect form-control" multiple="multiple">
+                                    @if(count($contacts_group)>0)
+                                    @foreach($contacts_group as $group)
+                                    <option value="{{$group->id}}">{{$group->group_name}}</option>
+                                    @endforeach
+                                    @else
+                                    <option value="" disabled="">No Group Found</option>
+                                    @endif
+                                </select>
+                            
                             </div>                           
                         </div>
                           {{ Form::hidden("group_id",null,['class'=>'inpt']) }}
@@ -78,77 +89,12 @@
 </section>
 @stop
 @section("myscripts")
+<script src="{{  Config('constants.adminPlugins').'/bootstrap-multiselect/bootstrap-multiselect.js' }}"></script>
 <script>
-$("#contactGroup").autocomplete({
-    source: "{{ route('admin.storecontacts.contactgroups') }}",
-    minLength: 1,
-    select: function (event, ui) {
-        ele = event.target;
-        setValuesToInpt(ui.item.id, ui.item.group_name);
-    }
+$('.multiselect').multiselect({
+    buttonWidth: '100%',
+    nonSelectedText: 'Select Group'
 });
 
-$(".contactGroup").on("change", function () {
-        term = $(this).val();
-        $.post("{{route('admin.storecontacts.contactgroups') }}", {term: term}, function (res) {
-            resp = JSON.parse(res);
-            chkLengh = Object.keys(resp).length;
-            if (chkLengh == 1) {
-                setValuesToInpt(resp[0].id, resp[0].group_name);
-            } else if (chkLengh == 0) {
-                
-            }
-
-        });
-
-    });
-
-function setValuesToInpt(grpid, group) {
-        $("input[name='group_name']").val(group);
-        $("input[name='group_id']").val(grpid);
-        
-    }
-
-    $(document).ready(function() {
-       $(".phone_no").blur(function(){
-           $('.phone_error').empty();
-            var phone = $(this).val();
-           var phoneno = /^\d{10}$/;
-             if((phone.match(phoneno)))  
-             {  
-                return true;  
-              }  
-             else  
-              {  
-            
-              $('.phone_error').append('<p> Please enter 10 digit mobile number </p>'); 
-              return false;  
-              } 
-        
-        
-       });
-     
-          $("#user-email").blur(function(){
-           $('#user-email').parent().find('span.error').remove();
-            var useremail = $(this).val();          
-            $.ajax({
-                type: "POST",
-                url: "{{ route('admin.customers.chkExistingUseremail') }}",
-                data: {useremail: useremail},
-                cache:false,
-                success:function(response){
-                    console.log('@@@@'+response['status'])
-                    if(response['status']== 'success') {
-                        $('.email_error').remove();
-                         $('#user-email').val('');
-                        $('#user-email').parent().append('<span class="error email_error" style="color:red;">'+response['msg']+'</span>'); 
-                    }
-                    else $('#user-email').parent().find('span.error').remove();
-                },error:function(e){
-                    console.log(e.responseText);
-                }
-            }); 
-    });
-    });
 </script>
 @stop

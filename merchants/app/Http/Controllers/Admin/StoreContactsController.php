@@ -92,9 +92,9 @@ class StoreContactsController extends Controller {
     public function add() {
         $user = new ContactStore();
         $action = "admin.storecontacts.save";
-        
+        $contacts_group = ContactsGroup::orderBy('group_name','desc')->get();
         $viewname = Config('constants.adminStoreContactView') . '.addEdit';
-        $data = ['user' => $user, 'action' => $action,'fieldData' => Input::all()];
+        $data = ['user' => $user,'contacts_group'=>$contacts_group, 'action' => $action,'fieldData' => Input::all()];
         return Helper::returnView($viewname, $data);
     }
 
@@ -103,7 +103,6 @@ class StoreContactsController extends Controller {
         $groupid = Input::get('group_id');
         if(empty($groupid))
         {
-            //dd('ddf');
             $grp = new ContactsGroup();
             $grp->group_name = Input::get('group_name');
             $grp->save();
@@ -121,11 +120,11 @@ class StoreContactsController extends Controller {
             $messages = array(
                 'name.required' => 'This Name Field is required',
                 'email.required' => 'This Email Field is required',
-                'email.max' => 'This Email Field max limit is 255',
-                'email.unique' => 'This Email All Ready Exist',
+                // 'email.max' => 'This Email Field max limit is 255',
+                // 'email.unique' => 'This Email All Ready Exist',
                 'mobileNo.required' => 'This Mobile Number Field is required',
-                'mobileNo.digits' => 'Mobile Number field is not more than 10 digits',
-                'mobileNo.unique' => 'This Mobile Number All Ready Exist',
+                // 'mobileNo.digits' => 'Mobile Number field is not more than 10 digits',
+                // 'mobileNo.unique' => 'This Mobile Number All Ready Exist',
                 
             );
 
@@ -166,6 +165,16 @@ class StoreContactsController extends Controller {
     }
 
     public function update() {
+        $groupid = Input::get('group_id');
+        if(empty($groupid))
+        {
+            //dd('ddf');
+            $grp = new ContactsGroup();
+            $grp->group_name = Input::get('group_name');
+            $grp->save();
+            $groupid = $grp->id;
+        }
+
         $storeCont = ContactStore::find(Input::get('id'));
         $storeCont->name = Input::get('name');
         $storeCont->email = Input::get('email');
@@ -173,6 +182,12 @@ class StoreContactsController extends Controller {
         $storeCont->birthDate = Input::get('birthDate');
         $storeCont->mobileNo = Input::get('mobileNo');
         $storeCont->update();
+
+        GroupHasContact::where(['group_id'=>$groupid,'contact_id'=>Input::get('id')])->delete();
+        $groupContacts = new GroupHasContact();
+        $groupContacts->group_id = $groupid;
+        $groupContacts->contact_id = Input::get('id');
+        $groupContacts->save();
         
         Session::flash("updatesuccess", "Store Contact updated successfully.");
         $viewname = Config('constants.adminStoreContactView') . '.index';
