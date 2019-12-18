@@ -28,6 +28,8 @@
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssPath').'/validationEngine.jquery.css' }}">
 <link rel="icon" type="image/png" href="{{ Config('constants.frontendThemeImagePath').'/favicon.png' }}">
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <?php
 $jsonString = App\Library\Helper::getSettings();
 

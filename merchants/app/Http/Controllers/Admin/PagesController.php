@@ -11,6 +11,8 @@ use App\Models\HasProducts;
 use App\Library\Helper;
 use DB;
 use Route;
+use Input;
+use Illuminate\Http\Request;
 
 class PagesController extends Controller {
 
@@ -112,16 +114,22 @@ class PagesController extends Controller {
                 $prd->prodImage = Config('constants.defaultImgPath') . '/default-product.jpg';
             }
         }
-        $salesGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
-        $orderGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(distinct(order_id)) as total_order')])->toArray();
+       
+           $salesGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();   
+        
+      
+          $orderGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(distinct(order_id)) as total_order')])->toArray();  
+       
+        
         $weekDate = date('Y-m-d', strtotime("-7 day"));
         $salesGraph = array();
         $orderGraph = array();
         for ($i = 8; $i > 0; $i--) {
             array_push($salesGraph, array('created_at' => $weekDate, 'total_amount' => 0));
             array_push($orderGraph, array('created_at' => $weekDate, 'total_order' => 0));
-            $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
+           $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
         }
+
         foreach ($salesGraph as $key => $sale) {
             foreach ($salesGraph0 as $s0) {
                 if (date('Y-m-d', strtotime($s0['created_at'])) == $sale['created_at']) {
@@ -155,9 +163,67 @@ class PagesController extends Controller {
         $products[$key]['color'] = '#'.$this->random_color_part() . $this->random_color_part() . $this->random_color_part();
          }
 
-
-
     return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph','items','products'));
+}
+public function orderStat(Request $request)
+{
+    $orderDates = explode(' - ',Input::get('orderDate'));
+    $weekDate = date('Y-m-d', strtotime('-7 days', strtotime($orderDates[1])));
+    $orderGraph = array();
+    $orderGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime($orderDates[0])))->where('created_at', '<=', date('Y-m-d', strtotime($orderDates[1])))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(distinct(order_id)) as total_order')])->toArray();
+        for ($i = 8; $i > 0; $i--) {
+            array_push($orderGraph, array('created_at' => $weekDate, 'total_order' => 0));
+            $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
+           
+        } 
+        foreach ($orderGraph as $key => $order) {
+            foreach ($orderGraph0 as $ord) {
+                if (date('Y-m-d', strtotime($ord['created_at'])) == $order['created_at']) {
+                    $orderGraph[$key]['created_at'] = $ord['created_at'];
+                    $orderGraph[$key]['total_order'] = $ord['total_order'];
+                }
+            }
+        }
+ 
+        $orderdata = '[';
+    foreach ($orderGraph as $order) {
+        $orderdata .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
+    }
+    $orderdata .= ']';
+
+        return $orderdata;
+   
+}
+public function salesStat()
+{
+   
+    $saleDates = explode(' - ',Input::get('saleDate'));
+    $weekDate = date('Y-m-d', strtotime('-7 days', strtotime($saleDates[1])));
+    $saleGraph = array();
+    $saleDates = explode(' - ', Input::get('saleDate'));
+    $salesGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime($saleDates[0])))->where('created_at', '<=', date('Y-m-d', strtotime($saleDates[1])))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();   
+        for ($i = 8; $i > 0; $i--) {
+             array_push($salesGraph, array('created_at' => $weekDate, 'total_amount' => 0));
+            $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
+           
+        } 
+        foreach ($saleGraph as $key => $order) {
+            foreach ($saleGraph0 as $ord) {
+                if (date('Y-m-d', strtotime($ord['created_at'])) == $order['created_at']) {
+                    $saleGraph[$key]['created_at'] = $ord['created_at'];
+                    $saleGraph[$key]['total_order'] = $ord['total_order'];
+                }
+            }
+        }
+ 
+        $saleGraph = '[';
+    foreach ($saleGraph as $order) {
+        $saleGraph .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
+    }
+    $saledata .= ']';
+
+        return $saledata;
+
 }
  public  function random_color_part() {
     return str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
