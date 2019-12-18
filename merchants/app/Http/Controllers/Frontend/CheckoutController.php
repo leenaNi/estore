@@ -62,7 +62,9 @@ class CheckoutController extends Controller {
         $json_data=Helper::getSettings();
 
         $my_data["country_id"]= $country[0]->id ;
-        $my_data["pincode_req"]=isset($json_data["pincode"]) ? (int)$json_data["pincode"] : 0 ;
+
+        // $my_data["pincode_req"]=isset($json_data["pincode"]) ? (int)$json_data["pincode"] : 0 ;
+        $my_data["pincode_req"] = GeneralSetting::where("url_key", "pincode")->select("status")->get()->toArray()[0]["status"];
 
         $cart = Cart::instance('shopping')->content();
         if (empty($cart->toArray())) {

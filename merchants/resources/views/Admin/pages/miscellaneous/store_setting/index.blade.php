@@ -242,14 +242,6 @@ if (isset($data->expiry_date)) {
                                         @endforeach -->
                                     </select>
                                 </div>
-                                <div class="col-sm-6">
-                                    <label>Is pincode compulsory ?</label>
-                                    <select name="pincode"  class="form-control">
-                                        <option value="">Please Select</option>
-                                        <option value="1"  <?= (isset($data->pincode) && $data->pincode == 1) ? 'selected' : ''; ?>  >Yes</option>
-                                        <option value="0" <?= (isset($data->pincode) && $data->pincode == 0) ? 'selected' : ''; ?> >No</option>
-                                    </select>
-                                </div>
                             </div>
                             {{-- Country and pincode changes required ends--}}
 

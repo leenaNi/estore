@@ -393,7 +393,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/update', array('as' => 'admin.storecontacts.update', 'uses' => 'StoreContactsController@update'));
                 Route::any('/import', array('as' => 'admin.storecontacts.import', 'uses' => 'StoreContactsController@import'));
                 Route::get('/exportsamplecsv', ['as' => 'admin.storecontacts.exportsamplecsv', 'uses' => 'StoreContactsController@exportsamplecsv']);
-                Route::any('/contactgroups', array('as' => 'admin.storecontacts.contactgroups', 'uses' => 'StoreContactsController@getContactGroups')); 
+                Route::get('/exportgroupcontacts', ['as' => 'admin.storecontacts.exportgroupcontacts', 'uses' => 'StoreContactsController@exportGroupContacts']);
+                Route::any('/contactgroups', array('as' => 'admin.storecontacts.contactgroups', 'uses' => 'StoreContactsController@getContactGroups'));
+                Route::post('/contactgroup', array('as' => 'admin.storecontacts.contactgroup', 'uses' => 'StoreContactsController@contactgroup')); 
+                Route::post('/renamegroup', array('as' => 'admin.storecontacts.renamegroup', 'uses' => 'StoreContactsController@renameGroup')); 
             });
 
             Route::group(array('prefix' => 'loyalty', 'middlewareGroups' => ['web']), function() {

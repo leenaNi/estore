@@ -84,8 +84,11 @@
                 </div> 
                 <div class="box-header col-md-3">
                     <button type="button" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" data-toggle="modal" data-target="#upload_contacts">Import</button> 
-                    {{-- <a href="{!! route('admin.storecontacts.import') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" type="button">Import</a> --}}
+                    
                 </div> 
+                <div class="box-header col-md-3">
+                    <button type="button" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" onclick="assignGroup();">Assign Group</button> 
+                </div>
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
                 <div class="row">
@@ -102,7 +105,13 @@
                     <div class="box-body">
                        @if($contacts_group && count($contacts_group)>0) 
                        @foreach($contacts_group as $group)
-                       <button class="btn btn-primary">{{$group->group_name}}</button>
+                        <div class="dropdown col-sm-2" style="margin-bottom: 20px;">
+                        <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" style="width: 100%">{{$group->group_name}}<span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                          <li><a onclick="renameGroup('{{$group->group_name}}','{{$group->id}}')" class="" ui-toggle-class="">Rename</a></li>
+                          <li><a href="{{route('admin.storecontacts.exportgroupcontacts',['id'=>$group->id]) }}" class="" ui-toggle-class="">Download</a></li>
+                        </ul>
+                        </div>
                        @endforeach
                        @else
                        No Group Found
@@ -116,6 +125,7 @@
                     <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Name</th>
                                 <th>Email Id</th>
                                 <th>Mobile</th>
@@ -130,8 +140,8 @@
                             @if(count($storecontacts) >0 )
                             @foreach($storecontacts as $stcon)
                             <tr> 
+                                <td><input type="checkbox" name="stId[]" class="checkContId" value="{{ $stcon->id }}" /></td>
                                 <td>{{$stcon->name }}</td>
-
                                 <td>{{ $stcon->email }}</td>
                                 <td>{{ $stcon->mobileNo }}</td>
                                 <td>{{ $stcon->contact_type==1?'Master':'Customer' }}</td>
@@ -139,8 +149,8 @@
                                 <td>{{ $stcon->birthDate=='0000-00-00 00:00:00'? '':date("d-M-Y",strtotime($stcon->birthDate)) }}</td>
                                 <td>{{ date("d-M-Y",strtotime($stcon->created_at)) }}</td>
                                 <td>
-                                    <a href="{!! route('admin.storecontacts.edit',['id'=>$stcon->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn-plen btn btnNo-margn-padd" ></i></a>
-                                    <a href="{!! route('admin.storecontacts.view',['contSearch'=> $stcon->name]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="View Order"> <i class="fa fa-eye btn-plen btn"></i></a>
+                                    <a href="{!! route('admin.storecontacts.edit',['id'=>$stcon->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o" ></i></a>
+                                    <a href="{!! route('admin.storecontacts.view',['contSearch'=> $stcon->name]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="View Order"> <i class="fa fa-eye"></i></a>
 
                                 </td>
                             </tr>
@@ -180,13 +190,29 @@
         <div class="modal-body">
           <div class="row">
             <div class="form-group">
-              {{-- <input type="hidden" name="bankID" id="bankID" value="{{ $bankID }}"> --}}
               <label for="userName" class="col-sm-2 control-label pull" style="text-align: right;">Add File</label>
-
-              
-                       <input name="contact_file" id="approveUuid" type="file">
-                
+                       <input name="contact_file" id="approveUuid" type="file" required="">
             </div>
+            <div class="form-group" style="margin-left: 19px;margin-right: 19px">
+                {!!Form::label('Group','Select Group') !!}<span class="red-astrik"> *</span>
+                <select  name="cg_id" class="selectpicker form-control" data-live-search="true">
+                    <option value="">Select Group</option>
+                    <option value="0">New Group</option>
+                    @if(count($contacts_group)>0)
+                    @foreach($contacts_group as $group)
+                    <option value="{{$group->id}}">{{$group->group_name}}</option>
+                    @endforeach
+                    @else
+                    <option value="" disabled="">No Group Found</option>
+                    @endif
+                </select>
+            </div> 
+            <div class="col-md-6" id="grp_div" style="display: none;">
+                        <div class="form-group">
+                            {!!Form::label('groupname','Group Name') !!}<span class="red-astrik"> *</span>
+                                {!! Form::text('new_cg',null, ["id"=>'new_cg',"class"=>'form-control' ,"placeholder"=>'Enter Group Name']) !!}
+                            </div>                           
+                        </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -199,13 +225,127 @@
 
     </div>
   </div>
+    <!-- Modal -->
+  <div class="modal fade" id="groupRenameModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Rename Group</h4>
+        </div>
+        <form action="{{route('admin.storecontacts.renamegroup')}}" method="post">
+        {!! csrf_field() !!}
+        <div class="modal-body">
+            <div class="form-group">
+                {!!Form::label('groupname','Group Name') !!}<span class="red-astrik"> *</span>
+                    {!! Form::text('edit_group_name',null, ["id"=>'edit_group_name',"class"=>'form-control' ,"placeholder"=>'Enter Group Name']) !!}
+                    {!! Form::hidden('groupid',null,['class'=>'form-control','id'=>'groupid']) !!}
+            </div>  
+                                   
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>  
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+        </form>
+      </div>  
+    </div>
+  </div>
 <!-- Upload Contacts Modal End -->
+<div id="assign_group_contacts" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4 class="modal-title">Assign Group</h4>
+      </div>
+      <form action="{{route('admin.storecontacts.contactgroup')}}" method="post">
+        {!! csrf_field() !!}
+        <div class="modal-body">
+          <div class="row" style="margin:0px;">
+            <div class="form-group">
+                {!!Form::label('Group','Select Group') !!}<span class="red-astrik"> *</span>
+                 <input type="hidden" value="" name="Contact_Ids" />
+                <select  name="group_name" class="selectpicker form-control" data-live-search="true">
+                    <option value="">Select Group</option>
+                    <option value="0">New Group</option>
+                    @if(count($contacts_group)>0)
+                    @foreach($contacts_group as $group)
+                    <option value="{{$group->id}}">{{$group->group_name}}</option>
+                    @endforeach
+                    @else
+                    <option value="" disabled="">No Group Found</option>
+                    @endif
+                </select>
+            </div> 
+            <div class="col-md-6" id="grp_div" style="display: none;">
+                        <div class="form-group">
+                            {!!Form::label('groupname','Group Name') !!}<span class="red-astrik"> *</span>
+                                {!! Form::text('new_group_name',null, ["id"=>'new_group_name',"class"=>'form-control' ,"placeholder"=>'Enter Group Name']) !!}
+                            </div>                           
+                        </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary submit_upload ladda-button" data-style="zoom-in" >Submit</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
 
+    </div>
+  </div>
 @stop
 
 @section('myscripts')
 <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
+function renameGroup(name,id){
+    $("#groupRenameModal").modal('show');
+    $("#edit_group_name").val(name);
+    $("#groupid").val(id);
+}
+
+function downloadContacts(groupid){
+    $.ajax({
+       type:'GET',
+       url:'storecontacts/exportgroupcontacts',
+       data:{groupid:groupid},
+       success:function(data){
+          
+       }
+    });
+}
+
+function assignGroup()
+{
+    var ids = $(".tableVaglignMiddle input.checkContId:checkbox:checked").map(function () {
+        return $(this).val();
+    }).toArray();
+    if(ids=='')
+    {
+        alert('Please select atleast one contact');
+        $('#assign_group_contacts').modal('hide');
+    }
+    else{
+        $("input[name='Contact_Ids']").val(ids);
+        $('#assign_group_contacts').modal('toggle');
+        $("#assign_group_contacts").modal('show');
+    }
+}
+$('.selectpicker').on('change', function() {
+  if ( this.value == '0')
+  {
+    $("#grp_div").show();
+  }
+  else
+  {
+    $("#grp_div").hide();
+  }
+});
+
 $(function () {
 
     var start = moment().subtract(29, 'days');
