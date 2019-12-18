@@ -28,6 +28,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
 
 
         Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "PagesController@index"]);
+        Route::post('/order-stat', ["as" => "admin.dashboard.orderStat", "uses" => "PagesController@orderStat"]);
+        Route::post('/sales-stat', ["as" => "admin.dashboard.saleStat", "uses" => "PagesController@salesStat"]);
         Route::group(['prefix' => 'catalog', 'middlewareGroups' => ['CheckUser', 'web']], function() {
             Route::group(['prefix' => 'category', 'middlewareGroups' => ['web']], function() {
                 Route::get('/', ['as' => 'admin.category.view', 'test' => 'test', 'uses' => 'CategoryController@index']);

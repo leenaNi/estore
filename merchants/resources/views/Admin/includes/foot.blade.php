@@ -30,6 +30,8 @@
 <script src="{{ Config('constants.adminPlugins').'/flot/jquery.flot.categories.min.js' }}"></script>
 <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <!--<script src="{{ asset('public/Admin/dist/js/pages/dashboard2.js') }}"></script>-->
 <!-- AdminLTE for demo purposes -->
