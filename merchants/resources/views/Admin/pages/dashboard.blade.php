@@ -153,6 +153,7 @@
                                         <th>Payment Status</th>
                                         <th>Payment Method</th>
                                         <th>Order Amount</th>
+                                        <th>Order Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -166,6 +167,7 @@
                                         <td>{{ @$order["payment_status"] }}</td>
                                         <td>{{ @$order["payment_method"] }}</td>
                                         <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';         ?><span class="currency-sym"></span> {{ @$order["total_amount"] }} </td>
+                                        <td>{{ @$order["order_date"] }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
