@@ -203,7 +203,11 @@ class StoreContactsController extends Controller {
         $contacts = ContactStore::find(Input::get('id'));
         $action = "admin.storecontacts.update";
         $contacts_group = ContactsGroup::orderBy('id','desc')->get();
-        $GroupHasContact = GroupHasContact::where('contact_id',Input::get('id'))->get();
+        $groupContacts = GroupHasContact::where('contact_id',Input::get('id'))->get();
+        $GroupHasContact = array();
+        foreach ($groupContacts as $key => $value) {
+            $GroupHasContact[] = $value->group_id;
+        }
         $viewname = Config('constants.adminStoreContactView') . '.edit';
         $data = ['contacts' => $contacts,'contacts_group'=>$contacts_group,'GroupHasContact'=>$GroupHasContact, 'action' => $action];
         return Helper::returnView($viewname, $data);
@@ -299,6 +303,7 @@ class StoreContactsController extends Controller {
 
     public function uploadContact(Request $request){
         $file      = $request->contact_file;
+        $cg_id     = $request->cg_id;
         $allowed   = array('text/plain', 'application/csv', 'application/vnd.ms-excel');
         $rules     = array('contact_file' => 'required');
         $validator = Validator::make($request->all(), $rules);
@@ -312,7 +317,7 @@ class StoreContactsController extends Controller {
             if (in_array($mime, $allowed)) {
                 $filePath      = $file->getPathName();
                 $fileName      = $file->getClientOriginalName();
-                $data          = $this->importCsv($filePath);
+                $data          = $this->importCsv($filePath,$cg_id);
                 return 1;
             } else {
                 return redirect()->back()
@@ -322,7 +327,7 @@ class StoreContactsController extends Controller {
         }
     }
 
-    public function importCsv($path)
+    public function importCsv($path,$groupid)
     {
         $csv_file            = $path;
         $insertedRecords     = 0;
@@ -352,7 +357,7 @@ class StoreContactsController extends Controller {
                 $col[3] = $anniversary;
                 $col[4] = $dateofbirth;
                 
-                $invalidRecords = $this->checkValidRecord($col);
+                $invalidRecords = $this->checkValidRecord($col,$groupid);
                 if ($invalidRecords['error'] == 'error') {
                     array_push($invalidRecordsArray, $invalidRecords['msg'][0]);
                 }
@@ -383,7 +388,7 @@ class StoreContactsController extends Controller {
                 ? FALSE : TRUE; 
     }
 
-    public function checkValidRecord($col)
+    public function checkValidRecord($col,$groupid)
     {
         $errorString    = "";
         $invalidRecords = array();
@@ -442,7 +447,7 @@ class StoreContactsController extends Controller {
         
         if (count($invalidRecords) == 0) {
 
-            $result = $this->saveContactUpload($col);
+            $result = $this->saveContactUpload($col,$groupid);
             if ($result == 0) {
                 array_push($invalidRecords, $col);
                 $invalidRecords[0][5] = 'Error';
@@ -466,10 +471,18 @@ class StoreContactsController extends Controller {
         }
     }
 
-    public function saveContactUpload($data)
+    public function saveContactUpload($data,$groupid)
     {
         $storeData      = ContactStore::where('email', $data[1])->first();
         DB::beginTransaction();
+        if($groupid == 0)
+        {
+            $grp = new ContactsGroup();
+            $grp->group_name = Input::get('new_cg');
+            $grp->save();
+            $groupid = $grp->id;
+        }
+
         try {
             if(empty($storeData)) {
                 $cont              = new ContactStore();
@@ -480,6 +493,11 @@ class StoreContactsController extends Controller {
                 $cont->birthDate   = Carbon::createFromFormat('d/m/Y',$data[4]);
                 $cont->contact_type = 1;
                 $cont->save();
+
+                $groupContacts = new GroupHasContact();
+                $groupContacts->group_id = $groupid;
+                $groupContacts->contact_id = $cont->id;
+                $groupContacts->save();
             } 
 
             DB::commit();

@@ -191,12 +191,11 @@
           <div class="row">
             <div class="form-group">
               <label for="userName" class="col-sm-2 control-label pull" style="text-align: right;">Add File</label>
-                       <input name="contact_file" id="approveUuid" type="file">
+                       <input name="contact_file" id="approveUuid" type="file" required="">
             </div>
             <div class="form-group" style="margin-left: 19px;margin-right: 19px">
                 {!!Form::label('Group','Select Group') !!}<span class="red-astrik"> *</span>
-                 <input type="hidden" value="" name="Contact_Ids" />
-                <select  name="group_name" class="selectpicker form-control" data-live-search="true">
+                <select  name="cg_id" class="selectpicker form-control" data-live-search="true">
                     <option value="">Select Group</option>
                     <option value="0">New Group</option>
                     @if(count($contacts_group)>0)
@@ -211,7 +210,7 @@
             <div class="col-md-6" id="grp_div" style="display: none;">
                         <div class="form-group">
                             {!!Form::label('groupname','Group Name') !!}<span class="red-astrik"> *</span>
-                                {!! Form::text('new_group_name',null, ["id"=>'new_group_name',"class"=>'form-control' ,"placeholder"=>'Enter Group Name']) !!}
+                                {!! Form::text('new_cg',null, ["id"=>'new_cg',"class"=>'form-control' ,"placeholder"=>'Enter Group Name']) !!}
                             </div>                           
                         </div>
           </div>
