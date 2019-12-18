@@ -303,7 +303,14 @@ class StoreContactsController extends Controller {
 
     public function uploadContact(Request $request){
         $file      = $request->contact_file;
-        $cg_id     = $request->cg_id;
+        $groupid     = $request->cg_id;
+        if($groupid == 0)
+        {
+            $grp = new ContactsGroup();
+            $grp->group_name = Input::get('new_cg');
+            $grp->save();
+            $groupid = $grp->id;
+        }
         $allowed   = array('text/plain', 'application/csv', 'application/vnd.ms-excel');
         $rules     = array('contact_file' => 'required');
         $validator = Validator::make($request->all(), $rules);
@@ -317,7 +324,7 @@ class StoreContactsController extends Controller {
             if (in_array($mime, $allowed)) {
                 $filePath      = $file->getPathName();
                 $fileName      = $file->getClientOriginalName();
-                $data          = $this->importCsv($filePath,$cg_id);
+                $data          = $this->importCsv($filePath,$groupid);
                 return 1;
             } else {
                 return redirect()->back()
@@ -446,7 +453,6 @@ class StoreContactsController extends Controller {
         }
         
         if (count($invalidRecords) == 0) {
-
             $result = $this->saveContactUpload($col,$groupid);
             if ($result == 0) {
                 array_push($invalidRecords, $col);
@@ -475,13 +481,6 @@ class StoreContactsController extends Controller {
     {
         $storeData      = ContactStore::where('email', $data[1])->first();
         DB::beginTransaction();
-        if($groupid == 0)
-        {
-            $grp = new ContactsGroup();
-            $grp->group_name = Input::get('new_cg');
-            $grp->save();
-            $groupid = $grp->id;
-        }
 
         try {
             if(empty($storeData)) {
