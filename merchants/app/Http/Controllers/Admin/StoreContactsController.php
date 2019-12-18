@@ -235,9 +235,9 @@ class StoreContactsController extends Controller {
                 $groupContacts->save();
             }
         }
-        Session::flash("updatesuccess", "Contacts have assigned group successfully.");
+        Session::flash("updatesuccess", "Group assigned to contacts successfully.");
         $viewname = Config('constants.adminStoreContactView') . '.index';
-        $data = ['status' => 'success', 'msg' => 'Contacts have assigned group successfully.'];
+        $data = ['status' => 'success', 'msg' => 'Group assigned to contacts successfully.'];
         return Helper::returnView($viewname, $data, $url = 'admin.storecontacts.view');
     }
 

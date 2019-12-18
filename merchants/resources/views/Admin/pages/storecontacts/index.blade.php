@@ -106,7 +106,7 @@
                        @if($contacts_group && count($contacts_group)>0) 
                        @foreach($contacts_group as $group)
                         <div class="dropdown col-sm-2" style="margin-bottom: 20px;">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{$group->group_name}}<span class="caret"></span></button>
+                        <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" style="width: 100%">{{$group->group_name}}<span class="caret"></span></button>
                         <ul class="dropdown-menu">
                           <li><a onclick="renameGroup('{{$group->group_name}}','{{$group->id}}')" class="" ui-toggle-class="">Rename</a></li>
                           <li><a href="{{route('admin.storecontacts.exportgroupcontacts',['id'=>$group->id]) }}" class="" ui-toggle-class="">Download</a></li>
