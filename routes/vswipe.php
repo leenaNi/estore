@@ -14,6 +14,7 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::any('/check-veeswipe-login', ["as" => "admin.login.checkVeeswipeLogin", "uses" => "LoginController@checkVeeswipeLogin"]);
     Route::group(['middleware' => ['auth:vswipe-users-web-guard', 'CheckUser']], function () {
         Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "LoginController@dashboard"]);
+        Route::get('/getOrderDateWise', ["as" => "admin.getOrderDateWise", "uses" => "LoginController@getOrderDateWise"]);
         Route::group(['prefix' => 'merchants'], function () {
             Route::get('/', ["as" => "admin.merchants.view", "uses" => "MerchantController@index"]);
             Route::any('/add-edit', ["as" => "admin.merchants.addEdit", "uses" => "MerchantController@addEdit"]);

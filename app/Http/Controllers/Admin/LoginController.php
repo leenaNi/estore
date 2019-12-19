@@ -16,6 +16,7 @@ use App\Models\BankUser;
 use App\Models\VswipeSale;
 use App\Models\VswipeUser;
 use App\Models\Merchant;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
@@ -69,7 +70,7 @@ class LoginController extends Controller {
             $withWhere
             group by m.id");
 
-        $stores = DB::select("SELECT s.id,s.prefix FROM `stores` s 
+        $stores = DB::select("SELECT s.id,s.prefix,s.store_name FROM `stores` s 
             left join merchants m on  s.merchant_id = m.id
             left join bank_has_merchants bm on m.id = bm.merchant_id
             left join banks b on bm.bank_id = b.id
@@ -89,44 +90,80 @@ class LoginController extends Controller {
         }
 
         $topStoreSales = DB::select("select store_id,store_name,company_name,total_sales,group_concat(banknames) as banknames,logo,firstname FROM(SELECT vs.store_id,m.company_name,sum(sales)as total_sales,s.store_name,group_concat(DISTINCT(b.name)) as banknames,s.logo,m.firstname FROM `vswipe_sales` vs
-left join stores s on vs.store_id = s.id
-left join merchants m on s.merchant_id = m.id
-left join bank_has_merchants bm on m.id = bm.merchant_id
-left join banks b on bm.bank_id = b.id
-where s.status=1
-$and
-group by vs.store_id,b.id,m.id
-) vs1
-group by store_id
-order by total_sales desc
-limit 10");
+            left join stores s on vs.store_id = s.id
+            left join merchants m on s.merchant_id = m.id
+            left join bank_has_merchants bm on m.id = bm.merchant_id
+            left join banks b on bm.bank_id = b.id
+            where s.status=1
+            $and
+            group by vs.store_id,b.id,m.id
+            ) vs1
+            group by store_id
+            order by total_sales desc
+            limit 10");
 
         $latestStores = DB::select("select *,group_concat(sbank) as banknames from (SELECT s.id,s.store_name,group_concat(DISTINCT(b.name)) as sbank,s.logo,group_concat(m.company_name) as company_name,s.created_at,m.firstname FROM  stores s
-left join merchants m on s.merchant_id = m.id 
-left join bank_has_merchants bm on m.id = bm.merchant_id 
-left join banks b on bm.bank_id = b.id
-where s.status = 1
-$and
-group by s.id,b.id,m.id
-order by created_at desc 
-limit 10) st1
-group by id
-order by created_at desc  
-limit 10");
+            left join merchants m on s.merchant_id = m.id 
+            left join bank_has_merchants bm on m.id = bm.merchant_id 
+            left join banks b on bm.bank_id = b.id
+            where s.status = 1
+            $and
+            group by s.id,b.id,m.id
+            order by created_at desc 
+            limit 10) st1
+            group by id
+            order by created_at desc  
+            limit 10");
 
         $allStoreSales = DB::select("select DISTINCT(DATE_FORMAT(order_date,'%D-%b')) as y,total_sales as item1 from (SELECT vs.order_date,sum(vs.sales) as total_sales FROM `vswipe_sales` vs 
-left join stores s on vs.store_id = s.id
-left join merchants m on s.merchant_id = m.id
-left join bank_has_merchants bm on m.id = bm.merchant_id
-left join banks b on bm.bank_id = b.id
-where  vs.order_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 10 DAY),'%Y-%m-%d')
-and s.status=1 
-$and
-group by vs.order_date,b.id,m.id) t1");
+            left join stores s on vs.store_id = s.id
+            left join merchants m on s.merchant_id = m.id
+            left join bank_has_merchants bm on m.id = bm.merchant_id
+            left join banks b on bm.bank_id = b.id
+            where  vs.order_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 10 DAY),'%Y-%m-%d')
+            and s.status=1 
+            $and
+            group by vs.order_date,b.id,m.id) t1");
 
 //dd($allStoreSales);
 
+
+        //for graph
+
+        $orderGraph0 = Order::where("order_status", 1)->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
+
+        $weekDate = date('Y-m-d', strtotime("-7 day"));
+        $orderGraph = array();
+        for ($i = 8; $i > 0; $i--) {
+            array_push($orderGraph, array('created_at' => $weekDate, 'total_order' => 0));
+            $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
+        }
+       foreach ($orderGraph as $key => $order) {
+            foreach ($orderGraph0 as $ord) {
+                if (date('Y-m-d', strtotime($ord['created_at'])) == $order['created_at']) {
+                    $orderGraph[$key]['created_at'] = $ord['created_at'];
+                    $orderGraph[$key]['total_order'] = $ord['total_order'];
+                }
+            }
+        }
+        // dd($orderGraph);
+        $final_orderGraph_x_axis = [];
+        $final_orderGraph_y_axis = [];
+        foreach ($orderGraph as $value) {
+            // array_push($final_orderGraph_x_axis, $value["created_at"]);
+            array_push($final_orderGraph_x_axis, date('d-M-Y',strtotime($value["created_at"])));
+            array_push($final_orderGraph_y_axis, $value["total_order"]);
+        }
+        // dd($final_orderGraph_x_axis);
+        $stores_name = [];
+        foreach ($stores as $val) {
+            $store_name[$val->id] = $val->store_name;
+        }
+
         $data["merchants"] = $merchants;
+        $data["merchants_name"] = $store_name;
+        $data["time_duration"] = [1 => "Today",2 => "This week",3 => "This Month",4 => "This year"];
+        // dd($data["time_duration"]);
         $data["stores"] = $stores;
         $data["totalOrders"] = $totalOrders;
         $data["totalSales"] = $totalSales;
@@ -135,11 +172,34 @@ group by vs.order_date,b.id,m.id) t1");
         $data["latestStores"] = $latestStores;
         $data["topStoreSales"] = $topStoreSales;
         $data["allStoreSales"] = $allStoreSales;
+        $data["orderGraph_x"] = ($final_orderGraph_x_axis);
+        $data["orderGraph_y"] = implode($final_orderGraph_y_axis, ',');
         $data['data'] = $data;
         $viewname = Config('constants.AdminPages') . ".dashboard";
         return Helper::returnView($viewname, $data);
 
         //return view(Config('constants.AdminPages') . ".dashboard", compact('data'));
+    }
+
+    public function getOrderDateWise() {
+        $merchants_id = !empty(Input::get('merchants_id')) ? (int)Input::get('merchants_id') : 0;
+        $time_duration_id= !empty(Input::get('time_duration_id')) ? Input::get('time_duration_id') : 1 ;
+        if ($merchants_id != 0) {
+           if ($time_duration_id == 1) {
+                DB::enableQueryLog();
+                $Orders = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'");
+            } elseif ($time_duration_id == 3) {
+                $Orders = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'");
+            } elseif ($time_duration_id == 2) {
+                $Orders = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'");
+            }else{
+                $Orders = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'");       
+            }
+            $Orders = $Orders->where("store_id", $merchants_id)->count();
+        }else{
+            $Orders = 0;
+        }
+        return $Orders;
     }
 
     public function login() {
