@@ -12,6 +12,7 @@ use App\Library\Helper;
 use DB;
 use Route;
 use Input;
+use Charts;
 use Illuminate\Http\Request;
 
 class PagesController extends Controller {
@@ -39,6 +40,8 @@ class PagesController extends Controller {
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
         ->sum('pay_amt');
 
+        $weeklySaleschart = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->get();
+        //dd($weeklySaleschart);
         $monthlySales = HasProducts::whereRaw("MONTH(created_at) = '" . date('m') . "'")
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
         ->sum('pay_amt');
@@ -162,9 +165,36 @@ class PagesController extends Controller {
         $products[$key]["quantity"] = $product->quantity;
         $products[$key]['color'] = '#'.$this->random_color_part() . $this->random_color_part() . $this->random_color_part();
          }
+         $users = User::where(DB::raw("(DATE_FORMAT(created_at,'%Y'))"),date('Y'))->get();
+          //dd($weeklySales);
+        $chart = Charts::database($weeklySaleschart, 'line', 'highcharts')
+                  ->title("")
+                  ->elementLabel("Total Sales")
+                  ->dimensions(460, 500)
+                  ->responsive(false)
+                  ->groupByMonth(date('Y'), true);
 
-    return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph','items','products'));
+        $topproducts = Charts::create('donut', 'highcharts')
+            ->title('My nice chart')
+            ->labels(['First', 'Second', 'Third'])
+            ->values([5,10,20])
+            ->dimensions(1000,500)
+            ->responsive(false);
+    return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph','items','products','chart'));
 }
+
+    public function weeklySales(){
+        $users = User::where(DB::raw("(DATE_FORMAT(created_at,'%Y'))"),date('Y'))
+                    ->get();
+        $chart = Charts::database($users, 'bar', 'highcharts')
+                  ->title("Monthly new Register Users")
+                  ->elementLabel("Total Users")
+                  ->dimensions(1000, 500)
+                  ->responsive(false)
+                  ->groupByMonth(date('Y'), true);
+        return view(Config('constants.adminView') . '.dashboard',compact('chart'));
+    }
+
 public function orderStat(Request $request)
 {
     $orderDates = explode(' - ',Input::get('orderDate'));
@@ -196,7 +226,6 @@ public function orderStat(Request $request)
 }
 public function salesStat()
 {
-   
     $saleDates = explode(' - ',Input::get('saleDate'));
     $weekDate = date('Y-m-d', strtotime('-7 days', strtotime($saleDates[1])));
     $saleGraph = array();

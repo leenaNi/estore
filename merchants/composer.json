@@ -16,7 +16,8 @@
         "kyslik/column-sortable": "~5.0.0",
         "vsmoraes/laravel-pdf": "^1.0",
         "milon/barcode": "^5.2",
-        "maatwebsite/excel": "~2.0.0"
+        "maatwebsite/excel": "~2.0.0",
+        "consoletvs/charts": "5.*"
        
         
 
