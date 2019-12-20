@@ -1,5 +1,6 @@
 @extends('Admin.layouts.default')
 @section('content')
+<link rel="stylesheet" href="{{ Config('constants.adminPlugins').'/daterangepicker/daterangepicker-bs3.css' }}">
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
@@ -153,7 +154,6 @@
                                         <th>Payment Status</th>
                                         <th>Payment Method</th>
                                         <th>Order Amount</th>
-                                        <th>Order Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -167,7 +167,6 @@
                                         <td>{{ @$order["payment_status"] }}</td>
                                         <td>{{ @$order["payment_method"] }}</td>
                                         <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';         ?><span class="currency-sym"></span> {{ @$order["total_amount"] }} </td>
-                                        <td>{{ @$order["order_date"] }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -428,141 +427,137 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="box box-primary">
-                                    <div class="box-header dashbox-header with-border">
-                                        <h3 class="box-title dashbox-title">Sales Statistics</h3>
-                                        <form  id="bsaleForm" class="box-title dash dashbox-title" method="get" action="{{route('admin.dashboard.saleStat')}}">
-                                           <input type="text" name="bsaleDate" class="bsaleDate form-control" value="1/01/2018 - 01/15/2018" />
-
-                                       </form>
-                                       <div class="box-tools pull-right">
-                                        <button type="button" class="btn-box-tool blackColor" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn-box-tool blackColor" data-widget="remove"><i class="fa fa-times"></i></button>
-                                    </div>
+                            <div class="box box-success" >
+                            <div class="box-header dashbox-header with-border bg-green">
+                                <h3 class="box-title dashbox-title">Sales Statistics</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                 </div>
+                            </div>
                                 <div class="box-body">
-                                    <div class="chart">
-                                        <canvas id="bareaChart" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
-                                    </div>
+                                    <div class="input-group date Nform_date" id="datepickerDemo">
+                                    <input placeholder="Select Date" type="text" id="" name="sales_daterange"  class="form-control sales_daterange textInput">
 
+                                    <span class="input-group-addon">
+                                        <i class=" ion ion-calendar"></i>
+                                    </span>
+                                    </div>
+                                    <div id="SalesChart">
+                                    {!! $Sales_chart->html() !!}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="box box-primary">
-                                <div class="box-header dashbox-header with-border">
-                                    <h3 class="box-title dash dashbox-title"> Orders Statistic</h3>
-                                    <form  id="borderForm" class="box-title dash dashbox-title" method="get" action="{{route('admin.dashboard.orderStat')}}">
-                                       <input type="text" name="borderDate" class="bOrderDate form-control" value="1/01/2018 - 01/15/2018" />
-
-                                   </form>
-                                   <div class="box-tools pull-right">
-                                    <button type="button" class="btn-box-tool blackColor" data-widget="collapse"><i class="fa fa-minus"></i>
+                             <!-- <div class="panel panel-default">
+                                <div class="panel-heading">Orders Statistics</div> -->
+                            <div class="box box-warning" >
+                            <div class="box-header dashbox-header with-border bg-yellow">
+                                <h3 class="box-title dashbox-title">Orders Statistics</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                                     </button>
-                                    <button type="button" class="btn-box-tool blackColor" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                 </div>
                             </div>
-                            <div class="box-body">
-                              
-<canvas id="myChart" width="400" height="400"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-   <div class="clearfix"></div>
-                              <div class="row">
-                            <div class="col-md-6">
-                                <div class="box box-primary">
-                                    <div class="box-header dashbox-header with-border">
-                                        <h3 class="box-title dashbox-title">Sales Statistics</h3>
-                                        <form  id="saleForm" class="box-title dash dashbox-title" method="get" action="{{route('admin.dashboard.saleStat')}}">
-                                           <input type="text" name="saleDate" class="saleDate form-control" value="1/01/2018 - 01/15/2018" />
-
-                                       </form>
-                                       <div class="box-tools pull-right">
-                                        <button type="button" class="btn-box-tool blackColor" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn-box-tool blackColor" data-widget="remove"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
                                 <div class="box-body">
-                                    <div class="chart">
-                                        <canvas id="areaChart" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
-                                    </div>
+                                <div class="input-group date Nform_date" id="datepickerDemo">
+                                    <input placeholder="Select Date" type="text" id="" name="datefrom"  class="form-control datefromto textInput">
 
+                                    <span class="input-group-addon">
+                                        <i class=" ion ion-calendar"></i>
+                                    </span>
+                                </div>
+                                <div id="ordersChart">
+                                     {!! $orders_chart->html() !!}
+                                </div>
+                                   
                                 </div>
                             </div>
+                            </div></div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="box box-primary">
-                                <div class="box-header dashbox-header with-border">
-                                    <h3 class="box-title dash dashbox-title"> Orders Statistic</h3>
-                                    <form  id="orderForm" class="box-title dash dashbox-title" method="get" action="{{route('admin.dashboard.orderStat')}}">
-                                       <input type="text" name="orderDate" class="OrderDate form-control" value="1/01/2018 - 01/15/2018" />
-
-                                   </form>
-                                   <div class="box-tools pull-right">
-                                    <button type="button" class="btn-box-tool blackColor" data-widget="collapse"><i class="fa fa-minus"></i>
-                                    </button>
-                                    <button type="button" class="btn-box-tool blackColor" data-widget="remove"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                            <div class="box-body">
-                                <div id="bar-chart" style="height: 300px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
         @stop
+         {!! Charts::scripts() !!}
+{!! $Sales_chart->script() !!}
+{!! $orders_chart->script() !!}
         @section('myscripts')
+        <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
+<script type="text/javascript">
+
+    $(function () {
+
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+
+    $('.sales_daterange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'sales-stat',
+           data:{startdate:startdate,enddate:enddate},
+           success:function(data){
+              $("#SalesChart").html(data);
+           }
+        });
+    });
+
+    $('.datefromto').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'order-stat',
+           data:{startdate:startdate,enddate:enddate},
+           success:function(data){
+              $("#ordersChart").html(data);
+           }
+        });
+    });
+
+    $('.datefromto').on('apply.daterangepicker', function (ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY') + '-' + picker.endDate.format('DD/MM/YYYY'));
+    });
+
+    $('.datefromto').on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val('');
+    });
+});
+</script>
         <script>
             $(document).ready(function(){
-               $(function() {
-
-                var start = moment().subtract(29, 'days');
-                var end = moment();
-
-                function cb(start, end) {
-                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                }
-
-                $('input[name="orderDate"]').daterangepicker({
-                    startDate: start,
-                    endDate: end,
-                    ranges: {
-                     'Today': [moment(), moment()],
-                     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                     'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                     'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                 }
-             }, cb);
-
-                $('input[name="saleDate"]').daterangepicker({
-                    startDate: start,
-                    endDate: end,
-                    ranges: {
-                     'Today': [moment(), moment()],
-                     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                     'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                     'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                 }
-             }, cb);
-
-
-                cb(start, end);
-
-            });
-
-
+             
                $('.OrderDate').blur(function (){
                      var form = $('#orderForm');
                      var url = form.attr('action');

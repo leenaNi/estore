@@ -12,6 +12,7 @@ use App\Library\Helper;
 use DB;
 use Route;
 use Input;
+use Charts;
 use Illuminate\Http\Request;
 
 class PagesController extends Controller {
@@ -39,6 +40,11 @@ class PagesController extends Controller {
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
         ->sum('pay_amt');
 
+        $weeklyOrderschart = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->get();
+
+        $weeklySaleschart = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
+        ->whereNotIn("order_status", [0, 4, 6, 10])->get();
+        //dd($weeklySaleschart);
         $monthlySales = HasProducts::whereRaw("MONTH(created_at) = '" . date('m') . "'")
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
         ->sum('pay_amt');
@@ -61,15 +67,9 @@ class PagesController extends Controller {
 
         $weeklyOrders = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->where("orders.store_id", $jsonString['store_id'])->count();
 
-        // $monthlyOrders = HasProducts::whereRaw("MONTH(created_at) = '" . date('m') . "'")
-        // ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
-        // ->count();
 
         $monthlyOrders = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")->where("orders.store_id", $jsonString['store_id'])->count();
 
-        // $yearlyOrders = HasProducts::whereRaw("YEAR(created_at) = '" . date('Y') . "'")
-        // ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
-        // ->count();
 
         $yearlyOrders = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'")->where("orders.store_id", $jsonString['store_id'])->count();
 
@@ -104,7 +104,7 @@ class PagesController extends Controller {
         // dd($jsonString["store_id"]);
        $latestOrders = Order::where("orders.store_id", $jsonString['store_id'])->orderBy("orders.created_at", "desc")->join("payment_method as pm", "pm.id", '=', 'orders.payment_method')->join("order_status as os", "os.id", '=', 'orders.order_status')->join("payment_status as ps", "ps.id", '=', 'orders.payment_status')->select(["orders.id as order_id","orders.created_at as order_date","orders.first_name","orders.last_name","os.order_status","pm.name as payment_method","ps.payment_status","orders.pay_amt as total_amount","orders.order_amt as amount","orders.email","orders.gifting_charges","orders.discount_amt","orders.shipping_amt","orders.referal_code_amt","orders.phone_no","orders.coupon_amt_used"])->limit(10)->orderBy('orders.created_at', 'desc')->get();
 
-        $latestUsers = User::where('user_type', 2)->limit(10)->orderBy('created_at', 'desc')->get();
+        $latestUsers = User::where('user_type', 2)->limit(5)->orderBy('created_at', 'desc')->get();
         $latestProducts = Product::where('is_individual', '1')->limit(5)->orderBy('created_at', 'desc')->get();
         foreach ($latestProducts as $prd) {
             $catImg = $prd->catalogimgs()->where("image_mode", 1)->first();
@@ -155,74 +155,126 @@ class PagesController extends Controller {
            $items[$key]['customer_name'] = $user->firstname." ".$user->lastname;
            $items[$key]['color'] = '#'.$this->random_color_part() . $this->random_color_part() . $this->random_color_part();
            }
-
+        $chart_prodname = array();   
        foreach($topProducts as $key => $product)
        {
         $products[$key]["product_name"] = $product->product;
         $products[$key]["quantity"] = $product->quantity;
         $products[$key]['color'] = '#'.$this->random_color_part() . $this->random_color_part() . $this->random_color_part();
+        $chart_prodname[] = $product->quantity;
          }
+        
+        $orders_chart = Charts::database($weeklyOrderschart, 'line', 'highcharts')
+                  ->title("Weekly Orders : ".count($weeklyOrderschart))
+                  ->elementLabel("Orders")
+                  ->dimensions(460, 500)
+                  ->responsive(false)
+                  //->groupByMonth(date('Y'), true);
+                  ->groupByDay(date('m'),'', true);
 
-    return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph','items','products'));
+        $Sales_chart = Charts::database($weeklySaleschart, 'line', 'highcharts')
+                  ->title("Weekly Sales : ".count($weeklySaleschart))
+                  ->elementLabel("Total Sales")
+                  ->dimensions(460, 500)
+                  ->responsive(false)
+                  ->groupByDay(date('m'),'', true);
+                  //->groupByMonth(date('Y'), true);
+        
+
+    return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph','items','products','orders_chart','Sales_chart'));
 }
-public function orderStat(Request $request)
-{
-    $orderDates = explode(' - ',Input::get('orderDate'));
-    $weekDate = date('Y-m-d', strtotime('-7 days', strtotime($orderDates[1])));
-    $orderGraph = array();
-    $orderGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime($orderDates[0])))->where('created_at', '<=', date('Y-m-d', strtotime($orderDates[1])))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(distinct(order_id)) as total_order')])->toArray();
-        for ($i = 8; $i > 0; $i--) {
-            array_push($orderGraph, array('created_at' => $weekDate, 'total_order' => 0));
-            $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
-           
-        } 
-        foreach ($orderGraph as $key => $order) {
-            foreach ($orderGraph0 as $ord) {
-                if (date('Y-m-d', strtotime($ord['created_at'])) == $order['created_at']) {
-                    $orderGraph[$key]['created_at'] = $ord['created_at'];
-                    $orderGraph[$key]['total_order'] = $ord['total_order'];
-                }
-            }
-        }
- 
-        $orderdata = '[';
-    foreach ($orderGraph as $order) {
-        $orderdata .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
-    }
-    $orderdata .= ']';
 
-        return $orderdata;
+public function orderStat()
+{
+    $startdate = Input::get('startdate');
+    $enddate = Input::get('enddate');
+
+    $Orders = Order::where('created_at','>=',$startdate)->where('created_at','<=',$enddate)->whereNotIn("order_status", [0, 4, 6, 10])->get();
+
+    $orders_chart = Charts::database($Orders, 'line', 'highcharts')
+                  ->title("Total Orders : ".count($Orders))
+                  ->elementLabel("Orders")
+                  ->dimensions(460, 500)
+                  ->responsive(false)
+                  ->groupByMonth(date('Y'), true);
+      $html = '';
+      $html .= '<div id="ordersChart">';
+                    echo $orders_chart->html();
+                    echo $orders_chart->script();
+    $html .=    '</div>';
+    return $html;
+    // $orderDates = explode(' - ',Input::get('orderDate'));
+    // $weekDate = date('Y-m-d', strtotime('-7 days', strtotime($orderDates[1])));
+    // $orderGraph = array();
+    // $orderGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime($orderDates[0])))->where('created_at', '<=', date('Y-m-d', strtotime($orderDates[1])))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(distinct(order_id)) as total_order')])->toArray();
+    //     for ($i = 8; $i > 0; $i--) {
+    //         array_push($orderGraph, array('created_at' => $weekDate, 'total_order' => 0));
+    //         $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
+           
+    //     } 
+    //     foreach ($orderGraph as $key => $order) {
+    //         foreach ($orderGraph0 as $ord) {
+    //             if (date('Y-m-d', strtotime($ord['created_at'])) == $order['created_at']) {
+    //                 $orderGraph[$key]['created_at'] = $ord['created_at'];
+    //                 $orderGraph[$key]['total_order'] = $ord['total_order'];
+    //             }
+    //         }
+    //     }
+ 
+    //     $orderdata = '[';
+    // foreach ($orderGraph as $order) {
+    //     $orderdata .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
+    // }
+    // $orderdata .= ']';
+
+    //     return $orderdata;
    
 }
 public function salesStat()
 {
-   
-    $saleDates = explode(' - ',Input::get('saleDate'));
-    $weekDate = date('Y-m-d', strtotime('-7 days', strtotime($saleDates[1])));
-    $saleGraph = array();
-    $saleDates = explode(' - ', Input::get('saleDate'));
-    $salesGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime($saleDates[0])))->where('created_at', '<=', date('Y-m-d', strtotime($saleDates[1])))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();   
-        for ($i = 8; $i > 0; $i--) {
-             array_push($salesGraph, array('created_at' => $weekDate, 'total_amount' => 0));
-            $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
-           
-        } 
-        foreach ($saleGraph as $key => $order) {
-            foreach ($saleGraph0 as $ord) {
-                if (date('Y-m-d', strtotime($ord['created_at'])) == $order['created_at']) {
-                    $saleGraph[$key]['created_at'] = $ord['created_at'];
-                    $saleGraph[$key]['total_order'] = $ord['total_order'];
-                }
-            }
-        }
- 
-        $saleGraph = '[';
-    foreach ($saleGraph as $order) {
-        $saleGraph .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
-    }
-    $saledata .= ']';
+    $startdate = Input::get('startdate');
+    $enddate = Input::get('enddate');
 
-        return $saledata;
+    $Sales = HasProducts::where('created_at','>=',$startdate)->where('created_at','<=',$enddate)->whereNotIn("order_status", [0, 4, 6, 10])->get();
+
+    $Sales_chart = Charts::database($Sales, 'line', 'highcharts')
+                  ->title("Total Sales : ".count($Sales))
+                  ->elementLabel("Sales")
+                  ->dimensions(460, 500)
+                  ->responsive(false)
+                  ->groupByMonth(date('Y'), true);
+      $html = '';
+      $html .= '<div id="SalesChart">';
+                    echo $Sales_chart->html();
+                    echo $Sales_chart->script();
+    $html .=    '</div>';
+    return $html;
+    // $saleDates = explode(' - ',Input::get('saleDate'));
+    // $weekDate = date('Y-m-d', strtotime('-7 days', strtotime($saleDates[1])));
+    // $saleGraph = array();
+    // $saleDates = explode(' - ', Input::get('saleDate'));
+    // $salesGraph0 = HasProducts::whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime($saleDates[0])))->where('created_at', '<=', date('Y-m-d', strtotime($saleDates[1])))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();   
+    //     for ($i = 8; $i > 0; $i--) {
+    //          array_push($salesGraph, array('created_at' => $weekDate, 'total_amount' => 0));
+    //         $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
+           
+    //     } 
+    //     foreach ($saleGraph as $key => $order) {
+    //         foreach ($saleGraph0 as $ord) {
+    //             if (date('Y-m-d', strtotime($ord['created_at'])) == $order['created_at']) {
+    //                 $saleGraph[$key]['created_at'] = $ord['created_at'];
+    //                 $saleGraph[$key]['total_order'] = $ord['total_order'];
+    //             }
+    //         }
+    //     }
+ 
+    //     $saleGraph = '[';
+    // foreach ($saleGraph as $order) {
+    //     $saleGraph .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
+    // }
+    // $saledata .= ']';
+
+    //     return $saledata;
 
 }
  public  function random_color_part() {

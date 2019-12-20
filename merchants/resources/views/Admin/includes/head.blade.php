@@ -28,8 +28,6 @@
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssPath').'/validationEngine.jquery.css' }}">
 <link rel="icon" type="image/png" href="{{ Config('constants.frontendThemeImagePath').'/favicon.png' }}">
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
-
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <?php
 $jsonString = App\Library\Helper::getSettings();
 
@@ -153,26 +151,6 @@ Session::put('storelogo', $data->logo);
     .nav-tabs-custom>.nav-tabs>li.active{border-top-color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
     .form-control:focus{border-color: <?php echo "#" . $data->primary_color . " !important"; ?>;;}
 
-    /*.skin-blue .sidebar-menu > li > .treeview-menu{
-        background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;
-        opacity:0.8;
-    }*/
-
-    /*.skin-blue .sidebar-menu > li > .treeview-menu{
-        background-color:rgba(0,0,0,0.2) !important;}*/
-
-    /*.btn-primary, .btn-default{
-        background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;
-        opacity:0.8;
-    }
-
-    .reset-btn{
-        background-color: <?php echo "#" . $data->secondary_color . " !important"; ?>;
-    }
-    .navbar, .navbar-static-top{
-        background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;
-        opacity:0.8;
-    }*/
 </style>
 <style>
     .btn{

@@ -30,8 +30,6 @@
 <script src="{{ Config('constants.adminPlugins').'/flot/jquery.flot.categories.min.js' }}"></script>
 <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <!--<script src="{{ asset('public/Admin/dist/js/pages/dashboard2.js') }}"></script>-->
 <!-- AdminLTE for demo purposes -->
@@ -171,34 +169,6 @@ $(document).keypress(function (e) {
 </script>
 
 <script  type="text/javascript">
-    $(document).ready(function () {
-//        $(".fa-rupee").toggleClass("fa-rupee fa-<?php //echo Session::get("currency_code")         ?>")
-    })
-
-//    var currentCurrency = parseFloat("<?= Session::get("currency_val") ?>");
-//    console.log(currentCurrency);
-//    $(".priceConvert").each(function (k, v) {
-//        var filterNumber = $(this).text().trim();
-//        filterNumber = filterNumber.replace(",", "");
-//        var getPrice = parseFloat(filterNumber);
-//        var calCulate = (getPrice * currentCurrency).toFixed(2)
-//        $(this).text(calCulate);
-//    })
-//
-//    $(".priceConvertTextBox").each(function (k, v) {
-//        var getPrice = $(this).val();
-//        getPrice = getPrice.replace(",", "");
-//        getPrice = parseFloat($(this).val());
-//        if (isNaN(getPrice)) {
-//            var getPrice = " ";
-//        } else {
-//            var calCulate = (getPrice * currentCurrency).toFixed(2);
-//            $(this).attr("value", calCulate);
-//        }
-//        var getName = $(this).attr("name");
-//        $(this).parent().append("<input type='hidden' name='" + getName + "' class='priceConvertTextBoxMain' value='" + getPrice + "' > ");
-//        $(this).attr("name", "not_in_use");
-//    });
     $(document).on("keyup", ".priceConvertTextBox", function () {
         var getPrice = $(this).val();
         getPrice = getPrice.replace(",", "");
