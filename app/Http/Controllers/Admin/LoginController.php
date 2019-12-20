@@ -128,9 +128,9 @@ class LoginController extends Controller {
 //dd($allStoreSales);
 
 
-        //for graph
+        //for order graph 
 
-        $orderGraph0 = Order::where("order_status", 1)->orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
+        $orderGraph0 = Order::orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
 
         $weekDate = date('Y-m-d', strtotime("-7 day"));
         $orderGraph = array();
@@ -154,7 +154,36 @@ class LoginController extends Controller {
             array_push($final_orderGraph_x_axis, date('d-M-Y',strtotime($value["created_at"])));
             array_push($final_orderGraph_y_axis, $value["total_order"]);
         }
-        // dd($final_orderGraph_x_axis);
+
+        //sales graph
+        $salesGraph0 = Order::orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
+
+        $salesGraph = array();
+        $weekDate = date('Y-m-d', strtotime("-7 day"));
+
+        for ($i = 8; $i > 0; $i--) {
+            array_push($salesGraph, array('created_at' => $weekDate, 'total_amount' => 0));
+            $weekDate = date('Y-m-d', strtotime('+1 day', strtotime($weekDate)));
+        }
+        foreach ($salesGraph as $key => $sale) {
+            foreach ($salesGraph0 as $s0) {
+                if (date('Y-m-d', strtotime($s0['created_at'])) == $sale['created_at']) {
+                    $salesGraph[$key]['created_at'] = $s0['created_at'];
+                    $salesGraph[$key]['total_amount'] = $s0['total_amount'];
+                }
+            }
+        }
+
+        $final_salesGraph_x_axis = [];
+        $final_salesGraph_y_axis = [];
+        foreach ($salesGraph as $value) {
+            // array_push($final_orderGraph_x_axis, $value["created_at"]);
+            array_push($final_salesGraph_x_axis, date('d-M-Y',strtotime($value["created_at"])));
+            array_push($final_salesGraph_y_axis, $value["total_amount"]);
+        }
+
+
+
         $stores_name = [];
         foreach ($stores as $val) {
             $store_name[$val->id] = $val->store_name;
@@ -173,7 +202,9 @@ class LoginController extends Controller {
         $data["topStoreSales"] = $topStoreSales;
         $data["allStoreSales"] = $allStoreSales;
         $data["orderGraph_x"] = ($final_orderGraph_x_axis);
+        $data["salesGraph_x"] = ($final_salesGraph_x_axis);
         $data["orderGraph_y"] = implode($final_orderGraph_y_axis, ',');
+        $data["salesGraph_y"] = implode($final_salesGraph_y_axis, ',');
         $data['data'] = $data;
         $viewname = Config('constants.AdminPages') . ".dashboard";
         return Helper::returnView($viewname, $data);
@@ -186,7 +217,6 @@ class LoginController extends Controller {
         $time_duration_id= !empty(Input::get('time_duration_id')) ? Input::get('time_duration_id') : 1 ;
         if ($merchants_id != 0) {
            if ($time_duration_id == 1) {
-                DB::enableQueryLog();
                 $Orders = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'");
             } elseif ($time_duration_id == 3) {
                 $Orders = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'");
@@ -200,6 +230,27 @@ class LoginController extends Controller {
             $Orders = 0;
         }
         return $Orders;
+    }
+
+
+    public function getSalesDateWise() {
+        $merchants_id = !empty(Input::get('merchants_id')) ? (int)Input::get('merchants_id') : 0;
+        $time_duration_id= !empty(Input::get('time_duration_id')) ? Input::get('time_duration_id') : 1 ;
+        if ($merchants_id != 0) {
+           if ($time_duration_id == 1) {
+                $totalSales = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'");
+            } elseif ($time_duration_id == 3) {
+                $totalSales = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'");
+            } elseif ($time_duration_id == 2) {
+                $totalSales = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'");
+            }else{
+                $totalSales = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'");       
+            }
+            $totalSales = $totalSales->where("store_id", $merchants_id)->sum("pay_amt");
+        }else{
+            $totalSales = 0;
+        }
+        return $totalSales;
     }
 
     public function login() {

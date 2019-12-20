@@ -113,41 +113,8 @@
             </div>
         </div>
         <!-- ./col -->
-        <div class="col-md-2 col-sm-6 col-xs-12">
-                {!! Form::select('merchants_name',$merchants_name,Input::get('merchants_name'), ["class"=>'form-control filter_type order-data','id' => 'merchants_id',"placeholder"=>"Merchants Name"]) !!}
-        </div>
-        <div class="col-md-2 col-sm-6 col-xs-12">
-                {!! Form::select('time_duration',$time_duration,Input::get('time_duration'), ["class"=>'form-control filter_type order-data','id' => 'time_duration_id', "placeholder"=>"Time Duration"]) !!}
-        </div>
-        
     </div>
-
     <!-- /.row -->
-    <div class="row">
-        <div class="col-lg-4 col-xs-6" style="margin-top: 20px;">
-            <!-- small box -->
-            <div class="small-box bg-blue">
-                <div class="inner">
-
-                    <h3 id="order_count"> 0 </h3>
-
-                    <p>Orders Count</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-bag"></i>
-                </div>
-                <a href="#" class="small-box-footer"> <i class="fa"></i></a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="box-body col-md-6">
-            <div class="chart">
-                <canvas id="areaChart" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
-            </div>
-        </div>
-    </div>
-    <!-- Main row -->
     <div class="row">
 
         <section class="col-lg-6 connectedSortable">
@@ -279,6 +246,81 @@
         </section>
 
     </div>
+    <div class="row">
+        
+        <div class="clearfix mb-15"></div>
+        <section class="col-lg-6 connectedSortable">
+            <div class="box box-info">
+                <div class="row">
+                    <div class="col-lg-4 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-blue">
+                            <div class="inner">
+
+                                <h3 id="order_count"> 0 </h3>
+
+                                <p>Orders Count</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-bag"></i>
+                            </div>
+                            <a href="#" class="small-box-footer"> <i class="fa"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-12" >
+                                {!! Form::select('merchants_name',$merchants_name,Input::get('merchants_name'), ["class"=>'form-control filter_type order-data','id' => 'merchants_id',"placeholder"=>"Store Name"]) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        {!! Form::select('time_duration',$time_duration,Input::get('time_duration'), ["class"=>'form-control filter_type order-data','id' => 'time_duration_id', "placeholder"=>"Time Duration"]) !!}
+                    </div>
+                </div>
+                <div class="row">
+                        <div class="box-body">
+                            <div class="chart">
+                                <canvas id="areaChart" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- <div class="clearfix mb-15"></div> -->
+        <section class="col-lg-6 connectedSortable">
+            <div class="box box-info">
+                <div class="row">
+                    <div class="col-lg-4 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-blue">
+                            <div class="inner">
+
+                                <h3 id="total_sales"> 0 </h3>
+
+                                <p>Total Sales</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-bag"></i>
+                            </div>
+                            <a href="#" class="small-box-footer"> <i class="fa"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-12" >
+                                {!! Form::select('merchants_name',$merchants_name,Input::get('merchants_name'), ["class"=>'form-control filter_type sales-data','id' => 'sale_merchants_id',"placeholder"=>"Store Name"]) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        {!! Form::select('time_duration',$time_duration,Input::get('time_duration'), ["class"=>'form-control filter_type sales-data','id' => 'sale_time_duration_id', "placeholder"=>"Time Duration"]) !!}
+                    </div>
+                </div>
+                <div class="row">
+                        <div class="box-body">
+                            <div class="chart">
+                                <canvas id="areaChart_sales" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- Main row -->
 
 
     <!--<div class="row">
@@ -312,7 +354,7 @@
     x_axis = x_axis.replace('[','').replace(']','').split(',');
     x_axis = x_axis.map(label => label.replace('"',"").replace('"',""))
     console.log(typeof x_axis);
-console.log(x_axis) 
+    console.log(x_axis) 
 
     $('svg').height(1000);
 
@@ -366,6 +408,20 @@ console.log(x_axis)
             }
         });   
     });
+
+    $('.sales-data').on('change', function(){
+        var merchants_id = $('#sale_merchants_id').val();
+        var time_duration_id = $('#sale_time_duration_id').val();
+        $.ajax({
+            type:"GET",
+            url: "{{route('admin.getSalesDateWise')}}",
+            data: {merchants_id : merchants_id,time_duration_id : time_duration_id},
+            dataType: 'json',
+            success : function(results) {
+                        $("#total_sales").text(results);
+            }
+        });   
+    });
 </script>
 
 
@@ -411,6 +467,49 @@ console.log(x_axis)
     });
 }
 drawChart();
+</script>
+
+<script>
+    const salesDrawChart = () => {
+    new Chart($('#areaChart_sales'), {
+        type: 'line',
+        data: {
+            // labels: orderGraph_x,
+            labels: x_axis,
+            datasets: [
+                {
+                    label: `Total Sales`,
+                    fill: true,
+                    // backgroundColor: forecastLineColors.darkBlue.fill,
+                    // pointBackgroundColor: forecastLineColors.darkBlue.stroke,
+                    // borderColor: forecastLineColors.darkBlue.stroke,
+                    // pointHighlightStroke: forecastLineColors.darkBlue.stroke,
+                    data: [{{$salesGraph_y}}],
+                    borderWidth: 1,
+                    order: 1,
+                },
+               
+                
+            ]
+        },
+        options: {
+            legend: {
+                position:'bottom'
+            },
+            // responsive: false,
+            // Can't just just `stacked: true` like the docs say
+            scales: {
+                yAxes: [{
+                    stacked: false,
+                }]
+            },
+            animation: {
+                duration: 1000,
+            },
+        }
+    });
+}
+salesDrawChart();
 </script>
 
 
