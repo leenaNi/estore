@@ -166,7 +166,7 @@ class Helper {
         fclose($fp);
     }
 
-    public static function saveDefaultSet($catid, $prefix) {
+    public static function saveDefaultSet($catid, $prefix, $storeId) {
         $cat = Category::find($catid);
         $categories = json_decode($cat->categories);
         $catsave = [];
@@ -181,37 +181,38 @@ class Helper {
             $i++;
             $catsave[$ck]['rgt'] = $i;
             $catsave[$ck]['depth'] = 0;
-             $catsave[$ck]['created_at'] =date('Y-m-d H:i:s');
+            $catsave[$ck]['store_id'] = $storeId;
+            $catsave[$ck]['created_at'] =date('Y-m-d H:i:s');
           
         }
-        $addedcats = DB::table($prefix . '_categories')->insert($catsave);
+        $addedcats = DB::table('categories')->insert($catsave);
         //save attr set       
         $attrset = json_decode($cat->attribute_sets, true);
         $saveAttrSet = [];
         foreach ($attrset as $attk => $attS) {
             $saveAttrSet[$attk]['attr_set'] = $attS;
             $saveAttrSet[$attk]['status'] = 1;
-             $saveAttrSet[$attk]['created_at'] = date('Y-m-d H:i:s');
+            $saveAttrSet[$attk]['store_id'] = $storeId;
+            $saveAttrSet[$attk]['created_at'] = date('Y-m-d H:i:s');
            
         }
-        $attrSets = DB::table($prefix . '_attribute_sets')->insert($saveAttrSet);
+        $attrSets = DB::table('attribute_sets')->insert($saveAttrSet);
         //save attributes
         $attributesData = json_decode($cat->attributes);
         $hasAttrubutes = [];
         foreach ($attributesData as $attk => $attrdata) {
             $sluG = strtolower(str_replace(" ", "-", $attrdata->attr));
-            $latestAtrr = DB::table($prefix .'_attributes')->where('slug', $sluG)->select('id', 'slug')->first();
+            $latestAtrr = DB::table('attributes')->where('slug', $sluG)->select('id', 'slug')->first();
             if (!empty($latestAtrr)) {
                 $sluG = $sluG . "_" . mt_rand(1000, 9999);
-                ;
             }
             $saveArrtt = ['attr' => $attrdata->attr, 'attr_type' => 1, 'is_filterable' => 1, 'placeholder' => $attrdata->placeholder, 'slug' => $sluG, 'att_sort_order' => $attk+1, 'status' => 1];
-            $idAttr = DB::table($prefix .'_attributes')->insert($saveArrtt);
-            $latestAtrr = DB::table($prefix .'_attributes')->select('id')->orderBy('id', 'DESC')->first();
+            $idAttr = DB::table('attributes')->insert($saveArrtt);
+            $latestAtrr = DB::table('attributes')->select('id')->orderBy('id', 'DESC')->first();
             $hasAttrubutes[$attk]['attr_id'] = $latestAtrr->id;
             $hasAttrubutes[$attk]['attr_set'] = $attrdata->attrset_id;
         }
-        DB::table($prefix . '_has_attributes')->insert($hasAttrubutes);
+        DB::table('has_attributes')->insert($hasAttrubutes);
 //save attribute values
         $attrvalues = json_decode($cat->attribute_values);
         $saveAttV = [];
@@ -223,19 +224,19 @@ class Helper {
             $saveAttV[$attvk]['sort_order'] = $attvk + 1;
             $saveAttV[$attvk]['created_at'] =  date('Y-m-d H:i:s');
         }
-        DB::table($prefix . '_attribute_values')->insert($saveAttV);
+        DB::table('attribute_values')->insert($saveAttV);
     }
     
      public static function getUserCashBack($prifix,$phone = null,$userId = null) {
         if (!is_null($phone)) {
-            $user = DB::table($prifix . '_users')->where('telephone', $phone)->first();
+            $user = DB::table('users')->where('telephone', $phone)->first();
             if (!is_null($user)) {
                 $data = ['status' => 1, 'cashback' => $user->cashback, 'user' => $user];
             } else {
                 $data = ['status' => 0, 'cashback' => 0, 'user' => $user];
             }
         } else {
-            $user = DB::table($prifix . '_users')->where('id', Session::get('loggedin_user_id'))->first();
+            $user = DB::table('users')->where('id', Session::get('loggedin_user_id'))->first();
             if (!is_null($user)) {
                 $data = ['status' => 1, 'cashback' => $user->cashback, 'user' => $user];
             } else {
@@ -256,10 +257,10 @@ class Helper {
             return false;
     }
        public static function getEmailInvoice($orderId,$prifix) {
-                $addCharge = DB::table($prifix . "_general_setting")->where('url_key', 'additional-charge')->first();
-                $manuD =DB::table($prifix . "_general_setting")->where('url_key', 'manual-discount')->first();
-                $tax =DB::table($prifix . "_general_setting")->where('url_key', 'tax')->first()->status;
-                $order = DB::table($prifix . "_orders")->find($orderId);
+                $addCharge = DB::table("general_setting")->where('url_key', 'additional-charge')->first();
+                $manuD =DB::table("general_setting")->where('url_key', 'manual-discount')->first();
+                $tax =DB::table("general_setting")->where('url_key', 'tax')->first()->status;
+                $order = DB::table("orders")->find($orderId);
                // dd($order);
                 if (!empty($order)) {
                     $currency = "inr";
@@ -307,7 +308,7 @@ class Helper {
                         if (!empty($cart['options']['options'])) {
 
                             foreach ($cart['options']['options'] as $key => $value) {
-                                $option = DB::table($prifix . "_attribute_values")->find($value)->option_name;
+                                $option = DB::table("attribute_values")->find($value)->option_name;
                             }
                         }
                         $tableContant = $tableContant . @$option . ' </a></small></td>
