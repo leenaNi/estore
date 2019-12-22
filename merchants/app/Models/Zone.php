@@ -1,16 +1,18 @@
 <?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-class Zone extends Model {
+use App\Library\Helper;
 
-      
-	protected $table = 'zones';
+class Zone extends Model
+{
 
-	 public $timestamps = false;
-	
+    protected $table = 'zones';
 
-    public function country() {
+    public $timestamps = false;
+
+    public function country()
+    {
         return $this->hasOne('App\Models\Country', 'country_id');
     }
-	
+
 }

@@ -4,12 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
+use App\Library\Helper;
 
 class AttributeSet extends Model {
     use Sortable;
     protected $table = 'attribute_sets';
     protected $fillable = ['attr_set'];
     public $sortable = ['id', 'attr_set'];
+
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted = true)
+            ->where('store_id', Helper::getSettings()['store_id']);
+    }
+
     public function attributes() {
         return $this->belongsToMany('App\Models\Attribute', 'has_attributes', 'attr_set', 'attr_id');
     }

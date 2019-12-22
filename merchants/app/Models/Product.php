@@ -6,6 +6,7 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Conner\Tagging\TaggableTrait;
 use Kyslik\ColumnSortable\Sortable;
 use Auth;
+use App\Library\Helper;
 
 class Product extends \Eloquent {
 
@@ -24,6 +25,13 @@ class Product extends \Eloquent {
     protected $fillable = ["base_qty","stock" ,"cur", "product_code","height","width","length","weight" ,"min_price", "max_price", "height_cm", "width_cm", "breadth_cm", "height_inches", "width_inches", "breadth_inches", "height_feet", "width_feet", "breadth_feet", "unit_measure", "prod_type","is_stock", "alias", "aq", "factor", "markup", "disc", "mrp", "sp", "savings", "art_cut", "add_desc", "meta_title", "meta_keys", "meta_desc", "is_cod", "is_crowd_funded", "target_date", "target_qty", "attr_set", "product", "is_individual",  "is_avail", "stock", "short_desc", "long_desc", "url_key", "images", "price", "spl_price", "parent_prod_id","status", "sort_order","consumption_uom","conversion","barcode","is_tax","is_trending","added_by","updated_by"];
 
     public $sortable = ['id','product','product_code','price','prod_type', 'spl_price', 'stock'];
+
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted = true)
+            ->where('store_id', Helper::getSettings()['store_id']);
+    }
+
     public function categories() {
         return $this->belongsToMany('App\Models\Category', 'has_categories', 'prod_id', 'cat_id');
     }
