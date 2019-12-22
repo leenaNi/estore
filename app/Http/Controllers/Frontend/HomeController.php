@@ -401,7 +401,7 @@ class HomeController extends Controller
 //        //stop Curl
 
         $contents = File::get(public_path() . "/public/skeleton.sql");
-        $sql = str_replace("tblprfx", $storeId, $contents);
+        $sql = str_replace('tblprfx_', $storeId, $contents);
         $test = DB::unprepared($sql);
         if ($test) {
             $path = base_path() . "/merchants/" . "$domainname";
@@ -425,12 +425,12 @@ class HomeController extends Controller
                     $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", "");
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
-
-                    $insertArr = ["email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
+                    //Last record
+                    $lastUser = DB::table('users')->latest('id')->first();
+                    $insertArr = ["id" => ($lastUser->id + 1), "email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
-
                         $insertArr["password"] = "$password";
                     }
                     if (Session::get("provider_id")) {
@@ -472,7 +472,7 @@ class HomeController extends Controller
                         $currVal = HasCurrency::find($currency);
                         if (!empty($currVal)) {
                             $currJson = json_encode(['name' => $currVal->name, 'iso_code' => $currVal->iso_code]);
-                            DB::table("general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0, 'store_id' => $storeId]]);
+                            DB::table("general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0, 'store_id' => $storeId]);
                         }
                     }
 
@@ -490,8 +490,7 @@ class HomeController extends Controller
                     fclose($fp);
 
                     $adminRoleId = DB::table('roles')->where('store_id', $storeId)->where('name', 'LIKE', 'admin')->first(['id']);	
-                    DB::table("role_user")->insert([	
-                        ["user_id" => @$newuserid, "role_id" => $adminRoleId->id],
+                    DB::table("role_user")->insert(["user_id" => @$newuserid, "role_id" => $adminRoleId->id]);
                     //Check acl setting from general settings
                     $chkAcl = DB::table("general_setting")->where('store_id', $storeId)->where('url_key', 'acl')->select("status")->first();
 
@@ -546,7 +545,7 @@ class HomeController extends Controller
                     }
                     if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
-                        Helper::sendsms($phone, $msgOrderSucc, $country_code);
+                        // Helper::sendsms($phone, $msgOrderSucc, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
@@ -559,7 +558,7 @@ class HomeController extends Controller
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
-                        Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
+                        // Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
                     return "Extracted Successfully to $path";
                 } else {
