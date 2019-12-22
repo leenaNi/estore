@@ -92,7 +92,7 @@
                     <div class="form-group col-md-4">
                         {!! Form::select('status',['1'=>'Enabled', '0'=>'Disabled'],Input::get('status'), ["class"=>'form-control ', "placeholder"=>"Status"]) !!}
                     </div>
-                    @if($settingStatus['26'] == 1)
+                    @if($settingStatus['stock'] == 1)
                     <div class="form-group col-md-4">
                         {!! Form::select('availability',['1'=>'In Stock', '0'=>'Out of Stock'],Input::get('availability'), ["class"=>'form-control filter_type', "placeholder"=>"Availability"]) !!}
                     </div>
@@ -128,7 +128,7 @@
                         <option value="">Bulk Action</option>
                         <option value="export">Export</option>
                         <option value="remove">Delete</option>
-                        <!--                        @if($settingStatus['26'] == 1)
+                        <!--                        @if($settingStatus['stock'] == 1)
                                                 <option value="update_stock_status">Change Stock Status</option>
                                                 @endif
                                                 <option value="update_special_price">Update Price/Special Price</option>
@@ -165,7 +165,7 @@
                                 <!-- <th>@sortablelink ('spl_price', 'Special Price')</th> -->
                                 <th>Product Type</th>
                                <!-- <th>Availability</th> -->
-                                @if($settingStatus['26'] == 1)
+                                @if($settingStatus['stock'] == 1)
                                 <th>Stock</th>
                                 @endif
                                 <th>Status</th>
@@ -221,7 +221,7 @@
                         <td> {{ $product->producttype->type }}</td>
                         <!-- <td><i class="fa fa-rupee"></i> {{$product->spl_price }}</td> -->
                         <!-- <td>{{ $product->is_avail ? 'Yes' : 'No'   }}</td> -->
-                        @if($settingStatus['26'] == 1)
+                        @if($settingStatus['stock'] == 1)
                         <td>{{ $product->stock }}</td>
                         @endif
                         <td>

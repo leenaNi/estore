@@ -88,7 +88,7 @@ class CategoryController extends Controller {
                 $saveCImh->save();
             }
         }else {
-            if (count(Input::file('images')) > 0) {
+            if (!empty(Input::file('images')) && count(Input::file('images')) > 0) {
                 foreach (Input::file('images') as $imgK => $imgV) {
                     if ($imgV != null) {
                         $destinationPath = Config('constants.catImgUploadPath')."/";

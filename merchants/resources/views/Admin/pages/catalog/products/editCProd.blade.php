@@ -43,7 +43,7 @@
                                     {!! Form::text("price[]",0,["class"=>"form-control priceConvertTextBox"]) !!}
                                 </div>
 
-                                @if(($settingStatus['26'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
+                                @if(($settingStatus['stock'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
                                 
                                 <div class="col-md-2">
                                     {!! Form::label('stock', 'Stock',['class'=>'control-label']) !!}
@@ -89,7 +89,7 @@
                             {!! Form::label('price', 'Extra Price',['class'=>'control-label']) !!}
                             {!! Form::text("price[]",0,["class"=>"form-control priceConvertTextBox"]) !!}
                         </div>
-                        @if(($settingStatus['26'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
+                        @if(($settingStatus['stock'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
                          
                         <div class="col-md-2">
                             {!! Form::label('stock', 'Stock',['class'=>'control-label']) !!}
@@ -126,7 +126,7 @@
                                 <th>Product</th>
                                 <th>Availability</th>
                                 <th>Price</th>
-                                @if($settingStatus['26'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
+                                @if($settingStatus['stock'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
                                 
                                 <th>Stock</th>
                               
@@ -143,7 +143,7 @@
                                 <td>{{ $prd->product }}</td>
                                 <td>{{ $prd->is_avail == 1 ? "Yes" : "No" }}</td>
                                 <td><span class="priceConvert">{{ $prd->price }}</span></td>
-                                @if($settingStatus['26'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
+                                @if($settingStatus['stock'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
                                
                                 <td>{{ $prd->stock }}</td>
                                

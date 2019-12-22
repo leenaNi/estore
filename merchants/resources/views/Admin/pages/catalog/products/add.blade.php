@@ -65,7 +65,7 @@
         {!! Form::number('selling_price',null, ["class"=>'form-control priceConvertTextBox','min'=>0 ,"placeholder"=>'Enter Selling Price']) !!}
        
     </div>
- @if($settingStatus['26'] == 1)
+ @if($settingStatus['stock'] == 1)
  <div class="form-group col-md-6 stockcheck">
         <label class="control-label">Stock </label>
         {!! Form::number('stock',null, ["class"=>'form-control validate[required]','min'=>0 ,"placeholder"=>'Enter stock']) !!}
@@ -119,7 +119,7 @@
     </div>
 
   
- @if($settingStatus['26'] == 1)
+ @if($settingStatus['stock'] == 1)
      <div class="form-group col-md-4">
         <label class="control-label">Manage Stock <span class="red-astrik"> *</span></label>
       <label class="switch">

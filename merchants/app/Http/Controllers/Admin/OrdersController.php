@@ -2147,7 +2147,7 @@ class OrdersController extends Controller {
 
     //To check stock order
     public function editOrderChkStock() {
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         $ppid = Input::get('ppid');
         $spid = Input::get('spid');
         $qty = Input::get('qty');

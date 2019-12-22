@@ -118,8 +118,8 @@ class ProductsController extends Controller {
 
         $prod_types = [];
         $prodTy = ProductType::where('status', 1)->get(['id', 'type']);
-        $setting = GeneralSetting::where('id', 30)->first();
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $setting = GeneralSetting::where('url_key', 'products-with-variants')->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         //  echo $setting->status; die;
         if ($setting->status == 0) {
             $prodTy = $prodTy->whereIn('id', array(1, 2, 5))->toArray();
@@ -129,7 +129,7 @@ class ProductsController extends Controller {
         foreach ($prodTy as $prodT) {
             $prod_types[$prodT['id']] = $prodT['type'];
         }
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
 
         $attr_sets = [];
         $attrS = AttributeSet::where('id', '!=', 1)->where('status', 1)->get(['id', 'attr_set'])->toArray();
@@ -167,8 +167,8 @@ class ProductsController extends Controller {
         }
         $prod_types = [];
         $prodTy = ProductType::where('status', 1)->get(['id', 'type']);
-        $setting = GeneralSetting::where('id', 30)->first();
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $setting = GeneralSetting::where('url_key', 'products-with-variants')->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
 
         if ($setting->status == 0) {
             $prodTy = $prodTy->whereIn('id', array(1, 2, 5))->toArray();
@@ -179,7 +179,7 @@ class ProductsController extends Controller {
         foreach ($prodTy as $prodT) {
             $prod_types[$prodT['id']] = $prodT['type'];
         }
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
 
         $attr_sets = [];
         $attrS = AttributeSet::where('id', '!=', 1)->get(['id', 'attr_set'])->toArray();

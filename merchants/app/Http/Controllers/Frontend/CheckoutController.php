@@ -206,7 +206,7 @@ class CheckoutController extends Controller {
                     $settings = Helper::getSettings();
                     //dd($settings);
                     $webUrl = $_SERVER['SERVER_NAME'];
-                    $emailContent = EmailTemplate::where('id', 1)->select('content', 'subject')->get()->toArray();
+                    $emailContent = EmailTemplate::where('url_key', 'registration')->select('content', 'subject')->get()->toArray();
                     $email_template = $emailContent[0]['content'];
                     $subject = $emailContent[0]['subject'];
 
@@ -2063,7 +2063,7 @@ class CheckoutController extends Controller {
     public function updateStock($orderId) {
 
         $jsonString = Helper::getSettings();
-        // $is_stockable = GeneralSetting::where('id', 26)->first();
+        // $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         $stock_limit = GeneralSetting::where('url_key', 'stock')->first();
         $stockLimit = json_decode($stock_limit->details, TRUE);
         $cartContent = Cart::instance("shopping")->content();
