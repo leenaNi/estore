@@ -34,7 +34,7 @@
 
 
     @endif
-    @if($settingStatus['35'] == 1)
+    @if($settingStatus['market-place'] == 1)
     <li class="{{ in_array(Route::currentRouteName(),['admin.product.vendors']) ? 'active' : '' }}"><a href="{!! route('admin.product.vendors',['id'=>$id]) !!}"  aria-expanded="false">Vendors </a></li>
     @endif
     
