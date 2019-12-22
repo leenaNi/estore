@@ -69,7 +69,7 @@
                              {!! Form::hidden('password') !!}
                         <div class="col-md-6">
                         <div class="form-group">
-                        @if($settingStatus['3'] == 1)
+                        @if($settingStatus['acl'] == 1)
                             {!!Form::label('Role','Role ') !!}<span class="red-astrik"> *</span>
                                 {!! Form::select('roles',$roles_name,!empty($user->roles()->first()->id)?$user->roles()->first()->id:null,["class"=>'form-control m-b validate[required]' , ]) !!}
                                 @else

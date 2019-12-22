@@ -122,7 +122,7 @@ if (isset($data->expiry_date)) {
                                
                             </div> -->
 
-                            @if($settingStatus['27'] == 1) 
+                            @if($settingStatus['multi-language'] == 1) 
                             <div class="form-group">
                                 <label>Store Admin Language</label>
                                 <select name="language"  class="form-control" >
