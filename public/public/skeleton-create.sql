@@ -1608,12 +1608,6 @@ ALTER TABLE `has_upsell_prods`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `has_vendors`
---
-ALTER TABLE `has_vendors`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `kot`
 --
 ALTER TABLE `kot`
@@ -1717,8 +1711,8 @@ ALTER TABLE `order_return_cashback_history`
 ALTER TABLE `order_return_open_unopen`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `order_status`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `order_status`
+--   ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `order_status_history`
@@ -1976,11 +1970,6 @@ ALTER TABLE `has_attributes`
 ALTER TABLE `has_attribute_values`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `has_categories`
---
-ALTER TABLE `has_categories`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `has_combo_prods`
 --
 ALTER TABLE `has_combo_prods`
@@ -2115,11 +2104,6 @@ ALTER TABLE `order_status_history`
 ALTER TABLE `permissions`
   MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `pincodes`
---
-ALTER TABLE `pincodes`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
@@ -2157,11 +2141,6 @@ ALTER TABLE `saved_list`
 --
 ALTER TABLE `sections`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `settings`
---
-ALTER TABLE `settings`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `sizechart`
 --
@@ -2258,16 +2237,17 @@ ALTER TABLE `permission_role`
 --
 -- Constraints for table `role_user`
 --
-ALTER TABLE `role_user`
-  ADD CONSTRAINT `role_user_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `role_user_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+-- ALTER TABLE `role_user`
+--   ADD CONSTRAINT `role_user_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+--   ADD CONSTRAINT `role_user_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
-ALTER TABLE `additional_charges` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`
-ALTER TABLE `categories` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`
-ALTER TABLE `cities` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`
-ALTER TABLE `contacts` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
+ALTER TABLE `additional_charges` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
+ALTER TABLE `attribute_sets` ADD `status` tinyint(20) NOT NULL AFTER `attr_set`;
+ALTER TABLE `attribute_sets` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
+ALTER TABLE `categories` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
 ALTER TABLE `cities` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
+ALTER TABLE `contacts` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
 ALTER TABLE `countries` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
 ALTER TABLE `coupons` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
 ALTER TABLE `couriers` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
@@ -2300,12 +2280,12 @@ ALTER TABLE `slider_master` ADD `store_id` BIGINT(20) NOT NULL AFTER `is_active`
 ALTER TABLE `sms_subscription` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
 ALTER TABLE `social_media_links` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
 ALTER TABLE `static_pages` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
-ALTER TABLE `store_contacts` ADD `store_id` BIGINT(20) NOT NULL AFTER `birth_date`;
+ALTER TABLE `store_contacts` ADD `store_id` BIGINT(20) NOT NULL AFTER `birthDate`;
 ALTER TABLE `tax` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
 ALTER TABLE `testimonials` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
 ALTER TABLE `translation` ADD `store_id` BIGINT(20) NOT NULL AFTER `is_specific`;
 ALTER TABLE `unit_measures` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
-ALTER TABLE `vendors` ADD `store_id` BIGINT(20) NOT NULL AFTER `status`;
+ALTER TABLE `vendors` ADD `zip` BIGINT(20) NOT NULL AFTER `status`;
 ALTER TABLE `roles` ADD `store_id` BIGINT(20) NOT NULL AFTER `description`;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
