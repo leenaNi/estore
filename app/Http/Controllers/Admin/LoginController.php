@@ -151,7 +151,7 @@ class LoginController extends Controller {
         $final_orderGraph_y_axis = [];
         foreach ($orderGraph as $value) {
             // array_push($final_orderGraph_x_axis, $value["created_at"]);
-            array_push($final_orderGraph_x_axis, date('d-M-Y',strtotime($value["created_at"])));
+            array_push($final_orderGraph_x_axis, date('d-M',strtotime($value["created_at"])));
             array_push($final_orderGraph_y_axis, $value["total_order"]);
         }
 
