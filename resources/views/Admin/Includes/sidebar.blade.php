@@ -16,6 +16,14 @@
                 </a>
             </li> 
 
+              <li class="{{ (in_array(Route::currentRouteName(),['admin.vendors.view'])?'active':'') }}">
+                <a href="{{ route('admin.vendors.view') }}">
+                    <i class="fa fa-users"></i> <span>Vendors</span>
+                </a>
+            </li> 
+
+
+
             <li class="{{ (in_array(Route::currentRouteName(),['admin.stores.view'])?'active':'') }}">
                 <a href="{{ route('admin.stores.view') }}">
                     <i class="fa fa-shopping-cart"></i> <span>Stores</span>
