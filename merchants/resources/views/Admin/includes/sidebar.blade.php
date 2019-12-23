@@ -91,7 +91,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
            @endif
             <li class="treeview {{ preg_match("/admin.category|admin.reviews.view|admin.products|admin.attribute.set|admin.tax|admin.attributes|admin.sizechart|admin.raw-material|admin.stock/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="#">
-                    <i class="fa fa-folder-open"></i><span>Products</span>
+                    <i class="fa fa-product-hunt"></i><span>Products</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
@@ -226,7 +226,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
             <li class="treeview {{ preg_match("/admin.report.productIndex|admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
-                    <i class="fa fa-line-chart"></i><span>Reports</span>
+                    <i class="fa fa-file"></i><span>Reports</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
@@ -253,7 +253,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
             <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
-                    <i class="fa fa-users"></i><span>ACL</span>
+                    <i class="fa fa-user-plus"></i><span>ACL</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">

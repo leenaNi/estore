@@ -278,7 +278,6 @@
                                         <center> <canvas id="productCanvas" width="300" height="300"></canvas>  </center>
                                         <div class="table-responsive">
                                             <table class="table no-margin">
-
                                                 <tbody>
                                                     @foreach($products as $product)
                                                     <tr>
