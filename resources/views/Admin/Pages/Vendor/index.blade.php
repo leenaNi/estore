@@ -34,7 +34,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                {{ Form::text('firstname',!empty(Input::get('firstname'))?Input::get('firstname'):null,['class'=>'form-control','placeholder'=>'Merchant']) }}
+                                {{ Form::text('firstname',!empty(Input::get('firstname'))?Input::get('firstname'):null,['class'=>'form-control','placeholder'=>'Vendor']) }}
                             </div>
                             <div class="col-md-3">
                                 {{ Form::text('email',!empty(Input::get('email'))?Input::get('email'):null,['class'=>'form-control','placeholder'=>'Email ID']) }}
