@@ -11,3 +11,29 @@ html,body{min-height:100%}.layout-boxed html,.layout-boxed body{height:100%}body
 		border-color: #8ab34f !important;
 		box-shadow: none;
 		}
+		.clearfix.mb-15 {
+    clear: both;
+    overflow: auto;
+    margin-bottom: 15px;
+}
+.bg-blue.bg-blue-box {
+    padding: 10px;
+}
+.bg-blue.bg-blue-box select {
+    background: transparent;
+    color: #fff;
+    margin: 10px 0px;
+}
+.bg-blue.bg-blue-box select option {
+    background: #3f73b7;
+    line-height: 20px;
+    border: 0;
+    outline: 0;
+    margin: 10px;
+}
+/*.bg-blue.bg-blue-box .small-box .icon {
+    right: -50px;
+}*/
+.bg-blue.bg-blue-box .small-box.bg-blue {
+    box-shadow: none !important;
+}

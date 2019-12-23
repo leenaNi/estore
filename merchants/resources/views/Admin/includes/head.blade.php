@@ -151,26 +151,6 @@ Session::put('storelogo', $data->logo);
     .nav-tabs-custom>.nav-tabs>li.active{border-top-color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
     .form-control:focus{border-color: <?php echo "#" . $data->primary_color . " !important"; ?>;;}
 
-    /*.skin-blue .sidebar-menu > li > .treeview-menu{
-        background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;
-        opacity:0.8;
-    }*/
-
-    /*.skin-blue .sidebar-menu > li > .treeview-menu{
-        background-color:rgba(0,0,0,0.2) !important;}*/
-
-    /*.btn-primary, .btn-default{
-        background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;
-        opacity:0.8;
-    }
-
-    .reset-btn{
-        background-color: <?php echo "#" . $data->secondary_color . " !important"; ?>;
-    }
-    .navbar, .navbar-static-top{
-        background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;
-        opacity:0.8;
-    }*/
 </style>
 <style>
     .btn{
