@@ -40,6 +40,13 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/delete-store-document', ["as" => "admin.stores.deleteStoreDoc", "uses" => "StoreController@deleteStoreDoc"]);
             Route::get('/get-zone-dropdown/{id?}', ["as" => "admin.stores.getZoneDropdown", "uses" => "StoreController@getZoneDropdown"]);
         });
+
+        Route::group(['prefix' => 'reports'], function () {
+            Route::any('/store-orders', ["as" => "admin.reports.view", "uses" => "ReportController@index"]);
+            Route::any('/check-store', ['as' => 'checkStoreAdmin', 'uses' => 'StoreController@checkStore']);
+            
+        });
+
         Route::group(['prefix' => 'analytics'], function () {
             Route::get('/by-category', ["as" => "admin.analytics.byCategory", "uses" => "AnalyticController@byCategory"]);
             Route::get('/by-date', ["as" => "admin.analytics.byDate", "uses" => "AnalyticController@byDate"]);

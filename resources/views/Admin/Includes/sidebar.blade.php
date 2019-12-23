@@ -122,6 +122,22 @@
 
                 </ul>
             </li>
+           
+            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.notification.view']) ? 'active' : '' }}">
+                <a href="#">
+                    <i class="fa fa-file"></i> <span>Reports</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu {{ in_array(Route::currentRouteName(),[
+                                'admin.masters.language.view',
+                               'admin.masters.language.view'
+                            ]) ? 'menu-open' : '' }}">
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.masters.category.view','admin.masters.category.addEdit'])?'active':'' }}"><a href="{{ route('admin.reports.view') }}"><i class="fa fa-circle-o"></i>Store Orders</a></li>
+                </ul>
+
+            </li>
             <li class="{{ (in_array(Route::currentRouteName(),['admin.settings.view'])?'active':'') }}">
                 <a href="{{route('admin.settings.view')}}">
                     <i class="fa fa-cogs"></i> <span>Settings</span>

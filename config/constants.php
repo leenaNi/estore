@@ -22,9 +22,10 @@ $adminConstants = [
     'AdminPagesNotification' => 'Admin.Pages.notification',
     'AdminPagesSettings' => 'Admin.Pages.Settings',
     
-      'AdminStoreLogo' => 'public/admin/uploads/logos/',
+    'AdminPagesReports' => 'Admin.Pages.Reports',
+    'AdminStoreLogo' => 'public/admin/uploads/logos/',
     'AdminPagesMastersCategory' => 'Admin.Pages.Masters.Category',
-      'AdminPagesMastersTheme' => 'Admin.Pages.Masters.Themes',
+    'AdminPagesMastersTheme' => 'Admin.Pages.Masters.Themes',
     'AdminPagesMastersLanguage' => 'Admin.Pages.Masters.Language',
     'AdminPagesMastersTranslation' => 'Admin.Pages.Masters.Translation',
     
