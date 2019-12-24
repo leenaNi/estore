@@ -338,3 +338,13 @@ $.src="https://v2.zopim.com/?5pJbEGEoZtWR1KmVOcuBvtRB6XLX6qKI";z.t=+new Date;$.
 type="text/javascript";e.parentNode.insertBefore($,e)})(document,"script");
 </script> -->
 <!--End of Zendesk Chat Script-->
+
+
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute("{{env('GOOGLE_RECAPTCHA_KEY')}}", { action: 'contact' }).then(function (token) {
+            var recaptchaResponse = document.getElementById('recaptchaResponse');
+            recaptchaResponse.value = token;
+        });
+    });
+</script>

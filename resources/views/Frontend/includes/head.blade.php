@@ -30,6 +30,7 @@
 <link rel="icon" type="image/png" href="{{ asset(Config('constants.frontendPublicImgPath').'/favicon.png') }}">
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120933546-1"></script>
+<script src="https://www.google.com/recaptcha/api.js?render={{env('GOOGLE_RECAPTCHA_KEY')}}" async defer></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
