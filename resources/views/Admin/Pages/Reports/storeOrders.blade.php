@@ -21,20 +21,18 @@
                     <div class="row">
                         <div class="col-md-10">
                         <div class="row"> 
-                            {{ Form::open(['method'=>'get']) }}
+                            {{ Form::open(['route'=>'admin.reports.getstoreorders','method'=>'get']) }}
                             {{ Form::hidden('search',1) }}
-                            <div class="col-md-3">
-
-                                {{ Form::text('s_category',!empty(Input::get('s_category'))?Input::get('s_category'):null,['class'=>'form-control','placeholder'=>'Search']) }}
+                            <div class="col-md-5">
+                                {{ Form::select('store_id',$AllStores,!empty(Input::get('store_id'))?Input::get('store_id'):null,['class'=>"form-control"]) }}
                             </div>
                             <div class="col-md-5">
                                 <div class="input-group">
                                     <div class="input-group-addon"><i class="fa fa-calendar glyphicon glyphicon-calendar"></i></div>
-                                    {{ Form::text('date_search',!empty(Input::get('date_search'))?Input::get('date_search'):null,['class'=>'form-control','id'=>'dateSearch','placeholder'=>'Select Date']) }}
+                                    {{ Form::text('date_search',!empty(Input::get('date_search'))?Input::get('date_search'):null,['class'=>'form-control','id'=>'dateFilter','placeholder'=>'Select Date']) }}
 
                                 </div>
                             </div>
-
                             <div class="col-md-1">
                                 <button type="submit" class="btn btn-success"><i class="fa fa-search"></i> Search</button>
 
@@ -43,7 +41,9 @@
                             </div>
                         </div> 
                         <div class="col-md-2 text-right"> 
-                            {!! Form::open(['route'=>'admin.masters.category.addEdit','method'=>'post']) !!}
+                           
+                            {!! Form::open(['route'=>'admin.reports.export','method'=>'post']) !!}
+                            <input type="hidden" name="store_ids" value="{{$store_ids}}">
                             {!! Form::submit('Export',['class'=>'btn btn-info']) !!}
                             {!! Form::close() !!}
                         </div>
@@ -57,15 +57,17 @@
                     <table class="table table-hover">
                         <tr>
                             <th>Order ID</th>
+                            <th>Customer Name</th>
                             <th>Order Amount</th>
                             <th>COD Charges</th>
                             <th>Payable Amount</th>
-                            <th>Created On</th>
+                            <th>Order Date</th>
                             <!-- <th>Action</th> -->
                         </tr>
                         @foreach($StoreOrders as $order)
                         <tr>
                             <td>{{ $order->id }}</td>
+                            <td>{{ $order->first_name }} {{ $order->last_name }}</td>
                             <td>{{ $order->order_amt }}</td>
                             <td>{{ $order->cod_charges }}</td>
                             <td>{{ $order->pay_amt }}</td>
@@ -122,27 +124,10 @@
             }
 
         });
-
-
-
     });
-
-
-
     s_from_date = '<?php echo date('Y-m-d', strtotime('-30 days')); ?>';
     s_to_date = '<?php echo date('Y-m-d'); ?>';
-
-
-
-<?php if (!empty(Input::get('date_search'))) { ?>
-    <?php $dateArr = explode(" - ", Input::get('date_search')); ?>
-        s_from_date = '<?php echo date("Y-m-d", strtotime($dateArr[0])) ?>';
-        s_to_date = '<?php echo date("Y-m-d", strtotime($dateArr[1])) ?>';
-<?php } ?>
-
-
-
-    $('#dateSearch').daterangepicker(
+    $('#dateFilter').daterangepicker(
             {
                 locale: {
                     format: 'YYYY-MM-DD'
@@ -160,11 +145,9 @@
                 }
             },
     function (start, end, label) {
-        alert("A new date range was chosen: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-        $('#dateSearch').val(start.format('YYYY-MM-DD') + " - " + end.format('YYYY-MM-DD'));
+        // alert("A new date range was chosen: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        $('#dateFilter').val(start.format('YYYY-MM-DD') + " - " + end.format('YYYY-MM-DD'));
 
     });
-
-
 </script>
 @stop

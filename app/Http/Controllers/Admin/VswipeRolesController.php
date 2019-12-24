@@ -36,6 +36,7 @@ class VswipeRolesController extends Controller {
     }
 
     public function addEdit() {
+        ini_set('max_execution_time', -1);
         $per = $permissions = VswipePermission::pluck('display_name')->toArray();
 
         $newRoutes = [];
