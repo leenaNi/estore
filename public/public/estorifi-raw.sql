@@ -660,13 +660,13 @@ DROP TABLE IF EXISTS `countries`;
 CREATE TABLE IF NOT EXISTS `countries` (
   `id` int(11) NOT NULL,
   `name` varchar(128) NOT NULL,
+  `country_code` VARCHAR(155) NOT NULL,
   `iso_code_2` varchar(2) NOT NULL,
   `iso_code_3` varchar(3) NOT NULL,
   `address_format` text NOT NULL,
   `postcode_required` tinyint(1) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 ALTER TABLE `countries` ADD PRIMARY KEY(`id`);
 ALTER TABLE `countries` CHANGE `id` `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
@@ -924,6 +924,8 @@ INSERT INTO `countries` (`id`, `name`, `iso_code_2`, `iso_code_3`, `address_form
 (250, 'St. Martin (French part)', 'MF', 'MAF', '', 0, 0),
 (251, 'Canary Islands', 'IC', 'ICA', '', 0, 0);
 
+UPDATE `countries` SET `country_code` = '880' WHERE `countries`.`id` = 18;
+UPDATE `countries` SET `country_code` = '91' WHERE `countries`.`id` = 99;
 -- --------------------------------------------------------
 
 --
