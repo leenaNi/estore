@@ -125,11 +125,8 @@ class LoginController extends Controller {
             $and
             group by vs.order_date,b.id,m.id) t1");
 
-//dd($allStoreSales);
-
-
+        //dd($allStoreSales);
         //for order graph 
-
         $orderGraph0 = Order::orderBy('created_at', 'asc')->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
 
         $weekDate = date('Y-m-d', strtotime("-7 day"));
@@ -213,23 +210,63 @@ class LoginController extends Controller {
     }
 
     public function getOrderDateWise() {
+        $result = [];
         $merchants_id = !empty(Input::get('merchants_id')) ? (int)Input::get('merchants_id') : 0;
         $time_duration_id= !empty(Input::get('time_duration_id')) ? Input::get('time_duration_id') : 1 ;
         if ($merchants_id != 0) {
-           if ($time_duration_id == 1) {
+            if ($time_duration_id == 1) {
                 $Orders = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'");
+                $orderGraph0 = Order::where('store_id',$merchants_id)->where('created_at', '>=', date('Y-m-d'))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
+                $n = 1;
+                $wDate = date('Y-m-d');
             } elseif ($time_duration_id == 3) {
                 $Orders = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'");
+                $orderGraph0 = Order::where('store_id',$merchants_id)->where('created_at', '>=', date('Y-m-d', strtotime("-30 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
+                $n = 30;
+                $wDate = date('Y-m-d', strtotime("-30 day"));
             } elseif ($time_duration_id == 2) {
                 $Orders = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'");
+                $orderGraph0 = Order::where('store_id',$merchants_id)->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();
+                $n = 7;
+                $wDate = date('Y-m-d', strtotime("-7 day"));
             }else{
-                $Orders = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'");       
+                $Orders = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'");    
+                $orderGraph0 = Order::where('store_id',$merchants_id)->where('created_at', '>=', date('Y-m-d', strtotime("-365 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('count(id) as total_order')])->toArray();   
+                $n = 365;
+                $wDate = date('Y-m-d', strtotime("-365 day"));
             }
             $Orders = $Orders->where("store_id", $merchants_id)->count();
+
+            $orderGraph = array();
+            for ($i = $n; $i > 0; $i--) {
+                array_push($orderGraph, array('created_at' => $wDate, 'total_order' => 0));
+                $wDate = date('Y-m-d', strtotime('+1 day', strtotime($wDate)));
+            }
+           foreach ($orderGraph as $key => $order) {
+                foreach ($orderGraph0 as $ord) {
+                    if (date('Y-m-d', strtotime($ord['created_at'])) == $order['created_at']) {
+                        $orderGraph[$key]['created_at'] = $ord['created_at'];
+                        $orderGraph[$key]['total_order'] = $ord['total_order'];
+                    }
+                }
+            }
+            // dd($orderGraph);
+            $final_orderGraph_x_axis = [];
+            $final_orderGraph_y_axis = [];
+            foreach ($orderGraph as $value) {
+                // array_push($final_orderGraph_x_axis, $value["created_at"]);
+                array_push($final_orderGraph_x_axis, date('d-M',strtotime($value["created_at"])));
+                array_push($final_orderGraph_y_axis, $value["total_order"]);
+            }
         }else{
             $Orders = 0;
+            $final_orderGraph_x_axis = 0;
+            $final_orderGraph_y_axis = 0;
         }
-        return $Orders;
+        $result["Orders"] = $Orders;
+        $result["orderGraph_x"] = $final_orderGraph_x_axis;
+        $result["orderGraph_y"] = $final_orderGraph_y_axis;
+        return $result;
     }
 
 
@@ -237,20 +274,59 @@ class LoginController extends Controller {
         $merchants_id = !empty(Input::get('merchants_id')) ? (int)Input::get('merchants_id') : 0;
         $time_duration_id= !empty(Input::get('time_duration_id')) ? Input::get('time_duration_id') : 1 ;
         if ($merchants_id != 0) {
-           if ($time_duration_id == 1) {
+            if ($time_duration_id == 1) {
                 $totalSales = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'");
+                $salesGraph0 = Order::where('store_id',$merchants_id)->where('created_at', '>=', date('Y-m-d'))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
+                $n = 1;
+                $wDate = date('Y-m-d');
             } elseif ($time_duration_id == 3) {
                 $totalSales = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'");
+                $salesGraph0 = Order::where('store_id',$merchants_id)->where('created_at', '>=', date('Y-m-d', strtotime("-30 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
+                $n = 30;
+                $wDate = date('Y-m-d', strtotime("-30 day"));
             } elseif ($time_duration_id == 2) {
                 $totalSales = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'");
+                $salesGraph0 = Order::where('store_id',$merchants_id)->where('created_at', '>=', date('Y-m-d', strtotime("-7 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
+                $n = 7;
+                $wDate = date('Y-m-d', strtotime("-7 day"));
             }else{
-                $totalSales = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'");       
+                $totalSales = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'"); 
+                $salesGraph0 = Order::where('store_id',$merchants_id)->where('created_at', '>=', date('Y-m-d', strtotime("-365 day")))->groupBy(DB::raw("DATE(created_at)"))->get(['created_at', DB::raw('sum(pay_amt) as total_amount')])->toArray();
+                $n = 365;
+                $wDate = date('Y-m-d', strtotime("-365 day"));  
             }
             $totalSales = $totalSales->where("store_id", $merchants_id)->sum("pay_amt");
+
+            $salesGraph = array();
+            for ($i = $n; $i > 0; $i--) {
+                array_push($salesGraph, array('created_at' => $wDate, 'total_amount' => 0));
+                $wDate = date('Y-m-d', strtotime('+1 day', strtotime($wDate)));
+            }
+            foreach ($salesGraph as $key => $sale) {
+                foreach ($salesGraph0 as $s0) {
+                    if (date('Y-m-d', strtotime($s0['created_at'])) == $sale['created_at']) {
+                        $salesGraph[$key]['created_at'] = $s0['created_at'];
+                        $salesGraph[$key]['total_amount'] = $s0['total_amount'];
+                    }
+                }
+            }
+
+            $final_salesGraph_x_axis = [];
+            $final_salesGraph_y_axis = [];
+            foreach ($salesGraph as $value) {
+                // array_push($final_orderGraph_x_axis, $value["created_at"]);
+                array_push($final_salesGraph_x_axis, date('d-M',strtotime($value["created_at"])));
+                array_push($final_salesGraph_y_axis, $value["total_amount"]);
+            }
         }else{
             $totalSales = 0;
+            $final_salesGraph_x_axis = 0;
+            $final_salesGraph_y_axis = 0;
         }
-        return $totalSales;
+        $result["totalSales"] = $totalSales;
+        $result["salesGraph_x"] = $final_salesGraph_x_axis;
+        $result["salesGraph_y"] = $final_salesGraph_y_axis;
+        return $result;
     }
 
     public function login() {
