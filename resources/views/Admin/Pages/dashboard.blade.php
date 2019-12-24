@@ -244,35 +244,32 @@
             </div>
 
         </section>
-
     </div>
     <div class="row">
-        
         <div class="clearfix mb-15"></div>
         <section class="col-lg-6 connectedSortable">
             <div class="box box-info">
-                <div class="row">
-                    <div class="col-lg-4 col-xs-6">
-                        <!-- small box -->
-                        <div class="small-box bg-blue">
-                            <div class="inner">
+                <div class="bg-blue bg-blue-box">
+                    <div class="row">
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="small-box bg-blue">
+                                <div class="inner">
 
-                                <h3 id="order_count"> 0 </h3>
+                                    <h3 id="order_count"> 0 </h3>
 
-                                <p>Orders Count</p>
+                                    <p><span id="total_order_label">Orders Count</span></p>
+                                </div>
+                                <div class="icon bg-icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
                             </div>
-                            <div class="icon">
-                                <i class="ion ion-bag"></i>
-                            </div>
-                            <a href="#" class="small-box-footer"> <i class="fa"></i></a>
+                        </div>
+                        <div class="col-lg-6 col-xs-6">
+                            {!! Form::select('merchants_name',$merchants_name,Input::get('merchants_name'), ["class"=>'form-control filter_type order-data','id' => 'merchants_id',"placeholder"=>"Store Name"]) !!}
+                            {!! Form::select('time_duration',$time_duration,Input::get('time_duration'), ["class"=>'form-control filter_type order-data','id' => 'time_duration_id', "placeholder"=>"Time Duration"]) !!}
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-6 col-xs-12" >
-                                {!! Form::select('merchants_name',$merchants_name,Input::get('merchants_name'), ["class"=>'form-control filter_type order-data','id' => 'merchants_id',"placeholder"=>"Store Name"]) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        {!! Form::select('time_duration',$time_duration,Input::get('time_duration'), ["class"=>'form-control filter_type order-data','id' => 'time_duration_id', "placeholder"=>"Time Duration"]) !!}
-                    </div>
+                    <a href="#" class="small-box-footer"> <i class="fa"></i></a>
                 </div>
                 <div class="row">
                         <div class="box-body">
@@ -283,32 +280,32 @@
                 </div>
             </div>
         </section>
-        
-        <!-- <div class="clearfix mb-15"></div> -->
+
         <section class="col-lg-6 connectedSortable">
             <div class="box box-info">
-                <div class="row">
-                    <div class="col-lg-4 col-xs-6">
-                        <!-- small box -->
-                        <div class="small-box bg-blue">
-                            <div class="inner">
+                <div class="bg-blue bg-blue-box">
+                    <div class="row">
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="small-box bg-blue">
+                                <div class="inner">
 
-                                <h3 id="total_sales"> 0 </h3>
-
-                                <p>Total Sales</p>
+                                    <h3 > 
+                                    <!-- <span class="currency-sym"> </span> -->
+                                    <span class="priceConvert" id="total_sales">
+                                    0 </span></h3>
+                                    <p><span id="total_sales_label">Total Sales</span></p>
+                                </div>
+                                <div class="icon bg-icon">
+                                   <i class="ion ion-connection-bars"></i>
+                                </div>
                             </div>
-                            <div class="icon">
-                                <i class="ion ion-bag"></i>
-                            </div>
-                            <a href="#" class="small-box-footer"> <i class="fa"></i></a>
+                        </div>
+                        <div class="col-lg-6 col-xs-6">
+                            {!! Form::select('merchants_name',$merchants_name,Input::get('merchants_name'), ["class"=>'form-control filter_type sales-data','id' => 'sale_merchants_id',"placeholder"=>"Store Name"]) !!}
+                            {!! Form::select('time_duration',$time_duration,Input::get('time_duration'), ["class"=>'form-control filter_type sales-data','id' => 'sale_time_duration_id', "placeholder"=>"Time Duration"]) !!}
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-6 col-xs-12" >
-                                {!! Form::select('merchants_name',$merchants_name,Input::get('merchants_name'), ["class"=>'form-control filter_type sales-data','id' => 'sale_merchants_id',"placeholder"=>"Store Name"]) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        {!! Form::select('time_duration',$time_duration,Input::get('time_duration'), ["class"=>'form-control filter_type sales-data','id' => 'sale_time_duration_id', "placeholder"=>"Time Duration"]) !!}
-                    </div>
+                    <a href="#" class="small-box-footer"> <i class="fa"></i></a>
                 </div>
                 <div class="row">
                         <div class="box-body">
@@ -405,6 +402,15 @@
             dataType: 'json',
             success : function(results) {
                             $("#order_count").text(results);
+                            if (time_duration_id == 1) {
+                                $("#total_order_label").text("Orders Today");
+                            }else if(time_duration_id == 2){
+                                $("#total_order_label").text("Orders This Week");
+                            }else if(time_duration_id == 3){
+                                $("#total_order_label").text("Orders This Month");
+                            }else{
+                                $("#total_order_label").text("Orders This Year");
+                            }      
             }
         });   
     });
@@ -419,6 +425,15 @@
             dataType: 'json',
             success : function(results) {
                         $("#total_sales").text(results);
+                        if (time_duration_id == 1) {
+                            $("#total_sales_label").text("Revenues Today");
+                        }else if(time_duration_id == 2){
+                            $("#total_sales_label").text("Revenues This Week");
+                        }else if(time_duration_id == 3){
+                            $("#total_sales_label").text("Revenues This Month");
+                        }else{
+                            $("#total_sales_label").text("Revenues This Year");
+                        }        
             }
         });   
     });
@@ -435,7 +450,7 @@
             labels: x_axis,
             datasets: [
                 {
-                    label: `Number Of Orders`,
+                    label: `Number Of Orders(Last 7 days)`,
                     fill: true,
                     // backgroundColor: forecastLineColors.darkBlue.fill,
                     // pointBackgroundColor: forecastLineColors.darkBlue.stroke,
@@ -478,7 +493,7 @@ drawChart();
             labels: x_axis,
             datasets: [
                 {
-                    label: `Total Sales`,
+                    label: `Total Sales(Last 7 days)`,
                     fill: true,
                     // backgroundColor: forecastLineColors.darkBlue.fill,
                     // pointBackgroundColor: forecastLineColors.darkBlue.stroke,
