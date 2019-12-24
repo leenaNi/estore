@@ -274,7 +274,7 @@
                 <div class="row">
                         <div class="box-body">
                             <div class="chart">
-                                <canvas id="areaChart" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
+                                <canvas class="areaChart" id="areaChart_id" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
                             </div>
                         </div>
                 </div>
@@ -310,37 +310,13 @@
                 <div class="row">
                         <div class="box-body">
                             <div class="chart">
-                                <canvas id="areaChart_sales" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
+                                <canvas class="areaChart_sales" id="areaChart_sales_id" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
                             </div>
                         </div>
                 </div>
             </div>
         </section>
     </div>
-    <!-- Main row -->
-
-
-    <!--<div class="row">
-        <section class="col-lg-12 connectedSortable">
-            <div class="box box-info">
-
-                <div class="box box-solid bg-teal-gradient">
-                    <div class="box-header">
-                        <i class="fa fa-th"></i>
-
-                        <h3 class="box-title">All Stores Sales (Last 10 days)</h3>
-
-                    </div>
-                    <div class="box-body border-radius-none">
-                        <div class="chart" id="line-chart" style="height: 250px;"></div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-
-    </div>-->
 </section>
 <!-- /.content -->
 @stop
@@ -350,8 +326,6 @@
     let x_axis = '<?php echo (json_encode($orderGraph_x)) ?>';
     x_axis = x_axis.replace('[','').replace(']','').split(',');
     x_axis = x_axis.map(label => label.replace('"',"").replace('"',""))
-    console.log(typeof x_axis);
-    console.log(x_axis) 
 
     $('svg').height(1000);
 
@@ -359,39 +333,6 @@
 //var storeSales = storedata.replace(/"(\w+)"\s*:/g, '$1:');
     console.log(JSON.stringify(storedata));
    
-    /*var line = new Morris.Line({
-        element: 'line-chart',
-        parseTime: false,
-        resize: true,
-        data: storedata,
-        xkey: 'y',
-        ykeys: ['item1'],
-        labels: ['Store Sales'],
-        // behaveLikeLine:true,
-        xLabelAngle: 45,
-        //   xLabelWidth:100,
-     //   xLabelMargin: 50,
-        //   
-        //  eventStrokeWidth: 0,
-        xLabelFormat: function (x) {
-            lab = x.label;
-            console.log(lab);
-            return lab.toString();
-        },
-//  
-        //    ymax: 0,
-        lineColors: ['#efefef'],
-        behaveLikeLine: true,
-        lineWidth: 2,
-        hideHover: 'auto',
-        gridTextColor: "#fff",
-        gridStrokeWidth: 0.4,
-        pointSize: 4,
-        pointStrokeColors: ["#efefef"],
-        gridLineColor: "#efefef",
-        gridTextFamily: "Open Sans",
-        gridTextSize: 18
-    });*/
     $('.order-data').on('change', function(){
         var merchants_id = $('#merchants_id').val();
         var time_duration_id = $('#time_duration_id').val();
@@ -401,7 +342,7 @@
             data: {merchants_id : merchants_id,time_duration_id : time_duration_id},
             dataType: 'json',
             success : function(results) {
-                            $("#order_count").text(results);
+                            $("#order_count").text(results.Orders);
                             if (time_duration_id == 1) {
                                 $("#total_order_label").text("Orders Today");
                             }else if(time_duration_id == 2){
@@ -410,11 +351,44 @@
                                 $("#total_order_label").text("Orders This Month");
                             }else{
                                 $("#total_order_label").text("Orders This Year");
-                            }      
+                            }
+                            let x_axis = results.orderGraph_x;
+                            const drawChart = () => {
+                            new Chart($('.areaChart'), {
+                                type: 'line',
+                                data: {
+                                    labels: x_axis,
+                                    datasets: [
+                                        {
+                                            label: `Number Of Orders`,
+                                            fill: true,
+                                            data: results.orderGraph_y,
+                                            borderWidth: 1,
+                                            order: 1,
+                                        }, 
+                                    ]
+                                },
+                                options: {
+                                    legend: {
+                                        position:'bottom'
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            stacked: false,
+                                        }]
+                                    },
+                                    animation: {
+                                        duration: 1000,
+                                    },
+                                }
+                            });
+                        }
+                        drawChart();
             }
         });   
     });
-
+</script>
+<script>
     $('.sales-data').on('change', function(){
         var merchants_id = $('#sale_merchants_id').val();
         var time_duration_id = $('#sale_time_duration_id').val();
@@ -424,7 +398,7 @@
             data: {merchants_id : merchants_id,time_duration_id : time_duration_id},
             dataType: 'json',
             success : function(results) {
-                        $("#total_sales").text(results);
+                        $("#total_sales").text(results.totalSales);
                         if (time_duration_id == 1) {
                             $("#total_sales_label").text("Revenues Today");
                         }else if(time_duration_id == 2){
@@ -433,17 +407,48 @@
                             $("#total_sales_label").text("Revenues This Month");
                         }else{
                             $("#total_sales_label").text("Revenues This Year");
-                        }        
+                        }
+                        let x_axis = results.salesGraph_x;
+                        const drawChart1 = () => {
+                            new Chart($('.areaChart_sales'), {
+                                type: 'line',
+                                data: {
+                                    labels: x_axis,
+                                    datasets: [
+                                        {
+                                            label: `Number Of Orders`,
+                                            fill: true,
+                                            data: results.salesGraph_y,
+                                            borderWidth: 1,
+                                            order: 1,
+                                        }, 
+                                    ]
+                                },
+                                options: {
+                                    legend: {
+                                        position:'bottom'
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            stacked: false,
+                                        }]
+                                    },
+                                    animation: {
+                                        duration: 1000,
+                                    },
+                                }
+                            });
+                        }
+                        drawChart1();
+
             }
         });   
     });
 </script>
 
-
-
 <script>
     const drawChart = () => {
-    new Chart($('#areaChart'), {
+    new Chart($('.areaChart'), {
         type: 'line',
         data: {
             // labels: orderGraph_x,
@@ -486,7 +491,7 @@ drawChart();
 
 <script>
     const salesDrawChart = () => {
-    new Chart($('#areaChart_sales'), {
+    new Chart($('.areaChart_sales'), {
         type: 'line',
         data: {
             // labels: orderGraph_x,
