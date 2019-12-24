@@ -131,7 +131,7 @@
                 </ul>
             </li>
            
-            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.notification.view']) ? 'active' : '' }}">
+            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.reports.view','admin.reports.getstoreorders']) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-file"></i> <span>Reports</span>
                     <span class="pull-right-container">
@@ -142,7 +142,7 @@
                                 'admin.masters.language.view',
                                'admin.masters.language.view'
                             ]) ? 'menu-open' : '' }}">
-                    <li class="{{ in_array(Route::currentRouteName(),['admin.masters.category.view','admin.masters.category.addEdit'])?'active':'' }}"><a href="{{ route('admin.reports.view') }}"><i class="fa fa-circle-o"></i>Store Orders</a></li>
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.reports.view','admin.reports.getstoreorders'])?'active':'' }}"><a href="{{ route('admin.reports.view') }}"><i class="fa fa-circle-o"></i>Store Orders</a></li>
                 </ul>
 
             </li>

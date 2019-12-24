@@ -59,9 +59,9 @@ Route::group(['namespace' => 'Admin'], function () {
         });
 
         Route::group(['prefix' => 'reports'], function () {
-            Route::any('/store-orders', ["as" => "admin.reports.view", "uses" => "ReportController@index"]);
-            Route::any('/check-store', ['as' => 'checkStoreAdmin', 'uses' => 'StoreController@checkStore']);
-            
+            Route::get('/store-orders', ["as" => "admin.reports.view", "uses" => "ReportController@index"]);
+            Route::get('/getorders', ["as" => "admin.reports.getstoreorders", "uses" => "ReportController@getOrdersByStore"]);
+            Route::post('/export-store-orders', ["as" => "admin.reports.export", "uses" => "ReportController@exportStoreOrders"]);
         });
 
         Route::group(['prefix' => 'analytics'], function () {
