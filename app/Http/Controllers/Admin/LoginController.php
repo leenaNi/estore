@@ -490,7 +490,7 @@ class LoginController extends Controller {
                 $name = ucfirst($chkemail->name);
                 $data = ['name' => $name, 'newlink' => $linktosend];
 
-                Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'forgotPassEmail', $data, 'Forgot password', "support@infiniteit.biz", "Veestores", $chkemail->email, $chkemail->name . " " . $chkemail->name);
+                Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'forgotPassEmail', $data, 'Forgot password', "support@infiniteit.biz", "eStorifi", $chkemail->email, $chkemail->name . " " . $chkemail->name);
             }
             // if ($chkemail->telephone) {
             //     $msgOrderSucc = "Click on the link to reset your password. " . $linktosend . ". Contact 1800 3000 2020 for real time support. Happy Learning! Team Cartini";
@@ -516,7 +516,7 @@ class LoginController extends Controller {
 
         $data = ['name' => $upPassword->name, 'email' => $useremail];
         $filepath = Config('constants.frontviewEmailTemplatesPath') . '.resetForgotPwdEmail';
-        Helper::sendMyEmail($filepath, $data, 'Your password changed!', "support@infiniteit.biz", "Veestores", $useremail, $upPassword->name);
+        Helper::sendMyEmail($filepath, $data, 'Your password changed!', "support@infiniteit.biz", "eStorifi", $useremail, $upPassword->name);
         session()->flash('pwdResetMsg', 'Password reset successfully!');
 
         return redirect()->route('admin.login');
