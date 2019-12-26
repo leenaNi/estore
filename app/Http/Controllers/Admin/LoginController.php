@@ -323,7 +323,7 @@ class LoginController extends Controller {
             $final_salesGraph_x_axis = 0;
             $final_salesGraph_y_axis = 0;
         }
-        $totalSales = number_format((float)$totalSales, 4, '.', '');
+        $totalSales = number_format((float)$totalSales, 2, '.', '');
         $result["totalSales"] = $totalSales;
         $result["salesGraph_x"] = $final_salesGraph_x_axis;
         $result["salesGraph_y"] = $final_salesGraph_y_axis;

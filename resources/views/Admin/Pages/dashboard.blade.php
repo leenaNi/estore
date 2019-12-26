@@ -293,7 +293,7 @@
                                     <!-- <span class="currency-sym"> </span> -->
                                     <span class="priceConvert" id="total_sales">
                                     0 </span></h3>
-                                    <p><span id="total_sales_label">Total Sales</span></p>
+                                    <p><span id="total_sales_label">Total Revenues</span></p>
                                 </div>
                                 <div class="icon bg-icon">
                                    <i class="ion ion-connection-bars"></i>
@@ -416,7 +416,7 @@
                                     labels: x_axis,
                                     datasets: [
                                         {
-                                            label: `Total Sales`,
+                                            label: `Total Revenues`,
                                             fill: true,
                                             data: results.salesGraph_y,
                                             borderWidth: 1,
@@ -498,7 +498,7 @@ drawChart();
             labels: x_axis,
             datasets: [
                 {
-                    label: `Total Sales(Last 7 days)`,
+                    label: `Total Revenues(Last 7 days)`,
                     fill: true,
                     // backgroundColor: forecastLineColors.darkBlue.fill,
                     // pointBackgroundColor: forecastLineColors.darkBlue.stroke,
