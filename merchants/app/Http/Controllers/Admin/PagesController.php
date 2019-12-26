@@ -40,10 +40,10 @@ class PagesController extends Controller {
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
         ->sum('pay_amt');
 
-        $weeklyOrderschart = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->get();
+        $weeklyOrderschart = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id',$this->jsonString['store_id'])->get();
 
         $weeklySaleschart = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
-        ->whereNotIn("order_status", [0, 4, 6, 10])->get();
+        ->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id',$this->jsonString['store_id'])->get();
         //dd($weeklySaleschart);
         $monthlySales = HasProducts::whereRaw("MONTH(created_at) = '" . date('m') . "'")
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
@@ -170,14 +170,14 @@ class PagesController extends Controller {
                   ->dimensions(460, 500)
                   ->responsive(false)
                   //->groupByMonth(date('Y'), true);
-                  ->groupByDay(date('m'),'', true);
+                  ->groupByDay();
 
         $Sales_chart = Charts::database($weeklySaleschart, 'line', 'highcharts')
                   ->title("Weekly Sales : ".count($weeklySaleschart))
                   ->elementLabel("Total Sales")
                   ->dimensions(460, 500)
                   ->responsive(false)
-                  ->groupByDay(date('m'),'', true);
+                  ->groupByDay();
                   //->groupByMonth(date('Y'), true);
         
 
@@ -186,17 +186,22 @@ class PagesController extends Controller {
 
 public function orderStat()
 {
+    $jsonString = Helper::getSettings();
     $startdate = Input::get('startdate');
     $enddate = Input::get('enddate');
-
-    $Orders = Order::where('created_at','>=',$startdate)->where('created_at','<=',$enddate)->whereNotIn("order_status", [0, 4, 6, 10])->get();
-
+    $date = date('Y-m-d');
+    if($startdate == $enddate){
+        $Orders = Order::whereDate('created_at','=',$startdate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id',$this->jsonString['store_id'])->get();
+    }else{
+        $Orders = Order::whereDate('created_at','>=',$startdate)->whereDate('created_at','<=',$enddate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id',$this->jsonString['store_id'])->get();
+    }
+    
     $orders_chart = Charts::database($Orders, 'line', 'highcharts')
                   ->title("Total Orders : ".count($Orders))
                   ->elementLabel("Orders")
                   ->dimensions(460, 500)
                   ->responsive(false)
-                  ->groupByMonth(date('Y'), true);
+                  ->groupByDay();
       $html = '';
       $html .= '<div id="ordersChart">';
                     echo $orders_chart->html();
@@ -232,17 +237,22 @@ public function orderStat()
 }
 public function salesStat()
 {
+    $jsonString = Helper::getSettings();
     $startdate = Input::get('startdate');
     $enddate = Input::get('enddate');
-
-    $Sales = HasProducts::where('created_at','>=',$startdate)->where('created_at','<=',$enddate)->whereNotIn("order_status", [0, 4, 6, 10])->get();
+    if($startdate == $enddate){
+        $Sales = HasProducts::whereDate('created_at','=',$startdate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id',$this->jsonString['store_id'])->get();
+    }else{
+        $Sales = HasProducts::whereDate('created_at','>=',$startdate)->whereDate('created_at','<=',$enddate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id',$this->jsonString['store_id'])->get();
+    }
 
     $Sales_chart = Charts::database($Sales, 'line', 'highcharts')
                   ->title("Total Sales : ".count($Sales))
                   ->elementLabel("Sales")
                   ->dimensions(460, 500)
                   ->responsive(false)
-                  ->groupByMonth(date('Y'), true);
+                  ->groupByDay();
+                  // ->groupByMonth(date('Y'), true);
       $html = '';
       $html .= '<div id="SalesChart">';
                     echo $Sales_chart->html();
