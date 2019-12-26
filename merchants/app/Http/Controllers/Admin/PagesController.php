@@ -251,7 +251,8 @@ public function salesStat()
                   ->elementLabel("Sales")
                   ->dimensions(460, 500)
                   ->responsive(false)
-                  ->groupByMonth(date('Y'), true);
+                  ->groupByDay();
+                  // ->groupByMonth(date('Y'), true);
       $html = '';
       $html .= '<div id="SalesChart">';
                     echo $Sales_chart->html();
