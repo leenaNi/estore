@@ -23,6 +23,7 @@ use App\Models\Templates;
 use App\Models\HasCurrency;
 use App\Models\Zone;
 use Illuminate\Support\Facades\Input;
+use GuzzleHttp\Client;
 use Hash;
 use File;
 use DB;
@@ -950,18 +951,44 @@ class HomeController extends Controller {
     }
 
     public function contactSend() {
-        $data = [];
-        $firstname = Input::get("firstname");
-        $useremail = Input::get("useremail");
-        $telephone = Input::get("telephone");
-        $message = Input::get("message");
+        $verifyCaptcha = $this->verifyRecaptcha(Input::get('recaptcha_response'));
+        if ($verifyCaptcha->success == true) {
+            $data = [];
+            $firstname = Input::get("firstname");
+            $useremail = Input::get("useremail");
+            $telephone = Input::get("telephone");
+            $message = Input::get("message");
 
-        $emailData = ['name' => $firstname, 'email' => $useremail, 'telephone' => $telephone, 'messages' => $message];
-        Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
-            $m->to("pravin@infiniteit.biz", $firstname)->subject('eStorifi Contact form!');
-        });
-        return 1;
+            $emailData = ['name' => $firstname, 'email' => $useremail, 'telephone' => $telephone, 'messages' => $message];
+            Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
+                $m->to("pravin@infiniteit.biz", $firstname)->subject('eStorifi Contact form!');
+            });
+            return 1;
+        } else {
+                $result = ['status' => 'error', 'msg' => 'Something went wrong..'];
+                return 0;
+        }
     }
+
+
+    public function verifyRecaptcha($recaptcha_response)
+    {
+        $client = new Client;
+        $response = $client->post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            [
+                'form_params' =>
+                [
+                    'secret' => env('GOOGLE_RECAPTCHA_SECRET'),
+                    'response' => Input::get('recaptcha_response'),
+                ],
+            ]
+        );
+
+        return json_decode((string) $response->getBody());
+    }
+
+
 
     public function faqS() {
         $data = [];
