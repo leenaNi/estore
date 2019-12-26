@@ -416,7 +416,7 @@
                                     labels: x_axis,
                                     datasets: [
                                         {
-                                            label: `Number Of Orders`,
+                                            label: `Total Sales`,
                                             fill: true,
                                             data: results.salesGraph_y,
                                             borderWidth: 1,
