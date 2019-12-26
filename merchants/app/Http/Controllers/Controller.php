@@ -142,8 +142,7 @@ abstract class Controller extends BaseController {
     }
 
     public static function getSetting() {
-        $settings = GeneralSetting::get(['url_key', 'status', 'type']);
-
+        $settings = GeneralSetting::get(['url_key', 'status', 'type','id']);
         foreach ($settings as $key => $value) {
             $general[strtolower($value->url_key)] = $value->status;
         }
@@ -152,11 +151,9 @@ abstract class Controller extends BaseController {
 
     public static function getSettingStatus() {
         $settings = GeneralSetting::all();
-
         foreach ($settings as $key => $value) {
-            $general[strtolower($value->id)] = $value->status;
+            $general[strtolower($value->url_key)] = $value->status;
         }
-
         return $general;
     }
 

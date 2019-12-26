@@ -264,7 +264,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.roles/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.roles.view') }}"><i class="fa fa-angle-right"></i>Roles</a></li>
 
                     @endif
-                    @if($settingStatus['25'] == 1)   
+                    @if($settingStatus['purchase'] == 1)   
                     <li class="{{ preg_match("/admin.vendors/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.view') }}"><i class="fa fa-angle-right"></i>Vendors</a></li>
                     @endif
 
