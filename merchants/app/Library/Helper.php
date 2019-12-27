@@ -423,10 +423,13 @@ class Helper {
     }
 
     public static function getCountry($country_code=0) {
+      //dd($country_code);
         if ($country_code==0) {
             $countries = DB::table('countries')->where("status", 1)->get(["id", "name","iso_code_3"]);
+            
         }else{
             $countries = DB::table('countries')->where("iso_code_3", $country_code)->get(["id", "name","iso_code_3"]);
+            
         }
         return $countries;
     }
