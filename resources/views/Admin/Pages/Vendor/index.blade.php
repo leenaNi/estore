@@ -4,7 +4,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Vendors
+        Distributors
 
     </h1>
     <ol class="breadcrumb">
@@ -57,7 +57,7 @@
                 <div class="box-body table-responsive">
                     <table class="table table-hover">
                         <tr>
-                            <th>Vendor</th>
+                            <th>Distributor Name</th>
                             <th>Email ID</th>
                             <th>Mobile</th>
                             <th>Created Date</th>

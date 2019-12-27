@@ -18,7 +18,7 @@
 
               <li class="{{ (in_array(Route::currentRouteName(),['admin.vendors.view'])?'active':'') }}">
                 <a href="{{ route('admin.vendors.view') }}">
-                    <i class="fa fa-users"></i> <span>Vendors</span>
+                    <i class="fa fa-users"></i> <span>Distributors</span>
                 </a>
             </li> 
 

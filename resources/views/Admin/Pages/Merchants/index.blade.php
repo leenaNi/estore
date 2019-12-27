@@ -58,10 +58,11 @@
                     <table class="table table-hover">
                         <tr>
 <!--                            <th>ID</th>-->  
-                            <th>Merchant</th>
+                            <th>Merchant Name</th>
                           <!--  <th>Owned By</th>--> 
                             <th>Email ID</th>
                             <th>Mobile</th>
+                            <th>Industry</th>
                             <!--<th>Bank</th>--> 
                             <th>Created Date</th>
                             <th>Actions</th>
@@ -73,6 +74,7 @@
                            <!--  <td>{{ $merchant->firstname." ".$merchant->lastname }}</td>-->
                             <td>{{ $merchant->email }}</td>
                             <td>{{ $merchant->phone }}</td>
+                            <td>{{ !empty(json_decode($merchant->register_details)->business_name) ? json_decode($merchant->register_details)->business_name : " " }}</td>
                             <!--<td><?php
                                 //$banks = '';
                                 //print_r($merchant->hasMarchants()->get());

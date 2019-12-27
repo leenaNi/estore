@@ -67,6 +67,23 @@ class MerchantController extends Controller {
         }
 
         $merchants = $merchants->paginate(Config('constants.AdminPaginateNo'));
+        // dd($merchants);
+        // $res_merchant = [];
+        // $i = 0;
+        // foreach ($merchants as $dt) {
+        //     $temp_data = New MerchantController;
+        //     $temp_data->id = $dt["id"];
+        //     $temp_data->email = $dt["email"];
+        //     $temp_data->firstname = $dt["firstname"];
+        //     $temp_data->lastname = $dt["lastname"];
+        //     $temp_data->phone = $dt["phone"];
+        //     $temp_data->created_at = $dt["created_at"];
+        //     $temp_data->industry = json_decode($dt["register_details"])->business_name;
+        //     $temp_data->currency = Currency::where("id", json_decode($dt["register_details"])->currency)->pluck('name')[0];
+        //     $res_merchant[$i] = $temp_data;
+        //     $i++; 
+        // }
+        // dd($res_merchant);
         $data = [];
         $viewname = Config('constants.AdminPagesMerchant') . ".index";
         $data['merchants'] = $merchants;
@@ -101,7 +118,8 @@ class MerchantController extends Controller {
     public function saveUpdate() {
 
         $validation = new Merchant();
-
+        $merchant = Merchant::findOrNew(Input::get('id'));
+        $business_name = Category::where("id",(int)Input::get('business_type'))->get(['category'])->toArray();
         $validator = Validator::make(Input::all(), Merchant::rules(Input::get('id')), $validation->messages);
         if ($validator->fails()) {
             return $validator->messages()->toJson();
@@ -143,7 +161,11 @@ class MerchantController extends Controller {
                 $updateArr = ["updated_by" => Session::get('authUserId')];
                 $merchant = Merchant::findOrNew(Input::get('id'));
                 $merchant->fill(Input::all());
-                $merchant->register_details = json_encode(collect(Input::all())->except('_token', 'id', 'existing_mid'));
+                $all_data = Input::all();
+                $all_data["business_name"] = $business_name[0]["category"];
+                // $merchant->register_details = json_encode(collect(Input::all())->except('_token', 'id', 'existing_mid'));
+                $merchant->register_details = json_encode(collect($all_data)->except('_token', 'id', 'existing_mid'));
+
                 $merchant->save();
                 if (!empty($this->getbankid())) {
                     $hasmer = $merchant->hasMarchants()->withPivot('id', 'bank_id', 'merchant_id', 'added_by', 'updated_by', 'created_at', 'updated_at')->get();
@@ -164,8 +186,7 @@ class MerchantController extends Controller {
         }
     }
 
-    public function saveUpdateDocuments() {
-        //dd(Input::all());
+    public function saveUpdateDocuments(\Illuminate\Http\Request $request) {
         $validation = new Merchant();
         $rules = ['des.*' => 'required', 'docs.*' => 'required|mimes:png,gif,jpeg,txt,pdf,doc'];
         $validator = Validator::make(Input::all(), $rules);
@@ -190,9 +211,14 @@ class MerchantController extends Controller {
                 $saveCImh->des = Input::get('des')[$imgK];
                 $saveCImh->save();
             }
-            $redirectView = 'admin.merchants.view';
             $data['documents'] = Merchant::find(Input::get('id'))->documents()->get();
             $data['status'] = "Saved successfully";
+            if($request->submitbutton == 'Save & Exit'){
+                $redirectView = 'admin.merchants.view';
+            }else{
+                // $redirectView = ;
+                return redirect()->back();
+            }
             return Helper::returnView(null, $data, $redirectView);
         }
     }
