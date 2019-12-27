@@ -92,7 +92,6 @@ class UserController extends Controller {
 
     public function save_review(){
         $user_id = Session::get('loggedin_user_id');
-
         $review = CustomerReview::where(['product_id'=>Input::get('pid'),'user_id'=>Session::get('loggedin_user_id'),'order_id' => Input::get('ord_id')])->get();
         if(count($review)>0)
         {
@@ -107,6 +106,7 @@ class UserController extends Controller {
             'title' => Input::get('title'),
             'description' => Input::get('desc'),
             'rating' => Input::get('stars'),
+            'store_id' => Session::get('store_id'),
             'created_at'=> date('Y-m-d H:i:s')
             ]);
         }

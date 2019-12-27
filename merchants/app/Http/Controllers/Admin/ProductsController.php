@@ -117,17 +117,17 @@ class ProductsController extends Controller {
         }
 
         $prod_types = [];
-        $prodTy = ProductType::where('status', 1)->get(['id', 'type']);
+        $prodTy = ProductType::where('status', 1)->get(['type_id', 'type']);
         $setting = GeneralSetting::where('url_key', 'products-with-variants')->first();
         $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         //  echo $setting->status; die;
         if ($setting->status == 0) {
-            $prodTy = $prodTy->whereIn('id', array(1, 2, 5))->toArray();
+            $prodTy = $prodTy->whereIn('type_id', array(1, 2, 5))->toArray();
         } else {
-            $prodTy = $prodTy->whereIn('id', array(1, 2, 3, 5))->toArray();
+            $prodTy = $prodTy->whereIn('type_id', array(1, 2, 3, 5))->toArray();
         }
         foreach ($prodTy as $prodT) {
-            $prod_types[$prodT['id']] = $prodT['type'];
+            $prod_types[$prodT['type_id']] = $prodT['type'];
         }
         $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
 
@@ -144,7 +144,7 @@ class ProductsController extends Controller {
             $getPrdImg = ($prd->catalogimgs()->where("image_mode", 1)->count() > 0) ? $prd->catalogimgs()->where("image_mode", 1)->first()->filename : 'default_product.png';
             $prd->prodImage = Config('constants.productImgPath') . "/" . @$getPrdImg;
         }
-        // dd($dd);
+        //dd($prod_types);
 
         return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets'));
     }
@@ -166,18 +166,18 @@ class ProductsController extends Controller {
             }
         }
         $prod_types = [];
-        $prodTy = ProductType::where('status', 1)->get(['id', 'type']);
+        $prodTy = ProductType::where('status', 1)->get(['type_id', 'type']);
         $setting = GeneralSetting::where('url_key', 'products-with-variants')->first();
         $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
 
         if ($setting->status == 0) {
-            $prodTy = $prodTy->whereIn('id', array(1, 2, 5))->toArray();
+            $prodTy = $prodTy->whereIn('type_id', array(1, 2, 5))->toArray();
         } else {
-            $prodTy = $prodTy->whereIn('id', array(1, 2, 3, 5))->toArray();
+            $prodTy = $prodTy->whereIn('type_id', array(1, 2, 3, 5))->toArray();
             // dd($prodTy);
         }
         foreach ($prodTy as $prodT) {
-            $prod_types[$prodT['id']] = $prodT['type'];
+            $prod_types[$prodT['type_id']] = $prodT['type'];
         }
         $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
 
@@ -224,8 +224,8 @@ class ProductsController extends Controller {
 
         $prod->added_by = Input::get('added_by');
         if ($prod->prod_type == 1) {
-
-            $prod->attr_set = "1";
+            $attr = AttributeSet::where(['store_id'=>Session::get('store_id'),'attr_set'=>'Default'])->first();
+            $prod->attr_set = $attr->id;
         }
         if (Input::get("is_stock") == 1) {
             $prod->stock = Input::get("stock");
@@ -242,9 +242,11 @@ class ProductsController extends Controller {
 
         //dd($prod);
         // Session::flash("msg","Product Added succesfully.");
+        $prod->store_id = Session::get('store_id');
         $prod->update();
         if ($prod->prod_type != 3) {
             $attributes = AttributeSet::find($prod->attributeset['id'])->attributes;
+            //dd($attributes);
             if (!empty($attributes))
                 $prod->attributes()->sync($attributes);
             else

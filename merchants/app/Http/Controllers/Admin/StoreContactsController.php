@@ -144,6 +144,7 @@ class StoreContactsController extends Controller {
                 $storeCont->anniversary = Input::get('anniversary');
                 $storeCont->birthDate = Input::get('birthDate');
                 $storeCont->mobileNo = Input::get('mobileNo');
+                $storeCont->store_id = Session::get('store_id');
                 $storeCont->contact_type = 1;
                 $storeCont->save();
                 

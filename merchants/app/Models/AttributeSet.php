@@ -9,7 +9,7 @@ use App\Library\Helper;
 class AttributeSet extends Model {
     use Sortable;
     protected $table = 'attribute_sets';
-    protected $fillable = ['attr_set'];
+    protected $fillable = ['id','attr_set'];
     public $sortable = ['id', 'attr_set'];
 
     public function newQuery($excludeDeleted = true)
