@@ -180,10 +180,11 @@
                                     <a href="javascript:void(0);" class="label label-success active addMoreDoc" >Add More</a>
                                 </div>
                                 <div class='clearfix'></div>
+                                <!-- {!! Form::hidden('return_url',null,['class'=>'rtUrl']) !!} -->
                                 <div class="box-footer">
                                     <a class="btn btn-info pull-right" href="{{route('admin.merchants.view')}}"> Close</a>
-                                    {{Form::submit('Save & Exit', ['class'=>'btn btn-info pull-right saveExitMerchantDoc mr10']) }}
-                                    <!--                                    {{Form::button('Save & Next', ['class'=>'btn btn-info pull-right saveNextMerchantDoc']) }}-->
+                                    {{Form::submit('Save & Exit', ['class'=>'btn btn-info pull-right saveExitMerchantDoc mr10','name'=>'submitbutton']) }} &nbsp; &nbsp;
+                                    {{Form::submit('Save & Continue', ['class'=>'btn btn-info pull-right saveAndContinue mr10','name'=>'submitbutton']) }}
                                 </div>
                                 {{ Form::close() }}
                             </div>
@@ -432,27 +433,6 @@
             });
         }
     });
-
-    $(".saveExitMerchantGeneral").click(function () {
-        if ($("#merchantGeneral").valid()) {
-            $.ajax({
-                type: "POST",
-                url: "{{ route('admin.merchants.saveUpdate') }}",
-                data: $("#merchantGeneral").serialize(),
-                cache: false,
-                success: function (data) {
-                    if(data != 'VsMerchantError'){
-                    window.location.href = "{{ route('admin.merchants.view') }}";
-                }
-                else{
-                     //window.location.href = "{{ route('admin.merchants.addEdit') }}";
-                     $(".VsMerchantError").text("Existing merchnat can not be add for Veesw");
-                 }
-             }
-         });
-        }
-    });
-    
     
 </script>
 @stop
