@@ -56,11 +56,11 @@ class ReportController extends Controller {
          
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['product', 'short_desc', 'long_desc'];
-        $prods = DB::connection('mysql2')->table($this->jsonString['prefix'].'_products as p')
+        $prods = DB::table('products as p')
                 ->where('is_individual', '=', '1')
                 ->join("has_products as hp", "hp.prod_id", '=', 'p.id')->whereNotIn('hp.order_status',[0,4,6,10])
-                ->join($this->jsonString['prefix']."_has_categories as hc", "hc.prod_id", "=", "p.id")
-                ->join($this->jsonString['prefix']."_categories as c", "c.id", "=", "hc.cat_id")
+                ->join("has_categories as hc", "hc.prod_id", "=", "p.id")
+                ->join("categories as c", "c.id", "=", "hc.cat_id")
                 ->where("hp.store_id", $this->jsonString['store_id'])
                 ->select('p.id','p.product',DB::raw("SUM(hp.qty) tot_qty"),DB::raw("SUM(hp.pay_amt) sales"), 'c.category')
                 ->orderBy("tot_qty", "desc")
@@ -76,7 +76,7 @@ class ReportController extends Controller {
             $prodCount=$prods->total();
         }
          
-        $cat = DB::connection('mysql2')->table($this->jsonString['prefix']."_categories")->select("category","id")->get()->toArray();
+        $cat = DB::table("categories")->select("category","id")->get()->toArray();
 
         $categrs = [];
         $categrs["0"] = "All" ;

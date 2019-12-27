@@ -32,7 +32,13 @@
 $jsonString = App\Library\Helper::getSettings();
 $data = (object) $jsonString;
 $country_code = (int)explode("+", $data->country_code)[1]; 
-$country = App\Library\Helper::getCountry($country_code);
+if($country_code != '')
+{
+    $country = DB::table('countries')->where("country_code", $country_code)->get(["id", "name","iso_code_3"]);
+}else{
+    $country = DB::table('countries')->where("status", 1)->get(["id", "name","iso_code_3"]);
+}
+//$country = App\Library\Helper::getCountry($country_code);
     // echo "<pre>";print_r($country);die;
 ?>
 
