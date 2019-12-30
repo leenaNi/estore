@@ -1080,7 +1080,7 @@ class HomeController extends Controller
             $msgOrderSucc = "Your one time password is. " . $otp . " Team eStorifi";
             Helper::sendsms($mobile, $msgOrderSucc, $country);
         }
-        $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber"];
+        $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber".$otp];
         return $data;
     }
 
