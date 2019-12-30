@@ -11,27 +11,7 @@
             </div>
             @endif
             <form action="{{route('selectThemes')}}" method="post" id='newStoreForm' role="form" class="landing-wide-form clearfix newStoreForm reg-form">
-                <!-- <div class="heading-block notopmargin nobottommargin center nobottomborder">
-
-                    <div class="customDomainfield">
-                    <div class="input-group custom-inputGroup">
-  <div class="input-group-prepend">
-    <span class="input-group-text">https://</span>
-  </div>
-  <input type="text" class="form-control custom-formControl required checkAvailability"  value="" name="domain_name" placeholder="Domain Name (Cannot be changed later)">
-  <div class="input-group-append">
-    <span class="input-group-text">{{".".str_replace("www","", $_SERVER['HTTP_HOST'])}}</span>
-  </div>
-</div>
-<div class="clearfix"></div>
-                        <div class="input-group">
-                            <input  type="text" class="form-control required checkAvailability" value="" name="domain_name" placeholder="Domain Name">
-                            <span class="input-group-addon"> {{".".str_replace("www","", $_SERVER['HTTP_HOST'])}}</span>
-                        </div> 
-                        <span class="checkAvail"><i class="fa fa-clock availCL"></i></span>
-                    </div>
-                 <p class="heading-desc">{{"http://". str_replace(" ",'-',strtolower(Session::get('storename'))) .".". str_replace("www","", $_SERVER['HTTP_HOST'])}} is available <i class="icon-ok green-ok"></i></p>
-                </div>-->
+               
                 <div class="">
                 <div class="col_full bottommargin-xs">
                     <div class="customDomainfield">
@@ -371,69 +351,7 @@ $('.busType').change(function(){
 
     });
 
-//    $("#otpForm").validate({
-//        // Specify the validation rules
-//        rules: {
-//            input_otp: {
-//                required: true
-//            }
-//
-//        },
-//        messages: {
-//            input_otp: {
-//                required: "OTP is required."
-//            }
-//        },
-//        errorPlacement: function (error, element) {
-//            $(element).after(error);
-//
-//        }
-//    });
-//$(document).ready(function() {
-//  
-//
-//$("#registerAndSubmit").validate({
-//        rules: {
-//            input_otp: {
-//                required: true,
-//                remote: function () {
-//                    var otp = $('input[name="input_otp"]').val().replace(/\s/g, '');
-//                    var r = {
-//                        url: "{{route('checkOtp')}}",
-//                        type: "post",
-//                        cache: false,
-//                        data: {inputotp:otp},
-//                         
-//                        dataFilter: function (response) {
-//                            if (response == 2) {
-//                                return false;
-//                            } else if (response == 1) {
-//                                return true;
-//                            }
-//                        }
-//                    };
-//                    return r;
-//                }
-//
-//
-//            }
-//        },
-//        messages: {
-//            input_otp: {
-//                required: "Otp is required.",
-//                remote: "Invalid otp."
-//            }
-//        },
-//        submitHandler: function (form) { // for demo
-//         $("#newStoreForm").submit();
-//
-//        },
-//        errorPlacement: function (error, element) {
-//            var elename = $(element);
-//            elename.parent().after(error);
-//        }
-//    });
-//});
+
     $(".registerAndSubmit").on("click", function () {
         $("input[name='input_otp']").find("label").remove();
         $("input[name='input_otp']").removeClass('error');
@@ -446,7 +364,7 @@ $('.busType').change(function(){
             data: {inputotp: otp},
             success: function (response) {
              console.log("response" +response);
-                if (response==otp) {
+                if (response==otp || response==2) {
                    $("#newStoreForm").submit(); 
                       
                 } else  {
