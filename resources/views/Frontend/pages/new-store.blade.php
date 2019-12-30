@@ -364,10 +364,14 @@ $('.busType').change(function(){
             data: {inputotp: otp},
             success: function (response) {
              console.log("response" +response);
-                if (response==otp || response==2) {
+                if (response==otp) {
                    $("#newStoreForm").submit(); 
                       
-                } else  {
+                } 
+                else if(response=='2'){
+                    $("#newStoreForm").submit(); 
+                }
+                else  {
                 $("input[name='input_otp']").find("label").remove();
                 $("input[name='input_otp']").addClass('error');
                 $("input[name='input_otp']").after("<label class='error'>Invalid OTP. </label>"); 
