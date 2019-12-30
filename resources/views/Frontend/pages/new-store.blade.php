@@ -335,7 +335,7 @@ $('.busType').change(function(){
             url: "{{route('sendOpt')}}",
             data: {mobile: mobile,country:country},
             success: function (response) {
-                console.log('@@@@' + response['status']);
+                console.log('@@@@' + response['otp']);
                 if (response['status'] == 'success') {  
                         $('.sendOtpOnMobile').html('<label class="error">' + response['msg'] + '</label>');
                 } else if (response['status'] == 'fail') {
