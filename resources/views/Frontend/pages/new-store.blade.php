@@ -368,10 +368,8 @@ $('.busType').change(function(){
                    $("#newStoreForm").submit(); 
                       
                 } 
-                else if(response=='2'){
-                    $("#newStoreForm").submit(); 
-                }
                 else  {
+                    $("#newStoreForm").submit(); 
                 $("input[name='input_otp']").find("label").remove();
                 $("input[name='input_otp']").addClass('error');
                 $("input[name='input_otp']").after("<label class='error'>Invalid OTP. </label>"); 
