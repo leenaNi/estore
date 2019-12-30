@@ -351,7 +351,69 @@ $('.busType').change(function(){
 
     });
 
-
+//    $("#otpForm").validate({
+//        // Specify the validation rules
+//        rules: {
+//            input_otp: {
+//                required: true
+//            }
+//
+//        },
+//        messages: {
+//            input_otp: {
+//                required: "OTP is required."
+//            }
+//        },
+//        errorPlacement: function (error, element) {
+//            $(element).after(error);
+//
+//        }
+//    });
+//$(document).ready(function() {
+//  
+//
+//$("#registerAndSubmit").validate({
+//        rules: {
+//            input_otp: {
+//                required: true,
+//                remote: function () {
+//                    var otp = $('input[name="input_otp"]').val().replace(/\s/g, '');
+//                    var r = {
+//                        url: "{{route('checkOtp')}}",
+//                        type: "post",
+//                        cache: false,
+//                        data: {inputotp:otp},
+//                         
+//                        dataFilter: function (response) {
+//                            if (response == 2) {
+//                                return false;
+//                            } else if (response == 1) {
+//                                return true;
+//                            }
+//                        }
+//                    };
+//                    return r;
+//                }
+//
+//
+//            }
+//        },
+//        messages: {
+//            input_otp: {
+//                required: "Otp is required.",
+//                remote: "Invalid otp."
+//            }
+//        },
+//        submitHandler: function (form) { // for demo
+//         $("#newStoreForm").submit();
+//
+//        },
+//        errorPlacement: function (error, element) {
+//            var elename = $(element);
+//            elename.parent().after(error);
+//        }
+//    });
+//});
     $(".registerAndSubmit").on("click", function () {
         $("input[name='input_otp']").find("label").remove();
         $("input[name='input_otp']").removeClass('error');
@@ -367,9 +429,7 @@ $('.busType').change(function(){
                 if (response==otp) {
                    $("#newStoreForm").submit(); 
                       
-                } 
-                else  {
-                    $("#newStoreForm").submit(); 
+                } else  {
                 $("input[name='input_otp']").find("label").remove();
                 $("input[name='input_otp']").addClass('error');
                 $("input[name='input_otp']").after("<label class='error'>Invalid OTP. </label>"); 
