@@ -47,6 +47,7 @@
                 
 
                 {{ Form::hidden('id') }}
+                        {!! Form::hidden('store_id', Session::get('store_id')) !!}
 
                 <div class="col-md-12 form-group">
                  <div class="col-md-2 control-label"></div>

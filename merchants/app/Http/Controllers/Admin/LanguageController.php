@@ -27,6 +27,7 @@ class LanguageController extends Controller {
         $language = Language::findOrNew(Input::get("id"));
         $language->name = Input::get("name");
         $language->status = Input::get("status");
+        $language->store_id = Session::get('store_id');
         if (empty(Input::get('id'))) {
             Session::flash("msg", "Language added successfully.");
             $data = ['status' => "1", "message" => "Language added successfully."];

@@ -67,6 +67,7 @@ class PincodeController extends Controller {
         $pincodes->cod_status = (Input::get("cod_status")) ? Input::get("cod_status") : 0;
         $pincodes->pref = (Input::get("pref")) ? Input::get("pref") : 0;
         $pincodes->status = Input::get("status");
+        $pincodes->store_id = Session::get('store_id');
         if (empty(Input::get('id'))) {
             Session::flash("msg", "Pincode added successfully.");
             $data = ['status' => "1", "message" => "Pincode added successfully."];

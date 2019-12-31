@@ -23,10 +23,11 @@
         <div class="col-md-12">
             <div class="box">
                 <div class="box-body">
-                    
+
                     {!! Form::model($language, ['method' => 'post', 'files'=> true, 'url' => $action ]) !!}
 
                  {!! Form::hidden('id',null) !!}
+                        {!! Form::hidden('store_id', Session::get('store_id')) !!}
                     <div class='col-md-6'>
                     <div class="form-group">
                         {!!Form::label('name','Language ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
@@ -52,8 +53,8 @@
             </div>
         </div>
     </div>
-</section> 
-@stop 
+</section>
+@stop
 
 @section('myscripts')
 <script>
@@ -62,4 +63,3 @@
 
 
 @stop
-

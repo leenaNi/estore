@@ -61,6 +61,7 @@ class CategoryController extends Controller {
         $category->url_key = strtolower(str_replace(" ","-",Input::get('category')));
         $category->status = Input::get('status');
         $category->short_desc = Input::get('short_desc');
+        $category->store_id = Session::get('store_id');
         //$category->long_desc = Input::get('long_desc');
 
         $catImgs = [];

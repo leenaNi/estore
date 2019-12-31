@@ -23,11 +23,12 @@
         <div class="col-md-12">
             <div class="box">
                 <div class="box-body">
-                    
+
                     {!! Form::model($smsSubscription, ['method' => 'post', 'files'=> true, 'url' => $action]) !!}
 
                  {!! Form::hidden('id',null) !!}
 
+                 {!! Form::hidden('store_id', Session::get('store_id')) !!}
                     <div class="col-sm-6">
                     <div class="form-group">
                         {!!Form::label('pincode','Sms Rate ',['class'=>'control-label ']) !!}<span class="red-astrik"> *</span>
@@ -45,10 +46,10 @@
                     <div class="col-sm-12">
                      <div class="form-group">
                         {!!Form::label('total_cost','Total Cost ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                        <div id='total_cost'></div> 
+                        <div id='total_cost'></div>
 
                         </div>
-                    </div>                   
+                    </div>
 
                     <div class="col-md-12">
                         <div class="form-group">
@@ -57,7 +58,7 @@
 
                                 <a href="{{route('admin.smsSubscription.view') }}" class="btn btn-default">Cancel </a>
                                 {!! Form::close() !!}
-                            </div>    
+                            </div>
                         </div>
                     </div>
                     </form>
@@ -65,13 +66,13 @@
             </div>
         </div>
     </div>
-</section> 
-@stop 
+</section>
+@stop
 
 @section('myscripts')
 <script>
     $(document).ready(function(){
-       
+
         $('#no_of_sms').keyup(function(){
         $('#total_cost').empty();
         var rate= $('#sms_rate').val();
@@ -79,7 +80,7 @@
         var cost=rate*number;
        $('#total_cost').append(cost);
     });
-        
+
     });
 </script>
 
