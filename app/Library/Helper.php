@@ -243,11 +243,11 @@ class Helper
         $saveIndustryQuestion = [];
         foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
             $generalSettingId = DB::table('general_setting')->where('url_key', $hasIndVal->url_key)->where('store_id', $storeId)->first();
-            // print_r($generalSettingId);
+         
             if ($generalSettingId && $generalSettingId != null) {
                 $saveIndustryQuestion[$hasIndKey]['general_setting_id'] = $generalSettingId->id;
                 $saveIndustryQuestion[$hasIndKey]['industry_id'] = $catid;
-                $saveIndustryQuestion[$hasIndKey]['store_id'] = $storeId;
+                //$saveIndustryQuestion[$hasIndKey]['store_id'] = $storeId;
             }
         }
         DB::table('has_industries')->insert($saveIndustryQuestion);

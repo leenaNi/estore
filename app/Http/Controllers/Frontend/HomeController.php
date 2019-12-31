@@ -17,6 +17,7 @@ use App\Models\Merchant;
 use App\Models\MerchantOrder;
 use App\Models\Store;
 use App\Models\StoreTheme;
+use App\Models\MerchantHasCountry;
 use Auth;
 use Crypt;
 use DB;
@@ -208,6 +209,15 @@ class HomeController extends Controller
                 Session::put('merchantid', $getMerchat->id);
                 Session::put('storename', $allinput['store_name']);
                 Session::put('merchantstorecount', 0);
+
+                $mcountry1 = new MerchantHasCountry;
+                $mcountry1->country_id = 18;
+                $mcountry1->merchant_id = Session::get('merchantid') ;
+                $mcountry1->save();
+                $mcountry2 = new MerchantHasCountry;
+                $mcountry2->country_id = 99;
+                $mcountry2->merchant_id = Session::get('merchantid') ;
+                $mcountry2->save();
             }
         } else {
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
@@ -284,9 +294,7 @@ class HomeController extends Controller
 
     public function congrats()
     {
-
         $themeInput = (object) Input::get('themeInput');
-
         $domainname = str_replace(" ", '-', trim(strtolower($themeInput->domain_name), " "));
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
         $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
@@ -490,6 +498,7 @@ class HomeController extends Controller
                     fclose($fp);
 
                     $adminRoleId = DB::table('roles')->where('store_id', $storeId)->where('name', 'LIKE', 'admin')->first(['id']);	
+                   
                     DB::table("role_user")->insert(["user_id" => @$newuserid, "role_id" => $adminRoleId->id]);
                     //Check acl setting from general settings
                     $chkAcl = DB::table("general_setting")->where('store_id', $storeId)->where('url_key', 'acl')->select("status")->first();

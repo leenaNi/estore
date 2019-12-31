@@ -78,7 +78,7 @@ INSERT INTO `general_setting` (`id`, `name`, `status`, `details`, `url_key`, `ty
 (NULL, 'Would you like to use "SEO (Search Engine Optimization)"?', '0', '', 'sco', '1', '12', '1', '0', '1','SEO (Search Engine Optimization) helps to increase the online visibility of a website and its products in the web search engines like Google', tblprfx_),
 (NULL, 'Would you like to use "Guest Checkout" feature?', 1, '', 'guest-checkout', 1, 23, 1, 0, 0,'This feature allows customer to checkout without logging in/registering on the website. Only email is asked from the customer for future communication.', tblprfx_),
 (NULL, 'Bank Account Details', '1', '{\"bank_name\":\"bank_name \",\"branch_name\":\"branch_name\",\"ifsc\":\"ifsc\",\"bank_address\":\"asdf sdff sdf asdfa sdfa dfa dasd asdf asdfa dfad asdf asdfa dfa sda d\",\"city\":\"mum\",\"state\":\"1504\",\"country\":\"99\",\"acc_type\":\"1\",\"acc_no\":\"123123123123123123123\"}', 'bank_acc_details', '8', '1', '1', '0', '3', 'Bank account information.', tblprfx_),
-(NULL,'would you like to use default courier services provided by veestores', 1,'', 'default-courier', 1, 12, 1, 1, 2, 'Only when VeeStores Logistic Partner service is used, delivery of the Order and COD (Cash On Delivery) will be managed by VeeStores. These payments will be settled to the Merchant’s bank account within Transaction + 2 working days. The amount transferred will be Amount Transferred = Transaction Amount - Shipping Charges - VeeStores Commission. If Merchant uses his/her own logistic partner, the Merchant will be responsible for delivery of the Order and COD (Cash On Delivery)', tblprfx_);
+(NULL,'would you like to use default courier services provided by eStorifi', 1,'', 'default-courier', 1, 12, 1, 1, 2, 'Only when eStorifi Logistic Partner service is used, delivery of the Order and COD (Cash On Delivery) will be managed by eStorifi. These payments will be settled to the Merchant’s bank account within Transaction + 2 working days. The amount transferred will be Amount Transferred = Transaction Amount - Shipping Charges - eStorifi Commission. If Merchant uses his/her own logistic partner, the Merchant will be responsible for delivery of the Order and COD (Cash On Delivery)', tblprfx_);
 INSERT INTO `language` (`id`, `name`, `status`, `store_id`) VALUES
 (NULL, 'Hindi', 1, tblprfx_),
 (NULL, 'English', 1, tblprfx_),
@@ -217,7 +217,7 @@ INSERT INTO `tax` (`id`, `type`, `name`, `label`, `rate`, `tax_number`, `status`
 (NULL, 0, 'VAT', 'VAT', 10.00, 'ABCD1234', 0, tblprfx_),
 (NULL, 0, 'GST', 'GST', 18.00, '22ABCDE1234F2Z5', 0, tblprfx_);
 INSERT INTO `testimonials` (`id`, `user_id`, `image`, `customer_name`, `testimonial`, `gender`, `sort_order`, `status`, `store_id`) VALUES
-(NULL, 1, '21062018122049.jpg', 'Rini Shah, Veestores', 'Incidunt deleniti blanditiis quas aperiam recusandae consequatur ullam quibusdam cum libero illo rerum!', 'female', 3, 1, tblprfx_),
+(NULL, 1, '21062018122049.jpg', 'Rini Shah, eStorifi', 'Incidunt deleniti blanditiis quas aperiam recusandae consequatur ullam quibusdam cum libero illo rerum!', 'female', 3, 1, tblprfx_),
 (NULL, 1, '21062018121817.jpg', 'John Doe, Abc Ltd.', 'Porro dolorem saepe reiciendis nihil minus neque. Ducimus rem necessitatibus repellat laborum nemo quod.', 'male', 2, 1, tblprfx_),
 (NULL, 1, '21062018121742.jpg', 'Steve Jobs, Apple Inc.', 'Similique fugit repellendus expedita excepturi iure perferendis provident quia eaque. Repellendus, vero numquam.', 'male', 1, 1, tblprfx_);
 INSERT INTO `unit_measures` (`id`, `unit`, `status`, `store_id`) VALUES
