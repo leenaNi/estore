@@ -43,8 +43,7 @@ class HomeController extends Controller {
         else
             echo 'some error occure';
     }
-
-  
+ 
 
     public function newsLetter() {
         // DB::enableQueryLog();
@@ -61,12 +60,10 @@ class HomeController extends Controller {
     }
 
     public function saveNewsLetter(Request $request){
-        
-       $rules = [
+        $rules = [
             'enablesub' => 'required',
             'newsLetterimg' => 'file|mimes:jpeg,png,jpg|max:1024',
         ];
-
         $messages = array(
             'enablesub.required' => 'This Radio Field is required',
             'newsLetterimg.required' => 'Please Select Image',
@@ -74,7 +71,6 @@ class HomeController extends Controller {
             'newsLetterimg.mimes' => 'File should of type jpeg,png,jpg',
             
         );
-
        $validator = Validator::make($request->all(), $rules,$messages);
        if ($validator->fails()) {
             $errors = $validator->messages();
@@ -108,17 +104,11 @@ class HomeController extends Controller {
                 $newsletter_pic_name = $imgpath["img_path"];
                 $displayHeader = $request->displayHeader;
                 $displayContent = $request->displayContent;
-
                 DB::table("general_setting")->where('url_key', 'notification')->update(["details" => json_encode(["img_path" => $newsletter_pic_name,"displayHeader" => $displayHeader,"displayContent" => $displayContent]),'is_active' => (int)($request->input("enablesub"))]);
-
-
                 session()->flash('msg', 'Newsletter Added Successfully for Store');
                 return redirect()->to('/admin/newsletter')->withInput($request->input());
-            }
-            
-        }
-       
-        
+            }            
+        }   
 
     }
 

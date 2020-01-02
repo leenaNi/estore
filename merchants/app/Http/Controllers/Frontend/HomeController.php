@@ -251,7 +251,7 @@ class HomeController extends Controller {
         // dd($subscription);
         if ($subscription != NULL) {
             DB::statement("update users set newsletter = 1 where email = '".$email."'");
-            return "You are already subscribed with us!";
+            return [ "status" => 2, "msg" => "You are already subscribed with us!"];
         } else {
             $subscription = new Notification();
             $subscription->email = $email;
@@ -264,17 +264,13 @@ class HomeController extends Controller {
             $contactEmail = Config::get('mail.from.address');
             $contactName = Config::get('mail.from.name');
             $data_email = ['first_name' => $fname];
-
             DB::statement("update users set newsletter = 1 where email = '".$email."'");
-
             if (Mail::send(Config('constants.frontviewEmailTemplatesPath') . '.subscription', $data_email, function($message) use ($contactEmail, $contactName, $email, $fname, $data_email) {
                         $message->from($contactEmail, $contactName);
                         $message->to($email, $fname)->subject("News Alert Subscription");
-                        $message->bcc(['pradeep@infiniteit.biz']);
+                        // $message->bcc(['pradeep@infiniteit.biz']);
                     }))
-                ;
-
-            return "You are successfully subscribe with us!";
+            return ["status" => 1, "msg" => "You are successfully subscribe with us!"];
         }
     }
 

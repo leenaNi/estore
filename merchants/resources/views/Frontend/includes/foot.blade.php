@@ -126,7 +126,7 @@
                 </form>
             </div>            
             <div class="modal-footer">
-                </div id="subscriptionNews-success"  style="color:#449d44" ></div>
+                <div id="subscriptionNews-success" class="success"></div>
             </div>
         </div>
     </div>
@@ -157,7 +157,13 @@
                     cache: false,
                     success: function (data) {
                         console.log("data: " + data);
-                        $('#subscriptionNews-success').append(data);
+                        if(data.status == 1){
+                            $('#subscriptionNews-success').removeClass('error').addClass('success')
+                        } else {
+                            $('#subscriptionNews-success').removeClass('success').addClass('error');
+                        }
+                        $('#subscriptionNews-success').addClass().append(data.msg);
+                        $('#subscribenews')[0].reset();
                         $('#EmailIconNews').find('i').removeClass('icon-line-loader icon-spin').addClass('icon-email2news')
                         //  $(form).find('.input-group-addon')
                     }
