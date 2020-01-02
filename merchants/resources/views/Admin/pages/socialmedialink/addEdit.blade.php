@@ -28,6 +28,7 @@
                     <div class="form-group{{ $errors->has('media') ? ' has-error' : '' }}">
                         {!! Form::label('media', 'Media Name',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
                         {!! Form::hidden('id',null) !!}
+                        {!! Form::hidden('store_id', Session::get('store_id')) !!}
                             {!! Form::text('media',null, ["class"=>'form-control validate[required]',"id"=>'media' ,"placeholder"=>'Media Name'] ) !!}
                             <span id='error_msg'></span>
                             @if ($errors->has('media'))
@@ -67,7 +68,7 @@
                     <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
                         {!!Form::label('image','Image ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
                             <input type="file" name="image" id="image" onchange="readURL(this);" class="{{@$link->image?'':'validate[required]'}}" />
-                          
+
                             @if ($errors->has('image'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('image') }}</strong>
@@ -94,8 +95,8 @@
             </div>
         </div>
     </div>
-</section> 
-@stop 
+</section>
+@stop
 
 @section('myscripts')
 <script>

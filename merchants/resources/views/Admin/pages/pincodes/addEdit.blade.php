@@ -26,6 +26,7 @@
                     {!! Form::model($pincodes, ['method' => 'post', 'files'=> true, 'url' => $action]) !!}
 
                     {!! Form::hidden('id',null) !!}
+                        {!! Form::hidden('store_id', Session::get('store_id')) !!}
 
                     <div class="row">
                         <div class='col-sm-12'> 

@@ -32,6 +32,7 @@ class SmsSubscriptionController extends Controller
        $smsSubscription->no_of_sms=Input::get("no_of_sms"); 
        $smsSubscription->purchased_by=Session::get('loggedinAdminId');
         $smsSubscription->status=1;
+        $smsSubscription->store_id = Session::get('store_id');
          $smsSubscription->save();
          $data='';
           $viewname='';

@@ -27,8 +27,9 @@
                       <div class="form-group">
                         {!! Form::label('customer_name', 'Contact Parson ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
                         {!! Form::hidden('id',null) !!}
-                            {!! Form::text('customer_name',null, ["class"=>'form-control validate[required]',"id"=>'customer_name' ,"placeholder"=>'Name']) !!}                  
-                        </div>                       
+                        {!! Form::hidden('store_id', Session::get('store_id')) !!}
+                            {!! Form::text('customer_name',null, ["class"=>'form-control validate[required]',"id"=>'customer_name' ,"placeholder"=>'Name']) !!}
+                        </div>
                     </div>
 
                     <div class="col-md-6">
@@ -42,7 +43,7 @@
                                     <strong>{{ $errors->first('phone_no') }}</strong>
                                 </span>
                             @endif
-                        </div>                       
+                        </div>
                     </div>
 
                     <div class="col-md-6">
@@ -100,7 +101,7 @@
                            {!! Form::select('state',$state,null,["class"=>'form-control validate[required] state', 'placeholder'=>'Select State']) !!}
                        </div>
                    </div>
-                   
+
                      <div class="col-md-6">
                         <div class="form-group">
                            {!!Form::label('pincode','Pincode  ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
@@ -140,8 +141,8 @@
             </div>
         </div>
     </div>
-</section> 
-@stop 
+</section>
+@stop
 
 @section('myscripts')
 <script>
@@ -167,7 +168,7 @@
     console.log(e.responseText);
     }
     });
-    });  
+    });
 </script>
 
 

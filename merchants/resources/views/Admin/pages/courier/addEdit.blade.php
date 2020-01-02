@@ -23,19 +23,20 @@
     </ol>
 </section>
 <section class='content'>
-    <div class="nav-tabs-custom"> 
+    <div class="nav-tabs-custom">
 
-       
+
 
 
         <div class="tab-content">
             <div class="tab-pan-active" id="activity">
                 <div class="panel-body">
-                <div class="row"> 
+                <div class="row">
                     {!! Form::model($courier, ['method' => 'post', 'files'=> true, 'url' => $action ,'id'=>'EditGeneralInfo']) !!}
-                    
+
                     {!! Form::hidden('id',null) !!}
-                    
+                        {!! Form::hidden('store_id', Session::get('store_id')) !!}
+
                     <div class="col-md-12">
                         <div class="form-group">
                         {!! Form::label('name', ' Name ') !!}<span class="red-astrik"> *</span>
@@ -43,12 +44,12 @@
                         </div>
                     </div>
                         <div class="col-md-12">
-                        <div class="form-group">              
+                        <div class="form-group">
                     {!!form::label('status','Status ', ["class"=> 'control-label']) !!}<span class="red-astrik"> *</span>
                         {!! form::select('status',["1"=>"Enabled","0"=>"Disabled"],null,["class"=>'form-control validate[required]', "placeholder"=>'Select Status']) !!}
                      </div>
                     </div>
-                    
+
                     <div class="col-md-12">
                         <div class="form-group">
                         {!! Form::label('Preference', 'Preference ') !!}<span class="red-astrik"> *</span>
@@ -56,27 +57,26 @@
                             <p style="color: red;" class="errorPrdCode"></p>
                         </div>
                     </div>
-                    
-                
+
+
                               @if(!empty($courier->details))
                     <?php
-                   
-                    $details = json_decode($courier->details);
-                   // dd($courier->details);
-                   
-                    ?>
+
+$details = json_decode($courier->details);
+// dd($courier->details);
+
+?>
                     @foreach($details as $detK => $detV)
-                     
+
 
 
                     <div class="col-md-6">
                         <div class="form-group">
 
                             <?php
-                            $label = $detK;
-                            
+$label = $detK;
 
-                            ?>
+?>
                             {!! Form::label($label, ucfirst(str_replace("_"," ",$label)),['class'=>'control-label']) !!}
 
                             {!! Form::text("details[$detK]",$detV, ["class"=>'form-control validate[required]' ,"placeholder"=>str_replace("_"," ",ucfirst($label))]) !!}
@@ -88,9 +88,9 @@
                     <div class="line line-dashed b-b line-lg pull-in"></div>
                     <div class="form-group col-sm-12 ">
                         {!! Form::submit('Submit',["class" => "btn btn-primary margin-left0"]) !!}
-                        
+
                     </div>
-                    {!! Form::close() !!}     
+                    {!! Form::close() !!}
                 </div>
                 </div>
             </div>
@@ -98,7 +98,7 @@
     </div>
 </section>
 
-@stop 
+@stop
 
 @section('myscripts')
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>

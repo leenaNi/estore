@@ -65,6 +65,7 @@ class LoyaltyController extends Controller {
         $loyalty->min_order_amt = Input::get('min_order_amt');
         $loyalty->max_order_amt = Input::get('max_order_amt');
         $loyalty->percent = Input::get('percent');
+        $loyalty->store_id = Session::get('store_id');
         $loyalty->save();
         Session::flash('msg', 'Loyalty program added successfully.');
         //return redirect()->route("admin.loyalty.view");
@@ -81,6 +82,7 @@ class LoyaltyController extends Controller {
         $loyalty->min_order_amt = Input::get('min_order_amt');
         $loyalty->max_order_amt = Input::get('max_order_amt');
         $loyalty->percent = Input::get('percent');
+        $loyalty->store_id = Session::get('store_id');
         $loyalty->update();
         if ($loyalty->update()) {
             Session::flash('msg', 'Loyalty program updated successfully.');
