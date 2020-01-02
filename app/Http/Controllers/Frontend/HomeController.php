@@ -449,7 +449,7 @@ class HomeController extends Controller
                     if ($country_code) {
                         $insertArr["country_code"] = "$merchantd->country_code";
                     }
-//                    $randno = $merchantPassword;
+                    //                    $randno = $merchantPassword;
                     //                    $password = Hash::make($randno);
                     $newuserid = DB::table("users")->insertGetId($insertArr);
 
@@ -474,7 +474,6 @@ class HomeController extends Controller
                     }
 
                     if (!empty($currency)) {
-
                         $decodeVal['currency'] = $currency;
                         $decodeVal['currency_code'] = HasCurrency::find($currency)->iso_code;
                         $currVal = HasCurrency::find($currency);

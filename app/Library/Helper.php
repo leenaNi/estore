@@ -203,7 +203,6 @@ class Helper
             $saveAttrSet[$attk]['status'] = 1;
             $saveAttrSet[$attk]['store_id'] = $storeId;
             $saveAttrSet[$attk]['created_at'] = date('Y-m-d H:i:s');
-
         }
         $attrSets = DB::table('attribute_sets')->insert($saveAttrSet);
         //save attributes
@@ -222,7 +221,7 @@ class Helper
             $hasAttrubutes[$attk]['attr_set'] = $attrdata->attrset_id;
         }
         DB::table('has_attributes')->insert($hasAttrubutes);
-//save attribute values
+        //save attribute values
         $attrvalues = json_decode($cat->attribute_values);
         $saveAttV = [];
         foreach ($attrvalues as $attvk => $attrv) {
@@ -234,6 +233,22 @@ class Helper
             $saveAttV[$attvk]['created_at'] = date('Y-m-d H:i:s');
         }
         DB::table('attribute_values')->insert($saveAttV);
+        //Update Attribute Set
+        $attrSetId = DB::table('attribute_sets')->where('attr_set', 'Default')->first(['id']);
+        DB::table('products')
+            ->where('store_id', $storeId)
+            ->update(['attr_set' => $attrSetId->id]);
+        //Catalouge images
+        $productId = DB::table('products')->where('store_id', $storeId)->first(['id']);
+        $catalougeImages = [
+            ['filename' => 'prod-20180623103707.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 1, 'image_path' => null],
+            ['filename' => 'prod-120180623103750.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 2, 'image_path' => null],
+            ['filename' => 'prod-420180623103751.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 3, 'image_path' => null],
+            ['filename' => 'prod-320180623103752.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 4, 'image_path' => null],
+            ['filename' => 'prod-220180623103753.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 5, 'image_path' => null],
+        ];
+
+        DB::table('catalog_images')->insert($catalougeImages);
 
         //Add General Settings Industriwise
         $industriQuestions = DB::table('has_industries')->JOIN('general_setting', 'general_setting.id', 'has_industries.general_setting_id')
@@ -243,7 +258,6 @@ class Helper
         $saveIndustryQuestion = [];
         foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
             $generalSettingId = DB::table('general_setting')->where('url_key', $hasIndVal->url_key)->where('store_id', $storeId)->first();
-         
             if ($generalSettingId && $generalSettingId != null) {
                 $saveIndustryQuestion[$hasIndKey]['general_setting_id'] = $generalSettingId->id;
                 $saveIndustryQuestion[$hasIndKey]['industry_id'] = $catid;
@@ -325,17 +339,17 @@ class Helper
                 $option = '';
                 // dd($cart['price']);
                 $tableContant = $tableContant . '   <tr class="cart_item">
-		        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
+									        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
                 if ($cart['options']['image'] != '') {
                     $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . $cart["options"]["image"]) . '" alt="">
-		          </a>';
+									          </a>';
                 } else {
                     $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
                 }
                 $tableContant = $tableContant . '</td>
-		        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
-		            <br>
-		          <small><a href="#"> ';
+									        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
+									            <br>
+									          <small><a href="#"> ';
                 if (!empty($cart['options']['options'])) {
 
                     foreach ($cart['options']['options'] as $key => $value) {
@@ -343,19 +357,19 @@ class Helper
                     }
                 }
                 $tableContant = $tableContant . @$option . ' </a></small></td>
-		        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
-		        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-		          <div class=""> ' . $cart["qty"] . '</div>
-		        </td>';
+									        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
+									        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
+									          <div class=""> ' . $cart["qty"] . '</div>
+									        </td>';
                 $tax_amt = 0;
                 if ($tax == 1) {
                     $tableContant = $tableContant . '   <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-		         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
-		        </td>';
+									         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
+									        </td>';
                     $tax_amt = $cart['options']["tax_amt"];
                 }
                 $tableContant = $tableContant . '<td class="cart-product-subtotal" align="center" style="border: 1px solid #ddd;border-left: 0;border-right:0px;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format((@$cart["subtotal"] * Session::get('currency_val')), 2, '.', '') . '</span> </td>
-		      </tr>';
+									      </tr>';
                 $gettotal += $cart["subtotal"] + $tax_amt;
             endforeach;
             $tableContant = $tableContant . '  </tbody>
