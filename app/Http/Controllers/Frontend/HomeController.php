@@ -17,7 +17,6 @@ use App\Models\Merchant;
 use App\Models\MerchantOrder;
 use App\Models\Store;
 use App\Models\StoreTheme;
-use App\Models\MerchantHasCountry;
 use Auth;
 use Crypt;
 use DB;
@@ -210,14 +209,6 @@ class HomeController extends Controller
                 Session::put('storename', $allinput['store_name']);
                 Session::put('merchantstorecount', 0);
 
-                $mcountry1 = new MerchantHasCountry;
-                $mcountry1->country_id = 18;
-                $mcountry1->merchant_id = Session::get('merchantid') ;
-                $mcountry1->save();
-                $mcountry2 = new MerchantHasCountry;
-                $mcountry2->country_id = 99;
-                $mcountry2->merchant_id = Session::get('merchantid') ;
-                $mcountry2->save();
             }
         } else {
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
