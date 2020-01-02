@@ -86,9 +86,10 @@ class HomeController extends Controller {
             $currentURL = explode('.',$currentURL[2]);
             $domain_name = current($currentURL);
             $domainname = strtolower($domain_name);
-            $path = base_path() ."/$domainname/public/uploads/newsletter/";
+            // $path = base_path() ."/$domainname/public/uploads/newsletter/";
+            $path = Config('constants.newsLetterUploadImgPath') . "/";
+            // dd($path);
             $mk = File::makeDirectory($path, 0777, true, true);
-            
             if ($request->hasFile('newsLetterimg')) {
                 $file = $request->file('newsLetterimg');
                 $name = $file->getClientOriginalName();
@@ -99,8 +100,6 @@ class HomeController extends Controller {
                 $displayContent = $request->displayContent;
                 $request->newsLetterimg->move($path,$newsletter_pic_name);
                 DB::table("general_setting")->where('url_key', 'notification')->update(["details" => json_encode(["img_path" => $newsletter_pic_name,"displayHeader" => $displayHeader,"displayContent" => $displayContent]),'is_active' => (int)($request->input("enablesub"))]);
-
-
                 session()->flash('msg', 'Newsletter Added Successfully for Store');
                 return redirect()->to('/admin/newsletter')->withInput($request->input());
             } else {
