@@ -108,8 +108,7 @@ class HomeController extends Controller {
                 session()->flash('msg', 'Newsletter Added Successfully for Store');
                 return redirect()->to('/admin/newsletter')->withInput($request->input());
             }            
-        }   
-
+        }
     }
 
     public function exportNewsLetter() {
@@ -124,8 +123,7 @@ class HomeController extends Controller {
                 $status = 'Yes';
             }else{
                 $status = 'No';
-            }
-                                    
+            }                 
             $details = [
                 $newsLetter->id,
                 $newsLetter->email,
@@ -134,9 +132,6 @@ class HomeController extends Controller {
             ];
             array_push($sampleProds, $details);
         }
-
-
-
         return Helper::getCsv($sampleProds, 'newsletter.csv', ',');
     }
 
