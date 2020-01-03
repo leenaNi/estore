@@ -138,6 +138,7 @@ class PincodeController extends Controller {
                       $pincode->cod_status = ($data->cod_status != null || $data->cod_status != 0 || $data->cod_status != "")? (int)$data->cod_status:0;
                 } 
                 $pincode->status = (int)$data->status;
+                $pincode->store_id = Session::get('store_id');
                 $pincode->save();
             }
         }

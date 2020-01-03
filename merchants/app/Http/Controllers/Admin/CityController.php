@@ -16,13 +16,10 @@ class CityController extends Controller
 {
     public function index(){
         if(!empty(Input::get("city_name"))){
-          $cities=City::where('city_name','like','%'.Input::get("city_name"). '%')->get();
-                   
-            
+          $cities=City::where('city_name','like','%'.Input::get("city_name"). '%')->get();  
         }else{
             $cities=City::paginate(Config('constants.paginateNo'));  
-        }
-       
+        }       
         return view(Config('constants.adminCitiesView') . '.index', compact('cities')); 
     }
  
@@ -45,6 +42,7 @@ class CityController extends Controller
        $city->city_name=Input::get('city_name');
        $city->cod_status=Input::get('cod_status');
        $city->delivary_status=Input::get('delivary_status');
+       $city->store_id = Session::get('store_id');
        $city->status=Input::get('status');
        $city->save();
        if(empty(Input::get("id"))){
@@ -86,9 +84,7 @@ class CityController extends Controller
    
    public function changeCodStatus(Request $request) {
         $type=$request->type;
-        $city = City::find($request->id);
-        
-       
+        $city = City::find($request->id);       
         if ($city->cod_status == 1) {
            $city->cod_status= 0;
            if($type=='1'){
@@ -112,8 +108,7 @@ class CityController extends Controller
     
     public function changeStatus(Request $request) {
         $type=$request->type;
-        $city = City::find($request->id);
-        
+        $city = City::find($request->id);       
        
         if ($city->status == 1) {
            $city->status= 0;

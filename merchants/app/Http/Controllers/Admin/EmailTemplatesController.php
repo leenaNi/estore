@@ -30,7 +30,8 @@ class EmailTemplatesController extends Controller {
         $emailTemp->name = Input::get('name');
         $emailTemp->subject = Input::get('subject');
         $emailTemp->content = Input::get('content');
-        $emailTemp->status = Input::get('status');;
+        $emailTemp->status = Input::get('status');
+        $emailTemp->store_id = Session::get('store_id');
         $emailTemp->save();
         if ($id == "") {
             Session::flash("msg", "Email template added successfully.");
