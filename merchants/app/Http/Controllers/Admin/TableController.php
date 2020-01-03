@@ -54,6 +54,7 @@ class TableController extends Controller {
         $table->chairs = Input::get("chairs");
         $table->table_label = Input::get("table_label");
         $table->table_type = Input::get("table_type");
+        $table->store_id = Session::get("store_id");
 
         $table->status = Input::get("status");
         if (empty(Input::get('id'))) {

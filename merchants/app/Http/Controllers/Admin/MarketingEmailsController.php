@@ -50,6 +50,7 @@ class MarketingEmailsController extends Controller {
         $emailGrp->status = Input::get('status');
         $emailGrp->is_user_specific = Input::get('is_user_specific');
         $emailGrp->status = Input::get('status');
+        // $emailGrp->store_id = Session::get('store_id');
          $emailGrp->save();
         if ($emailGrp->is_user_specific == 1) {
             $userEmails = Input::get('user_emails');
