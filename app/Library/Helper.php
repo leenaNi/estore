@@ -214,7 +214,7 @@ class Helper
             if (!empty($latestAtrr)) {
                 $sluG = $sluG . "_" . mt_rand(1000, 9999);
             }
-            $saveArrtt = ['attr' => $attrdata->attr, 'attr_type' => 1, 'is_filterable' => 1, 'placeholder' => $attrdata->placeholder, 'slug' => $sluG, 'att_sort_order' => $attk + 1, 'status' => 1];
+            $saveArrtt = ['attr' => $attrdata->attr, 'attr_type' => 1, 'is_filterable' => 1, 'placeholder' => $attrdata->placeholder, 'slug' => $sluG, 'att_sort_order' => $attk + 1, 'status' => 1, 'store_id' => $storeId];
             $idAttr = DB::table('attributes')->insert($saveArrtt);
             $latestAtrr = DB::table('attributes')->select('id')->orderBy('id', 'DESC')->first();
             $hasAttrubutes[$attk]['attr_id'] = $latestAtrr->id;
@@ -339,17 +339,17 @@ class Helper
                 $option = '';
                 // dd($cart['price']);
                 $tableContant = $tableContant . '   <tr class="cart_item">
-									        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
+										        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
                 if ($cart['options']['image'] != '') {
                     $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . $cart["options"]["image"]) . '" alt="">
-									          </a>';
+										          </a>';
                 } else {
                     $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
                 }
                 $tableContant = $tableContant . '</td>
-									        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
-									            <br>
-									          <small><a href="#"> ';
+										        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
+										            <br>
+										          <small><a href="#"> ';
                 if (!empty($cart['options']['options'])) {
 
                     foreach ($cart['options']['options'] as $key => $value) {
@@ -357,19 +357,19 @@ class Helper
                     }
                 }
                 $tableContant = $tableContant . @$option . ' </a></small></td>
-									        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
-									        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-									          <div class=""> ' . $cart["qty"] . '</div>
-									        </td>';
+										        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
+										        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
+										          <div class=""> ' . $cart["qty"] . '</div>
+										        </td>';
                 $tax_amt = 0;
                 if ($tax == 1) {
                     $tableContant = $tableContant . '   <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-									         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
-									        </td>';
+										         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
+										        </td>';
                     $tax_amt = $cart['options']["tax_amt"];
                 }
                 $tableContant = $tableContant . '<td class="cart-product-subtotal" align="center" style="border: 1px solid #ddd;border-left: 0;border-right:0px;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format((@$cart["subtotal"] * Session::get('currency_val')), 2, '.', '') . '</span> </td>
-									      </tr>';
+										      </tr>';
                 $gettotal += $cart["subtotal"] + $tax_amt;
             endforeach;
             $tableContant = $tableContant . '  </tbody>
