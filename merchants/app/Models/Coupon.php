@@ -9,7 +9,7 @@ class Coupon extends \Eloquent {
 
 
     protected $table = 'coupons';
-    protected $fillable = ['id', 'coupon_name', 'coupon_code', 'discount_type', 'coupon_value', 'min_order_amt', 'coupon_type', 'coupon_image', 'coupon_desc', 'no_times_allowed', 'start_date', 'end_date', 'user_specific'];
+    protected $fillable = ['id', 'coupon_name', 'coupon_code', 'discount_type', 'coupon_value', 'min_order_amt', 'coupon_type', 'coupon_image', 'coupon_desc', 'no_times_allowed', 'start_date', 'end_date', 'user_specific', 'store_id'];
 
     public function newQuery($excludeDeleted = true)
     {
