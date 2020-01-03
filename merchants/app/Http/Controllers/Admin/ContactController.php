@@ -96,6 +96,7 @@ class ContactController extends Controller {
         $contact->city = Input::get('city');
         $contact->pincode = Input::get('pincode');
        $contact->map_url = Input::get('map_url');
+       $contact->store_id = Session::get('store_id');
 //        $contact->vat = Input::get('vat');
         $contact->save();
         if (empty(Input::get('id'))) {
@@ -135,6 +136,7 @@ class ContactController extends Controller {
         $contact->city = Input::get('city');
         $contact->pincode = Input::get('pincode');
         $contact->map_url = Input::get('map_url');
+        $contact->store_id = Session::get('store_id');
        // $contact->vat = Input::get('vat');
         $contact->update();
         Session::flash("msg", "Contact details updated successfully.");
