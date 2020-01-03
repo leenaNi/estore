@@ -40,6 +40,7 @@ class HomeController extends Controller
 
     public function index()
     {
+        // dd(Category::limit(1)->offset(0)->get());
 
         Session::forget('storename');
         //  dd("after sent mIL");
@@ -319,7 +320,6 @@ class HomeController extends Controller
                 if ($chkUrlKey == 0) {
                     $store->url_key = $themeInput->url_key;
                 }
-
             }
             $store->prefix = $this->getPrefix($domainname);
         }
@@ -335,7 +335,6 @@ class HomeController extends Controller
 
         if ($store->save()) {
             if (empty($themeInput->id)) {
-
                 $result = $this->createInstance($store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $themeInput->storename, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $getMerchat->phone, $firstname, $domainname, $storeVersion, $store->expiry_date);
                 // dd($result);
             }
@@ -343,10 +342,8 @@ class HomeController extends Controller
 
         $data = [];
         $data['id'] = $store->id;
-
         $data['status'] = "success";
         Session::forget("storeId");
-
         return $data;
     }
 
@@ -356,17 +353,14 @@ class HomeController extends Controller
         $dataS = [];
         $dataS['id'] = Input::get('id');
         $dataS['storedata'] = Store::find(Input::get('id'));
-
         $viewname = Config('constants.frontendView') . ".congrats";
         return Helper::returnView($viewname, $dataS);
     }
 
     public function createInstance($storeId, $prefix, $urlKey, $merchantEamil, $merchantPassword, $storeName, $themeid, $catid, $currency, $phone, $firstname, $domainname, $storeVersion, $expirydate)
     {
-
         ini_set('max_execution_time', 600);
         $merchantd = Merchant::find(Session::get('merchantid'));
-
         $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "' . env('GODADDY_IP') . '","ttl": 3600}]';
         $fields = array(
             'data' => $messagearray,
@@ -387,24 +381,21 @@ class HomeController extends Controller
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
         //disabling ssl support
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
         //adding the fields in json format
         curl_setopt($ch, CURLOPT_POSTFIELDS, $messagearray);
-
         //finally executing the curl request
         $result = curl_exec($ch);
         if ($result === false) {
             die('Curl failed: ' . curl_error($ch));
         }
         curl_close($ch);
-//        //stop Curl
+        // stop Curl
 
         $contents = File::get(public_path() . "/public/skeleton.sql");
         $sql = str_replace('tblprfx_', $storeId, $contents);
         $test = DB::unprepared($sql);
         if ($test) {
             $path = base_path() . "/merchants/" . "$domainname";
-
             $mk = File::makeDirectory($path, 0777, true, true);
             if (chmod($path, 0777)) {
                 chmod($path, 0777);
@@ -443,7 +434,6 @@ class HomeController extends Controller
                     //                    $randno = $merchantPassword;
                     //                    $password = Hash::make($randno);
                     $newuserid = DB::table("users")->insertGetId($insertArr);
-
                     $json_url = base_path() . "/merchants/" . $domainname . "/storeSetting.json";
                     $json = file_get_contents($json_url);
                     $decodeVal = json_decode($json, true);
@@ -487,8 +477,7 @@ class HomeController extends Controller
                     fwrite($fp, $newJsonString);
                     fclose($fp);
 
-                    $adminRoleId = DB::table('roles')->where('store_id', $storeId)->where('name', 'LIKE', 'admin')->first(['id']);	
-                   
+                    $adminRoleId = DB::table('roles')->where('store_id', $storeId)->where('name', 'LIKE', 'admin')->first(['id']);
                     DB::table("role_user")->insert(["user_id" => @$newuserid, "role_id" => $adminRoleId->id]);
                     //Check acl setting from general settings
                     $chkAcl = DB::table("general_setting")->where('store_id', $storeId)->where('url_key', 'acl')->select("status")->first();
@@ -544,7 +533,7 @@ class HomeController extends Controller
                     }
                     if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
-                        // Helper::sendsms($phone, $msgOrderSucc, $country_code);
+                        Helper::sendsms($phone, $msgOrderSucc, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
@@ -557,7 +546,7 @@ class HomeController extends Controller
                     $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
-                        // Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
+                        Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
                     return "Extracted Successfully to $path";
                 } else {
@@ -1079,7 +1068,7 @@ class HomeController extends Controller
             $msgOrderSucc = "Your one time password is. " . $otp . " Team eStorifi";
             Helper::sendsms($mobile, $msgOrderSucc, $country);
         }
-        $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber","otp"=>$otp];
+        $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber", "otp" => $otp];
         return $data;
     }
 

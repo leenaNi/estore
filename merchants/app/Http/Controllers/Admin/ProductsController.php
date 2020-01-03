@@ -2,65 +2,62 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Route;
-use Input;
-use App\Models\Product;
-use App\Models\HasProducts;
-use App\Models\Finish;
-use App\Models\Fabric;
-use App\Models\Category;
-use App\Models\ProductType;
-use App\Models\AttributeSet;
-use App\Models\CatalogImage;
-use App\Models\Attribute;
-use App\Models\Conversion;
-use App\Models\AttributeValue;
-use App\Models\DownlodableProd;
-use App\Models\GeneralSetting;
-use App\Models\StockUpdateHistory;
+use App\Classes\UploadHandler;
 use App\Http\Controllers\Controller;
-use App\Models\UnitMeasure;
-use App\Models\Tax;
-use App\Models\ProductHasTaxes;
+use App\Library\Helper;
+use App\Models\Attribute;
+use App\Models\AttributeSet;
 use App\Models\AttributeType;
+use App\Models\AttributeValue;
+use App\Models\CatalogImage;
+use App\Models\Category;
+use App\Models\DownlodableProd;
+use App\Models\Finish;
+use App\Models\GeneralSetting;
+use App\Models\HasProducts;
 use App\Models\HasVendors;
 use App\Models\MallProdCategory;
 use App\Models\MallProducts;
-use DB;
-use Request;
-use Response;
+use App\Models\Product;
+use App\Models\ProductHasTaxes;
+use App\Models\ProductType;
+use App\Models\StockUpdateHistory;
+use App\Models\Tax;
+use App\Models\UnitMeasure;
 use App\Models\User;
-use Session;
-use App\Library\Helper;
-use App\Classes\UploadHandler;
-use Vsmoraes\Pdf\Pdf;
+use DB;
 use DNS1D;
 use DNS2D;
 use Excel;
-use Schema;
-use DOMDocument;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Pagination\Paginator;
+use Input;
+use Request;
+use Response;
+use Route;
+use Schema;
+use Session;
+use Vsmoraes\Pdf\Pdf;
 
-class ProductsController extends Controller {
+class ProductsController extends Controller
+{
 
     private $pdf;
 
-    function __construct(Pdf $pdf) {
+    public function __construct(Pdf $pdf)
+    {
         parent::__construct();
         $this->pdf = $pdf;
     }
 
-    public function index() {
-
+    public function index()
+    {
         //\Artisan::call("cache:clear");
         //dd(Config('constants.productImgPath'));
-//        $products = Product::find(3);
-//          $products->is_share_on_mall=1;
-//          $products->save();
-//dd($products);
+        //        $products = Product::find(3);
+        //          $products->is_share_on_mall=1;
+        //          $products->save();
+        //dd($products);
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
 
@@ -87,7 +84,7 @@ class ProductsController extends Controller {
             $products = $products->where('selling_price', '<=', $max_prize);
         }
         if (!empty(Input::get('category'))) {
-            $products = $products->whereHas('categories', function($q) {
+            $products = $products->whereHas('categories', function ($q) {
                 $q->where('categories.id', Input::get('category'));
             });
         }
@@ -139,8 +136,8 @@ class ProductsController extends Controller {
 
         foreach ($products as $prd) {
 //if(count($prd->wishlist) > 0){
-//             $dd[$prd->product]=  $prd->wishlist;
-//           }
+            //             $dd[$prd->product]=  $prd->wishlist;
+            //           }
             $getPrdImg = ($prd->catalogimgs()->where("image_mode", 1)->count() > 0) ? $prd->catalogimgs()->where("image_mode", 1)->first()->filename : 'default_product.png';
             $prd->prodImage = Config('constants.productImgPath') . "/" . @$getPrdImg;
         }
@@ -149,7 +146,8 @@ class ProductsController extends Controller {
         return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets'));
     }
 
-    public function add() {
+    public function add()
+    {
         $has_attr = DB::table('has_attributes')->select('attr_set')->groupBy('attr_set')->get();
 
         $attr_has = [];
@@ -187,13 +185,13 @@ class ProductsController extends Controller {
             $attr_sets[$attr['id']] = $attr['attr_set'];
         }
 
-
         $action = route("admin.products.save");
 
         return view(Config('constants.adminProductView') . '.add', compact('is_stockable', 'prod_types', 'attr_sets', 'action'));
     }
 
-    public function save() {
+    public function save()
+    {
         //dd(Input::all());
         $prod = Product::create(Input::all());
         $category = Input::get("category");
@@ -224,7 +222,7 @@ class ProductsController extends Controller {
 
         $prod->added_by = Input::get('added_by');
         if ($prod->prod_type == 1) {
-            $attr = AttributeSet::where(['store_id'=>Session::get('store_id'),'attr_set'=>'Default'])->first();
+            $attr = AttributeSet::where(['store_id' => Session::get('store_id'), 'attr_set' => 'Default'])->first();
             $prod->attr_set = $attr->id;
         }
         if (Input::get("is_stock") == 1) {
@@ -247,14 +245,18 @@ class ProductsController extends Controller {
         if ($prod->prod_type != 3) {
             $attributes = AttributeSet::find($prod->attributeset['id'])->attributes;
             //dd($attributes);
-            if (!empty($attributes))
+            if (!empty($attributes)) {
                 $prod->attributes()->sync($attributes);
-            else
+            } else {
                 $prod->attributes()->detach();
+            }
+
         } else {
             $attributes = AttributeSet::find($prod->attributeset['id'])->attributes()->where('is_filterable', "=", "0")->get();
-            if (!empty($attributes))
+            if (!empty($attributes)) {
                 $prod->attributes()->sync($attributes);
+            }
+
         }
         if (count($category) > 0) {
             $prod->categories()->sync($category);
@@ -263,7 +265,8 @@ class ProductsController extends Controller {
         return $view;
     }
 
-    public function edit() {
+    public function edit()
+    {
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $prod = Product::find(Input::get('id'));
         $action = route('admin.products.update');
@@ -283,7 +286,8 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.editInfo', compact('prod', 'action', 'barcode', 'unit_measure', 'taxes', 'selected_taxes', 'is_desc'));
     }
 
-    public function update() {
+    public function update()
+    {
 
         $is_desc = GeneralSetting::where('url_key', 'des')->first();
         $retunUrl = Input::get('return_url');
@@ -323,13 +327,13 @@ class ProductsController extends Controller {
             try {
                 @$prod->retag($tags);
             } catch (Exception $ex) {
-                
+
             }
         } else {
             try {
                 @$prod->untag();
             } catch (Exception $ex) {
-                
+
             }
         }
         Session::flash("msg", "Product updated succesfully.");
@@ -351,21 +355,24 @@ class ProductsController extends Controller {
         return $view->with('msg', "Product updated successfully.");
     }
 
-    public function edit_category() {
+    public function edit_category()
+    {
         $prod = Product::find(Input::get('id'));
         $action = route('admin.products.update.category');
         return view(Config('constants.adminProductView') . '.edit_category', compact('prod', 'action'));
     }
 
-    public function update_edit_category() {
+    public function update_edit_category()
+    {
         $retunUrl = Input::get('return_url');
         $prod = Product::find(Input::get('id'));
         $prod->updated_by = Input::get('updated_by');
         $prod->update();
-        if (!empty(Input::get('category_id')))
+        if (!empty(Input::get('category_id'))) {
             $prod->categories()->sync(Input::get('category_id'));
-        else
+        } else {
             $prod->categories()->detach();
+        }
 
         $view = !empty(Input::get('return_url')) ? redirect()->to($retunUrl) : redirect()->route("admin.products.images", ['id' => $prod->id]);
         return $view->with('msg', "Product updated successfully.");
@@ -373,28 +380,33 @@ class ProductsController extends Controller {
 
     //images Tab
 
-    public function img() {
+    public function img()
+    {
         $images = CatalogImage::paginate(Config('constants.paginateNo'));
         $prod = Product::find(Input::get('id'));
         $action = route('admin.products.images.save');
         return view(Config('constants.adminProductView') . '.catalog_images', compact('images', 'prod', 'action'));
     }
 
-    public function delImg() {
+    public function delImg()
+    {
         $id = Input::get('imgId');
         $del = CatalogImage::find($id);
-        if ($del->delete())
+        if ($del->delete()) {
             return 1;
-        else
+        } else {
             return 0;
+        }
+
         //->with('msg', "Image deleted successfully.");
         //return redirect()->back()->with('msg',"Image deleted successfully.");
         //echo "Successfully deleted";
     }
 
-    public function saveImg() {
+    public function saveImg()
+    {
         // dd(Product::find(Input::get('prod_id'))->catalogimgs()->where("image_type", "=", 1)->get());
-        //  dd(Input::all());  
+        //  dd(Input::all());
         if (Input::file('images')) {
             foreach (Input::file('images') as $key => $value) {
                 // if (Input::get('file_upload_status')[$key] == 0) {
@@ -476,13 +488,14 @@ class ProductsController extends Controller {
         return $nextView;
     }
 
-    public function attribute() {
+    public function attribute()
+    {
         $prod = Product::find(Input::get('id'));
         $attrset = $prod->attr_set;
         $attributes_values = $prod->attributes->toArray();
-        $attributes = Attribute::where('is_filterable', 0)->orderBy('att_sort_order', 'asc')->with('attributeoptions')->whereHas('attributesets', function($q)use ($attrset) {
-                    $q->where('attribute_sets.id', $attrset);
-                })->get()->toArray();
+        $attributes = Attribute::where('is_filterable', 0)->orderBy('att_sort_order', 'asc')->with('attributeoptions')->whereHas('attributesets', function ($q) use ($attrset) {
+            $q->where('attribute_sets.id', $attrset);
+        })->get()->toArray();
         foreach ($attributes as $key => $attr) {
             foreach ($attributes_values as $key1 => $attr_val) {
                 if ($attr['id'] == $attr_val['id'] && $attr_val['pivot']['attr_val']) {
@@ -508,7 +521,8 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.attributes', compact('attributes', 'prod', 'action', 'attributes_values', 'attrs', 'attr_types', 'attrSetsSelected'));
     }
 
-    public function saveAttribute() {
+    public function saveAttribute()
+    {
         $returnUrl = Input::get('return_url');
 
         $product = Product::find(Input::get('id'));
@@ -622,7 +636,8 @@ class ProductsController extends Controller {
         return $nextView;
     }
 
-    public function configProdAttrs($prodId) {
+    public function configProdAttrs($prodId)
+    {
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $prod = Product::find($prodId);
         $attributes = AttributeSet::find($prod->attributeset['id'])->attributes()->where("is_filterable", 1)->get();
@@ -640,7 +655,8 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.editCProd', compact('prod', 'action', 'attrs', 'prodVariants', 'barcode'));
     }
 
-    public function update4() {
+    public function update4()
+    {
         //  dd(Input::all());
 
         $prod = Product::find(Input::get("prod_id"));
@@ -659,9 +675,9 @@ class ProductsController extends Controller {
         }
 
         $prdAttrCnt = count($prodsAttr);
-        $subProds = Product::where('parent_prod_id', Input::get('prod_id'))->with(['attributes' => function($q) use($prodsAttr) {
-                        $q->whereIn('attr_val', $prodsAttr);
-                    }])->get();
+        $subProds = Product::where('parent_prod_id', Input::get('prod_id'))->with(['attributes' => function ($q) use ($prodsAttr) {
+            $q->whereIn('attr_val', $prodsAttr);
+        }])->get();
         $isExists = 0;
         foreach ($subProds as $sprod) {
             if (count($sprod->attributes) == $prdAttrCnt) {
@@ -690,7 +706,7 @@ class ProductsController extends Controller {
             }
             foreach ($prods as $key => $prd) {
                 // dd($prd["options"]);
-                $newConfigProduct = Product::create(['product' => $prod->product . ' - Variant - ' . ($key + 1), 'is_avail' => 1, 'is_stock' => $prod->is_stock, 'parent_prod_id' => $prod->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $prod->attr_set, 'price' => $prods[$key]['price'], 'stock' => $prods[$key]['stock'], 'is_avail' => $prods[$key]['is_avail']]);
+                $newConfigProduct = Product::create(['product' => $prod->product . ' - Variant - ' . ($key + 1), 'is_avail' => 1, 'is_stock' => $prod->is_stock, 'parent_prod_id' => $prod->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $prod->attr_set, 'price' => $prods[$key]['price'], 'stock' => $prods[$key]['stock'], 'is_avail' => $prods[$key]['is_avail'], 'store_id' => Session::get('store_id')]);
                 //*
                 $attributes = AttributeSet::find($newConfigProduct->attributeset['id'])->attributes;
                 $newConfigProduct->attributes()->sync($attributes);
@@ -705,6 +721,7 @@ class ProductsController extends Controller {
                 $name = rtrim($name, ", ");
                 $name .= ")";
                 $newConfigProduct->product = $name;
+                $newConfigProduct->store_id = Session::get('store_id');
                 $newConfigProduct->update();
             }
 //dd($newConfigProduct);
@@ -716,7 +733,8 @@ class ProductsController extends Controller {
 
     //update without stock conf
 
-    public function updateWithoutStock() {
+    public function updateWithoutStock()
+    {
         $prod = Product::find(Input::get("prod_id"));
         $prods = [];
 
@@ -738,7 +756,8 @@ class ProductsController extends Controller {
         return $view;
     }
 
-    public function updateProdVariant() {
+    public function updateProdVariant()
+    {
         $prod = Product::find(Input::get("id"));
         $attributes = AttributeSet::find($prod->attributeset['id'])->attributes()->where("is_filterable", "=", "1")->get();
         $attrs = [];
@@ -756,15 +775,17 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.editProdVariant', compact('prod', 'action', 'attrs', 'attributes'));
     }
 
-    public function getAllProds($prod_id = "") {
+    public function getAllProds($prod_id = "")
+    {
         $prods = Product::where('is_individual', '=', '1')
-                ->where("id", "!=", $prod_id)
-                ->orderBy("product", "asc")
-                ->paginate(Config('constants.paginateNo'));
+            ->where("id", "!=", $prod_id)
+            ->orderBy("product", "asc")
+            ->paginate(Config('constants.paginateNo'));
         return $prods;
     }
 
-    public function update2() {
+    public function update2()
+    {
         foreach ($_POST as $key => $value) {
             if (is_int($key)) {
                 DB::update(DB::raw("update " . DB::getTablePrefix() . "has_options set attr_val = '$value' where attr_id = $key and prod_id = " . Input::get('id')));
@@ -799,13 +820,14 @@ class ProductsController extends Controller {
         }
     }
 
-    public function updateRelatedUpsellProds($prodId) {
+    public function updateRelatedUpsellProds($prodId)
+    {
         $prod = Product::find($prodId);
         //    $search = !empty(Input::get("relSearch")) ? Input::get("relSearch") : !empty(Input::get("relSearch")) ? Input::get("relSearch") : '';
         //  $search_fields = ['product', 'short_desc', 'long_desc'];
         $prods = Product::where('is_individual', '=', '1')
-                ->where("id", "!=", $prod->id)
-                ->orderBy("product", "asc");
+            ->where("id", "!=", $prod->id)
+            ->orderBy("product", "asc");
         //   $prods = $prods->where(function($query) use($search_fields, $search) {
         //       foreach ($search_fields as $field) {
         //           $query->orWhere($field, "like", "%$search%");
@@ -823,13 +845,14 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.editRelUpsellProd', compact('prod', 'prods', 'action', 'relatedProd'));
     }
 
-    public function updateUpsellProds($prodId) {
+    public function updateUpsellProds($prodId)
+    {
         $prod = Product::find($prodId);
         //    $search = !empty(Input::get("relSearch")) ? Input::get("relSearch") : !empty(Input::get("relSearch")) ? Input::get("relSearch") : '';
         //  $search_fields = ['product', 'short_desc', 'long_desc'];
         $prods = Product::where('is_individual', '=', '1')
-                ->where("id", "!=", $prod->id)
-                ->orderBy("product", "asc");
+            ->where("id", "!=", $prod->id)
+            ->orderBy("product", "asc");
         $relatedProd = Product::with('upsellproducts')->where('id', $prodId)->get();
         if (!empty(Input::get('product_name'))) {
             $prods = $prods->where('product', 'like', "%" . Input::get('product_name') . "%");
@@ -844,7 +867,8 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.editUpsellProduct', compact('prod', 'prods', 'action', 'relatedProd'));
     }
 
-    public function ProductsUpsellRelatedSearch() {
+    public function ProductsUpsellRelatedSearch()
+    {
         $name = Input::get("product");
         $prodId = Input::get("id");
         $relatedId = DB::table('has_upsell_prods')->where('prod_id', $prodId)->pluck("upsell_prod_id");
@@ -857,7 +881,8 @@ class ProductsController extends Controller {
         //  echo json_encode($prods);
     }
 
-    public function ProductsRelatedSearch() {
+    public function ProductsRelatedSearch()
+    {
 
         $prodId = Input::get("id");
         $relatedId = DB::table('has_related_prods')->where('prod_id', $prodId)->pluck("related_prod_id");
@@ -870,7 +895,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function relAttach() {
+    public function relAttach()
+    {
         $id = Input::get("id");
         $prod = Product::find(Input::get("id"));
         // dd(Input::get("prod_id"));
@@ -880,7 +906,8 @@ class ProductsController extends Controller {
         //  return Helper::returnView($viewname, $data, $url = 'admin.products.upsell.related?id='.$id);
     }
 
-    public function relDetach() {
+    public function relDetach()
+    {
         $id = Input::get("id");
         $prod = Product::find(Input::get("id"));
 
@@ -889,21 +916,24 @@ class ProductsController extends Controller {
         //redirect()->route("admin.products.upsell.related", ['id' => $id]);
     }
 
-    public function upsellAttach() {
+    public function upsellAttach()
+    {
         $prod = Product::find(Input::get("id"));
         // dd(Input::get("prod_id"));
         $prod->upsellproducts()->attach(Input::get("prod_id"));
         return redirect()->back();
     }
 
-    public function upsellDetach() {
+    public function upsellDetach()
+    {
         $prod = Product::find(Input::get("id"));
         $prod->upsellproducts()->detach(Input::get("prod_id"));
         return $prod;
         //  redirect()->route("admin.products.upsell.related", ['id' => $id]);
     }
 
-    public function update3() {
+    public function update3()
+    {
         Session::flash("msg", "Product updated successfully.");
         $view = !empty(Input::get('return_url')) ? redirect()->to(Input::get('return_url')) : redirect()->route("admin.products.view");
         return $view;
@@ -911,7 +941,8 @@ class ProductsController extends Controller {
 
     //combo products
 
-    public function comboProds($prodId) {
+    public function comboProds($prodId)
+    {
         $prod = Product::find($prodId);
         $catid = @$prod->categories()->first()->id;
         $cat = Category::find($catid);
@@ -919,27 +950,27 @@ class ProductsController extends Controller {
         //  $search_fields = ['product', 'short_desc', 'long_desc'];
         if (count($cat->descendants()->get()) <= 0) {
             $prods = $cat->products()
-                            ->where("is_individual", 1)
-                            ->where("products.id", "!=", $prodId)
-                            ->get(['products.*'])->toArray();
+                ->where("is_individual", 1)
+                ->where("products.id", "!=", $prodId)
+                ->get(['products.*'])->toArray();
 
 //      $prods = Product::where('is_individual', '=', '1')
-//                ->where("id", "!=", $prod->id)
-//                ->where("is_crowd_funded", "=", 0)
-//                ->orderBy("product", "asc");
-//        $prods = $prods->where(function($query) use($search_fields, $search) {
-//            foreach ($search_fields as $field) {
-//                $query->orWhere($field, "like", "%$search%");
-//            }
-//        });
+            //                ->where("id", "!=", $prod->id)
+            //                ->where("is_crowd_funded", "=", 0)
+            //                ->orderBy("product", "asc");
+            //        $prods = $prods->where(function($query) use($search_fields, $search) {
+            //            foreach ($search_fields as $field) {
+            //                $query->orWhere($field, "like", "%$search%");
+            //            }
+            //        });
         } else {
 //            die('bhavana123');
             $prods = [];
             foreach ($cat->descendantsAndSelf()->get() as $child) {
                 foreach ($child->products()
-                        ->where("is_individual", 1)
-                        ->where("products.id", "!=", $prodId)
-                        ->get(['products.*'])->toArray() as $course) {
+                    ->where("is_individual", 1)
+                    ->where("products.id", "!=", $prodId)
+                    ->get(['products.*'])->toArray() as $course) {
                     array_push($prods, $course);
                 }
             }
@@ -957,12 +988,14 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.edit4Prod', compact('prod', 'prods', 'action'));
     }
 
-    public function update5() {
+    public function update5()
+    {
         $prod = Product::find(Input::get("id"));
-        if (!empty(Input::get('combo_prods')))
+        if (!empty(Input::get('combo_prods'))) {
             $prod->comboproducts()->sync(Input::get('combo_prods'));
-        else
+        } else {
             $prod->comboproducts()->detach();
+        }
 
         $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
 
@@ -978,25 +1011,29 @@ class ProductsController extends Controller {
         return $nextView;
     }
 
-    public function comboAttach() {
+    public function comboAttach()
+    {
         $prod = Product::find(Input::get("id"));
         $prod->comboproducts()->attach(Input::get("prod_id"));
     }
 
-    public function comboDetach() {
+    public function comboDetach()
+    {
         $prod = Product::find(Input::get("id"));
         $prod->comboproducts()->detach(Input::get("prod_id"));
     }
 
     //attr
-    public function prodAttrs($prodId) {
+    public function prodAttrs($prodId)
+    {
         $prod = Product::find($prodId);
         $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
         $action = route('update2Prod');
         return view(Config('constants.adminProductView') . '.edit2Prod', compact('prod', 'action', 'attrs'));
     }
 
-    public function duplicate_prod() {
+    public function duplicate_prod()
+    {
         $prodId = Input::get('id');
         //save products basic fields
         $prods = Product::where('id', '=', $prodId)->get()->toArray();
@@ -1043,7 +1080,8 @@ class ProductsController extends Controller {
         return redirect()->route("admin.products.view");
     }
 
-    public function fabrics() {
+    public function fabrics()
+    {
         $prod = Product::find(Input::get('id'));
         $brand = \App\Library\Helper::getBrand($prod);
         // dd($brand);
@@ -1052,7 +1090,8 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.fabrics', compact('finish', 'prod', 'action'));
     }
 
-    public function updateFabrics() {
+    public function updateFabrics()
+    {
         $prod = Product::find(Input::get('id'));
 
         if (!empty(Input::get('fab'))) {
@@ -1069,20 +1108,22 @@ class ProductsController extends Controller {
         return $nextView;
     }
 
-    public function comm_prod_details() {
+    public function comm_prod_details()
+    {
         $allProdDetails = HasProducts::where("has_products.id", "=", Input::get('prodid'))
-                ->leftJoin("orders", "orders.id", "=", "has_products.order_id")
-                ->leftJoin("prod_status", "prod_status.id", "=", "has_products.status")
-                ->leftJoin("products", "products.id", "=", "has_products.prod_id")
-                ->leftJoin("fabrics", "fabrics.id", "=", "has_products.finish_id")
-                ->leftJoin("consignments", "consignments.id", "=", "has_products.consignment_id")
-                ->leftJoin("proforma_invoices", "proforma_invoices.id", "=", "has_products.proforma_invoice_id")
-                ->first(['has_products.*', 'orders.project_name', 'fabrics.fabric', 'products.product', 'prod_status.prod_status', 'products.product_code', 'proforma_invoices.invoice_no', 'consignments.consignment_no']);
+            ->leftJoin("orders", "orders.id", "=", "has_products.order_id")
+            ->leftJoin("prod_status", "prod_status.id", "=", "has_products.status")
+            ->leftJoin("products", "products.id", "=", "has_products.prod_id")
+            ->leftJoin("fabrics", "fabrics.id", "=", "has_products.finish_id")
+            ->leftJoin("consignments", "consignments.id", "=", "has_products.consignment_id")
+            ->leftJoin("proforma_invoices", "proforma_invoices.id", "=", "has_products.proforma_invoice_id")
+            ->first(['has_products.*', 'orders.project_name', 'fabrics.fabric', 'products.product', 'prod_status.prod_status', 'products.product_code', 'proforma_invoices.invoice_no', 'consignments.consignment_no']);
 
         return $allProdDetails;
     }
 
-    public function delete() {
+    public function delete()
+    {
 
         //  return redirect()->back()->with('message', 'You cannot delete this product.');
 
@@ -1114,7 +1155,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function bulkDelete($id) {
+    public function bulkDelete($id)
+    {
         $count = HasProducts::where("prod_id", $id)->count();
         if ($count <= 0) {
             $prod = Product::find($id);
@@ -1146,7 +1188,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function changeStatus() {
+    public function changeStatus()
+    {
         $prod = Product::find(Input::get('id'));
         if ($prod->status == 1) {
             $prodStatus = 0;
@@ -1173,7 +1216,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function deleteVarient() {
+    public function deleteVarient()
+    {
         //  return redirect()->back()->with('message', 'You cannot delete this product.');
         $count = HasProducts::where("sub_prod_id", Input::get('id'))->count();
         if ($count <= 0) {
@@ -1183,11 +1227,11 @@ class ProductsController extends Controller {
                 @$prod->attributes()->detach();
             }
 //            if ($prod->catalogimgs()->count() >= 2) {
-//                $prod->catalogimgs()->delete();
-//            }
-//            if ($prod->savedlist()->count() >= 1) {
-//                @$prod->savedlist()->detach();
-//            }
+            //                $prod->catalogimgs()->delete();
+            //            }
+            //            if ($prod->savedlist()->count() >= 1) {
+            //                @$prod->savedlist()->detach();
+            //            }
             $prod->delete();
             return redirect()->back()->with('message', 'Product deleted successfully.');
         } else {
@@ -1195,7 +1239,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function configProdAttrsWithoutStock($prodId) {
+    public function configProdAttrsWithoutStock($prodId)
+    {
         $prod = Product::find($prodId);
         $attributes = AttributeSet::find($prod->attributeset['id'])->attributes()->get();
         $attrs = [];
@@ -1211,13 +1256,15 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.editCProdWithoutStock', compact('prod', 'action', 'attrs', 'prodVariants'));
     }
 
-    public function prodSeo() {
+    public function prodSeo()
+    {
         $prod = Product::find(Input::get('id'));
         $action = route('admin.products.prodSaveSeo');
         return view(Config('constants.adminProductView') . '.prod_seo', compact('prod', 'action'));
     }
 
-    public function prodSaveSeo() {
+    public function prodSaveSeo()
+    {
         $saveS = Product::findOrNew(Input::get('id'));
         $saveS->meta_title = Input::get("meta_title");
         $saveS->meta_keys = Input::get("meta_keys");
@@ -1238,13 +1285,15 @@ class ProductsController extends Controller {
         return redirect()->to(Input::get('return_url'));
     }
 
-    public function prodUpload() {
+    public function prodUpload()
+    {
         $prod = Product::find(Input::get('id'));
         $action = route('admin.products.prodSaveUpload');
         return view(Config('constants.adminProductView') . '.upload_prod', compact('prod', 'action'));
     }
 
-    public function prodSaveUpload() {
+    public function prodSaveUpload()
+    {
         foreach (Input::file('image_d') as $imgK => $imgV) {
             if ($imgV != null) {
                 $destinationPath = Config('constants.productUploadImgPath') . "/";
@@ -1264,7 +1313,8 @@ class ProductsController extends Controller {
         return redirect()->to(Input::get('return_url'));
     }
 
-    public function prodUploadDel() {
+    public function prodUploadDel()
+    {
 
         $id = Input::get('imgId');
 
@@ -1274,7 +1324,8 @@ class ProductsController extends Controller {
         Session::flash("delDownloadableProd", "Deleted Successfully.");
     }
 
-    public function sampleBulkDownload() {
+    public function sampleBulkDownload()
+    {
         $details = [];
         $arr = ['id', 'product', 'prod_type', 'images', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
         $products = Product::where("is_individual", 1)->get(['id', 'product', 'prod_type', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount']);
@@ -1296,10 +1347,12 @@ class ProductsController extends Controller {
                 $cats = "";
             }
 
-            if (!empty($prodt->tagNames()))
+            if (!empty($prodt->tagNames())) {
                 $tags = implode(",", $prodt->tagNames());
-            else
+            } else {
                 $tags = "";
+            }
+
             $rel = [];
             if (!empty($prodt->relatedproducts()->get(['prod_id'])->toArray())) {
                 foreach ($prodt->relatedproducts()->get(['prod_id']) as $relids) {
@@ -1363,14 +1416,15 @@ class ProductsController extends Controller {
                 @$tags,
                 @$cats,
                 @$relProds,
-                @$upProds
+                @$upProds,
             ];
             array_push($sampleProds, $details);
         }
         return Helper::getCsv($sampleProds, 'products_data.csv', ',');
     }
 
-    public function productBulkUpload() {
+    public function productBulkUpload()
+    {
 
         if (Input::hasFile('file')) {
 
@@ -1389,10 +1443,11 @@ class ProductsController extends Controller {
         }
     }
 
-    private function product_import_csv($path, $filename) {
+    private function product_import_csv($path, $filename)
+    {
         $arr = ['id', 'product', 'prod_type', 'images', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
         $csv_file = $path . $filename;
-        if (($handle = fopen($csv_file, "r")) !== FALSE) {
+        if (($handle = fopen($csv_file, "r")) !== false) {
             $intersect = array_intersect($arr, fgetcsv($handle));
             if (count($arr) != count($intersect)) {
                 echo "Column miss match plaese check your Excel sheet";
@@ -1400,7 +1455,7 @@ class ProductsController extends Controller {
             }
 
             $row_id = 1;
-            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
                 $num = count($data);
                 for ($c = 0; $c < $num; $c++) {
                     $col[$c] = $data[$c];
@@ -1442,13 +1497,11 @@ class ProductsController extends Controller {
                 $upsell = $col[34];
                 if (!empty($id)) {
 
-
-
                     $updateProd = Product::firstOrNew(array('id' => $id));
 
-                    if (!empty($product))
+                    if (!empty($product)) {
                         $updateProd->product = $product;
-
+                    }
 
                     if (!empty($prodT)) {
                         if (is_numeric($prodT)) {
@@ -1466,22 +1519,21 @@ class ProductsController extends Controller {
                         }
                     }
 
-
-
-                    if (!empty($is_avail))
+                    if (!empty($is_avail)) {
                         $updateProd->is_avail = $is_avail;
+                    }
 
-
-                    if (!empty($is_listing))
+                    if (!empty($is_listing)) {
                         $updateProd->is_listing = $is_listing;
+                    }
 
-
-                    if (!empty($stock))
+                    if (!empty($stock)) {
                         $updateProd->stock = $stock;
+                    }
 
-
-                    if (!empty($price))
+                    if (!empty($price)) {
                         $updateProd->price = $price;
+                    }
 
                     if ($spl_price > 0 && $spl_price < $price) {
                         $selling_price = $spl_price;
@@ -1489,95 +1541,108 @@ class ProductsController extends Controller {
                         $selling_price = $price;
                     }
 
-                    if (!empty($spl_price))
+                    if (!empty($spl_price)) {
                         $updateProd->spl_price = $spl_price;
+                    }
 
-                    if (!empty($selling_price))
+                    if (!empty($selling_price)) {
                         $updateProd->selling_price = $selling_price;
+                    }
 
-                    if (!empty($sort_order))
+                    if (!empty($sort_order)) {
                         $updateProd->sort_order = $sort_order;
-
+                    }
 
                     if (!empty($attr_set)) {
                         if (is_numeric($attr_set)) {
-                            
+
                         } else {
                             Session::flash("message", "Product Attibute set  must be a Integer value for product Name " . $product . " in " . $row_id . " product record.");
                             return redirect()->back();
                         }
                     }
 
-
-                    if (!empty($is_cod))
+                    if (!empty($is_cod)) {
                         $updateProd->is_cod = $is_cod;
+                    }
 
-
-                    if (!empty($url_key))
+                    if (!empty($url_key)) {
                         $updateProd->url_key = $url_key;
+                    }
 
-
-                    if (!empty($short_desc))
+                    if (!empty($short_desc)) {
                         $updateProd->short_desc = $short_desc;
+                    }
 
-
-                    if (!empty($long_desc))
+                    if (!empty($long_desc)) {
                         $updateProd->long_desc = $long_desc;
+                    }
 
-
-                    if (!empty($add_desc))
+                    if (!empty($add_desc)) {
                         $updateProd->add_desc = $add_desc;
+                    }
 
-                    if (!empty($meta_title))
+                    if (!empty($meta_title)) {
                         $updateProd->meta_title = $meta_title;
+                    }
 
                     $updateProd->is_individual = 1;
 
-                    if (!empty($meta_key))
+                    if (!empty($meta_key)) {
                         $updateProd->meta_keys = $meta_key;
+                    }
 
-
-                    if (!empty($meta_desc))
+                    if (!empty($meta_desc)) {
                         $updateProd->meta_desc = $meta_desc;
+                    }
 
-                    if (!empty($meta_robot))
+                    if (!empty($meta_robot)) {
                         $updateProd->meta_robot = $meta_robot;
+                    }
 
-                    if (!empty($canonical))
+                    if (!empty($canonical)) {
                         $updateProd->canonical = $canonical;
+                    }
 
-                    if (!empty($og_title))
+                    if (!empty($og_title)) {
                         $updateProd->og_title = $og_title;
+                    }
 
-                    if (!empty($og_desc))
+                    if (!empty($og_desc)) {
                         $updateProd->og_desc = $og_desc;
+                    }
 
-                    if (!empty($og_image))
+                    if (!empty($og_image)) {
                         $updateProd->og_image = $og_image;
+                    }
 
-                    if (!empty($twitter_url))
+                    if (!empty($twitter_url)) {
                         $updateProd->twitter_url = $twitter_url;
+                    }
 
-                    if (!empty($twitter_title))
+                    if (!empty($twitter_title)) {
                         $updateProd->twitter_title = $twitter_title;
+                    }
 
-                    if (!empty($twitter_desc))
+                    if (!empty($twitter_desc)) {
                         $updateProd->twitter_desc = $twitter_desc;
+                    }
 
-                    if (!empty($twitter_image))
+                    if (!empty($twitter_image)) {
                         $updateProd->twitter_image = $twitter_image;
+                    }
 
-                    if (!empty($og_url))
+                    if (!empty($og_url)) {
                         $updateProd->og_url = $og_url;
+                    }
 
-
-                    if (!empty($is_shipped_inter))
+                    if (!empty($is_shipped_inter)) {
                         $updateProd->is_shipped_international = $is_shipped_inter;
+                    }
 
-
-                    if (!empty($is_referal_discount))
+                    if (!empty($is_referal_discount)) {
                         $updateProd->is_referal_discount = $is_referal_discount;
-
+                    }
 
                     $updateProd->save();
 
@@ -1600,10 +1665,12 @@ class ProductsController extends Controller {
                                     $updateProd->delete();
                                     return redirect()->back();
                                 }
-                                if (!empty($attributes))
+                                if (!empty($attributes)) {
                                     $updateProd->attributes()->sync($attributes);
-                                else
+                                } else {
                                     $updateProd->attributes()->detach();
+                                }
+
                             }
                         } else {
                             $chkAttr = AttributeSet::find($updateProd->attributeset['id']);
@@ -1624,13 +1691,12 @@ class ProductsController extends Controller {
                             }
 
 //                            $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes()->where('is_filterable', "=", "0")->get();
-//                            if (!empty($attributes))
-//                                $updateProd->attributes()->sync($attributes);
+                            //                            if (!empty($attributes))
+                            //                                $updateProd->attributes()->sync($attributes);
                         }
                     }
 
                     $tagsArr = explode(",", $tags);
-
 
                     if (!empty($tags)) {
                         $updateProd->retag($tags);
@@ -1699,12 +1765,14 @@ class ProductsController extends Controller {
         // echo "File data successfully imported to database!!";
     }
 
-    public function prdBulkImgUpload() {
+    public function prdBulkImgUpload()
+    {
         $path = '/public/Admin/uploads/catalog/products/';
         $upload_handler = new UploadHandler(null, true, null, $path);
     }
 
-    function generateBarcode() {
+    public function generateBarcode()
+    {
         $id = Input::get('id');
         $rand = rand(10000, 20000);
         $pro = Product::find($id);
@@ -1713,7 +1781,8 @@ class ProductsController extends Controller {
         echo json_encode(['id' => $id]);
     }
 
-    function printBarcode() {
+    public function printBarcode()
+    {
         if (Input::get('pt') == "var") { //FOR Varient level barcode generation
             $id = explode(',', Input::get('id'));
             echo Product::whereIn('id', $id)->select('id', 'product', 'barcode')->get();
@@ -1735,7 +1804,8 @@ class ProductsController extends Controller {
         }
     }
 
-    function bulkUpdate() {
+    public function bulkUpdate()
+    {
         // dd(Input::all());
         if (Input::get('productId')) {
             $ids = explode(',', Input::get('productId'));
@@ -1787,7 +1857,8 @@ class ProductsController extends Controller {
         return redirect()->route("admin.products.view")->with(array('message' => 'Error occured, no product selected.'));
     }
 
-    public function exportExcel() {
+    public function exportExcel()
+    {
         if (Input::get('productId')) {
             $ids = explode(',', Input::get('productId'));
             $pids = [];
@@ -1797,8 +1868,8 @@ class ProductsController extends Controller {
             }
             dd(Input::get('productId'));
             $products = Product::orderBy("id", "asc")->find($pids);
-            Excel::create('products', function($excel) use($products) {
-                $excel->sheet('Sheet 1', function($sheet) use($products) {
+            Excel::create('products', function ($excel) use ($products) {
+                $excel->sheet('Sheet 1', function ($sheet) use ($products) {
                     $arr = array();
                     foreach ($products as $product) {
                         $data = array($product->id, $product->product, $product->product_code, $product->is_stock ? 'Yes' : 'No', $product->url_key, $product->is_avail ? 'Yes' : 'No',
@@ -1808,8 +1879,8 @@ class ProductsController extends Controller {
                     }
                     $sheet->fromArray($arr, null, 'A1', false, false)->prependRow(array(
                         'Id', 'Product', 'Product Code', 'Is Stock', 'Url Key',
-                        'Is Available', 'Status', 'Stock', 'Max Price', 'Min Price', 'Price', 'Special Price', 'Selling Price', 'Is Individual'
-                            )
+                        'Is Available', 'Status', 'Stock', 'Max Price', 'Min Price', 'Price', 'Special Price', 'Selling Price', 'Is Individual',
+                    )
                     );
                 });
             })->export('csv');
@@ -1818,13 +1889,16 @@ class ProductsController extends Controller {
         }
     }
 
-    public function exportWishlist() {
+    public function exportWishlist()
+    {
         $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc")->get();
-       $dd=[];
-        foreach ($products as $prod)
+        $dd = [];
+        foreach ($products as $prod) {
             if (count($prod->wishlist) > 0) {
                 $dd[$prod->product] = $prod->wishlist;
             }
+        }
+
         $arr = ['FirstName', 'LastName', 'Email', 'Mobile', 'Products'];
         $sampleProds = [];
         array_push($sampleProds, $arr);
@@ -1835,7 +1909,7 @@ class ProductsController extends Controller {
                     $user->lastname,
                     $user->email,
                     $user->telephone,
-                    $key
+                    $key,
                 ];
             }
             array_push($sampleProds, $details);
@@ -1844,14 +1918,15 @@ class ProductsController extends Controller {
         return Helper::getCsv($sampleProds, 'products_wishlist.csv', ',');
     }
 
-    function barcodeForm() {
+    public function barcodeForm()
+    {
 
         $html = '';
 
         $html = "<html><head>"
-                . ""
-                . "<style>"
-                . ".wrappera {
+            . ""
+            . "<style>"
+            . ".wrappera {
    float: left;
     height: 100px;
     margin: 15px 10px 5px 55px;
@@ -1893,8 +1968,8 @@ class ProductsController extends Controller {
 .image img{
   vertical-align:middle;
 }"
-                . "</style>"
-                . "</head><body><table>";
+            . "</style>"
+            . "</head><body><table>";
         foreach (input::get('product') as $productId => $val) {
             if (!empty($val['barcode']) && $val['quantity'] > 0) {
                 $barcode = $val['barcode'];
@@ -1940,20 +2015,20 @@ class ProductsController extends Controller {
             }
         }
 
-
         $html .= "</table></body></html>";
         $time = time();
         echo $path = public_path("temp/$time.pdf");
         $this->pdf->load($html)->filename($path)->output();
     }
 
-    function downloadbarcode() {
+    public function downloadbarcode()
+    {
         $url = input::get('url');
-        return( Response::download($url) );
+        return (Response::download($url));
     }
 
-    function showbarcodes() {
-
+    public function showbarcodes()
+    {
 
         $d = json_encode(['id' => '1234', 'name' => 'simple-tshirt', 'category' => ['cat1', 'cat2', 'cat3'], 'whouse' => 1]);
         echo '<img style="width:200px;height:200px" src="data:image/png;base64,' . DNS2D::getBarcodePNG("$d", "QRCODE", 6, 6, array(1, 1, 1)) . '" alt="barcode"   />';
@@ -1961,7 +2036,7 @@ class ProductsController extends Controller {
         //   echo DNS2D::getBarcodePNGPath($d, "QRCODE");
         die;
         $html = "<style>"
-                . ".wrapper {
+            . ".wrapper {
    float: left;
     height: 100px;
     margin: 15px 10px 5px 55px;
@@ -1996,7 +2071,7 @@ class ProductsController extends Controller {
 .image img{
   vertical-align:middle;
 }"
-                . "</style>";
+            . "</style>";
         $html .= "<div class='pixel'>";
         for ($i = 0; $i < 10; $i++) {
 
@@ -2023,7 +2098,8 @@ class ProductsController extends Controller {
     }
 
     //To check attributes against product wether exist or not
-    public function checkAttribute() {
+    public function checkAttribute()
+    {
 
         $prod = Product::find(Input::get('prod_id'));
         $attr_set = $prod->attr_set;
@@ -2039,7 +2115,8 @@ class ProductsController extends Controller {
         return 0;
     }
 
-    public function productVendors($prodId) {
+    public function productVendors($prodId)
+    {
 
         $prod = Product::find($prodId);
         $vendors = $prod->hasVendors;
@@ -2047,25 +2124,26 @@ class ProductsController extends Controller {
         return view(Config('constants.adminProductView') . '.productVendors', compact('vendors', 'prod', 'action'));
     }
 
-    public function ProductVendorsSearch() {
+    public function ProductVendorsSearch()
+    {
 
         $prodId = Input::get("id");
         // search all vendor
         if (is_null($prodId)) {
-            $vendors = User::where('user_type', 3)->where(function($query) {
-                        $query->where('firstname', "like", '%' . $_GET['term'] . '%');
-                        $query->orwhere('lastname', "like", '%' . $_GET['term'] . '%');
-                    })->get();
+            $vendors = User::where('user_type', 3)->where(function ($query) {
+                $query->where('firstname', "like", '%' . $_GET['term'] . '%');
+                $query->orwhere('lastname', "like", '%' . $_GET['term'] . '%');
+            })->get();
             return $vendors;
         }
 
-        // search vendor associated with product       
+        // search vendor associated with product
         $vendorId = HasVendors::where('prod_id', $prodId)->where('status', 1)->pluck('vendor_id');
         if ($_GET['term'] != "") {
-            $vendors = User::where('user_type', 3)->whereNotIn('id', $vendorId)->where(function($query) {
-                        $query->where('firstname', "like", '%' . $_GET['term'] . '%');
-                        $query->orwhere('lastname', "like", '%' . $_GET['term'] . '%');
-                    })->get();
+            $vendors = User::where('user_type', 3)->whereNotIn('id', $vendorId)->where(function ($query) {
+                $query->where('firstname', "like", '%' . $_GET['term'] . '%');
+                $query->orwhere('lastname', "like", '%' . $_GET['term'] . '%');
+            })->get();
 
             return $vendors;
         } else {
@@ -2073,7 +2151,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function ProductVendorsSave() {
+    public function ProductVendorsSave()
+    {
         $prod_id = Input::get('id');
         $product = Product::find($prod_id);
         $vendor_ids = Input::get('vendor_id');
@@ -2084,7 +2163,7 @@ class ProductsController extends Controller {
         if (count($vendor_ids) > 0) {
             foreach ($vendor_ids as $key => $vendor_id) {
                 $data['vendor_id'] = $vendor_id;
-                ;
+
                 $data['sort'] = $sort[$vendor_id];
                 $data['status'] = 1;
                 $prod_vendor[] = $data;
@@ -2097,41 +2176,49 @@ class ProductsController extends Controller {
         return $nextView;
     }
 
-    public function ProductVendorsDelete() {
+    public function ProductVendorsDelete()
+    {
         $prod = Product::find(Input::get("id"));
         $prod->vendors()->detach(Input::get("vendor_id"));
         Session::flash("message", "Product vendor deleted succesfully.");
         return $prod;
     }
 
-    public function getMallCategory() {
+    public function getMallCategory()
+    {
         $prod = MallProdCategory::where("status", 1)->where("is_nav", 1)->get(["id", "category"])->toArray();
         $roots = MallProdCategory::roots()->where("status", 1)->get();
         $str = '';
-        $str.= "<ul id='catTree' class='tree icheck '>";
-        foreach ($roots as $root)
-            $str.= $this->renderNode($root, $prod);
-        $str.= "</ul>";
+        $str .= "<ul id='catTree' class='tree icheck '>";
+        foreach ($roots as $root) {
+            $str .= $this->renderNode($root, $prod);
+        }
+
+        $str .= "</ul>";
         return ['category' => $str, 'prod_cat' => $prod];
     }
 
-    function renderNode($node, $prodCats) {
+    public function renderNode($node, $prodCats)
+    {
         $str = '';
-        $str.= "<li class='tree-item fl_left ps_relative_li " . ($node->parent_id == '' ? 'parent' : '') . "'>";
-        $str.= '<div class="checkbox">
+        $str .= "<li class='tree-item fl_left ps_relative_li " . ($node->parent_id == '' ? 'parent' : '') . "'>";
+        $str .= '<div class="checkbox">
                                 <label class="i-checks checks-sm"><input type="checkbox"  name="categories[]" value="' . $node->id . '"  /> <i></i>' . $node->category . '</label>
                               </div>';
         if ($node->adminChildren()->count() > 0) {
-            $str.= "<ul class='fl_left treemap'>";
-            foreach ($node->adminChildren as $child)
-                $str.=$this->renderNode($child, $prodCats);
-            $str.= "</ul>";
+            $str .= "<ul class='fl_left treemap'>";
+            foreach ($node->adminChildren as $child) {
+                $str .= $this->renderNode($child, $prodCats);
+            }
+
+            $str .= "</ul>";
         }
-        $str.= "</li>";
+        $str .= "</li>";
         return $str;
     }
 
-    public function mallProductadd() {
+    public function mallProductadd()
+    {
         $jsonString = Helper::getSettings();
         $products = Product::find(Input::get("prodId"));
         $category = Input::get("categories");
@@ -2142,8 +2229,8 @@ class ProductsController extends Controller {
                 $data = ["status" => "0", "msg" => "Product alredy exist!"];
             } else {
 //                $prod = Product::where("id", Input::get("prodId"))->get();
-//                $tableColumns = Schema::getColumnListing('products');
-//                $this->updateProduct($prodConfig, $jsonString, $tableColumns);
+                //                $tableColumns = Schema::getColumnListing('products');
+                //                $this->updateProduct($prodConfig, $jsonString, $tableColumns);
                 $mallProd->status = 1;
                 $mallProd->save();
                 $products->is_share_on_mall = 1;
@@ -2168,7 +2255,8 @@ class ProductsController extends Controller {
         return $data;
     }
 
-    public function saveProduct($product, $jsonString, $tableColumns, $category = null, $parent = null) {
+    public function saveProduct($product, $jsonString, $tableColumns, $category = null, $parent = null)
+    {
         foreach ($product as $prod) {
             $prods = new MallProducts();
             $prods->store_id = $jsonString['store_id'];
@@ -2183,7 +2271,8 @@ class ProductsController extends Controller {
             }
         }
     }
-    public function updateProduct($product, $jsonString, $tableColumns, $category = null, $parent = null) {
+    public function updateProduct($product, $jsonString, $tableColumns, $category = null, $parent = null)
+    {
         foreach ($product as $prod) {
             $prods = MallProducts::where('store_prod_id', $prod->id);
             $prods->store_id = $jsonString['store_id'];
@@ -2199,7 +2288,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function mallProductUpdate() {
+    public function mallProductUpdate()
+    {
         $prodId = Input::get("prodId");
         $jsonString = Helper::getSettings();
         $store_id = $jsonString['store_id'];
