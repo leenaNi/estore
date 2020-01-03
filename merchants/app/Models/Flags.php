@@ -10,7 +10,7 @@ class Flags extends Model {
     
     public $timestamps = false;
     
-    protected $fillable = ['flag', 'value', 'desc'];
+    protected $fillable = ['flag', 'value', 'desc', 'store_id'];
 
     public function newQuery($excludeDeleted = true)
     {

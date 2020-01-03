@@ -8,7 +8,7 @@ use App\Library\Helper;
 class Contact extends Model
 {
     protected $table = 'contacts';
-    protected $fillable = ['phone_no', 'email', 'address', 'status'];
+    protected $fillable = ['phone_no', 'email', 'address', 'status', 'store_id'];
     public function newQuery($excludeDeleted = true)
     {
         return parent::newQuery($excludeDeleted = true)

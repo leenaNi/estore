@@ -7,7 +7,7 @@ use App\Library\Helper;
 
 class SocialMediaLink extends Model
 {
-    protected $fillable = ['media', 'link', 'image', 'status','sort_order'];
+    protected $fillable = ['media', 'link', 'image', 'status','sort_order', 'store_id'];
 
     public function newQuery($excludeDeleted = true)
     {
