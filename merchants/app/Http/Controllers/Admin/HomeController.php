@@ -26,7 +26,7 @@ class HomeController extends Controller {
         }
 
         $general_setting = $general_setting->get();
-     //  dd($general_setting);
+        //  dd($general_setting);
         $courier = Courier::where("status", 1)->get(["name", "id"]);
         $set_popup = GeneralSetting::where('name', 'set_popup')->first();
         return view('Admin.pages.home.index', ['general_setting' => $general_setting, 'set_popup' => $set_popup, 'courier' => $courier]);
