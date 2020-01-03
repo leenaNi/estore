@@ -150,7 +150,7 @@ class OrdersController extends Controller {
         Session::forget("codCharges");
         Session::forget('shippingCost');
         $jsonString = Helper::getSettings();
-        $prodTab = $jsonString['prefix'] . '_products';
+        $prodTab = 'products';
         $order = Order::findOrFail(Input::get('id'));
         $payment_method = PaymentMethod::get()->toArray();
         $payment_methods = [];
@@ -195,11 +195,11 @@ class OrdersController extends Controller {
             Cart::instance("shopping")->destroy();
             $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
             $additional = json_decode($order->additional_charge, true);
-            $prodTab = $jsonString['prefix'] . '_products';
-            $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')->where("prefix", $this->jsonString['prefix'])
+            $prodTab = 'products';
+            $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')
                             ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
 
-            // $prod_id = HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'id','=','has_prodducts.prod_id')->where("prefix",$this->jsonString['prefix']);
+           
             $products = $prods;
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
