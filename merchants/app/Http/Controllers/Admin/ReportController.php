@@ -144,11 +144,11 @@ class ReportController extends Controller {
 
     public function productIndexExport() {
         $jsonString = Helper::getSettings();
-        $prods = DB::connection('mysql2')->table($this->jsonString['prefix'].'_products as p')
+        $prods = DB::connection('mysql2')->table(DB::getTablePrefix().'products as p')
                 ->where('is_individual', '=', '1')
                 ->join("has_products as hp", "hp.prod_id", '=', 'p.id')->whereNotIn('hp.order_status',[0,4,6,10])
-                ->join($this->jsonString['prefix']."_has_categories as hc", "hc.prod_id", "=", "p.id")
-                ->join($this->jsonString['prefix']."_categories as c", "c.id", "=", "hc.cat_id")
+                ->join(DB::getTablePrefix()."has_categories as hc", "hc.prod_id", "=", "p.id")
+                ->join(DB::getTablePrefix()."categories as c", "c.id", "=", "hc.cat_id")
                 ->where("hp.store_id", $this->jsonString['store_id'])
                 ->select('p.id','p.product',DB::raw("SUM(hp.qty) tot_qty"),DB::raw("SUM(hp.pay_amt) sales"), 'c.category')
                 ->orderBy("tot_qty", "desc")
