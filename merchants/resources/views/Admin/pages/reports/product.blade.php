@@ -7,7 +7,7 @@
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
-        <li class="active">Products Report</li>
+        <li class="active">Products Sales Report</li>
     </ol>
 </section>
 <section class="content">
@@ -46,7 +46,7 @@
                             <tr>
                                 <th>Product Name</th>
                                 <th>Category Name</th>
-                                <th>Quantity</th>
+                                <th>Quantity Sold</th>
                                 <th>Total Amount</th>
                             </tr>
                         </thead>
