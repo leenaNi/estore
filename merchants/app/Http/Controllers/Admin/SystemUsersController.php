@@ -18,7 +18,7 @@ class SystemUsersController extends Controller
     {
 //dd(base64_decode("YXNkZjEyMzQ="));
         $search = !empty(Input::get("empSearch")) ? Input::get("empSearch") : '';
-        $system_users = User::with('roles')->where('user_type', '1')->where("store_id", Session::get('loggedinAdminId'))->whereIn('status', [1, 0]);
+        $system_users = User::with('roles')->where('user_type', '1')->where("store_id", Session::get('store_id'))->whereIn('status', [1, 0]);
 
         $roles = Role::get(['id', 'name'])->toArray();
         $search_fields = ['firstname', 'lastname', 'email', 'telephone'];

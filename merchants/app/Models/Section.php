@@ -13,7 +13,7 @@ class Section extends Model
     public function newQuery($excludeDeleted = true)
     {
         return parent::newQuery($excludeDeleted = true)
-            ->where('store_id', Helper::getSettings()['store_id']);
+            ->where('store_id', 0); //Helper::getSettings()['store_id']);
     }
 
     public function permissions(){
