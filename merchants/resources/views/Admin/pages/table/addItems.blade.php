@@ -895,7 +895,7 @@ body * { visibility: hidden; }
         submitHandler: function (form) {
             $.post("{{ route('admin.orders.saveCustomerAdd') }}", $("#custAddForm").serialize(), function (res) {
                 if (res !== 0) {
-                    $("input[name=addressid]").val(res.addressid);
+                    $("input[name=addressId]").val(res.addressid);
                     $("input[name=userid]").val(res.userid);
                     addData = $("input[name='address_id']").val();
                     data = res.myadd;
@@ -1153,15 +1153,15 @@ body * { visibility: hidden; }
             data: $("#tableOrderForm").serialize(),
             cache: false,
             success: function (data) {
-                //   console.log(JSON.stringify(data));
+               //console.log(JSON.stringify(data));
         var tableId=data.orders.table_id?data.orders.table_id:'#';
     var subtotal=0;
     var userDisc=0;
-    
-    if(data.contact.address){
+    //if(data.contact.address1){
+    if(data.address1){
                var table = "<div id='DivIdToPrint'><table class='invocieBill-table' style='width: 400px;margin: 0 auto;'>";
            }else{
-                var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.contact.address+"</span><br><span class='shopnumber'>"+data.contact.phone_no+"</span></td></tr><tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table 329<br>Server: Krista<br>11:59 AM</td> <td colspan='2' class='text-right'>Party of 1<br>Tickit 4002<br>Server<br>Date 002/26/14</td></tr><tr style='padding-bottom: 10px !important;padding-top: 10px !important;'> <th class='text-left'>Order id</th> <th class='text-center'>Table#</th> <th colspan='2' class='text-right'>Order date</th></tr><tr class='double-dashed-border'><td  class='text-left'>" + data.orders.id + "</td><td  class='text-center'>" + tableId + "</td><td colspan='2' class='text-right'>" + data.orders.created_at + "</td></tr>";
+                var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.orders.address1+" "+data.orders.address2+" "+data.orders.address3+"</span><br><span class='shopnumber'>"+data.orders.phone_no+"</span></td></tr><tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table 329<br>Server: Krista<br>11:59 AM</td> <td colspan='2' class='text-right'>Party of 1<br>Tickit 4002<br>Server<br>Date 002/26/14</td></tr><tr style='padding-bottom: 10px !important;padding-top: 10px !important;'> <th class='text-left'>Order id</th> <th class='text-center'>Table#</th> <th colspan='2' class='text-right'>Order date</th></tr><tr class='double-dashed-border'><td  class='text-left'>" + data.orders.id + "</td><td  class='text-center'>" + tableId + "</td><td colspan='2' class='text-right'>" + data.orders.created_at + "</td></tr>";
             }
                
                 table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><th class='text-left'>Qty </th><th class='text-left pl10'>product </th><th class='text-left'>price</th><th class='text-right'>total</th>";
@@ -1191,7 +1191,7 @@ body * { visibility: hidden; }
                     table = table + " <tr  style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>"+chargev.label+"</td><td class='text-right sbtot'>"+chargev.applied+"</td></tr>";
                 }
              });
-         table = table + "<t  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.pay_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table# 27</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='getprint()'>Print Bill</button>";
+         table = table + "<t  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.order_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table# 27</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='getprint()'>Print Bill</button>";
               
     //console.log('==' + JSON.stringify(table));
                 $("#printInvoicce").modal("show");

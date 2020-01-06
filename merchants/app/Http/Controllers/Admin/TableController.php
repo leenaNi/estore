@@ -625,7 +625,7 @@ class TableController extends Controller {
 
     public function saveOrder($userId, $orderId, $addressId, $payAmt, $paymentMethod, $additionalCharge) {
         $address = Address::find($addressId);
-
+        //dd($address);
         $orders = Order::find($orderId);
         if ($userId) {
             $user = User::find($userId);
