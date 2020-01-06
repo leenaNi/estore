@@ -2,12 +2,12 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Products Sales Report
+        Products Report
         <small></small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
-        <li class="active">Products Sales Report</li>
+        <li class="active">Products Report</li>
     </ol>
 </section>
 <section class="content">
@@ -46,7 +46,7 @@
                             <tr>
                                 <th>Product Name</th>
                                 <th>Category Name</th>
-                                <th>Quantity Sold</th>
+                                <th>Quantity</th>
                                 <th>Total Amount</th>
                             </tr>
                         </thead>

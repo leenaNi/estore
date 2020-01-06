@@ -169,7 +169,7 @@
                                 <th>Stock</th>
                                 @endif
                                 <th>Status</th>
-                                <th>Sell On Estorifi Mall</th>
+                                <th>Sell On Veestores Mall</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
