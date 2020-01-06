@@ -44,6 +44,7 @@ class AttributeSetsController extends Controller {
         $attrSets = AttributeSet::findOrNew(Input::get('id'));
         $attrSets->status = 1;
         $attrSets->attr_set = Input::get('attr_set');
+        $attrSets->store_id = Session::get('store_id');
         $attrSets->save();
         if(empty(Input::get('id'))){
           Session::flash("msg", "Variant set added successfully.");  

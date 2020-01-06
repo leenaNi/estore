@@ -1,14 +1,11 @@
-
 <!-- Go To Top
 ============================================= -->
 <div id="gotoTop" class="icon-angle-up"></div>
-
 <!-- External JavaScripts
 ============================================= -->
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/jquery.js' }}"></script>
 <script src="{{ Config('constants.frontendPublicJsPath').'/jquery.validate.min.js' }}"></script>
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/plugins.js' }}"></script>	
-
 <!-- Footer Scripts
 ============================================= -->
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/functions.js' }}"></script>
@@ -16,10 +13,7 @@
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/jquery.elevatezoom.js' }}"></script>
 <script src="//connect.facebook.net/en_US/all.js"></script>
 <script async src="https://static.addtoany.com/menu/page.js"></script>
-
 <script src="{{Config('constants.adminDistJsPath').'/bootstrap-select.js' }}"></script>
-
-
 <div class="modal fade" id="manageSlider" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
@@ -54,13 +48,11 @@
                 </div>
             </form>
         </div>
-
     </div>
 </div>
 
 <div class="modal fade" id="addNewSliderImage" role="dialog">
     <div class="modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -73,7 +65,6 @@
                             <div class="choosebtnbox text-center">
                                 <input type="file" class="custom-file-input chooselogottext" name="sliderImg" id="sliderImg"  >
                             </div>
-
                             <span id="error-banner" class="text-danger"></span>
                         </div></div>      
                     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -84,14 +75,11 @@
                         </div>
                     </div> 
                 </div>  
-
                 <div class="clearfix"></div>
-
                 <div class="modal-footer text-center topmargin-sm">
                     <button type="submit" class="btn btn-default" id="saveSlider">Add</button>
                 </div>
             </form>
-
         </div>        
     </div>
 </div>
@@ -134,15 +122,12 @@
                         <span class="input-group-btn">
                             <button class="btn btn-default" id="btn-newssubscribe" type="submit">Subscribe</button>
                         </span>
-                    </div>
-                    
+                    </div>                    
                 </form>
-            </div>
-            
+            </div>            
             <div class="modal-footer">
-                </div id="subscriptionNews-success"  style="color:#449d44" ></div>
+                <div id="subscriptionNews-success" class="success"></div>
             </div>
-
         </div>
     </div>
 </div>
@@ -172,15 +157,19 @@
                     cache: false,
                     success: function (data) {
                         console.log("data: " + data);
-                        $('#subscriptionNews-success').append(data);
+                        if(data.status == 1){
+                            $('#subscriptionNews-success').removeClass('error').addClass('success')
+                        } else {
+                            $('#subscriptionNews-success').removeClass('success').addClass('error');
+                        }
+                        $('#subscriptionNews-success').addClass().append(data.msg);
+                        $('#subscribenews')[0].reset();
                         $('#EmailIconNews').find('i').removeClass('icon-line-loader icon-spin').addClass('icon-email2news')
                         //  $(form).find('.input-group-addon')
                     }
                 });
             }
-            
-        });
-        
+        });        
         console.log( "window loaded" );
     });
 </script>

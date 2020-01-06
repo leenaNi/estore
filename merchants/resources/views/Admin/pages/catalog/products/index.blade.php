@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui.css'}}">
 
 <noscript><link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-noscript.css'}}"></noscript>
-<noscript><link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui-noscript.css'}}"></noscript> 
+<noscript><link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui-noscript.css'}}"></noscript>
 
 @stop
 @section('content')
@@ -68,31 +68,36 @@
                         <select class='form-control' name='category' class="form-control" placeholder="Product Category">
                             <option value="">Product Category</option>
                             <?php
-                            $dash = " -- ";
-                            echo "<ul>";
-                            foreach ($rootsS as $root)
-                                renderNode1($root, $dash);
-                            echo "</ul>";
+$dash = " -- ";
+echo "<ul>";
+foreach ($rootsS as $root) {
+    renderNode1($root, $dash);
+}
 
-                            function renderNode1($node, $dash) {
-                                echo "<li>";
-                                echo "<option value='{$node->id}'   > {$dash}{$node->category}</option>";
-                                if ($node->children()->count() > 0) {
-                                    $dash .= " -- ";
-                                    echo "<ul>";
-                                    foreach ($node->children as $child)
-                                        renderNode1($child, $dash);
-                                    echo "</ul>";
-                                }
-                                echo "</li>";
-                            }
-                            ?>
+echo "</ul>";
+
+function renderNode1($node, $dash)
+{
+    echo "<li>";
+    echo "<option value='{$node->id}'   > {$dash}{$node->category}</option>";
+    if ($node->children()->count() > 0) {
+        $dash .= " -- ";
+        echo "<ul>";
+        foreach ($node->children as $child) {
+            renderNode1($child, $dash);
+        }
+
+        echo "</ul>";
+    }
+    echo "</li>";
+}
+?>
                         </select>
                     </div>
                     <div class="form-group col-md-4">
                         {!! Form::select('status',['1'=>'Enabled', '0'=>'Disabled'],Input::get('status'), ["class"=>'form-control ', "placeholder"=>"Status"]) !!}
                     </div>
-                    @if($settingStatus['26'] == 1)
+                    @if($settingStatus['stock'] == 1)
                     <div class="form-group col-md-4">
                         {!! Form::select('availability',['1'=>'In Stock', '0'=>'Out of Stock'],Input::get('availability'), ["class"=>'form-control filter_type', "placeholder"=>"Availability"]) !!}
                     </div>
@@ -116,7 +121,7 @@
                     </div>
                     {!! Form::close() !!}
                 </div>
-                <?php $cat = count($rootsS) > 0 ? '' : "Cat"; ?>
+                <?php $cat = count($rootsS) > 0 ? '' : "Cat";?>
                 <div class="box-header col-md-3 noBottompadding col-sm-12 col-xs-12">
                     <a class="btn btn-default pull-right col-md-12 marginBottom15 mobAddnewflagBTN" type="button" data-toggle="modal" data-target="#addProduct{{$cat}}">Add New Product</a>
                     <div class="clearfix"></div>
@@ -128,7 +133,7 @@
                         <option value="">Bulk Action</option>
                         <option value="export">Export</option>
                         <option value="remove">Delete</option>
-                        <!--                        @if($settingStatus['26'] == 1)
+                        <!--                        @if($settingStatus['stock'] == 1)
                                                 <option value="update_stock_status">Change Stock Status</option>
                                                 @endif
                                                 <option value="update_special_price">Update Price/Special Price</option>
@@ -140,7 +145,7 @@
                     </select>
                 </div>
 
-                @if($barcode == 1)    
+                @if($barcode == 1)
                 <!--                <div class="box-header col-md-3">
                                     <button id="print_all" class="btn btn-info pull-right col-md-12 barcode_print" type="button">Print Barcode</button>
                                 </div>-->
@@ -165,11 +170,11 @@
                                 <!-- <th>@sortablelink ('spl_price', 'Special Price')</th> -->
                                 <th>Product Type</th>
                                <!-- <th>Availability</th> -->
-                                @if($settingStatus['26'] == 1)
+                                @if($settingStatus['stock'] == 1)
                                 <th>Stock</th>
                                 @endif
                                 <th>Status</th>
-                                <th>Sell On Veestores Mall</th>
+                                <th>Sell On Estorifi Mall</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -178,7 +183,7 @@
                             @foreach($products as $product)
 
                             <tr> @if($barcode == 1)  <td>
-                                    <input type="checkbox" class="singleCheck" name="singleCheck[]" value="{{ $product->id }}-{{ $product->prod_type }}"/></td>  
+                                    <input type="checkbox" class="singleCheck" name="singleCheck[]" value="{{ $product->id }}-{{ $product->prod_type }}"/></td>
                                 @endif
 
 <!--                                <td>{{$product->id }}</td>-->
@@ -188,40 +193,40 @@
                                             <img src="{{($product->catalogimgs()->first())?  Config('constants.productImgPath')."/".$product->catalogimgs()->first()->filename:'' }}" class="admin-profile-picture" />
                                         </span>
                                         <span class="marginleft10">
-                                            {{$product->product }}<br> 
-                                            <span class="breakLine"> 
+                                            {{$product->product }}<br>
+                                            <span class="breakLine">
                                                 @if($product->product_code)
                                                 ({{ $product->product_code }})
                                                 @endif
-                                            </span>    
-                                        </span>                       
+                                            </span>
+                                        </span>
                                     </div>
                                 </td>
                                 <!-- <td>{{$product->product_code }}</td> -->
                                 <td>
                                     <?php
-                                    if ($product->categories()->get()->count() > 0) {
-                                        echo $product->categories()->orderBy('created_at', 'desc')->first()->category;
-                                    } else {
-                                        echo '-';
-                                    }
-                                    ?>
+if ($product->categories()->get()->count() > 0) {
+    echo $product->categories()->orderBy('created_at', 'desc')->first()->category;
+} else {
+    echo '-';
+}
+?>
                                 </td>
                                 <td>
 
                                     @if( $product->spl_price <= 0 )
-                                    <?php echo!empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert"> {{ $product->price }} </span>
+                                    <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert"> {{ $product->price }} </span>
                                     @else
                         <strike>
-                            <?php echo!empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
-                            <span class="priceConvert">{{$product->price }}</span> </strike><br><?php echo!empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
+                            <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
+                            <span class="priceConvert">{{$product->price }}</span> </strike><br><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
                         <span class="priceConvert"> {{ $product->spl_price }} </span>
                         @endif
                         </td>
                         <td> {{ $product->producttype->type }}</td>
                         <!-- <td><i class="fa fa-rupee"></i> {{$product->spl_price }}</td> -->
                         <!-- <td>{{ $product->is_avail ? 'Yes' : 'No'   }}</td> -->
-                        @if($settingStatus['26'] == 1)
+                        @if($settingStatus['stock'] == 1)
                         <td>{{ $product->stock }}</td>
                         @endif
                         <td>
@@ -241,8 +246,8 @@
                         </td>
                         <td>
                             <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw"></i></a>
-                           
-                            <!--                        
+
+                            <!--
 <a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
 
                             <a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i></a>
@@ -260,16 +265,16 @@
                 <div class="box-footer clearfix">
 
                     <?php
-                    $args = [];
-                    !empty(Input::get("product_name")) ? $args["product_name"] = Input::get("product_name") : '';
+$args = [];
+!empty(Input::get("product_name")) ? $args["product_name"] = Input::get("product_name") : '';
 
-                    !empty(Input::get("product_code")) ? $args["product_code"] = Input::get("product_code") : '';
+!empty(Input::get("product_code")) ? $args["product_code"] = Input::get("product_code") : '';
 //echo $products->appends(Input::except('page'))->render();
 
-                    if (empty(Input::get('prdSearch'))) {
-                        echo $products->render();
-                    }
-                    ?>
+if (empty(Input::get('prdSearch'))) {
+    echo $products->render();
+}
+?>
 
                 </div>
             </div><!-- /.box -->
@@ -366,7 +371,7 @@
             </div>
         </div>
     </div>
-    <!-- Modal --> 
+    <!-- Modal -->
     <div class="modal fade" id="myModalbarcode" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg">
             <!-- Modal content-->
@@ -411,7 +416,7 @@
                         <input type="hidden" name="csrf-token" value="<?php echo csrf_token() ?>"/>
                         <table class="table table-bordered">
                             <thead>
-                                <tr>                                    
+                                <tr>
                                     <th class="b-action"></th>
                                     <th class="product_loop"></th>
                                 </tr>
@@ -775,7 +780,7 @@
                                             //                                           alert("Please select product");
                                             //                                            return false;
                                             //                                        }
-                                            var str = '<form method="post" action="<?= route('admin.products.export') ?>" id="exportForm">';
+                                            var str = '<form method="post" action="<?=route('admin.products.export')?>" id="exportForm">';
                                             str += '<input type="hidden" name="productId" value="' + prod_list + '"/>';
                                             str += '<input type="hidden" name="type" value="' + $this.val() + '"/>';
                                             str += '</form>';
@@ -801,7 +806,7 @@
                                                     //                                            prod_list.push({id: n.value, product: $(n).closest('tr').find('.product-name').html()});
                                                     prod_list.push(n.value);
                                                 });
-                                                var str = '<form method="post" action="<?= route('admin.products.bulkUpdate') ?>" id="removeForm">';
+                                                var str = '<form method="post" action="<?=route('admin.products.bulkUpdate')?>" id="removeForm">';
                                                 str += '<input type="hidden" name="productId" value="' + prod_list + '"/>';
                                                 str += '<input type="hidden" name="type" value="' + $this.val() + '"/>';
                                                 str += '</form>';
@@ -828,7 +833,7 @@
                                         //                                        }
                                         //                                        str += '</tr>';
                                         //                                    });
-                                        //                                       
+                                        //
                                         str += '<input type="hidden" name="productId" value="' + prod_list + '"/>';
                                         str += '<input type="hidden" name="type" value="' + action_val + '"/>';
                                         if (action_val == 'update_stock_status') {
@@ -857,17 +862,22 @@
 <?php
 $roots = App\Models\Category::roots()->get();
 echo "str += \"<ul id='catTree' class='tree icheck '>\";";
-foreach ($roots as $root)
+foreach ($roots as $root) {
     renderNode($root);
+}
+
 echo "str += \"</ul>\";";
 
-function renderNode($node) {
+function renderNode($node)
+{
     echo "str += \"<li class='tree-item fl_left ps_relative_li " . ($node->parent_id == '' ? 'parent' : '') . "'>\";";
     echo 'str += \'<div class="checkbox"><label class="i-checks checks-sm"><input type="checkbox"  name="updated_value[]" value="' . $node->id . '" /> <i></i>' . $node->category . '</label></div>\';';
     if ($node->children()->count() > 0) {
         echo "str += \"<ul class='fl_left treemap'>\";";
-        foreach ($node->children as $child)
+        foreach ($node->children as $child) {
             renderNode($child);
+        }
+
         echo "str += \"</ul>\";";
     }
     echo "str += \"</li>\";";
@@ -880,7 +890,7 @@ function renderNode($node) {
                                         $('#' + modal + ' .product_loop').html(str);
                                         $('#' + modal + ' .modal-title').html(action);
                                         //                                    if (action_val == 'update_stock_status') {
-                                        //                                        
+                                        //
                                         //                                    }
                                     }
 

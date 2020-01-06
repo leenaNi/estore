@@ -60,7 +60,7 @@ class OrdersController extends Controller {
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
-        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        $orders = Order::where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
         //   dd($orders);
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
@@ -150,7 +150,7 @@ class OrdersController extends Controller {
         Session::forget("codCharges");
         Session::forget('shippingCost');
         $jsonString = Helper::getSettings();
-        $prodTab = $jsonString['prefix'] . '_products';
+        $prodTab = 'products';
         $order = Order::findOrFail(Input::get('id'));
         $payment_method = PaymentMethod::get()->toArray();
         $payment_methods = [];
@@ -195,11 +195,11 @@ class OrdersController extends Controller {
             Cart::instance("shopping")->destroy();
             $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
             $additional = json_decode($order->additional_charge, true);
-            $prodTab = $jsonString['prefix'] . '_products';
-            $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')->where("prefix", $this->jsonString['prefix'])
+            $prodTab = 'products';
+            $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')
                             ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
 
-            // $prod_id = HasProducts::where('order_id', Input::get("id"))->join($prodTab,$prodTab.'id','=','has_prodducts.prod_id')->where("prefix",$this->jsonString['prefix']);
+           
             $products = $prods;
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
@@ -2149,7 +2149,7 @@ class OrdersController extends Controller {
 
     //To check stock order
     public function editOrderChkStock() {
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         $ppid = Input::get('ppid');
         $spid = Input::get('spid');
         $qty = Input::get('qty');

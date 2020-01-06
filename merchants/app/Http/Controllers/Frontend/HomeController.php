@@ -51,19 +51,19 @@ class HomeController extends Controller {
 
     public function index() {
    
-//      $users = User::with("userCashback")->find( 1);
-//     dd($users);
-//$chkEmail = DB::select(DB::raw("select * from users"));
-//      
-//          $chkEmail = User::get();
+        //      $users = User::with("userCashback")->find( 1);
+        //     dd($users);
+        //$chkEmail = DB::select(DB::raw("select * from users"));
+        //      
+        //          $chkEmail = User::get();
         // print_r(Session::get('currency_val')); die;
         $testimonial_status = GeneralSetting::where("url_key", 'testimonial')->first();
 
         $notification_status = GeneralSetting::where("url_key", 'notification')->first();
-//        $saveto= "public/Admin/uploads/slider/default_slider.png";
-//        dd(Helper::saveImage("http://www.techhaking.com/wp-content/uploads/2017/09/default-slider-image-300x150.png",$saveto));
-//        $data1 = [];
-//        Helper::sendMyEmail('Frontend.emails.test_mail', $data1, 'Test mail from inficart.com', 'support@inficart.com', 'inficart.com', 'tapodnya@infiniteit.biz', 'Tapodnya');
+        //        $saveto= "public/Admin/uploads/slider/default_slider.png";
+        //        dd(Helper::saveImage("http://www.techhaking.com/wp-content/uploads/2017/09/default-slider-image-300x150.png",$saveto));
+        //        $data1 = [];
+        //        Helper::sendMyEmail('Frontend.emails.test_mail', $data1, 'Test mail from inficart.com', 'support@inficart.com', 'inficart.com', 'tapodnya@infiniteit.biz', 'Tapodnya');
         $categoryA = Category::get(['id', 'category'])->toArray();
         $rootsS = Category::roots()->where("status", 1)->get();
         $category = [];
@@ -78,9 +78,9 @@ class HomeController extends Controller {
         if ($this->feature['products-with-variants'] == 0) {
             $prodTy = $prodTy->where("id", 1);
         }
-//                 else{
-//            $prodTy =$prodTy->whereIn("id",[1,3]);;
-//                 }
+        //                 else{
+        //            $prodTy =$prodTy->whereIn("id",[1,3]);;
+        //                 }
         $prodTy = $prodTy->get(['id', 'type']);
         foreach ($prodTy as $prodT) {
             $prod_types[$prodT['id']] = $prodT['type'];
@@ -128,7 +128,7 @@ class HomeController extends Controller {
     }
 
     public function saveProduct() {
-//dd(Input::all());
+        //dd(Input::all());
         $prod = Product::create(Input::all());
         $category = Input::get("category");
         $retunUrl = Input::get("return_url");
@@ -144,13 +144,9 @@ class HomeController extends Controller {
             $data = base64_decode($data);
             $fileName = "prod-" . date("YmdHis") . "." . Input::File('images')->getClientOriginalExtension();
             file_put_contents($destinationPath . $fileName, $data);
-
-
             // $destinationPath = public_path() . '/public/Admin/uploads/catalog/products/';
             // $fileName = "prod-" . date("YmdHis") . "." . Input::File('images')->getClientOriginalExtension();
             // $upload_success = Input::File('images')->move($destinationPath, $fileName);
-
-
             $saveImgs = CatalogImage::findOrNew(Input::get('id_img'));
             $saveImgs->catalog_id = $prod->id;
             $saveImgs->filename = is_null($fileName) ? $saveImgs->filename : $fileName;
@@ -228,7 +224,6 @@ class HomeController extends Controller {
                     $filepath = Config('constants.frontviewEmailTemplatesPath') . '.email';
                     Mail::send($filepath, [], function($m)use($emailvalue) {
                         $m->from('hello@app.com', 'Your Application');
-
                         $m->to($emailvalue)->subject('Subscription');
                     });
                 }
@@ -253,13 +248,15 @@ class HomeController extends Controller {
     public function subscription() {
         $email = Input::get('email');
         $subscription = Notification::where('email', $email)->first();
-        if (count($subscription) > 0) {
+        // dd($subscription);
+        if ($subscription != NULL) {
             DB::statement("update users set newsletter = 1 where email = '".$email."'");
-            return "You are already subscribed with us!";
+            return [ "status" => 2, "msg" => "You are already subscribed with us!"];
         } else {
             $subscription = new Notification();
             $subscription->email = $email;
             $subscription->status = 1;
+            $subscription->store_id = Session::get('store_id');
             $subscription->timestamps = false;
             $subscription->save();
             $parts = explode("@", Input::get('email'));
@@ -267,17 +264,13 @@ class HomeController extends Controller {
             $contactEmail = Config::get('mail.from.address');
             $contactName = Config::get('mail.from.name');
             $data_email = ['first_name' => $fname];
-
             DB::statement("update users set newsletter = 1 where email = '".$email."'");
-
             if (Mail::send(Config('constants.frontviewEmailTemplatesPath') . '.subscription', $data_email, function($message) use ($contactEmail, $contactName, $email, $fname, $data_email) {
                         $message->from($contactEmail, $contactName);
                         $message->to($email, $fname)->subject("News Alert Subscription");
-                        $message->bcc(['pradeep@infiniteit.biz']);
+                        // $message->bcc(['pradeep@infiniteit.biz']);
                     }))
-                ;
-
-            return "You are successfully subscribe with us!";
+            return ["status" => 1, "msg" => "You are successfully subscribe with us!"];
         }
     }
 

@@ -39,6 +39,7 @@ class SliderController extends Controller {
     public function save() {
         $save = Slider::create(Input::except('image'));
         $save->slider_id = Input::get('slider_id');
+        $save->store_id = Session::get('store_id');
         if (Input::hasFile('image')) {
             $destinationPath = Config('constants.sliderUploadPath');
             $fileName = date("YmdHis") . "." . Input::file('image')->getClientOriginalExtension();
@@ -68,6 +69,7 @@ class SliderController extends Controller {
         $sliderUpdate->sort_order = Input::get('sort_order');
         $sliderUpdate->slider_id = Input::get('slider_id');
         $sliderUpdate->alt = Input::get('alt');
+        $sliderUpdate->store_id = Session::get('store_id');
         if (Input::hasFile('image')) {
             $destinationPath = Config('constants.sliderUploadPath');
             $fileName = date("YmdHis") . "." . Input::file('image')->getClientOriginalExtension();

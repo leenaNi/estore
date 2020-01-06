@@ -29,6 +29,7 @@
                         {!! Form::label('order_status', 'Order Status ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
 </div>
                         {!! Form::hidden('id',null) !!}
+                        {!! Form::hidden('store_id', Session::get('store_id')) !!}
                         <div class="col-md-10 col-sm-9 col-xs-12">
                             {!! Form::text('order_status',null, ["class"=>'form-control validate[required]',"id"=>'order_status' ,"placeholder"=>'Order Status']) !!}
                             <span id='error_msg'></span>

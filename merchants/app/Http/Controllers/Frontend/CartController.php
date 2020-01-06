@@ -210,7 +210,7 @@ class CartController extends Controller {
             $tax = $product->selling_price * $quantity * $sum / 100;
             $tax_amt = round($tax, 2);
         }
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                 Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
@@ -254,7 +254,7 @@ class CartController extends Controller {
             $tax = $product->selling_price * $quantity * $sum / 100;
             $tax_amt = round($tax, 2);
         }
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         if ($is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                 Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $images, "sub_prod" => $prod_id, 'url' => $product->url_key, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix'], "is_cod" => $product->is_cod, 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "eNoOfDaysAllowed" => $eNoOfDaysAllowed, "prod_type" => $prod_type, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
@@ -313,7 +313,7 @@ class CartController extends Controller {
                 }
             }
         }
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         $image = (!empty($images)) ? $images : "default.jpg";
         if ($is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock" || $product->is_crowd_funded != 0) {
@@ -328,7 +328,7 @@ class CartController extends Controller {
 
     public function configProduct($prod_id, $quantity, $sub_prod) {
         $jsonString = Helper::getSettings();
-        $is_stockable = GeneralSetting::where('id', 26)->first();
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         $product = Product::find($prod_id);
         $cats = [];
 
