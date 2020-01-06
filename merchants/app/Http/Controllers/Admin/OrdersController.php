@@ -1778,6 +1778,8 @@ class OrdersController extends Controller {
         $saveAdd->zone_id = Input::get('zone_id');
         $saveAdd->postcode = Input::get('postcode');
         $saveAdd->phone_no = Input::get('phone_no');
+        $saveAdd->is_shipping = 1;
+        $saveAdd->is_default_shipping = 1;
         if ($saveAdd->save()) {
             $saveAdd->statename = $saveAdd->zone['name'];
             $data = ['addressid' => $saveAdd->id, 'userid' => $saveAdd->user_id, 'myadd' => $saveAdd];
