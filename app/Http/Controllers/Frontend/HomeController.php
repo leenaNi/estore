@@ -437,95 +437,108 @@ class HomeController extends Controller
                     $newuserid = DB::table("users")->insertGetId($insertArr);
                     switch ($catid) {
                         case '4':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'Lenovo Ideapad D330 81H300AKIN 10.1-inch Detachable Laptop', 'url_key' => 'laptop-cum-tablet', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '46000.00', 'spl_price' => '46000.00', 'selling_price' => '46000.00']
                             );
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'electronics.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            DB::table('catalog_images')->insert(['filename' => 'electronics.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '5':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'Vegan Aquafaba Chocolate Ice Cream', 'url_key' => 'chocolate-ice-cream', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '300.00', 'spl_price' => '300.00', 'selling_price' => '300.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'icecream.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'icecream.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '7':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'Frame All About You', 'url_key' => 'frame', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '1390.00', 'spl_price' => '1390.00', 'selling_price' => '1390.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'art.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'art.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '8':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'Bryan & Candy New York Cocoa Shea Bath Tub Kit for Complete Home Spa Experience', 'url_key' => 'beauty-wellness', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '1200.00', 'spl_price' => '1200.00', 'selling_price' => '1200.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'beauty.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'beauty.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '9':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'Flber Cotton Macrame Plant Hanger Handmade Rope Wall Hangings Home Decor', 'url_key' => 'home-decor', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '13450.00', 'spl_price' => '13450.00', 'selling_price' => '13450.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'homedecor.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'homedecor.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '10':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'TAJ EXPERIENCES GIFT CARD', 'url_key' => 'gift-card', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '5000.00', 'spl_price' => '5000.00', 'selling_price' => '5000.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'gifts.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'gifts.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '11':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'Cute Kids Dore moon Nobita generic Cartoon Fun Play Anime', 'url_key' => 'toy', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '575.00', 'spl_price' => '575.00', 'selling_price' => '575.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'toys.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'toys.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '12':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'Shining Diva Fashion Latest Design 18k Rose Gold Stylish Bracelet Earrings', 'url_key' => 'bracelet', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '850.00', 'spl_price' => '850.00', 'selling_price' => '850.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'jewellery.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'jewellery.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '13':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'Nutri Blend Mixer and Grinder with Jars with Chopper and Juicer', 'url_key' => 'blender', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '3599.00', 'spl_price' => '3599.00', 'selling_price' => '3599.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'kitchen.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'kitchen.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '14':
-                            DB::table('products')->where('id', 1)->update(
+                            DB::table('products')->where('store_id', $storeId)->update(
                                 ['product' => 'Yonex AERO Comfort Badminton Shoes', 'url_key' => 'shoes', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '2899.00', 'spl_price' => '2899.00', 'selling_price' => '2899.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'footwear.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'footwear.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '15':
                             DB::table('products')->where('id', 1)->update(
                                 ['product' => 'National Geographic Encyclopedia of Space', 'url_key' => 'book', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '3000.00', 'spl_price' => '3000.00', 'selling_price' => '3000.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'books.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'books.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '16':
                             DB::table('products')->where('id', 1)->update(
                                 ['product' => 'Lenovo Ideapad D330 81H300AKIN 10.1-inch Detachable Laptop', 'url_key' => 'laptop-cum-tablet', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '850.00', 'spl_price' => '850.00', 'selling_price' => '850.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'electronics.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'electronics.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         case '17':
                             DB::table('products')->where('id', 1)->update(
                                 ['product' => 'Fresho Capsicum - Green', 'url_key' => 'capsicum', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '55.00', 'spl_price' => '55.00', 'selling_price' => '55.00']
                             );
                             DB::table('catalog_images')->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'mgrocery.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => 1, 'sort_order' => 1, 'image_path' => '']);
+                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->fisrt();
+                            DB::table('catalog_images')->insert(['filename' => 'mgrocery.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
                             break;
                         default:
                             # code...
