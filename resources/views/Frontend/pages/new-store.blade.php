@@ -1,9 +1,7 @@
 @extends('Frontend.layouts.default')
 @section('content')
 <section id="slider" class="full-screen dark newStoreSlider" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/static.jpg') }}') center center no-repeat; background-size: cover" style="height:820px !important;">
-
     <div class="">
-
         <div class="container vertical-middle clearfix">
             @if(!empty(Session::get('message')))
             <div class="alert alert-danger" role="alert">
@@ -11,27 +9,6 @@
             </div>
             @endif
             <form action="{{route('selectThemes')}}" method="post" id='newStoreForm' role="form" class="landing-wide-form clearfix newStoreForm reg-form">
-                <!-- <div class="heading-block notopmargin nobottommargin center nobottomborder">
-
-                    <div class="customDomainfield">
-                    <div class="input-group custom-inputGroup">
-  <div class="input-group-prepend">
-    <span class="input-group-text">https://</span>
-  </div>
-  <input type="text" class="form-control custom-formControl required checkAvailability"  value="" name="domain_name" placeholder="Domain Name (Cannot be changed later)">
-  <div class="input-group-append">
-    <span class="input-group-text">{{".".str_replace("www","", $_SERVER['HTTP_HOST'])}}</span>
-  </div>
-</div>
-<div class="clearfix"></div>
-                        <div class="input-group">
-                            <input  type="text" class="form-control required checkAvailability" value="" name="domain_name" placeholder="Domain Name">
-                            <span class="input-group-addon"> {{".".str_replace("www","", $_SERVER['HTTP_HOST'])}}</span>
-                        </div> 
-                        <span class="checkAvail"><i class="fa fa-clock availCL"></i></span>
-                    </div>
-                 <p class="heading-desc">{{"http://". str_replace(" ",'-',strtolower(Session::get('storename'))) .".". str_replace("www","", $_SERVER['HTTP_HOST'])}} is available <i class="icon-ok green-ok"></i></p>
-                </div>-->
                 <div class="">
                 <div class="col_full bottommargin-xs">
                     <div class="customDomainfield">
@@ -41,7 +18,7 @@
                             </div>
                             <input type="text" class="form-control custom-formControl required checkAvailability"  value="" name="domain_name" placeholder="Domain Name (Cannot be changed later)">
                             <div class="input-group-append">
-                                <?php $hname = ".".str_replace("www","", $_SERVER['HTTP_HOST']);?>
+                                <?php $hname = "." . str_replace("www", "", $_SERVER['HTTP_HOST']);?>
                                 <span class="input-group-text">{{ str_replace("..",".",$hname)  }}</span>
                             </div>
                         </div>
@@ -64,7 +41,6 @@
                     </div>
                     <div class="col_half col_last bottommargin-xs">
                         <input type="text" class="sm-form-control telephone"  required="true" id="telephone" name="phone" value="" placeholder="Mobile *">
-                      
                     </div>
                     <div class="col_half bottommargin-xs">
                         <input type="email" class="sm-form-control email"   name="email" id="email" value="{{Session::get('merchantEmail')}}" placeholder="Email" {{Session::get('merchantEmail')?'readonly':''}}>
@@ -74,10 +50,8 @@
                         <select class="sm-form-control" name="currency" required="true">
                             <option value="">Store Currency *</option>
                             @foreach($curr as $cur)
-                          
                             <option value="{{$cur->id}}">{{ $cur->currency_code." - ".ucwords(strtolower($cur->name)) }}</option>
                             @endforeach
-
                         </select>
                     </div>
                     @if(empty(Session::get("fbId")))
@@ -89,15 +63,13 @@
                         <input type="password" class="sm-form-control" name="cpassword" id="cpassword1" value="" placeholder="Confirm Password *">
                         <span id="cpassword_re_validate"></span>
                     </div>
-                    @else 
+                    @else
                     <input type="hidden" name="provider_id" value="{{Session::get("fbId")}}">
                     @endif
                     <div class="col_half bottommargin-xs">
                         {{ Form::select('business_type',$cat,null,['class'=>'sm-form-control busType','required'=>'true']) }}
                     </div>
                     <div class="col_half col_last  bottommargin-xs">
-
-
                         <select class="selectpicker sm-form-control select-box-alsell" multiple required="true" name="already_selling[]">
                             <option value="Just checking out features">Just checking out features</option>
                             <option value="Have retail store">Have retail store</option>
@@ -111,24 +83,15 @@
                             <option value="2">Advanced Version - a complex online store with highend features activated (FREE)</option>
                         </select>
                     </div>
-
-
-
                 </div>
-
-
                 <p class="text-center topmargin-xs bottommargin-xs">By registering, you agree to our <a href="/terms-condition" target="_blank">Terms &amp; Condition</a> <!-- | <a href="#">Privacy Policy</a> -->
                 </p>
                 <input type="hidden" name="storename" value="{{ Session::get('storename') }}">
-                <input type="hidden" name="company_name" value="veestores">
+                <input type="hidden" name="company_name" value="estorifi">
                 <input type="hidden" name="business_name" value="" id="bussiness_name">
-
                 <input type="button" class="btn btn-default theme-btn btn-block nomargin reg-sub-btn sendOtpOnMobile" value="Send OTP on Mobile" >
                <!--<input type="submit" class="btn btn-default theme-btn btn-block nomargin reg-sub-btn " value="Submit & Continue" >-->
-
-
             </form>
-
             <div class="col_full nobottommargin">
                 <!-- Modal -->
                 <div class="modal fade otpPopup" id="sendOTP" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -157,22 +120,18 @@
                 </div>
             </div>
         </div>
-
     </div>
-
 </section>
 @stop
-
 @section('myscripts')
 <script>
-
 $('.busType').change(function(){
-  var bname=$('.busType option:selected').html();  
+  var bname=$('.busType option:selected').html();
   $('#bussiness_name').val(bname);
 })
 //    function checkAvailability(){
 //       if($(this).hasClass('error') == true){
-//        
+//
 //           $(".availCL").removeClass("icon-ok green-ok");
 //           $(".availCL").addClass("icon-remove red-close");
 //       }else{
@@ -184,7 +143,7 @@ $('.busType').change(function(){
 //    jQuery.validator.addMethod("specialChrs", function (element, value) {
 //            return new RegExp('^[a-zA-Z0-9 ]+$').test(value)
 //        }, "Special Characters not permitted");
-//        
+//
     jQuery.validator.addMethod("phone", function (phone_number, element) {
         phone_number = phone_number.replace(/\s+/g, "");
         return this.optional(element) || phone_number.length > 4 &&
@@ -192,8 +151,8 @@ $('.busType').change(function(){
     }, "Please specify a valid phone number");
 
 
-//      jQuery.validator.addMethod("noSpace", function(value, element) { 
-//  return value.indexOf(" ") < 0 && value != ""; 
+//      jQuery.validator.addMethod("noSpace", function(value, element) {
+//  return value.indexOf(" ") < 0 && value != "";
 //}, "No space please and don't leave it empty");
     jQuery.validator.addMethod("specialChrs", function (value, element) {
         return this.optional(element) || /^[a-z0-9-_]+$/.test(value);
@@ -227,7 +186,6 @@ $('.busType').change(function(){
                     };
                     return r;
                 }
-
             },
             phone: {
                 required: true,
@@ -248,8 +206,6 @@ $('.busType').change(function(){
                     };
                     return r;
                 }
-
-
             }, password: {
                 required: true
             },
@@ -268,7 +224,7 @@ $('.busType').change(function(){
                 onkeyup: function (element) {
                     $(".availCL").removeClass("icon-clock icon-ok green-ok icon-remove red-close");
                     if ($(element).val() == '') {
-                      
+
                         $(".availCL").addClass("icon-clock");
                     } else {
                         if ($(element).hasClass('error') == true) {
@@ -278,7 +234,6 @@ $('.busType').change(function(){
                             $(".availCL").removeClass("icon-remove red-close");
                             $(".availCL").addClass("icon-ok green-ok");
                         }
-
                     }
                 },
                 remote: function () {
@@ -298,7 +253,6 @@ $('.busType').change(function(){
                     return r;
                 }
             }
-
         },
         messages: {
             firstname: {
@@ -331,7 +285,6 @@ $('.busType').change(function(){
             }, domain_name: {
                 required: "Domain Name is required.",
                 remote: "Domain Name already in use."
-
             }
         },
         errorPlacement: function (error, element) {
@@ -348,27 +301,24 @@ $('.busType').change(function(){
         if ($("#newStoreForm").valid()) {
             $("#sendOTP").modal('show');
             var country=$('.county_code').val();
-           var mobile= $('.telephone').val();
-         //  alert(country + '' +mobile);
-             $.ajax({
-            type: 'POST',
-            url: "{{route('sendOpt')}}",
-            data: {mobile: mobile,country:country},
-            success: function (response) {
-                console.log('@@@@' + response['status']);
-                if (response['status'] == 'success') {  
-                        $('.sendOtpOnMobile').html('<label class="error">' + response['msg'] + '</label>');
-                } else if (response['status'] == 'fail') {
-                   
-                
+            var mobile= $('.telephone').val();
+            //  alert(country + '' +mobile);
+            $.ajax({
+                type: 'POST',
+                url: "{{route('sendOpt')}}",
+                data: {mobile: mobile,country:country},
+                success: function (response) {
+                    console.log('@@@@' + response['otp']);
+                    if (response['status'] == 'success') {
+                            $('.sendOtpOnMobile').html('<label class="error">' + response['msg'] + '</label>');
+                    } else if (response['status'] == 'fail') {
+                    }
+                },
+                error: function (e) {
+                    console.log(e.responseText);
                 }
-            },
-            error: function (e) {
-                console.log(e.responseText);
-            }
-        });
+            });
         }
-
     });
 
 //    $("#otpForm").validate({
@@ -390,7 +340,7 @@ $('.busType').change(function(){
 //        }
 //    });
 //$(document).ready(function() {
-//  
+//
 //
 //$("#registerAndSubmit").validate({
 //        rules: {
@@ -403,7 +353,7 @@ $('.busType').change(function(){
 //                        type: "post",
 //                        cache: false,
 //                        data: {inputotp:otp},
-//                         
+//
 //                        dataFilter: function (response) {
 //                            if (response == 2) {
 //                                return false;
@@ -438,42 +388,34 @@ $('.busType').change(function(){
         $("input[name='input_otp']").find("label").remove();
         $("input[name='input_otp']").removeClass('error');
         var otp = $('input[name="input_otp"]').val().replace(/\s/g, '');
-       console.log("dasdassa" +otp);
+        console.log("dasdassa" +otp);
         if ($("#otpForm").valid()) {
-             $.ajax({
-            type: 'POST',
-            url: "{{route('checkOtp')}}",
-            data: {inputotp: otp},
-            success: function (response) {
-             console.log("response" +response);
-                if (response==otp) {
-                   $("#newStoreForm").submit(); 
-                      
-                } else  {
-                $("input[name='input_otp']").find("label").remove();
-                $("input[name='input_otp']").addClass('error');
-                $("input[name='input_otp']").after("<label class='error'>Invalid OTP. </label>"); 
-                
+            $.ajax({
+                type: 'POST',
+                url: "{{route('checkOtp')}}",
+                data: {inputotp: otp},
+                success: function (response) {
+                console.log("response" +response);
+                    if (response==otp) {
+                        $("#newStoreForm").submit();
+                    } else  {
+                        $("input[name='input_otp']").find("label").remove();
+                        $("input[name='input_otp']").addClass('error');
+                        $("input[name='input_otp']").after("<label class='error'>Invalid OTP. </label>");
+                    }
+                },
+                error: function (e) {
+                    console.log(e.responseText);
                 }
-            },
-            error: function (e) {
-                console.log(e.responseText);
-            }
-        });
-           
-
+            });
         }
-
-
     });
-
 
     function toTitleCase(str) {
         return str.replace(/(?:^|\s)\w/g, function (match) {
             return match.toUpperCase();
         });
     }
-
 
     function toLowerCase(str) {
         return str.replace(/(?:^|\s)\w/g, function (match) {

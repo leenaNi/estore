@@ -43,7 +43,7 @@
                                     {!! Form::text("price[]",0,["class"=>"form-control priceConvertTextBox"]) !!}
                                 </div>
 
-                                @if(($settingStatus['26'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
+                                @if(($settingStatus['stock'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
                                 
                                 <div class="col-md-2">
                                     {!! Form::label('stock', 'Stock',['class'=>'control-label']) !!}
@@ -89,7 +89,7 @@
                             {!! Form::label('price', 'Extra Price',['class'=>'control-label']) !!}
                             {!! Form::text("price[]",0,["class"=>"form-control priceConvertTextBox"]) !!}
                         </div>
-                        @if(($settingStatus['26'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
+                        @if(($settingStatus['stock'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
                          
                         <div class="col-md-2">
                             {!! Form::label('stock', 'Stock',['class'=>'control-label']) !!}
@@ -111,7 +111,7 @@
                 </div>
                 <div class="bg-light lter b-b wrapper-md">
                     <h1 class="m-n font-thin h3">Product Variants</h1>
-                    @if($settingStatus['18'] == 1)
+                    @if($settingStatus['barcode'] == 1)
                     @if($barcode == 1)
                     <button id="print_all" data-toggle="modal" data-target="#myModal">Print Barcode</button>
                     @endif
@@ -126,7 +126,7 @@
                                 <th>Product</th>
                                 <th>Availability</th>
                                 <th>Price</th>
-                                @if($settingStatus['26'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
+                                @if($settingStatus['stock'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
                                 
                                 <th>Stock</th>
                               
@@ -143,7 +143,7 @@
                                 <td>{{ $prd->product }}</td>
                                 <td>{{ $prd->is_avail == 1 ? "Yes" : "No" }}</td>
                                 <td><span class="priceConvert">{{ $prd->price }}</span></td>
-                                @if($settingStatus['26'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
+                                @if($settingStatus['stock'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
                                
                                 <td>{{ $prd->stock }}</td>
                                
@@ -156,7 +156,7 @@
                                     <a href="{!! route('admin.products.changeStatus',['id'=>$prd->id]) !!}" class="label label-danger active" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this variant?')">Disabled</a>
                                     @endif
                                     <a href="{!! route('admin.products.deleteVarient',['id'=>$prd->id]) !!}" class="label label-danger active" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this variant?')">Delete</a>
-                                @if($settingStatus['18'] == 1)
+                                @if($settingStatus['barcode'] == 1)
                                     @if($barcode == 1)   <button class="genBarcode barcode_print" title="Generate Barcode" data-id="{{ $prd->id }}">Generate</button><button class="barcode_print bprint" data-toggle="modal" title="Print Barcode" data-target="#myModal" data-id="{{ $prd->id }}">Print</button>
                                     <span id="barerr{{ $prd->id }}"></span>
                                     @endif

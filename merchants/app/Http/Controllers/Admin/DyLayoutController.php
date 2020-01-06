@@ -89,6 +89,7 @@ class DyLayoutController extends Controller {
         $dynamiclayout->link = Input::get("link");
         $dynamiclayout->is_active = Input::get("is_active");
         $dynamiclayout->sort_order = Input::get("sort_order");
+        // $dynamiclayout->store_id = Session::get('store_id');
         if (Input::hasFile('image')) {
             $destinationPath = Config('constants.layoutUploadPath');
             $fileName = date("YmdHis") . "." . Input::file('image')->getClientOriginalExtension();

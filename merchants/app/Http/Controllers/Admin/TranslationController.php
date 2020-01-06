@@ -35,6 +35,7 @@ class TranslationController extends Controller {
         $translation->bengali = Input::get("bengali");
         $translation->is_specific = Input::get('is_specific');
         $translation->translate_for = Input::get('translate_for');
+        $translation->store_id = Session::get('store_id');
         $translation->page = Input::get("page");
         if (empty(Input::get('id'))) {
             Session::flash("msg", "Translation added successfully.");

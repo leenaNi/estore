@@ -18,7 +18,7 @@ use App\Library\Helper;
 class CampaignController extends Controller
 {
     public function index() {
-        $messages = Message::orderBy("id", "desc")->get();
+        $messages = Message::orderBy("id", "desc")->where('store_id',Session::get('store_id'))->get();
       	//dd($messages);
         $data = [ 'messages' => $messages];
         $viewname = Config('constants.adminCampaignView') . '.index';
@@ -88,10 +88,16 @@ class CampaignController extends Controller
         $EmailCampaign->title = Input::get('title');
         $EmailCampaign->subject = Input::get('subject');
         $EmailCampaign->content = Input::get('content');
+        $EmailCampaign->store_id = Session::get('store_id');
         $EmailCampaign->created_at = date('Y-m-d H:i:s');
         $EmailCampaign->status = 2;
         $EmailCampaign->save();
         
+        if (empty(Input::get('id'))) {
+            Session::flash("msg", "Email details added successfully.");
+        } else {
+            Session::flash("msg", "Email details updated successfully.");
+        }
         $url = 'admin.emailcampaign.viewemails';
         $data = ['status' => '1', 'msg' => 'Email added/updated successfully.'];
         $viewname = '';
@@ -110,10 +116,15 @@ class CampaignController extends Controller
         $smsCampaign = Message::findOrNew(Input::get('id'));
         $smsCampaign->title = Input::get('title');
         $smsCampaign->content = Input::get('content');
+        $smsCampaign->store_id = Session::get('store_id');
         $smsCampaign->created_at = date('Y-m-d H:i:s');
         $smsCampaign->status = 2;
         $smsCampaign->save();
-        
+        if (empty(Input::get('id'))) {
+            Session::flash("msg", "SMS details added successfully.");
+        } else {
+            Session::flash("msg", "SMS details updated successfully.");
+        }
         $url = 'admin.campaign.view';
         $data = ['status' => '1', 'msg' => 'SMS added/updated successfully.'];
         $viewname = '';
