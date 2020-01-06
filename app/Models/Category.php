@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model {
 
-    protected $table = 'industries';
+    protected $table = 'categories';
     public $rules = [
         'category' => 'required',
         'status' => 'required',

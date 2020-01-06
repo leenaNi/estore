@@ -32,13 +32,7 @@
 $jsonString = App\Library\Helper::getSettings();
 $data = (object) $jsonString;
 $country_code = (int)explode("+", $data->country_code)[1]; 
-if($country_code != '')
-{
-    $country = DB::table('countries')->where("country_code", $country_code)->get(["id", "name","iso_code_3"]);
-}else{
-    $country = DB::table('countries')->where("status", 1)->get(["id", "name","iso_code_3"]);
-}
-//$country = App\Library\Helper::getCountry($country_code);
+$country = App\Library\Helper::getCountry($country_code);
     // echo "<pre>";print_r($country);die;
 ?>
 
@@ -128,7 +122,7 @@ if (isset($data->expiry_date)) {
                                
                             </div> -->
 
-                            @if($settingStatus['multi-language'] == 1) 
+                            @if($settingStatus['27'] == 1) 
                             <div class="form-group">
                                 <label>Store Admin Language</label>
                                 <select name="language"  class="form-control" >

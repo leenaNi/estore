@@ -585,7 +585,7 @@
                                     @endif
                                     <div>
                                         <div>
-                                            @if(@$settingStatus['des'] == 1)
+                                            @if(@$settingStatus['36'] == 1)
                                             <!--                                                <li> 
                                                                                                 <div class="form-group">
                                                                                                     <label for="email" class="col-md-12">GIFT VOUCHER</label>

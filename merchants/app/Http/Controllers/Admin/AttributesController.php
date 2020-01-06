@@ -75,7 +75,6 @@ class AttributesController extends Controller {
         $attr->att_sort_order = Input::get('att_sort_order');
         $attr->is_required = Input::get('is_required');
         $attr->status = Input::get('status');
-        $attr->store_id = Session::get('store_id');
         $attr->save();
         $attr->attributesets()->sync(Input::get('attr_set'));
        // dd(Input::all());

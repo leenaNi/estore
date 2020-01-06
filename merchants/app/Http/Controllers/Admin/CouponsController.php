@@ -123,7 +123,6 @@ class CouponsController extends Controller {
         $couponNew->start_date = Input::get('start_date');
         $couponNew->end_date = Input::get('end_date') . ' 23:59:59';
         $couponNew->status = 1;
-        $couponNew->store_id = Session::get('store_id');
 //dd($couponNew);
         $couponNew->user_specific = Input::get('user_specific');
         if (Input::hasFile('c_image')) {
@@ -201,7 +200,6 @@ class CouponsController extends Controller {
         $couponNew->start_date = Input::get('start_date');
         $couponNew->end_date = IInput::get('end_date') . ' 23:59:59';
         $couponNew->user_specific = Input::get('user_specific');
-        $couponNew->store_id = Session::get('store_id');
         $couponNew->save();
         Session::flash('', 'Coupon deleted successfully.');
         $url = 'admin.coupons.view'; //redirect()->route('admin.coupons.view');

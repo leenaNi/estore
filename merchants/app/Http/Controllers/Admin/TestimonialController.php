@@ -48,7 +48,6 @@ class TestimonialController extends Controller {
          $testimonial->sort_order=Input::get('sort_order');
          $testimonial->gender = Input::get('gender'); 
          $testimonial->status=Input::get('status');
-         $testimonial->store_id = Session::get('store_id');
          
           if (Input::hasFile('image')) {
             $destinationPath = Config('constants.adminTestimonialUploadPath');

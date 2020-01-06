@@ -107,7 +107,6 @@ class CustomersController extends Controller {
             $user->password = $password;
             $user->user_type = 2;
             $user->status = 1;
-            $user->store_id = Session::get('store_id');
             $user->save();
             if (!empty(Input::get('cashback'))) {
                 if ($user->userCashback) {
@@ -155,7 +154,6 @@ class CustomersController extends Controller {
         $user->password = $password;
         $user->user_type = 2;
         $user->status = 1;
-        $user->store_id = Session::get('store_id');
         $user->update();
         if ($user->userCashback) {
             if (Input::get('loyalty_group') == $user->userCashback->loyalty_group) {

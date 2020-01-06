@@ -62,14 +62,14 @@
                         <div class="col-md-6">
                         <div class="form-group">
                             {!!Form::label('Password','Password ') !!}<span class="red-astrik"> *</span>
-                            <input type="password" name="password" value="{{$user->password_crpt}}" class="form-control pass validate[required]"  placeholder="Password" autocomplete="off">
-
+                            <input type="password" value="{{$user->password_crpt}}" class="form-control pass validate[required]"  placeholder="Password" autocomplete="off">
+<!--                             <input type="checkbox" name="chkpass" id="showpass"/>Show Password -->
                             </div>
                         </div>
-                           <!--   {!! Form::hidden('password') !!} -->
+                             {!! Form::hidden('password') !!}
                         <div class="col-md-6">
                         <div class="form-group">
-                        @if($settingStatus['acl'] == 1)
+                        @if($settingStatus['3'] == 1)
                             {!!Form::label('Role','Role ') !!}<span class="red-astrik"> *</span>
                                 {!! Form::select('roles',$roles_name,!empty($user->roles()->first()->id)?$user->roles()->first()->id:null,["class"=>'form-control m-b validate[required]' , ]) !!}
                                 @else

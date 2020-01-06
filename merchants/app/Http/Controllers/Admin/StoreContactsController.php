@@ -28,8 +28,8 @@ class StoreContactsController extends Controller {
     public function index() {
         $user = User::find(Session::get('loggedinAdminId'));
         $users = User::where(['user_type'=>2,'store_id'=>$user->store_id])->orderBy('id','desc')->get();
-        $contacts = ContactStore::where('store_id',Session::get('store_id'))->orderBy('id','desc');
-        $contacts_group = ContactsGroup::where('store_id',Session::get('store_id'))->orderBy('id','desc')->get();
+        $contacts = ContactStore::orderBy('id','desc');
+        $contacts_group = ContactsGroup::orderBy('id','desc')->get();
         $search = !empty(Input::get("contSearch")) ? Input::get("contSearch") : '';
         $search_fields = ['name', 'email', 'mobileNo'];
         if (!empty(Input::get('contSearch'))) {
@@ -77,7 +77,7 @@ class StoreContactsController extends Controller {
       
         if (!empty($term)) {
             $result = ContactsGroup::where("group_name", "like", "%$term%")
-                    ->where('store_id',Session::get('store_id'))->get(['id', 'group_name']);
+                    ->get(['id', 'group_name']);
         }
 
         $data = [];
@@ -92,7 +92,7 @@ class StoreContactsController extends Controller {
     public function add() {
         $user = new ContactStore();
         $action = "admin.storecontacts.save";
-        $contacts_group = ContactsGroup::where('store_id',Session::get('store_id'))->orderBy('group_name','desc')->get();
+        $contacts_group = ContactsGroup::orderBy('group_name','desc')->get();
         $viewname = Config('constants.adminStoreContactView') . '.addEdit';
         $data = ['user' => $user,'contacts_group'=>$contacts_group, 'action' => $action,'fieldData' => Input::all()];
         return Helper::returnView($viewname, $data);
@@ -106,7 +106,6 @@ class StoreContactsController extends Controller {
         {
             $grp = new ContactsGroup();
             $grp->group_name = Input::get('new_group_name');
-            $grp->store_id = Session::get('store_id');
             $grp->save();
             $group_ids[] = $grp->id;
             unset($group_ids[0]);
@@ -145,7 +144,6 @@ class StoreContactsController extends Controller {
                 $storeCont->anniversary = Input::get('anniversary');
                 $storeCont->birthDate = Input::get('birthDate');
                 $storeCont->mobileNo = Input::get('mobileNo');
-                $storeCont->store_id = Session::get('store_id');
                 $storeCont->contact_type = 1;
                 $storeCont->save();
                 
@@ -177,7 +175,6 @@ class StoreContactsController extends Controller {
         {
             $grp = new ContactsGroup();
             $grp->group_name = Input::get('new_group_name');
-            $grp->store_id = Session::get('store_id');
             $grp->save();
             $group_ids[] = $grp->id;
             unset($group_ids[0]);
@@ -205,7 +202,7 @@ class StoreContactsController extends Controller {
     public function edit() {
         $contacts = ContactStore::find(Input::get('id'));
         $action = "admin.storecontacts.update";
-        $contacts_group = ContactsGroup::where('store_id',Session::get('store_id'))->orderBy('id','desc')->get();
+        $contacts_group = ContactsGroup::orderBy('id','desc')->get();
         $groupContacts = GroupHasContact::where('contact_id',Input::get('id'))->get();
         $GroupHasContact = array();
         foreach ($groupContacts as $key => $value) {
@@ -222,7 +219,6 @@ class StoreContactsController extends Controller {
         {
             $grp = new ContactsGroup();
             $grp->group_name = Input::get('new_group_name');
-            $grp->store_id = Session::get('store_id');
             $grp->save();
             $group_id = $grp->id;
         }
@@ -312,7 +308,6 @@ class StoreContactsController extends Controller {
         {
             $grp = new ContactsGroup();
             $grp->group_name = Input::get('new_cg');
-            $grp->store_id = Session::get('store_id');
             $grp->save();
             $groupid = $grp->id;
         }
@@ -458,10 +453,6 @@ class StoreContactsController extends Controller {
         }
         
         if (count($invalidRecords) == 0) {
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/dev-multi
             $result = $this->saveContactUpload($col,$groupid);
             if ($result == 0) {
                 array_push($invalidRecords, $col);
@@ -500,7 +491,6 @@ class StoreContactsController extends Controller {
                 $cont->anniversary = Carbon::createFromFormat('d/m/Y',$data[3]);
                 $cont->birthDate   = Carbon::createFromFormat('d/m/Y',$data[4]);
                 $cont->contact_type = 1;
-                $cont->store_id = Session::get('store_id');
                 $cont->save();
 
                 $groupContacts = new GroupHasContact();
@@ -517,7 +507,9 @@ class StoreContactsController extends Controller {
             $jsonArray['msg']   = $e;
             return $e;
         }
+        
         return 0;
+
     }
 
     public function downloadInvalidRecords($dataArray)

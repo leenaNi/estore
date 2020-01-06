@@ -5,7 +5,6 @@ namespace App\Models;
 //use Illuminate\Database\Eloquent\Model;
 //use App\Models\AttributeSet;
 use Cviebrock\EloquentSluggable\Sluggable;
-use App\Library\Helper;
 
 class Attribute extends \Eloquent {
 
@@ -21,11 +20,6 @@ class Attribute extends \Eloquent {
                 'includeTrashed' => true,
             ]
         ];
-    }
-    public function newQuery($excludeDeleted = true)
-    {
-        return parent::newQuery($excludeDeleted = true)
-            ->where('store_id', Helper::getSettings()['store_id']);
     }
 
     public function attributesets() {

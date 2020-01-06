@@ -280,14 +280,14 @@
             </div>
 
         
-            @if($settingStatus['stock'] == 1)
+            @if($settingStatus['26'] == 1)
             <div class="col-md-3">
                 {!! Form::label('is_avail', 'Availability',['class'=>'control-label']) !!}
                 {!! Form::select("is_avail",['1'=>'Yes','0'=>'No'],$prod->is_avail,["class"=>"form-control"]) !!}
             </div>
             @endif
         </div>
-       @if($settingStatus['stock'] == 1 && $prod->is_stock==1)
+       @if($settingStatus['26'] == 1 && $prod->is_stock==1)
         <div class="row ">
             <div class="col-md-12">
                 <div class="col-md-6 form-group">

@@ -60,8 +60,8 @@ class CheckoutController extends Controller {
 
         $my_data=[];
         $json_data=Helper::getSettings();
-        $countryid = Country::where('country_code',$country_code)->first();
-        $my_data["country_id"]= $countryid->id ;
+
+        $my_data["country_id"]= $country[0]->id ;
 
         // $my_data["pincode_req"]=isset($json_data["pincode"]) ? (int)$json_data["pincode"] : 0 ;
         $my_data["pincode_req"] = GeneralSetting::where("url_key", "pincode")->select("status")->get()->toArray()[0]["status"];
@@ -103,9 +103,9 @@ class CheckoutController extends Controller {
         $temp_data = (object) $jsonString;
         $country_code = (int)explode("+", $temp_data->country_code)[1]; 
         $cnt = Helper::getCountry($country_code);
-        $countryid = Country::where('country_code',$country_code)->first();
+
         $json_data=Helper::getSettings();
-        $my_data["country_id"]= $countryid->id ;
+        $my_data["country_id"]= $cnt[0]->id ;
         
 
         $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'name'])->toArray();
@@ -206,7 +206,7 @@ class CheckoutController extends Controller {
                     $settings = Helper::getSettings();
                     //dd($settings);
                     $webUrl = $_SERVER['SERVER_NAME'];
-                    $emailContent = EmailTemplate::where('url_key', 'registration')->select('content', 'subject')->get()->toArray();
+                    $emailContent = EmailTemplate::where('id', 1)->select('content', 'subject')->get()->toArray();
                     $email_template = $emailContent[0]['content'];
                     $subject = $emailContent[0]['subject'];
 
@@ -2063,7 +2063,7 @@ class CheckoutController extends Controller {
     public function updateStock($orderId) {
 
         $jsonString = Helper::getSettings();
-        // $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
+        // $is_stockable = GeneralSetting::where('id', 26)->first();
         $stock_limit = GeneralSetting::where('url_key', 'stock')->first();
         $stockLimit = json_decode($stock_limit->details, TRUE);
         $cartContent = Cart::instance("shopping")->content();

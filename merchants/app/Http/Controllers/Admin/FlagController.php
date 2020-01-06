@@ -48,7 +48,6 @@ class FlagController extends Controller {
     public function save() {
         $flags = Flags::findOrNew(Input::get('id'));
         $flags->flag = Input::get('flag');
-        $flags->store_id = Session::get('store_id');
         if (Input::get('value') == '') {
             $flags->value = 0;
         } else {
@@ -66,7 +65,6 @@ class FlagController extends Controller {
         $flags = Flags::find(Input::get('id'));
         $flags->fill(Input::all());
         $flags->value= "#".Input::get('value');
-        $flags->store_id = Session::get('store_id');
         $flags->save();
        // dd($flags);
         return redirect()->route("admin.miscellaneous.flags")->with("msg", "Flag updated successfully.");

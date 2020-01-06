@@ -56,8 +56,7 @@ class CourierController extends Controller {
 
     public function update() {
         $courier = Courier::find(Input::get('id'));
-        $courier->update(Input::except(['details']));        
-        $courier->store_id = Session::get('store_id');
+        $courier->update(Input::except(['details']));
         //$courier->charges = Input::get('id')*Session::get("currency_val");
         $courier->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
         $courier->update();

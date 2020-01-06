@@ -44,7 +44,7 @@
 
 									<ul>
 										
-										@if($staticPages && count($staticPages) >0)
+										@if(count($staticPages) >0)
 										@foreach($staticPages as $page)
 										<li><a href="{{route($page->url_key)}}">{{$page->page_name}}</a></li>
 										@endforeach
@@ -87,8 +87,9 @@
 						<div class="{{$cols2}}  col-sm-6  col-xs-12">
 							<div class="widget clearfix">
 								<h4>Contact</h4>
+								
 								<div class="widget subscribe-widget clearfix footaddresstopMargin">
-									@if(isset($contactDetails))
+									@if(count($contactDetails) >0)
 									<?php    $contact =json_decode($contactDetails->contact_details); ?>
 									
 									
@@ -113,7 +114,7 @@
 									<div class="si-share clearfix">
 										<span>Connect with us on:</span>
 										<div>
-											@if(isset($socialMedia))
+											@if(count($socialMedia) >0)
 											@foreach($socialMedia as $socialMedialink)
 											<a target="_blank" href="{{$socialMedialink->link}}" class="social-icon si-borderless si-text-color si-{{$socialMedialink->media}}" title="{{$socialMedialink->media}}">
 												<i class="icon-{{$socialMedialink->media}}"></i>

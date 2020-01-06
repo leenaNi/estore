@@ -268,7 +268,7 @@
             <div class="form-group">
                 {!!Form::label('Group','Select Group') !!}<span class="red-astrik"> *</span>
                  <input type="hidden" value="" name="Contact_Ids" />
-                <select  name="group_id" class="selectpicker form-control" data-live-search="true">
+                <select  name="group_name" class="selectpicker form-control" data-live-search="true">
                     <option value="">Select Group</option>
                     <option value="0">New Group</option>
                     @if(count($contacts_group)>0)
@@ -280,7 +280,7 @@
                     @endif
                 </select>
             </div> 
-            <div class="col-md-6" id="grp_div1" style="display: none;">
+            <div class="col-md-6" id="grp_div" style="display: none;">
                         <div class="form-group">
                             {!!Form::label('groupname','Group Name') !!}<span class="red-astrik"> *</span>
                                 {!! Form::text('new_group_name',null, ["id"=>'new_group_name',"class"=>'form-control' ,"placeholder"=>'Enter Group Name']) !!}
@@ -339,12 +339,10 @@ $('.selectpicker').on('change', function() {
   if ( this.value == '0')
   {
     $("#grp_div").show();
-    $("#grp_div1").show();
   }
   else
   {
     $("#grp_div").hide();
-    $("#grp_div1").hide();
   }
 });
 

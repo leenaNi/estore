@@ -4,7 +4,7 @@
 <section class="content-header">
     <h1>
        {{$layout->name}}
-
+       
         <small>Add/Edit</small>
     </h1>
     <ol class="breadcrumb">
@@ -22,35 +22,34 @@
         <div class="col-md-12">
             <div class="box">
                 <div class="box-body">
-
-
+                    
+                   
                     {!! Form::model($layoutPage, ['method' => 'post', 'files'=> true, 'url' => $action,'id'=>'addSlider' ] ) !!}
 
                     <div class="col-md-6">
-                    <div class="form-group">
+                    <div class="form-group">    
                         {!! Form::label('page_name', 'Banner Text ',['class'=>'control-label']) !!}
                         {!! Form::hidden('id',null) !!}
-                        {!! Form::hidden('store_id', Session::get('store_id')) !!}
                             {!! Form::text('name',null, ["class"=>'form-control ',"id"=>'page_name' ,"placeholder"=>'Banner Text']) !!}
-                          {!! Form::hidden('layout_id',$layout->id, array('id' => 'layout_id')) !!}
-                          {!! Form::hidden('url',$layout->url_key) !!}
+                          {!! Form::hidden('layout_id',$layout->id, array('id' => 'layout_id')) !!}  
+                          {!! Form::hidden('url',$layout->url_key) !!}  
                         </div>
                     </div>
                            <div class="col-md-6">
 
                     <div class="form-group">
-                         {!!Form::label('link','Link ',['class'=>'control-label']) !!}
+                         {!!Form::label('link','Link ',['class'=>'control-label']) !!} 
                         {!! Form::text('link',null, ["class"=>'form-control validate[custom[url]]',"id"=>'link' ,"placeholder"=>'Link']) !!}
 
                               <p id="url_error" style="color:red"></p>
                         </div>
-
+                            
                     </div>
 
 
 <input type="hidden" name="desc" value=" ">
-
-
+                    
+                    
                      <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('sort_order', 'Sort Order',['class'=>'control-label']) !!}
@@ -61,31 +60,27 @@
                     <div class="form-group">
                         {!! Form::label('is_active', 'Status ',['class'=>'control-label']) !!} <span class="red-astrik"> *</span>
                             {!! Form::select('is_active',["0"=>"Disabled","1"=>"Enabled"],null, ["class"=>'form-control validate[required]',"id"=>'status' ,"placeholder"=>'Select Status']) !!}
-
+                          
                         </div>
                     </div>
                      <div class="clearfix"></div>
                     <div class="col-md-6">
                     <div class="form-group">
                         <?php
-$img_dim = '';
-if ($layout->id == 1) {
-    $img_dim = "(1920px W X 1080px H)";
-}
-
-if ($layout->id == 4) {
-    $img_dim = "(548px W X 308px H)";
-}
-
-?>
+                            $img_dim = '';
+                            if($layout->id == 1)
+                             $img_dim = "(1920px W X 1080px H)";
+                            if($layout->id == 4)
+                             $img_dim = "(548px W X 308px H)"; 
+                        ?>
                         {!!Form::label('image','Image '.$img_dim ,['class'=>'control-label ']) !!}
                         <span class="red-astrik">*</span>
                             <input type="file" name="sliderImg" id="sliderImg"  class="form-control"   />
-                            <input type="hidden" name="old_image" value="{{$layoutPage->image}}">
-
+                            <input type="hidden" name="old_image" value="{{$layoutPage->image}}"> 
+                                                       
                             <!-- <img id="select_image" src="#" alt="Selected Image" style="display: none;" /> -->
 <!--                            <span type="button"  class="label label-danger delimg" style="cursor: pointer;" >Delete</span>-->
-
+                        
                         </div>
                          <span id="error-banner" class="text-danger"></span>
                     </div>
@@ -95,15 +90,15 @@ if ($layout->id == 4) {
                      </div>
                      @endif
                     <div class="clearfix"></div>
-
-                        <div class="col-md-6">
+                
+                        <div class="col-md-6">    
                             <div class="form-group">
                                <div class="box-2">
                                   <div class="result-slider" style="height: 350px"></div>
                               </div>
                                <div class="options-slider hide"> </div>
                             </div>
-                        </div>
+                        </div>  
                     <div class="clearfix"></div>
 
                     <div class="col-md-12">
@@ -119,8 +114,8 @@ if ($layout->id == 4) {
             </div>
         </div>
     </div>
-</section>
-@stop
+</section> 
+@stop 
 
 @section('myscripts')
 <script src="{{ asset('public/Admin/plugins/ckeditor/ckeditor.js') }}"></script>
@@ -136,7 +131,7 @@ if($("#layout_id").val() == 1)
 }
 else if($("#layout_id").val() == 4)
 {
-    widthSlider = 548; heightSlider=308;
+    widthSlider = 548; heightSlider=308; 
 }
 
 var resultSlider = document.querySelector('.result-slider'),
@@ -222,7 +217,7 @@ $('#saveSlider').on('click', function (e) {
         }
     }else{
         $('#addSlider').submit();
-    }
+    }    
 
 });</script>
 
@@ -233,9 +228,9 @@ $('#saveSlider').on('click', function (e) {
     //     $("#select_image").hide();
     //     $(".delimg").hide();
     //     $("input[name='old_image']").val("");
-
+        
     // });
-
+    
     function is_validUrl(url1)
 {
       $('#url_error').html('')
@@ -265,8 +260,8 @@ $('#saveSlider').on('click', function (e) {
             $("#select_image").show();
         }
     }
-
-
+    
+       
    @php
         if($layoutPage->image){
             @endphp
@@ -280,10 +275,10 @@ $('#saveSlider').on('click', function (e) {
     @endphp
 //   $(document).ready(function(){
 //    ("#img").click(function () {
-//       ("#select_image").remove();
+//       ("#select_image").remove(); 
 //    });
 //});
-//
+//    
 
 
 

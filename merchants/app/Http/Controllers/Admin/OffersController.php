@@ -65,7 +65,6 @@ class OffersController extends Controller {
         $offerNew->end_date = Input::get('end_date');
         $offerNew->user_specific = Input::get('user_specific');
         $offerNew->status = Input::get('status');
-        $offerNew->store_id = Session::get('store_id');
 
         $offerNew->save();
 

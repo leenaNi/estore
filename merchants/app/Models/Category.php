@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Baum\Node;
-use App\Library\Helper;
 
 class Category extends Node {
 
@@ -22,12 +21,6 @@ class Category extends Node {
         ];
     }
     protected $orderColumn = "sort_order";
-
-    public function newQuery($excludeDeleted = true)
-    {
-        return parent::newQuery($excludeDeleted = true)
-            ->where('store_id', Helper::getSettings()['store_id']);
-    }
 
     public function products() {
         return $this->belongsToMany('App\Models\Product', 'has_categories', 'cat_id', 'prod_id');

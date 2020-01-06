@@ -100,12 +100,14 @@ class RolesController extends Controller {
         $role->name = Input::get('name');
         $role->display_name = Input::get('display_name');
         $role->description = Input::get('description');
-        $role->store_id = Helper::getSettings()['store_id'];
         $role->save();
+
         $check_permissions = Input::get('chk');
+
         if (!empty(Input::get('chk'))) {
             foreach ($check_permissions as $key => $perm_id) {
                 $permission = Permission::find($perm_id);
+
                 if (!$permission->childPermissions->isEmpty()) {
                     $child_prems = $permission->childPermissions->pluck('id')->toArray();
                     foreach ($child_prems as $val) {
@@ -123,6 +125,7 @@ class RolesController extends Controller {
             Session::flash("message", "Role updated successfully.");
         else
             Session::flash("message", "Role added successfully.");
+
         return redirect()->route('admin.roles.view');
         // echo "<script>window.close();</script>";
     }

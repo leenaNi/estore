@@ -2,41 +2,39 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Route;
+use Input;
+use App\Models\SocialMediaLink;
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
-use App\Models\SocialMediaLink;
-use Illuminate\Http\Request;
-use Input;
-use Route;
 use Session;
+use Illuminate\Http\Request;
+use DB;
 use Validator;
 
-class SocialMediaLinksController extends Controller
-{
+class SocialMediaLinksController extends Controller {
 
-    public function index()
-    {
+    public function index() {
         $search = !empty(Input::get("media")) ? Input::get("media") : '';
         $search_fields = ['media'];
-
-        if ($search != "") {
-            $smlinkInfo = SocialMediaLink::where(function ($query) use ($search_fields, $search) {
+        
+        if($search != ""){
+            $smlinkInfo = SocialMediaLink::where(function($query) use($search_fields, $search) {
                 foreach ($search_fields as $field) {
                     $query->orWhere($field, "like", "%$search%");
                 }
-            })->get();
-            $smlinkCount = $smlinkInfo->count();
+            })->get(); 
+            $smlinkCount=$smlinkInfo->count();
         } else {
             $smlinkInfo = SocialMediaLink::paginate(Config('constants.paginateNo'));
-            $smlinkCount = $smlinkInfo->total();
+            $smlinkCount=$smlinkInfo->total();
         }
-        $data = ['smlinkInfo' => $smlinkInfo, 'public_path' => 'public/Admin/uploads/socialmedia/', 'smlinkCount' => $smlinkCount];
+        $data = ['smlinkInfo' => $smlinkInfo,'public_path' => 'public/Admin/uploads/socialmedia/','smlinkCount'=>$smlinkCount];
         $viewname = Config('constants.adminSocialMediaLinkView') . '.index';
         return Helper::returnView($viewname, $data);
     }
 
-    public function add()
-    {
+    public function add() {
         $link = new SocialMediaLink();
         $action = route("admin.socialmedialink.save");
         $data = ['link' => $link, 'action' => $action, 'new' => '1', 'public_path' => 'public/Admin/uploads/socialmedia/'];
@@ -44,8 +42,7 @@ class SocialMediaLinksController extends Controller
         return Helper::returnView($viewname, $data);
     }
 
-    public function edit()
-    {
+    public function edit() {
         $link = SocialMediaLink::find(Input::get('id'));
         $action = route("admin.socialmedialink.update");
         $data = ['link' => $link, 'action' => $action, 'new' => '0', 'public_path' => 'public/Admin/uploads/socialmedia/'];
@@ -53,13 +50,12 @@ class SocialMediaLinksController extends Controller
         return Helper::returnView($viewname, $data);
     }
 
-    public function save(Request $request)
-    {
+    public function save(Request $request) {
         Validator::make($request->all(), [
             'media' => 'required',
             'link' => 'required|url',
             'image' => 'required|image',
-        ], [
+            ],[
             'media.required' => 'The media name field is required.',
             'link.url' => 'Please enter proper url.',
             'link.required' => 'The link field is required.',
@@ -75,8 +71,9 @@ class SocialMediaLinksController extends Controller
         } else {
             $fileName = (!empty(Input::get('image')) ? Input::get('image') : '');
         }
-
+        
         $formData['image'] = $fileName;
+
         SocialMediaLink::create($formData);
         Session::flash("msg", "Social media link added successfully.");
         $viewname = Config('constants.adminSocialMediaLinkView') . '.index';
@@ -84,13 +81,12 @@ class SocialMediaLinksController extends Controller
         return Helper::returnView($viewname, $data, $url = 'admin.socialmedialink.view');
     }
 
-    public function update(Request $request)
-    {
+    public function update(Request $request){
         Validator::make($request->all(), [
             'media' => 'required',
             'sort_order' => 'required',
             'link' => 'required|url',
-        ], [
+            ],[
             'media.required' => 'The media name field is required.',
             'sort_order.required' => 'Sort Order required.',
             'link.url' => 'Please enter proper url',
@@ -109,7 +105,7 @@ class SocialMediaLinksController extends Controller
             //$fileName = (!empty(Input::get('image')) ? Input::get('image') : '');
             unset($formData['image']);
         }
-
+        
         $link->update($formData);
         Session::flash("msg", "Social media link updated successfully.");
         $viewname = Config('constants.adminSocialMediaLinkView') . '.index';
@@ -117,8 +113,7 @@ class SocialMediaLinksController extends Controller
         return Helper::returnView($viewname, $data, $url = 'admin.socialmedialink.view');
     }
 
-    public function delete(Request $request)
-    {
+    public function delete(Request $request) {
         $link = SocialMediaLink::find($request->id);
         $link->delete();
         Session::flash("message", "Social media link deleted successfully.");
@@ -127,22 +122,23 @@ class SocialMediaLinksController extends Controller
         return Helper::returnView($viewname, $data, $url = 'admin.socialmedialink.view');
     }
 
-    public function changeStatus(Request $request)
-    {
+    public function changeStatus(Request $request) {
         $contact = SocialMediaLink::find($request->id);
-        if ($contact->status == 1) {
+        if($contact->status == 1) {
             $contact->status = 0;
             $msg = "Social media link disabled successfully.";
-            Session::flash("message", $msg);
-        } else {
+              Session::flash("message", $msg);
+        }else{
             $contact->status = 1;
             $msg = "Social media link enabled successfully.";
-            Session::flash("msg", $msg);
+             Session::flash("msg", $msg);
         }
         $contact->update();
-
+       
         $data = ['status' => '1', 'msg' => $msg];
         $viewname = Config('constants.adminSocialMediaLinkView') . '.index';
         return Helper::returnView($viewname, $data, $url = 'admin.socialmedialink.view');
     }
 }
+
+?>

@@ -107,7 +107,7 @@
     </div>
 
   
- @if($settingStatus['stock'] == 1)
+ @if($settingStatus['26'] == 1)
      <div class="form-group col-md-4">
         <label class="control-label">Manage Stock <span class="red-astrik"> *</span></label>
       <label class="switch">

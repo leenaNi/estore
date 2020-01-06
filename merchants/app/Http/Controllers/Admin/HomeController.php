@@ -26,7 +26,7 @@ class HomeController extends Controller {
         }
 
         $general_setting = $general_setting->get();
-        //  dd($general_setting);
+     //  dd($general_setting);
         $courier = Courier::where("status", 1)->get(["name", "id"]);
         $set_popup = GeneralSetting::where('name', 'set_popup')->first();
         return view('Admin.pages.home.index', ['general_setting' => $general_setting, 'set_popup' => $set_popup, 'courier' => $courier]);
@@ -43,7 +43,8 @@ class HomeController extends Controller {
         else
             echo 'some error occure';
     }
- 
+
+  
 
     public function newsLetter() {
         // DB::enableQueryLog();
@@ -60,10 +61,12 @@ class HomeController extends Controller {
     }
 
     public function saveNewsLetter(Request $request){
-        $rules = [
+        
+       $rules = [
             'enablesub' => 'required',
             'newsLetterimg' => 'file|mimes:jpeg,png,jpg|max:1024',
         ];
+
         $messages = array(
             'enablesub.required' => 'This Radio Field is required',
             'newsLetterimg.required' => 'Please Select Image',
@@ -71,6 +74,7 @@ class HomeController extends Controller {
             'newsLetterimg.mimes' => 'File should of type jpeg,png,jpg',
             
         );
+
        $validator = Validator::make($request->all(), $rules,$messages);
        if ($validator->fails()) {
             $errors = $validator->messages();
@@ -82,10 +86,9 @@ class HomeController extends Controller {
             $currentURL = explode('.',$currentURL[2]);
             $domain_name = current($currentURL);
             $domainname = strtolower($domain_name);
-            // $path = base_path() ."/$domainname/public/uploads/newsletter/";
-            $path = Config('constants.newsLetterUploadImgPath') . "/";
-            // dd($path);
+            $path = base_path() ."/$domainname/public/uploads/newsletter/";
             $mk = File::makeDirectory($path, 0777, true, true);
+            
             if ($request->hasFile('newsLetterimg')) {
                 $file = $request->file('newsLetterimg');
                 $name = $file->getClientOriginalName();
@@ -96,6 +99,8 @@ class HomeController extends Controller {
                 $displayContent = $request->displayContent;
                 $request->newsLetterimg->move($path,$newsletter_pic_name);
                 DB::table("general_setting")->where('url_key', 'notification')->update(["details" => json_encode(["img_path" => $newsletter_pic_name,"displayHeader" => $displayHeader,"displayContent" => $displayContent]),'is_active' => (int)($request->input("enablesub"))]);
+
+
                 session()->flash('msg', 'Newsletter Added Successfully for Store');
                 return redirect()->to('/admin/newsletter')->withInput($request->input());
             } else {
@@ -104,11 +109,18 @@ class HomeController extends Controller {
                 $newsletter_pic_name = $imgpath["img_path"];
                 $displayHeader = $request->displayHeader;
                 $displayContent = $request->displayContent;
+
                 DB::table("general_setting")->where('url_key', 'notification')->update(["details" => json_encode(["img_path" => $newsletter_pic_name,"displayHeader" => $displayHeader,"displayContent" => $displayContent]),'is_active' => (int)($request->input("enablesub"))]);
+
+
                 session()->flash('msg', 'Newsletter Added Successfully for Store');
                 return redirect()->to('/admin/newsletter')->withInput($request->input());
-            }            
+            }
+            
         }
+       
+        
+
     }
 
     public function exportNewsLetter() {
@@ -123,7 +135,8 @@ class HomeController extends Controller {
                 $status = 'Yes';
             }else{
                 $status = 'No';
-            }                 
+            }
+                                    
             $details = [
                 $newsLetter->id,
                 $newsLetter->email,
@@ -132,6 +145,9 @@ class HomeController extends Controller {
             ];
             array_push($sampleProds, $details);
         }
+
+
+
         return Helper::getCsv($sampleProds, 'newsletter.csv', ',');
     }
 

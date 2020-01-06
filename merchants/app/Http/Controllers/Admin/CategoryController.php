@@ -61,7 +61,6 @@ class CategoryController extends Controller {
         $category->url_key = strtolower(str_replace(" ","-",Input::get('category')));
         $category->status = Input::get('status');
         $category->short_desc = Input::get('short_desc');
-        $category->store_id = Session::get('store_id');
         //$category->long_desc = Input::get('long_desc');
 
         $catImgs = [];
@@ -89,7 +88,7 @@ class CategoryController extends Controller {
                 $saveCImh->save();
             }
         }else {
-            if (!empty(Input::file('images')) && count(Input::file('images')) > 0) {
+            if (count(Input::file('images')) > 0) {
                 foreach (Input::file('images') as $imgK => $imgV) {
                     if ($imgV != null) {
                         $destinationPath = Config('constants.catImgUploadPath')."/";

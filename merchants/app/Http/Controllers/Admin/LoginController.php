@@ -2,88 +2,92 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Library\Helper;
-use App\Models\EmailTemplate;
-use App\Models\GeneralSetting;
-use App\Models\Role;
-use App\Models\User;
-use Auth;
-use Config;
-use Crypt;
-use Hash;
-use Input;
 use Route;
+use Input;
+use App\Models\User;
+use App\Models\Role;
+use App\Models\Product;
+use App\Models\DownlodableProd;
+use App\Models\GeneralSetting;
+use App\Models\EmailTemplate;
+use Auth;
+use Hash;
+use App\Library\Helper;
+use App\Models\Permission;
+use App\Http\Controllers\Controller;
 use Session;
+use Crypt;
+use Config;
+use DB;
 
-class LoginController extends Controller
-{
+class LoginController extends Controller {
 
-    public function index()
-    {
+    public function index() {
+  
+
         if (Session::get('loggedinAdminId')) {
+
+
             return redirect()->route('admin.dashboard');
         } else {
             return view(Config('constants.adminView') . '.login');
         }
     }
 
-    public function unauthorized()
-    {
+    public function unauthorized() {
         return view(Config('constants.adminView') . '.unauthorized');
     }
 
-    public function chk_admin_user()
-    {
+    public function chk_admin_user() {
         $input = Input::get("email");
+
         $login_type = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
-        $userDetails = User::where($login_type, "=", Input::get("email"))->whereIn('user_type', [1, 3])->where('store_id', Helper::getSettings()['store_id'])->where("status", 1)->first();
-        // dd($userDetails);
+        $userDetails = User::where($login_type, "=", Input::get("email"))->whereIn('user_type', [1, 3])->where("status", 1)->first();
         $userData = [$login_type => Input::get('email'),
-            'password' => Input::get('password'), 'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
+            'password' => Input::get('password'), 'status' => 1];
         if (!empty($userDetails)) {
-            // dd(Auth::attempt($userData, true));
             if (Auth::attempt($userData, true)) {
-                // dd($userData);
                 $user = User::with('roles')->find($userDetails->id);
                 Session::put('loggedinAdminId', $userDetails->id);
                 Session::put('profile', $userDetails->profile);
                 Session::put('loggedin_user_id', $user->id);
                 Session::put('login_user_type', $user->user_type);
                 $roles = $user->roles()->first();
+              
                 $r = Role::find($roles->id);
+                
                 $per = $r->perms()->get()->toArray();
+              
                 if (Auth::user()->user_type == 3) {
                     return redirect()->route('admin.vendors.dashboard');
                 }
                 return redirect()->route('admin.home.view');
             } else {
-                // dd('1 Unauthorized user');
                 Session::flash('invalidUser', 'Invalid Username or Password');
                 return redirect()->route('adminLogin');
             }
         } else {
-            // dd('2 Unauthorized user');
             Session::flash('invalidUser', 'Invalid Username or Password');
             return redirect()->route('adminLogin');
         }
     }
-
-    public function chk_fb_admin_user()
-    {
-        $FbUser = Input::get('userData');
-        $userEmail = $FbUser['email'];
-        $appId = $FbUser['id'];
-        // var_dump($userEmail);
-        // $userDetails = User::where('email', $userEmail)->first();
+    
+  public function chk_fb_admin_user() {
+          $FbUser=Input::get('userData');
+       $userEmail=$FbUser['email'];
+         
+          $appId=$FbUser['id'];
+        // var_dump($userEmail); 
+       // $userDetails = User::where('email', $userEmail)->first();
         //return $userDetails;
-        // $login_type = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
-        $userDetails = User::where('email', $userEmail)->where("provider_id", $appId)->whereIn('user_type', [1, 3])->where("status", 1)->first();
-        //  return $userDetails;
-        //         $userData = [$login_type => Input::get('email'),
-        //            'password' => Input::get('password'), 'status' => 1];
+       // $login_type = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
+        $userDetails = User::where('email', $userEmail)->where("provider_id",$appId)->whereIn('user_type', [1, 3])->where("status", 1)->first();
+      //  return $userDetails;
+//         $userData = [$login_type => Input::get('email'),
+//            'password' => Input::get('password'), 'status' => 1];
         if (!empty($userDetails)) {
             Auth::login($userDetails);
+            
             if (Auth::check()) {
                 $user = User::with('roles')->find($userDetails->id);
                 Session::put('loggedinAdminId', $userDetails->id);
@@ -94,39 +98,37 @@ class LoginController extends Controller
                 $r = Role::find($roles->id);
                 $per = $r->perms()->get()->toArray();
                 if (Auth::user()->user_type == 3) {
-                    return $data = ["status" => 1, "route" => route('admin.vendors.dashboard')];
+                    return $data=["status"=>1,"route"=>route('admin.vendors.dashboard')];
                 }
-                return $data = ["status" => 1, "route" => route('admin.home.view')];
-                // return redirect()->route('admin.home.view');
+                 return $data=["status"=>1,"route"=>route('admin.home.view')];
+               // return redirect()->route('admin.home.view');
             } else {
-                //  Session::flash('invalidUser', 'Invalid Username or Password');
+              //  Session::flash('invalidUser', 'Invalid Username or Password');
                 //return redirect()->route('adminLogin');
-                return $data = ["status" => 0, "route" => route('adminLogin'), "msg" => "Invalid Username or Password asa"];
+                 return $data=["status"=>0,"route"=>route('adminLogin'),"msg"=>"Invalid Username or Password asa"];
             }
         } else {
             //Session::flash('invalidUser', 'Invalid Username or Password');
-            return $data = ["status" => 0, "route" => route('adminLogin'), "msg" => "Invalid Username or Password"];
-            // return redirect()->route('adminLogin');
+             return $data=["status"=>0,"route"=>route('adminLogin'),"msg"=>"Invalid Username or Password"];
+           // return redirect()->route('adminLogin');
         }
     }
-    public function admin_logout()
-    {
+    public function admin_logout() {
         Auth::logout();
+       
         Session::flush();
         return redirect()->route('adminLogin');
     }
 
-    public function admin_edit_profile()
-    {
+    public function admin_edit_profile() {
         $id = Input::get("id");
         $user = User::find($id);
         $action = route('adminSaveProfile');
-        $public_path = Config('constants.adminImgUploadPath') . "/";
+        $public_path =Config('constants.adminImgUploadPath')."/"; 
         return view(Config('constants.adminView') . '.adminEditProfile', compact('user', 'action', 'public_path'));
     }
 
-    public function admin_save_profile()
-    {
+    public function admin_save_profile() {
         // dd(Input::get());
         $user = User::find(Input::get('id'));
         $user->firstname = Input::get("firstname");
@@ -135,19 +137,20 @@ class LoginController extends Controller
         if (!empty(Input::get("telephone"))) {
             $user->telephone = Input::get("telephone");
         }
+
         if (!empty(Input::get("password"))) {
             $check = (Hash::check(Input::get('old_password'), $user->password));
             if ($check == true) {
                 if (Input::get("password") == Input::get("confirmpwd")) {
                     $user->password = Hash::make(Input::get('password'));
                 }
-            } else {
-                Session::flash('invaliOldPass', 'Invalid Username or Password');
+            }else{
+                 Session::flash('invaliOldPass', 'Invalid Username or Password');
                 return redirect()->back();
             }
         }
         if (Input::hasFile('profile')) {
-            $destinationPath = Config('constants.adminImgUploadPath') . "/";
+            $destinationPath =Config('constants.adminImgUploadPath')."/"; 
             $fileName = date("dmYHis") . "." . Input::File('profile')->getClientOriginalExtension();
             $upload_success = Input::File('profile')->move($destinationPath, $fileName);
             $user->profile = $fileName;
@@ -158,28 +161,29 @@ class LoginController extends Controller
         return Helper::returnView($viewname, $data, $url = 'admin.dashboard');
     }
 
-    public function adminCheckCurPassowrd()
-    {
-        $user = User::find(Session::get('loggedinAdminId'));
-        $check = (Hash::check(Input::get('thispass'), $user->password));
-        if ($check == true) {
-            return 0;
-        } else {
-            return 1;
-        }
-
+    public function adminCheckCurPassowrd(){
+   $user =      User::find(Session::get('loggedinAdminId'));
+     $check = (Hash::check(Input::get('thispass'), $user->password));
+     
+if ($check == true) {
+    return 0;
+}else{
+     return 1;
+}
+   
     }
-
-    public function forgotPassword()
-    {
+    
+    public function forgotPassword() {
         return view(Config('constants.adminView') . '.forgot_password');
     }
 
-    public function chkForgotPasswordEmail()
-    {
+    public function chkForgotPasswordEmail() {
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
+
         $useremail = Input::get('useremail');
+
         $login_type = filter_var($useremail, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
+
         $storeId = Input::get('storeid'); // need to use DB table
         //$request->input("useremail");
         // echo "login type ".$login_type ." " .$useremail;
@@ -190,6 +194,7 @@ class LoginController extends Controller
             //$user = User::where("email", "=", $useremail)->first();
             if ($emailStatus == 1 && $chkemail->email != '') {
                 $email_template = EmailTemplate::where('id', 3)->select('content')->get()->toArray()[0]['content'];
+
                 $name = ucfirst($chkemail->firstname);
                 $replace = ["[firstname]", "[newlink]"];
                 $data = ['name' => $name, 'newlink' => $linktosend];
@@ -208,15 +213,13 @@ class LoginController extends Controller
         }
     }
 
-    public function adminResetNewPassword($link)
-    {
+    public function adminResetNewPassword($link) {
         $data = ['link' => $link];
         $viewname = Config('constants.adminView') . '.reset_forgot_pwd';
         return Helper::returnView($viewname, $data);
     }
 
-    public function adminSaveResetPwd()
-    {
+    public function adminSaveResetPwd() {
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
         $useremail = Crypt::decrypt(Input::get('link'));
         $user = User::where("email", "=", $useremail)->first();

@@ -4,16 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\GeneralSetting;
-use App\Library\Helper;
 
 class AdditionalCharge extends Model {
 
     protected $table = 'additional_charges';
-    public function newQuery($excludeDeleted = true)
-    {
-        return parent::newQuery($excludeDeleted = true)
-            ->where('store_id', Helper::getSettings()['store_id']);
-    }
+
     public static function ApplyAdditionalCharge($price) {
         $addCharge = GeneralSetting::where('url_key', 'additional-charge')->where('status', 1)->first();      
 

@@ -51,8 +51,7 @@
                 </div>
                 </div>
                 {{ Form::hidden('id',null, ["class"=>'lolytyId' ]) }}   
-    
-                {!! Form::hidden('store_id', Session::get('store_id')) !!}
+
                     <div class="col-md-12 form-group">
                         {{ Form::button('Submit',["class" => "btn btn-primary noLeftMargin btnsubmit pull-right mobFloatLeft noMob-leftmargin"]) }}
                         {{ Form::close() }}

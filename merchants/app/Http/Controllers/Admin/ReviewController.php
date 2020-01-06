@@ -22,9 +22,17 @@ use Validator;
 class ReviewController extends Controller
 {
     public function index() {
-         
+        // $customer_reviews = CustomerReview::select('products.product','customer_reviews.*')->
+        // join('products','customer_reviews.product_id','=','products.id')
+        // ->orderBy("customer_reviews.id", "desc")->get();
+        
+        // $viewname = Config('constants.adminCustReviewView') . '.index';
+        // $data = ['CustomerReviews' => $customer_reviews];
+        // return Helper::returnView($viewname, $data);
+
+
         $customer_reviews = CustomerReview::select('products.product','customer_reviews.*')->
-        join('products','customer_reviews.product_id','=','products.id')->where('customer_reviews.store_id', Helper::getSettings()['store_id'])
+        join('products','customer_reviews.product_id','=','products.id')
         ->orderBy("customer_reviews.id", "desc");
 
         if (!empty(Input::get('order_ids'))) {

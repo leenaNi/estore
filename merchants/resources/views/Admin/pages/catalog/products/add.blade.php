@@ -21,21 +21,21 @@
             <span class="add-img-txt">Add Image</span>
         </div>
          <span id="error-product" class="text-danger"></span>
-         <div class="img-box">
+         <div class="img-box">  
             <div class="form-group">
                <div class="box-2">
                   <div class="result-product" style="height: 200px"></div>
               </div>
               <!--  <div class="options-product hide"> </div> -->
             </div>
-        </div>
+        </div>  
         <!-- <div class="img-box">
              <img id="blah" src="#" alt="your image" class="hide" />
          </div> -->
     </div>
 <div class="clearfix"></div>
     <div class="form-group col-md-6">
-        <label class="control-label">Product Type <span class="red-astrik"> *</span></label>
+        <label class="control-label">Product Type <span class="red-astrik"> *</span></label> 
           {!! Form::select('prod_type',$prod_types,null,["class"=>'form-control prod_type validate[required]']) !!}
 <!--            <select class="form-control">
             <option value="1">Simple</option>
@@ -45,61 +45,56 @@
     </div>
 
     <div class="form-group  col-md-6">
-        <label class="control-label">Product Name <span class="red-astrik"> *</span></label>
+        <label class="control-label">Product Name <span class="red-astrik"> *</span></label> 
        {!! Form::text('product',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Enter Product Name']) !!}
     </div>
  <div class="form-group  col-md-12 hide" id="attribute" >
         {!! Form::label('Attribute Set', 'Attribute Set',['class'=>'control-label']) !!}
-
+        
             {!! Form::select('attr_set',$attr_sets,null,["class"=>'form-control validate[required]']) !!}
-
+        
     </div>
     <div class="form-group col-md-6">
         <label class="control-label">MRP/Listing Price </label> <span class="red-astrik">*</span>
           {!! Form::number('price',null, ["class"=>'form-control priceConvertTextBox validate[required]','min'=>0 ,"placeholder"=>'Enter Mrp Price']) !!}
-
+       
     </div>
 
     <div class="form-group col-md-6">
         <label class="control-label">Selling Price </label>
         {!! Form::number('selling_price',null, ["class"=>'form-control priceConvertTextBox','min'=>0 ,"placeholder"=>'Enter Selling Price']) !!}
-
+       
     </div>
- @if($settingStatus['stock'] == 1)
+ @if($settingStatus['26'] == 1)
  <div class="form-group col-md-6 stockcheck">
         <label class="control-label">Stock </label>
         {!! Form::number('stock',null, ["class"=>'form-control validate[required]','min'=>0 ,"placeholder"=>'Enter stock']) !!}
-
+       
     </div>
  @endif
     <div class="form-group col-md-12">
         <label class="control-label">Select Category </label>
         <select name="category[]" class="selectpicker validate[required] sel-cat-multi-drop col-md-12" multiple>
    <?php
-$dash1 = " -- ";
-echo "<ul>";
-foreach ($rootsS as $root1) {
-    renderNode2($root1, $dash1);
-}
+                            $dash1 = " -- ";
+                            echo "<ul>";
+                            foreach ($rootsS as $root1)
+                                renderNode2($root1, $dash1);
+                            echo "</ul>";
 
-echo "</ul>";
-
-function renderNode2($node, $dash1)
-{
-    echo "<li>";
-    echo "<option value='{$node->id}'   > {$dash1}{$node->category}</option>";
-    if ($node->children()->where("status", 1)->count() > 0) {
-        $dash1 .= " -- ";
-        echo "<ul>";
-        foreach ($node->children as $child) {
-            renderNode2($child, $dash1);
-        }
-
-        echo "</ul>";
-    }
-    echo "</li>";
-}
-?>
+                            function renderNode2($node, $dash1) {
+                                echo "<li>";
+                                echo "<option value='{$node->id}'   > {$dash1}{$node->category}</option>";
+                                if ($node->children()->where("status",1)->count() > 0) {
+                                    $dash1 .= " -- ";
+                                    echo "<ul>";
+                                    foreach ($node->children as $child)
+                                        renderNode2($child, $dash1);
+                                    echo "</ul>";
+                                }
+                                echo "</li>";
+                            }
+                            ?>
 </select>
 
     </div>
@@ -109,8 +104,8 @@ function renderNode2($node, $dash1)
         <label class="control-label">Status </label>
       <label class="switch">
   <input class="switch-input"  name="status" id="prodStatus" value="1" type="checkbox" checked="" />
-  <span class="switch-label"  data-on="Enabled" data-off="Disabled"></span>
-  <span class="switch-handle"></span>
+  <span class="switch-label"  data-on="Enabled" data-off="Disabled"></span> 
+  <span class="switch-handle"></span> 
  </label>
     </div>
 
@@ -118,33 +113,33 @@ function renderNode2($node, $dash1)
         <label class="control-label">Trending </label>
       <label class="switch">
   <input class="switch-input" name="is_trending" id="tranding" value="0" type="checkbox" />
-  <span class="switch-label"  data-on="Enabled" data-off="Disabled"></span>
-  <span class="switch-handle"></span>
+  <span class="switch-label"  data-on="Enabled" data-off="Disabled"></span> 
+  <span class="switch-handle"></span> 
  </label>
     </div>
 
-
- @if($settingStatus['stock'] == 1)
+  
+ @if($settingStatus['26'] == 1)
      <div class="form-group col-md-4">
         <label class="control-label">Manage Stock <span class="red-astrik"> *</span></label>
       <label class="switch">
   <input class="switch-input" name="is_stock" value="1" id="isStock" type="checkbox" checked="" />
-  <span class="switch-label"  data-on="Enabled" data-off="Disabled"></span>
-  <span class="switch-handle"></span>
+  <span class="switch-label"  data-on="Enabled" data-off="Disabled"></span> 
+  <span class="switch-handle"></span> 
  </label>
     </div>
     @else
     <input type="hidden" name="is_stock" value="0">
     @endif
-
+   
     <div class="form-group col-md-12 text-right">
               {!! Form::submit('Add',["class" => "btn btn-primary saveButton"]) !!}
-
-
+           
+        
             <input class="btn btn-primary nextButton" type="submit" value="Next">
-
-
-            {!! Form::close() !!}
+        
+       
+            {!! Form::close() !!} 
        <!--  <div class="col-md-4 pl-0">
             <button type="button" class="btn btn-default fullwidthbtn" data-dismiss="modal">Close</button>
         </div> -->
