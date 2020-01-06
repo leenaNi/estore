@@ -439,19 +439,19 @@ class ApiCreateStoreController extends Controller {
                     }
                     }
                   if ($phone) {
-                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Download VeeStores Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
+                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
-                    $domain = 'veestores.com'; //$_SERVER['HTTP_HOST'];
-                    $sub = "VeeStores Links for Online Store - " . $storeName;
+                    $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
+                    $sub = "eStorifi Links for Online Store - " . $storeName;
                     $mailcontent = "<b>Congratulations  " . $storeName ." has been created successfully!</b>" . "\n\n";
                     $mailcontent .= "Kindly find the links to view your store:" . "\n";
                     
                     $mailcontent .= "Store Admin Link: http://" . $domainname . '.' . $domain . "/admin" . "\n";
                     $mailcontent .= "Online Store Link: http://" . $domainname . '.' . $domain . "\n";
-                    $mailcontent .= "For any further assistance/support, contact http://veestores.com/contact" . "\n\n";
+                    $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n\n";
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
@@ -518,7 +518,7 @@ class ApiCreateStoreController extends Controller {
         Session::put('otp', $otp);
 
         if ($mobile) {
-            $msgOrderSucc = "Your one time password is. " . $otp . ". Contact 1800 3000 2020 for real time support.! Team Veestores";
+            $msgOrderSucc = "Your one time password is. " . $otp . ". Contact 1800 3000 2020 for real time support.! Team eStorifi";
             Helper::sendsms($mobile, $msgOrderSucc, $country);
         }
         $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber", "otp"=>$otp];

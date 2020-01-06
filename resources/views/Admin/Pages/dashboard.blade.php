@@ -115,7 +115,6 @@
         <!-- ./col -->
     </div>
     <!-- /.row -->
-    <!-- Main row -->
     <div class="row">
 
         <section class="col-lg-6 connectedSortable">
@@ -229,6 +228,13 @@
                         </table>
                     </div>
                     <!-- /.table-responsive -->
+                    <!-- <div class="box-body">
+                        <div class="chart">
+                            <canvas id="bareaChart" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
+                        </div>
+
+                    </div> -->
+                    
                 </div>
                 @endif
                 <!-- /.box-body -->
@@ -238,40 +244,88 @@
             </div>
 
         </section>
-
     </div>
-
-
-    <!--<div class="row">
-        <section class="col-lg-12 connectedSortable">
+    <div class="row">
+        <div class="clearfix mb-15"></div>
+        <section class="col-lg-6 connectedSortable">
             <div class="box box-info">
+                <div class="bg-blue bg-blue-box">
+                    <div class="row">
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="small-box bg-blue">
+                                <div class="inner">
 
-                <div class="box box-solid bg-teal-gradient">
-                    <div class="box-header">
-                        <i class="fa fa-th"></i>
+                                    <h3 id="order_count"> 0 </h3>
 
-                        <h3 class="box-title">All Stores Sales (Last 10 days)</h3>
-
+                                    <p><span id="total_order_label">Orders Count</span></p>
+                                </div>
+                                <div class="icon bg-icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xs-6">
+                            {!! Form::select('merchants_name',$merchants_name,Input::get('merchants_name'), ["class"=>'form-control filter_type order-data','id' => 'merchants_id',"placeholder"=>"Store Name"]) !!}
+                            {!! Form::select('time_duration',$time_duration,Input::get('time_duration'), ["class"=>'form-control filter_type order-data','id' => 'time_duration_id', "placeholder"=>"Time Duration"]) !!}
+                        </div>
                     </div>
-                    <div class="box-body border-radius-none">
-                        <div class="chart" id="line-chart" style="height: 250px;"></div>
-                    </div>
-
+                    <a href="#" class="small-box-footer"> <i class="fa"></i></a>
+                </div>
+                <div class="row">
+                        <div class="box-body">
+                            <div class="chart">
+                                <canvas class="areaChart" id="areaChart_id" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
+                            </div>
+                        </div>
                 </div>
             </div>
         </section>
 
+        <section class="col-lg-6 connectedSortable">
+            <div class="box box-info">
+                <div class="bg-blue bg-blue-box">
+                    <div class="row">
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="small-box bg-blue">
+                                <div class="inner">
 
-    </div>-->
+                                    <h3 > 
+                                    <!-- <span class="currency-sym"> </span> -->
+                                    <span class="priceConvert" id="total_sales">
+                                    0 </span></h3>
+                                    <p><span id="total_sales_label">Total Revenues</span></p>
+                                </div>
+                                <div class="icon bg-icon">
+                                   <i class="ion ion-connection-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xs-6">
+                            {!! Form::select('merchants_name',$merchants_name,Input::get('merchants_name'), ["class"=>'form-control filter_type sales-data','id' => 'sale_merchants_id',"placeholder"=>"Store Name"]) !!}
+                            {!! Form::select('time_duration',$time_duration,Input::get('time_duration'), ["class"=>'form-control filter_type sales-data','id' => 'sale_time_duration_id', "placeholder"=>"Time Duration"]) !!}
+                        </div>
+                    </div>
+                    <a href="#" class="small-box-footer"> <i class="fa"></i></a>
+                </div>
+                <div class="row">
+                        <div class="box-body">
+                            <div class="chart">
+                                <canvas class="areaChart_sales" id="areaChart_sales_id" style="height: 278px; width: 610px;" width="610" height="278"></canvas>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </section>
 <!-- /.content -->
-
-
 @stop
-
 @section('myscripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
 <script>
- 
+    let x_axis = '<?php echo (json_encode($orderGraph_x)) ?>';
+    x_axis = x_axis.replace('[','').replace(']','').split(',');
+    x_axis = x_axis.map(label => label.replace('"',"").replace('"',""))
 
     $('svg').height(1000);
 
@@ -279,42 +333,204 @@
 //var storeSales = storedata.replace(/"(\w+)"\s*:/g, '$1:');
     console.log(JSON.stringify(storedata));
    
-    /*var line = new Morris.Line({
-        element: 'line-chart',
-        parseTime: false,
-        resize: true,
-        data: storedata,
-        xkey: 'y',
-        ykeys: ['item1'],
-        labels: ['Store Sales'],
-        // behaveLikeLine:true,
-        xLabelAngle: 45,
-        //   xLabelWidth:100,
-     //   xLabelMargin: 50,
-        //   
-        //  eventStrokeWidth: 0,
-        xLabelFormat: function (x) {
-            lab = x.label;
-            console.log(lab);
-            return lab.toString();
-        },
-//  
-        //    ymax: 0,
-        lineColors: ['#efefef'],
-        behaveLikeLine: true,
-        lineWidth: 2,
-        hideHover: 'auto',
-        gridTextColor: "#fff",
-        gridStrokeWidth: 0.4,
-        pointSize: 4,
-        pointStrokeColors: ["#efefef"],
-        gridLineColor: "#efefef",
-        gridTextFamily: "Open Sans",
-        gridTextSize: 18
-    });*/
-
-
-
-
+    $('.order-data').on('change', function(){
+        var merchants_id = $('#merchants_id').val();
+        var time_duration_id = $('#time_duration_id').val();
+        $.ajax({
+            type:"GET",
+            url: "{{route('admin.getOrderDateWise')}}",
+            data: {merchants_id : merchants_id,time_duration_id : time_duration_id},
+            dataType: 'json',
+            success : function(results) {
+                            $("#order_count").text(results.Orders);
+                            if (time_duration_id == 1) {
+                                $("#total_order_label").text("Orders Today");
+                            }else if(time_duration_id == 2){
+                                $("#total_order_label").text("Orders This Week");
+                            }else if(time_duration_id == 3){
+                                $("#total_order_label").text("Orders This Month");
+                            }else{
+                                $("#total_order_label").text("Orders This Year");
+                            }
+                            let x_axis = results.orderGraph_x;
+                            const drawChart = () => {
+                            new Chart($('.areaChart'), {
+                                type: 'line',
+                                data: {
+                                    labels: x_axis,
+                                    datasets: [
+                                        {
+                                            label: `Number Of Orders`,
+                                            fill: true,
+                                            data: results.orderGraph_y,
+                                            borderWidth: 1,
+                                            order: 1,
+                                        }, 
+                                    ]
+                                },
+                                options: {
+                                    legend: {
+                                        position:'bottom'
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            stacked: false,
+                                        }]
+                                    },
+                                    animation: {
+                                        duration: 1000,
+                                    },
+                                }
+                            });
+                        }
+                        drawChart();
+            }
+        });   
+    });
 </script>
+<script>
+    $('.sales-data').on('change', function(){
+        var merchants_id = $('#sale_merchants_id').val();
+        var time_duration_id = $('#sale_time_duration_id').val();
+        $.ajax({
+            type:"GET",
+            url: "{{route('admin.getSalesDateWise')}}",
+            data: {merchants_id : merchants_id,time_duration_id : time_duration_id},
+            dataType: 'json',
+            success : function(results) {
+                        $("#total_sales").text(results.totalSales);
+                        if (time_duration_id == 1) {
+                            $("#total_sales_label").text("Revenues Today");
+                        }else if(time_duration_id == 2){
+                            $("#total_sales_label").text("Revenues This Week");
+                        }else if(time_duration_id == 3){
+                            $("#total_sales_label").text("Revenues This Month");
+                        }else{
+                            $("#total_sales_label").text("Revenues This Year");
+                        }
+                        let x_axis = results.salesGraph_x;
+                        const drawChart1 = () => {
+                            new Chart($('.areaChart_sales'), {
+                                type: 'line',
+                                data: {
+                                    labels: x_axis,
+                                    datasets: [
+                                        {
+                                            label: `Total Revenues`,
+                                            fill: true,
+                                            data: results.salesGraph_y,
+                                            borderWidth: 1,
+                                            order: 1,
+                                        }, 
+                                    ]
+                                },
+                                options: {
+                                    legend: {
+                                        position:'bottom'
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            stacked: false,
+                                        }]
+                                    },
+                                    animation: {
+                                        duration: 1000,
+                                    },
+                                }
+                            });
+                        }
+                        drawChart1();
+
+            }
+        });   
+    });
+</script>
+
+<script>
+    const drawChart = () => {
+    new Chart($('.areaChart'), {
+        type: 'line',
+        data: {
+            // labels: orderGraph_x,
+            labels: x_axis,
+            datasets: [
+                {
+                    label: `Number Of Orders(Last 7 days)`,
+                    fill: true,
+                    // backgroundColor: forecastLineColors.darkBlue.fill,
+                    // pointBackgroundColor: forecastLineColors.darkBlue.stroke,
+                    // borderColor: forecastLineColors.darkBlue.stroke,
+                    // pointHighlightStroke: forecastLineColors.darkBlue.stroke,
+                    data: [{{$orderGraph_y}}],
+                    borderWidth: 1,
+                    order: 1,
+                },
+               
+                
+            ]
+        },
+        options: {
+            legend: {
+                position:'bottom'
+            },
+            // responsive: false,
+            // Can't just just `stacked: true` like the docs say
+            scales: {
+                yAxes: [{
+                    stacked: false,
+                }]
+            },
+            animation: {
+                duration: 1000,
+            },
+        }
+    });
+}
+drawChart();
+</script>
+
+<script>
+    const salesDrawChart = () => {
+    new Chart($('.areaChart_sales'), {
+        type: 'line',
+        data: {
+            // labels: orderGraph_x,
+            labels: x_axis,
+            datasets: [
+                {
+                    label: `Total Revenues(Last 7 days)`,
+                    fill: true,
+                    // backgroundColor: forecastLineColors.darkBlue.fill,
+                    // pointBackgroundColor: forecastLineColors.darkBlue.stroke,
+                    // borderColor: forecastLineColors.darkBlue.stroke,
+                    // pointHighlightStroke: forecastLineColors.darkBlue.stroke,
+                    data: [{{$salesGraph_y}}],
+                    borderWidth: 1,
+                    order: 1,
+                },
+               
+                
+            ]
+        },
+        options: {
+            legend: {
+                position:'bottom'
+            },
+            // responsive: false,
+            // Can't just just `stacked: true` like the docs say
+            scales: {
+                yAxes: [{
+                    stacked: false,
+                }]
+            },
+            animation: {
+                duration: 1000,
+            },
+        }
+    });
+}
+salesDrawChart();
+</script>
+
+
 @stop

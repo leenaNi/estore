@@ -32,6 +32,14 @@
                         <div class="col_full">
                             <textarea class="required sm-form-control" name='message' placeholder="Your Message" rows="6" cols="30"></textarea>
                         </div>
+
+                        <fieldset class="col-md-12 recaptcha">
+                          <p class="recaptcha-text">This site is protected by reCAPTCHA and the Google
+                          <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+                          <a href="https://policies.google.com/terms">Terms of Service</a> apply.</p>
+                        </fieldset>
+                        <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+
                         <div class="col_full">
                             <button class="button button-3d nomargin" type="submit" id="msgsubmit"  value="submit">Submit</button>
                         </div>
@@ -44,8 +52,8 @@
                 <address>
                     <strong>Dhaka</strong><br>
                     AZ Consultant Ltd.<br/>
-House# 373 (2nd Floor), Road# 28,
-Mohakhali DOHS, Dhaka-1212, Bangladesh.
+                    House# 373 (2nd Floor), Road# 28,
+                    Mohakhali DOHS, Dhaka-1212, Bangladesh.
                     <!-- 8th Floor, Haque Tower, IA - 28/8 – D, Mohakhali, C/A Dhaka 1212<br> -->
                 </address>
                 <address>

@@ -4,19 +4,23 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Merchants
+        Distributors
 
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">Merchants</li>
+        <li class="active">Vendors</li>
     </ol>
 </section>
 <section class="content">
-
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
+                   @if(!empty(Session::get('status')))
+                <div class="alert alert-success" role="alert">
+                    {{Session::get('status')}}
+                </div>
+                @endif
                 <div class="box-header">
                     @if (Auth::guard('merchant-users-web-guard')->check() !== true) 
                     <div class="row">
@@ -29,27 +33,23 @@
                                     {{ Form::text('date_search',!empty(Input::get('date_search'))?Input::get('date_search'):null,['class'=>'form-control','id'=>'dateSearch','placeholder'=>'Select Date']) }}
                                 </div>
                             </div>
-                            
                             <div class="col-md-3">
-                                {{ Form::text('s_company_name',!empty(Input::get('s_company_name'))?Input::get('s_company_name'):null,['class'=>'form-control','placeholder'=>'Merchant']) }}
+                                {{ Form::text('firstname',!empty(Input::get('firstname'))?Input::get('firstname'):null,['class'=>'form-control','placeholder'=>'Vendor']) }}
                             </div>
                             <div class="col-md-3">
-                                {{ Form::text('s_email',!empty(Input::get('s_email'))?Input::get('s_email'):null,['class'=>'form-control','placeholder'=>'Email ID']) }}
+                                {{ Form::text('email',!empty(Input::get('email'))?Input::get('email'):null,['class'=>'form-control','placeholder'=>'Email ID']) }}
                             </div>
-
-
                             <div class="col-md-1">
                                 <button type="submit" class="btn btn-success"><i class="fa fa-search"></i> Search</button>
                             </div>
                             {{ Form::close() }}
                         </div> 
                         <div class="col-md-2 text-right"> 
-                            {!! Form::open(['route'=>'admin.merchants.addEdit','method'=>'post']) !!}
-                            {!! Form::submit('Add New Merchant',['class'=>'btn btn-info']) !!}
+                            {!! Form::open(['route'=>'admin.vendors.addEdit','method'=>'post']) !!}
+                            {!! Form::submit('Add New Vendor',['class'=>'btn btn-info']) !!}
                             {!! Form::close() !!}
                         </div>
                     </div>
-
                     @endif
 
                 </div>
@@ -57,49 +57,31 @@
                 <div class="box-body table-responsive">
                     <table class="table table-hover">
                         <tr>
-<!--                            <th>ID</th>-->  
-                            <th>Merchant Name</th>
-                          <!--  <th>Owned By</th>--> 
+                            <th>Distributor Name</th>
                             <th>Email ID</th>
                             <th>Mobile</th>
-                            <th>Industry</th>
-                            <!--<th>Bank</th>--> 
                             <th>Created Date</th>
                             <th>Actions</th>
                         </tr>
-                        @foreach($merchants as $merchant)
+                        @foreach($vendors as $vendor)
                         <tr>
-<!--                            <td>{{ $merchant->id }}</td>-->
-                            <td>{{ $merchant->firstname." ".$merchant->lastname }}</td>
-                           <!--  <td>{{ $merchant->firstname." ".$merchant->lastname }}</td>-->
-                            <td>{{ $merchant->email }}</td>
-                            <td>{{ $merchant->phone }}</td>
-                            <td>{{ !empty(json_decode($merchant->register_details)->business_name) ? json_decode($merchant->register_details)->business_name : " " }}</td>
-                            <!--<td><?php
-                                //$banks = '';
-                                //print_r($merchant->hasMarchants()->get());
-                                //foreach ($merchant->hasMarchants()->get() as $b) {
-                                  //  $banks.=$b->name . ', ';
-                               // }
-                               //echo rtrim($banks, ", ");
-                                ?></td>--> 
-                            <td>{{ date('d-M-Y',strtotime($merchant->created_at)) }}</td>
+                            <td>{{ $vendor->firstname." ".$vendor->lastname }}</td>
+                            <td>{{ $vendor->email }}</td>
+                            <td>{{ $vendor->phone }}</td>
+                            <td>{{ date('d-M-Y',strtotime($vendor->created_at)) }}</td>
                             <td>
-                                <a href="{{ route('admin.merchants.addEdit') }}?id={{$merchant->id }}" class="btn btn-success btn-xs">Edit</a>
-<!--                                <a href="{{ route('admin.stores.addEdit') }}?mid={{$merchant->id }}" class="btn btn-success btn-xs">+ Store</a>-->
+                                <a href="{{ route('admin.vendors.addEdit') }}?id={{$vendor->id }}" class="btn btn-success btn-xs">Edit</a>
                             </td>
                         </tr>
                         @endforeach
                     </table>
                     <?php
                     $arguments = [];
-                    !empty(Input::get('s_bank_name')) ? $arguments['s_bank_name'] = Input::get('s_bank_name') : '';
-                    !empty(Input::get('s_company_name')) ? $arguments['s_company_name'] = Input::get('s_company_name') : '';
-                    !empty(Input::get('s_email')) ? $arguments['s_email'] = Input::get('s_email') : '';
+                   
                     !empty(Input::get('date_search')) ? $arguments['date_search'] = Input::get('date_search') : '';
                     ?>
                     <div class="pull-right">
-                        {{ $merchants->appends($arguments)->links() }}
+                        {{ $vendors->appends($arguments)->links() }}
                     </div>
 
 

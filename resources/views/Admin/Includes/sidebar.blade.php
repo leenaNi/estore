@@ -16,6 +16,14 @@
                 </a>
             </li> 
 
+              <li class="{{ (in_array(Route::currentRouteName(),['admin.vendors.view'])?'active':'') }}">
+                <a href="{{ route('admin.vendors.view') }}">
+                    <i class="fa fa-users"></i> <span>Distributors</span>
+                </a>
+            </li> 
+
+
+
             <li class="{{ (in_array(Route::currentRouteName(),['admin.stores.view'])?'active':'') }}">
                 <a href="{{ route('admin.stores.view') }}">
                     <i class="fa fa-shopping-cart"></i> <span>Stores</span>
@@ -121,6 +129,22 @@
 
 
                 </ul>
+            </li>
+           
+            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.reports.view','admin.reports.getstoreorders']) ? 'active' : '' }}">
+                <a href="#">
+                    <i class="fa fa-file"></i> <span>Reports</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu {{ in_array(Route::currentRouteName(),[
+                                'admin.masters.language.view',
+                               'admin.masters.language.view'
+                            ]) ? 'menu-open' : '' }}">
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.reports.view','admin.reports.getstoreorders'])?'active':'' }}"><a href="{{ route('admin.reports.view') }}"><i class="fa fa-circle-o"></i>Store Orders</a></li>
+                </ul>
+
             </li>
             <li class="{{ (in_array(Route::currentRouteName(),['admin.settings.view'])?'active':'') }}">
                 <a href="{{route('admin.settings.view')}}">

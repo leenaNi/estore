@@ -13,7 +13,11 @@ Route::group(['namespace' => 'Admin'], function () {
     
     Route::any('/check-veeswipe-login', ["as" => "admin.login.checkVeeswipeLogin", "uses" => "LoginController@checkVeeswipeLogin"]);
     Route::group(['middleware' => ['auth:vswipe-users-web-guard', 'CheckUser']], function () {
+
         Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "LoginController@dashboard"]);
+        Route::get('/getOrderDateWise', ["as" => "admin.getOrderDateWise", "uses" => "LoginController@getOrderDateWise"]);
+        Route::get('/getSalesDateWise', ["as" => "admin.getSalesDateWise", "uses" => "LoginController@getSalesDateWise"]);
+
         Route::group(['prefix' => 'merchants'], function () {
             Route::get('/', ["as" => "admin.merchants.view", "uses" => "MerchantController@index"]);
             Route::any('/add-edit', ["as" => "admin.merchants.addEdit", "uses" => "MerchantController@addEdit"]);
@@ -26,6 +30,21 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/check-existing-phone', ['as' => 'checkExistingphone', 'uses' => 'MerchantController@checkExistingphone']);
             
         });
+
+        
+         Route::group(['prefix' => 'vendors'], function () {
+            Route::get('/', ["as" => "admin.vendors.view", "uses" => "VendorController@index"]);
+            Route::any('/add-edit', ["as" => "admin.vendors.addEdit", "uses" => "VendorController@addEdit"]);
+            Route::post('/save-update', ["as" => "admin.vendors.saveUpdate", "uses" => "VendorController@saveUpdate"]);
+            Route::any('/save-update-documents', ["as" => "admin.vendors.saveUpdateDocuments", "uses" => "VendorController@saveUpdateDocuments"]);
+            Route::any('/delete-document', ["as" => "admin.vendors.deleteDocument", "uses" => "VendorController@deleteDocument"]);
+            Route::any('/merchant-autocomplete', ["as" => "admin.vendors.merchantAutocomplete", "uses" => "VendorController@merchantAutocomplete"]);
+            Route::post('/check-existing-merchant', ["as" => "admin.vendors.checkExistingMerchant", "uses" => "VendorController@checkExistingMerchant"]);
+        });
+
+
+        
+
         Route::group(['prefix' => 'stores'], function () {
             Route::get('/', ["as" => "admin.stores.view", "uses" => "StoreController@index"]);
             Route::any('/check-store', ['as' => 'checkStoreAdmin', 'uses' => 'StoreController@checkStore']);
@@ -38,6 +57,13 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/delete-store-document', ["as" => "admin.stores.deleteStoreDoc", "uses" => "StoreController@deleteStoreDoc"]);
             Route::get('/get-zone-dropdown/{id?}', ["as" => "admin.stores.getZoneDropdown", "uses" => "StoreController@getZoneDropdown"]);
         });
+
+        Route::group(['prefix' => 'reports'], function () {
+            Route::get('/store-orders', ["as" => "admin.reports.view", "uses" => "ReportController@index"]);
+            Route::get('/getorders', ["as" => "admin.reports.getstoreorders", "uses" => "ReportController@getOrdersByStore"]);
+            Route::post('/export-store-orders', ["as" => "admin.reports.export", "uses" => "ReportController@exportStoreOrders"]);
+        });
+
         Route::group(['prefix' => 'analytics'], function () {
             Route::get('/by-category', ["as" => "admin.analytics.byCategory", "uses" => "AnalyticController@byCategory"]);
             Route::get('/by-date', ["as" => "admin.analytics.byDate", "uses" => "AnalyticController@byDate"]);
