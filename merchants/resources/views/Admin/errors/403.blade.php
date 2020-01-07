@@ -1,4 +1,5 @@
-@extends('Admin.errors.error-layout')
+@extends('Admin.layouts.default')
+
 @section('mystyles')
 	<style>
 		html, body {

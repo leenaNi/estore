@@ -1237,12 +1237,27 @@ class OrdersController extends Controller {
         }
     }
 
+    public function exportsamplecsv() {
+        
+        $order_data = [];
+        array_push($order_data, ['Order Id', 'Name', 'Email', 'Address', 'City', 'State', 'Country',
+            'Pincode', 'Product Name', 'Product Category', 'Product Variant', 'Product Qty', 'Product Price', 'Mobile No', 'Order Status',
+            'Payment Method', 'Payment Status', 'Order Status',
+            'Order Amt', 'Cod Charges',
+            'Gifting Charges', 'Reward Points Used',
+            'Shipping Amt',
+            'Coupon Discount', 'Voucher Discount', 'Final Amount', 'Order Comments', 'Order Date']);
+        $details = ['1','Stefen','stefen@gmail.com','Cecilia Chapman 711-2880 Nulla St. Mankato Mississippi 96522','Mystic Falls','Paris','London','203456','Veg Pizza','Pizza','','2','500','9878765678','','COD','Pending','','1000','25','0','0','0','0','0','1025','','30/04/1986'];
+        array_push($order_data, $details);
+        return Helper::getCsv($order_data, 'order-sample.csv', ',');
+    }
+
     public function export() {
         $orderIds = explode(",", Input::get('OrderIds'));
         if (Input::get('OrderIds')) {
-            $orders_data = Order::with('users', 'country', 'zone')->with('paymentmethod')->with('paymentstatus')->with('orderstatus')->whereIn("id", $orderIds)->orderBy("id", "desc")->get()->toArray();
+            $orders_data = Order::with('users', 'country', 'zone')->with('paymentmethod')->with('paymentstatus')->with('orderstatus')->where('store_id',Session::get('store_id'))->whereIn("id", $orderIds)->orderBy("id", "desc")->get()->toArray();
         } else {
-            $orders_data = Order::with('users', 'country', 'zone')->with('paymentmethod')->with('paymentstatus')->with('orderstatus')->where("order_status", '!=', 0)->orderBy("id", "desc")->get()->toArray();
+            $orders_data = Order::with('users', 'country', 'zone')->with('paymentmethod')->with('paymentstatus')->with('orderstatus')->where('store_id',Session::get('store_id'))->where("order_status", '!=', 0)->orderBy("id", "desc")->get()->toArray();
         }
 
         $orders = [];
@@ -1674,18 +1689,23 @@ class OrdersController extends Controller {
         $term = Input::get('term');
         $email = Input::get('email');
         if (!empty($term)) {
-            $result = User::where('user_type', 2)
+            $result = User::where(['user_type'=> 2,'store_id'=>Session::get('store_id')])
                     ->where("email", "like", "%$term%")
-                    ->orWhere("firstname", "like", "%$term%")
+                    ->where(function($q) use($term) {
+                        $q->orWhere("firstname", "like", "%$term%")
                     ->orWhere("lastname", "like", "%$term%")
-                    ->orWhere("telephone", "like", "%$term%")
+                    ->orWhere("telephone", "like", "%$term%");
+                    })
                     ->get(['id', 'firstname', 'lastname', 'telephone', 'email']);
         }
         if (!empty($email)) {
-            $result = User::where('user_type', 2)->where("email", "=", "$email")
-                    ->orWhere("firstname", "like", "%$email%")
-                    ->orWhere("lastname", "like", "%$email%")
-                    ->orWhere("telephone", "like", "%$email%")
+            $result = User::where(['user_type'=> 2,'store_id'=>Session::get('store_id'),'email'=> $email])
+                    ->where('store_id',Session::get('store_id'))
+                    ->where(function($q) use($term) {
+                        $q->orWhere("firstname", "like", "%$term%")
+                    ->orWhere("lastname", "like", "%$term%")
+                    ->orWhere("telephone", "like", "%$term%");
+                    })
                     ->get(['id', 'firstname', 'lastname', 'telephone', 'email']);
         }
 

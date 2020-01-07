@@ -2382,7 +2382,7 @@ class CheckoutController extends Controller {
     }
 
     function successMail($orderId, $firstName, $toEmail) {
-        $toEmails = 'bhavana@infiniteit.biz';
+        $toEmails = 'anita@infiniteit.biz';
         $tableContant = Helper::getEmailInvoice($orderId);
         $order = Order::find($orderId);
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
@@ -2393,7 +2393,8 @@ class CheckoutController extends Controller {
         $settings = Helper::getSettings();
         $webUrl = $_SERVER['SERVER_NAME'];
         if ($emailStatus == 1) {
-            $emailContent = EmailTemplate::where('id', 2)->select('content', 'subject')->get()->toArray();
+            $emailContent = EmailTemplate::where(['store_id'=>Session::get('store_id'),'url_key'=>'order-success'])->select('content', 'subject')->get()->toArray();
+            print_r($emailContent);
             $email_template = $emailContent[0]['content'];
             $subject = $emailContent[0]['subject'];
 

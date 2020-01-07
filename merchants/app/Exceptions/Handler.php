@@ -44,22 +44,15 @@ class Handler extends ExceptionHandler {
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
-
-        return parent::render($request, $e);
+        $statusCode = $e->getStatusCode();
+        if($statusCode==403)
+        {
+            return response()->view('Admin.errors.403');
+        }
+        else{
+           return parent::render($request, $e); 
+        }
     }
-
-//
-//    public function render($request, Exception $e) {
-//        // dd($request);
-////         $status = $e->getStatusCode();
-////         echo $status;
-//        if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-//            return response()->view('index');
-//        }
-//        // print_r($e);
-//        // dd($request);
-//        return parent::render($request, $e);
-//    }
 
     protected function unauthenticated($request, Exception $e) {
         //dd($request);
