@@ -2508,14 +2508,8 @@ foreach ($_POST as $a => $b) {
         Session::forget('usedCouponCode');
     }
 
-<<<<<<< HEAD
-    public function successMail($orderId, $firstName, $toEmail)
-    {
-        $toEmails = 'bhavana@infiniteit.biz';
-=======
     function successMail($orderId, $firstName, $toEmail) {
         $toEmails = 'anita@infiniteit.biz';
->>>>>>> 8fc0ad171598cde547e31797d33091d05cf7f48e
         $tableContant = Helper::getEmailInvoice($orderId);
         $order = Order::find($orderId);
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
