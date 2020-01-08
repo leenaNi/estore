@@ -295,7 +295,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any("/cancel-order-edit/{id}", ['as' => 'admin.orders.cancelOrderEdit', 'uses' => 'CancelOrderController@edit']);
             Route::any("/cancel-order-update", ['as' => 'admin.orders.cancelOrderUpdate', 'uses' => 'CancelOrderController@update']);
 
-
+            //Get order payments
+            Route::post('/get-payments', ['as' => 'admin.orders.getPayments', 'uses' => 'OrdersController@getPayments']);
             //for courier services
             Route::any("/get-e-courier", ['as' => 'admin.orders.getECourier', 'uses' => 'OrdersController@getECourier']);
         });

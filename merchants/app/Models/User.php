@@ -17,7 +17,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         EntrustUserTrait,
         CanResetPassword,
         Sortable;
-    protected $connection = 'mysql2';
+    protected $connection = 'mysql';
     protected $table = 'users';
     protected $fillable = ['first_name', 'last_name', 'company_name', 'address', 'contact_no', 'alternate_no', 'email', 'password', 'provider_id','status' ,'provider', 'user_name', 'user_type'];
     protected $hidden = ['password', 'remember_token'];

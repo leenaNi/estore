@@ -93,6 +93,7 @@
                                 <th>Email Id</th>
                                 <th>Mobile</th>
                                 <th>Date Created</th>
+                                <th>Credit</th>
                                 @if($setting->status ==1)
                                 <th>Loyalty Group</th>
                                 <th>Loyalty Point</th>
@@ -111,7 +112,7 @@
                                 <td>{{ $customer->email }}</td>
                                 <td>{{ $customer->telephone }}</td>
                                 <td>{{ date("d-M-Y",strtotime($customer->created_at)) }}</td>
-
+                                <td>{{ $customer->credit_amt }}</td>
                                 @if($setting->status ==1)
                                 <?php 
                                     $group=@$customer->userCashback->loyalty_group?@$customer->userCashback->loyalty_group:0;
