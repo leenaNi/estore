@@ -112,7 +112,10 @@
                                 <td>{{ $customer->email }}</td>
                                 <td>{{ $customer->telephone }}</td>
                                 <td>{{ date("d-M-Y",strtotime($customer->created_at)) }}</td>
-                                <td>{{ $customer->credit_amt }}</td>
+                                <td>
+                                    <a class="btn btn-default view-payments" data-toggle="tooltip" title="View payments" data-userId="{{$customer->id}}">
+                                        {{ number_format(($customer->credit_amt  * Session::get('currency_val')), 2) }}</a>
+                                </td>
                                 @if($setting->status ==1)
                                 <?php 
                                     $group=@$customer->userCashback->loyalty_group?@$customer->userCashback->loyalty_group:0;
@@ -127,11 +130,9 @@
                                     @endif
                                 </td>
                                 <td>
-
                                     <a href="{!! route('admin.customers.edit',['id'=>$customer->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn-plen btn btnNo-margn-padd" ></i></a>               
                                     <a href="{!! route('admin.customers.delete',['id'=>$customer->id]) !!}" onclick="return confirm('Are you sure you want to delete this customer?')" class="" ui-toggle-class="" data-toggle="tooltip" title="Delete"> <i class="fa fa-trash btn-plen btn"></i></a>
                                     <a href="{!! route('admin.orders.view',['search'=> $customer->firstname.' '.$customer->lastname]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="View Order"> <i class="fa fa-eye btn-plen btn"></i></a>
-
                                 </td>
                             </tr>
                             @endforeach
@@ -147,50 +148,54 @@
                         echo $customers->render();
                     }
                     ?> 
-
+                <form class="payment-form" method="post">
+                    <input type="hidden" name="user_id"/>
+                </form>
                 </div>
             </div><!-- /.box -->
         </div><!-- /.col -->
-
     </div> 
 </section>
-
 @stop
 
 @section('myscripts')
 <script src="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <script type="text/javascript">
-                                        $(function () {
+$(function () {
+    // var start = moment().subtract(29, 'days');
+    // var end = moment();
+    // function cb(start, end) {
+    //      $('#reportrange span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+    // }
+    // $('.datefromto').daterangepicker({
+    //     startDate: start,
+    //     endDate: end,
+    //     ranges: {
+    //         'Today': [moment(), moment()],
+    //         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    //         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    //         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    //         'This Month': [moment().startOf('month'), moment().endOf('month')],
+    //         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    //     }
+    // }, function () {
+    // });
+    // //cb(start, end);
+    // $('.datefromto').on('apply.daterangepicker', function (ev, picker) {
+    //     $(this).val(picker.startDate.format('DD/MM/YYYY') + '-' + picker.endDate.format('DD/MM/YYYY'));
+    // });
 
-                                            var start = moment().subtract(29, 'days');
-                                            var end = moment();
+    // $('.datefromto').on('cancel.daterangepicker', function (ev, picker) {
+    //     $(this).val('');
+    // });
 
-                                            // function cb(start, end) {
-                                            //      $('#reportrange span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-                                            // }
-
-                                            $('.datefromto').daterangepicker({
-                                                startDate: start,
-                                                endDate: end,
-                                                ranges: {
-                                                    'Today': [moment(), moment()],
-                                                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                                                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                                                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                                                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                                                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                                                }
-                                            }, function () {
-                                            });
-
-                                            //cb(start, end);
-                                            $('.datefromto').on('apply.daterangepicker', function (ev, picker) {
-                                                $(this).val(picker.startDate.format('DD/MM/YYYY') + '-' + picker.endDate.format('DD/MM/YYYY'));
-                                            });
-
-                                            $('.datefromto').on('cancel.daterangepicker', function (ev, picker) {
-                                                $(this).val('');
-                                            });
-                                        });
+    $('.view-payments').click(function() {
+        var customerId = $(this).attr('data-userId');
+        $('input[name=user_id]').val(customerId);
+        $('form.payment-form').attr('action', "{{route('admin.customers.payment.history')}}");
+        $('form.payment-form').submit();
+    });
+    
+});
 </script>
 @stop 

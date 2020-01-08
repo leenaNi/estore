@@ -1665,14 +1665,14 @@ class OrdersController extends Controller
         $term = Input::get('term');
         $email = Input::get('email');
         if (!empty($term)) {
-            $result = User::where(['user_type'=> 2,'store_id'=>Session::get('store_id')])
+            $result = User::where(['user_type'=> 2, 'store_id'=>Session::get('store_id')])
                     ->where("email", "like", "%$term%")
                     ->where(function($q) use($term) {
                         $q->orWhere("firstname", "like", "%$term%")
                     ->orWhere("lastname", "like", "%$term%")
                     ->orWhere("telephone", "like", "%$term%");
                     })
-                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email']);
+                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email', 'credit_amt']);
         }
         if (!empty($email)) {
             $result = User::where(['user_type'=> 2,'store_id'=>Session::get('store_id'),'email'=> $email])
@@ -1682,7 +1682,7 @@ class OrdersController extends Controller
                     ->orWhere("lastname", "like", "%$term%")
                     ->orWhere("telephone", "like", "%$term%");
                     })
-                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email']);
+                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email', 'credit_amt']);
         }
 
         $data = [];
@@ -1696,6 +1696,7 @@ class OrdersController extends Controller
             $data[$k]['lastname'] = $res->lastname;
             $data[$k]['telephone'] = $res->telephone;
             $data[$k]['email'] = $res->email;
+            $data[$k]['credit'] = $res->credit_amt;
         }
         echo json_encode($data);
     }
@@ -2510,7 +2511,6 @@ class OrdersController extends Controller
 
     public function waybill($id = null)
     {
-
         $allids = $id;
         $storeName = $this->jsonString['storeName'];
         $storeId = $this->jsonString['store_id'];
@@ -2809,21 +2809,50 @@ class OrdersController extends Controller
     public function getPayments() {
         $orderId = Input::get('orderId');
         if($orderId && $orderId != null) {
-            $order = Order::where('id', $orderId)->select('id')->first();
+            $order = Order::where('id', $orderId)->select('id', 'pay_amt', 'amt_paid')->first();
             if($order && $order != null) {
                 $payments = PaymentHistory::where('order_id', $orderId)->get();
+                $remainingAmt = ($order->pay_amt)-($order->amt_paid);
                 $str = '';
-                if($payments && count($payments) > 0){
+                if($payments && count($payments) > 0) {
                     foreach($payments as $payment){
-                        $str .='<tr><td>'.$payment->amount.'</td><td>'.date('d-M-Y',strtotime($payment->created_at)).'</td></tr>'; 
+                        $str .='<tr><td>'.date('d-M-Y',strtotime($payment->created_at)).'</td><td class="text-right"><span class="currency-sym"></span>'.number_format(($payment->pay_amount  * Session::get('currency_val')), 2).'</td></tr>'; 
                     }
                 } else {
                     $str .='<tr><td colspan="2">No records found!</td></tr>';
                 }
-                return ['status' => 1, 'payments' => $payments];
+                return ['status' => 1, 'payments' => $str, 'remainingAmt' => $remainingAmt];
             } else {
                 return ['status' => 0, 'msg' => 'Incorrect order id'];
             }
+        } else {
+            return ['status' => 0, 'msg' => 'Incorrect order id'];
+        }
+    }
+
+    public function addNewOrderPayment() {
+        // dd(Input::all());
+        $paymentAmt = Input::get('payAmt');
+        $orderId = Input::get('orderId');
+        $orderS = Order::where('id', $orderId)->first();
+        if($orderS && $orderS != NULL){
+            // USER LEVEL CREDIT UPDATE
+            $userinfo = User::where('id', $orderS->user_id)->first();
+            $userinfo->credit_amt = $userinfo->credit_amt - $paymentAmt;
+            $userinfo->update();
+            //UPDATE ORDER paid amt
+            $orderS->amt_paid = $orderS->amt_paid + $paymentAmt;
+            $orderS->save();
+            if($orderS->amt_paid == $orderS->pay_amt){
+                $orderS->payment_status = 4;
+                $orderS->update();
+            }
+            $paymentHistory = PaymentHistory::create();
+            $paymentHistory->order_id = $orderS->id;
+            $paymentHistory->pay_amount = $paymentAmt;
+            $paymentHistory->added_by = Session::get('loggedinAdminId');
+            $paymentHistory->save();
+            return ['status' => 1, 'msg' => 'Payment added successfully'];
         } else {
             return ['status' => 0, 'msg' => 'Incorrect order id'];
         }

@@ -7,6 +7,17 @@
     .multiselect-container {
         width: 100% !important;
     }
+    .brbottom1{
+        margin-bottom: 10px;
+        padding: 10px;
+        /* border-bottom: 1px solid #CCC; */
+    }
+    .success{
+        color: #3c763d;
+    }
+    .error{
+        color: #d73925;
+    }
 </style>
 @stop
 
@@ -152,11 +163,7 @@
                         </select>
                     </form> 
                 </div>
-
-
-
                 <div class="dividerhr"></div>
-
                 <div style="clear: both"></div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table orderTable table-striped table-hover tableVaglignMiddle">
@@ -196,7 +203,6 @@
                                 <td><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /></td>
                                 <td><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
                                 <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
-
                                 <td>{{ @$order->users->firstname }} {{ @$order->users->lastname }} </td>
 <!--                                <td>{{ @$order->users->email }}  </td>-->
                                 <td>{{ @$order->users->telephone }}</td>
@@ -280,12 +286,9 @@
                         </tbody>
                     </table>
                     <div class="box-footer clearfix">
-
-
                         <?php
                         echo $orders->appends(Input::except('page'))->render();
                         ?>
-
                         <?php //}
                         ?>
                     </div>
@@ -367,17 +370,38 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Add Payment for <span class="payment-order-id"></span></h4>
+                        <h4 class="modal-title" id="myModalLabel">Add Payment for order ID: <span class="payment-order-id"></span></h4>
                     </div>
                     <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="control-label"><b>Pending Amount:</b> <span class="currency-sym"></span><span class="remaining-amt"></span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 payment-msg">
+                            </div>
+                        </div>
+                        <div class="clear-fix"></div>
+                        <div class="row brbottom1">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Enter amount" name="pay_amt" value="" required />
+                                    <input type="hidden" name="remaining_amt" required/>
+                                    <input type="hidden" name="order_id" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-6"><button class="btn btn-primary add-new-payment">Submit</button></div>
+                        </div>
+                        <div class="clear-fix"></div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th>Amount Paid</th>
                                                 <th>Date</th>
+                                                <th>Amount Paid</th>
                                             </tr>
                                         </thead>
                                         <tbody class="payment-details"></tbody>
@@ -761,10 +785,48 @@ $(document).ready(function() {
         $('tbody.payment-details').html('');
         $.post("{{ route('admin.orders.getPayments') }}", {orderId: orderId}, function (res) {
             if(res.status) {
-                $('tbody.payment-details').html(res.payment);
+                $('tbody.payment-details').html(res.payments);
+                $('input[name=remaining_amt]').val(res.remainingAmt);
+                $('input[name=order_id]').val(orderId);
+                $('.remaining-amt').text(res.remainingAmt);
                 $('#add-payment').modal('show');
             }
         });
+    });
+    $('input[name=pay_amt]').blur(function(){
+        var payAmt = parseInt($('input[name=pay_amt]').val());
+        var remainingAmt = parseInt($('input[name=remaining_amt]').val());
+        var orderId = parseInt($('input[name=order_id]').val());
+        if(payAmt > remainingAmt){
+            alert('Amount can not be greater than total payable amount!');
+            $('input[name=pay_amt]').val('');
+        }
+    });
+    $('.add-new-payment').click(function () {
+        var payAmt = parseInt($('input[name=pay_amt]').val());
+        var remainingAmt = parseInt($('input[name=remaining_amt]').val());
+        var orderId = parseInt($('input[name=order_id]').val());
+        if(payAmt > remainingAmt){
+            alert('Amount can not be greater than total payable amount!');
+        } else {
+            $.post("{{ route('admin.orders.addNewOrderPayment') }}", {orderId: orderId, payAmt: payAmt}, function (res) {
+                if(res.status) {
+                    $('.payment-msg').addClass('brbottom1').html('<div class="success">' + res.msg + '</div>');
+                    $.post("{{ route('admin.orders.getPayments') }}", {orderId: orderId}, function (res) {
+                    if(res.status) {
+                        $('input[name=pay_amt]').val('');
+                        $('tbody.payment-details').html(res.payments);
+                        $('input[name=remaining_amt]').val(res.remainingAmt);
+                        $('input[name=order_id]').val(orderId);
+                        $('.remaining-amt').text(res.remainingAmt);
+                        // $('#add-payment').modal('show');
+                    }
+                });
+                } else {
+                    $('.payment-msg').html('<div class="error">' + res.msg + '</div>');
+                }
+            });
+        }
     });
 
 });

@@ -172,6 +172,15 @@
                         <address class="pull-left col-md-6" class="shippedAdd">
 
                         </address>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="">
+                                    <h4><b>Customer Credit<small>(Till Date)</small>: </b> 
+                                        <span class="currency-sym"></span><span class="customer-credit"></span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
                         <div class="pull-right">
                             <button  class="btn sbtn btn-primary margin addCourse ">Add New Product</button>
                         </div>
@@ -429,13 +438,14 @@
         $(".subtotal").text(prodPrice);
     }
 
-    function setValuesToInpt(custid, firstname, lastname, telephone, emailid) {
+    function setValuesToInpt(custid, firstname, lastname, telephone, emailid, credit) {
         $("input[name='s_phone']").val(telephone);
         $("input[name='customer_id']").val(custid);
         $("input[name='cust_firstname']").val(firstname);
         $("input[name='cust_lastname']").val(lastname);
         $("input[name='cust_telephone']").val(telephone);
         $("input[name='email_id']").val(emailid);
+        $(".customer-credit").html(credit);
         $(".customerEmail").css("border-color", "");
         $(".inpt").prop('readonly', false);
     }
@@ -513,7 +523,7 @@
         minLength: 1,
         select: function (event, ui) {
             ele = event.target;
-            setValuesToInpt(ui.item.id, ui.item.firstname, ui.item.lastname, ui.item.telephone, ui.item.email);
+            setValuesToInpt(ui.item.id, ui.item.firstname, ui.item.lastname, ui.item.telephone, ui.item.email , ui.item.credit);
             $(".custdata").show();
 
         }
@@ -531,7 +541,7 @@
             resp = JSON.parse(res);
             chkLengh = Object.keys(resp).length;
             if (chkLengh == 1) {
-                setValuesToInpt(resp[0].id, resp[0].firstname, resp[0].lastname, resp[0].telephone, resp[0].email);
+                setValuesToInpt(resp[0].id, resp[0].firstname, resp[0].lastname, resp[0].telephone, resp[0].email, resp[0].credit);
             } else if (chkLengh == 0) {
                 $(".inpt").removeAttr('readonly');
                 $(".inpt").val('');
