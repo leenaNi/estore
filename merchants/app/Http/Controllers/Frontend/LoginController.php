@@ -108,7 +108,7 @@ class LoginController extends Controller {
         return view($viewname, $data);
     }
 
-    public function login() {
+    public function login() { 
 
         $data = [];
         if (Session::get('loggedin_user_id')) {

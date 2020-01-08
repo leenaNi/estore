@@ -257,6 +257,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/order-invoice/{OrderIds?}', ['as' => 'admin.orders.invoice', 'uses' => 'OrdersController@invoice']);
             Route::post('/order-invoice-print', ['as' => 'admin.orders.invoice.print', 'uses' => 'OrdersController@setPrintInvoice']);
             Route::any('/order-export', ['as' => 'admin.orders.export', 'uses' => 'OrdersController@export']);
+            Route::any('/order-sample-export', ['as' => 'admin.orders.sampleexport', 'uses' => 'OrdersController@exportsamplecsv']);
             Route::post('/order-update-payment', ['as' => 'admin.orders.update.payment', 'uses' => 'OrdersController@updatePaymentStatus']);
             Route::post('/order-update-status', ['as' => 'admin.orders.update.status', 'uses' => 'OrdersController@updateOrderStatus']);
             Route::post('/order-update-return-quantity', ['as' => 'admin.orders.update.return', 'uses' => 'OrdersController@updateRetutnQty']);

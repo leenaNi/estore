@@ -6,7 +6,7 @@
 <!-- Bootstrap 3.3.5 -->
 <link rel="stylesheet" href="{{ Config('constants.adminBootstrapCssPath').'/bootstrap.min.css' }}">
 <!-- Font Awesome -->
-<link rel="stylesheet" href="{{ Config('constants.adminDistCssPath').'/font-awesome.min.css' }}"><!-- <link rel="stylesheet" href="{{ asset('public/Admin/dist/css/sanfrancisco-font.css') }}"> -->
+<link rel="stylesheet" href="{{ Config('constants.adminDistCssPath').'/font-awesome.min.css' }}">
 <!-- Ionicons -->
 <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 <!-- jvectormap -->
@@ -49,8 +49,7 @@ Session::put('storelogo', $data->logo);
                     <div class="col-md-12 col-sm-12 col-xs-12 mobilepopup-chooselogo"><div class="form-group">
                             <div class="choosebtnbox text-center">
                                 <input type="file" class="custom-file-input chooselogottext" id="logoF" name="logo_img" >
-                            </div><!-- 
-                  <input type="file" class="form-control" id="logoF" name="logo_img" class="form-control" /> -->
+                            </div>
                             <span id="error-logo" class="text-danger"></span>
                         </div></div>      
                     <div class="col-md-10 col-sm-12 col-xs-12 mobilepopup-chooselogo">

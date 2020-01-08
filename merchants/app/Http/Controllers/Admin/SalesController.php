@@ -385,17 +385,7 @@ class SalesController extends Controller {
 
     public function bycustomer() {
 
-//       $where = ['user_type' => '2'];
-//        if (!empty(Input::get('search_name'))) {
-//            $where['users.firstname'] = Input::get('search_name');
-//        }
-//        if (!empty(Input::get('search_email'))) {
-//           $where['users.email'] = Input::get('search_email');
-//        }
-//        if (!empty(Input::get('search_number'))) {
-//            $where['users.telephone'] = Input::get('search_number');
-//        }
-        $users=User::with("userCashback")->where('user_type',2);
+        $users=User::with("userCashback")->where('user_type',2)->where('store_id',Session::get('store_id'));
          if (!empty(Input::get('search_name'))) {
              $uname=Input::get('search_name');
              $users=$users->where('firstname',"like","$uname%");
@@ -406,7 +396,6 @@ class SalesController extends Controller {
           if (!empty(Input::get('search_number'))) {
              $users=$users->where('telephone',Input::get('search_number'));
         }
-      //  $users = User::where($where)->select('id', 'firstname', 'lastname', 'email', 'telephone', 'total_purchase_till_now', 'cashback','user_type')->orderBy("id", "desc"); 
         if(!empty(Input::get("dataSearch"))){
             
             $users=$users->get();
