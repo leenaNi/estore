@@ -4,57 +4,53 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
+use App\Models\AdditionalCharge;
 use App\Models\Address;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Coupon;
+use App\Models\Courier;
+use App\Models\CurierHistory;
+use App\Models\EmailTemplate;
 use App\Models\Flags;
+use App\Models\GeneralSetting;
+use App\Models\HasCourier;
 use App\Models\HasProducts;
 use App\Models\Order;
 use App\Models\OrderFlagHistory;
 use App\Models\OrderReturnCashbackHistory;
-use App\Models\EmailTemplate;
 use App\Models\OrderReturnStatus;
 use App\Models\OrderStatus;
 use App\Models\OrderStatusHistory;
+use App\Models\PaymentHistory;
 use App\Models\PaymentMethod;
 use App\Models\PaymentStatus;
 use App\Models\Product;
 use App\Models\ReturnOrder;
-use App\Models\User;
-use App\Models\CurierHistory;
 use App\Models\StaticPage;
-use App\Models\HasCurrency;
+use App\Models\User;
 use App\Models\Zone;
-use App\Models\Courier;
-use App\Models\HasCourier;
-use App\Models\AdditionalCharge;
-use App\Models\GeneralSetting;
+use App\Traits\Admin\OrdersTrait;
 use Cart;
 use Config;
-use DB;
-use Input;
-use Mail;
-use Session;
-use Hash;
 use Crypt;
-use App\Traits\Admin\OrdersTrait;
-use Form;
-use Request;
-use DateTime;
-use App\Models\MallProducts;
-use http\Client;
+use DB;
+use Hash;
+use Input;
+use Session;
 
-class OrdersController extends Controller {
+class OrdersController extends Controller
+{
 
     use OrdersTrait;
 
-    public function index() {
+    public function index()
+    {
         $jsonString = Helper::getSettings();
 
 //      $data=  DB::table('has_industries')->join("general_setting as g",'g.id','=','has_industries.general_setting_id')
-//             ->join("categories",'has_industries1.industry_id','=','categories.id')
-//              ->select('g.id','g.name','g.is_active','g.is_question','g.question_category_id','categories.category')->get();
+        //             ->join("categories",'has_industries1.industry_id','=','categories.id')
+        //              ->select('g.id','g.name','g.is_active','g.is_question','g.question_category_id','categories.category')->get();
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
@@ -97,9 +93,9 @@ class OrdersController extends Controller {
             $orders = $orders->whereBetween('orders.created_at', $dates);
         }
         /* if (!empty(Input::get('dateto'))) {
-          $date = date("Y-m-d", strtotime(Input::get('dateto')));
-          $orders = $orders->where('created_at', '<=', $date);
-          } */
+        $date = date("Y-m-d", strtotime(Input::get('dateto')));
+        $orders = $orders->where('created_at', '<=', $date);
+        } */
         if (!empty(Input::get('searchFlag'))) {
             // $chk = Flags::find(Input::get('searchFlag'))->flag;
             $chk = Flags::find(Input::get('searchFlag'))->flag;
@@ -131,13 +127,15 @@ class OrdersController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function add() {
+    public function add()
+    {
         $order = new Order();
         $action = route("admin.order.save");
         return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'products', 'action'));
     }
 
-    public function edit() {
+    public function edit()
+    {
         Session::forget("discAmt");
         Session::forget('voucherUsedAmt');
         Session::forget('voucherAmount');
@@ -197,13 +195,12 @@ class OrdersController extends Controller {
             $additional = json_decode($order->additional_charge, true);
             $prodTab = 'products';
             $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')
-                            ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
+                ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
 
-           
             $products = $prods;
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
-            // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users', 
+            // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users',
             $viewname = Config('constants.adminOrderView') . '.addEdit';
             $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'coupon' => $coupon, 'coupons' => $coupons, 'flags' => $flag_status, 'courier' => $courier_status, 'additional' => $additional];
             return Helper::returnView($viewname, $data);
@@ -218,7 +215,8 @@ class OrdersController extends Controller {
         }
     }
 
-    public function save() {
+    public function save()
+    {
         //dd(Input::get('cartdata'));
         // if (Input::get('ordereditCal') == 1) {
         if (!empty(Input::get('cartdata'))) {
@@ -251,7 +249,6 @@ class OrdersController extends Controller {
                     $prd->update();
                 }
             }
-
 
             $cartdata = Input::get('cartdata');
 
@@ -295,7 +292,7 @@ class OrdersController extends Controller {
                 'additional_charge' => $orderUpdateCart->additional_charge,
                 'user_id' => Session::get('admin_id'),
                 'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
-                'updated_at' => \Carbon\Carbon::now()->toDateTimeString()
+                'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
             ));
 
             $arrExistingCart = [];
@@ -385,7 +382,7 @@ class OrdersController extends Controller {
                     $cart_ids[$cart->id]["amt_after_discount"] = $cart->options->discountedAmount;
                     $prd->stock = $prd->stock - $cart->qty;
                     $prd->update();
-                } if ($cart->options->combos) {
+                }if ($cart->options->combos) {
                     $sub_prd_ids = [];
                     foreach ($cart->options->combos as $key => $val) {
 
@@ -401,7 +398,7 @@ class OrdersController extends Controller {
                         }
                     }
                     $cart_ids[$cart->id]["sub_prod_id"] = json_encode($sub_prd_ids);
-                } if ($checkPrd->prod_type == 1) {
+                }if ($checkPrd->prod_type == 1) {
                     $prd = Product::find($cart->id);
 
                     $proddetails = [];
@@ -427,7 +424,6 @@ class OrdersController extends Controller {
                 //$orderUpdateCart->products()->attach($cart->id, $cart_ids[$cart->id]);
             }
 
-
             Cart::instance("shopping")->destroy();
             Session::forget('orderId');
             Session::forget('usedCouponId');
@@ -438,7 +434,7 @@ class OrdersController extends Controller {
             $orderStatus = $order->order_status;
             $updateOrder = $order->fill(Input::except('not_in_use'))->save();
             HasProducts::where("order_id", Input::get('id'))->update(["order_status" => $order->order_status]);
-            if (Input::get('order_status') && $updateOrder == TRUE && $orderStatus != Input::get('order_status')) {
+            if (Input::get('order_status') && $updateOrder == true && $orderStatus != Input::get('order_status')) {
                 OrderStatusHistory::create([
                     'order_id' => Input::get('id'),
                     'status_id' => Input::get('order_status'),
@@ -453,11 +449,13 @@ class OrdersController extends Controller {
         return redirect()->route('admin.orders.view');
     }
 
-    public function addCartForCoupon() {
+    public function addCartForCoupon()
+    {
         $cartdata = Input::get('cartdata');
     }
 
-    public function mallOrderSave() {
+    public function mallOrderSave()
+    {
 
         $orders = HasProducts::find(Input::get("order_id"));
         if (Input::get("order_status")) {
@@ -467,7 +465,8 @@ class OrdersController extends Controller {
         return redirect()->route('admin.orders.view');
     }
 
-    public function updateRetutnQty() {
+    public function updateRetutnQty()
+    {
 
         $orderEdit = Order::find(Input::get('id'));
         $cnt = 0;
@@ -479,8 +478,8 @@ class OrdersController extends Controller {
                 $mainProd->stock = $mainProd->stock + Input::get("qty_returned")[$row->id];
                 $mainProd->update();
                 DB::table('has_products')
-                        ->where('id', $key)
-                        ->update(['price' => $mainProd->price * $actQty, 'qty' => $actQty, 'qty_returned' => Input::get("qty_returned")[$row->id]]);
+                    ->where('id', $key)
+                    ->update(['price' => $mainProd->price * $actQty, 'qty' => $actQty, 'qty_returned' => Input::get("qty_returned")[$row->id]]);
                 $orderEdit->order_amt = $orderEdit->order_amt - ($mainProd->price * Input::get("qty_returned")[$row->id]);
                 $orderEdit->pay_amt = $orderEdit->pay_amt - ($mainProd->price * Input::get("qty_returned")[$row->id]);
 
@@ -542,7 +541,8 @@ class OrdersController extends Controller {
         return redirect()->route('admin.orders.view');
     }
 
-    public function revertReturnQty() {
+    public function revertReturnQty()
+    {
         $orderEdit = Order::find(Input::get('id'));
         $newval = 0;
         foreach (Input::get("pid") as $key => $val) {
@@ -552,8 +552,8 @@ class OrdersController extends Controller {
             $mainProd->stock = $mainProd->stock - Input::get("qty_returned")[$row->id];
             $mainProd->update();
             DB::table('has_products')
-                    ->where('id', $key)
-                    ->update(['price' => $mainProd->price * $actQty, 'qty' => $actQty, 'qty_returned' => 0]);
+                ->where('id', $key)
+                ->update(['price' => $mainProd->price * $actQty, 'qty' => $actQty, 'qty_returned' => 0]);
             $orderEdit->order_amt = $orderEdit->order_amt + ($mainProd->price * Input::get("qty_returned")[$row->id]);
             $orderEdit->pay_amt = $orderEdit->pay_amt + ($mainProd->price * Input::get("qty_returned")[$row->id]);
             $orderEdit->update();
@@ -561,7 +561,8 @@ class OrdersController extends Controller {
         return redirect()->route('admin.orders.view');
     }
 
-    public function delete() {
+    public function delete()
+    {
         $order = Order::find(Input::get('id'));
         if ($order->order_status == 1) {
             $cartContent = json_decode($order->cart);
@@ -588,7 +589,8 @@ class OrdersController extends Controller {
         }
     }
 
-    public function invoice($id = null) {
+    public function invoice($id = null)
+    {
         //echo "<pre>";
         $allids = $id;
         if ($id == null) {
@@ -616,16 +618,17 @@ class OrdersController extends Controller {
         $addcharge_status = $addCharge->status;
         $additional = json_decode($order->additional_charge, true);
         //dd($additional);
-//          print_r(json_decode($orders));
-//            die;
-//        dd($orders);
+        //          print_r(json_decode($orders));
+        //            die;
+        //        dd($orders);
         // return View(Config('constants.adminOrderView') . '.invoice', compact('orders', 'allids'));
         $viewname = Config('constants.adminOrderView') . '.invoice';
         $data = ['orders' => $orders, 'allids' => $allids, 'additional' => $additional, 'chrges' => $addCharge, 'jsonString' => $this->jsonString];
         return Helper::returnView($viewname, $data);
     }
 
-    public function setPrintInvoice() {
+    public function setPrintInvoice()
+    {
 
         $allorders = Input::get("AllOrders");
         $orders = explode(",", $allorders);
@@ -637,7 +640,8 @@ class OrdersController extends Controller {
         }
     }
 
-    public function updateOrderStatus() {
+    public function updateOrderStatus()
+    {
         //NO Mail for undelivered order
         $notify = 0;
         $comment = Input::get('comment');
@@ -647,7 +651,7 @@ class OrdersController extends Controller {
         $notify = is_null(Input::get('notify')) ? 0 : Input::get('notify');
         foreach ($orderIds as $id) {
             if ($id > 0) {
-                // send mail after updating order status                
+                // send mail after updating order status
                 $orderUser = Order::find($id);
                 $orderUser->order_status = $orderStatus;
                 $orderUser->remark = $remark;
@@ -655,68 +659,55 @@ class OrdersController extends Controller {
                 $statusHistory = ['order_id' => $id, 'status_id' => $orderStatus, 'remark' => $remark, 'notify' => $notify, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
                 OrderStatusHistory::insert($statusHistory);
                 $orderid = $orderUser->id;
-
-//                $path = Config("constants.adminStorePath") . "/storeSetting.json";
-//                $str = file_get_contents($path);
+                // $path = Config("constants.adminStorePath") . "/storeSetting.json";
+                // $str = file_get_contents($path);
                 $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
-//                $settings = json_decode($str, true);
+                // $settings = json_decode($str, true);
                 $settings = Helper::getSettings();
                 $webUrl = $_SERVER['SERVER_NAME'];
-
                 if ($orderStatus == 8) {
-                    //delay order                    
+                    //delay order
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
                     //$data = array('orderUser' => $orderUser);
                     if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
-                        $emailContent = EmailTemplate::where('id', 12)->select('content', 'subject')->get()->toArray();
+                        $emailContent = EmailTemplate::where('url_key', 'delay-in-shipment')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
-
                         $replace = array("[firstName]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[orderId]");
                         $replacewith = array($name, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $orderid);
-
                         $email_templates = str_replace($replace, $replacewith, $email_template);
                         $data1 = ['email_template' => $email_templates];
                         Helper::sendMyEmail(Config('constants.adminEmails') . '.regret_email', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
                     }
-
-
                     $msgS = "Hey, this is to inform you that we're facing a slight delay with your order & we're doing our best to get it to you as soon as possible. Have a soulful day!";
                     echo Helper::sendSMS($orderUser->users['telephone'], $msgS);
                 } elseif ($orderStatus == 9) {
-                    //Partially shipped mail 
+                    //Partially shipped mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
                     if ($notify == 1 && $this->getEmailStatus == 1) {
-
-                        $emailContent = EmailTemplate::where('id', 4)->select('content', 'subject')->get()->toArray();
+                        $emailContent = EmailTemplate::where('url_key', 'partial-shipping')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
                         $tableContant = Helper::getEmailInvoice($orderid);
-
                         $replace = array("[firstName]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[orderId]", "[invoice]");
                         $replacewith = array($name, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $orderid, $tableContant);
-
                         $email_templates = str_replace($replace, $replacewith, $email_template);
                         $data1 = ['email_template' => $email_templates];
                         Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
                     }
                 } elseif ($orderStatus == 7) {
-
                     //Undelivered mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
                     if ($notify == 1 && $this->getEmailStatus == 1) {
-
-                        $emailContent = EmailTemplate::where('id', 5)->select('content', 'subject')->get()->toArray();
+                        $emailContent = EmailTemplate::where('url_key', 'undelivered')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
                         $tableContant = Helper::getEmailInvoice($orderid);
-
                         $replace = array("[firstName]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[orderId]", "[invoice]");
                         $replacewith = array($name, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $orderid, $tableContant);
-
                         $email_templates = str_replace($replace, $replacewith, $email_template);
                         $data1 = ['email_template' => $email_templates];
                         Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
@@ -727,41 +718,31 @@ class OrdersController extends Controller {
                     $rewardPtUpdate->cashback_earned = 0;
                     $rewardPtUpdate->cashback_credited = 0;
                     $rewardPtUpdate->Update();
-
-
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
                     if ($notify == 1 && $this->getEmailStatus == 1) {
-
-                        $emailContent = EmailTemplate::where('id', 6)->select('content', 'subject')->get()->toArray();
+                        $emailContent = EmailTemplate::where('url_key', 'return-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
                         $tableContant = Helper::getEmailInvoice($orderid);
-
                         $replace = array("[firstName]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[orderId]", "[invoice]");
                         $replacewith = array($name, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $orderid, $tableContant);
-
                         $email_templates = str_replace($replace, $replacewith, $email_template);
                         $data1 = ['email_template' => $email_templates];
                         Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
                     }
-
                     $this->updateQty($id);
                 } elseif ($orderStatus == 5) {
                     // Exchanged mail
-
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
                     if ($notify == 1 && $this->getEmailStatus == 1) {
-
-                        $emailContent = EmailTemplate::where('id', 7)->select('content', 'subject')->get()->toArray();
+                        $emailContent = EmailTemplate::where('url_key', 'exchange-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
                         $tableContant = Helper::getEmailInvoice($orderid);
-
                         $replace = array("[firstName]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[orderId]", "[invoice]");
                         $replacewith = array($name, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $orderid, $tableContant);
-
                         $email_templates = str_replace($replace, $replacewith, $email_template);
                         $data1 = ['email_template' => $email_templates];
                         Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
@@ -772,7 +753,6 @@ class OrdersController extends Controller {
                         $userUsedCashback = User::find($orderUser->user_id);
                         $userUsedCashback->cashback = $userUsedCashback->cashback + $orderUser->cashback_used;
                         $userUsedCashback->update();
-
                         $odUpdate = Order::find($id);
                         $odUpdate->cashback_used = 0;
                         $odUpdate->update();
@@ -781,15 +761,12 @@ class OrdersController extends Controller {
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
                     if ($notify == 1 && $this->getEmailStatus == 1) {
-
-                        $emailContent = EmailTemplate::where('id', 8)->select('content', 'subject')->get()->toArray();
+                        $emailContent = EmailTemplate::where('url_key', 'cancel-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
                         $tableContant = Helper::getEmailInvoice($orderid);
-
                         $replace = array("[firstName]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[orderId]", "[invoice]");
                         $replacewith = array($name, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $orderid, $tableContant);
-
                         $email_templates = str_replace($replace, $replacewith, $email_template);
                         $data1 = ['email_template' => $email_templates];
                         Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
@@ -797,26 +774,21 @@ class OrdersController extends Controller {
                     $this->updateQty($id);
                 } elseif ($orderStatus == 10) {
                     //Refunded mail
-
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
                     if ($notify == 1 && $this->getEmailStatus == 1) {
-
-                        $emailContent = EmailTemplate::where('id', 9)->select('content', 'subject')->get()->toArray();
+                        $emailContent = EmailTemplate::where('url_key', 'refund-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
                         $tableContant = Helper::getEmailInvoice($orderid);
-
                         $replace = array("[firstName]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[orderId]", "[invoice]");
                         $replacewith = array($name, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $orderid, $tableContant);
-
                         $email_templates = str_replace($replace, $replacewith, $email_template);
                         $data1 = ['email_template' => $email_templates];
                         Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
                     }
                 } elseif ($orderStatus == 3) {
                     /* Order history */
-
                     if ($orderUser->users['telephone']) {
                         $msgOrderSucc = "Your order from " . $settings['storeName'] . " with id " . $orderid . " is delivered successfully. Happy Shopping!";
                         Helper::sendsms($orderUser->users['telephone'], $msgOrderSucc, $orderUser->users['country_code']);
@@ -825,12 +797,10 @@ class OrdersController extends Controller {
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
                     if ($notify == 1 && $this->getEmailStatus == 1) {
-
-                        $emailContent = EmailTemplate::where('id', 10)->select('content', 'subject')->get()->toArray();
+                        $emailContent = EmailTemplate::where('url_key', 'deliver-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
                         $tableContant = Helper::getEmailInvoice($orderid);
-
                         $replace = array("[firstName]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[orderId]", "[invoice]");
                         $replacewith = array($name, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $orderid, $tableContant);
 
@@ -854,25 +824,28 @@ class OrdersController extends Controller {
                 Session::flash("message", "Order status updated successfully.");
             }
         }
+        if(Input::get('responseType') && Input::get('responseType') == 'json'){
+            return ['status' => 1, 'msg' => 'Order status updated successfully.'];
+        }
         return redirect()->route('admin.orders.view');
     }
 
-    public function updateOrderHistory($id, $orderStatus, $remark, $notify) {
+    public function updateOrderHistory($id, $orderStatus, $remark, $notify)
+    {
         /* Order history */
-//        $commentChk = new Comment();
-//        $commentChk->order_id = $id;
-//        $commentChk->status_id = $orderStatus;
-//        $commentChk->comment = $remark;
-//        $commentChk->notify = is_null($notify) ? 0 : $notify;
-//        $commentChk->save();
+        //        $commentChk = new Comment();
+        //        $commentChk->order_id = $id;
+        //        $commentChk->status_id = $orderStatus;
+        //        $commentChk->comment = $remark;
+        //        $commentChk->notify = is_null($notify) ? 0 : $notify;
+        //        $commentChk->save();
         $statusHistory = ['order_id' => $id, 'status_id' => $orderStatus, 'remark' => $remark, 'notify' => $notify, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
         OrderStatusHistory::insert($statusHistory);
     }
 
-    public function updatePaymentStatus() {
-
+    public function updatePaymentStatus()
+    {
         $orderIds = explode(",", Input::get('OrderIds'));
-
         foreach ($orderIds as $id) {
             $order = Order::find($id);
             $order->payment_status = Input::get("status");
@@ -882,60 +855,56 @@ class OrdersController extends Controller {
         return redirect()->route('admin.orders.view');
     }
 
-    public function sendShippedMail($id, $notify) {
+    public function sendShippedMail($id, $notify)
+    {
         $order = Order::find($id);
         $saveOrder = Order::find($id);
         $saveOrder->order_status = 2;
         $saveOrder->ship_date = date("Y-m-d");
         if ($saveOrder->Update()) {
-
             $path = Config("constants.adminStorePath") . "/storeSetting.json";
             $str = file_get_contents($path);
             $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
             $settings = json_decode($str, true);
             $webUrl = $_SERVER['SERVER_NAME'];
-
             $name = $order->users['firstname'];
             $email_id = $order->users['email'];
             if ($notify == 1) {
-
-                $emailContent = EmailTemplate::where('id', 11)->select('content', 'subject')->get()->toArray();
+                $emailContent = EmailTemplate::where('url_key', 'order-shipped')->select('content', 'subject')->get()->toArray();
                 $email_template = $emailContent[0]['content'];
                 $subject = $emailContent[0]['subject'];
                 $tableContant = Helper::getEmailInvoice($order->id);
-
                 $replace = array("[firstName]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[orderId]", "[invoice]");
                 $replacewith = array($name, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $order->id, $tableContant);
-
                 $email_templates = str_replace($replace, $replacewith, $email_template);
                 $data1 = ['email_template' => $email_templates];
                 Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
             }
 
-
-//            $msgS = "Hey! Your order has been dispatched from our warehouse. Your tracking details have been mailed to you. So sit tight. Your goodies will be with you shortly.";
-//            Helper::sendSMS($order->users['telephone'], $msgS);
+            //            $msgS = "Hey! Your order has been dispatched from our warehouse. Your tracking details have been mailed to you. So sit tight. Your goodies will be with you shortly.";
+            //            Helper::sendSMS($order->users['telephone'], $msgS);
         }
     }
 
-    public function searchUser() {
+    public function searchUser()
+    {
         if ($_GET['term'] != "") {
             $data = User::where("email", "like", "%" . $_GET['term'] . "%")
-                    ->select(DB::raw('id, email'))
-                    ->get();
-        } else
+                ->select(DB::raw('id, email'))
+                ->get();
+        } else {
             $data = "";
+        }
 
         echo json_encode($data);
     }
 
-    public function updateQty($id) {
+    public function updateQty($id)
+    {
         $order = Order::find($id);
         $cartContent = json_decode($order->cart);
-
         foreach ($cartContent as $cart) {
             //if ($cart->options->is_crowd_funded == 0) {
-
             if (!empty($cart->options->sub_prod)) {
                 $prd = Product::find($cart->options->sub_prod);
                 $prd->stock = $prd->stock + $cart->qty;
@@ -962,35 +931,30 @@ class OrdersController extends Controller {
         }
     }
 
-    public function addOrderFlag() {
+    public function addOrderFlag()
+    {
         $orderid = Input::get('ord_id');
         $flagid = Input::get('flagid');
         $flag_remark = Input::get('flag_remark');
-
         $ordUpdate = Order::find($orderid);
         $ordUpdate->flag_id = $flagid;
         $ordUpdate->flag_remark = $flag_remark;
         $ordUpdate->update();
-
         $flagHistory = ['order_id' => $orderid, 'flag_id' => $flagid, 'remark' => $flag_remark, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
-
         OrderFlagHistory::insert($flagHistory);
-
         $getColor = Flags::find($flagid);
-
         $fName = $getColor->flag;
-
         if (strpos($getColor->flag, 'No Flag') !== false) {
             $fName = "";
         } else {
             $fName = $getColor->flag;
         }
         $data = ['flag' => $fName, 'value' => $getColor->value, 'remark' => $ordUpdate->flag_remark];
-
         return $data;
     }
 
-    public function addMulFlag() {
+    public function addMulFlag()
+    {
         $orderids = explode(",", Input::get('ord_id'));
         $flag_remark = Input::get('flag_remark');
         $flagid = Input::get('flagid');
@@ -1006,7 +970,8 @@ class OrdersController extends Controller {
         return redirect()->back();
     }
 
-    public function orderHistory() {
+    public function orderHistory()
+    {
         $order = Order::find(Input::get('id'));
         $orderStatusHistory = $order->orderStatHist()->orderBy('created_at', 'DESC')->get();
         $flags = $order->orderFlagHist()->get();
@@ -1014,7 +979,8 @@ class OrdersController extends Controller {
         return view(Config('constants.adminOrderView') . '.orderHistory', compact('order', 'orderStatusHistory', 'flags', 'orderHistory'));
     }
 
-    function return_order($id) {
+    public function return_order($id)
+    {
         $order = HasProducts::where('order_id', $id)->get()->toArray();
         $returnp = ReturnOrder::where('order_id', $id)->get()->toArray();
         $orderid = $order_id = $output = [];
@@ -1061,14 +1027,15 @@ class OrdersController extends Controller {
             $output[$pid]['return_quantity'] = $return_quantity;
             $output[$pid]['return_amount'] = $return_amt;
         }
-//        echo "<pre>";
-//        print_r($output);
-//        die;
+        //        echo "<pre>";
+        //        print_r($output);
+        //        die;
         $action = route("admin.orders.save");
         return view(Config('constants.adminOrderView') . '.returnorder', compact('output', 'action'));
     }
 
-    function return_order_cal() {
+    public function return_order_cal()
+    {
         $orderId = Input::get('orderId');
         if (count(Input::get('pr')) > 0) {
             $sum = array_sum(array_column(Input::get('pr'), 'returnqty'));
@@ -1093,15 +1060,15 @@ class OrdersController extends Controller {
         }
     }
 
-    function order_return() {
+    public function order_return()
+    {
         // $return = ReturnOrder::with('reason', 'opened', 'product_id', 'order_id', 'return_status_id')->with(['order_id' => function($q) {
         //                 $q->with('user');
         //             }])->where("store_id", $this->jsonString['store_id'])->orderBy('id', 'desc')->get()->toArray();
         // return view(Config('constants.adminOrderView') . '.returnOrders', compact('return'));
-
-        $return = ReturnOrder::with('reason', 'opened', 'product_id', 'order_id', 'return_status_id')->with(['order_id' => function($q) {
-                        $q->with('user');
-                    }])->where("store_id", $this->jsonString['store_id'])->orderBy('id', 'desc');
+        $return = ReturnOrder::with('reason', 'opened', 'product_id', 'order_id', 'return_status_id')->with(['order_id' => function ($q) {
+            $q->with('user');
+        }])->where("store_id", $this->jsonString['store_id'])->orderBy('id', 'desc');
 
         if (!empty(Input::get('order_ids'))) {
             $mulIds = explode(",", Input::get('order_ids'));
@@ -1121,15 +1088,15 @@ class OrdersController extends Controller {
                 $return = $return->whereIn('orders.user_id', $users);
             }
         }
-
         $return = $return->get()->toArray();
         return view(Config('constants.adminOrderView') . '.returnOrders', compact('return'));
     }
 
-    function editorder_return($id) {
-        $return = ReturnOrder::with('reason', 'opened', 'product_id', 'order_id', 'exchangeProduct')->with(['order_id' => function($r) {
-                        $r->with('country', 'zone');
-                    }])->where('id', $id)->get()->toArray();
+    public function editorder_return($id)
+    {
+        $return = ReturnOrder::with('reason', 'opened', 'product_id', 'order_id', 'exchangeProduct')->with(['order_id' => function ($r) {
+            $r->with('country', 'zone');
+        }])->where('id', $id)->get()->toArray();
 
         $return_status = OrderReturnStatus::all();
         $returnStatus = [];
@@ -1140,7 +1107,8 @@ class OrdersController extends Controller {
         return view(Config('constants.adminOrderView') . '.editreturnorder', compact('return', 'returnStatus'));
     }
 
-    function update_return_order_status() {
+    public function update_return_order_status()
+    {
         $checkStockEnabled = GeneralSetting::where('url_key', 'stock')->where('is_active', 1)->get();
         $returnorder = ReturnOrder::find(Input::get('id'));
 
@@ -1194,21 +1162,22 @@ class OrdersController extends Controller {
         return redirect()->route('admin.orders.OrderReturn')->with('message', "Return status updated successfully.");
     }
 
-    public function sendReturnOrderMail($returnorder) {
+    public function sendReturnOrderMail($returnorder)
+    {
         //  $path = Config("constants.adminStorePath") . "/storeSetting.json";
         // $str = file_get_contents($path);
         $order = Order::find($returnorder->order_id);
         $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
         $settings = Helper::getSettings();
-        ;
+
         $webUrl = $_SERVER['SERVER_NAME'];
 
         $name = "pradeep";
         $email_id = "pradeep@infiniteit.biz";
         if ($returnorder->order_status == 3) {
-            $emailContent = EmailTemplate::where('id', 7)->select('content', 'subject')->get()->toArray();
+            $emailContent = EmailTemplate::where('url_key', 'exchange-order')->select('content', 'subject')->get()->toArray();
         } else if ($returnorder->order_status == 2) {
-            $emailContent = EmailTemplate::where('id', 9)->select('content', 'subject')->get()->toArray();
+            $emailContent = EmailTemplate::where('url_key', 'refund-order')->select('content', 'subject')->get()->toArray();
         }
         $email_template = $emailContent[0]['content'];
         $subject = $emailContent[0]['subject'];
@@ -1222,7 +1191,8 @@ class OrdersController extends Controller {
         Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data1, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, $name);
     }
 
-    public function updateUserCashback($uid, $ammount, $quantity) {
+    public function updateUserCashback($uid, $ammount, $quantity)
+    {
         $usercashback = HasCashbackLoyalty::where("user_id", $uid)->where("store_id", $this->jsonString['store_id'])->first();
         if (count($usercashback) > 0) {
             $usercashback->cashback = $usercashback->cashback + ($ammount * $quantity);
@@ -1259,7 +1229,6 @@ class OrdersController extends Controller {
         } else {
             $orders_data = Order::with('users', 'country', 'zone')->with('paymentmethod')->with('paymentstatus')->with('orderstatus')->where('store_id',Session::get('store_id'))->where("order_status", '!=', 0)->orderBy("id", "desc")->get()->toArray();
         }
-
         $orders = [];
         $details = ['Order Id', 'Name', 'Email', 'Address', 'City', 'State', 'Country',
             'Pincode', 'Product Name', 'Product Category', 'Product Variant', 'Product Qty', 'Product Price', 'Mobile No', 'Order Status',
@@ -1270,12 +1239,9 @@ class OrdersController extends Controller {
             'Coupon Discount', 'Voucher Discount', 'Final Amount', 'Order Comments', 'Order Date'];
         array_push($orders, $details);
         foreach ($orders_data as $order) {
-
             $cart = json_decode($order['cart'], true);
-//   $prodnames = [];
-
+            //   $prodnames = [];
             foreach ($cart as $cart_prods) {
-
                 $optVal1 = "";
                 if (isset($cart_prods['options']['options'])) {
                     foreach ($cart_prods['options']['options'] as $opt => $optVal) {
@@ -1314,18 +1280,18 @@ class OrdersController extends Controller {
                     //  $order['shipping_amt'],
                     number_format($order['pay_amt'] * Session::get('currency_val'), 2),
                     $order['description'],
-                    date("d-M-Y", strtotime($order['created_at']))
+                    date("d-M-Y", strtotime($order['created_at'])),
                 ];
                 array_push($orders, $details);
             }
         }
-
         $nameFile = "order" . date('ymd');
-//dd($orders);
+        //dd($orders);
         return $this->convert_to_csv($orders, $nameFile . '_export.csv', ',');
     }
 
-    function convert_to_csv($input_array, $output_file_name, $delimiter) {
+    public function convert_to_csv($input_array, $output_file_name, $delimiter)
+    {
         $temp_memory = fopen('php://memory', 'w');
         foreach ($input_array as $line) {
             fputcsv($temp_memory, $line, $delimiter);
@@ -1336,7 +1302,8 @@ class OrdersController extends Controller {
         fpassthru($temp_memory);
     }
 
-    function get_prod_details() {
+    public function get_prod_details()
+    {
         $parent_prod = '';
         $product = Product::where('id', Input::get('id'))->select('id', 'stock', 'price', 'spl_price', 'selling_price', 'prod_type', 'parent_prod_id')->get()->toArray();
         if ($product[0]['stock'] > 0) {
@@ -1358,7 +1325,8 @@ class OrdersController extends Controller {
         }
     }
 
-    function quantityUpdate() {
+    public function quantityUpdate()
+    {
         $product = Product::where('id', Input::get('id'))->select('id', 'price', 'stock', 'prod_type', 'parent_prod_id', 'spl_price', 'selling_price')->get()->toArray();
         if ($product[0]['stock'] < Input::get('stock')) {
             if ($product[0]['parent_prod_id'] != 0) {
@@ -1387,12 +1355,12 @@ class OrdersController extends Controller {
         }
     }
 
-    function add_to_cart($prod_type, $prod_id, $sub_prod, $quantity) {
+    public function add_to_cart($prod_type, $prod_id, $sub_prod, $quantity)
+    {
 
         if ($prod_id == 0) {
             $prod_id = $sub_prod;
         }
-
         switch ($prod_type) {
             case 1:
                 $this->simpleProduct($prod_id, $quantity);
@@ -1406,20 +1374,23 @@ class OrdersController extends Controller {
             case 5:
                 $this->simpleProduct($prod_id, $quantity);
                 break;
-            default :
+            default:
         }
     }
 
-    public function edit_cart() {
+    public function edit_cart()
+    {
         Cart::instance('shopping')->update(Input::get("rowid"), ['qty' => Input::get("qty")]);
     }
 
-    public function delete_cart() {
+    public function delete_cart()
+    {
         Cart::instance('shopping')->remove(Input::get("rowid"));
         Session::put("pay_amt", Cart::instance('shopping')->total());
     }
 
-    function edit_re_order() {
+    public function edit_re_order()
+    {
         Session::forget('cart');
         $order = Order::find(Input::get('id'));
         // $this->add_cart_custom(json_decode($order->cart));
@@ -1456,9 +1427,9 @@ class OrdersController extends Controller {
         return view(Config('constants.adminOrderView') . '.editReOrder', compact('order', 'action', 'address', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon', 'product_all')); //users
     }
 
-    function save_re_order() {
+    public function save_re_order()
+    {
         $user = User::find(Input::get('user_id'));
-
         foreach (Input::get('old_product') as $prod) {
             $prod_id = $prod['pid'];
             $sub_prod = $prod['sub'];
@@ -1475,7 +1446,6 @@ class OrdersController extends Controller {
             $this->add_to_cart($product['prod_type'], $product['pid'], $product['sub'], $product['qty']);
         }
         $cash_back_amt = $cashback_used = 0;
-
         if (Input::get('payment_method') != 1) {
             if (Input::get('old_pay_amt') > Input::get('pay_amt')) {
                 $cash_back_amt = (Input::get('old_pay_amt') - Input::get('pay_amt')) - Input::get('cod_charges');
@@ -1489,7 +1459,6 @@ class OrdersController extends Controller {
             }
         }
         $payment_status = Input::get('payment_status');
-
         $payment_method = Input::get('payment_method');
         if ($pay_amt > 0) {
             $payment_status = 1;
@@ -1503,7 +1472,7 @@ class OrdersController extends Controller {
         $order->cod_charges = Input::get('cod_charges');
         $order->order_status = Input::get('order_status');
         $order->order_amt = Cart::instance('adminshop')->total();
-        $order->pay_amt = $pay_amt; // - 
+        $order->pay_amt = $pay_amt; // -
         $order->gifting_charges = Input::get('gifting_charges');
         $order->cart = json_encode(Cart::instance('adminshop')->content());
         $order->description = Input::get('description');
@@ -1532,10 +1501,10 @@ class OrdersController extends Controller {
         $order->postal_code = Input::get('postal_code');
         $order->save();
         $order_id = $order->id;
-//echo "<pre>";
-//print_r(json_decode($order));
-//        
-//        die;
+        //echo "<pre>";
+        //print_r(json_decode($order));
+        //
+        //        die;
         foreach (Cart::instance('adminshop')->content() as $order_session) {
             $hasproduct = new HasProducts();
             $hasproduct->order_id = $order_id;
@@ -1560,7 +1529,8 @@ class OrdersController extends Controller {
         return redirect()->route('admin.orders.invoice', ['OrderIds' => $order_id]);
     }
 
-    public function simpleProduct($prod_id, $quantity) {
+    public function simpleProduct($prod_id, $quantity)
+    {
         $product = Product::find($prod_id);
         $cats = [];
         foreach ($product->categories as $cat) {
@@ -1580,7 +1550,8 @@ class OrdersController extends Controller {
         }
     }
 
-    public function comboProduct($prod_id, $quantity, $sub_prod) {
+    public function comboProduct($prod_id, $quantity, $sub_prod)
+    {
         $product = Product::find($prod_id);
         if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock" || $product->is_crowd_funded != 0) {
             $cats = [];
@@ -1623,7 +1594,8 @@ class OrdersController extends Controller {
         }
     }
 
-    public function configProduct($prod_id, $quantity, $sub_prod) {
+    public function configProduct($prod_id, $quantity, $sub_prod)
+    {
         if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock") {
             $product = Product::find($sub_prod);
             $product = Product::find($prod_id);
@@ -1651,16 +1623,18 @@ class OrdersController extends Controller {
         }
     }
 
-    public function paymentStatus() {
+    public function paymentStatus()
+    {
         return $data['payment_method'] = PaymentMethod::get()->toArray();
     }
 
-    public function paymentMethod() {
-
+    public function paymentMethod()
+    {
         return $data['payment_stuatus'] = PaymentStatus::get()->toArray();
     }
 
-    public function createOrder() {
+    public function createOrder()
+    {
         Session::forget("discAmt");
         Session::forget('voucherUsedAmt');
         Session::forget('voucherAmount');
@@ -1681,22 +1655,24 @@ class OrdersController extends Controller {
         $ordcountries = Country::where("status", 1)->pluck("name", "id")->prepend("Country", "");
         $ordstates = Zone::where("status", 1)->pluck("name", "id")->prepend("State", "");
         $roots = Category::roots()->where('status', 1)->get();
-        $data = ['ordstates' => $ordstates, 'ordcountries' => $ordcountries, 'roots' => $roots, 'coupons' => $coupons];
+        $paymentMethods = PaymentMethod::where('show_in_merchant_admin', 1)->orderBy('sort_order')->get(["id", "name"]);
+        $data = ['ordstates' => $ordstates, 'ordcountries' => $ordcountries, 'paymentMethods' => $paymentMethods, 'roots' => $roots, 'coupons' => $coupons];
         return Helper::returnView($viewname, $data);
     }
 
-    public function getCustomerEmails() {
+    public function getCustomerEmails()
+    {
         $term = Input::get('term');
         $email = Input::get('email');
         if (!empty($term)) {
-            $result = User::where(['user_type'=> 2,'store_id'=>Session::get('store_id')])
+            $result = User::where(['user_type'=> 2, 'store_id'=>Session::get('store_id')])
                     ->where("email", "like", "%$term%")
                     ->where(function($q) use($term) {
                         $q->orWhere("firstname", "like", "%$term%")
                     ->orWhere("lastname", "like", "%$term%")
                     ->orWhere("telephone", "like", "%$term%");
                     })
-                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email']);
+                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email', 'credit_amt']);
         }
         if (!empty($email)) {
             $result = User::where(['user_type'=> 2,'store_id'=>Session::get('store_id'),'email'=> $email])
@@ -1706,9 +1682,8 @@ class OrdersController extends Controller {
                     ->orWhere("lastname", "like", "%$term%")
                     ->orWhere("telephone", "like", "%$term%");
                     })
-                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email']);
+                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email', 'credit_amt']);
         }
-
 
         $data = [];
         foreach ($result as $k => $res) {
@@ -1716,54 +1691,55 @@ class OrdersController extends Controller {
             $data[$k]['value'] = $res->telephone;
             $tele = ($res->telephone) ? " / " . $res->telephone : '';
             $ele = ($res->email) ? " / " . $res->email : '';
-
             $data[$k]['label'] = $res->firstname . "  " . $res->lastname . "" . $tele . "" . $ele;
             $data[$k]['firstname'] = $res->firstname;
             $data[$k]['lastname'] = $res->lastname;
             $data[$k]['telephone'] = $res->telephone;
             $data[$k]['email'] = $res->email;
+            $data[$k]['credit'] = $res->credit_amt;
         }
         echo json_encode($data);
     }
 
-    public function getCustomerData() {
-
+    public function getCustomerData()
+    {
         if (!empty(Input::get('customer_id'))) {
             $user = User::where('id', Input::get('customer_id'))->with('addresses')->first();
         } else {
-
             $rand = rand(100000, 999999);
             $password = trim($rand, ' ');
             $userS = new User();
             $userS->firstname = (Input::get('cust_firstname')) ? Input::get('cust_firstname') : '';
             $userS->lastname = (Input::get('cust_lastname')) ? Input::get('cust_lastname') : '';
 
-            if (Input::get('email_id'))
+            if (Input::get('email_id')) {
                 $userS->email = Input::get('email_id');
+            }
 
-            if (Input::get('email_id'))
+            if (Input::get('email_id')) {
                 $userS->password = Hash::make($password);
+            }
 
             $userS->telephone = Input::get('cust_telephone');
             $userS->user_type = 2;
             $userS->save();
             $user = $userS;
             $key = Crypt::encrypt($user->id);
-//            
-//            if(Input::get('email_id')){
-//            $data1 = ['firstname' => $userS->firstname, 'key' => $key, 'user' => $userS, 'password' => $password];
-//            Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, 'Successfully registered with Edunguru', 'support@edunguru.com', 'EdunGuru', Input::get('email_id'), $userS->firstname . " " . $userS->lastname);
-//            }
-//                if($this->getEmailStatus==1){
-//                     if(Input::get('email_id')){
-//                    $email_template = EmailTemplate::where('id', 1)->select('content')->get()->toArray()[0]['content'];
-//                    $replace = ["[first_name]", "[last_name]"];
-//                    $replacewith = [ucfirst($userS->firstname), ucfirst($userS->lastname)];
-//                    $email_templates = str_replace($replace, $replacewith, $email_template);
-//                    $data1 = ['email_template' => $email_templates];
-//                    Helper::sendMyEmail(onfig('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, 'Successfully registered',  Config::get('mail.from.address'), Config::get('mail.from.name'), $userS->email, $userS->firstname . " " . $userS->lastname );
-//                     }
-//                    }
+            //
+            //            if(Input::get('email_id')){
+            //            $data1 = ['firstname' => $userS->firstname, 'key' => $key, 'user' => $userS, 'password' => $password];
+            //            Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, 'Successfully registered with Edunguru', 'support@edunguru.com', 'EdunGuru', Input::get('email_id'), $userS->firstname . " " . $userS->lastname);
+            //            }
+            //                if($this->getEmailStatus==1){
+            //                     if(Input::get('email_id')){
+            //                    $email_template = EmailTemplate::where('url_key', 'registration')->select('content')->get()->toArray()[0]['content'];
+            //                    $replace = ["[first_name]", "[last_name]"];
+            //                    $replacewith = [ucfirst($userS->firstname), ucfirst($userS->lastname)];
+            //                    $email_templates = str_replace($replace, $replacewith, $email_template);
+            //                    $data1 = ['email_template' => $email_templates];
+            //                    Helper::sendMyEmail(onfig('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, 'Successfully registered',  Config::get('mail.from.address'), Config::get('mail.from.name'), $userS->email, $userS->firstname . " " . $userS->lastname );
+            //                     }
+            //                    }
         }
         foreach ($user->addresses as $add) {
             $add->countryname = $add->country['name'];
@@ -1772,7 +1748,8 @@ class OrdersController extends Controller {
         return $user;
     }
 
-    public function getCustomerZone() {
+    public function getCustomerZone()
+    {
         $countryid = Input::get('countryid');
         $zones = Zone::where("country_id", $countryid)->where("status", 1)->get();
         $opt = "<option value=''>Select state</option>";
@@ -1782,11 +1759,13 @@ class OrdersController extends Controller {
         return $opt;
     }
 
-    public function getCustomerAdd() {
+    public function getCustomerAdd()
+    {
         return Address::find(Input::get('addData'));
     }
 
-    public function saveCustomerAdd() {
+    public function saveCustomerAdd()
+    {
         $saveAdd = Address::findOrNew(Input::get('address_id'));
         $saveAdd->user_id = Input::get('user_id');
         $saveAdd->firstname = Input::get('firstname');
@@ -1798,6 +1777,7 @@ class OrdersController extends Controller {
         $saveAdd->zone_id = Input::get('zone_id');
         $saveAdd->postcode = Input::get('postcode');
         $saveAdd->phone_no = Input::get('phone_no');
+        $saveAdd->store_id = Session::get('store_id');
         $saveAdd->is_shipping = 1;
         $saveAdd->is_default_shipping = 1;
         if ($saveAdd->save()) {
@@ -1809,8 +1789,9 @@ class OrdersController extends Controller {
         }
     }
 
-    public function getSearchProds() {
-        // hidding product which is already added 
+    public function getSearchProds()
+    {
+        // hidding product which is already added
         $cart_products = Cart::instance('shopping')->content()->toArray();
         $added_prod = array();
         if (count($cart_products) > 0) {
@@ -1836,11 +1817,14 @@ class OrdersController extends Controller {
         echo json_encode($data);
     }
 
-    public function getSubProds() {
+    public function getSubProds()
+    {
         return $subprods = Product::find(Input::get('prodid'))->subproducts()->where("status", 1)->get();
     }
 
-    public function saveCartData() {
+    public function saveCartData()
+    {
+        // dd(Input::all());
         if (!Session::get('usedCouponId')) {
             Cart::instance("shopping")->destroy();
             $mycarts = Input::get('mycart');
@@ -1850,12 +1834,11 @@ class OrdersController extends Controller {
             }
         }
         $cartInfo = Cart::instance("shopping")->total();
-
         // $finalamt = Cart::instance("shopping")->total() -  Session::get('couponUsedAmt');
         $cart_amt = Helper::calAmtWithTax();
         $finalamt = $cart_amt['total'];
-
-        $paymentMethod = "9";
+        $paymentAmt = Input::get('pay_amt');
+        $paymentMethod = Input::get('payment_mode'); //"9";
         $paymentStatus = "1";
         $payAmt = $finalamt;
         // apply additional charge to payAmount
@@ -1863,41 +1846,44 @@ class OrdersController extends Controller {
         $additional_charge = json_decode($additional_charge_json, true);
         $payAmt = $payAmt + $additional_charge['total_amt'];
 
-
         $trasactionId = "";
         $transactionStatus = "";
         $userid = Input::get('user_id');
         $addressid = Input::get('address_id');
-
         $userinfo = User::find($userid);
-
         Session::put('loggedin_user_id', $userid);
         Session::put("addressSelected", $addressid);
-
         Session::put('logged_in_user', $userinfo->email);
         Session::put('user_cashback', $userinfo->cashback);
         Session::put('login_user_type', $userinfo->user_type);
         Session::put('login_user_first_name', $userinfo->firstname);
         Session::put('login_user_last_name', $userinfo->lastname);
         Session::put('login_user_telephone', $userinfo->telephone);
-
         Session::forget('orderId');
         $toPay = app('App\Http\Controllers\Frontend\CheckoutController')->toPayment();
-
         if (!empty($toPay['orderId'])) {
             $orderS = Order::find($toPay['orderId']);
             $orderS->created_by = Session::get('loggedinAdminId');
             $orderS->additional_charge = $additional_charge_json;
+            $orderS->amt_paid = $paymentAmt;
             // $orderS->offline_payment_mode = Input::get('payment_mode');
             $orderS->description = Input::get('remark');
+            $orderS->order_status = Input::get('remark');
             $orderS->update();
+            if ($paymentMethod == '10') {
+                $userinfo->credit_amt = $userinfo->credit_amt+$paymentAmt;
+                $userinfo->update();
+                $paymentHistory = PaymentHistory::create();
+                $paymentHistory->order_id = $orderS->id;
+                $paymentHistory->pay_amount = $paymentAmt;
+                $paymentHistory->added_by = Session::get('loggedinAdminId');
+                $paymentHistory->save();
+            }
             $succ = app('App\Http\Controllers\Frontend\CheckoutController')->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus);
-            // dd($succ);
             Cart::instance("shopping")->destroy();
             Session::forget('loggedin_user_id');
             Session::forget("addressSelected");
             Session::forget('orderId');
-
             Session::forget('usedCouponId');
             Session::forget('logged_in_user');
             Session::forget('user_cashback');
@@ -1908,13 +1894,14 @@ class OrdersController extends Controller {
         }
 
         if ($succ['orderId']) {
-            return 3; //success
+            return ['status' => 3, 'msg' => 'Created', 'orderId' => $succ['orderId']]; //success
         } else {
-            return 4; //failure
+            return ['status' => 3, 'msg' => 'Created', 'orderId' => $succ['orderId']]; //failure
         }
     }
 
-    public function getProdPrice() {
+    public function getProdPrice()
+    {
         $qty = Input::get('qty');
 
         if (Input::get('pprd') == 1) {
@@ -1924,7 +1911,7 @@ class OrdersController extends Controller {
             $tax_rate = $pprod->totalTaxRate();
         } else {
             $pprod = Product::find(Input::get('subprdid'));
-            $price = $pprod->price + @Product::find($pprod->parent_prod_id)->selling_price;
+            $price = $pprod->price+@Product::find($pprod->parent_prod_id)->selling_price;
             $tax_type = $pprod->parentproduct->is_tax;
             $tax_rate = $pprod->parentproduct->totalTaxRate();
         }
@@ -1952,11 +1939,13 @@ class OrdersController extends Controller {
         return $total;
     }
 
-    public function checkcart($cart) {
+    public function checkcart($cart)
+    {
         Cart::instance('shopping')->destroy();
     }
 
-    public function calculateFixedDiscount($individualSubtotal, $disc) {
+    public function calculateFixedDiscount($individualSubtotal, $disc)
+    {
         $arraySumPercent = array_sum($individualSubtotal) / 100;
         $individualDiscountPercent = [];
         foreach ($individualSubtotal as $key => $subtotal) {
@@ -1967,8 +1956,8 @@ class OrdersController extends Controller {
         return $individualDiscountPercent;
     }
 
-    public function checkOrderCoupon() {
-
+    public function checkOrderCoupon()
+    {
         Session::put('currency_val', 1);
         Cart::instance('shopping')->destroy();
         // Remove all discount session before adding new discount
@@ -1983,23 +1972,17 @@ class OrdersController extends Controller {
         Session::forget("referalCodeAmt");
         Session::forget("codCharges");
         Session::forget('shippingCost');
-
         $mycarts = Input::get('mycart');
         foreach ($mycarts as $key => $mycart) {
             $getProd = Product::find($mycart['prod_id']);
             $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $mycart['subprodid'], $mycart['qty']);
         }
-
         // dd(Cart::instance('shopping')->content()->toArray());
         $couponCode = Input::get('couponCode');
         $cartContent = Cart::instance('shopping')->content()->toArray();
-
         $cart_amt = Helper::calAmtWithTax();
-
         $orderAmount = $cart_amt['total'];
-
         $couponID = Coupon::where("coupon_code", "=", $couponCode)->first();
-
         @$usedCouponCountOrders = @Order::where('coupon_used', '=', $couponID->id)->where("order_status", "=", 1)->count();
         if (isset($couponID)) {
             if ($couponID->user_specific == 1) {
@@ -2015,16 +1998,14 @@ class OrdersController extends Controller {
                     }
                 }
             } else {
-
                 $validCoupon = DB::select(DB::raw("Select * from " . DB::getTablePrefix() . "coupons where coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . $orderAmount . " and (now() between start_date and end_date)"));
             }
         }
 
         if (isset($validCoupon) && !empty($validCoupon)) {
             $disc = 0;
-
             if ($validCoupon[0]->coupon_type == 2) {
-//for specific category
+                //for specific category
                 $orderAmt = 0;
                 $allowedCats = [];
                 $cats = Coupon::find($validCoupon[0]->id)->categories->toArray();
@@ -2036,7 +2017,6 @@ class OrdersController extends Controller {
                     $discountCartProds = [];
                     $individualSubtotal = [];
                     foreach ($cartContent as $product) {
-
                         $checkAllowCatsCount = array_intersect($allowedCats, $product['options']['cats']);
                         if (!empty($checkAllowCatsCount)) {
                             $indvDisc = 0;
@@ -2060,14 +2040,13 @@ class OrdersController extends Controller {
                     // dd($discountCartProds);
                 }
             } else if ($validCoupon[0]->coupon_type == 3) {
-//for specific prods
+                //for specific prods
                 $orderAmt = 0;
                 $allowedProds = [];
                 $prods = Coupon::find($validCoupon[0]->id)->products()->get()->toArray();
                 foreach ($prods as $prd) {
                     array_push($allowedProds, $prd['id']);
                 }
-
                 if (!empty($cartContent)) {
                     // print_r($cartContent);
                     $discountCartProds = [];
@@ -2127,11 +2106,9 @@ class OrdersController extends Controller {
             Session::put('usedCouponCode', $validCoupon[0]->coupon_code);
             Session::put('usedCouponId', $validCoupon[0]->id);
             $data = [];
-
             $data['coupon_type'] = $validCoupon[0]->coupon_type * Session::get('currency_val');
             $data['disc'] = $disc * Session::get('currency_val');
             $data['individual_disc_amt'] = $discountCartProds;
-
             // coupon amt to added by satendra
             if (Session::get('individualDiscountPercent')) {
                 $coupDisc = json_decode(Session::get('individualDiscountPercent'), true);
@@ -2139,7 +2116,6 @@ class OrdersController extends Controller {
                     Cart::instance('shopping')->update($discK, ["options" => ['disc' => @$discV]]);
                 }
             }
-
             $cart_amt = Helper::calAmtWithTax();
             $data['cart'] = Cart::instance('shopping')->content()->toArray();
             $newAmnt = $cart_amt['total'] * Session::get('currency_val');
@@ -2147,13 +2123,10 @@ class OrdersController extends Controller {
             $data['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
             return $data;
         } else {
-
             Session::forget('couponUsedAmt');
             Session::forget('usedCouponId');
             Session::forget('usedCouponCode');
-
             $data['remove'] = 1;
-
             $cart = Cart::instance('shopping')->content();
             foreach ($cart as $k => $c) {
                 Cart::instance('shopping')->update($k, ["options" => ['disc' => 0]]);
@@ -2168,7 +2141,8 @@ class OrdersController extends Controller {
     }
 
     //To check stock order
-    public function editOrderChkStock() {
+    public function editOrderChkStock()
+    {
         $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         $ppid = Input::get('ppid');
         $spid = Input::get('spid');
@@ -2193,7 +2167,8 @@ class OrdersController extends Controller {
         return $chk;
     }
 
-    public function getCartEditProd() {
+    public function getCartEditProd()
+    {
         $catid = Input::get('catid');
         $products = Category::find($catid)->products()->where("is_individual", 1)->where("is_del", 0)->where("is_avail", 1)->where("stock", ">", 0)->orderBy("product", "asc")->get();
         $cart_products = Cart::instance('shopping')->content()->toArray();
@@ -2205,7 +2180,6 @@ class OrdersController extends Controller {
                 }
             }
         }
-
         $opt = "<option value=''>Please Select</option>";
         foreach ($products as $prd) {
             if (!in_array($prd->id, $added_prod)) {
@@ -2215,19 +2189,17 @@ class OrdersController extends Controller {
         return $opt;
     }
 
-    public function getCartEditProdVar() {
+    public function getCartEditProdVar()
+    {
         $prdid = Input::get('prdid');
         $prd = Product::find($prdid);
         $tax_rate = $prd->totalTaxRate();
-
         // $sub_total = $qty * $price;
-
         $sub_total = $prd->selling_price;
         if ($prd->is_tax == 2) {
             $tax_amt = round($prd->selling_price * $tax_rate / 100, 2);
             $sub_total = $prd->selling_price + $tax_amt;
         }
-
         if ($prd->prod_type == 3) {
             $sub_total = 0;
             $getSub = $prd->subproducts()->where("is_del", 0)->orderBy("product", "asc")->get();
@@ -2257,12 +2229,12 @@ class OrdersController extends Controller {
             }
             return $prd->selling_price . "||||" . $prd->prod_type . "||||" . $opt . "||||" . $prd->stock . "||||" . $sub_total;
         } else {
-
             echo $prd->selling_price . "||||" . $prd->prod_type . "||||" . "invalid" . "||||" . $prd->stock . "||||" . $sub_total;
         }
     }
 
-    public function cartEditGetComboSelect() {
+    public function cartEditGetComboSelect()
+    {
         $prdid = Input::get('prdid');
         $getSr = Input::get('getarr');
         $prd = Product::find($prdid);
@@ -2274,7 +2246,7 @@ class OrdersController extends Controller {
             if ($prdC->prod_type == 3) {
                 $getSel .= "<br/>" . $prdC->product . "(" . $prdC->categories()->first()->category . ")";
                 $getSubPrd = Product::find($prdC->id)->subproducts()->get();
-                $getSel.= '<br/><select name="cartdata[' . $getSr . '][' . $prdid . '][subprd][]" class="form-control subComboProd selPrdVar">';
+                $getSel .= '<br/><select name="cartdata[' . $getSr . '][' . $prdid . '][subprd][]" class="form-control subComboProd selPrdVar">';
                 foreach ($getSubPrd as $sprd) {
                     $nameProd1 = explode("Variant", $sprd->product, 2);
                     $filtered_words = array(
@@ -2285,15 +2257,16 @@ class OrdersController extends Controller {
                     );
                     $gap = '';
                     $prodSize1 = str_replace($filtered_words, $gap, $nameProd1[1]);
-                    $getSel.= '<option value="' . $sprd->id . '">' . $prodSize1 . '</option>';
+                    $getSel .= '<option value="' . $sprd->id . '">' . $prodSize1 . '</option>';
                 }
-                $getSel.= '</select>';
+                $getSel .= '</select>';
             }
         }
         return $getSel;
     }
 
-    public function searchForId($id, $array) {
+    public function searchForId($id, $array)
+    {
         foreach ($array as $key => $val) {
             if ($val['id'] == $id || $val['id'] === "$id") {
                 return $val;
@@ -2303,7 +2276,8 @@ class OrdersController extends Controller {
     }
 
     // For cashback
-    public function applyCashback() {
+    public function applyCashback()
+    {
         $user_id = input::get('userId');
         $user = User::find($user_id);
         if (isset($user)) {
@@ -2325,12 +2299,10 @@ class OrdersController extends Controller {
                 $productP = (($c->subtotal - $discount) / 100);
                 $orderAmtP = ($orderAmt / 100);
                 $amt = Helper::discForProduct($productP, $orderAmtP, Session::get('checkbackUsedAmt'));
-
                 Cart::instance('shopping')->update($k, ["options" => ['wallet_disc' => $amt]]);
             }
         } else {
             $finalamt = Session::get('pay_amt') + Session::get('checkbackUsedAmt');
-
             $cart = Cart::instance('shopping')->content();
             foreach ($cart as $k => $c) {
                 Cart::instance('shopping')->update($k, ["options" => ['wallet_disc' => 0]]);
@@ -2345,7 +2317,6 @@ class OrdersController extends Controller {
         if ($finalamt <= 0) {
             $finalamt = 0;
         }
-
         $cart = Cart::instance('shopping')->content();
         $data['orderAmount'] = $finalamt * Session::get('currency_val');
         $data['cart'] = $cart;
@@ -2355,18 +2326,16 @@ class OrdersController extends Controller {
         return $data;
     }
 
-    public function applyVoucher() {
+    public function applyVoucher()
+    {
         $voucherCode = Input::get('voucherCode');
         $cartAmount = Helper::getMrpTotal();
-
         $validVoucher = Coupon::where("coupon_code", "=", $voucherCode)
-                        ->where("coupon_type", "=", 3)
-                        ->where("initial_coupon_val", "!=", 0)
-                        ->get()->toArray();
-
+            ->where("coupon_type", "=", 3)
+            ->where("initial_coupon_val", "!=", 0)
+            ->get()->toArray();
         if (!empty($validVoucher[0]['id'])) {
             $coupon_value = $validVoucher[0]['initial_coupon_val'];
-
             if ($coupon_value >= $cartAmount) {
                 $remainingVoucherAmt = ($coupon_value - $cartAmount);
                 $voucherValue = $coupon_value - $remainingVoucherAmt;
@@ -2375,22 +2344,18 @@ class OrdersController extends Controller {
                 $remainVoucherval = 0;
                 $voucherValue = $coupon_value;
             }
-
             Session::put('voucherUsedAmt', $validVoucher[0]['id']);
             Session::put('voucherAmount', $voucherValue);
             Session::put('remainingVoucherAmt', $remainVoucherval);
-
             $orderAmt = Helper::getMrpTotal();
             $cart = Cart::instance('shopping')->content();
             foreach ($cart as $k => $c) {
                 $productP = (($c->subtotal - $c->options->disc - $c->options->wallet_disc - $c->options->referral_disc - $c->options->user_disc) / 100);
                 $orderAmtP = ($orderAmt / 100);
                 $amt = Helper::discForProduct($productP, $orderAmtP, Session::get('voucherAmount'));
-
                 Cart::instance('shopping')->update($k, ["options" => ['voucher_disc' => $amt]]);
             }
         } else {
-
             Session::forget('voucherAmount');
             Session::forget('voucherUsedAmt');
             Session::forget('remainingVoucherAmt');
@@ -2409,7 +2374,6 @@ class OrdersController extends Controller {
         if ($finalamt <= 0) {
             $finalamt = 0;
         }
-
         $cart = Cart::instance('shopping')->content();
         $data['orderAmount'] = $finalamt * Session::get('currency_val');
         $data['cart'] = $cart;
@@ -2420,7 +2384,8 @@ class OrdersController extends Controller {
         return $data;
     }
 
-    public function applyUserLevelDisc() {
+    public function applyUserLevelDisc()
+    {
         $cart_data = Helper::calAmtWithTax();
         $cartAmount = $cart_data['total'];
         $discType = Input::get('discType');
@@ -2438,14 +2403,12 @@ class OrdersController extends Controller {
                 $productP = (($c->subtotal - $c->options->disc - $c->options->wallet_disc - $c->options->referral_disc - $c->options->voucher_disc) / 100);
                 $orderAmtP = ($orderAmt / 100);
                 $amt = Helper::discForProduct($productP, $orderAmtP, Session::get('discAmt'));
-
                 Cart::instance('shopping')->update($k, ["options" => ['user_disc' => $amt]]);
             }
         } else if ($discType == 2) {
             $discountAmt = ($discVal);
             Session::put("discAmt", $discountAmt);
             Session::put("discType", $discType);
-
             $orderAmt = Helper::getMrpTotal();
             $cart = Cart::instance('shopping')->content();
             foreach ($cart as $k => $c) {
@@ -2477,7 +2440,8 @@ class OrdersController extends Controller {
         return $data;
     }
 
-    public function applyReferel() {
+    public function applyReferel()
+    {
         $requireReferalCode = Input::get('RefCode');
         if ($requireReferalCode == '') {
             $data['clearReferrel'] = true;
@@ -2486,17 +2450,21 @@ class OrdersController extends Controller {
         $checkReferral = GeneralSetting::where('url_key', 'referral')->first();
         $detailsR = json_decode($checkReferral->details);
         foreach ($detailsR as $detRk => $detRv) {
-            if ($detRk == "activate_duration_in_days")
+            if ($detRk == "activate_duration_in_days") {
                 $activate_duration = $detRv;
-            if ($detRk == "bonous_to_referee")
+            }
+            if ($detRk == "bonous_to_referee") {
                 $bonousToReferee = $detRv;
-            if ($detRk == "discount_on_order")
+            }
+            if ($detRk == "discount_on_order") {
                 $discountOnOrder = $detRv;
+            }
         }
         // dd($requireReferalCode);
         $allRefCode = [];
-        if (!empty($requireReferalCode))
+        if (!empty($requireReferalCode)) {
             $allRefCode = User::where("id", "!=", Session::get('loggedin_user_id'))->where("referal_code", "=", $requireReferalCode)->get();
+        }
         if (count($allRefCode) > 0) {
             $ref_disc = number_format(($cart_amount * $discountOnOrder) / 100, 2);
             $user_referal_points = number_format(($cart_amount * $bonousToReferee) / 100, 2);
@@ -2504,22 +2472,18 @@ class OrdersController extends Controller {
             Session::put("referalCodeAmt", $ref_disc);
             Session::put("ReferalCode", $requireReferalCode);
             Session::put("ReferalId", $allRefCode[0]->id);
-
             $orderAmt = Helper::getMrpTotal();
             $cart = Cart::instance('shopping')->content();
             foreach ($cart as $k => $c) {
                 $productP = (($c->subtotal - $c->options->disc - $c->options->wallet_disc - $c->options->user_disc) / 100);
                 $orderAmtP = ($orderAmt / 100);
                 $amt = Helper::discForProduct($productP, $orderAmtP, Session::get('referalCodeAmt'));
-
                 Cart::instance('shopping')->update($k, ["options" => ['referral_disc' => $amt]]);
             }
-
             // $cart_data = Helper::calAmtWithTax();
             // $cartAmount = $cart_data['total'];
         } else {
             $cart = Cart::instance('shopping')->content();
-
             foreach ($cart as $k => $c) {
                 Cart::instance('shopping')->update($k, ["options" => ['referral_disc' => 0]]);
             }
@@ -2545,17 +2509,14 @@ class OrdersController extends Controller {
         return $data;
     }
 
-    public function waybill($id = null) {
-
+    public function waybill($id = null)
+    {
         $allids = $id;
-
         $storeName = $this->jsonString['storeName'];
         $storeId = $this->jsonString['store_id'];
         $contact = StaticPage::where('url_key', 'contact-us')->first()->contact_details;
         $storeContact = json_decode($contact);
-
         $orders = Order::where('id', $allids)->get();
-
         foreach ($orders as $key => $saveorder) {
             $ordid = $saveorder->id; //array(16,15);//explode(",", Input::get('OrderIds'));
             // dd($saveorder);
@@ -2573,66 +2534,64 @@ class OrdersController extends Controller {
             } else {
                 $payment_method = '2';
             }
-//            $client = new http\Client;
-//$request = new http\Client\Request;
-//
-//$body = new http\Message\Body;
-//$body->append(new http\QueryString(array(
-//  'order_code' => $saveorder->id,
-//  'product_id' => '1',
-//  'parcel' => 'insert',
-//  'ep_name' => $storeName,
-//  'pick_contact_person' =>  $storeContact->mobile,
-//  'pick_division' => '',
-//  'pick_district' => 'test',
-//  'pick_thana' =>  $storeContact->thana,
-//  'pick_union' => 'test',
-//  'pick_address' => $storeContact->address_line1,
-//  'pick_mobile' =>  $storeContact->mobile,
-//  'recipient_name' => $saveorder->first_name . '' . $saveorder->last_name,
-//  'recipient_mobile' => $saveorder->phone_no,
-//  'recipient_division' => '',
-//  'recipient_district' => '',
-//  'recipient_city' => $saveorder->zone->name,
-//  'recipient_area' => $saveorder->thana,
-//  'recipient_thana' => $saveorder->thana,
-//  'recipient_union' => 'test',
-//  'upazila' => '',
-//    'weight' =>$weight,
-//  'delivery_timing' =>$delivery_timing,
-//  'package_code' => $package_code,
-//  'recipient_address' => $saveorder->address1 . '' . $saveorder->address2,
-//  'shipping_price' => '1',
-//  'parcel_detail' => '',
-//  'no_of_items' => '',
-//  'product_price' => $payamt,
-//  'payment_method' => $payment_method,
-//  'ep_id' =>$storeId
-//)));
-//$request->setRequestUrl('http://103.239.254.146/apiv2/');
-//$request->setRequestMethod('POST');
-//$request->setBody($body);
-//
-//$request->setHeaders(array(
-//  'Postman-Token' => 'c74cf735-9bd9-4ca5-9cd9-dd41df455e3d',
-//  'Cache-Control' => 'no-cache',
-//  'Content-Type' => 'application/x-www-form-urlencoded',
-//  'USER_ID' => 'I8837',
-//  'API_KEY' => 'xqdH',
-//  'API_SECRET' => 'jubLW'
-//));
-//$client->enqueue($request)->send();
-//$response = $client->getResponse();
-//
-//$data= $response->getBody();
-//dd($data);
-
+            // $client = new http\Client;
+            //$request = new http\Client\Request;
+            //
+            //$body = new http\Message\Body;
+            //$body->append(new http\QueryString(array(
+            //  'order_code' => $saveorder->id,
+            //  'product_id' => '1',
+            //  'parcel' => 'insert',
+            //  'ep_name' => $storeName,
+            //  'pick_contact_person' =>  $storeContact->mobile,
+            //  'pick_division' => '',
+            //  'pick_district' => 'test',
+            //  'pick_thana' =>  $storeContact->thana,
+            //  'pick_union' => 'test',
+            //  'pick_address' => $storeContact->address_line1,
+            //  'pick_mobile' =>  $storeContact->mobile,
+            //  'recipient_name' => $saveorder->first_name . '' . $saveorder->last_name,
+            //  'recipient_mobile' => $saveorder->phone_no,
+            //  'recipient_division' => '',
+            //  'recipient_district' => '',
+            //  'recipient_city' => $saveorder->zone->name,
+            //  'recipient_area' => $saveorder->thana,
+            //  'recipient_thana' => $saveorder->thana,
+            //  'recipient_union' => 'test',
+            //  'upazila' => '',
+            //    'weight' =>$weight,
+            //  'delivery_timing' =>$delivery_timing,
+            //  'package_code' => $package_code,
+            //  'recipient_address' => $saveorder->address1 . '' . $saveorder->address2,
+            //  'shipping_price' => '1',
+            //  'parcel_detail' => '',
+            //  'no_of_items' => '',
+            //  'product_price' => $payamt,
+            //  'payment_method' => $payment_method,
+            //  'ep_id' =>$storeId
+            //)));
+            //$request->setRequestUrl('http://103.239.254.146/apiv2/');
+            //$request->setRequestMethod('POST');
+            //$request->setBody($body);
+            //
+            //$request->setHeaders(array(
+            //  'Postman-Token' => 'c74cf735-9bd9-4ca5-9cd9-dd41df455e3d',
+            //  'Cache-Control' => 'no-cache',
+            //  'Content-Type' => 'application/x-www-form-urlencoded',
+            //  'USER_ID' => 'I8837',
+            //  'API_KEY' => 'xqdH',
+            //  'API_SECRET' => 'jubLW'
+            //));
+            //$client->enqueue($request)->send();
+            //$response = $client->getResponse();
+            //
+            //$data= $response->getBody();
+            //dd($data);
 
             $headers = array();
             $headers[] = 'USER_ID:I8837';
             $headers[] = 'API_KEY:xqdH';
             $headers[] = 'API_SECRET:jubLW';
-
             $reqArray = [];
             $reqArray['order_code'] = $saveorder->id;
             $reqArray['product_id'] = '1';
@@ -2643,7 +2602,7 @@ class OrdersController extends Controller {
             $reqArray['pick_district'] = 'test';
             $reqArray['pick_thana'] = $storeContact->Thana;
             $reqArray['pick_union'] = 'test';
-            $reqArray['pick_address'] = $storeContact->address_line1. ' ' . $storeContact->address_line2;
+            $reqArray['pick_address'] = $storeContact->address_line1 . ' ' . $storeContact->address_line2;
             $reqArray['pick_mobile'] = $storeContact->mobile;
             $reqArray['recipient_name'] = $saveorder->first_name . '' . $saveorder->last_name;
             $reqArray['recipient_mobile'] = $saveorder->phone_no;
@@ -2651,9 +2610,8 @@ class OrdersController extends Controller {
             $reqArray['recipient_district'] = '';
             $reqArray['recipient_city'] = $saveorder->zone->name;
             $reqArray['recipient_area'] = $saveorder->thana;
-            $reqArray['recipient_thana'] =  $saveorder->thana;
+            $reqArray['recipient_thana'] = $saveorder->thana;
             $reqArray['recipient_union'] = 'test';
-
 
             $reqArray['upazila'] = '';
             if ($saveorder->zone_id == '322') {
@@ -2678,8 +2636,8 @@ class OrdersController extends Controller {
                 $reqArray['payment_method'] = 2;
             }
 
-            $reqArray['ep_id'] =$storeId;
-          //echo "================request Array==================";
+            $reqArray['ep_id'] = $storeId;
+            //echo "================request Array==================";
             //print_r($reqArray);
 
             $url = "https://ecourier.com.bd/apiekom/";
@@ -2690,13 +2648,13 @@ class OrdersController extends Controller {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reqArray));
             $output = curl_exec($ch);
-           // echo "================output= rrr=================";
-          //  print_r($output);
-          //  echo "================output==================";
+            // echo "================output= rrr=================";
+            //  print_r($output);
+            //  echo "================output==================";
             curl_close($ch);
             $data = json_decode($output);
             //print_r($output);
-          //  echo "================output==================";
+            //  echo "================output==================";
 
             if ($data->response_code == 200) {
                 $saveorder->shiplabel_tracking_id = $data->ID;
@@ -2709,11 +2667,8 @@ class OrdersController extends Controller {
                 $curierHistory->prefix = $this->jsonString['prefix'];
                 $curierHistory->store_id = $this->jsonString['store_id'];
                 $curierHistory->save();
-
                 $tableContant = Helper::getEmailInvoice($id);
-
                 $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
-
                 $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
                 //$settings = json_decode($str, true);
                 $settings = Helper::getSettings();
@@ -2721,15 +2676,13 @@ class OrdersController extends Controller {
                 $toEmail = $saveorder->users->email;
                 $firstName = $saveorder->first_name;
                 if ($emailStatus == 1) {
-                    $emailContent = EmailTemplate::where('id', 11)->select('content', 'subject')->get()->toArray();
+                    $emailContent = EmailTemplate::where('url_key', 'order-shipped')->select('content', 'subject')->get()->toArray();
                     $email_template = $emailContent[0]['content'];
                     $subject = $emailContent[0]['subject'];
-
                     $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
                     $replacewith = array($saveorder->id, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $saveorder->id, $saveorder->created_at);
                     $email_templates = str_replace($replace, $replacewith, $email_template);
                     $data_email = ['email_template' => $email_templates];
-
                     Helper::sendMyEmail(Config('constants.adminEmails') . '.dispatch_email', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
                     //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
                 }
@@ -2738,31 +2691,31 @@ class OrdersController extends Controller {
                 die;
             }
 
-// $saveorder = Order::find($id);
-//         $tableContant = Helper::getEmailInvoice($id);
-//      
-//        $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
-//        //$path = Config("constants.adminStorePath"). "/storeSetting.json";
-//        //$str = file_get_contents($path);
-//        $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
-//        //$settings = json_decode($str, true);
-//        $settings = Helper::getSettings();
-//        $webUrl = $_SERVER['SERVER_NAME'];
-//         $toEmail = $saveorder->users->email;
-//        $firstName= $saveorder->first_name;
-//        if ($emailStatus == 1) {
-//            $emailContent = EmailTemplate::where('id', 11)->select('content', 'subject')->get()->toArray();
-//            $email_template = $emailContent[0]['content'];
-//            $subject = $emailContent[0]['subject'];
-//
-//            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
-//            $replacewith = array($saveorder->id,$firstName,  $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $saveorder->id, $saveorder->created_at);
-//            $email_templates = str_replace($replace, $replacewith, $email_template);
-//            $data_email = ['email_template' => $email_templates];
-//
-//            Helper::sendMyEmail(Config('constants.adminEmails') . '.dispatch_email', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
-//          //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
-//  
+            // $saveorder = Order::find($id);
+            //         $tableContant = Helper::getEmailInvoice($id);
+            //
+            //        $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
+            //        //$path = Config("constants.adminStorePath"). "/storeSetting.json";
+            //        //$str = file_get_contents($path);
+            //        $logoPath = @asset(Config("constants.logoUploadImgPath") . 'logo.png');
+            //        //$settings = json_decode($str, true);
+            //        $settings = Helper::getSettings();
+            //        $webUrl = $_SERVER['SERVER_NAME'];
+            //         $toEmail = $saveorder->users->email;
+            //        $firstName= $saveorder->first_name;
+            //        if ($emailStatus == 1) {
+            //            $emailContent = EmailTemplate::where('url_key', 'order-shipped')->select('content', 'subject')->get()->toArray();
+            //            $email_template = $emailContent[0]['content'];
+            //            $subject = $emailContent[0]['subject'];
+            //
+            //            $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
+            //            $replacewith = array($saveorder->id,$firstName,  $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $saveorder->id, $saveorder->created_at);
+            //            $email_templates = str_replace($replace, $replacewith, $email_template);
+            //            $data_email = ['email_template' => $email_templates];
+            //
+            //            Helper::sendMyEmail(Config('constants.adminEmails') . '.dispatch_email', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
+            //          //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
+            //
         }
         $viewname = Config('constants.adminOrderView') . '.invoiceAws';
         $data = ['orders' => $orders, 'storeName' => $storeName, 'storeContact' => $storeContact, 'allids' => $allids];
@@ -2770,10 +2723,11 @@ class OrdersController extends Controller {
         // return view(Config('constants.adminOrderView') . '.invoiceAws', compact('result','allids' , 'orders','params','awbno')); //users
     }
 
-    public function getECourier() {
+    public function getECourier()
+    {
 
         $ordid = 15; //array(16,15);//explode(",", Input::get('OrderIds'));
-//        foreach ($orderids as $ordid) {
+        //        foreach ($orderids as $ordid) {
         $saveorder = Order::find($ordid);
         // dd($saveorder);
         $headers = array();
@@ -2781,7 +2735,6 @@ class OrdersController extends Controller {
         $headers[] = 'USER_ID:I8837';
         $headers[] = 'API_KEY:xqdH';
         $headers[] = 'API_SECRET:jubLW';
-
         $reqArray = [];
         $reqArray['order_code'] = $ordid;
         $reqArray['product_id'] = '1';
@@ -2849,12 +2802,59 @@ class OrdersController extends Controller {
             die;
         }
 
-
-
-//        }
+        //        }
         return redirect()->back();
     }
 
-}
+    public function getPayments() {
+        $orderId = Input::get('orderId');
+        if($orderId && $orderId != null) {
+            $order = Order::where('id', $orderId)->select('id', 'pay_amt', 'amt_paid')->first();
+            if($order && $order != null) {
+                $payments = PaymentHistory::where('order_id', $orderId)->get();
+                $remainingAmt = ($order->pay_amt)-($order->amt_paid);
+                $str = '';
+                if($payments && count($payments) > 0) {
+                    foreach($payments as $payment){
+                        $str .='<tr><td>'.date('d-M-Y',strtotime($payment->created_at)).'</td><td class="text-right"><span class="currency-sym"></span>'.number_format(($payment->pay_amount  * Session::get('currency_val')), 2).'</td></tr>'; 
+                    }
+                } else {
+                    $str .='<tr><td colspan="2">No records found!</td></tr>';
+                }
+                return ['status' => 1, 'payments' => $str, 'remainingAmt' => $remainingAmt];
+            } else {
+                return ['status' => 0, 'msg' => 'Incorrect order id'];
+            }
+        } else {
+            return ['status' => 0, 'msg' => 'Incorrect order id'];
+        }
+    }
 
-?>
+    public function addNewOrderPayment() {
+        // dd(Input::all());
+        $paymentAmt = Input::get('payAmt');
+        $orderId = Input::get('orderId');
+        $orderS = Order::where('id', $orderId)->first();
+        if($orderS && $orderS != NULL){
+            // USER LEVEL CREDIT UPDATE
+            $userinfo = User::where('id', $orderS->user_id)->first();
+            $userinfo->credit_amt = $userinfo->credit_amt - $paymentAmt;
+            $userinfo->update();
+            //UPDATE ORDER paid amt
+            $orderS->amt_paid = $orderS->amt_paid + $paymentAmt;
+            $orderS->save();
+            if($orderS->amt_paid == $orderS->pay_amt){
+                $orderS->payment_status = 4;
+                $orderS->update();
+            }
+            $paymentHistory = PaymentHistory::create();
+            $paymentHistory->order_id = $orderS->id;
+            $paymentHistory->pay_amount = $paymentAmt;
+            $paymentHistory->added_by = Session::get('loggedinAdminId');
+            $paymentHistory->save();
+            return ['status' => 1, 'msg' => 'Payment added successfully'];
+        } else {
+            return ['status' => 0, 'msg' => 'Incorrect order id'];
+        }
+    }
+}

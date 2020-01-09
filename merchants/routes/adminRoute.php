@@ -296,7 +296,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any("/cancel-order-edit/{id}", ['as' => 'admin.orders.cancelOrderEdit', 'uses' => 'CancelOrderController@edit']);
             Route::any("/cancel-order-update", ['as' => 'admin.orders.cancelOrderUpdate', 'uses' => 'CancelOrderController@update']);
 
-
+            //Get order payments
+            Route::post('/get-payments', ['as' => 'admin.orders.getPayments', 'uses' => 'OrdersController@getPayments']);
+            Route::post('/add-new-order-payment', ['as' => 'admin.orders.addNewOrderPayment', 'uses' => 'OrdersController@addNewOrderPayment']);
             //for courier services
             Route::any("/get-e-courier", ['as' => 'admin.orders.getECourier', 'uses' => 'OrdersController@getECourier']);
         });
@@ -384,6 +386,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::get('/change-status', array('as' => 'admin.customers.changeStatus', 'uses' => 'CustomersController@changeStatus'));
                 Route::get('/export', ['as' => 'admin.customers.export', 'uses' => 'CustomersController@export']);
                 Route::post('/chk-existing-useremail', ['as' => 'admin.customers.chkExistingUseremail', 'uses' => 'CustomersController@chkExistingUseremail']);
+                Route::post('/get-payment-history', ['as' => 'admin.customers.payment.history', 'uses' => 'CustomersController@paymentHistory']);                
+                Route::post('/export-payment-history', ['as' => 'admin.customers.export.payment', 'uses' => 'CustomersController@exportPaymentHistory']);
+
             });
 
             Route::group(array('prefix' => 'storecontacts', 'middlewareGroups' => ['web']), function() {
