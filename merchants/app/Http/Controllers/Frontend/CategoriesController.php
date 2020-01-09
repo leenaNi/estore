@@ -27,7 +27,7 @@ class CategoriesController extends Controller {
         $data['cat_name'] = "";
         if ($slug != null) {
             $cat = Category::where('url_key', $slug)->first();
-            $data['metaTitle'] = @$cat->meta_title == "" ? @$cat->category . " | Cartini " : @$cat->meta_title;
+            $data['metaTitle'] = @$cat->meta_title == "" ? @$cat->category . " | eStorifi " : @$cat->meta_title;
             $data['metaDesc'] = @$cat->meta_desc == "" ? @$cat->category : @$cat->meta_desc;
             $data['metaKeys'] = @$cat->meta_keys == "" ? @$cat->category : @$cat->meta_keys;
 

@@ -49,9 +49,7 @@ class Handler extends ExceptionHandler {
         {
             return response()->view('Admin.errors.403');
         }
-        else{
-           return parent::render($request, $e); 
-        }
+        return parent::render($request, $e); 
     }
 
     protected function unauthenticated($request, Exception $e) {
