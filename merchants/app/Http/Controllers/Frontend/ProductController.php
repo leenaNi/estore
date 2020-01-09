@@ -113,7 +113,7 @@ class ProductController extends Controller {
 
         $product->related = $product->relatedproducts()->where("status", 1)->get();
         $product->upsellproduct = $product->upsellproducts()->where("status", 1)->get();
-        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | Cartini " : @$product->meta_title;
+        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | eStorifi " : @$product->meta_title;
         $product->metaDesc = @$product->meta_desc == "" ? @$product->product : @$product->meta_desc;
         $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
@@ -128,7 +128,7 @@ class ProductController extends Controller {
         $is_rel_prod = GeneralSetting::where('url_key', 'related-products')->first();
         $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
         $product = Product::find($prodid);
-        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | Cartini " : @$product->meta_title;
+        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | eStorifi " : @$product->meta_title;
         $product->metaDesc = @$product->meta_desc == "" ? @$product->product : @$product->meta_desc;
         $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
 

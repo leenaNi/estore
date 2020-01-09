@@ -43,7 +43,7 @@ class Handler extends ExceptionHandler {
     {
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
-        } else if($e instanceof NotFoundHttpException){
+        } else if($e instanceof NotFoundHttpException) {
             $statusCode = $e->getStatusCode();
             if($statusCode==403)
             {
