@@ -824,7 +824,7 @@ class OrdersController extends Controller
                 Session::flash("message", "Order status updated successfully.");
             }
         }
-        if(Input::get('responseType') && Input::get('responseType') == 'json'){
+        if (Input::get('responseType') && Input::get('responseType') == 'json') {
             return ['status' => 1, 'msg' => 'Order status updated successfully.'];
         }
         return redirect()->route('admin.orders.view');
@@ -1207,8 +1207,9 @@ class OrdersController extends Controller
         }
     }
 
-    public function exportsamplecsv() {
-        
+    public function exportsamplecsv()
+    {
+
         $order_data = [];
         array_push($order_data, ['Order Id', 'Name', 'Email', 'Address', 'City', 'State', 'Country',
             'Pincode', 'Product Name', 'Product Category', 'Product Variant', 'Product Qty', 'Product Price', 'Mobile No', 'Order Status',
@@ -1217,17 +1218,18 @@ class OrdersController extends Controller
             'Gifting Charges', 'Reward Points Used',
             'Shipping Amt',
             'Coupon Discount', 'Voucher Discount', 'Final Amount', 'Order Comments', 'Order Date']);
-        $details = ['1','Stefen','stefen@gmail.com','Cecilia Chapman 711-2880 Nulla St. Mankato Mississippi 96522','Mystic Falls','Paris','London','203456','Veg Pizza','Pizza','','2','500','9878765678','','COD','Pending','','1000','25','0','0','0','0','0','1025','','30/04/1986'];
+        $details = ['1', 'Stefen', 'stefen@gmail.com', 'Cecilia Chapman 711-2880 Nulla St. Mankato Mississippi 96522', 'Mystic Falls', 'Paris', 'London', '203456', 'Veg Pizza', 'Pizza', '', '2', '500', '9878765678', '', 'COD', 'Pending', '', '1000', '25', '0', '0', '0', '0', '0', '1025', '', '30/04/1986'];
         array_push($order_data, $details);
         return Helper::getCsv($order_data, 'order-sample.csv', ',');
     }
 
-    public function export() {
+    public function export()
+    {
         $orderIds = explode(",", Input::get('OrderIds'));
         if (Input::get('OrderIds')) {
-            $orders_data = Order::with('users', 'country', 'zone')->with('paymentmethod')->with('paymentstatus')->with('orderstatus')->where('store_id',Session::get('store_id'))->whereIn("id", $orderIds)->orderBy("id", "desc")->get()->toArray();
+            $orders_data = Order::with('users', 'country', 'zone')->with('paymentmethod')->with('paymentstatus')->with('orderstatus')->where('store_id', Session::get('store_id'))->whereIn("id", $orderIds)->orderBy("id", "desc")->get()->toArray();
         } else {
-            $orders_data = Order::with('users', 'country', 'zone')->with('paymentmethod')->with('paymentstatus')->with('orderstatus')->where('store_id',Session::get('store_id'))->where("order_status", '!=', 0)->orderBy("id", "desc")->get()->toArray();
+            $orders_data = Order::with('users', 'country', 'zone')->with('paymentmethod')->with('paymentstatus')->with('orderstatus')->where('store_id', Session::get('store_id'))->where("order_status", '!=', 0)->orderBy("id", "desc")->get()->toArray();
         }
         $orders = [];
         $details = ['Order Id', 'Name', 'Email', 'Address', 'City', 'State', 'Country',
@@ -1665,24 +1667,24 @@ class OrdersController extends Controller
         $term = Input::get('term');
         $email = Input::get('email');
         if (!empty($term)) {
-            $result = User::where(['user_type'=> 2, 'store_id'=>Session::get('store_id')])
-                    ->where("email", "like", "%$term%")
-                    ->where(function($q) use($term) {
-                        $q->orWhere("firstname", "like", "%$term%")
-                    ->orWhere("lastname", "like", "%$term%")
-                    ->orWhere("telephone", "like", "%$term%");
-                    })
-                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email', 'credit_amt']);
+            $result = User::where(['user_type' => 2, 'store_id' => Session::get('store_id')])
+                ->where("email", "like", "%$term%")
+                ->where(function ($q) use ($term) {
+                    $q->orWhere("firstname", "like", "%$term%")
+                        ->orWhere("lastname", "like", "%$term%")
+                        ->orWhere("telephone", "like", "%$term%");
+                })
+                ->get(['id', 'firstname', 'lastname', 'telephone', 'email', 'credit_amt']);
         }
         if (!empty($email)) {
-            $result = User::where(['user_type'=> 2,'store_id'=>Session::get('store_id'),'email'=> $email])
-                    ->where('store_id',Session::get('store_id'))
-                    ->where(function($q) use($term) {
-                        $q->orWhere("firstname", "like", "%$term%")
-                    ->orWhere("lastname", "like", "%$term%")
-                    ->orWhere("telephone", "like", "%$term%");
-                    })
-                    ->get(['id', 'firstname', 'lastname', 'telephone', 'email', 'credit_amt']);
+            $result = User::where(['user_type' => 2, 'store_id' => Session::get('store_id'), 'email' => $email])
+                ->where('store_id', Session::get('store_id'))
+                ->where(function ($q) use ($term) {
+                    $q->orWhere("firstname", "like", "%$term%")
+                        ->orWhere("lastname", "like", "%$term%")
+                        ->orWhere("telephone", "like", "%$term%");
+                })
+                ->get(['id', 'firstname', 'lastname', 'telephone', 'email', 'credit_amt']);
         }
 
         $data = [];
@@ -1722,6 +1724,7 @@ class OrdersController extends Controller
 
             $userS->telephone = Input::get('cust_telephone');
             $userS->user_type = 2;
+            $userS->store_id = Session::get('store_id');
             $userS->save();
             $user = $userS;
             $key = Crypt::encrypt($user->id);
@@ -1777,7 +1780,6 @@ class OrdersController extends Controller
         $saveAdd->zone_id = Input::get('zone_id');
         $saveAdd->postcode = Input::get('postcode');
         $saveAdd->phone_no = Input::get('phone_no');
-        $saveAdd->store_id = Session::get('store_id');
         $saveAdd->is_shipping = 1;
         $saveAdd->is_default_shipping = 1;
         if ($saveAdd->save()) {
@@ -1871,7 +1873,9 @@ class OrdersController extends Controller
             $orderS->order_status = Input::get('remark');
             $orderS->update();
             if ($paymentMethod == '10') {
-                $userinfo->credit_amt = $userinfo->credit_amt+$paymentAmt;
+                // echo $userinfo->credit_amt;
+                $userinfo->credit_amt = $userinfo->credit_amt + ($payAmt - $paymentAmt);
+                // dd($userinfo->credit_amt);
                 $userinfo->update();
                 $paymentHistory = PaymentHistory::create();
                 $paymentHistory->order_id = $orderS->id;
@@ -2806,20 +2810,21 @@ class OrdersController extends Controller
         return redirect()->back();
     }
 
-    public function getPayments() {
+    public function getPayments()
+    {
         $orderId = Input::get('orderId');
-        if($orderId && $orderId != null) {
+        if ($orderId && $orderId != null) {
             $order = Order::where('id', $orderId)->select('id', 'pay_amt', 'amt_paid')->first();
-            if($order && $order != null) {
+            if ($order && $order != null) {
                 $payments = PaymentHistory::where('order_id', $orderId)->get();
-                $remainingAmt = ($order->pay_amt)-($order->amt_paid);
+                $remainingAmt = ($order->pay_amt) - ($order->amt_paid);
                 $str = '';
-                if($payments && count($payments) > 0) {
-                    foreach($payments as $payment){
-                        $str .='<tr><td>'.date('d-M-Y',strtotime($payment->created_at)).'</td><td class="text-right"><span class="currency-sym"></span>'.number_format(($payment->pay_amount  * Session::get('currency_val')), 2).'</td></tr>'; 
+                if ($payments && count($payments) > 0) {
+                    foreach ($payments as $payment) {
+                        $str .= '<tr><td>' . date('d-M-Y', strtotime($payment->created_at)) . '</td><td class="text-right"><span class="currency-sym"></span>' . number_format(($payment->pay_amount * Session::get('currency_val')), 2) . '</td></tr>';
                     }
                 } else {
-                    $str .='<tr><td colspan="2">No records found!</td></tr>';
+                    $str .= '<tr><td colspan="2">No records found!</td></tr>';
                 }
                 return ['status' => 1, 'payments' => $str, 'remainingAmt' => $remainingAmt];
             } else {
@@ -2830,12 +2835,13 @@ class OrdersController extends Controller
         }
     }
 
-    public function addNewOrderPayment() {
+    public function addNewOrderPayment()
+    {
         // dd(Input::all());
         $paymentAmt = Input::get('payAmt');
         $orderId = Input::get('orderId');
         $orderS = Order::where('id', $orderId)->first();
-        if($orderS && $orderS != NULL){
+        if ($orderS && $orderS != null) {
             // USER LEVEL CREDIT UPDATE
             $userinfo = User::where('id', $orderS->user_id)->first();
             $userinfo->credit_amt = $userinfo->credit_amt - $paymentAmt;
@@ -2843,7 +2849,7 @@ class OrdersController extends Controller
             //UPDATE ORDER paid amt
             $orderS->amt_paid = $orderS->amt_paid + $paymentAmt;
             $orderS->save();
-            if($orderS->amt_paid == $orderS->pay_amt){
+            if ($orderS->amt_paid == $orderS->pay_amt) {
                 $orderS->payment_status = 4;
                 $orderS->update();
             }

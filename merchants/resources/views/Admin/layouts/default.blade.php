@@ -10,7 +10,7 @@
 
             @include('Admin.includes.header')
             <!-- Left side column. contains the logo and sidebar -->
-            @if(Auth::User()->user_type == 3)
+            @if(Session::get('loggedinAdminId') && Auth::User()->user_type == 3)
                 @include('Admin.includes.vendorSidebar')
             @else
                 @include('Admin.includes.sidebar')
