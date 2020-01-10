@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\DownlodableProd;
 use App\Models\GeneralSetting;
 use App\Models\EmailTemplate;
+use App\Models\Merchant;
 use Auth;
 use Hash;
 use App\Library\Helper;
@@ -143,6 +144,7 @@ class LoginController extends Controller {
             if ($check == true) {
                 if (Input::get("password") == Input::get("confirmpwd")) {
                     $user->password = Hash::make(Input::get('password'));
+                    Merchant::where('email',Input::get("email_id"))->update(['password'=>Hash::make(Input::get('password'))]);
                 }
             }else{
                  Session::flash('invaliOldPass', 'Invalid Username or Password');
