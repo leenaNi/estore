@@ -43,13 +43,18 @@ class Handler extends ExceptionHandler {
     {
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
+        } else if($e instanceof NotFoundHttpException) {
+            $statusCode = $e->getStatusCode();
+            if($statusCode==403)
+            {
+                return response()->view('Admin.errors.403');
+            }
+            else{
+            return parent::render($request, $e); 
+            }
+        } else {
+            return parent::render($request, $e);
         }
-        $statusCode = $e->getStatusCode();
-        if($statusCode==403)
-        {
-            return response()->view('Admin.errors.403');
-        }
-        return parent::render($request, $e); 
     }
 
     protected function unauthenticated($request, Exception $e) {

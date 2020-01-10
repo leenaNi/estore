@@ -1,20 +1,13 @@
 @extends('Admin.layouts.default')
-@section('mystyles')
-<link rel="stylesheet" href="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker-bs3.css') }}">
-<style type="text/css">.capitalizeText select {
-        text-transform: capitalize;
-    } 
-    select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transform: capitalize !important;}</style>
-@stop
-
 @section('content')
 <section class="content-header">
     <h1>
-        {{$user->firstname}} {{($user->lastname=='')? "'s":""}} {{$user->lastname}}{{($user->lastname!='')? "'s":""}} Payment History 
+        Add New Settlement
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">Customers</li>
+        <li class="">Payments</li>
+        <li class="active">Add New Settlement</li>
     </ol>
 </section>
 <section class="content">
@@ -37,65 +30,73 @@
                 </div>
                 @endif
                 <div class="box-header noBorder box-tools filter-box col-md-9">
-                    <form action="{{ route('admin.customers.view') }}" method="get" >
+                    <form action="{{ route('admin.payments.newSettlement') }}" method="get" >
                         <div class="form-group col-md-4">
+                            <input type="text" name="custSearch" value="{{ !empty(Input::get('custSearch')) ? Input::get('custSearch') : '' }}" class="form-control input-sm pull-right fnt14" placeholder="Customer/Email/Contact">
+                        </div>
+                        <!-- <div class="form-group col-md-4">
                             <div class="input-group date Nform_date" id="datepickerDemo">
                                 <input placeholder="Created Date" type="text" id="" name="daterangepicker" value="{{ !empty(Input::get('daterangepicker')) ? Input::get('daterangepicker') : '' }}" class="form-control datefromto textInput">
                                 <span class="input-group-addon">
                                     <i class=" ion ion-calendar"></i>
                                 </span>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="clearfix"></div>
                         <div class="clearfix"></div>
-
                         <div class="form-group col-md-2">
                             <input type="submit" name="submit" class="form-control btn btn-primary" value="Search" style="margin-left:0px">
                         </div>
                         <div class="form-group col-md-2">
-                            <a  href="{{route('admin.customers.view')}}" class="form-control medium btn reset-btn" style="margin-left:0px">Reset</a>
+                            <a href="{{route('admin.payments.newSettlement')}}" class="form-control medium btn reset-btn" style="margin-left:0px">Reset</a>
                         </div>
                     </form>
-
                 </div>
                 <div class="box-header col-md-3">
-                    <form action="{!! route('admin.customers.export.payment') !!}" target="_" method="post">
-                        <input type="hidden" name="user_id" value="{{$user->id}}" />
-                    <button class="btn btn-default pull-right col-md-12 mobAddnewflagBTN"  type="submit">Export</button>
-                    </form>
-                </div> 
+                    <a href="{!! route('admin.payments.export') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" >Add new settlement</a>
+                </div>
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
-
+                <form method="post" id="settlement-form" action="{{ route('admin.payments.settlePayments') }}">
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
                                 <th>Date</th>
                                 <th>Order Id</th>
-                                <th class="text-right">Payable Amount</th>
+                                <th class="text-right">Actual Payable Amount</th>
                                 <th class="text-right">Paid Amount</th>
+                                <th class="text-right">Pending Amount</th>
                             </tr>
                         </thead>
-                        <tbody>   
+                        <tbody>
                             @if(count($userPayments) > 0 )
                             @foreach($userPayments as $userPayment)
-                            <tr> 
+                            <tr>
                                 <td>{{date('d-M-Y H:i:s', strtotime($userPayment->created_at))}}</td>
                                 <td>{{$userPayment->order_id}}</td>
                                 <td class="text-right""><span class="currency-sym"></span>{{number_format(($userPayment->pay_amt  * Session::get('currency_val')), 2)}}</td>
-                                <td class="text-right"><span class="currency-sym"></span>{{number_format(($userPayment->pay_amount  * Session::get('currency_val')), 2)}}</td>
+                                <td class="text-right">
+                                    <span class="currency-sym"></span>{{number_format(($userPayment->amt_paid  * Session::get('currency_val')), 2)}}
+                                </td>
+                                <td class="text-right">
+                                    <span class="currency-sym"></span>{{number_format((($userPayment->pay_amt-$userPayment->amt_paid)  * Session::get('currency_val')), 2)}}
+                                </td>
+                                <td>
+                                    <input name="order_id[]" type="hidden" value="{{$userPayment->order_id}}" />
+                                    <input name="pay_amt[]" data-orderAmt="{{$userPayment->pay_amt}}" value="" maxlength="{{$userPayment->pay_amt-$userPayment->pay_amount}}" />
+                                </td>
                             </tr>
-                            @endforeach                            
-                            <tr>
+                            @endforeach
+                            <!-- <tr>
                                 <th colspan="2" class="text-right">Total</th>
                                 <td class="text-right"><span class="currency-sym"></span>{{number_format(($totalCreditAmount->total_credit * Session::get('currency_val')), 2)}}</td>
                                 <td class="text-right"><span class="currency-sym"></span>{{number_format(($totalPaid->total_paid * Session::get('currency_val')), 2)}}</td>
-                            </tr>
-                            <tr>
+                            </tr> -->
+                            <!-- <tr>
                                 <th colspan="3" class="text-right">Outstanding</th>
                                 <th colspan="1" class="text-right"><span class="currency-sym"></span>{{number_format((($totalCreditAmount->total_credit - $totalPaid->total_paid) * Session::get('currency_val')), 2)}}</th>
-                            </tr>
+                            </tr> -->
                             @else
                             <tr><td colspan=4> No Record Found.</td></tr>
                             @endif
@@ -104,46 +105,51 @@
                 </div><!-- /.box-body -->
                 <div class="box-footer clearfix">
                     <?php
-                        echo $userPayments->render();
-                    ?> 
+if (Input::get('custSearch') && !empty(Input::get('custSearch'))) {
+    echo $userPayments->render();
+}
+?>
                 </div>
+                <div class="row">
+                    <div class="col-md-3 pull-right">
+                        <div class="form-group ">
+                            <button type="button" class="btn btn-primary settle-payment" >Settle Payments</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
             </div><!-- /.box -->
         </div><!-- /.col -->
-    </div> 
+    </div>
 </section>
 @stop
 
 @section('myscripts')
+<script>
+    var cnt = 0;
+    $('.settle-payment').click(function() {
+        console.log(checkInputValues(), $('input[name=pay_amt]').length);
+        $('#settlement-form').submit();
+        if($('input[name=pay_amt]').length == checkInputValues()){
 
-<script src="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker.js') }}"></script>
-<script type="text/javascript">
-$(function () {
-    // var start = moment().subtract(29, 'days');
-    // var end = moment();
-    // function cb(start, end) {
-    //      $('#reportrange span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-    // }
-    // $('.datefromto').daterangepicker({
-    //     startDate: start,
-    //     endDate: end,
-    //     ranges: {
-    //         'Today': [moment(), moment()],
-    //         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    //         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    //         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    //         'This Month': [moment().startOf('month'), moment().endOf('month')],
-    //         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    //     }
-    // }, function () {
-    // });
-    // //cb(start, end);
-    // $('.datefromto').on('apply.daterangepicker', function (ev, picker) {
-    //     $(this).val(picker.startDate.format('DD/MM/YYYY') + '-' + picker.endDate.format('DD/MM/YYYY'));
-    // });
-
-    // $('.datefromto').on('cancel.daterangepicker', function (ev, picker) {
-    //     $(this).val('');
-    // });
-});
-</scripts>
-@stop 
+        }
+    });
+    $('input[name="pay_amt[]"]').change(function() {
+        console.log($(this).val());
+        var actualPayAmt = parseInt($(this).attr('data-orderAmt'));
+        var curAmt = parseInt($(this).val());
+        console.log(actualPayAmt, curAmt);
+        if(actualPayAmt < curAmt) {
+            alert('Amount can not be greater than total payable amount!');
+            $(this).val('');
+        }
+    });
+    function checkInputValues() {
+        var inputCnt = 0
+        $('input[name=pay_amt]').each(function(){
+            if($(this).val() || $(this).val() == '') inputCnt++;
+        });
+        return inputCnt;
+    }
+</script>
+@stop

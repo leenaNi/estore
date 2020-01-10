@@ -19,7 +19,7 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <?php
-                                $profileimg = App\Models\User::find(Session::get('loggedinAdminId'))->profile;
+                                $profileimg = (Session::get('loggedinAdminId'))? App\Models\User::find(Session::get('loggedinAdminId'))->profile: '';
                                 $date1 = date_create(date("2018-09-10"));//date_create(App\Library\Helper::getSettings()['created_date']);
                                 $expiry = date_create(App\Library\Helper::getSettings()['expiry_date']);
                                 $date2 = date_create(date("Y-m-d"));

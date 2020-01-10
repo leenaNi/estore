@@ -266,17 +266,32 @@ class CustomersController extends Controller
         $userId = Input::get('user_id');
         $user = User::where('id', $userId)->first();
         if ($user && $user != null) {
+            $totalPaid = DB::table('payment_history')
+                ->leftjoin('orders', 'orders.id', 'payment_history.order_id')
+                ->where('orders.user_id', $userId)
+                ->where('orders.payment_method', 10)
+                ->where('orders.store_id', Session::get('store_id'))
+                ->select(DB::raw('SUM(payment_history.pay_amount) as total_paid'))
+                // ->groupBy('payment_history.order_id')
+                ->first();
+            $totalCreditAmount = DB::table('orders')
+                ->where('orders.user_id', $userId)
+                ->where('orders.payment_method', 10)
+                ->where('orders.store_id', Session::get('store_id'))
+                ->select(DB::raw('SUM(orders.pay_amt) as total_credit'))
+                ->first();
             $payments = DB::table('payment_history')
                 ->leftjoin('orders', 'orders.id', 'payment_history.order_id')
             // ->join('users', 'users.id', 'orders.user_id')
             // ->join('payment_method', 'payment_method.id', 'orders.payment_method')
                 ->where('orders.user_id', $userId)
                 ->where('orders.payment_method', 10)
+                ->where('orders.store_id', Session::get('store_id'))
                 ->select('payment_history.*', 'orders.pay_amt', 'orders.amt_paid')
+                ->groupBy('payment_history.id')
                 ->paginate(Config('constants.paginateNo'));
             $viewname = Config('constants.adminCustomersView') . '.payment-history';
-            $data = ['status' => 'success', 'userPayments' => $payments, 'user' => $user];
-            // dd(Helper::returnView($viewname, $data));
+            $data = ['status' => 'success', 'userPayments' => $payments, 'totalPaid' => $totalPaid, 'totalCreditAmount' => $totalCreditAmount, 'user' => $user];
             return Helper::returnView($viewname, $data);
         } else {
             Session::flash("msg", "Invalid Customer!");

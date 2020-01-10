@@ -78,7 +78,7 @@
                     <div class="btn-group form-group col-md-4 col-xs-12">
                         <select name='searchStatus[]' class="multiselect form-control" multiple="multiple" style="background-color: none!important;">
                             @php echo $order_options @endphp
-                        </select>                                  
+                        </select>
                     </div>
                     @endif
                     @if($feature['flag'])
@@ -86,9 +86,9 @@
                         <select name='searchFlag' class="form-control">
                             <option  value="">Select Flag</option>
                             @foreach($flags as $flag)
-                            <option  value="{{$flag->id }}"  <?php echo (Input::get('searchFlag') == $flag->id ) ? "selected" : '' ?> >{{$flag->flag }}</option> 
+                            <option  value="{{$flag->id }}"  <?php echo (Input::get('searchFlag') == $flag->id) ? "selected" : '' ?> >{{$flag->flag }}</option>
                             @endforeach
-                        </select>                                    
+                        </select>
                     </div>
                     @endif
                     <div class="clearfix"></div>
@@ -112,7 +112,7 @@
                     <a class="btn btn-primary" href="{{route('admin.orders.sampleexport')}}"style="margin-bottom:15px; margin-left: 0; width: 100%;">Download Sample</a>
                     <div class="clearfix"></div>
                     <form action="{{route('admin.traits.orders')}}"  method="post" enctype="multipart/form-data">
-                        <div class=""> 
+                        <div class="">
                             <input type="file" class="form-control validate[required] fileUploder" name="order_file" placeholder="Browse CSV file"  required style="margin-bottom:15px; "  onChange="validateFile(this.value)"/>
                         </div>
                         <div class="">
@@ -131,7 +131,7 @@
                             <option value="1">Print Invoice</option>
                             <!--<option value="17">Send to Shiprocket</option>-->
                             <option value="3" >Export</option>
-                            @if($feature['flag'] == 1)  
+                            @if($feature['flag'] == 1)
                             <option value="30" >Flag</option>
                             @endif
 
@@ -140,7 +140,7 @@
                             </optgroup>
 
                             <!--<option value="25" >Warehouse Order Export</option>-->
-                            <optgroup label="Update Order Status">                                           
+                            <optgroup label="Update Order Status">
                                 <option value="8">Cancelled</option>
                                 <option value="12" >Delayed</option>
                                 <option value="6" >Delivered</option>
@@ -161,7 +161,7 @@
                             </optgroup>
 
                         </select>
-                    </form> 
+                    </form>
                 </div>
                 <div class="dividerhr"></div>
                 <div style="clear: both"></div>
@@ -186,11 +186,11 @@
                                <th>Shipping date</th>-->
 
 <!--                                <th>Invoice Printed?</th>-->
-                                @if($feature['flag'] == 1)  
+                                @if($feature['flag'] == 1)
                                 <th>Flag</th>
 <!--                                <th>Flag Comment</th>-->
                                 @endif
-                                @if($feature['courier-services'] == 1)  
+                                @if($feature['courier-services'] == 1)
 <!--                                <th>Courier Service</th>-->
                                 @endif
                                 <th width="6%">Action</th>
@@ -211,7 +211,7 @@
 <!--                                <td>{{ @$order->paymentmethod['name'] }}</td>-->
                                 <td>@if(@$order->prefix)
                                     <span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
-                                    @else 
+                                    @else
                                     <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
                                     @endif
                                 </td>
@@ -221,7 +221,7 @@
                                     @endif
                                 </td>
                                 <td>@if(@$order->order_source==1)
-                                    Mall 
+                                    Mall
                                     @elseif(@$order->order_source==2)
                                     {{ Session::get("storeName")}}
                                     @endif
@@ -237,17 +237,17 @@
 //                                        }
 //                                        echo "Other" . @$serviceN;
 //                                    }
-                                ?></td>
-                               
+?></td>
+
                                                                <td>{{ @$order->shiplabel_tracking_id }}</td>
-                               
+
                                                                <td>{{ !empty($order->ship_date != 00-00-00)?date('d M y',strtotime($order->ship_date)):'' }}</td>-->
 
 
 <!--                                <td>{{ ($order->print_invoice == 0)?"No":"Yes" }}</td>-->
-                                @if($feature['flag'] == 1)  
+                                @if($feature['flag'] == 1)
                                 <td>
-                                    <div id="flagD{{$order->id }}" class="flagD">   
+                                    <div id="flagD{{$order->id }}" class="flagD">
                                         <div class="flagDName" id="flagDName{{$order->id }}">
                                             <div style='width: 20px;height: 20px;background:{{ @$order->orderFlag->value }} ; border-radius: 50%'></div>
                                             <br/>{{  (strpos(@$order->orderFlag->flag, 'No Flag') !== false)?"":@$order->orderFlag->flag}} <br> {{  $order->flag_remark}}
@@ -255,14 +255,14 @@
                                     </div>
                                 </td>
 <!--                                 <td>
-                                    <div class="flagC{{$order->id }}" id="flagC{{$order->id }}"> 
+                                    <div class="flagC{{$order->id }}" id="flagC{{$order->id }}">
                                         <div class="flagDC{{$order->id }}" id="flagDC{{$order->id }}">
                                             {{  $order->flag_remark}}
                                         </div>
                                     </div>
                                 </td>-->
                                 @endif
-                                @if($feature['courier-services'] == 1)  
+                                @if($feature['courier-services'] == 1)
 <!--                                   <td>{{ ($order->courier != 0)?$order->getcourier['name']:'-' }}</td>-->
                                 @endif
                                 <td>
@@ -287,10 +287,10 @@
                     </table>
                     <div class="box-footer clearfix">
                         <?php
-                        echo $orders->appends(Input::except('page'))->render();
-                        ?>
+echo $orders->appends(Input::except('page'))->render();
+?>
                         <?php //}
-                        ?>
+?>
                     </div>
                 </div>
             </div>
@@ -302,7 +302,7 @@
                             <h4 class="modal-title" id="myModalLabel">Change Order Status</h4>
                         </div>
                         <div class="modal-body">
-                            <form method="post" id="mulForm" action="{{ route('admin.orders.update.status') }}"> 
+                            <form method="post" id="mulForm" action="{{ route('admin.orders.update.status') }}">
                                 <input  type="checkbox" name="notify" value="1">  Confirm & Notify Customer.
                                 <br/>
                                 <label>Comments</label>
@@ -344,7 +344,7 @@
                         <h4 class="modal-title" id="myModalLabel">Flag</h4>
                     </div>
                     <div class="modal-body">
-                        <form method="post" id="flagForm" action=""> 
+                        <form method="post" id="flagForm" action="">
                             <label>Select Flag</label>
                             <select name="flagid" class="form-control selFlag">
                                 <option value="">Please select</option>
@@ -356,7 +356,7 @@
                             <label>Comments</label>
                             <textarea name="flag_remark"  class="form-control flagComment"></textarea>
                             <input type="hidden" name="ord_id" class="OdID">
-                        </form>   
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="saveFlag" class="btn btn-primary saveFlag" >Submit</button>
@@ -401,14 +401,14 @@
                                         <thead>
                                             <tr>
                                                 <th>Date</th>
-                                                <th>Amount Paid</th>
+                                                <th class="text-right">Amount Paid</th>
                                             </tr>
                                         </thead>
                                         <tbody class="payment-details"></tbody>
                                     </table>
                                 </div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -802,6 +802,7 @@ $(document).ready(function() {
             $('input[name=pay_amt]').val('');
         }
     });
+    var paymentAdded = 0;
     $('.add-new-payment').click(function () {
         var payAmt = parseInt($('input[name=pay_amt]').val());
         var remainingAmt = parseInt($('input[name=remaining_amt]').val());
@@ -811,6 +812,7 @@ $(document).ready(function() {
         } else {
             $.post("{{ route('admin.orders.addNewOrderPayment') }}", {orderId: orderId, payAmt: payAmt}, function (res) {
                 if(res.status) {
+                    paymentAdded = 1;
                     $('.payment-msg').addClass('brbottom1').html('<div class="success">' + res.msg + '</div>');
                     $.post("{{ route('admin.orders.getPayments') }}", {orderId: orderId}, function (res) {
                     if(res.status) {
@@ -826,6 +828,12 @@ $(document).ready(function() {
                     $('.payment-msg').html('<div class="error">' + res.msg + '</div>');
                 }
             });
+        }
+    });
+    $("#add-payment").on("hidden.bs.modal", function () {
+        if(paymentAdded) {
+            paymentAdded = 0;
+            window.location.reload();
         }
     });
 
