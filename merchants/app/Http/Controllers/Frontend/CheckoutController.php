@@ -139,7 +139,7 @@ class CheckoutController extends Controller
             $login_type => $existEmail,
             'password' => $existPassword,
         );
-        $user = User::where($login_type, '=', $existEmail)->where('user_type','!=',1)->orWhere('id',Session::get('loggedin_user_id'))->first();
+        $user = User::where($login_type, '=', $existEmail)->where('user_type', '!=', 1)->orWhere('id', Session::get('loggedin_user_id'))->first();
         if (!empty($user)) {
             if (Auth::attempt($userdata)) {
                 Helper::postLogin($user->id);
@@ -2046,7 +2046,7 @@ foreach ($_POST as $a => $b) {
         }
         if ($courier_status == 1) {
             $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
-            $order->courier = $courier->courier_id;
+            $order->courier = @$courier->courier_id;
         }
         if ($this->courierService == 1 && $this->pincodeStatus == 1) {
 //            if ($courier_status == 1) {
@@ -2508,7 +2508,8 @@ foreach ($_POST as $a => $b) {
         Session::forget('usedCouponCode');
     }
 
-    function successMail($orderId, $firstName, $toEmail) {
+    public function successMail($orderId, $firstName, $toEmail)
+    {
         $toEmails = 'anita@infiniteit.biz';
         $tableContant = Helper::getEmailInvoice($orderId);
         $order = Order::find($orderId);
@@ -2520,7 +2521,7 @@ foreach ($_POST as $a => $b) {
         $settings = Helper::getSettings();
         $webUrl = $_SERVER['SERVER_NAME'];
         if ($emailStatus == 1) {
-            $emailContent = EmailTemplate::where(['store_id'=>Session::get('store_id'),'url_key'=>'order-success'])->select('content', 'subject')->get()->toArray();
+            $emailContent = EmailTemplate::where(['store_id' => Session::get('store_id'), 'url_key' => 'order-success'])->select('content', 'subject')->get()->toArray();
             print_r($emailContent);
             $email_template = $emailContent[0]['content'];
             $subject = $emailContent[0]['subject'];
