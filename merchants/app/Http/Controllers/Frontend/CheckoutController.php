@@ -139,7 +139,7 @@ class CheckoutController extends Controller
             $login_type => $existEmail,
             'password' => $existPassword,
         );
-        $user = User::where($login_type, '=', $existEmail)->first();
+        $user = User::where($login_type, '=', $existEmail)->where('user_type','!=',1)->orWhere('id',Session::get('loggedin_user_id'))->first();
         if (!empty($user)) {
             if (Auth::attempt($userdata)) {
                 Helper::postLogin($user->id);

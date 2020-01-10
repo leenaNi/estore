@@ -1665,7 +1665,9 @@ class OrdersController extends Controller
         $term = Input::get('term');
         $email = Input::get('email');
         if (!empty($term)) {
-            $result = User::where(['user_type'=> 2, 'store_id'=>Session::get('store_id')])
+            $result = User::where(['store_id'=>Session::get('store_id')])
+                    ->where('user_type','!=',1)
+                    ->orWhere('id',Session::get('loggedin_user_id'))
                     ->where("email", "like", "%$term%")
                     ->where(function($q) use($term) {
                         $q->orWhere("firstname", "like", "%$term%")
@@ -1777,7 +1779,7 @@ class OrdersController extends Controller
         $saveAdd->zone_id = Input::get('zone_id');
         $saveAdd->postcode = Input::get('postcode');
         $saveAdd->phone_no = Input::get('phone_no');
-        $saveAdd->store_id = Session::get('store_id');
+        //$saveAdd->store_id = Session::get('store_id');
         $saveAdd->is_shipping = 1;
         $saveAdd->is_default_shipping = 1;
         if ($saveAdd->save()) {
@@ -1824,7 +1826,7 @@ class OrdersController extends Controller
 
     public function saveCartData()
     {
-        // dd(Input::all());
+         //dd(Session::get('usedCouponId'));
         if (!Session::get('usedCouponId')) {
             Cart::instance("shopping")->destroy();
             $mycarts = Input::get('mycart');

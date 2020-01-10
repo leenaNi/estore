@@ -148,6 +148,13 @@ if ($coupon->coupon_type != 0) {
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        {!!Form::label('max_discount_amt','Maximum Discount Amount ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                                        {!! Form::text('max_discount_amt',null,["class"=>'form-control validate[required,custom[number]]', 'min'=>1,"placeholder"=>"Maximum Discount Amount"]) !!}
+                                        <div id="max_discount_amt_validate" style="color:red;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         {!!Form::label('user_specific','User Specific',['class'=>'control-label']) !!}
                                         {!! Form::select('user_specific',["0" => "No", "1" => "Yes"],null,["class"=>'form-control']) !!}
                                     </div>

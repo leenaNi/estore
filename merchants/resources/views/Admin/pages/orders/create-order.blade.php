@@ -114,15 +114,15 @@
                                         {!! Form::text('address1',null, ["class"=>'form-control inptAdd validate[required]','placeholder'=>'Address Line 1']) !!}
                                     </div>
                                     <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('Address Line 2', 'Address Line 2  ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::text('address2',null, ["class"=>'form-control inptAdd validate[required]','placeholder'=>'Address Line 2']) !!}
+                                        {!! Form::label('Address Line 2', 'Address Line 2  ',['class'=>'control-label']) !!}
+                                        {!! Form::text('address2',null, ["class"=>'form-control inptAdd','placeholder'=>'Address Line 2']) !!}
                                     </div>
                                 </div>
                                 <div class="line line-dashed b-b line-lg pull-in"></div>
                                 <div class="row form-group">
                                     <div class="col-md-6 mob-marBottom15">
                                         {!! Form::label('Address Line 3', 'Address Line 3',['class'=>'control-label']) !!}
-                                        {!! Form::text('address3',null, ["class"=>'form-control inptAdd','placeholder'=>'Address Line 3']) !!}
+                                        {!! Form::text('address3',null, ["class"=>'form-control','placeholder'=>'Address Line 3']) !!}
                                     </div>
                                     <div class="col-md-6 mob-marBottom15">
                                         {!! Form::label('City', 'City ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
@@ -132,8 +132,8 @@
                                 <div class="line line-dashed b-b line-lg pull-in"></div>
                                 <div class="row form-group">
                                     <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('Pin Code', 'Pin Code ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::text('postcode',null,["class"=>'form-control inptAdd validate[required,custom[number]]','placeholder'=>'Pin Code']) !!}
+                                        {!! Form::label('Pin Code', 'Pin Code ',['class'=>'control-label']) !!}
+                                        {!! Form::text('postcode',null,["class"=>'form-control inptAdd','placeholder'=>'Pin Code']) !!}
                                     </div>
                                     <div class="col-md-6 mob-marBottom15">
                                         {!! Form::label('Country', 'Country ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
