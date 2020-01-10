@@ -111,7 +111,7 @@ if ($coupon->coupon_type != 0) {
     ?>
                                         <div class="form-group">
                                             {!!Form::label('coupon_type','Coupon Type',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                            {!! Form::select('coupon_type',["1" => "Entire Order", "2" => "Specific Categories", "3" => "Specific Products"],null,["class"=>'form-control validate[required] ']) !!}
+                                            {!! Form::select('coupon_type',["1" => "Entire Order", "2" => "Specific Categories", "3" => "Specific Products"],null,["class"=>'form-control validate[required]']) !!}
                                         </div>
                                         <?php
 }
@@ -146,10 +146,10 @@ if ($coupon->coupon_type != 0) {
                                         <div id="no_times_allowed_re_validate" style="color:red;"></div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="max_discount_div">
                                     <div class="form-group">
-                                        {!!Form::label('max_discount_amt','Maximum Discount Amount ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::text('max_discount_amt',null,["class"=>'form-control validate[required,custom[number]]', 'min'=>1,"placeholder"=>"Maximum Discount Amount"]) !!}
+                                        {!!Form::label('max_discount_amt','Maximum Discount Amount ',['class'=>'control-label']) !!}
+                                        {!! Form::text('max_discount_amt',null,["class"=>'form-control', 'min'=>1,"placeholder"=>"Maximum Discount Amount"]) !!}
                                         <div id="max_discount_amt_validate" style="color:red;"></div>
                                     </div>
                                 </div>
@@ -317,68 +317,7 @@ echo "</ul>";
 @stop
 
 @section('myscripts')
-<script>
-    /*  $("#save_coupon").validate({
-     // Specify the validation rules
-     rules: {
-     coupon_name: "required",
-     coupon_code: "required",
-     coupon_value: {
-     required: true,
-     min: 1,
-     number: true
-     },
-     min_order_amt: {
-     required: true,
-     min: 1,
-     number: true
-     },
-     start_date: {
-     required: true
 
-     },
-     end_date: {
-     required: true
-
-     }, no_times_allowed: {
-     required: true,
-     min: 1
-     }
-     },
-     // Specify the validation error messages
-     messages: {
-     coupon_name: "Please enter coupon name",
-     coupon_code: "Please enter coupon code",
-     coupon_value: {
-     required: "Please enter coupon discount value",
-     min: "Number must be greater than 0",
-     number: "Please enter valid number"
-     },
-     min_order_amt: {
-     required: "Please enter min order amount.",
-     min: "Number must be greater than 0",
-     number: "Please enter valid number"
-     },
-     start_date: {
-     required: "Please enter start date"
-     },
-     end_date: {
-     required: "Please enter end date"
-     },
-     no_times_allowed: {
-     required: "Please enter no. of times coupon allowed",
-     min: "Number must be greater than 0",
-     number: "Please enter valid number"
-     }
-     },
-     errorPlacement: function (error, element) {
-     var name = $(element).attr("name");
-     error.appendTo($("#" + name + "_re_validate"));
-     }
-     });
-     */
-
-</script>
 <script>
 
     $(document).on('keyup', '.searchProducts', function () {
@@ -444,18 +383,21 @@ echo "</ul>";
 
     $("#coupon_type").change(function () {
         if ($("#coupon_type").val() == 2) {
+            $("#max_discount_div").hide();
             $("#showProducts").hide();
             $("#showCategories").show();
             $("input[name='ProductIds']").val("");
         }
 
         if ($("#coupon_type").val() == 3) {
+            $("#max_discount_div").hide();
             $("#showCategories").hide();
             $("#showProducts").show();
             $("input[name='CategoryIds']").val("");
         }
 
         if ($("#coupon_type").val() == 1) {
+            $("#max_discount_div").show();
             $("#showCategories").hide();
             $("#showProducts").hide();
             $("input[name='CategoryIds']").val("");
