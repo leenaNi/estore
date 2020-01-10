@@ -2091,6 +2091,10 @@ class OrdersController extends Controller
                     $indvDisc = 0;
                     if ($validCoupon[0]->discount_type == 1) {
                         $indvDisc = (($validCoupon[0]->coupon_value * $prdAllC['subtotal']) / 100);
+                        if($indvDisc >= $validCoupon[0]->max_discount_amt)
+                        {
+                            $indvDisc = $validCoupon[0]->max_discount_amt;
+                        }
                         $disc += $indvDisc;
                         $individualSubtotal[$prdAllC['rowid']] = $indvDisc;
                     } else {
