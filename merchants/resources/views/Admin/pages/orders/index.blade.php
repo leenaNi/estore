@@ -7,7 +7,7 @@
     .multiselect-container {
         width: 100% !important;
     }
-</style>
+</style> 
 @stop
 
 @section('content')
