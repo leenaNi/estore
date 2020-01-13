@@ -715,11 +715,20 @@ class TableController extends Controller
     public function changeOccupancyStatus($oStatus) {
         if(Input::get("orderId")) {
             $order = Order::find(Input::get("orderId"));
-            $table = Table::find($order->table_id);
-            $table->ostatus = $oStatus;
-            $table->update();
-            Session::flash("msg", 'Table status updated successfully.');
-            return ['status' => 1, 'msg' => "Table status updated successfully."];
+            if($order->table_id == 1) {
+                $table = Table::find($order->table_id);
+                $table->ostatus = $oStatus;
+                $table->update();
+                Session::flash("msg", 'Table status updated successfully.');
+                return ['status' => 1, 'msg' => "Table status updated successfully."];
+            } else {
+                $order->order_status = 3;
+                $order->update();
+                $statusHistory = ['order_id' => $order->id, 'status_id' => 3, 'remark' => 'Table order completed', 'notify' => 0, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
+                OrderStatusHistory::insert($statusHistory);
+                Session::flash("msg", '');
+                return ['status' => 1, 'msg' => ""];
+            }
         } else if(Input::get("tableid")) {
             $order = Order::where('table_id', Input::get("tableid"))->first();
             $order->order_status = 3;
