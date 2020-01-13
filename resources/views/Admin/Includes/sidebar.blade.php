@@ -16,8 +16,8 @@
                 </a>
             </li> 
 
-              <li class="{{ (in_array(Route::currentRouteName(),['admin.vendors.view'])?'active':'') }}">
-                <a href="{{ route('admin.vendors.view') }}">
+              <li class="{{ (in_array(Route::currentRouteName(),['admin.distributors.view'])?'active':'') }}">
+                <a href="{{ route('admin.distributors.view') }}">
                     <i class="fa fa-users"></i> <span>Distributors</span>
                 </a>
             </li> 

@@ -1,5 +1,5 @@
 <?php
-
+//dd("front route");
 Route::group(['middleware' => ['web'], 'namespace' => 'Auth'], function() {
     Route::get('login/{provider?}/{from?}', ['as' => 'login', 'uses' => 'AuthController@login']);
 });

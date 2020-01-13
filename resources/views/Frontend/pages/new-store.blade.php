@@ -10,23 +10,35 @@
             @endif
             <form action="{{route('selectThemes')}}" method="post" id='newStoreForm' role="form" class="landing-wide-form clearfix newStoreForm reg-form">
                 <div class="">
-                <div class="col_full bottommargin-xs">
-                    <div class="customDomainfield">
-                        <div class="input-group custom-inputGroup">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">https://</span>
-                            </div>
-                            <input type="text" class="form-control custom-formControl required checkAvailability"  value="" name="domain_name" placeholder="Domain Name (Cannot be changed later)">
-                            <div class="input-group-append">
-                                <?php $hname = "." . str_replace("www", "", $_SERVER['HTTP_HOST']);?>
-                                <span class="input-group-text">{{ str_replace("..",".",$hname)  }}</span>
-                            </div>
+                    <div class="col_full bottommargin-xs customTab">
+                        <div class="tab">
+                            <label>
+                                <input type="radio" id="merchants" name="storeType" value="merchant" checked>
+                                <span class="selection">Merchant</span>
+                            </label>
+                            <label>
+                                <input type="radio" id="distributor" name="storeType" value="distributor">
+                                <span class="selection">Distributor</span>
+                            </label>
                         </div>
-                        <span class="checkAvail"><i class="fa fa-clock availCL"></i></span>
                     </div>
-                </div>
+                    <div class="col_full bottommargin-xs"> 
+                        <div class="customDomainfield">
+                            <div class="input-group custom-inputGroup">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">https://</span>
+                                </div>
+                                <input type="text" class="form-control custom-formControl required checkAvailability"  value="" name="domain_name" id="domain_name" placeholder="Domain Name (Cannot be changed later)">
+                                <div class="input-group-append">
+                                    <?php $hname = "." . str_replace("www", "", $_SERVER['HTTP_HOST']);?>
+                                    <span class="input-group-text">{{ str_replace("..",".",$hname)  }}</span>
+                                </div>
+                            </div>
+                            <span class="checkAvail"><i class="fa fa-clock availCL"></i></span>
+                        </div>
+                    </div>
                     <div class="col_half bottommargin-xs">
-                        <input type="text" class="sm-form-control stName"   required="true" id="store_name" name="store_name" value=""  placeholder="Store Name * (don't worry you can change it later)" >
+                        <input type="text" class="sm-form-control stName" required="true" id="store_name" name="store_name" value=""  placeholder="Store Name * (don't worry you can change it later)">
                     </div>
                     <div class="col_half  col_last bottommargin-xs">
                         <input type="text" class="sm-form-control"   required="true" id="first_name" name="firstname" value="{{Session::get('merchantName')}}"  placeholder="First Name *" >
@@ -66,10 +78,20 @@
                     @else
                     <input type="hidden" name="provider_id" value="{{Session::get("fbId")}}">
                     @endif
-                    <div class="col_half bottommargin-xs">
-                        {{ Form::select('business_type',$cat,null,['class'=>'sm-form-control busType','required'=>'true']) }}
+                    <div class="col_half bottommargin-xs" id="divForMerchant">
+                        {{ Form::select('m_business_type[]',$cat,'',['id'=>'m_business_type','class'=>'sm-form-control select-box-alsell busType','required'=>'true']) }}
+                       
                     </div>
-                    <div class="col_half col_last  bottommargin-xs">
+                    <div class="col_half bottommargin-xs" id="divForDistributor" style="display: none;">
+                        <select id="d_business_type"  name="d_business_type[]" class="selectpicker sm-form-control select-box-alsell busType" multiple required="true">
+                        @foreach($cat as $catId=>$catName)
+                        <option value="{{$catId}}">{{$catName}}</option>
+                        @endforeach
+                        </select>
+
+                        {{-- {{ Form::select('business_type[]',$cat,'',['id'=>'business_type','class'=>'selectpicker sm-form-control select-box-alsell busType','required'=>'true']) }} <!--, 'noneSelectedText'=>'Top'--> --}}
+                    </div>
+                    <div class="col_half col_last  bottommargin-xs" id="storeOptionDiv">
                         <select class="selectpicker sm-form-control select-box-alsell" multiple required="true" name="already_selling[]">
                             <option value="Just checking out features">Just checking out features</option>
                             <option value="Have retail store">Have retail store</option>
@@ -77,13 +99,14 @@
                             <option value="Selling on facebook">Selling on facebook</option>
                         </select>
                     </div>
-                    <div class="col_full bottommargin-xs">
+                    <div class="col_full bottommargin-xs" id="storeVersionDiv">
                         <select class="sm-form-control" required="true" name="store_version">
                             <option value="1">Starter Version - a simple online store with minimum features activated (FREE)</option>
                             <option value="2">Advanced Version - a complex online store with highend features activated (FREE)</option>
                         </select>
                     </div>
                 </div>
+                <div class="clear"></div>
                 <p class="text-center topmargin-xs bottommargin-xs">By registering, you agree to our <a href="/terms-condition" target="_blank">Terms &amp; Condition</a> <!-- | <a href="#">Privacy Policy</a> -->
                 </p>
                 <input type="hidden" name="storename" value="{{ Session::get('storename') }}">
@@ -125,10 +148,21 @@
 @stop
 @section('myscripts')
 <script>
-$('.busType').change(function(){
-  var bname=$('.busType option:selected').html();
-  $('#bussiness_name').val(bname);
-})
+    
+    $('#store_name').keyup(function(){
+        var storeName = this.value;
+        if(storeName != '')
+        {
+            storeName = storeName.split(" ").join("-").toLowerCase();
+            $("#domain_name").val(storeName);
+        }
+    })
+
+    $('.busType').change(function(){
+        var bname = $('.busType option:selected').html();
+        $('#bussiness_name').val(bname);
+    })
+
 //    function checkAvailability(){
 //       if($(this).hasClass('error') == true){
 //
@@ -143,7 +177,27 @@ $('.busType').change(function(){
 //    jQuery.validator.addMethod("specialChrs", function (element, value) {
 //            return new RegExp('^[a-zA-Z0-9 ]+$').test(value)
 //        }, "Special Characters not permitted");
-//
+
+
+    $('input[type=radio][name=storeType]').change(function(){
+        var seletedUserType = this.value;
+        $("#business_type").val('');
+        if(seletedUserType == 'distributor'){
+            $("#storeOptionDiv").hide();
+            $("#storeVersionDiv").hide();
+           // $('#business_type').attr("multiple","true");
+           $("#divForDistributor").show();
+           $("#divForMerchant").hide();
+        }
+        else if(seletedUserType == 'merchant'){
+            $("#storeOptionDiv").show();
+            $("#storeVersionDiv").show();
+            $("#business_type").removeAttr("multiple",'');
+            $("#divForDistributor").hide();
+            $("#divForMerchant").show();
+        }
+    });
+
     jQuery.validator.addMethod("phone", function (phone_number, element) {
         phone_number = phone_number.replace(/\s+/g, "");
         return this.optional(element) || phone_number.length > 4 &&
@@ -178,6 +232,7 @@ $('.busType').change(function(){
                         cache: false,
                         data: {email: emal},
                         dataFilter: function (response) {
+                            
                             if (response == 1)
                                 return false; //return true or false
                             else
@@ -298,7 +353,11 @@ $('.busType').change(function(){
     });
 
     $(".sendOtpOnMobile").on("click", function () {
-        if ($("#newStoreForm").valid()) {
+       
+        $("#newStoreForm").submit();
+       /* 
+       Commented by SS
+       if ($("#newStoreForm").valid()) {
             $("#sendOTP").modal('show');
             var country=$('.county_code').val();
             var mobile= $('.telephone').val();
@@ -318,7 +377,7 @@ $('.busType').change(function(){
                     console.log(e.responseText);
                 }
             });
-        }
+        }*/
     });
 
 //    $("#otpForm").validate({

@@ -14,73 +14,65 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::any('/check-veeswipe-login', ["as" => "admin.login.checkVeeswipeLogin", "uses" => "LoginController@checkVeeswipeLogin"]);
     Route::group(['middleware' => ['auth:vswipe-users-web-guard', 'CheckUser']], function () {
 
-        Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "LoginController@dashboard"]);
-        Route::get('/getOrderDateWise', ["as" => "admin.getOrderDateWise", "uses" => "LoginController@getOrderDateWise"]);
-        Route::get('/getSalesDateWise', ["as" => "admin.getSalesDateWise", "uses" => "LoginController@getSalesDateWise"]);
-
-        Route::group(['prefix' => 'merchants'], function () {
-            Route::get('/', ["as" => "admin.merchants.view", "uses" => "MerchantController@index"]);
-            Route::any('/add-edit', ["as" => "admin.merchants.addEdit", "uses" => "MerchantController@addEdit"]);
-            Route::post('/save-update', ["as" => "admin.merchants.saveUpdate", "uses" => "MerchantController@saveUpdate"]);
-            Route::any('/save-update-documents', ["as" => "admin.merchants.saveUpdateDocuments", "uses" => "MerchantController@saveUpdateDocuments"]);
-            Route::any('/delete-document', ["as" => "admin.merchants.deleteDocument", "uses" => "MerchantController@deleteDocument"]);
-            Route::any('/merchant-autocomplete', ["as" => "admin.merchants.merchantAutocomplete", "uses" => "MerchantController@merchantAutocomplete"]);
-            Route::post('/check-existing-merchant', ["as" => "admin.merchants.checkExistingMerchant", "uses" => "MerchantController@checkExistingMerchant"]);
-            Route::post('/check-existing-user', ['as' => 'checkExistingUser', 'uses' => 'MerchantController@checkExistingUser']);
-            Route::post('/check-existing-phone', ['as' => 'checkExistingphone', 'uses' => 'MerchantController@checkExistingphone']);
-            
-        });
-
+    Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "LoginController@dashboard"]);
+    Route::get('/getOrderDateWise', ["as" => "admin.getOrderDateWise", "uses" => "LoginController@getOrderDateWise"]);
+    Route::get('/getSalesDateWise', ["as" => "admin.getSalesDateWise", "uses" => "LoginController@getSalesDateWise"]);
+    
+    Route::group(['prefix' => 'merchants'], function () {
+        Route::get('/', ["as" => "admin.merchants.view", "uses" => "MerchantController@index"]);
+        Route::any('/add-edit', ["as" => "admin.merchants.addEdit", "uses" => "MerchantController@addEdit"]);
+        Route::post('/save-update', ["as" => "admin.merchants.saveUpdate", "uses" => "MerchantController@saveUpdate"]);
+        Route::any('/save-update-documents', ["as" => "admin.merchants.saveUpdateDocuments", "uses" => "MerchantController@saveUpdateDocuments"]);
+        Route::any('/delete-document', ["as" => "admin.merchants.deleteDocument", "uses" => "MerchantController@deleteDocument"]);
+        Route::any('/merchant-autocomplete', ["as" => "admin.merchants.merchantAutocomplete", "uses" => "MerchantController@merchantAutocomplete"]);
+        Route::post('/check-existing-merchant', ["as" => "admin.merchants.checkExistingMerchant", "uses" => "MerchantController@checkExistingMerchant"]);
+        Route::post('/check-existing-user', ['as' => 'checkExistingUser', 'uses' => 'MerchantController@checkExistingUser']);
+        Route::post('/check-existing-phone', ['as' => 'checkExistingphone', 'uses' => 'MerchantController@checkExistingphone']);
         
-         Route::group(['prefix' => 'vendors'], function () {
-            Route::get('/', ["as" => "admin.vendors.view", "uses" => "VendorController@index"]);
-            Route::any('/add-edit', ["as" => "admin.vendors.addEdit", "uses" => "VendorController@addEdit"]);
-            Route::post('/save-update', ["as" => "admin.vendors.saveUpdate", "uses" => "VendorController@saveUpdate"]);
-            Route::any('/save-update-documents', ["as" => "admin.vendors.saveUpdateDocuments", "uses" => "VendorController@saveUpdateDocuments"]);
-            Route::any('/delete-document', ["as" => "admin.vendors.deleteDocument", "uses" => "VendorController@deleteDocument"]);
-            Route::any('/merchant-autocomplete', ["as" => "admin.vendors.merchantAutocomplete", "uses" => "VendorController@merchantAutocomplete"]);
-            Route::post('/check-existing-merchant', ["as" => "admin.vendors.checkExistingMerchant", "uses" => "VendorController@checkExistingMerchant"]);
-        });
+    });
+
+    Route::group(['prefix' => 'distributors'], function () {
+        //dd("inside group");
+        Route::get('/', ["as" => "admin.distributors.view", "uses" => "DistributorController@index"]);
+    });
 
 
-        
+    Route::group(['prefix' => 'stores'], function () {        
+        Route::get('/', ["as" => "admin.stores.view", "uses" => "StoreController@index"]);
+        Route::any('/check-store', ['as' => 'checkStoreAdmin', 'uses' => 'StoreController@checkStore']);
+        Route::any('/add-edit', ["as" => "admin.stores.addEdit", "uses" => "StoreController@addEdit"]);
+        Route::post('/save-update-general', ["as" => "admin.stores.saveUpdateGeneral", "uses" => "StoreController@saveUpdateGeneral"]);
+        Route::post('/save-update-contact', ["as" => "admin.stores.saveUpdateContact", "uses" => "StoreController@saveUpdateContact"]);
+        Route::post('/save-update-business', ["as" => "admin.stores.saveUpdateBusiness", "uses" => "StoreController@saveUpdateBusiness"]);
+        Route::post('/save-update-bank', ["as" => "admin.stores.saveUpdateBank", "uses" => "StoreController@saveUpdateBank"]);
+        Route::post('/save-update-store', ["as" => "admin.stores.saveUpdateStoreDoc", "uses" => "StoreController@saveUpdateStoreDoc"]);
+        Route::post('/delete-store-document', ["as" => "admin.stores.deleteStoreDoc", "uses" => "StoreController@deleteStoreDoc"]);
+        Route::get('/get-zone-dropdown/{id?}', ["as" => "admin.stores.getZoneDropdown", "uses" => "StoreController@getZoneDropdown"]);
+    });
 
-        Route::group(['prefix' => 'stores'], function () {
-            Route::get('/', ["as" => "admin.stores.view", "uses" => "StoreController@index"]);
-            Route::any('/check-store', ['as' => 'checkStoreAdmin', 'uses' => 'StoreController@checkStore']);
-            Route::any('/add-edit', ["as" => "admin.stores.addEdit", "uses" => "StoreController@addEdit"]);
-            Route::post('/save-update-general', ["as" => "admin.stores.saveUpdateGeneral", "uses" => "StoreController@saveUpdateGeneral"]);
-            Route::post('/save-update-contact', ["as" => "admin.stores.saveUpdateContact", "uses" => "StoreController@saveUpdateContact"]);
-            Route::post('/save-update-business', ["as" => "admin.stores.saveUpdateBusiness", "uses" => "StoreController@saveUpdateBusiness"]);
-            Route::post('/save-update-bank', ["as" => "admin.stores.saveUpdateBank", "uses" => "StoreController@saveUpdateBank"]);
-            Route::post('/save-update-store', ["as" => "admin.stores.saveUpdateStoreDoc", "uses" => "StoreController@saveUpdateStoreDoc"]);
-            Route::post('/delete-store-document', ["as" => "admin.stores.deleteStoreDoc", "uses" => "StoreController@deleteStoreDoc"]);
-            Route::get('/get-zone-dropdown/{id?}', ["as" => "admin.stores.getZoneDropdown", "uses" => "StoreController@getZoneDropdown"]);
-        });
+    Route::group(['prefix' => 'reports'], function () {
+        Route::get('/store-orders', ["as" => "admin.reports.view", "uses" => "ReportController@index"]);
+        Route::get('/getorders', ["as" => "admin.reports.getstoreorders", "uses" => "ReportController@getOrdersByStore"]);
+        Route::post('/export-store-orders', ["as" => "admin.reports.export", "uses" => "ReportController@exportStoreOrders"]);
+    });
 
-        Route::group(['prefix' => 'reports'], function () {
-            Route::get('/store-orders', ["as" => "admin.reports.view", "uses" => "ReportController@index"]);
-            Route::get('/getorders', ["as" => "admin.reports.getstoreorders", "uses" => "ReportController@getOrdersByStore"]);
-            Route::post('/export-store-orders', ["as" => "admin.reports.export", "uses" => "ReportController@exportStoreOrders"]);
-        });
+    Route::group(['prefix' => 'analytics'], function () {
+        Route::get('/by-category', ["as" => "admin.analytics.byCategory", "uses" => "AnalyticController@byCategory"]);
+        Route::get('/by-date', ["as" => "admin.analytics.byDate", "uses" => "AnalyticController@byDate"]);
+        Route::get('/by-merchant', ["as" => "admin.analytics.byMerchant", "uses" => "AnalyticController@byMerchant"]);
+        Route::get('/by-store', ["as" => "admin.analytics.byStore", "uses" => "AnalyticController@byStore"]);
+        Route::any('/by-bank', ["as" => "admin.analytics.byBank", "uses" => "AnalyticController@byBank"]);
 
-        Route::group(['prefix' => 'analytics'], function () {
-            Route::get('/by-category', ["as" => "admin.analytics.byCategory", "uses" => "AnalyticController@byCategory"]);
-            Route::get('/by-date', ["as" => "admin.analytics.byDate", "uses" => "AnalyticController@byDate"]);
-            Route::get('/by-merchant', ["as" => "admin.analytics.byMerchant", "uses" => "AnalyticController@byMerchant"]);
-            Route::get('/by-store', ["as" => "admin.analytics.byStore", "uses" => "AnalyticController@byStore"]);
-            Route::any('/by-bank', ["as" => "admin.analytics.byBank", "uses" => "AnalyticController@byBank"]);
-
-            Route::any('/by-bank-export', ["as" => "admin.analytics.byBank.export", "uses" => "AnalyticController@byBankExport"]);
-            Route::any('/by-merchant-export', ["as" => "admin.analytics.byMerchant.export", "uses" => "AnalyticController@byMerchantExport"]);
-            Route::any('/by-store-export', ["as" => "admin.analytics.byStore.export", "uses" => "AnalyticController@byStoreExport"]);
-            Route::any('/by-date-get-yearly', ["as" => "admin.analytics.byDateGetYearly", "uses" => "AnalyticController@byDateGetYearly"]);
-            Route::any('/by-date-get-daily', ["as" => "admin.analytics.byDateGetDaily", "uses" => "AnalyticController@byDateGetDaily"]);
-            Route::any('/by-date-get-monthly', ["as" => "admin.analytics.byDateGetMonthly", "uses" => "AnalyticController@byDateGetMonthly"]);
-            Route::any('/by-category-export', ["as" => "admin.analytics.byCategoryExport", "uses" => "AnalyticController@byCategoryExport"]);
+        Route::any('/by-bank-export', ["as" => "admin.analytics.byBank.export", "uses" => "AnalyticController@byBankExport"]);
+        Route::any('/by-merchant-export', ["as" => "admin.analytics.byMerchant.export", "uses" => "AnalyticController@byMerchantExport"]);
+        Route::any('/by-store-export', ["as" => "admin.analytics.byStore.export", "uses" => "AnalyticController@byStoreExport"]);
+        Route::any('/by-date-get-yearly', ["as" => "admin.analytics.byDateGetYearly", "uses" => "AnalyticController@byDateGetYearly"]);
+        Route::any('/by-date-get-daily', ["as" => "admin.analytics.byDateGetDaily", "uses" => "AnalyticController@byDateGetDaily"]);
+        Route::any('/by-date-get-monthly', ["as" => "admin.analytics.byDateGetMonthly", "uses" => "AnalyticController@byDateGetMonthly"]);
+        Route::any('/by-category-export', ["as" => "admin.analytics.byCategoryExport", "uses" => "AnalyticController@byCategoryExport"]);
 
             
-        });
+    });
         Route::group(['prefix' => 'systemusers'], function () {
             Route::group(['prefix' => 'roles'], function() {
                 Route::get('/', ['as' => 'admin.systemusers.roles.view', 'uses' => 'VswipeRolesController@index']);
