@@ -64,6 +64,7 @@ class SystemUsersController extends Controller {
         } else {
             $password = rand(10000, 99999);
         }
+        //dd($password);
         if (empty($chk)) {
             $user = new User();
             $user->firstname = Input::get('firstname');
@@ -103,13 +104,13 @@ class SystemUsersController extends Controller {
         $user = User::find(Input::get('id'));
       
         $user->firstname = Input::get('firstname');
-        if (Input::get('password_crpt')) {
-        //    dd(Input::get('password'));
+        if (Input::get('password')) {
+        //   dd(Input::get('password'));
             
-        $password = Hash::make(Input::get('password_crpt'));
+        $password = Hash::make(Input::get('password'));
         if($password!=$user->password){
              $user->password =$password;
-             $user->password_crpt =base64_encode(Input::get('password_crpt'));
+             $user->password_crpt =base64_encode(Input::get('password'));
         } 
        
        }
