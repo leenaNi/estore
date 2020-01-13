@@ -10,11 +10,9 @@ class AdditionalCharge extends Model {
     protected $table = 'additional_charges';
 
     public static function ApplyAdditionalCharge($price) {
-        $addCharge = GeneralSetting::where('url_key', 'additional-charge')->where('status', 1)->first();      
-
+        $addCharge = GeneralSetting::where('url_key', 'additional-charge')->where('status', 1)->first();
         $data = [];
-
-        if( is_array($addCharge) && count($addCharge) <= 0)
+        if($addCharge == null)
         {
             $data['total_amt'] = 0;
             return json_encode($data);
@@ -22,13 +20,13 @@ class AdditionalCharge extends Model {
            
 
         $amount = 0;
-//        $charge_list = [];
+        // $charge_list = [];
         $arr = [];
         $charges = [];
-        if ( is_array($addCharge) && $addCharge->status == 1) {
+        if ($addCharge != null && $addCharge->status == 1) {
             $charges = AdditionalCharge::where('status', 1)->get();
             foreach ($charges as $key => $charge) {
-//                echo "In Add Charge Model -> ".$charge->label. " Price => ". $price;
+                // echo "In Add Charge Model -> ".$charge->label. " Price => ". $price;
                 $charge_list = [];
                 if ($charge['min_order_amt'] > 0) {
                     if ($price >= $charge['min_order_amt']) {
@@ -45,7 +43,7 @@ class AdditionalCharge extends Model {
                         $charge_list['rate'] = $charge->rate;
                         $charge_list['min_order_amt'] = $charge->min_order_amt;
                         array_push($arr, $charge_list);
-//                        print_r($charge_list);
+                        // print_r($charge_list);
                     }
                 } else {
                     if ($charge->type == 1) {
@@ -61,12 +59,12 @@ class AdditionalCharge extends Model {
                     $charge_list['rate'] = $charge->rate;
                     $charge_list['min_order_amt'] = $charge->min_order_amt;
                     array_push($arr, $charge_list);
-//                    print_r($charge_list);
+                    // print_r($charge_list);
                 }
-//                print_r($arr);
+                // print_r($arr);
             }
-//            echo "==================================================<br/>";
-//            print_r($arr);
+            // echo "==================================================<br/>";
+            // print_r($arr);
         } else {
             $amount = 0;
         }
