@@ -193,7 +193,8 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'adminCourierView' => 'Admin.pages.courier',
         'adminStorePath' => base_Path() . '/' . env('STORE_NAME'),
         'adminMarketingEmailsView' => 'Admin.pages.marketing-emails',
-        'adminReports' => 'Admin.pages.reports',
+        'adminReports' => 'Admin.pages.reports',        
+        'adminPaymentsView' => 'Admin.pages.payments',
     ];
 }
 

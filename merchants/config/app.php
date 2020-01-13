@@ -12,7 +12,7 @@ return [
       | application. If disabled, a simple generic error page is shown.
       |
      */
-    'env' => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'local'),
     'debug' => true,//env('APP_DEBUG', false),
     /*
       |--------------------------------------------------------------------------

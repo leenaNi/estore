@@ -192,7 +192,7 @@ class LoginController extends Controller {
                         $settings =Helper::getSettings();                      
                         //dd($settings);
                         $webUrl = $_SERVER['SERVER_NAME'];
-                        $emailContent = EmailTemplate::where('id', 1)->select('content','subject')->get()->toArray();                        
+                        $emailContent = EmailTemplate::where('url_key', 'registration')->select('content','subject')->get()->toArray();                        
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
                         
@@ -245,7 +245,7 @@ class LoginController extends Controller {
             $linktosend = route('resetNewPwd') . "/" . Crypt::encrypt($useremail);
             //$user = User::where("email", "=", $useremail)->first();
             if ($emailStatus == 1 && $chkemail->email != '') {
-                $emailContent = EmailTemplate::where('id', 3)->select('content','subject')->get()->toArray();
+                $emailContent = EmailTemplate::where('url_key', 'forgot-password')->select('content','subject')->get()->toArray();
                 $email_template = $emailContent[0]['content'];
                 $subject = $emailContent[0]['subject'];
 //                $path = Config("constants.adminStorePath"). "/storeSetting.json";
@@ -318,7 +318,7 @@ class LoginController extends Controller {
         $upPassword->update();
 
         if ($emailStatus == 1 && $upPassword->email != '') {
-                $emailContent = EmailTemplate::where('id', 14)->select('content','subject')->get()->toArray();
+                $emailContent = EmailTemplate::where('url_key', 'reset-password')->select('content','subject')->get()->toArray();
                 $email_template = $emailContent[0]['content'];
                 $subject = $emailContent[0]['subject'];
                // $path = Config("constants.adminStorePath"). "/storeSetting.json";

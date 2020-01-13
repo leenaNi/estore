@@ -354,7 +354,7 @@ class HomeController extends Controller {
 //                       // $message->cc(['indranath.sgupta@gmail.com','aloke@asgleather.com']);
 //                    }));
         if ($this->getEmailStatus == 1) {
-            $email_template = EmailTemplate::where('id', 13)->select('content')->get()->toArray()[0]['content'];
+            $email_template = EmailTemplate::where('url_key', 'contact-us')->select('content')->get()->toArray()[0]['content'];
             $replace = ["[userName]", "[userEmail]", "[telephone]", "[message]"];
             $replacewith = [ucfirst($contactform_fname), $contactform_email, $contactform_phone, $contactform_message];
             $subject = "Conatct form Enquiry";
