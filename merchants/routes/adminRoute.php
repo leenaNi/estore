@@ -212,6 +212,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/rev-loyalty', array('as' => 'admin.tables.revloyalty', 'uses' => 'TableController@revLoyalty'));
             Route::any('/table-cod', array('as' => 'admin.tables.tableCod', 'uses' => 'TableController@cashOnDelivary'));
             Route::any('/get-add-charge', array('as' => 'admin.tables.getAdditionalcharge', 'uses' => 'TableController@getAddCharges'));
+            Route::any('/get-search-data', array('as' => 'admin.tables.getSearchData', 'uses' => 'TableController@getSearchData'));
         });
         Route::group(array('prefix' => 'restaurant-layout', 'middlewareGroups' => ['web']), function() {
             Route::any('/', array('as' => 'admin.restaurantlayout.view', 'uses' => 'TableController@layout'));
@@ -233,8 +234,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/get-occupied-table-order', array('as' => 'admin.tableOccupiedOrder', 'uses' => 'TableController@tableOccupiedOrder'));
             Route::any('/get-orderBill/{id?}', array('as' => 'admin.order.getbill', 'uses' => 'TableController@tableOccupiedOrderBill'));
             Route::any('/get-cart-amount', array('as' => 'admin.getCartAmt', 'uses' => 'TableController@getCartAmt'));
-
             Route::any('/delete-kot-prods', array('as' => 'admin.order.deleteKotProds', 'uses' => 'TableController@deleteKotProds'));
+            Route::post('/change-occupancy-status/{id?}', array('as' => 'admin.tables.changeOccupancyStatus', 'uses' => 'TableController@changeOccupancyStatus'));
         });
 
 
@@ -247,16 +248,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/get-customer-zone', ['as' => 'admin.orders.getCustomerZone', 'uses' => 'OrdersController@getCustomerZone']);
             Route::any('/get-customer-add', ['as' => 'admin.orders.getCustomerAdd', 'uses' => 'OrdersController@getCustomerAdd']);
             Route::any('/save-customer-add', ['as' => 'admin.orders.saveCustomerAdd', 'uses' => 'OrdersController@saveCustomerAdd']);
-
             Route::any('/get-cat-prods', ['as' => 'admin.orders.getSearchProds', 'uses' => 'OrdersController@getSearchProds']);
-
             Route::any('/get-sub-prods', ['as' => 'admin.orders.getSubProds', 'uses' => 'OrdersController@getSubProds']);
             Route::any('/save-cart-data', ['as' => 'admin.orders.saveCartData', 'uses' => 'OrdersController@saveCartData']);
             Route::any('/get-prod-price', ['as' => 'admin.orders.getProdPrice', 'uses' => 'OrdersController@getProdPrice']);
-
             Route::any('/order-invoice/{OrderIds?}', ['as' => 'admin.orders.invoice', 'uses' => 'OrdersController@invoice']);
             Route::post('/order-invoice-print', ['as' => 'admin.orders.invoice.print', 'uses' => 'OrdersController@setPrintInvoice']);
             Route::any('/order-export', ['as' => 'admin.orders.export', 'uses' => 'OrdersController@export']);
+            Route::any('/order-sample-export', ['as' => 'admin.orders.sampleexport', 'uses' => 'OrdersController@exportsamplecsv']);
             Route::post('/order-update-payment', ['as' => 'admin.orders.update.payment', 'uses' => 'OrdersController@updatePaymentStatus']);
             Route::post('/order-update-status', ['as' => 'admin.orders.update.status', 'uses' => 'OrdersController@updateOrderStatus']);
             Route::post('/order-update-return-quantity', ['as' => 'admin.orders.update.return', 'uses' => 'OrdersController@updateRetutnQty']);

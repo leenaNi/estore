@@ -10,9 +10,10 @@
 
   
 
-   $attr =   App\Models\AttributeSet::find(App\Models\Product::find($id)->attr_set)->attributes()->where('is_filterable',0)->count()
+   // $attr =   App\Models\AttributeSet::find(App\Models\Product::find($id)->attr_set)->attributes()->where('is_filtrable',0)->count();
+   // dd($attr);&& $attr !=0
    ?>
-    @if(($prod_type == 1 || $prod_type == 7 || $prod_type == 3 || $prod_type == 8) && $attr !=0)
+    @if(($prod_type == 1 || $prod_type == 7 || $prod_type == 3 || $prod_type == 8) )
 
     <li class="{{ in_array(Route::currentRouteName(),['admin.products.attribute']) ? 'active' : '' }}"><a href="{!! route('admin.products.attribute',['id'=>$id]) !!}"  aria-expanded="false">Extra Details</a></li>
     @endif

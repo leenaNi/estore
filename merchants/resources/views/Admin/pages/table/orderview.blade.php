@@ -11,6 +11,7 @@
     .green{background-color: #2ecc71;}
     .red{background-color: #d35400;}
     .yellow{background-color: #f1c40f;}
+    .billedColor{ background: #f1c40f; }
 
 
 </style>
@@ -25,17 +26,27 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box">
+            @if(!empty(Session::get('message')))
+                <div class="alert alert-danger" role="alert">
+                    {{ Session::get('message') }}
+                </div>
+                @endif
+                @if(!empty(Session::get('msg')))
+                <div class="alert alert-success" role="alert">
+                    {{Session::get('msg')}}
+                </div>
+                @endif
             <div class="box-header box-tools filter-box col-md-9 noBorder rightBorder">
                 <ul class="orderTableColor">
-                    <li>Occupy<br/><div class="occupyColor"></div></li>
                     <li>Free<br/><div class="freeColor"></div></li>
+                    <li>Occupy<br/><div class="occupyColor"></div></li>
+                    <li>Billed<br/><div class="freeColor billedColor"></div></li>
                 </ul>
             </div>
                 <div class="box-header  col-md-3 col-xs-12 pull-right">
                     <a class="btn btn-default pull-right" type="button" data-toggle="modal" data-target="#addOrder">Add New Order</a>
                     <div id="addOrder" class="modal fade" role="dialog">
                         <div class="modal-dialog" style="width: 75%;top:40px">
-
                             <!-- Modal content-->
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -58,9 +69,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
-
-
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -69,22 +77,13 @@
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
-
                 </div>
-
-
-
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
-
                 <div class="box-body ">
                     <div class="row" >
-
-
                         <!-- style four -->
                         <div class="col-md-12">
                             <!-- tab style -->
@@ -93,12 +92,11 @@
                                     <li class="active"><a href="#tab-linearrow-one" data-toggle="tab">Dine In Orders</a></li>
                                     <li><a href="#tab-linearrow-two" data-toggle="tab">Other Orders</a></li>
                                     <li><a href="#tab-linearrow-three" data-toggle="tab">All Orders</a></li>
-
                                 </ul>
                                 <div class="tab-content pull-left" style="width:100%;">
                                     <div class="tab-pane active" id="tab-linearrow-one">
                                         <div  id='box' class="pull-left">
-                                        <?php//  dd($tables); ?>
+                                        <?php //  dd($tables); ?>
                                             @foreach($tables as $table)
                                             <div class="draggable3 size{{$table->table_type }} col-md-3 ">
                                                 <div data-tableid="{{ $table->id }}" class="target3 {{@$table->tablestatus->color}} context-menu-one">
@@ -110,7 +108,6 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab-linearrow-two">
-
                                         <table class="table table-bordered table-condensed table-hover tableVaglignMiddle">
                                             <thead>
                                                 <tr>
@@ -129,19 +126,12 @@
                                                     <td><a href="{{route('admin.order.additems', ['id' => $otherorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
                                                 </tr>
                                                 @endforeach
-
-
                                             </tbody>
                                         </table>
-
                                         <div class="pull-right">
-
                                             {{ $otherorders->links() }}
                                         </div>
-
-
                                     </div>
-
                                     <div class="tab-pane" id="tab-linearrow-three">
                                         <table class="table table-bordered table-condensed table-hover tableVaglignMiddle">
                                             <thead>
@@ -158,7 +148,6 @@
                                                 <tr>
                                                     <td>{{ $allorder->id }}</td>
                                                     <td>{{ $allorder->type()->first()->otype }}</td>
-                                                    
                                                     <td> <?php 
                                                     $tablesnumbers = "";
                                                     if($allorder->otype == 1){
@@ -170,40 +159,29 @@
                                                                 $tablesnumbers .= App\Models\Table::find($t)->table_no.",";
                                                             }
                                                          $tablesnumbers =   rtrim($tablesnumbers,',');
-                                                        }
-                                                        
-                                                        
+                                                        }                                                                                                                
                                                     }
-                                                    echo $tablesnumbers;
-                                                    
+                                                    echo $tablesnumbers;                                                    
                                                     ?> </td>
                                                     <td>{{ date("d-M-Y H:i:s",strtotime($allorder->created_at)) }}</td>
                                                     <td><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
                                                 </tr>
                                                 @endforeach
-
-
                                             </tbody>
                                         </table>
                                         <div class="pull-right">
                                             {{ $allorders->links() }}
                                         </div> 
-                                    </div>  
-
+                                    </div>
                                 </div>
                                 <!-- tab style -->
                             </div>
                             <!-- #end style-four -->
-
-
-
                         </div>
-
                     </div><!-- /.box-body -->
                 </div>
             </div>
         </div>
-
         <div id="newOrdersTables" class="modal fade" role="dialog">
             <div class="modal-dialog" style="width: 75%;top:40px">
                 <!-- Modal content-->
@@ -226,11 +204,8 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
-
             </div>
         </div>
-
-
 </section>
 
 @stop
@@ -238,11 +213,8 @@
 @section('myscripts')
 <link href="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
 <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.js" type="text/javascript"></script>
-
 <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.ui.position.min.js" type="text/javascript"></script>
-
 <script src="https://swisnl.github.io/jQuery-contextMenu/js/main.js" type="text/javascript"></script>
-
 <script>
 var itemsNew = {
     "edit": {name: "Add Order", icon: "edit"},
@@ -305,15 +277,19 @@ $(document).ready(function () {
               if (key == 'edit') {
                 $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
                     window.location.href=respurl;
-                });
-                
-            }else if(key == 'cut'){
+                });                
+            } else if(key == 'cut'){
               $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
-                 
                   window.location.href=respurl+"?from=regenerateBill";
                 });  
-            }
-            
+            } else if(key == 'paste'){
+              $.post("{{ route('admin.tables.changeOccupancyStatus') }}/1",{tableid:tableid, keyname:key},function(res){
+                  console.log(res);
+                  if(res.status){
+                    window.location.href = "{{route('admin.tableorder.view')}}";
+                  }
+                });  
+            }            
         },
         items: billNew
 
