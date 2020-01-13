@@ -92,6 +92,10 @@ body * { visibility: hidden; }
     .panel-title{ font-size: 14px!important; }
     .control-label{ font-size: 14px!important; }
     .error{color:red;}
+    .search{
+        position: relative;
+    }
+    .search .remove-search{position: absolute;top: 5px; right: 12px; font-size: 20px; }
 </style>
 @stop
 @section('content')
@@ -134,14 +138,17 @@ body * { visibility: hidden; }
             <div class="box box-solid">
                 <h3 class="list marginBottom20">
                     <div class="col-md-6 noRightpadding noLeftpadding">
-                        <input type="text" class="form-control" placeholder="Search Category/Product Name/SKU/ID" name="Search Category/Product Name/SKU/ID">
+                        <div class="search">
+                        <input type="text" name="prod_search" class="form-control prodSearch validate[required]" placeholder="Search Product Name/SKU/ID" name="Search Product Name/SKU/ID">
+                        <span class="remove-search hide"><i class="fa fa-remove"></i></span>    
+                    </div>
                     </div>
                 </h3>
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="box-group" id="accordion">
                         <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
-                        <div class="panel box box-primary">
+                        <div class="panel box box-primary" id="default-view">
                             @foreach($categories as $key =>  $cat)
                             <div class="box-header with-border">
                                 <h6 class="box-title">
@@ -154,7 +161,7 @@ body * { visibility: hidden; }
                                 <div class="box-body">
                                     <ul>
                                         @foreach($cat->products as $prd)
-                                        <li class="prod" data-prdid="{{$prd->id }}" id="prd-{{$prd->id}}"><b>{{ $prd->product }}</b>
+                                        <li class="prod" data-cat="{{ $cat->url_key }}" data-prdid="{{$prd->id }}" id="prd-{{$prd->id}}"><b>{{ $prd->product }}</b>
                                             <a href="#"  class="pull-right" ui-toggle-class="" data-toggle="tooltip" title="Add Item"><i class="fa fa-plus fa-fw addItem"></i></a>
                                             <input value="" type="text" placeholder="Remarks"  name="remarks" class="input-mini pull-right remark">
                                             <input value="1" type="text" placeholder="Qty"  name="qty" class="qty input-mini pull-right">
@@ -166,6 +173,7 @@ body * { visibility: hidden; }
                             </div>
                             @endforeach
                         </div>
+                        <div class="panel box box-primary" id="search-results"></div>
                     </div>
                 </div>
                 <!-- /.box-body -->
@@ -537,7 +545,6 @@ body * { visibility: hidden; }
             });
         });
     }
-
     $(".cancelBtn").on("click", function () {
         $("#getAddCustomer").modal("hide");
         // window.location.href = "{{ route('admin.order.additems',['id'=><?= request()->route('id'); ?>]) }}";
@@ -566,7 +573,7 @@ body * { visibility: hidden; }
         });
     }
 
-    $(".addItem").click(function () {
+    $("body").on('click', '.addItem', function () {
         $("#saveItem").show();
         var prodList = $(this).parents('li').attr('id').split('-');
         var prodId = prodList[1];
@@ -691,7 +698,7 @@ body * { visibility: hidden; }
         });
 
     });
-//
+    //
     function setValuesToInpt(custid, firstname, lastname, telephone, emailid) {
         $("input[name='s_phone']").val(telephone);
         $("input[name='customer_id']").val(custid);
@@ -1049,12 +1056,12 @@ body * { visibility: hidden; }
         var sThisVal=new Array();
         $('input:checkbox.checkboxCheck').each(function () {
             if(this.checked){
-            sThisVal.push($(this).attr("data-id"));
-        }     
-  });
-  console.log($("#tableOrderForm").attr('action'));
-   $("input[name='additionalcharge']").val(sThisVal);
-          $.ajax({
+                sThisVal.push($(this).attr("data-id"));
+            }     
+        });
+        console.log($("#tableOrderForm").attr('action'));
+        $("input[name='additionalcharge']").val(sThisVal);
+        $.ajax({
             type: "POST",
             url: $("#tableOrderForm").attr('action'),
             data: $("#tableOrderForm").serialize(),
@@ -1139,5 +1146,67 @@ body * { visibility: hidden; }
         newWin.document.close();
         setTimeout(function(){newWin.close();},10);
     }
+
+    // $(".prodSearch").autocomplete({
+    //     source: "{{ route('admin.orders.getSearchProds') }}",
+    //     minLength: 1,
+    //     select: function (event, ui) {
+    //         ele = event.target;
+            
+
+    //     }
+    // });
+    $(".prodSearch").blur(function () {        
+        if($(this).val().length<=1){
+            $(this).val('');            
+            $('.remove-search').addClass('hide');
+            $('#default-view').show();
+            $('#search-results').html('').hide();
+        }
+    });
+    $(".prodSearch").keyup(function() {
+        var searchKey = $(this).val();
+        if(searchKey.length>1) {
+            $('.remove-search').removeClass('hide');
+            $.ajax({
+                type: "POST",
+                url: "{{route('admin.tables.getSearchData')}}",
+                data: {term: searchKey},
+                cache: false,
+                success: function (data) {
+                    console.log(data);
+                    if(data.length) {                        
+                        var str = '<div class="box-body"><ul>';
+                        for(i=0; i<data.length; i++) {
+                            str+='<li class="prod" data-cat="'+data[i].cat_url+'" data-prdid="'+data[i].id+'" id="prd-'+data[i].id+'"><b>'+data[i].product+'</b>';
+                            str+='<a href="#"  class="pull-right" ui-toggle-class="" data-toggle="tooltip" title="Add Item"><i class="fa fa-plus fa-fw addItem"></i></a>';
+                            str+='<input value="" type="text" placeholder="Remarks"  name="remarks" class="input-mini pull-right remark">';
+                            str+='<input value="1" type="text" placeholder="Qty"  name="qty" class="qty input-mini pull-right">';
+                            str+='<input value="'+data[i].selling_price * {{Session::get('currency_val')}}+'" type="hidden"  name="price" class="price">';
+                            str+='</li>';
+                        }                        
+                        str+='</ul></div>';
+                        $('#search-results').html(str);
+                        $('#default-view').hide();
+                        $('#search-results').show();
+                    } else {
+                        $('.remove-search').addClass('hide');
+                        $('#default-view').show();
+                        $('#search-results').hide();
+                    }
+                }
+            });
+        } else {
+            $('.remove-search').addClass('hide');
+            $('#default-view').show();
+            $('#search-results').hide();
+        }
+    });
+    $('.search span.remove-search').click(function () {
+        $('.prodSearch').val('');
+        $('#default-view').show();
+        $('#search-results').html('').hide();
+        $(this).addClass('hide');
+    });
 </script>
 @stop

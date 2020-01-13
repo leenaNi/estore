@@ -736,4 +736,27 @@ class TableController extends Controller
         }
     }
 
+    public function getSearchData() {
+        $searchStr = Input::get('term');
+        $products = DB::table('products')
+        ->select('products.id', 'products.product', 'products.selling_price', 'categories.category', 'categories.url_key as cat_url')
+        ->leftJoin('has_categories', 'products.id', 'has_categories.prod_id')
+        ->leftJoin('categories', 'categories.id', '=', 'has_categories.cat_id')
+        ->where("products.is_individual", 1)->where('products.status', 1)
+        ->where('products.product', "like", "%" . $searchStr . "%")
+        ->orWhere('products.id', "like", "%" . $searchStr . "%")
+        ->get();
+
+        // $data = [];
+        // foreach ($products as $k => $prd) {
+        //     if (!in_array($prd->id, $added_prod)) {
+        //         $data[$k]['id'] = $prd->id;
+        //         $data[$k]['value'] = $prd->product;
+        //         $data[$k]['label'] = "[" . $prd->id . "]" . $prd->product;
+        //     }
+        // }
+
+        return $products;
+    }
+
 }

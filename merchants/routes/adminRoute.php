@@ -212,6 +212,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/rev-loyalty', array('as' => 'admin.tables.revloyalty', 'uses' => 'TableController@revLoyalty'));
             Route::any('/table-cod', array('as' => 'admin.tables.tableCod', 'uses' => 'TableController@cashOnDelivary'));
             Route::any('/get-add-charge', array('as' => 'admin.tables.getAdditionalcharge', 'uses' => 'TableController@getAddCharges'));
+            Route::any('/get-search-data', array('as' => 'admin.tables.getSearchData', 'uses' => 'TableController@getSearchData'));
         });
         Route::group(array('prefix' => 'restaurant-layout', 'middlewareGroups' => ['web']), function() {
             Route::any('/', array('as' => 'admin.restaurantlayout.view', 'uses' => 'TableController@layout'));
