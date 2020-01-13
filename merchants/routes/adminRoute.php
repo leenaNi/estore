@@ -233,8 +233,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/get-occupied-table-order', array('as' => 'admin.tableOccupiedOrder', 'uses' => 'TableController@tableOccupiedOrder'));
             Route::any('/get-orderBill/{id?}', array('as' => 'admin.order.getbill', 'uses' => 'TableController@tableOccupiedOrderBill'));
             Route::any('/get-cart-amount', array('as' => 'admin.getCartAmt', 'uses' => 'TableController@getCartAmt'));
-
             Route::any('/delete-kot-prods', array('as' => 'admin.order.deleteKotProds', 'uses' => 'TableController@deleteKotProds'));
+            Route::post('/change-occupancy-status/{id?}', array('as' => 'admin.tables.changeOccupancyStatus', 'uses' => 'TableController@changeOccupancyStatus'));
         });
 
 
@@ -247,13 +247,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/get-customer-zone', ['as' => 'admin.orders.getCustomerZone', 'uses' => 'OrdersController@getCustomerZone']);
             Route::any('/get-customer-add', ['as' => 'admin.orders.getCustomerAdd', 'uses' => 'OrdersController@getCustomerAdd']);
             Route::any('/save-customer-add', ['as' => 'admin.orders.saveCustomerAdd', 'uses' => 'OrdersController@saveCustomerAdd']);
-
             Route::any('/get-cat-prods', ['as' => 'admin.orders.getSearchProds', 'uses' => 'OrdersController@getSearchProds']);
-
             Route::any('/get-sub-prods', ['as' => 'admin.orders.getSubProds', 'uses' => 'OrdersController@getSubProds']);
             Route::any('/save-cart-data', ['as' => 'admin.orders.saveCartData', 'uses' => 'OrdersController@saveCartData']);
             Route::any('/get-prod-price', ['as' => 'admin.orders.getProdPrice', 'uses' => 'OrdersController@getProdPrice']);
-
             Route::any('/order-invoice/{OrderIds?}', ['as' => 'admin.orders.invoice', 'uses' => 'OrdersController@invoice']);
             Route::post('/order-invoice-print', ['as' => 'admin.orders.invoice.print', 'uses' => 'OrdersController@setPrintInvoice']);
             Route::any('/order-export', ['as' => 'admin.orders.export', 'uses' => 'OrdersController@export']);

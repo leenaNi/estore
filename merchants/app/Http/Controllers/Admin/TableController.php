@@ -2,36 +2,37 @@
 
 namespace App\Http\Controllers\admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Table;
-use App\Models\Kot;
-use App\Models\Order;
-use App\Models\Category;
-use App\Models\Coupon;
-use App\Models\OrderType;
-use App\Models\Country;
-use App\Models\Product;
-use App\Models\Zone;
-use App\Models\User;
-use App\Models\HasProducts;
+use App\Library\Helper;
 use App\Models\AdditionalCharge;
 use App\Models\Address;
-use App\Models\Loyalty;
+use App\Models\Category;
 use App\Models\Contact;
-use Input;
-use App\Library\Helper;
-use Session;
-use DB;
-use Form;
-use Cart;
+use App\Models\Country;
+use App\Models\Coupon;
+use App\Models\HasProducts;
+use App\Models\Kot;
+use App\Models\Loyalty;
+use App\Models\Order;
+use App\Models\OrderType;
+use App\Models\Product;
+use App\Models\Table;
+use App\Models\User;
+use App\Models\Zone;
+use App\Models\OrderStatusHistory;
+use App\Models\TableStatus;
 use Carbon;
+use Cart;
+use DB;
+use Input;
+use Session;
 
-class TableController extends Controller {
+class TableController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
         $tables = Table::whereIn('status', [0, 1])->orderBy("id", "asc");
-
         if (!empty(Input::get("table"))) {
             $tables = $tables->where("table_label", "like", "%" . Input::get("table") . "%")->get();
             $tablesCount = $tables->count();
@@ -42,19 +43,20 @@ class TableController extends Controller {
         return view(Config('constants.adminTableView') . '.index', compact('tables', 'tablesCount'));
     }
 
-    public function addEdit() {
+    public function addEdit()
+    {
         $table = Table::find(Input::get("id"));
         $action = route('admin.tables.save');
         return view(Config('constants.adminTableView') . '.addEdit', compact('table', 'action'));
     }
 
-    public function save() {
+    public function save()
+    {
         $table = Table::findOrNew(Input::get("id"));
         $table->table_no = Input::get("table_no");
         $table->chairs = Input::get("chairs");
         $table->table_label = Input::get("table_label");
         $table->table_type = Input::get("table_type");
-
         $table->status = Input::get("status");
         if (empty(Input::get('id'))) {
             Session::flash("msg", "Table added successfully.");
@@ -68,7 +70,8 @@ class TableController extends Controller {
         return Helper::returnView($viewname, $data, $url = 'admin.tables.view');
     }
 
-    public function changeStatus() {
+    public function changeStatus()
+    {
         $table = Table::find(Input::get("id"));
         if ($table->status == 1) {
             $status = 0;
@@ -86,62 +89,64 @@ class TableController extends Controller {
         return Helper::returnView($viewname, $data, $url = 'admin.tables.view');
     }
 
-    public function delete() {
+    public function delete()
+    {
         $table = Table::find(Input::get("id"));
         $table->delete();
         Session::flash("message", "Table deleted successfully.");
         $data = ['status' => "1", "message" => "Table deleted successfully."];
         $viewname = '';
-
         return Helper::returnView($viewname, $data, $url = 'admin.tables.view');
     }
 
-    public function layout() {
+    public function layout()
+    {
         $tables = Table::all();
         return view(Config('constants.adminTableView') . '.layout', compact('tables'));
     }
 
-    public function orderview() {
+    public function orderview()
+    {
         $tables = Table::with('tablestatus')->get();
-        $otypes = OrderType::where('id', "!=", 1)->get();
+        $tableStatus = TableStatus::get();
+        $otypes = OrderType::where('id', '!=', 1)->get();
         $otherorders = Order::whereNotIn("otype", [1, 0])->orderBy("created_at", "desc")->paginate(100);
         $allorders = Order::where("otype", "!=", 0)->orderBy("created_at", "desc")->paginate(100);
-
-
-        return view(Config('constants.adminTableView') . '.orderview', compact('tables', 'otypes', 'otherorders', 'allorders'));
+        return view(Config('constants.adminTableView') . '.orderview', compact('tables', 'tableStatus', 'otypes', 'otherorders', 'allorders'));
     }
 
-    public function ordersave() {
+    public function ordersave()
+    {
         $order = new Order;
         $order->otype = Input::get('ordertype');
         $order->save();
-
         return redirect()->route('admin.order.additems', ['id' => $order->id]);
     }
 
-    public function additems($id) {
+    public function additems($id)
+    {
         $this->removeAllDiscountSession();
         $data['order'] = Order::find($id);
         $data['order']->kots = $data['order']->kots;
         $data['order']->type = $data['order']->type;
-        $data['categories'] = Category::where("status", 1)->with(['products' => function($q) {
-                        $q->where("status", 1)->where("prod_type", 1);
-                    }])->get();
+        $data['categories'] = Category::where("status", 1)->with(['products' => function ($q) {
+            $q->where("status", 1)->where("prod_type", 1);
+        }])->get();
         $data['tables'] = Table::where("status", 1)
-                ->select(DB::raw("CONCAT(table_no,' - ',table_label) AS table_name"), 'id')
-                ->pluck("table_name", 'id');
+            ->select(DB::raw("CONCAT(table_no,' - ',table_label) AS table_name"), 'id')
+            ->pluck("table_name", 'id');
 
         $ordcountries = Country::where("status", 1)->pluck("name", "id")->prepend("Country", "");
         $ordstates = Zone::where("status", 1)->pluck("name", "id")->prepend("State", "");
         $data['ordcountries'] = $ordcountries;
         $data['ordstates'] = $ordstates;
-
         $data['coupon'] = Coupon::where("status", 1)->where("start_date", "<=", Carbon\Carbon::now())->where("end_date", ">", Carbon\Carbon::now())->pluck("coupon_name", "coupon_code")->prepend("Apply Coupon", "");
 
         return Helper::returnView(Config('constants.adminTableView') . '.addItems', $data);
     }
 
-    public function saveItems() {
+    public function saveItems()
+    {
         $kot = new Kot();
         $kot->order_id = Input::get('order_id');
         $kot->save();
@@ -157,10 +162,11 @@ class TableController extends Controller {
         }
 
         return $kot;
-//        return redirect()->route('admin.tableorder.view')->with('message', 'Order placed successfully.');
+        // return redirect()->route('admin.tableorder.view')->with('message', 'Order placed successfully.');
     }
 
-    public function transferKot() {
+    public function transferKot()
+    {
         if (Table::find(Input::get('table_id'))->ostatus == 1) {
             $order = new Order;
             $order->otype = 1;
@@ -186,8 +192,8 @@ class TableController extends Controller {
         return redirect()->route('admin.order.additems', ['id' => $order->id]);
     }
 
-    public function addNewOrder() {
-
+    public function addNewOrder()
+    {
         $order = new Order;
         $order->otype = 1;
         $order->table_id = Input::get('tableid');
@@ -195,25 +201,25 @@ class TableController extends Controller {
         $savetable = Table::find(Input::get('tableid'));
         $savetable->ostatus = 2;
         $savetable->update();
-
         $data = ['status' => 1, 'order' => $order, 'redirectUrl' => route('admin.order.additems', ['id' => $order->id])];
         return $data;
     }
 
-    public function getJoinTableCheckbox() {
+    public function getJoinTableCheckbox()
+    {
         $tables = Table::where("status", 1)->where("ostatus", 1)->where("id", "!=", Input::get('tableid'))
-                ->select(DB::raw("CONCAT(table_no,' - ',table_label) AS table_name"), 'id')
-                ->get("table_name", 'id');
+            ->select(DB::raw("CONCAT(table_no,' - ',table_label) AS table_name"), 'id')
+            ->get("table_name", 'id');
         $html = "";
         foreach ($tables as $tbl) {
 
-            $html .="<input type='checkbox' name='join_tableChk[]'  value='" . $tbl->id . "'>" . $tbl->table_name . "<br>";
+            $html .= "<input type='checkbox' name='join_tableChk[]'  value='" . $tbl->id . "'>" . $tbl->table_name . "<br>";
         }
         return $html;
     }
 
-    public function saveJoinTableOrder() {
-
+    public function saveJoinTableOrder()
+    {
         $order = new Order;
         $order->otype = 1;
         $order->table_id = Input::get('tableid');
@@ -224,55 +230,53 @@ class TableController extends Controller {
         return $data;
     }
 
-    public function getOrderKotProds() {
+    public function getOrderKotProds()
+    {
         Cart::instance("shopping")->destroy();
         $order = Order::find(Input::get('orderid'));
         $kotprods = "";
-
         foreach ($order->kots as $kot) {
             $kotprods .= '<tr class="green" data-otype="' . $order->otype . '">';
             $kotprods .= '<td colspan="6"><b>KOT #' . $kot->id . '</b>';
-
-            if ($order->otype == 1)
+            if ($order->otype == 1) {
                 $kotprods .= '<span class="pull-right transferKOT" data-kotid="' . $kot->id . '" style="cursor:pointer;">Transfer KOT</span>';
-
-            $kotprods .='</td>';
-            $kotprods .='</tr>';
-
-            foreach ($kot->products as $prd) {
-                $kotprods .='<tr>';
-                $kotprods .='<td>' . $prd->product->product . '</td>';
-                $kotprods .='<td>' . $prd->product_details . '</td>';
-                $kotprods .='<td>' . $prd->qty . '</td>';
-                $kotprods .='<td>' . number_format($prd->price, 2) . '</td>';
-                $kotprods .='<td>' . number_format(($prd->price * $prd->qty), 2) . '</td>';
-                $kotprods .='<td><i data-hasprdid="' . $prd->id . '" class="fa fa-trash fa-fw deleteExistingItem" style="color:red;cursor:pointer;"></i></td>';
-                $kotprods .='</tr>';
             }
-
+            $kotprods .= '</td>';
+            $kotprods .= '</tr>';
+            foreach ($kot->products as $prd) {
+                $kotprods .= '<tr>';
+                $kotprods .= '<td>' . $prd->product->product . '</td>';
+                $kotprods .= '<td>' . $prd->product_details . '</td>';
+                $kotprods .= '<td>' . $prd->qty . '</td>';
+                $kotprods .= '<td>' . number_format($prd->price, 2) . '</td>';
+                $kotprods .= '<td>' . number_format(($prd->price * $prd->qty), 2) . '</td>';
+                $kotprods .= '<td><i data-hasprdid="' . $prd->id . '" class="fa fa-trash fa-fw deleteExistingItem" style="color:red;cursor:pointer;"></i></td>';
+                $kotprods .= '</tr>';
+            }
             if (!empty($kot->products)) {
                 foreach ($kot->products as $prd) {
                     $getProd = Product::find($prd->prod_id);
-//                    dd($getProd->prod_type);
+                    //  dd($getProd->prod_type);
                     $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $prd->sub_prod_id, $prd->qty);
                 }
             }
         }
-        $kotprods .='<tr class="green"><td colspan="6"><b>New KOT #</b></td></tr>';
-
+        $kotprods .= '<tr class="green"><td colspan="6"><b>New KOT #</b></td></tr>';
         return $kotprods;
     }
 
-    public function getCartAmt() {
+    public function getCartAmt()
+    {
         // Cart::instance("shopping")->destroy();
         // return Cart::instance('shopping')->total();
         $cart_amt = Helper::calAmtWithTax();
-//        return $cart_amt['total'] * Session::get('currency_val');
+        //        return $cart_amt['total'] * Session::get('currency_val');
         $data['cartAmt'] = $cart_amt['total'] * Session::get('currency_val');
         return $data;
     }
 
-    public function deleteKotProds() {
+    public function deleteKotProds()
+    {
         $delprd = HasProducts::find(Input::get('hasprdid'));
         $getkot = $delprd->kot;
         $orderid = $delprd->order_id;
@@ -280,12 +284,11 @@ class TableController extends Controller {
         if (Kot::find($getkot)->products()->count() == 0) {
             Kot::find($getkot)->delete();
         }
-
-
         return $orderid;
     }
 
-    public function tableOccupiedOrder() {
+    public function tableOccupiedOrder()
+    {
         //  dd(Input::all());
         $key = Input::get('keyname');
         $order = Table::find(Input::get('tableid'))->orders()->orderBy("created_at", "desc")->first();
@@ -294,37 +297,42 @@ class TableController extends Controller {
         } else {
             $url = route('admin.order.additems', ['id' => $order->id]);
         }
-
         return $url;
     }
 
-    public function tableOccupiedOrderBill($id) {
+    public function tableOccupiedOrderBill($id)
+    {
         $order = Order::find($id);
         $coupon = Coupon::where("status", 1)->where("start_date", "<=", Carbon\Carbon::now())->where("end_date", ">", Carbon\Carbon::now())->pluck("coupon_name", "coupon_code")->prepend("Apply Coupon", "");
         $ordcountries = Country::where("status", 1)->pluck("name", "id")->prepend("Country", "");
         $ordstates = Zone::where("status", 1)->pluck("name", "id")->prepend("State", "");
         $data = ['order' => $order, 'coupon' => $coupon, 'ordcountries' => $ordcountries, 'ordstates' => $ordstates];
-//        $order = Table::find(Input::get('tableid'))->orders()->orderBy("created_at","desc")->first();
-//        $url = route('admin.order.additems',['id'=>$order->id]);
-        return Helper::returnView(Config('constants.adminTableView') . '.orderBill', $data);
+        // $order = Table::find(Input::get('tableid'))->orders()->orderBy("created_at","desc")->first();
+        // $url = route('admin.order.additems',['id'=>$order->id]);
+        if(Input::get('responseType') && Input::get('responseType') == 'json'){
+            return $data;
+        } else {
+            return Helper::returnView(Config('constants.adminTableView') . '.orderBill', $data);
+        }
     }
 
-    public function checkCoupon() {
+    public function checkCoupon()
+    {
         /*
-          Session::put('currency_val',1);
-          Cart::instance('shopping')->destroy();
-          // Remove all discount session before adding new discount
-          Session::forget("discAmt");
-          Session::forget('voucherUsedAmt');
-          Session::forget('voucherAmount');
-          Session::forget('remainingVoucherAmt');
-          Session::forget('checkbackUsedAmt');
-          Session::forget('remainingCashback');
-          Session::forget("ReferalCode");
-          Session::forget("ReferalId");
-          Session::forget("referalCodeAmt");
-          Session::forget("codCharges");
-          Session::forget('shippingCost');
+        Session::put('currency_val',1);
+        Cart::instance('shopping')->destroy();
+        // Remove all discount session before adding new discount
+        Session::forget("discAmt");
+        Session::forget('voucherUsedAmt');
+        Session::forget('voucherAmount');
+        Session::forget('remainingVoucherAmt');
+        Session::forget('checkbackUsedAmt');
+        Session::forget('remainingCashback');
+        Session::forget("ReferalCode");
+        Session::forget("ReferalId");
+        Session::forget("referalCodeAmt");
+        Session::forget("codCharges");
+        Session::forget('shippingCost');
          */
 
         $couponCode = Input::get('couponCode');
@@ -359,7 +367,7 @@ class TableController extends Controller {
             $disc = 0;
 
             if ($validCoupon[0]->coupon_type == 2) {
-//for specific category
+                //for specific category
                 $orderAmt = 0;
                 $allowedCats = [];
                 $cats = Coupon::find($validCoupon[0]->id)->categories->toArray();
@@ -395,7 +403,7 @@ class TableController extends Controller {
                     // dd($discountCartProds);
                 }
             } else if ($validCoupon[0]->coupon_type == 3) {
-//for specific prods
+                //for specific prods
                 $orderAmt = 0;
                 $allowedProds = [];
                 $prods = Coupon::find($validCoupon[0]->id)->products()->get()->toArray();
@@ -502,7 +510,8 @@ class TableController extends Controller {
         }
     }
 
-    public function calculateFixedDiscount($individualSubtotal, $disc) {
+    public function calculateFixedDiscount($individualSubtotal, $disc)
+    {
         $arraySumPercent = array_sum($individualSubtotal) / 100;
         $individualDiscountPercent = [];
         foreach ($individualSubtotal as $key => $subtotal) {
@@ -513,7 +522,8 @@ class TableController extends Controller {
         return $individualDiscountPercent;
     }
 
-    public function removeAllDiscountSession() {
+    public function removeAllDiscountSession()
+    {
         Session::forget('couponUsedAmt');
         Session::forget('usedCouponCode');
         Session::forget('usedCouponId');
@@ -530,7 +540,8 @@ class TableController extends Controller {
         Session::forget('shippingCost');
     }
 
-    public function getAddCharges() {
+    public function getAddCharges()
+    {
         $cart_amt = Helper::calAmtWithTax();
         $price = $cart_amt['total'] * Session::get('currency_val');
         $additionalCharge = AdditionalCharge::ApplyAdditionalCharge($price);
@@ -538,7 +549,8 @@ class TableController extends Controller {
         return $data;
     }
 
-    public function reqLoyalty() {
+    public function reqLoyalty()
+    {
         $user_id = input::get('user_id');
         $orderAmt = input::get('orderAmt');
 
@@ -547,10 +559,10 @@ class TableController extends Controller {
         } else {
             $cashback = User::find(Session::get('loggedin_user_id'))->cashback * Session::get('currency_val');
         }
-//        if($orderAmt > $cashback){
-//              Session::put('checkbackUsedAmt', $cartAmount); 
-//        }
-//return $cashback;
+        //        if($orderAmt > $cashback){
+        //              Session::put('checkbackUsedAmt', $cartAmount);
+        //        }
+        //return $cashback;
         $cartAmount = Helper::getMrpTotal();
 
         if ($cartAmount < $cashback) {
@@ -588,7 +600,8 @@ class TableController extends Controller {
         //  echo Session::get('remainingCashback') . ":-" . @Session::get('checkbackUsedAmt') . ":-" . Session::get('pay_amt') . ':-' . json_encode($cart);
     }
 
-    public function revLoyalty() {
+    public function revLoyalty()
+    {
         $user_id = input::get('user_id');
         $orderAmt = input::get('orderAmt');
         $cart = Cart::instance('shopping')->content();
@@ -605,24 +618,26 @@ class TableController extends Controller {
         return $cashback;
     }
 
-    public function cashOnDelivary() {
+    public function cashOnDelivary()
+    {
         // return Input::all();
-
         Session::put("currency_val", 1);
         $userId = input::get('userId');
         $orderId = input::get('orderId');
         $payAmt = input::get('payamt');
         $addi = explode(",", input::get('additionalcharge'));
         $additionalCharge = array_map('intval', $addi);
-        //$additionalCharge=input::get('additionalcharge');      
+        //$additionalCharge=input::get('additionalcharge');
         $payAmt = filter_var($payAmt, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         $addressId = input::get('addressId');
         $paymentMethod = 1;
         $data = $this->saveOrder($userId, $orderId, $addressId, $payAmt, $paymentMethod, $additionalCharge);
+        // $this->changeOccupancyStatus($orderId);
         return $data;
     }
 
-    public function saveOrder($userId, $orderId, $addressId, $payAmt, $paymentMethod, $additionalCharge) {
+    public function saveOrder($userId, $orderId, $addressId, $payAmt, $paymentMethod, $additionalCharge)
+    {
         $address = Address::find($addressId);
         //dd($address);
         $orders = Order::find($orderId);
@@ -650,7 +665,6 @@ class TableController extends Controller {
         //  dd($cartAmount);
         $orders->order_amt = $cartAmount;
         $additional_charge_json = AdditionalCharge::ApplyAdditionalChargeOnOrder($cartAmount, $additionalCharge);
-
         $orders->additional_charge = $additional_charge_json ? $additional_charge_json : 0;
         //return $additional_charge_json;
         $orders->payment_method = $paymentMethod;
@@ -671,7 +685,6 @@ class TableController extends Controller {
                 $orders->ref_flag = 0;
             }
         }
-
         if ($this->feature['loyalty'] == 1 && $userId != null) {
             $orders->loyalty_cron_status = 1;
             $loyaltyPercent = $user->loyalty['percent'];
@@ -692,9 +705,35 @@ class TableController extends Controller {
         $orders->couponCode = @$orders->coupon()->first()->coupon_name;
         $contact = Contact::where('status', 1)->orderBy('id', 'desc')->take(1)->first();
         $storeName = Helper::getSettings()['storeName'];
-
         $data = ['orders' => $orders, 'contact' => $contact, 'storeName' => $storeName];
         return $data;
+    }
+
+    
+    
+    public function changeOccupancyStatus($oStatus) {
+        if(Input::get("orderId")) {
+            $order = Order::find(Input::get("orderId"));
+            $table = Table::find($order->table_id);
+            $table->ostatus = $oStatus;
+            $table->update();
+            Session::flash("msg", 'Table status updated successfully.');
+            return ['status' => 1, 'msg' => "Table status updated successfully."];
+        } else if(Input::get("tableid")) {
+            $order = Order::where('table_id', Input::get("tableid"))->first();
+            $order->order_status = 3;
+            $order->update();
+            $statusHistory = ['order_id' => $order->id, 'status_id' => 3, 'remark' => 'Table order completed', 'notify' => 0, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
+                OrderStatusHistory::insert($statusHistory);
+            $table = Table::find($order->table_id);
+            $table->ostatus = $oStatus;
+            $table->update();
+            Session::flash("msg", 'Table status updated successfully.');
+            return ['status' => 1, 'msg' => "Table status updated successfully."];
+        } else {
+            Session::flash("message", 'Oops something went wrong.');
+            return ['status' => 0, 'msg' => "Oops something went wrong."];
+        }
     }
 
 }

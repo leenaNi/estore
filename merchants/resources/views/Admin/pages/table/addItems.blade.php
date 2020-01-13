@@ -99,13 +99,11 @@ body * { visibility: hidden; }
 <section class="content-header">
     <h1>
         Add/Edit Items
-        <small>{{ $order->type->otype }} #{{ $order->id }} </small>
+        <small>{{ $order->type->otype }} @if($order->table_id!=0)Table:  #{{ $order->table->table_no }}@endif OrderID: #{{ $order->id }} </small>
     </h1>
 </section>
 <section class="content">
-
     <div class="row">
-
         <div class="col-md-9">
             <div class="box box-solid">
                 <div class="col-md-12">
@@ -127,30 +125,23 @@ body * { visibility: hidden; }
                                 </tr>
                             </thead>
                             <tbody>
-
                             </tbody>
                         </table>
                         <button type="button" class="btn btn-primary pull-right" style="display:none;" id="saveItem">Save KOT</button>
                     </form>
                 </div>
             </div>
-
-
             <div class="box box-solid">
-
                 <h3 class="list marginBottom20">
                     <div class="col-md-6 noRightpadding noLeftpadding">
                         <input type="text" class="form-control" placeholder="Search Category/Product Name/SKU/ID" name="Search Category/Product Name/SKU/ID">
                     </div>
                 </h3>
-
                 <!-- /.box-header -->
                 <div class="box-body">
-
                     <div class="box-group" id="accordion">
                         <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
                         <div class="panel box box-primary">
-
                             @foreach($categories as $key =>  $cat)
                             <div class="box-header with-border">
                                 <h6 class="box-title">
@@ -163,7 +154,6 @@ body * { visibility: hidden; }
                                 <div class="box-body">
                                     <ul>
                                         @foreach($cat->products as $prd)
-
                                         <li class="prod" data-prdid="{{$prd->id }}" id="prd-{{$prd->id}}"><b>{{ $prd->product }}</b>
                                             <a href="#"  class="pull-right" ui-toggle-class="" data-toggle="tooltip" title="Add Item"><i class="fa fa-plus fa-fw addItem"></i></a>
                                             <input value="" type="text" placeholder="Remarks"  name="remarks" class="input-mini pull-right remark">
@@ -175,9 +165,7 @@ body * { visibility: hidden; }
                                 </div>
                             </div>
                             @endforeach
-
                         </div>
-
                     </div>
                 </div>
                 <!-- /.box-body -->
@@ -194,17 +182,13 @@ body * { visibility: hidden; }
                                 <button class="btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20">Add Customer Details</button>
                             </div>
                         </div>
-
                         <div id="shippedTo">
-
                         </div>
-
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Subtotal (Without Taxes): <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="finalSubTotal" >0</span></label>
                             </div>
                         </div>
-
                         @if($feature['coupon']==1)
                         <div class="col-md-12 marginBottom20">
                             <label class="col-md-3 noAllpadding control-label">Coupon: </label>
@@ -212,7 +196,6 @@ body * { visibility: hidden; }
                                 {{ Form::select('coupon',$coupon,null,['class'=>'form-control applyCoupon']) }}
                             </div>
                         </div>
-
                         <div class="col-md-12">
                             <div class="form-group coupan-amt">
                                 <!-- <label>Coupon Value: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> 100</label> -->
@@ -226,7 +209,6 @@ body * { visibility: hidden; }
                                 <input type="text" class="form-control referral-code" placeholder="Enter Referral Code" name="Referral">
                             </div>
                         </div>
-
                         <div class="col-md-12">
                             <div class="form-group referral-amt">
                                 <!-- <label>Referral Pts. Earned: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> 50</label> -->
@@ -251,7 +233,6 @@ body * { visibility: hidden; }
                                 <!-- <label>Discount Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> 50</label> -->
                             </div>
                         </div>
-
                         <div class="col-md-12">
                             <div class="form-group total-amount">
                                 <!-- <label>Total(After Discount): <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> 50</label> -->
@@ -297,18 +278,13 @@ body * { visibility: hidden; }
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-
                         <div class="col-md-12">
                             <div class="form-group payable-amt">
                                 <!-- <label>Payable Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> 1150</label> -->
                             </div>
                         </div>                        
-
-
-
                         <!--                        <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label>Final Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> 0</label>
@@ -316,13 +292,11 @@ body * { visibility: hidden; }
                                                 </div> -->
                         <form id="tableOrderForm" method="post">
                             <div class="col-md-12">
-
                                 <input type="hidden" name="userId" value="" class="userId">
                                 <input type="hidden" name="addressId" value="" class="addressId">
                                 <input type="hidden" name="orderId" value="" class="orderId">
                                 <input type="hidden" name="payamt" value="" class="payamt">
                                 <input type="hidden" name="additionalcharge" value="" class="additionalcharge">
-
                                 <div class="form-group">
                                     <div class="ui-radio ui-radio-pink">
                                         <label class="ui-radio-inline">
@@ -333,14 +307,12 @@ body * { visibility: hidden; }
                                             <input type="radio" name="radioEg" class="payu" onclick="getPaymentMethod()"> 
                                             <span>Card</span>
                                         </label>
-
                                         <label class="ui-radio-inline">
                                             <input type="radio" name="radioEg"  class="paypal" onclick="getPaymentMethod()"> 
                                             <span>Credit Card</span>
                                         </label>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -348,16 +320,12 @@ body * { visibility: hidden; }
                                 </div>
                             </div>
                         </form>
-
                     </div>
                     <!-- /.row -->
                 </div>
             </div>
         </div>
     </div>
-
-
-
     <!-- Modal -->
     <div id="transferKot" class="modal fade" role="dialog">
         <div class="modal-dialog" style="width: 75%;top:40px">
@@ -385,10 +353,8 @@ body * { visibility: hidden; }
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
-
         </div>
     </div>
-
     <!-- Model Print Invoice -->
     <div id="printInvoicce" class="modal fade" role="dialog">
         <div class="modal-dialog"  style="width: 75%;top:40px">
@@ -402,11 +368,9 @@ body * { visibility: hidden; }
                 </div>
                 <div class="modal-body">
                     <div class="box-body invoiceData" id="printcontent">
-
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -428,7 +392,6 @@ body * { visibility: hidden; }
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="basicTab">
-
                                     <div class="post clearfix">
                                         {{ Form::open(['id'=>'custInfo','class'=>'custInfo']) }}
                                         <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -461,12 +424,8 @@ body * { visibility: hidden; }
                                             <button class="btn btn-black cancelBtn pull-right">Cancel</button>
                                         </div>
                                         {{ Form::close() }}
-
-
-                                    </div>
-
+                                   </div>
                                 </div>
-
                                 <div class="tab-pane" id="addressTab">
                                     <div class="post clearfix">
                                         <div  class="col-md-6 noallMargin noallpadding">
@@ -535,15 +494,14 @@ body * { visibility: hidden; }
                                             </div>
                                             {{ Form::hidden('address_id',null) }}
                                             {{ Form::hidden('user_id',null) }}
+                                            {{ Form::hidden('order_id', null) }}
                                             {{ Form::close() }}
                                         </div>
                                         <div  class="col-md-6 addressDiv pull-right"> </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -551,16 +509,10 @@ body * { visibility: hidden; }
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
-
     </div>
 </div>
-
-
-
 </section>
-
 @stop
-
 @section('myscripts')
 <script>
     calAmt();
@@ -569,17 +521,13 @@ body * { visibility: hidden; }
             carttot = response.cartAmt.toFixed(2);
             $(".finalSubTotal").text(carttot);
         });
-
     }
-
     function getAdd(addid) {
         addData = addid
         $.post("{{ route('admin.orders.getCustomerAdd') }}", {addData: addData}, function (data) {
             $.each(data, function (addk, addv) {
                 $("input[name='" + addk + "']").val("");
-
                 $("input[name='" + addk + "']").val(addv);
-
                 if (addk == 'country_id' || addk == 'zone_id') {
                     $("select[name='" + addk + "']").val("");
                     $("select[name='" + addk + "']").val(addv);
@@ -603,10 +551,10 @@ body * { visibility: hidden; }
     }, "Please specify a valid phone number");
     $(".placeorderSpinner").hide();
     $(document).ready(function () {
-
         $(".sidebar-toggle").click();
     });
     $("input[name='orderId']").val(<?= $order->id; ?>);
+    $("input[name='order_id']").val(<?=$order->id;?>);
     getOrderKotWithProds(<?= $order->id; ?>);
     function getOrderKotWithProds(orderid) {
        // alert(orderid);
@@ -634,24 +582,17 @@ body * { visibility: hidden; }
             addQty = $("table.tableVaglignMiddle").find("." + trClassName).find(".qty").val();
             addPrice = $("table.tableVaglignMiddle").find("." + trClassName).find(".price").val();
             addRemark = $("table.tableVaglignMiddle").find("." + trClassName).find(".remark").val();
-
             remarK = addRemark + " " + remark;
             qtY = parseInt(addQty) + parseInt(qty);
-
             itemp = addPrice;
             totalItemP = qtY * addPrice;
             totalItemP = totalItemP.toFixed(2);
-
-
             var addrow = '<tr class="newRow row-' + prodid + '"><td>' + prod + '</td><td>' + remarK + '</td><td>' + qtY + '</td>' +
                     '<td>' + itemp.toFixed(2) + '<input type="hidden" class="price" name="orderdata[' + prodid + '][price]" value="' + itemp.toFixed(2) + '"> </td><td>' + totalItemP + '</td>' +
                     '<input type="hidden" class="qty" name="orderdata[' + prodid + '][qty]" value="' + qtY + '">' +
                     '<input type="hidden" class="remark" name="orderdata[' + prodid + '][remark]" value="' + remarK + '"><td><i class="fa fa-trash fa-fw deleteItem" style="color:red;cursor:pointer;"></i></td>' +
                     '</tr>';
-
-
             $("table.tableVaglignMiddle").find("." + trClassName).replaceWith(addrow);
-
         } else {
             var row = '<tr class="newRow row-' + prodid + '"><td>' + prod + '</td><td>' + remark + '</td><td>' + qty + '</td>' +
                     '<td>' + parseFloat(itemPrice).toFixed(2) + '<input type="hidden" class="price" name="orderdata[' + prodid + '][price]" value="' + parseFloat(itemPrice).toFixed(2) + '"> </td><td>' + parseFloat(totalPrice).toFixed(2) + '</td>' +
@@ -664,6 +605,7 @@ body * { visibility: hidden; }
     });
 
     $("#saveItem").click(function () {
+        $("#saveItem").text('Saving..');
         $("input[name='orderId']").val($("input[name='order_id']").val());
         $.ajax({
             url: "{{ route('admin.order.saveitems') }}",
@@ -671,6 +613,7 @@ body * { visibility: hidden; }
             data: $("#order-addItem").serialize(),
             cache: false,
             success: function (kotdata) {
+                $("#saveItem").text('Save KOT');
                 console.log(JSON.stringify(kotdata));
                 getOrderKotWithProds(kotdata.order_id);
             }
@@ -679,11 +622,9 @@ body * { visibility: hidden; }
 
     $("#order-addItem").delegate(".deleteItem", "click", function () {
         chkconfirm = confirm("Are you really want delete this product?");
-
         if (chkconfirm) {
             $(this).parent().parent().remove();
         }
-
         if ($("table.tableVaglignMiddle").find("tr").hasClass("newRow") == false)
             $("#saveItem").hide();
     });
@@ -698,7 +639,6 @@ body * { visibility: hidden; }
         //   alert("sdfsdf");
         hasprdid = $(this).attr('data-hasprdid');
         chkconfirm = confirm("Are you really want delete this product?");
-
         if (chkconfirm) {
             $.post("{{route('admin.order.deleteKotProds')}}", {hasprdid: hasprdid}, function (deletedprd) {
                 if (deletedprd) {
@@ -724,7 +664,6 @@ body * { visibility: hidden; }
             ele = event.target;
             setValuesToInpt(ui.item.id, ui.item.firstname, ui.item.lastname, ui.item.telephone, ui.item.email);
             $(".custdata").show();
-
         }
     });
 //
@@ -807,10 +746,7 @@ body * { visibility: hidden; }
                     $("input[name='lastname']").val(data.lastname);
                     $("input[name='phone_no']").val(data.telephone);
                     $("input[name='userId']").val(data.id);
-
-
                     address = data.addresses;
-
                     addDiv = "";
                     $.each(address, function (addk, addv) {
                         addData = JSON.stringify(addv);
@@ -829,7 +765,6 @@ body * { visibility: hidden; }
                     $("#addressTab input[type='radio']:first").trigger('click');
                     $('.nav-tabs a[href="#addressTab"]').tab('show');
                     $('.nav-tabs a[href="#basicTab"]').removeAttr('data-toggle');
-
                 }
             });
         }
@@ -843,7 +778,6 @@ body * { visibility: hidden; }
     });
     $(".addressDiv").delegate(".addRadio", "click", function () {
         var addData = $(this).attr('data-add');
-
         getAdd(addData);
     });
     $(".country").on("change", function () {
@@ -923,7 +857,6 @@ body * { visibility: hidden; }
         $('.nav-tabs a[href="#addressTab"]').removeAttr('data-toggle');
     });
 
-
     $(".applyCoupon").change(function () {
         var couponCode = $(".applyCoupon").val();
         $.ajax({
@@ -934,7 +867,6 @@ body * { visibility: hidden; }
             cache: false,
             success: function (msg) {
                 console.log(msg);
-
                 if (msg.remove == 1) {
                     $('.coupan-amt').html("<label style='color:red'>Invalid Coupon!</label>");
                 } else {
@@ -954,7 +886,6 @@ body * { visibility: hidden; }
             data: {RefCode: RefCode},
             cache: false,
             success: function (data) {
-
                 if (data.referalCodeAmt != null && data.referalCodeAmt != 0) {
                     $(".referral-amt").html("<label>Referral Pts. Earned: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> " + data.referalCodeAmt.toFixed(2) + "</label>");
                 } else {
@@ -980,7 +911,6 @@ body * { visibility: hidden; }
                 } else {
                     $(".discount-amount").html("<label></label>");
                 }
-
                 $(".total-amount").html("<label>Total(After Discount): <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> " + data.orderAmount.toFixed(2) + "</label>");
                 getAdditionalcharge();
             }
@@ -992,7 +922,6 @@ body * { visibility: hidden; }
 
     });
     function getAdditionalcharge() {
-
         var total_amt = 0;
         var total_price = 0;
         var addi_charge_with_price = 0
@@ -1001,7 +930,6 @@ body * { visibility: hidden; }
             type: 'POST',
             cache: false,
             success: function (msg) {
-
                 var data = JSON.parse(msg.additionalCharge);
                 // alert(JSON.stringify(msg));
                 $(".addi-charge-list").empty();
@@ -1019,12 +947,10 @@ body * { visibility: hidden; }
                             })
                         }
                         if (i == 'total_amt') {
-
                             total_amt = (v * <?php echo Session::get('currency_val'); ?>).toFixed(2);
                         }
                         if (i == 'total_with_price') {
                             addi_charge_with_price = v;
-
                         }
                         if (i == 'total') {
                             total_price = v;
@@ -1032,14 +958,12 @@ body * { visibility: hidden; }
                     });
                     $(".total-charge").html('Taxes/Additional Charges: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="additionalTotal"> ' + total_amt + '</span><i class="fa pull-right fa-angle-down" aria-hidden="true"></i>');
                 }
-
                 $(".payable-amt").html('<label>Payable Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="payAmount" >' + addi_charge_with_price + '</span></label><input type="hidden" name="payAmount" value="' + total_price + '">');
                 $('input[name="payamt"]').val($('input[name="payAmount"]').val());
                 $('input[name="payamt"]').val($('.payAmount').text());
                 //   alert(parseInt($('.payAmount').text()));
             }
         });
-
     }
 
     // to check is object empty
@@ -1048,7 +972,6 @@ body * { visibility: hidden; }
             if (obj.hasOwnProperty(prop))
                 return false;
         }
-
         return true;
     }
     $(document).ready(function () {
@@ -1068,7 +991,6 @@ body * { visibility: hidden; }
                 $('input[name="payAmount"]').val(parseInt(payamt) - parseInt($(this).val()));
             }
         });
-
     });
 
     $(document).on('change', '.loyaltyCheck', function (e) {
@@ -1077,7 +999,6 @@ body * { visibility: hidden; }
         //   alert(user_id);
         var orderAmt = parseInt($('.payAmount').text());
         if ($(this).is(':checked')) {
-
             $.ajax({
                 url: "{{ route('admin.tables.reqloyalty') }}",
                 type: 'POST',
@@ -1090,7 +1011,6 @@ body * { visibility: hidden; }
                     // alert(JSON.stringify(msg));
                 }
             });
-
         } else {
             $.ajax({
                 url: "{{ route('admin.tables.revloyalty') }}",
@@ -1098,7 +1018,6 @@ body * { visibility: hidden; }
                 data: {user_id: user_id, orderAmt: orderAmt},
                 cache: false,
                 success: function (msg) {
-
                     // alert(msg)
                     $('.lolytyPoint').text(parseInt(msg));
                     $(".loyaltyCheck").val(parseInt(msg));
@@ -1108,16 +1027,12 @@ body * { visibility: hidden; }
                 }
             });
         }
-
     });
 
     function getPaymentMethod() {
-
         if ($(".codChek").is(':checked')) {
             var route = "{{ route('admin.tables.tableCod')}}";
             $("#tableOrderForm").attr("action", route);
-
-
         } else if ($(".payu").is(':checked')) {
             var route = "#";
             $("#tableOrderForm").attr("action", route);
@@ -1127,82 +1042,71 @@ body * { visibility: hidden; }
         } else {
             var route = "{{ route('admin.tables.tableCod')}}";
             $("#tableOrderForm").attr("action", route);
-
         }
-
-
-
     }
 
     function placeOrder() {
-      
         var sThisVal=new Array();
         $('input:checkbox.checkboxCheck').each(function () {
             if(this.checked){
             sThisVal.push($(this).attr("data-id"));
-            }
-      
-       
+        }     
   });
   console.log($("#tableOrderForm").attr('action'));
    $("input[name='additionalcharge']").val(sThisVal);
-  
-        $.ajax({
+          $.ajax({
             type: "POST",
             url: $("#tableOrderForm").attr('action'),
             data: $("#tableOrderForm").serialize(),
             cache: false,
             success: function (data) {
                //console.log(JSON.stringify(data));
-        var tableId=data.orders.table_id?data.orders.table_id:'#';
-    var subtotal=0;
-    var userDisc=0;
-    //if(data.contact.address1){
-    if(data.address1){
-               var table = "<div id='DivIdToPrint'><table class='invocieBill-table' style='width: 400px;margin: 0 auto;'>";
-           }else{
-                var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.orders.address1+" "+data.orders.address2+" "+data.orders.address3+"</span><br><span class='shopnumber'>"+data.orders.phone_no+"</span></td></tr><tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table 329<br>Server: Krista<br>11:59 AM</td> <td colspan='2' class='text-right'>Party of 1<br>Tickit 4002<br>Server<br>Date 002/26/14</td></tr><tr style='padding-bottom: 10px !important;padding-top: 10px !important;'> <th class='text-left'>Order id</th> <th class='text-center'>Table#</th> <th colspan='2' class='text-right'>Order date</th></tr><tr class='double-dashed-border'><td  class='text-left'>" + data.orders.id + "</td><td  class='text-center'>" + tableId + "</td><td colspan='2' class='text-right'>" + data.orders.created_at + "</td></tr>";
-            }
-               
+                var tableId=data.orders.table_id?data.orders.table_id:'#';
+                var subtotal=0;
+                var userDisc=0;
+                //if(data.contact.address1){
+                if(data.address1){
+                    var table = "<div id='DivIdToPrint'><table class='invocieBill-table' style='width: 400px;margin: 0 auto;'>";
+                }else{
+                        var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.orders.address1+" "+data.orders.address2+" "+data.orders.address3+"</span><br><span class='shopnumber'>"+data.orders.phone_no+"</span></td></tr><tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table 329<br>Server: Krista<br>11:59 AM</td> <td colspan='2' class='text-right'>Party of 1<br>Tickit 4002<br>Server<br>Date 002/26/14</td></tr><tr style='padding-bottom: 10px !important;padding-top: 10px !important;'> <th class='text-left'>Order id</th> <th class='text-center'>Table#</th> <th colspan='2' class='text-right'>Order date</th></tr><tr class='double-dashed-border'><td  class='text-left'>" + data.orders.id + "</td><td  class='text-center'>" + tableId + "</td><td colspan='2' class='text-right'>" + data.orders.created_at + "</td></tr>";
+                }
                 table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><th class='text-left'>Qty </th><th class='text-left pl10'>product </th><th class='text-left'>price</th><th class='text-right'>total</th>";
                 $.each(jQuery.parseJSON(data.orders.cart), function (cartk, cartv) {
                     subtotal=subtotal+parseInt(cartv.subtotal);
                     userDisc=userDisc+parseInt(cartv.options.user_disc);
                     table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><td>" + cartv.qty + "</td><td class='text-left pl10'>" + cartv.name + "</td><td class='text-left'>" + cartv.price + "</td><td class='text-right'>" + cartv.subtotal + "</td></tr>";
-
                 });
                 table = table + "<tr   style='padding-bottom: 10px !important;padding-top: 10px !important;' class='double-dashed-top-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>Subtotal</td><td class='text-right sbtot'>"+subtotal+"</td></tr>";
                 if(data.orders.coupon_amt_used){
-                 table = table + "<tr   style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td> <td class='text-left sbtot'>Coupon (" +data.orders.couponCode+ ")</td><td class='text-right sbtot'>"+data.orders.coupon_amt_used+"</td></tr>";
-             } 
-              if(data.orders.cashback_used){
-                table = table + " <tr class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>Cashback</td><td class='text-right sbtot'>"+data.orders.cashback_used+"</td></tr>";   
-              }
-               if(userDisc){
-                table = table + " <tr class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>User disc</td><td class='text-right sbtot'>"+userDisc+"</td></tr>";   
-              }
-               if(data.orders.referal_code_amt){
-                table = table + " <tr  style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>Referal Amt</td><td class='text-right sbtot'>"+data.orders.referal_code_amt+"</td></tr>";   
-              }
-              var additional=jQuery.parseJSON(data.orders.additional_charge);
-              console.log(JSON.stringify(additional));
-               $.each((additional.details), function (chargek, chargev) {
-                if(chargev.rate){
-                    table = table + " <tr  style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>"+chargev.label+"</td><td class='text-right sbtot'>"+chargev.applied+"</td></tr>";
+                    table = table + "<tr   style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td> <td class='text-left sbtot'>Coupon (" +data.orders.couponCode+ ")</td><td class='text-right sbtot'>"+data.orders.coupon_amt_used+"</td></tr>";
+                } 
+                if(data.orders.cashback_used){
+                  table = table + " <tr class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>Cashback</td><td class='text-right sbtot'>"+data.orders.cashback_used+"</td></tr>";   
                 }
-             });
-         table = table + "<t  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.order_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table# 27</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='getprint()'>Print Bill</button>";
-              
-    //console.log('==' + JSON.stringify(table));
+                if(userDisc){
+                    table = table + " <tr class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>User disc</td><td class='text-right sbtot'>"+userDisc+"</td></tr>";   
+                }
+                if(data.orders.referal_code_amt){
+                    table = table + " <tr  style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>Referal Amt</td><td class='text-right sbtot'>"+data.orders.referal_code_amt+"</td></tr>";   
+                }
+                var additional=jQuery.parseJSON(data.orders.additional_charge);
+                console.log(JSON.stringify(additional));
+                $.each((additional.details), function (chargek, chargev) {
+                    if(chargev.rate){
+                        table = table + " <tr  style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>"+chargev.label+"</td><td class='text-right sbtot'>"+chargev.applied+"</td></tr>";
+                    }
+                });
+                table = table + "<t  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.order_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table# 27</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='getprint()'>Print Bill</button>";
+                //console.log('==' + JSON.stringify(table));
                 $("#printInvoicce").modal("show");
                 $(".invoiceData").html(table);
+                changeOccupancyStatus();
             }
             // $("#tableOrderForm").attr("action",route);
         });
     }
     
-     function addCommas(nStr)
-    {
+    function addCommas(nStr) {
         nStr += '';
         x = nStr.split('.');
         x1 = x[0];
@@ -1213,20 +1117,27 @@ body * { visibility: hidden; }
         }
         return x1 + x2;
     }
-    
+    function changeOccupancyStatus() {
+        var orderId = $('input[name=order_id]').val();
+        $.ajax({
+            type: "POST",
+            url: "{{route('admin.tables.changeOccupancyStatus')}}/3",
+            data: {orderId: orderId},
+            cache: false,
+            success: function (data) {
+                // window.location.href = "{{route('admin.tableorder.view')}}";
+            }
+        });
+    }
+
     function getprint(){
-     // window.print();
-      var divToPrint=document.getElementById('DivIdToPrint');
-
-  var newWin=window.open('','Print-Window');
-
-  newWin.document.open();
-
-  newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
-
-  newWin.document.close();
-
-  setTimeout(function(){newWin.close();},10);
+        // window.print();
+        var divToPrint=document.getElementById('DivIdToPrint');
+        var newWin=window.open('','Print-Window');
+        newWin.document.open();
+        newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+        newWin.document.close();
+        setTimeout(function(){newWin.close();},10);
     }
 </script>
 @stop
