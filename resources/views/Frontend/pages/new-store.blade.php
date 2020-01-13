@@ -354,9 +354,8 @@
 
     $(".sendOtpOnMobile").on("click", function () {
        
-        $("#newStoreForm").submit();
-       /* 
-       Commented by SS
+        //$("#newStoreForm").submit();
+        
        if ($("#newStoreForm").valid()) {
             $("#sendOTP").modal('show');
             var country=$('.county_code').val();
@@ -377,7 +376,7 @@
                     console.log(e.responseText);
                 }
             });
-        }*/
+        }
     });
 
 //    $("#otpForm").validate({
