@@ -119,6 +119,7 @@ class TableController extends Controller
     {
         $order = new Order;
         $order->otype = Input::get('ordertype');
+        $order->store_id = Session::get('store_id');
         $order->save();
         return redirect()->route('admin.order.additems', ['id' => $order->id]);
     }
