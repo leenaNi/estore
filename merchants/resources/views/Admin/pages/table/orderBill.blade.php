@@ -209,7 +209,7 @@ body * { visibility: hidden; }
                         </div>
                         <div class="col-md-12">
                             <div class="form-group pull-right  padd-all10">
-                                <button type="button" class="btn col-md-12 noAllpadding  btn-primary noLeftMargin " onclick="placeOrder()">Complete Order</button>
+                                <button type="button" class="btn col-md-12 noAllpadding  btn-primary noLeftMargin complete-order" onclick="placeOrder()">Complete Order</button>
                             </div>
                         </div>
                             </form>
@@ -825,6 +825,7 @@ body * { visibility: hidden; }
         }
     }
     function placeOrder() {
+        $('.complete-order').text('Completing..');
         var sThisVal=new Array();
         $('input:checkbox.checkboxCheck').each(function () {
             if(this.checked) {
@@ -877,6 +878,7 @@ body * { visibility: hidden; }
                     table = table + "<tr class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.pay_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table# 27</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr><tr class=''><td colspan='4' class='text-center'><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='window.print()'>Print Bill</button></td></tr></table>";
                     //console.log('==' + JSON.stringify(table));
                     $("#printInvoicce").modal("show");
+                    $('.complete-order').text('Complete Order');
                     $(".invoiceData").html(table);
                     changeOccupancyStatus();
                 }

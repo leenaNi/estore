@@ -284,7 +284,7 @@ $(document).ready(function () {
                 });  
             } else if(key == 'paste'){
               $.post("{{ route('admin.tables.changeOccupancyStatus') }}/1",{tableid:tableid, keyname:key},function(res){
-                  console.log(respurl);
+                  console.log(res);
                   if(res.status){
                     window.location.href = "{{route('admin.tableorder.view')}}";
                   }

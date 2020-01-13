@@ -324,7 +324,7 @@ body * { visibility: hidden; }
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <button type="button" class="btn col-md-12 noAllpadding  btn-primary noLeftMargin " onclick="placeOrder()">Complete Order</button>
+                                    <button type="button" class="btn col-md-12 noAllpadding  btn-primary noLeftMargin complete-order" onclick="placeOrder()">Complete Order</button>
                                 </div>
                             </div>
                         </form>
@@ -1053,6 +1053,7 @@ body * { visibility: hidden; }
     }
 
     function placeOrder() {
+        $('.complete-order').text('Completing..');
         var sThisVal=new Array();
         $('input:checkbox.checkboxCheck').each(function () {
             if(this.checked){
@@ -1107,6 +1108,7 @@ body * { visibility: hidden; }
                 //console.log('==' + JSON.stringify(table));
                 $("#printInvoicce").modal("show");
                 $(".invoiceData").html(table);
+                $('.complete-order').text('Complete Order');
                 changeOccupancyStatus();
             }
             // $("#tableOrderForm").attr("action",route);
