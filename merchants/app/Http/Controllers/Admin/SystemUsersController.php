@@ -17,7 +17,7 @@ class SystemUsersController extends Controller {
     public function index() {
 //dd(base64_decode("YXNkZjEyMzQ="));
         $search = !empty(Input::get("empSearch")) ? Input::get("empSearch") : '';
-        $system_users = User::with('roles')->where('user_type', '1')->where("store_id",Session::get('loggedinAdminId'))->whereIn('status', [1, 0]);
+        $system_users = User::with('roles')->where('user_type', '1')->where("store_id",Session::get('store_id'))->whereIn('status', [1, 0]);
 
         $roles = Role::get(['id', 'name'])->toArray();
         $search_fields = ['firstname', 'lastname', 'email', 'telephone'];
@@ -64,6 +64,7 @@ class SystemUsersController extends Controller {
         } else {
             $password = rand(10000, 99999);
         }
+        //dd($password);
         if (empty($chk)) {
             $user = new User();
             $user->firstname = Input::get('firstname');
@@ -74,6 +75,7 @@ class SystemUsersController extends Controller {
             $user->password = Hash::make($password);
             $user->password_crpt =base64_encode($password);
             $user->user_type = 1;
+            $user->store_id = Session::get('store_id');
             $user->save();
             // print_r($user); die;
             if (!empty(Input::get('roles'))) {
@@ -102,13 +104,13 @@ class SystemUsersController extends Controller {
         $user = User::find(Input::get('id'));
       
         $user->firstname = Input::get('firstname');
-        if (Input::get('password_crpt')) {
-        //    dd(Input::get('password'));
+        if (Input::get('password')) {
+        //   dd(Input::get('password'));
             
-        $password = Hash::make(Input::get('password_crpt'));
+        $password = Hash::make(Input::get('password'));
         if($password!=$user->password){
              $user->password =$password;
-             $user->password_crpt =base64_encode(Input::get('password_crpt'));
+             $user->password_crpt =base64_encode(Input::get('password'));
         } 
        
        }
