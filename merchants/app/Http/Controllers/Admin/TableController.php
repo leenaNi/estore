@@ -722,6 +722,10 @@ class TableController extends Controller
                 Session::flash("msg", 'Table status updated successfully.');
                 return ['status' => 1, 'msg' => "Table status updated successfully."];
             } else {
+                $order->order_status = 3;
+                $order->update();
+                $statusHistory = ['order_id' => $order->id, 'status_id' => 3, 'remark' => 'Table order completed', 'notify' => 0, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
+                OrderStatusHistory::insert($statusHistory);
                 Session::flash("msg", '');
                 return ['status' => 1, 'msg' => ""];
             }
