@@ -1648,7 +1648,7 @@ class ProductsController extends Controller {
                             }
                         }
                         $updateProd->categories()->detach();
-                        $updateProd->categories()->sync($categoryids);
+                        $updateProd->categories()->sync($cat_id);
                     } else {
                         Session::flash("message", "Category name can't be blank for product name " . $product . " in " . $row_id . " product record.");
                         $updateProd->delete();

@@ -41,13 +41,12 @@ class Handler extends ExceptionHandler {
      */
     public function render($request, Exception $e)
     {
-
+//dd($e->getMessage());
         if ($e instanceof ModelNotFoundException) {
            
             $e = new NotFoundHttpException($e->getMessage(), $e);
-         }
-         // else if($e instanceof NotFoundHttpException) {
-        //     dd('sdsdsd');
+         }else if($e->getMessage()=='') {
+       
             $statusCode = $e->getStatusCode();
             if($statusCode==403)
             {
@@ -56,10 +55,10 @@ class Handler extends ExceptionHandler {
             else{
             return parent::render($request, $e); 
             }
-        // } else {
-        //     dd('sdsdsd');
-        //     return parent::render($request, $e);
-        // }
+        } else {
+          //  dd('sdsdsd');
+            return parent::render($request, $e);
+        }
     }
 
 //

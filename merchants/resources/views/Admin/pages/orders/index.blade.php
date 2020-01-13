@@ -98,7 +98,7 @@
                     <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default pull-right col-md-12 fullMobile-width">Create New Order</a>
 
                     <div class="clearfix" style="margin-bottom:15px;"></div>
-                    <a class="btn btn-primary" href="{{ asset(Config('constants.BulkOrderUploadPath')). "/cartini_orderBulk_upload.csv"}}"style="margin-bottom:15px; margin-left: 0; width: 100%;">Download Sample</a>
+                    <a class="btn btn-primary" href="{{route('admin.orders.sampleexport')}}"style="margin-bottom:15px; margin-left: 0; width: 100%;">Download Sample</a>
                     <div class="clearfix"></div>
                     <form action="{{route('admin.traits.orders')}}"  method="post" enctype="multipart/form-data">
                         <div class=""> 

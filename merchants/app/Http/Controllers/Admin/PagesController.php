@@ -33,11 +33,11 @@ class PagesController extends Controller {
         $userThisYearCount = User::where("user_type", "=", 2)->where('created_at', '>=', $current_year['start'])->where('created_at', '<=', $current_year['end'])->count();
 
         $todaysSales = Order::whereRaw("DATE(created_at) = '" . date('Y-m-d') . "'")
-        ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
-        ->sum('pay_amt');
+        ->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', Session::get('store_id'))
+        ->sum('pay_amt'); 
 
         $weeklySales = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
-        ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
+        ->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', Session::get('store_id'))
         ->sum('pay_amt');
 
         $weeklyOrderschart = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id',$this->jsonString['store_id'])->get();

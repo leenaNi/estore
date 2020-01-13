@@ -1237,6 +1237,22 @@ class OrdersController extends Controller {
         }
     }
 
+    public function exportsamplecsv()
+    {
+
+        $order_data = [];
+        array_push($order_data, ['Order Id', 'Name', 'Email', 'Address', 'City', 'State', 'Country',
+            'Pincode', 'Product Name', 'Product Category', 'Product Variant', 'Product Qty', 'Product Price', 'Mobile No', 'Order Status',
+            'Payment Method', 'Payment Status', 'Order Status',
+            'Order Amt', 'Cod Charges',
+            'Gifting Charges', 'Reward Points Used',
+            'Shipping Amt',
+            'Coupon Discount', 'Voucher Discount', 'Final Amount', 'Order Comments', 'Order Date']);
+        $details = ['1', 'Stefen', 'stefen@gmail.com', 'Cecilia Chapman 711-2880 Nulla St. Mankato Mississippi 96522', 'Mystic Falls', 'Paris', 'London', '203456', 'Veg Pizza', 'Pizza', '', '2', '500', '9878765678', '', 'COD', 'Pending', '', '1000', '25', '0', '0', '0', '0', '0', '1025', '', '30/04/1986'];
+        array_push($order_data, $details);
+        return Helper::getCsv($order_data, 'order-sample.csv', ',');
+    }
+
     public function export() {
         $orderIds = explode(",", Input::get('OrderIds'));
         if (Input::get('OrderIds')) {
