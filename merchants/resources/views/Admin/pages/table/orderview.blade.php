@@ -163,7 +163,7 @@
                                                     }
                                                     echo $tablesnumbers;                                                    
                                                     ?> </td>
-                                                    <td>{{ date("d-M-Y H:i:s",strtotime($allorder->created_at)) }}</td>
+                                                    <td>{{ date("d-M-Y H:i a",strtotime($allorder->created_at)) }}</td>
                                                     <td><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
                                                 </tr>
                                                 @endforeach
