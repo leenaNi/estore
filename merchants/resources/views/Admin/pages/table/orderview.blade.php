@@ -308,7 +308,7 @@ $(document).ready(function () {
                 });
                 
             } else if(key=='cut') {
-                $.post("{{route('admin.order.addNewOrder')}}", {tableid: tableid}, function (resp) {
+                $.post("{{route('admin.tableOccupiedOrder')}}", {tableid: tableid, keyname:'edit'}, function (resp) {
                     if (resp.order.id) {
                         window.location.href = resp.redirectUrl;
                     }
