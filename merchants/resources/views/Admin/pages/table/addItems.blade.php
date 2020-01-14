@@ -103,15 +103,18 @@ body * { visibility: hidden; }
 <section class="content-header">
     <h1>
         Add/Edit Items
-        <small>{{ $order->type->otype }} @if($order->table_id!=0)Table:  #{{ $order->table->table_no }}@endif OrderID: #{{ $order->id }} </small>
+        <small> OrderID: #{{ $order->id }} </small>
     </h1>
 </section>
 <section class="content">
     <div class="row">
         <div class="col-md-9">
             <div class="box box-solid">
-                <div class="col-md-12">
+                <div class="col-md-7">
                     <h3>Currently Ordered</h3>
+                </div>
+                <div class="col-md-5">
+                    <h2 class="pull-right">{{ $order->type->otype }} @if($order->table_id!=0)Table:  #{{ $order->table->table_no }}@endif</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive  ">
