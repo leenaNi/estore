@@ -160,9 +160,17 @@
                                     @foreach($latestOrders as $order)
                                     <tr>
                                         <td>{{ @$order["order_id"] }}</td>
-                                        <td>{{ ucfirst(@$order["first_name"]) }} {{ @$order["last_name"] }} </td>
-                                        <td>{{ @$order["email"] }}  </td>
-                                        <td>{{ @$order["phone_no"] }}</td>
+                                        <td>
+                                        @if($order["first_name"] != '') {{  ucfirst(@$order["first_name"]) }} {{ @$order["last_name"] }}
+                                        @else 
+                                        -
+                                        @endif
+                                        </td>
+                                        <td>
+                                        @if($order["email"] != '') {{ @$order["email"] }} @else 
+                                        -
+                                        @endif </td>
+                                        <td>@if($order["phone_no"] != '') {{ @$order["phone_no"] }} @else - @endif</td>
                                         <td>{{ @$order["order_status"] }}</td>  
                                         <td>{{ @$order["payment_status"] }}</td>
                                         <td>{{ @$order["payment_method"] }}</td>

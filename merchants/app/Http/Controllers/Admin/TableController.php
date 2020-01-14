@@ -671,6 +671,7 @@ class TableController extends Controller
         $orders->additional_charge = $additional_charge_json ? $additional_charge_json : 0;
         //return $additional_charge_json;
         $orders->payment_method = $paymentMethod;
+        $orders->payment_status = ($paymentMethod == '1')? 4: 1;
         $orders->pay_amt = $payAmt;
         $orders->currency_id = Session::get("currency_id");
         $orders->currency_value = Session::get("currency_val");
