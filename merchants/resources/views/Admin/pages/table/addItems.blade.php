@@ -1110,7 +1110,7 @@ body * { visibility: hidden; }
                         table = table + " <tr  style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>"+chargev.label+"</td><td class='text-right sbtot'>"+chargev.applied+"</td></tr>";
                     }
                 });
-                table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.order_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='getprint()'>Print Bill</button>";
+                table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.pay_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='getprint()'>Print Bill</button>";
                 //console.log('==' + JSON.stringify(table));
                 $("#printInvoicce").modal("show");
                 $(".invoiceData").html(table);
