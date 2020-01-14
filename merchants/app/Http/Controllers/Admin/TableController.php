@@ -718,7 +718,7 @@ class TableController extends Controller
     {
         if (Input::get("orderId")) {
             $order = Order::find(Input::get("orderId"));
-            if ($order->table_id == 1) {
+            if ($order->otype == 1) {
                 $table = Table::find($order->table_id);
                 $table->ostatus = $oStatus;
                 $table->update();
