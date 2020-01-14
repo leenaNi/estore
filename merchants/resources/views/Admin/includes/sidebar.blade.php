@@ -133,7 +133,8 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
                 </ul>
             </li>
-            <li class="treeview {{ preg_match("/admin.vendors|admin.requisition/",Route::currentRouteName())? 'active' : ''}}">
+            
+            <!-- <li class="treeview {{ preg_match("/admin.vendors|admin.requisition/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-credit-card"></i>
                     <span>Purchases</span>
@@ -144,7 +145,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.requisition.view|admin.requisition.add|admin.requisition.edit/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.requisition.view') }}"><i class="fa fa-angle-right"></i>Purchase Orders</a></li>
                    
                 </ul>
-            </li> 
+            </li>  -->
             <li class="treeview {{ preg_match("/admin.campaign|admin.coupons|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.emailcampaign.viewemails|admin.emailcampaign.addemail|admin.emailcampaign.editemail|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-bullhorn"></i><span>Marketing</span>

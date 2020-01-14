@@ -58,6 +58,7 @@ class TableController extends Controller
         $table->table_label = Input::get("table_label");
         $table->table_type = Input::get("table_type");
         $table->status = Input::get("status");
+        $table->ostatus = 1;
         if (empty(Input::get('id'))) {
             Session::flash("msg", "Table added successfully.");
             $data = ['status' => "1", "message" => "Table added successfully."];
@@ -717,7 +718,7 @@ class TableController extends Controller
     {
         if (Input::get("orderId")) {
             $order = Order::find(Input::get("orderId"));
-            if ($order->table_id == 1) {
+            if ($order->otype == 1) {
                 $table = Table::find($order->table_id);
                 $table->ostatus = $oStatus;
                 $table->update();

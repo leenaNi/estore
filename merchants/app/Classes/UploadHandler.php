@@ -351,15 +351,16 @@ class UploadHandler {
     function get_config_bytes($val) {
         $val = trim($val);
         $last = strtolower($val[strlen($val) - 1]);
+        $size = substr($val, 0, -1);
         switch ($last) {
             case 'g':
-                $val *= 1024;
+                $size *= 1024;
             case 'm':
-                $val *= 1024;
+                $size *= 1024;
             case 'k':
-                $val *= 1024;
+                $size *= 1024;
         }
-        return $this->fix_integer_overflow($val);
+        return $this->fix_integer_overflow($size);
     }
 
     protected function validate($uploaded_file, $file, $error, $index) {
