@@ -1131,7 +1131,7 @@ body * { visibility: hidden; }
         var orderId = $('input[name=order_id]').val();
         $.ajax({
             type: "POST",
-            url: "{{route('admin.tables.changeOccupancyStatus')}}/2",
+            url: "{{route('admin.tables.changeOccupancyStatus')}}/3",
             data: {orderId: orderId},
             cache: false,
             success: function (data) {
@@ -1149,14 +1149,24 @@ body * { visibility: hidden; }
         newWin.document.close();
         setTimeout(function(){newWin.close();},10);
     }
-
+    $("#printInvoicce").on("hidden.bs.modal", function () {
+        window.location.href = "{{route('admin.tableorder.view')}}";
+        // var orderId = $('input[name=order_id]').val();
+        // $.ajax({
+        //     type: "POST",
+        //     url: "{{route('admin.tables.changeOccupancyStatus')}}",
+        //     data: {id: orderId},
+        //     cache: false,
+        //     success: function (data) {
+        //         window.location.href = "{{route('admin.tableorder.view')}}";
+        //         }
+        // });
+    });
     // $(".prodSearch").autocomplete({
     //     source: "{{ route('admin.orders.getSearchProds') }}",
     //     minLength: 1,
     //     select: function (event, ui) {
     //         ele = event.target;
-            
-
     //     }
     // });
     $(".prodSearch").blur(function () {        

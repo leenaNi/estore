@@ -907,17 +907,18 @@ body * { visibility: hidden; }
         newWin.document.close();
         setTimeout(function(){newWin.close();},10);
     }
-    // $("#printInvoicce").on("hidden.bs.modal", function () {
-    //     var orderId = $('input[name=order_id]').val();
-    //     $.ajax({
-    //         type: "POST",
-    //         url: "{{route('admin.tables.changeOccupancyStatus')}}",
-    //         data: {id: orderId},
-    //         cache: false,
-    //         success: function (data) {
-    //             window.location.href = "{{route('admin.tableorder.view')}}";
-    //             }
-    //     });
-    // });
+    $("#printInvoicce").on("hidden.bs.modal", function () {
+        window.location.href = "{{route('admin.tableorder.view')}}";
+        // var orderId = $('input[name=order_id]').val();
+        // $.ajax({
+        //     type: "POST",
+        //     url: "{{route('admin.tables.changeOccupancyStatus')}}",
+        //     data: {id: orderId},
+        //     cache: false,
+        //     success: function (data) {
+        //         window.location.href = "{{route('admin.tableorder.view')}}";
+        //         }
+        // });
+    });
 </script>
 @stop
