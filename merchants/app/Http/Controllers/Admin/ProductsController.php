@@ -1635,10 +1635,10 @@ class ProductsController extends Controller {
                     }
 
                     $categoryids = explode(",", $categories);
-
+                    $cat_id = [];
                     if (!empty($categories)) {
                         foreach ($categoryids as $categoryid) {
-                            $category = Category::where(DB::raw(strtolower('category')), $categoryid)->first();
+                            $category = Category::where(DB::raw(strtolower('category')), strtolower($categoryid))->first();
                             if (count($category) > 0) {
                                 $cat_id[] = $category->id;
                             } else {
