@@ -570,6 +570,7 @@ body * { visibility: hidden; }
             //console.log(existingprods);
           calAmt();
             $("table.tableVaglignMiddle tbody").html(existingprods);
+            getAdditionalcharge();
         });
     }
 
@@ -1130,7 +1131,7 @@ body * { visibility: hidden; }
         var orderId = $('input[name=order_id]').val();
         $.ajax({
             type: "POST",
-            url: "{{route('admin.tables.changeOccupancyStatus')}}/3",
+            url: "{{route('admin.tables.changeOccupancyStatus')}}/2",
             data: {orderId: orderId},
             cache: false,
             success: function (data) {
