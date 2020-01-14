@@ -163,14 +163,14 @@
                                         <td>
                                         @if($order["first_name"] != '') {{  ucfirst(@$order["first_name"]) }} {{ @$order["last_name"] }}
                                         @else 
-                                        NA
+                                        -
                                         @endif
                                         </td>
                                         <td>
                                         @if($order["email"] != '') {{ @$order["email"] }} @else 
-                                        NA
+                                        -
                                         @endif </td>
-                                        <td>@if($order["phone_no"] != '') {{ @$order["phone_no"] }} @else NA @endif</td>
+                                        <td>@if($order["phone_no"] != '') {{ @$order["phone_no"] }} @else - @endif</td>
                                         <td>{{ @$order["order_status"] }}</td>  
                                         <td>{{ @$order["payment_status"] }}</td>
                                         <td>{{ @$order["payment_method"] }}</td>

@@ -196,9 +196,9 @@
                                 <td><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
                                 <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
 
-                                <td>@if(@$order->users->firstname && @$order->users->firstname!=''){{ @$order->users->firstname }} {{ @$order->users->lastname }} @else NA @endif </td>
+                                <td>@if(@$order->users->firstname && @$order->users->firstname!=''){{ @$order->users->firstname }} {{ @$order->users->lastname }} @else - @endif </td>
 <!--                                <td>{{ @$order->users->email }}  </td>-->
-                                <td>@if(@$order->users->telephone && @$order->users->telephone != '') {{ @$order->users->telephone }} @else NA @endif</td>
+                                <td>@if(@$order->users->telephone && @$order->users->telephone != '') {{ @$order->users->telephone }} @else - @endif</td>
                                 <td>{{ @$order->orderstatus['order_status']  }}</td>
                                 <td>{{ @$order->paymentstatus['payment_status'] }}</td>
 <!--                                <td>{{ @$order->paymentmethod['name'] }}</td>-->
