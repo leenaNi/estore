@@ -1080,7 +1080,9 @@ body * { visibility: hidden; }
                 if(data.address1){
                     var table = "<div id='DivIdToPrint'><table class='invocieBill-table' style='width: 400px;margin: 0 auto;'>";
                 }else{
-                        var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.orders.address1+" "+data.orders.address2+" "+data.orders.address3+"</span><br><span class='shopnumber'>"+data.orders.phone_no+"</span></td></tr><tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table 329<br>Server: Krista<br>11:59 AM</td> <td colspan='2' class='text-right'>Party of 1<br>Tickit 4002<br>Server<br>Date 002/26/14</td></tr><tr style='padding-bottom: 10px !important;padding-top: 10px !important;'> <th class='text-left'>Order id</th> <th class='text-center'>Table#</th> <th colspan='2' class='text-right'>Order date</th></tr><tr class='double-dashed-border'><td  class='text-left'>" + data.orders.id + "</td><td  class='text-center'>" + tableId + "</td><td colspan='2' class='text-right'>" + data.orders.created_at + "</td></tr>";
+                        var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.orders.address1+" "+data.orders.address2+" "+data.orders.address3+"</span><br><span class='shopnumber'>"+data.orders.phone_no+"</span></td></tr>";
+                        // table + "<tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table 329<br>Server: Krista<br>11:59 AM</td> <td colspan='2' class='text-right'>Party of 1<br>Tickit 4002<br>Server<br>Date 002/26/14</td></tr>";
+                        table+="<tr style='padding-bottom: 10px !important;padding-top: 10px !important;'> <th class='text-left'>Order id</th> <th class='text-center'>Table#</th> <th colspan='2' class='text-right'>Order date</th></tr><tr class='double-dashed-border'><td  class='text-left'>" + data.orders.id + "</td><td  class='text-center'>" + tableId + "</td><td colspan='2' class='text-right'>" + data.orders.created_at + "</td></tr>";
                 }
                 table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><th class='text-left'>Qty </th><th class='text-left pl10'>product </th><th class='text-left'>price</th><th class='text-right'>total</th>";
                 $.each(jQuery.parseJSON(data.orders.cart), function (cartk, cartv) {
@@ -1108,7 +1110,7 @@ body * { visibility: hidden; }
                         table = table + " <tr  style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>"+chargev.label+"</td><td class='text-right sbtot'>"+chargev.applied+"</td></tr>";
                     }
                 });
-                table = table + "<t  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.order_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table# 27</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='getprint()'>Print Bill</button>";
+                table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.order_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='getprint()'>Print Bill</button>";
                 //console.log('==' + JSON.stringify(table));
                 $("#printInvoicce").modal("show");
                 $(".invoiceData").html(table);
@@ -1134,7 +1136,7 @@ body * { visibility: hidden; }
         var orderId = $('input[name=order_id]').val();
         $.ajax({
             type: "POST",
-            url: "{{route('admin.tables.changeOccupancyStatus')}}/3",
+            url: "{{route('admin.tables.changeOccupancyStatus')}}/1",
             data: {orderId: orderId},
             cache: false,
             success: function (data) {
