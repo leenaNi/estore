@@ -14,13 +14,13 @@ use App\Models\HasProducts;
 use App\Models\Kot;
 use App\Models\Loyalty;
 use App\Models\Order;
+use App\Models\OrderStatusHistory;
 use App\Models\OrderType;
 use App\Models\Product;
 use App\Models\Table;
+use App\Models\TableStatus;
 use App\Models\User;
 use App\Models\Zone;
-use App\Models\OrderStatusHistory;
-use App\Models\TableStatus;
 use Carbon;
 use Cart;
 use DB;
@@ -159,6 +159,7 @@ class TableController extends Controller
             $saveHasprd->qty = $ordv['qty'];
             $saveHasprd->price = $ordv['price'];
             $saveHasprd->remark = $ordv['remark'];
+            $saveHasprd->store_id = $this->jsonString['store_id'];
             $saveHasprd->save();
         }
 
@@ -310,7 +311,7 @@ class TableController extends Controller
         $data = ['order' => $order, 'coupon' => $coupon, 'ordcountries' => $ordcountries, 'ordstates' => $ordstates];
         // $order = Table::find(Input::get('tableid'))->orders()->orderBy("created_at","desc")->first();
         // $url = route('admin.order.additems',['id'=>$order->id]);
-        if(Input::get('responseType') && Input::get('responseType') == 'json'){
+        if (Input::get('responseType') && Input::get('responseType') == 'json') {
             return $data;
         } else {
             return Helper::returnView(Config('constants.adminTableView') . '.orderBill', $data);
@@ -678,6 +679,8 @@ class TableController extends Controller
         $orders->cashback_used = is_null(Session::get('checkbackUsedAmt')) ? 0 : Session::get('checkbackUsedAmt');
         $orders->voucher_amt_used = is_null(Session::get('voucherAmount')) ? 0 : Session::get('voucherAmount');
         $orders->voucher_used = is_null(Session::get('voucherUsedAmt')) ? 0 : Session::get('voucherUsedAmt');
+        $orders->store_id = $this->jsonString['store_id'];
+        $orders->prefix = $this->jsonString['prefix'];
         if ($this->feature['referral'] == 1) {
             if (!empty(Session::get("ReferalId"))) {
                 $orders->referal_code_used = Session::get("ReferalCode");
@@ -710,12 +713,11 @@ class TableController extends Controller
         return $data;
     }
 
-    
-    
-    public function changeOccupancyStatus($oStatus) {
-        if(Input::get("orderId")) {
+    public function changeOccupancyStatus($oStatus)
+    {
+        if (Input::get("orderId")) {
             $order = Order::find(Input::get("orderId"));
-            if($order->table_id == 1) {
+            if ($order->table_id == 1) {
                 $table = Table::find($order->table_id);
                 $table->ostatus = $oStatus;
                 $table->update();
@@ -729,12 +731,12 @@ class TableController extends Controller
                 Session::flash("msg", '');
                 return ['status' => 1, 'msg' => ""];
             }
-        } else if(Input::get("tableid")) {
+        } else if (Input::get("tableid")) {
             $order = Order::where('table_id', Input::get("tableid"))->first();
             $order->order_status = 3;
             $order->update();
             $statusHistory = ['order_id' => $order->id, 'status_id' => 3, 'remark' => 'Table order completed', 'notify' => 0, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
-                OrderStatusHistory::insert($statusHistory);
+            OrderStatusHistory::insert($statusHistory);
             $table = Table::find($order->table_id);
             $table->ostatus = $oStatus;
             $table->update();
@@ -746,16 +748,17 @@ class TableController extends Controller
         }
     }
 
-    public function getSearchData() {
+    public function getSearchData()
+    {
         $searchStr = Input::get('term');
         $products = DB::table('products')
-        ->select('products.id', 'products.product', 'products.selling_price', 'categories.category', 'categories.url_key as cat_url')
-        ->leftJoin('has_categories', 'products.id', 'has_categories.prod_id')
-        ->leftJoin('categories', 'categories.id', '=', 'has_categories.cat_id')
-        ->where("products.is_individual", 1)->where('products.status', 1)
-        ->where('products.product', "like", "%" . $searchStr . "%")
-        ->orWhere('products.id', "like", "%" . $searchStr . "%")
-        ->get();
+            ->select('products.id', 'products.product', 'products.selling_price', 'categories.category', 'categories.url_key as cat_url')
+            ->leftJoin('has_categories', 'products.id', 'has_categories.prod_id')
+            ->leftJoin('categories', 'categories.id', '=', 'has_categories.cat_id')
+            ->where("products.is_individual", 1)->where('products.status', 1)
+            ->where('products.product', "like", "%" . $searchStr . "%")
+            ->orWhere('products.id', "like", "%" . $searchStr . "%")
+            ->get();
 
         // $data = [];
         // foreach ($products as $k => $prd) {
