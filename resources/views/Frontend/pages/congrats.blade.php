@@ -18,18 +18,19 @@
             <a href='#' test='{{$storedata->store_domain}}/admin' class="btn theme-btn setUpStoreButton">Let's Set up your Store</a>
             </div>
            
-			
-<div class="table-responsive">
+        <div class="table-responsive">
             <form action="#" method="post" role="form" class="landing-wide-form congrats-form clearfix">
                 <table class="table nobottommargin">
-
                     <tbody>
+                       
                         <tr>
                             <td colspan="2">Store Admin Link<br/><a target="_blank" href="{{$storedata->store_domain}}/admin">{{$storedata->store_domain}}/admin</a></td>
                         </tr>
+                        @if($storedata->store_type == 'merchant')
                         <tr>
                             <td colspan="2">Online Store Link<br/><a target="_blank" href="{{$storedata->store_domain}}">{{$storedata->store_domain}}</a></td>
                         </tr>
+                        @endif
                         <tr>
                             <td colspan="2" class="text-center">To manage your online store, click on the Store Admin link or download eStorifi Merchant app and login with the same credentials used to create the store.
                                <div class="clearfix androidBtn">
@@ -37,7 +38,8 @@
                         </tr>
                     </tbody>
                 </table>
-
+                <input type="hidden" id="hdnStoreType" name="hdnStoreType" value="">
+                <input type="hidden" id="hdnmMerchantPhoneNo" name="hdnmMerchantPhoneNo" value="">
             </form>
         </div>
         </div>
@@ -49,27 +51,39 @@
 
 @section('myscripts')
 <script>
+    $(document).ready(function(){
+        var storeType = '<?= $storedata->store_type ?>';
+        var merchantId = '<?= $storedata->merchant_id ?>';
+        //alert("storeType >> "+storeType+" :: merchantId >> "+merchantId);
+        if(storeType == 'merchant')
+        {
+            merchantphone = <?= App\Models\Merchant::where(['id' => $storedata->merchant_id])->pluck('phone') ?>;
+        }
+        else
+        {
+            merchantphone = <?= App\Models\Vendor::where(['id' => $storedata->merchant_id])->pluck('phone_no') ?>;
+        }
+        $("#hdnmMerchantPhoneNo").val(merchantphone);
+       //alert("merchantphone >> "+merchantphone);
+        $("#hdnStoreType").val(storeType);
+    });
     
-      $(".yourOnlineStore").on("click",function(){
-          merchantphone = <?= App\Models\Merchant::find($storedata->merchant_id)->phone ?>;
-            form = "";
-            form += '<input type="hidden" name="telephone" value="'+merchantphone+'">';
-            $('<form action="{{$storedata->store_domain}}/get-log" method="POST" target="_blank">'+form+'</form>').appendTo('body').submit();
-        
-        
+
+    $(".yourOnlineStore").on("click",function(){
+        var merchantphone = $("#hdnmMerchantPhoneNo").val();
+        form = "";
+        form += '<input type="hidden" name="telephone" value="'+merchantphone+'">';
+        $('<form action="{{$storedata->store_domain}}/get-log" method="POST" target="_blank">'+form+'</form>').appendTo('body').submit();  
     });
     
     $(".setUpStoreButton").on("click",function(){
-        merchantphone = <?= App\Models\Merchant::find($storedata->merchant_id)->phone ?>;
-            form = "";
-            form += '<input type="hidden" name="telephone" value="'+merchantphone+'">';
-            $('<form action="{{$storedata->store_domain}}/get-login" method="POST" target="_blank">'+form+'</form>').appendTo('body').submit();
-        
-        
+        var merchantphone = $("#hdnmMerchantPhoneNo").val();
+       
+        form = "";
+        form += '<input type="hidden" name="telephone" value="'+merchantphone+'">';
+        $('<form action="{{$storedata->store_domain}}/get-login" method="POST" target="_blank">'+form+'</form>').appendTo('body').submit();
     });
     
-    
+   
 </script>
-
-
 @stop

@@ -5,12 +5,8 @@
     <div class="">
 
         <div class="full-screen force-full-screen nopadding nomargin noborder ohidden">
-
             <div class="container mob-container clearfix">
-
                 <div class="landing-wide-form landing-form-overlay dark nobottommargin clearfix"><!-- contact-widget-->
-
-
 
                     <!--<form action="#" id="getStartedForm" method="post" class="col-md-6 landing-wide-form landing-form-overlay dark nobottommargin clearfix">-->
                         <div class="heading-block nobottommargin nobottomborder">
@@ -31,7 +27,8 @@
                         </div>
                         @else
                         <div class="col_full text-center bottommargin-xs noMobBottomMargin">
-                            <input class="btn theme-btn nomargin getVeestore"  value="Get Started" type="submit" style="" data-toggle="modal" data-target="#getstartModal">
+                            {{-- <input class="btn theme-btn nomargin getVeestore"  value="Get Started" type="submit" style="" data-toggle="modal" data-target="#getstartModal"> --}}
+                            <a href="{{route('newstore')}}" class="btn theme-btn nomargin getVeestore" >Get Started</a>
                         </div>
                         @endif
                         <div class="clearfix"></div>
@@ -40,24 +37,16 @@
                              <button class="btn btn-default btn-block nomargin "  type="button">Get VeeStores free trial for a year today!</button>
                          </div> -->
                     <!--</form>-->
-
-
-
                 </div>
 
             </div>
 
             <!--   <div class="image-wrap">
                   <img src="{{ asset(Config('constants.frontendPublicImgPath').'/slider/4.jpg') }}" alt="Image">
-              </div> -->
-
+             </div> -->
         </div>
-
     </div>
-
 </section>
-
-
 <!-- Content
             ============================================= -->
 <section id="content">
@@ -70,14 +59,11 @@
 
                 <div class="col-lg-5 col-md-5 col-sm-6">
                     <h2 class="marginBottom10">Features</h2>
-                    <!--                     <form action="{{route('newstore')}}" id="getStartedForm" method="post">
-                                             <input type="text" class="form-control required not-dark" required="true"  name="store_name" placeholder="Store Name">
-                                            <input class="btn theme-btn btn-block nomargin" id="create_store" value="Get Started" type="submit" style="" >
-                                            
-                                        </form>-->
-
-
-
+                    <!-- <form action="{{route('newstore')}}" id="getStartedForm" method="post">
+                                <input type="text" class="form-control required not-dark" required="true"  name="store_name" placeholder="Store Name">
+                            <input class="btn theme-btn btn-block nomargin" id="create_store" value="Get Started" type="submit" style="" >
+                            
+                        </form>-->
                     <ul class="iconlist iconlist-large iconlist-color">
                         <li><i class="icon-ok-sign"></i> Beautiful Themes</li>
                         <li><i class="icon-ok-sign"></i> Payment Ready Shop</li>
@@ -99,14 +85,9 @@
                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fmobile.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="400" alt="iPad">
                     </div>
-
                 </div>
-
             </div>
         </div>
-
-
-
         <div class="clearfix"></div>
         <div id="howitwork"></div>
         <div class="section notopmargin pd100topbottom">
@@ -122,8 +103,6 @@
                     </div>
                 </div>
  
-                 
-
                 <div class="col_one_third nobottommargin">
                     <div class="feature-box fbox-center fbox-light fbox-effect nobottomborder">
                         <div class="fbox-icon">
@@ -147,13 +126,8 @@
             </div>
         </div>
         <div class="clearfix"></div>
-
-
-
         <div class="container clearfix ">
-
             <div class="row notopmargin nobottommargin">
-
                 <div class="heading-block center nobottommargin">
                     <h2 class="">Beautiful and professional themes for your online store</h2>
                 </div>
@@ -163,11 +137,9 @@
                             <div class="slide">
 
                                 <div class="col-lg-6 col-xs-12 sameheight">
-
                                     <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="370" data-height-xxs="370">
                                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme1.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                                     </div>
-
                                 </div>
                                 <div class="col-lg-6 col-xs-12 sameheight">
                                     <div class="heading-block content-vertica-middle">
@@ -177,13 +149,10 @@
                                 </div>
                             </div>
                             <div class="slide">
-
                                 <div class="col-lg-6 col-xs-12 sameheight">
-
                                     <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="370" data-height-xxs="370">
                                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme2.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                                     </div>
-
                                 </div>
                                 <div class="col-lg-6 col-xs-12 sameheight">
                                     <div class="heading-block content-vertica-middle">
@@ -192,8 +161,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -259,46 +226,11 @@
                   </div>
               </div>
           </div> -->
-
     </div>
-
 </section>
 <!-- #content end -->
-  <!-- Modal -->
-  <div class="modal fade" id="getstartModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header regPopheader">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-         
-          <div class="errorMessage alert-danger"></div>
-        </div>
-        <div class="modal-body"> 
-        <div class="col-md-12 text-center marginBottom20">
-<!--               <a href="{{ route('login',['provider'=>'facebook']) }}"  class="col-md-12 col-sm-6 col-xs-12" style="margin-bottom:11px;">-->
-<a class="btn btn-block btn-social btn-facebook" onclick="fbLogin()" id="fbLink" class="fb_login_btn">
-            <span class="icon-facebook"></span> Register with Facebook</a>
-        </div>
-       <div class="col-md-12 orDivider-box marginBottom20">
-       <div class="orDivider">or</div>
-       </div>
-       
-       <div class="col-md-12 text-center">
-                <a href="{{route('newstore')}}">  <button class="btn btn-success btn-social fullWidthbtn theme-color marginBottom20"><span class="icon-vlogo"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/register-button-logo.png') }}" alt="V"></span> Register with Mobile</button></a>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-        <div class="clearfix">
-        </div>
-      </div>
-      
-    </div>
-  </div>
 @stop
 @section("myscripts")
-
 <script>
 
 //function toTitleCase(str) {

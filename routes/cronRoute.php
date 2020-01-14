@@ -1,5 +1,4 @@
 <?php
-
 Route::group(['namespace' => 'Cron', 'prefix' => 'cron', 'middleware' => ['web']], function() {
 //       Route::any('/user-check', function(){
 //           echo "fwerewrwe";

@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vendor extends Model
 {
-       protected $table = 'vendors';
+       //protected $table = 'vendors';
+       protected $table = 'distributor';
+
 }

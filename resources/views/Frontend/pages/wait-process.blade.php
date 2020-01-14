@@ -45,7 +45,8 @@ body, #wrapper, #content {
 <script>
     $(document).ready(function(){
         allinput = <?= $themeInput ?>;
-        console.log(allinput);
+        console.log("allinput >> "+JSON.stringify(allinput));
+        //alert(" call ajax");
      $.ajax({
         type:"POST",
        // dataType:"json",

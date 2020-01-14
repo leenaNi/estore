@@ -54,7 +54,6 @@ class RouteServiceProvider extends ServiceProvider {
             
             $this->mapApiRoutes();
         } else if($getprefix[1] == 'admin'){
-           
             $this->mapVswipeRoutes(); 
         }else{
               $this->mapWebRoutes(); 

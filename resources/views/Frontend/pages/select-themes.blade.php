@@ -54,6 +54,7 @@
                                 <div class="center-text" >
                                     <h3 class="nobottommargin white-text">{{$theme->category['category']."".$themeK}} - {{$theme->theme_type==1?'Starter':'Advanced'}}</h3>
                                     @if(!empty(Session::get('merchantid')))
+                                    <input type="hidden" name="storeType" value="{{$allinput['storeType']}}">
                                     <input type="hidden" name="storename" value="{{Session::get('storename')}}">
                                     <input type="hidden" name="firstname" value="{{$allinput['firstname']}}">
                                     <input type="hidden" name="email" value="{{$allinput['email']}}">
@@ -65,7 +66,7 @@
                                     @if(!empty($allinput['provider_id']))
                                     <input type="hidden" name="provider_id" value="{{$allinput['provider_id']}}">
                                     @endif
-                                    <input type="hidden" name="business_type" value="{{$allinput['business_type']}}">
+                                    <input type="hidden" name="business_type" value="{{$allinput['business_type'][0]}}">
                                     <input type="hidden" name="already_selling" value="{{json_encode($allinput['already_selling'])}}">
                                     <input type="hidden" name="theme_id" value="{{$theme->id}}">
                                     <input type="hidden" name="cat_id" value="{{$c->id}}">

@@ -20,6 +20,8 @@ class Helper
 
     public static function returnView($viewname, $data, $redirectTo = null)
     {
+        //echo "<pre>";print_r($data);
+        //dd($data);
         if (isset($_REQUEST['responseType'])) {
             if ($_REQUEST['responseType'] == 'json') {
                 return $data;
