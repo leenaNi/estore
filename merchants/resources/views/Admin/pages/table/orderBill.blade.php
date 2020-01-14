@@ -890,7 +890,7 @@ body * { visibility: hidden; }
         var orderId = $('input[name=order_id]').val();
         $.ajax({
             type: "POST",
-            url: "{{route('admin.tables.changeOccupancyStatus')}}/3",
+            url: "{{route('admin.tables.changeOccupancyStatus')}}/1",
             data: {orderId: orderId},
             cache: false,
             success: function (data) {

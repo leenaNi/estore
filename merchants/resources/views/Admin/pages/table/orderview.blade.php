@@ -307,11 +307,16 @@ $(document).ready(function () {
                     window.location.href=respurl;
                 });
                 
-            }else if(key=='cut'){
-              $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
-                  // console.log(respurl);
-                    window.location.href=respurl+"?from=BillTable";
-                });  
+            } else if(key=='cut') {
+                $.post("{{route('admin.order.addNewOrder')}}", {tableid: tableid}, function (resp) {
+                    if (resp.order.id) {
+                        window.location.href = resp.redirectUrl;
+                    }
+                });
+            //   $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
+            //       // console.log(respurl);
+            //         window.location.href=respurl+"?from=BillTable";
+            //     });  
             }
             
         },
