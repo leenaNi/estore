@@ -1131,7 +1131,7 @@ body * { visibility: hidden; }
         var orderId = $('input[name=order_id]').val();
         $.ajax({
             type: "POST",
-            url: "{{route('admin.tables.changeOccupancyStatus')}}/2",
+            url: "{{route('admin.tables.changeOccupancyStatus')}}/3",
             data: {orderId: orderId},
             cache: false,
             success: function (data) {
@@ -1155,8 +1155,6 @@ body * { visibility: hidden; }
     //     minLength: 1,
     //     select: function (event, ui) {
     //         ele = event.target;
-            
-
     //     }
     // });
     $(".prodSearch").blur(function () {        
