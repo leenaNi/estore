@@ -245,7 +245,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
             </li> 
             <li class="{{ Route::currentRouteName() == 'admin.payments.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.payments.view') }}">
-                    <i class="fa fa-money"></i><span>Payments</span> <i class=""></i>
+                    <i class="fa fa-money"></i><span>Settlements</span> <i class=""></i>
                 </a>
             </li>
             <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">

@@ -232,13 +232,19 @@
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><span class="store-credit hide"><input type="text" onblur="updateRemainigAmount()" name='pay_amt' class='form-control validate_decimal' max="1" value="0" /></span></td>
+                                    <td><span class="store-credit hide"><input type="text" onblur="updateRemainigAmount()" name='pay_amt' class='form-control validate_decimal' max="1" value="0" />
+                                    </span></td>
                                     <td><span class="store-credit hide"><b>Remaining Amount:</b> <span class="" id="remaining-amt">0</span></span></td>
                                     <td> Subtotal: <b><span class="subtotal">0</span></b></td>
                                     <td></td>
                                 </tr>
+                                <tr id="validate_credit_amt" style="display: none">
+                                    <td></td>
+                                    <td><span style="color: red">Amount should be less than payable amount</span></td>
+                                    <td></td><td></td>
+                                </tr>
                                 <tr>
-                                    <td colspan="1"><label><input type="checkbox" value="1" class="form-inline" name="order_status" />Deliver entire order</label></td>
+                                    <td colspan="1"><label><input type="checkbox" value="1" class="form-inline" name="order_status" />is Delivered</label></td>
                                     <td colspan="2">{{ Form::textarea("remarks",null,['class'=>'form-control remark','rows'=>"1",'cols'=>"50","Placeholder"=>'Remarks (If any)']) }}</td>
                                     <td colspan="2"></td>
                                 </tr>
@@ -502,7 +508,7 @@
                 parentprdid = prodid;
                 //console.log(parentprdid);exite;
                 $.post("{{route('admin.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1}, function (price) {
-                    console.log(JSON.stringify(price));
+                    //console.log(JSON.stringify(price));
                     prodSel.parent().parent().find('.prodPrice').text((price.price).toFixed(2));
                     <?php if ($feature['tax'] == 1) {?>
                     prodSel.parent().parent().find('.taxAmt').text((price.tax).toFixed(2));
@@ -858,11 +864,11 @@
                 prod.push(data);
             }
         });
-        if (prod.length <= 0) {
-            $(".finalAmt").text('0.00');
-            getAdditionalcharge();
-            return false;
-        }
+        // if (prod.length <= 0) {
+        //     $(".finalAmt").text('0.00');
+        //     getAdditionalcharge();
+        //     return false;
+        // }
         $.ajax({
             type: "POST",
             url: "{{ route('admin.orders.checkOrderCoupon') }}",
@@ -1191,14 +1197,22 @@
     });
 
     function updateRemainigAmount() {
-        var totalPayAmt = parseInt($(".finalAmt").text());
+        var finalamt = $(".finalAmt").text();
+        if(finalamt == ''){
+            var totalPayAmt = 0;
+        }else{
+            var totalPayAmt = parseInt($(".finalAmt").text());
+        }
+        
         var currentPayingAmt = parseInt($('input[name="pay_amt"]').val());
         var remainingPayAmt = totalPayAmt - currentPayingAmt;
         console.log("Remaining Amt", remainingPayAmt, totalPayAmt, currentPayingAmt);
         if(currentPayingAmt > totalPayAmt) {
-            alert("This amount can not be greater than total payable amount!");
+            //alert("This amount can not be greater than total payable amount!");
+            $("#validate_credit_amt").show();
             $('input[name="pay_amt"]').val('0');
         } else {
+            $("#validate_credit_amt").hide();
             $("#remaining-amt").text(remainingPayAmt.toFixed(2));
         }
         // var remainigPayAmt = parseInt($('#remaining-amt').text());

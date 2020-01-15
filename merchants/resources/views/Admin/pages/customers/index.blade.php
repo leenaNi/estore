@@ -92,7 +92,8 @@
                                 <!--                                <th>Last Name</th>-->
                                 <th>Email Id</th>
                                 <th>Mobile</th>
-                                <th>Date Created</th>
+                                <th>Total No. of Orders</th>
+                                <th>Total Order Amt</th>
                                 <th>Credit</th>
                                 @if($setting->status ==1)
                                 <th>Loyalty Group</th>
@@ -105,13 +106,15 @@
                         <tbody>
                             @if(count($customers) >0 )
                             @foreach($customers as $customer)
+                            <?php //dd($customer->orders) ?> 
                             <tr> 
                               <!--                            <td>{{$customer->id }}</td>-->
                                 <td>{{$customer->firstname }} {{$customer->lastname }}</td>
 
                                 <td>{{ $customer->email }}</td>
                                 <td>{{ $customer->telephone }}</td>
-                                <td>{{ date("d-M-Y",strtotime($customer->created_at)) }}</td>
+                                <td>{{ count($customer->orders) }}</td>
+                                <td>{{ $customer->total_order_amt }}</td>
                                 <td>
                                     <a class="btn btn-default view-payments" data-toggle="tooltip" title="View payments" data-userId="{{$customer->id}}">
                                         {{ number_format(($customer->credit_amt  * Session::get('currency_val')), 2) }}</a>
@@ -124,12 +127,17 @@
                                 <td><span class="currency-sym"> </span> {{ number_format((@$customer->userCashback->cashback * Session::get('currency_val')), 2) }}</td>
                                 @endif
                                 <td>@if($customer->status==1)
+                                    <a class="btn btn-default"  title="Enabled">Enabled</a>
+                                    @elseif($customer->status==0)
+                                    <a class="btn btn-default" title="Disabled">Disabled</a>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($customer->status==1)
                                     <a href="{!! route('admin.customers.changeStatus',['id'=>$customer->id]) !!}"  onclick="return confirm('Are you sure you want to disable this customer?')" data-toggle='tooltip' title='Enabled' ><i class="fa fa-check btn-plen btn btnNo-margn-padd"></i></a>
                                     @elseif($customer->status==0)
                                     <a href="{!! route('admin.customers.changeStatus',['id'=>$customer->id]) !!}"  onclick="return confirm('Are you sure you want to enable this customer?')" data-toggle="tooltip" title="Disabled"> <i class="fa fa-times btn-plen btn btnNo-margn-padd"></i></a>
                                     @endif
-                                </td>
-                                <td>
                                     <a href="{!! route('admin.customers.edit',['id'=>$customer->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn-plen btn btnNo-margn-padd" ></i></a>               
                                     <a href="{!! route('admin.customers.delete',['id'=>$customer->id]) !!}" onclick="return confirm('Are you sure you want to delete this customer?')" class="" ui-toggle-class="" data-toggle="tooltip" title="Delete"> <i class="fa fa-trash btn-plen btn"></i></a>
                                     <a href="{!! route('admin.orders.view',['search'=> $customer->firstname.' '.$customer->lastname]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="View Order"> <i class="fa fa-eye btn-plen btn"></i></a>
