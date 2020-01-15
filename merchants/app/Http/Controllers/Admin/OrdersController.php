@@ -1797,7 +1797,7 @@ class OrdersController extends Controller
     {
         // hidding product which is already added
         $cart_products = Cart::instance('shopping')->content()->toArray();
-        $added_prod = array();
+        $added_prod = [];
         if (count($cart_products) > 0) {
             foreach ($cart_products as $key => $product) {
                 if ($product['id'] == $product['options']['sub_prod']) {
@@ -1805,7 +1805,6 @@ class OrdersController extends Controller
                 }
             }
         }
-
         $searchStr = Input::get('term');
         $products = Product::where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product']);
 
@@ -1979,10 +1978,15 @@ class OrdersController extends Controller
         Session::forget("codCharges");
         Session::forget('shippingCost');
         $mycarts = Input::get('mycart');
-        foreach ($mycarts as $key => $mycart) {
+        if(!empty($mycarts)){
+            foreach ($mycarts as $key => $mycart) {
             $getProd = Product::find($mycart['prod_id']);
             $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $mycart['subprodid'], $mycart['qty']);
+            }
+        }else{
+            $cartContent = Cart::instance('shopping')->destroy();
         }
+        
         // dd(Cart::instance('shopping')->content()->toArray());
         $couponCode = Input::get('couponCode');
         $cartContent = Cart::instance('shopping')->content()->toArray();

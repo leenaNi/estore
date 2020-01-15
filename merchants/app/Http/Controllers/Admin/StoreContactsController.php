@@ -458,10 +458,7 @@ class StoreContactsController extends Controller {
         }
         
         if (count($invalidRecords) == 0) {
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/dev-multi
             $result = $this->saveContactUpload($col,$groupid);
             if ($result == 0) {
                 array_push($invalidRecords, $col);
