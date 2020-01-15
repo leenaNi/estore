@@ -10,7 +10,6 @@
     .brbottom1{
         margin-bottom: 10px;
         padding: 10px;
-        /* border-bottom: 1px solid #CCC; */
     }
     .success{
         color: #3c763d;
@@ -173,23 +172,15 @@
                                 <th>@sortablelink ('id', 'Order Id')</th>
                                 <th>Date</th>
                                 <th>Name</th>
-<!--                                <th>Email ID</th>-->
                                 <th>Mobile</th>
                                 <th>Order Status</th>
                                 <th>Payment Status</th>
-<!--                                <th>Payment Method</th>-->
-                                <th>@sortablelink ('pay_amt', 'Amount') <?php //echo!empty(Session::get('currency_symbol')) ? '('.Session::get('currency_symbol').')' : '';  ?></th>
+                                <th>@sortablelink ('pay_amt', 'Amount')</th>
                                 <th>Paid Amount</th>
-                                <th>Order Source</th>
-<!--                                <th>Courier</th>
-                               <th>Tracking no.</th>
-                               <th>Shipping date</th>-->
-
-<!--                                <th>Invoice Printed?</th>-->
+                                <!-- <th>Order Source</th>
                                 @if($feature['flag'] == 1)
                                 <th>Flag</th>
-<!--                                <th>Flag Comment</th>-->
-                                @endif
+                                @endif -->
                                 @if($feature['courier-services'] == 1)
 <!--                                <th>Courier Service</th>-->
                                 @endif
@@ -199,16 +190,15 @@
                         <tbody>
                             @if(count($orders) >0 )
                             @foreach($orders as $order)
+                         
                             <tr>
                                 <td><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /></td>
                                 <td><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
                                 <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
                                 <td>{{ @$order->users->firstname }} {{ @$order->users->lastname }} </td>
-<!--                                <td>{{ @$order->users->email }}  </td>-->
                                 <td>{{ @$order->users->telephone }}</td>
                                 <td>{{ @$order->orderstatus['order_status']  }}</td>
                                 <td>{{ @$order->paymentstatus['payment_status'] }}</td>
-<!--                                <td>{{ @$order->paymentmethod['name'] }}</td>-->
                                 <td>@if(@$order->prefix)
                                     <span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
                                     @else
@@ -220,31 +210,13 @@
                                     <span class="currency-sym"></span> {{ number_format((@$order->amt_paid  * Session::get('currency_val')), 2) }}
                                     @endif
                                 </td>
-                                <td>@if(@$order->order_source==1)
+                               <!--  <td>@if(@$order->order_source==1)
                                     Mall
                                     @elseif(@$order->order_source==2)
                                     {{ Session::get("storeName")}}
                                     @endif
                                 </td>
-                               <!--                                <td><?php
-//                                    if ($order->courier == 1) {
-//                                        echo "Fedex";
-//                                    } else if ($order->courier == 2) {
-//                                        echo "Delhivery";
-//                                    } else if ($order->courier == 3) {
-//                                        if (!empty($order->courier_service_name)) {
-//                                            $serviceN = "[" . $order->courier_service_name . "]";
-//                                        }
-//                                        echo "Other" . @$serviceN;
-//                                    }
-?></td>
-
-                                                               <td>{{ @$order->shiplabel_tracking_id }}</td>
-
-                                                               <td>{{ !empty($order->ship_date != 00-00-00)?date('d M y',strtotime($order->ship_date)):'' }}</td>-->
-
-
-<!--                                <td>{{ ($order->print_invoice == 0)?"No":"Yes" }}</td>-->
+                             
                                 @if($feature['flag'] == 1)
                                 <td>
                                     <div id="flagD{{$order->id }}" class="flagD">
@@ -253,29 +225,19 @@
                                             <br/>{{  (strpos(@$order->orderFlag->flag, 'No Flag') !== false)?"":@$order->orderFlag->flag}} <br> {{  $order->flag_remark}}
                                         </div>
                                     </div>
-                                </td>
-<!--                                 <td>
-                                    <div class="flagC{{$order->id }}" id="flagC{{$order->id }}">
-                                        <div class="flagDC{{$order->id }}" id="flagDC{{$order->id }}">
-                                            {{  $order->flag_remark}}
-                                        </div>
-                                    </div>
-                                </td>-->
+                                </td> -->
+
                                 @endif
                                 @if($feature['courier-services'] == 1)
 <!--                                   <td>{{ ($order->courier != 0)?$order->getcourier['name']:'-' }}</td>-->
                                 @endif
                                 <td>
-                                    <!--                                    <a href="{!! route('admin.orders.editReOrder',['id'=>$order->id]) !!}"  class="label label-success active ereorder" ui-toggle-class="">Edit / Update Order</a>-->
+                                    
                                     <a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
                                     <a href="#" data-ordId ="{{$order->id}}"  class="flage"  ui-toggle-class="" data-toggle="tooltip" title="Flag"><i class="fa fa-flag-o btn-plen"></i></a>
                                     <a data-orderId="{{$order->id}}" class="add-payment" ui-toggle-class="" data-toggle="tooltip" title="Add Payment"><i class="fa fa-money" ></i></a>
                                     <a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this order?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash "></i></a>
-                                    <a href="{!! route('admin.orders.waybill',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="waybill"><i class="fa fa-barcode fa-fw btnNo-margn-padd"></i></a>
-                       <!--                                    <a href="{!! route('admin.orders.orderHistory') !!}?id={{$order->id}}" target="_blank" class="viewHistory"><span class="label label-info label-mini">History</span></a>-->
-
-   <!--  <a href="#" data-ordId ="{{ $order->id }}"  class="" ui-toggle-class="" data-toggle="tooltip" title="History"><i class="fa fa-history"></i></a> -->
-                                    <!--                                    <a href="{!! route('admin.orders.ReturnOrder',['id'=>$order->id]) !!}"  class="label label-success active" ui-toggle-class="">Return Order</a>-->
+                                   <!--  <a href="{!! route('admin.orders.waybill',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="waybill"><i class="fa fa-barcode fa-fw btnNo-margn-padd"></i></a> -->
 
                                 </td>
                             </tr>
