@@ -33,11 +33,35 @@ class DistributorController extends Controller
         foreach ($allBanks as $allB) {
             $bank[$allB->id] = $allB->name;
         }
-
-        if (Auth::guard('vswipe-users-web-guard')->check() !== false) {
-			$distributor = Vendor::orderBy('id', 'desc');
-        } 
         
+        if (Auth::guard('vswipe-users-web-guard')->check() !== false) 
+        {
+            $distributors = Vendor::orderBy('id', 'desc')->get();
+            
+            //dd($distributors);exit;
+        } 
+        else if (Auth::guard('bank-users-web-guard')->check() !== false) 
+        {
+            $bkid = $this->getbankid();
+            $distributors = Vendor::whereHas('hasMarchants', function($q) use($bkid) 
+            {
+                $q->where("bank_id", $bkid);
+            })->orderBy('id', 'desc');
+        } 
+        else if (Auth::guard('merchant-users-web-guard')->check() !== false) 
+        {
+            $distributors = Vendor::orderBy('id', 'desc')->where("id", Session::get('authUserId'));
+        } 
+        else if (array_key_exists('token', $headers)) 
+        {
+            $distributors = Vendor::orderBy('id', 'desc')->where("id", Session::get('authUserId'));
+        }
+       
+       /* if (Auth::guard('vswipe-users-web-guard')->check() !== false) {
+			$distributors = Vendor::where('id', 11)->get();
+        } */
+       // echo count($distributors);
+       // echo "<pre>";print_r($distributors);
         $categories = Category::where('status', 1)->get();
        
         $selCats = ['' => 'Select Category'];
@@ -49,15 +73,11 @@ class DistributorController extends Controller
        
         $data = [];
         $viewname = Config('constants.AdminPagesDistributors') . ".index";
-        $data['distributor'] = $distributor;
+        $data['distributor'] = $distributors;
         $data['selCats'] = $selCats;
         //$data['selBanks'] = $selBanks;
         //$data['storeList'] = $getAllStores;
-echo $viewname;
-
-        //print_r($data);
-        //$viewname = 'Admin.Pages.distributors.index';
-        return Helper::returnView($viewname,$data);
         
-    }
+        return Helper::returnView($viewname,$data);
+    } // End index()
 }

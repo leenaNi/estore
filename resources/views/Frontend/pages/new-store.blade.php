@@ -153,7 +153,7 @@
         var storeName = this.value;
         if(storeName != '')
         {
-            storeName = storeName.split(" ").join("-").toLowerCase();
+            storeName = storeName.replace(/[^a-zA-Z ]/g, "").split(" ").join("").toLowerCase();
             $("#domain_name").val(storeName);
         }
     })
@@ -185,16 +185,16 @@
         if(seletedUserType == 'distributor'){
             $("#storeOptionDiv").hide();
             $("#storeVersionDiv").hide();
-           // $('#business_type').attr("multiple","true");
-           $("#divForDistributor").show();
-           $("#divForMerchant").hide();
+            $("#divForDistributor").show();
+            $("#divForMerchant").hide();
+            $("#newStoreForm").attr("action","{{route('distributorSignup')}}");
         }
         else if(seletedUserType == 'merchant'){
             $("#storeOptionDiv").show();
             $("#storeVersionDiv").show();
-            $("#business_type").removeAttr("multiple",'');
             $("#divForDistributor").hide();
             $("#divForMerchant").show();
+            $("#newStoreForm").attr("action","{{route('selectThemes')}}");
         }
     });
 
@@ -213,6 +213,7 @@
     }, "Invalid Domain Name.");
 
     $("#newStoreForm").validate({
+        
         // Specify the validation rules
         rules: {
             firstname: {
@@ -226,11 +227,17 @@
                 email: true,
                 remote: function () {
                     var emal = $('.email').val().replace(/\s/g, '');
+                    var storeType = $("input[name='storeType']:checked"). val();
+                  
                     var r = {
                         url: "{{route('checkExistingUser')}}",
                         type: "post",
                         cache: false,
-                        data: {email: emal},
+                        data: 
+                        {
+                            email: emal,
+                            storeType: storeType
+                        },
                         dataFilter: function (response) {
                             
                             if (response == 1)
@@ -247,11 +254,16 @@
                 phone: true,
                 remote: function () {
                     var tele = $('.telephone').val().replace(/\s/g, '');
+                    var storeType = $("input[name='storeType']:checked"). val();
                     var r = {
                         url: "{{route('checkExistingphone')}}",
                         type: "post",
                         cache: false,
-                        data: {phone_no: tele},
+                        data: 
+                        {
+                            phone_no: tele,
+                            storeType: storeType
+                        },
                         dataFilter: function (response) {
                             if (response == 1)
                                 return false; //return true or false
@@ -354,9 +366,9 @@
 
     $(".sendOtpOnMobile").on("click", function () {
        
-        //$("#newStoreForm").submit();
+        $("#newStoreForm").submit();
         
-       if ($("#newStoreForm").valid()) {
+       /*if ($("#newStoreForm").valid()) {
             $("#sendOTP").modal('show');
             var country=$('.county_code').val();
             var mobile= $('.telephone').val();
@@ -376,7 +388,7 @@
                     console.log(e.responseText);
                 }
             });
-        }
+        }*/
     });
 
 //    $("#otpForm").validate({
