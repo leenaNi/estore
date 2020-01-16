@@ -23,7 +23,7 @@ class CustomersController extends Controller
     {
         $user = User::find(Session::get('loggedinAdminId'));
         $search = !empty(Input::get("custSearch")) ? Input::get("custSearch") : '';
-        $customers = User::with("userCashback")->where('user_type', 2)->where('store_id', $user->store_id)->orderBy('id', 'desc');
+        $customers = User::with(["userCashback","orders"])->where('user_type', 2)->where('store_id', $user->store_id)->orderBy('id', 'desc');
         $search_fields = ['firstname', 'lastname', 'email', 'telephone'];
         if (!empty(Input::get('custSearch'))) {
             $customers = $customers->where(function ($query) use ($search_fields, $search) {
@@ -56,6 +56,16 @@ class CustomersController extends Controller
             $customers = $customers->paginate(Config('constants.paginateNo'));
             $customers->appends($_GET);
             $customerCount = $customers->total();
+        }
+        
+        foreach ($customers as $key => $value) {
+            $pay_amt = [];
+            $user_orders = $value->orders;
+            foreach ($user_orders as $key => $order) {
+                $pay_amt[] = $order->pay_amt;
+               
+            }
+            $value->total_order_amt=array_sum($pay_amt);
         }
         $loyalty = ['' => 'Select Loyalty Group'] + Loyalty::orderBy('group')->pluck('group', 'id')->toArray();
         $loyalty = array_map('strtolower', $loyalty);
