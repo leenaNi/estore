@@ -126,7 +126,7 @@ class ApiMerchantController extends Controller {
             $merchant = Merchant::find($userDetails->id)->getstores()->first();
             $store = Merchant::find($userDetails->id)->getstores()->count();
             if ($store > 0) {
-                $popupStatus = DB::table($merchant->prefix . '_general_setting')->where('name', 'set_popup')->first()->status;
+                $popupStatus = DB::table('general_setting')->where('name', 'set_popup')->first()->status;
 
                 $storeUrl = $merchant->store_domain;
                 $data = ['storeCount' => $store, 'popup_status' => $popupStatus, 'storeUrl' => $storeUrl];
@@ -163,7 +163,7 @@ class ApiMerchantController extends Controller {
     public function getBankDetails() {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $bankDetails = DB::table($merchant->prefix . '_general_setting')->where('url_key', 'bank_acc_details')->first();
+        $bankDetails = DB::table('general_setting')->where('url_key', 'bank_acc_details')->first();
         if(!empty($bankDetails))
         {
             return $data = ["status" => 1, "bankDetails" => $bankDetails->details];
@@ -179,7 +179,7 @@ class ApiMerchantController extends Controller {
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         if(!empty($merchant))
         {
-            $bankDetails = DB::table($merchant->prefix . '_general_setting')->where('url_key', 'bank_acc_details')->first();
+            $bankDetails = DB::table('general_setting')->where('url_key', 'bank_acc_details')->first();
             $postedData = $data = [];
             $postedData['bank_name'] = Input::get("bank_name");
             $postedData['branch_name'] = Input::get("branch_name");
@@ -193,7 +193,7 @@ class ApiMerchantController extends Controller {
 
             $data['details'] = json_encode($postedData);
 
-            DB::table($merchant->prefix . '_general_setting')->where('url_key', 'bank_acc_details')->update($data);
+            DB::table('general_setting')->where('url_key', 'bank_acc_details')->update($data);
            
 
             return $data = ["status" => 1, "msg" => "Bank details updated successfully!"];

@@ -26,7 +26,7 @@ class ApiCampaignController extends Controller
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prefix = $merchant->prefix;
         
-        $messagesList = DB::table($prefix . '_messages')->orderBy("id", "desc");
+        $messagesList = DB::table('messages')->orderBy("id", "desc");
         
         $messagesList = $messagesList->get();
         $messagesListCount = $messagesList->count();
@@ -44,7 +44,7 @@ class ApiCampaignController extends Controller
         $prefix = $merchant->prefix;
         
         $sms_data=array('title'=>$msg_title,"content"=>$msg_content,'status'=>2);
-		$data1 = DB::table($prefix . '_messages')->insert($sms_data);
+		$data1 = DB::table('messages')->insert($sms_data);
       
         return response()->json(["status" => 1, 'msg' => "SMS send successfully", 'SMS data' => $sms_data]);
     }
