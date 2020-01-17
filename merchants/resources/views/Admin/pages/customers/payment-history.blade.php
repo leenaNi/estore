@@ -1,6 +1,5 @@
 @extends('Admin.layouts.default')
 @section('mystyles')
-<link rel="stylesheet" href="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker-bs3.css') }}">
 <style type="text/css">.capitalizeText select {
         text-transform: capitalize;
     } 
@@ -41,10 +40,11 @@
                 </div>
                 @endif
                 <div class="box-header noBorder box-tools filter-box col-md-9">
-                    <form action="{{ route('admin.customers.view') }}" method="get" >
+                    <form action="{{ route('admin.customers.payment.history') }}" method="post" >
                         <div class="form-group col-md-4">
                         {!! Form::text('datefrom',Input::get('datefrom'), ["class"=>'form-control fromDate', "placeholder"=>"From Date"]) !!}
                     </div>
+                    <input type="hidden" name="user_id" value="{{$user->id}}" />
                     <div class="form-group col-md-4">
                         {!! Form::text('dateto',Input::get('dateto'), ["class"=>'form-control toDate', "placeholder"=>"To Date"]) !!}
                     </div>
@@ -158,7 +158,6 @@
 
 @section('myscripts')
 
-<script src="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
     $(".fromDate").datepicker({
@@ -174,33 +173,5 @@
         }
     });
 });
-$(function () {
-    // var start = moment().subtract(29, 'days');
-    // var end = moment();
-    // function cb(start, end) {
-    //      $('#reportrange span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-    // }
-    // $('.datefromto').daterangepicker({
-    //     startDate: start,
-    //     endDate: end,
-    //     ranges: {
-    //         'Today': [moment(), moment()],
-    //         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    //         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    //         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    //         'This Month': [moment().startOf('month'), moment().endOf('month')],
-    //         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    //     }
-    // }, function () {
-    // });
-    // //cb(start, end);
-    // $('.datefromto').on('apply.daterangepicker', function (ev, picker) {
-    //     $(this).val(picker.startDate.format('DD/MM/YYYY') + '-' + picker.endDate.format('DD/MM/YYYY'));
-    // });
-
-    // $('.datefromto').on('cancel.daterangepicker', function (ev, picker) {
-    //     $(this).val('');
-    // });
-});
-</scripts>
+</script>
 @stop 
