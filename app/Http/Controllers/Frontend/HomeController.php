@@ -786,7 +786,7 @@ class HomeController extends Controller
 
                     if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
-                        //Helper::sendsms($phone, $msgOrderSucc, $country_code);
+                        Helper::sendsms($phone, $msgOrderSucc, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
@@ -802,7 +802,7 @@ class HomeController extends Controller
                     }
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
-                        //Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
+                        Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
                     return "Extracted Successfully to $path";
                 } else {
