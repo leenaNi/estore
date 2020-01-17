@@ -340,7 +340,6 @@ class CartController extends Controller {
         $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
         $imagPath = Config("constants.productImgPath") . '/' . $images;
         $subProd = Product::where("id", "=", $sub_prod)->first();
-        dd($sub_prod);
           if(($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)){
              $price = $product->price;
         }else{
