@@ -5,7 +5,6 @@
 <section class="content-header">
     <h1>
         Merchants
-
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -13,7 +12,6 @@
     </ol>
 </section>
 <section class="content">
-
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
@@ -31,21 +29,19 @@
                             </div>
                             
                             <div class="col-md-3">
-                                {{ Form::text('s_company_name',!empty(Input::get('s_company_name'))?Input::get('s_company_name'):null,['class'=>'form-control','placeholder'=>'Merchant']) }}
+                                {{ Form::text('s_company_name',!empty(Input::get('s_company_name'))?Input::get('s_company_name'):null,['class'=>'form-control','placeholder'=>'Distributor']) }}
                             </div>
                             <div class="col-md-3">
                                 {{ Form::text('s_email',!empty(Input::get('s_email'))?Input::get('s_email'):null,['class'=>'form-control','placeholder'=>'Email ID']) }}
                             </div>
-
-
                             <div class="col-md-1">
                                 <button type="submit" class="btn btn-success"><i class="fa fa-search"></i> Search</button>
                             </div>
                             {{ Form::close() }}
                         </div> 
                         <div class="col-md-2 text-right"> 
-                            {!! Form::open(['route'=>'admin.merchants.addEdit','method'=>'post']) !!}
-                            {!! Form::submit('Add New Merchant',['class'=>'btn btn-info']) !!}
+                            {!! Form::open(['route'=>'admin.distributors.addEdit','method'=>'post']) !!}
+                            {!! Form::submit('Add New Distributor',['class'=>'btn btn-info']) !!}
                             {!! Form::close() !!}
                         </div>
                     </div>
@@ -100,7 +96,7 @@
                                 </td>
                                 <td>{{ date('d-M-Y',strtotime($distributorData->created_at)) }}</td>
                                 <td>
-                                    <a href="#" class="btn btn-success btn-xs">Edit</a>
+                                    <a href="{{ route('admin.distributors.addEdit') }}?id={{$distributorData->id }}" class="btn btn-success btn-xs">Edit</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -121,31 +117,6 @@
 
 @stop
 @section('myscripts')
-<style>
-    .tooltip {
-      position: relative;
-      display: inline-block;
-      border-bottom: 1px dotted black;
-    }
-    
-    .tooltip .tooltiptext {
-      visibility: hidden;
-      width: 120px;
-      background-color: black;
-      color: #fff;
-      text-align: center;
-      border-radius: 6px;
-      padding: 5px 0;
-    
-      /* Position the tooltip */
-      position: absolute;
-      z-index: 1;
-    }
-    
-    .tooltip:hover .tooltiptext {
-      visibility: visible;
-    }
-    </style>
 <script>
     s_from_date = '<?php echo date('Y-m-d', strtotime('-30 days')); ?>';
     s_to_date = '<?php echo date('Y-m-d'); ?>';

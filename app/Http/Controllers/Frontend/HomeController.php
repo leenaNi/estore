@@ -171,7 +171,6 @@ class HomeController extends Controller
 
     public function selectThemes()
     {
-        
         $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
         if (empty(Input::get('firstname')) && empty(Session::get('merchantid')))
         {
@@ -184,7 +183,6 @@ class HomeController extends Controller
         if (empty(Session::get('merchantid'))) 
         {
             $allinput = Input::all();
-            
             $storeType = $allinput['storeType'];
             $sendmsg = "Registred successfully.";
             // Helper::sendsms($allinput['phone'],$sendmsg);
@@ -219,8 +217,16 @@ class HomeController extends Controller
                 $merchantObj->email = $allinput['email'];
                 $merchantObj->register_details = json_encode($allinput);
                 $merchantObj->save();
+                $lastInsteredId = $merchantObj->id;
 
-                Session::put('merchantid', $merchantObj->id);
+                if($lastInsteredId > 0)
+                {
+                    $merchantObj1 = Merchant::find($lastInsteredId);
+                    $indentityCode = $this->createUniqueIdentityCode($allinput,$lastInsteredId);
+                    $merchantObj1->identity_code = $indentityCode;
+                    $merchantObj1->save();
+                }
+                Session::put('merchantid', $lastInsteredId);
                 Session::put('storename', $allinput['store_name']);
                 Session::put('merchantstorecount', 0);
             } // end else
@@ -229,7 +235,6 @@ class HomeController extends Controller
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
             $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
             $checkStote = Merchant::find(Session::get('merchantid'))->getstores()->count();
-
             Session::put('merchantstorecount', $checkStote);
         }
         //echo "<pre>";print_r($allinput);
@@ -279,7 +284,17 @@ class HomeController extends Controller
                 $distributorObj->email = $allinput['email'];
                 $distributorObj->register_details = json_encode($allinput);
                 $distributorObj->save();
-                Session::put('merchantid', $distributorObj->id);
+                $lastInsteredId = $distributorObj->id;
+
+                if($lastInsteredId > 0)
+                {
+                    $distributorObj1 = Vendor::find($lastInsteredId);
+                    $indentityCode = $this->createUniqueIdentityCode($allinput,$lastInsteredId);
+                    $distributorObj1->identity_code = $indentityCode;
+                    $distributorObj1->save();
+                }
+
+                Session::put('merchantid', $lastInsteredId);
                 Session::put('storename', $allinput['store_name']);
                 Session::put('merchantstorecount', 0);
             } // end else
@@ -296,8 +311,19 @@ class HomeController extends Controller
         // For distributor redirect on intermediat page
         $viewname = Config('constants.frontendView') . ".wait-process";
         return Helper::returnView($viewname, $data);
-    }
+    } // End distributorSignup()
 
+    public function createUniqueIdentityCode($allinput,$lastInsteredId) // for merchnat and distributor
+    {
+        $storeName = $allinput['store_name'];
+        $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
+        $phoneNo = $allinput['phone'];
+        $randomFourDigit = rand(1000,9999);
+        $indentityCode = substr($storeName,0,3).substr($phoneNo,-3).$lastInsteredId.$randomFourDigit;
+        //dd($indentityCode);
+        return $indentityCode;
+        
+    } // End createUniqueIdentityCode(
     public function checkUser()
     {
         dd(Input::all());
@@ -991,7 +1017,7 @@ class HomeController extends Controller
     public function checkExistingUser()
     {
         //echo Input::get('email');
-       //dd("dsf >> ".Input::get('storeType'));
+        //dd("dsf >> ".Input::get('storeType'));
         $storeType = Input::get('storeType'); // merchant/ distributor
         
         if($storeType == 'merchant')
