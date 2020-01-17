@@ -274,7 +274,12 @@ class CustomersController extends Controller
     public function paymentHistory()
     {
         $userId = Input::get('user_id');
+        $datefrom = Input::get('datefrom');
+        $dateto = Input::get('dateto');
+        
         $user = User::where('id', $userId)->first();
+
+
         if ($user && $user != null) {
             $totalPaid = DB::table('payment_history')
                 ->leftjoin('orders', 'orders.id', 'payment_history.order_id')
@@ -282,7 +287,6 @@ class CustomersController extends Controller
                 ->where('orders.payment_method', 10)
                 ->where('orders.store_id', Session::get('store_id'))
                 ->select(DB::raw('SUM(payment_history.pay_amount) as total_paid'))
-                // ->groupBy('payment_history.order_id')
                 ->first();
             $totalCreditAmount = DB::table('orders')
                 ->where('orders.user_id', $userId)
@@ -292,14 +296,18 @@ class CustomersController extends Controller
                 ->first();
             $payments = DB::table('payment_history')
                 ->leftjoin('orders', 'orders.id', 'payment_history.order_id')
-            // ->join('users', 'users.id', 'orders.user_id')
-            // ->join('payment_method', 'payment_method.id', 'orders.payment_method')
                 ->where('orders.user_id', $userId)
                 ->where('orders.payment_method', 10)
-                ->where('orders.store_id', Session::get('store_id'))
-                ->select('payment_history.*', 'orders.pay_amt', 'orders.amt_paid')
-                ->groupBy('payment_history.id')
-                ->paginate(Config('constants.paginateNo'));
+                ->where('orders.store_id', Session::get('store_id'));
+
+            if (isset($datefrom) && $dateto !== '') {          
+                $start_date = Carbon::parse(str_replace("/", "-", $datefrom))->format("Y-m-d");
+                $end_date = Carbon::parse(str_replace("/", "-", $dateto))->format("Y-m-d");
+                $payments = $payments->whereBetween('payment_history.created_at', [$start_date.' 00:00:01', $end_date.' 23:59:59']);
+            }
+            $payments = $payments->select('payment_history.*', 'orders.pay_amt', 'orders.amt_paid')
+                    ->groupBy('payment_history.id')
+                    ->paginate(Config('constants.paginateNo'));
             $viewname = Config('constants.adminCustomersView') . '.payment-history';
             $data = ['status' => 'success', 'userPayments' => $payments, 'totalPaid' => $totalPaid, 'totalCreditAmount' => $totalCreditAmount, 'user' => $user];
             return Helper::returnView($viewname, $data);

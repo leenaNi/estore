@@ -75,7 +75,6 @@ class OrderStatusController extends Controller {
 
         $status = OrderStatus::find($request->id);
         $formData = $request->all();
-
         $status->update($formData);
         Session::flash("msg", "Order status updated successfully.");
         $viewname = Config('constants.adminOrderStatusView') . '.index';
