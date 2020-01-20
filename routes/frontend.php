@@ -13,8 +13,9 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     
     Route::any('/check-user', ['as' => 'checkUser', 'uses' => 'HomeController@checkUser']);
     Route::any('/check-fbuser', ['as' => 'checkFbUser', 'uses' => 'HomeController@checkFbUser']);
-        Route::any('/check-fbuser-login', ['as' => 'checkFbUserLogin', 'uses' => 'HomeController@checkFbUserLogin']);
+    Route::any('/check-fbuser-login', ['as' => 'checkFbUserLogin', 'uses' => 'HomeController@checkFbUserLogin']);
 
+    Route::any('/onboard-distributor', ['as' => 'onboardDistributor', 'uses' => 'HomeController@onboardDistributor']);
     Route::any('/show-themes', ['as' => 'showThemes', 'uses' => 'HomeController@showThemes']);
     Route::any('/select-themes', ['as' => 'selectThemes', 'uses' => 'HomeController@selectThemes']);
     Route::any('/congrats/{data?}', ['as' => 'congrats', 'uses' => 'HomeController@congrats']);

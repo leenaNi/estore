@@ -25,6 +25,7 @@ $adminConstants = [
     
     'AdminPagesReports' => 'Admin.Pages.Reports',
     'AdminStoreLogo' => 'public/admin/uploads/logos/',
+    'adminCategoryMasterView' => 'Admin.Pages.Category',
     'AdminPagesMastersCategory' => 'Admin.Pages.Masters.Category',
     'AdminPagesMastersTheme' => 'Admin.Pages.Masters.Themes',
     'AdminPagesMastersLanguage' => 'Admin.Pages.Masters.Language',

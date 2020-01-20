@@ -205,8 +205,9 @@ function renderNode1($node, $dash)
                                 <!-- <td>{{$product->product_code }}</td> -->
                                 <td>
                                     <?php
-if ($product->categories()->get()->count() > 0) {
-    echo $product->categories()->orderBy('created_at', 'desc')->first()->category;
+                                    $prodCategories = $product->categories()->get();
+if ($prodCategories->count() > 0) {
+    echo $prodCategories[0]->categoryName->category;
 } else {
     echo '-';
 }

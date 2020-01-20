@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model {
+class Category extends Model
+{
 
     protected $table = 'industries';
     public $rules = [
@@ -12,17 +13,17 @@ class Category extends Model {
         'status' => 'required',
     ];
     protected $fillable = [
-        'category', 'status','categories','attribute_sets','attributes','attribute_values'
+        'category', 'status', 'categories', 'attribute_sets', 'attributes', 'attribute_values',
     ];
-    
-    
-    public function stores(){
-        
-     $this->hasMany("App\Models\Store",'category_id');   
+
+    public function stores()
+    {
+        $this->hasMany("App\Models\Store", 'category_id');
     }
- public function themes(){
-        
-     $this->hasMany("App\Models\StoreTheme",'cat_id');   
+
+    public function themes()
+    {
+        $this->hasMany("App\Models\StoreTheme", 'cat_id');
     }
 
 }

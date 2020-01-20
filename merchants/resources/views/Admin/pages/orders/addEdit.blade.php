@@ -825,13 +825,17 @@
     });
     $(".addProd").click(function () {
 <?php
-$caTs = App\Models\Category::where("is_nav", 1)->orderBy("category", "asc")->get();
+$caTs = App\Models\Category::where("is_nav", 1)->with(['categoryName' => function($query) {
+    return $query->orderBy('category', 'ASC');
+}])->get();
 $cats = ["" => "Please select"];
 foreach ($caTs as $c) {
     if ($c->id != 153)
         $cats[$c->id] = $c->category;
 }
-$phoneCoversSel = App\Models\Category::where("parent_id", "=", 153)->orderBy("category", "asc")->get();
+$phoneCoversSel = App\Models\Category::where("parent_id", "=", 153)->with(['categoryName' => function($query) {
+    return $query->orderBy('category', 'ASC');
+}])->get();
 foreach ($phoneCoversSel as $phoneC) {
     $cats["test" . $phoneC->id] = $phoneC->category;
     foreach ($phoneC->subcategories()->get() as $subCat) {

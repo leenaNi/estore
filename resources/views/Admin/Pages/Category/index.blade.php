@@ -19,10 +19,10 @@
 <link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui.css'}}">
 
 <noscript><link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-noscript.css'}}"></noscript>
-<noscript><link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui-noscript.css'}}"></noscript>
+<noscript><link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui-noscript.css'}}"></noscript> 
 
 @stop
-@section('content')
+@section('contents')
 <section class="content-header">
     <h1>
         Categories
@@ -55,7 +55,7 @@
                 </div>
                 </div>
                 <div class="box-header col-md-3 col-sm-12 col-xs-12">
-                    <!-- <a href="{!! route('admin.category.add') !!}" class="btn btn-default pull-right col-md-12" type="button">Add New Category</a> -->
+                    <a href="{!! route('admin.category.add') !!}" class="btn btn-success pull-right col-md-12" type="button">Add New Category</a>
                 </div>
 <!--                <div class="box-header col-md-3">
                     <button class="btn btn-default pull-right col-md-12 bulkuploadprod" type="button" >Bulk Upload</button>
@@ -65,40 +65,37 @@
                 <div class="box-body no-padding">
                     <table class="table table-striped table-hover">
                         <?php
-echo "<ul  id='catTree' class='tree icheck catTrEE'>";
-foreach ($roots as $root) {
-    renderNode($root);
-}
+                        echo "<ul  id='catTree' class='tree icheck catTrEE'>";
+                        foreach ($roots as $root)
+                            renderNode($root);
+                        echo "</ul>";
 
-echo "</ul>";
-
-function renderNode($node)
-{
-    echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
-    echo '' . $node->categoryName->category . ''
-    . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
-                            <!-- <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a> -->
-
-
-                            @if ($node->status == '0')
-                                <a href="{{route('admin.category.changeStatus',['id'=> $node->id])}}" class="changCatStatus" onclick="return confirm('Are you sure you  want to enable this category?')" data-toggle="tooltip" title="Disabled"><b><i class="fa fa-times fa-fw"></i></b></a>
+                        function renderNode($node) {
+                            echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
+                            if($node->adminChildren()->count() > 0){
+                            echo '<b>' . $node->category . '</b><a href="' . route("admin.category.add", ["parent_id" => $node->id]) . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+                            } else {
+                            echo '' . $node->category . '<a href="' . route("admin.category.add", ["parent_id" => $node->id]) . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+                            }
+                            echo '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>'  ?>
+                            <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a>
+                            @if ($node->status == '0')  
+                                <a href="{{route('admin.category.changeStatus',['id'=> $node->id])}}" style="color:grey;" class="changCatStatus" onclick="return confirm('Are you sure, you want to enable this category?')" data-toggle="tooltip" title="Disabled"><b><i class="fa fa-times fa-fw"></i></b></a>
                             @endif
                             @if($node->status == '1')
-                              <a href="{{route('admin.category.changeStatus',['id' => $node->id]) }}"  class="changCatStatus" onclick="return confirm('Are you sure you want to disable this category?')" data-toggle="tooltip" title="Enabled"><b><i class="fa fa-check fa-fw"></i></b></a>
+                              <a href="{{route('admin.category.changeStatus',['id' => $node->id]) }}" style="color:green;" class="changCatStatus" onclick="return confirm('Are you sure, you want to disable this category?')" data-toggle="tooltip" title="Enabled"><b><i class="fa fa-check fa-fw"></i></b></a>
                             @endif
-                      <?php if ($node->adminChildren()->count() > 0) {
-        echo "<ul class='treemap fl_left'>";
-        foreach ($node->adminChildren as $child) {
-            renderNode($child);
-        }
+                      <?php      if ($node->adminChildren()->count() > 0) {
+                                echo "<ul class='treemap fl_left'>";
+                                foreach ($node->adminChildren as $child)
+                                    renderNode($child);
+                                // echo $child;
+                                echo "</ul>";
+                            }
 
-        // echo $child;
-        echo "</ul>";
-    }
-
-    echo "</li>";
-}
-?>
+                            echo "</li>";
+                        }
+                        ?> 
 
                     </table>
                 </div><!-- /.box-body -->
@@ -137,7 +134,7 @@ function renderNode($node)
                         <form action="{{ route('admin.category.categoryBulkUpload') }}" method="post" enctype="multipart/form-data">
                             <div class='col-md-6'>
                                 <label>Category Upload</label>
-                                <input type="file" name="file" class="fileUploder" onChange="validateFile(this.value)"/>
+                                <input type="file" name="file" class="fileUploder" onChange="validateFile(this.value)"/> 
                             </div>
                             <div class='col-md-6'>
                                 <input type="submit" class="btn btn-primary" value="Upload" >
