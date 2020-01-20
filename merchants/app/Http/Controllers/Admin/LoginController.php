@@ -8,6 +8,8 @@ use App\Models\EmailTemplate;
 use App\Models\GeneralSetting;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Store;
+use App\Models\Vendor;
 use Auth;
 use Config;
 use Crypt;
@@ -118,16 +120,27 @@ class LoginController extends Controller
 
     public function admin_edit_profile()
     {
+        //dd("admin_edit_profile");
         $id = Input::get("id");
         $user = User::find($id);
         $action = route('adminSaveProfile');
+        $distributorIdData = [];
+        if(Auth::User()->user_type == 3)
+        {
+            $storeId = $user->store_id;
+            $distributorIdfromStore = Store::where('id',$storeId)->pluck('merchant_id');
+            $distributorId = $distributorIdfromStore[0];
+            $distributorIdData = Vendor::find($distributorId);
+        }
+        
         $public_path = Config('constants.adminImgUploadPath') . "/";
-        return view(Config('constants.adminView') . '.adminEditProfile', compact('user', 'action', 'public_path'));
+        //echo Config('constants.adminView');exit;
+        return view(Config('constants.adminView') . '.adminEditProfile', compact('user', 'action', 'public_path','distributorIdData'));
     }
 
     public function admin_save_profile()
     {
-        // dd(Input::get());
+        //dd(Input::get());
         $user = User::find(Input::get('id'));
         $user->firstname = Input::get("firstname");
         $user->lastname = Input::get("lastname");
@@ -153,6 +166,22 @@ class LoginController extends Controller
             $user->profile = $fileName;
         }
         $user->save();
+        
+        if(Auth::User()->user_type == 3)
+        {
+            $distributorId = Input::get("hdnDistributorId");
+            
+            if(!empty($distributorId) && $distributorId > 0)
+            {
+                $distributorObj = Vendor::find($distributorId);
+                $distributorObj->address_line_1 = Input::get("addressLine1");
+                $distributorObj->address_line_2 = Input::get("addressLine2");
+                $distributorObj->locality = Input::get("locality");
+                $distributorObj->zip = Input::get("pincode");
+                $distributorObj->save();
+            }
+        }
+
         $viewname = '';
         $data = 'Your profile updated successfully.';
         return Helper::returnView($viewname, $data, $url = 'admin.dashboard');
