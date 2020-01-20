@@ -18,6 +18,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/onboard-distributor', ['as' => 'onboardDistributor', 'uses' => 'HomeController@onboardDistributor']);
     Route::any('/show-themes', ['as' => 'showThemes', 'uses' => 'HomeController@showThemes']);
     Route::any('/select-themes', ['as' => 'selectThemes', 'uses' => 'HomeController@selectThemes']);
+    Route::any('/distributor-signup', ['as' => 'distributorSignup', 'uses' => 'HomeController@distributorSignup']);
     Route::any('/congrats/{data?}', ['as' => 'congrats', 'uses' => 'HomeController@congrats']);
       Route::any('/congratulations', ['as' => 'getcongrats', 'uses' => 'HomeController@getcongrats']);
     

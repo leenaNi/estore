@@ -53,7 +53,7 @@
                         <thead>
                             <tr>
                                 <th>Order Status</th>
-<!--                                <th>Created At</th>-->
+                                <th>Sort Order</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -63,7 +63,7 @@
                             @foreach ($orderstatusInfo as $status)
                             <tr>
                                 <td>{{$status->order_status}}</td>
-<!--                                <td>{{date('d-M-Y',strtotime($status->created_at))}}</td>-->
+                                <td>{{$status->sort_order}}</td>
                                 <td>
                                     <?php $route=  ($status->id!=1)?route('admin.order_status.changeStatus',['id'=>$status->id]):'#';?>
                                     @if($status->status==1)

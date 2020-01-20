@@ -3,10 +3,12 @@
 @section('contents')
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1>Distributors</h1>
+    <h1>
+        Merchants
+    </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">Distributors</li>
+        <li class="active">Merchants</li>
     </ol>
 </section>
 <section class="content">
@@ -14,104 +16,95 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
-                    <div class="row "> 
-                        <div class="col-md-12 text-right"> 
-{{-- 
-                            {!! Form::open(['route'=>'admin.distributors.addEdit','method'=>'post']) !!}
-
-<!--                            {!! Form::submit('Add New Store',['class'=>'btn btn-info']) !!}-->
-
-                            {!! Form::close() !!} --}}
-                        </div>
-
-                    </div>
                     @if (Auth::guard('merchant-users-web-guard')->check() !== true) 
-                    <div class="row mt15">
-
-                        {{ Form::open(['method'=>'get']) }}
-
-                        <div class="col-md-2">
-                            <div class="input-group">
-                                <div class="input-group-addon"><i class="fa fa-calendar glyphicon glyphicon-calendar"></i></div>
-                                {{ Form::text('date_search',!empty(Input::get('date_search'))?Input::get('date_search'):null,['class'=>'form-control','id'=>'dateSearch','placeholder'=>'Select Date']) }}
+                    <div class="row">
+                        <div class="col-md-10">
+                            {{ Form::open(['method'=>'get']) }}
+                            {{ Form::hidden('search',1) }}
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-calendar glyphicon glyphicon-calendar"></i></div>
+                                    {{ Form::text('date_search',!empty(Input::get('date_search'))?Input::get('date_search'):null,['class'=>'form-control','id'=>'dateSearch','placeholder'=>'Select Date']) }}
+                                </div>
                             </div>
+                            
+                            <div class="col-md-3">
+                                {{ Form::text('s_company_name',!empty(Input::get('s_company_name'))?Input::get('s_company_name'):null,['class'=>'form-control','placeholder'=>'Distributor']) }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ Form::text('s_email',!empty(Input::get('s_email'))?Input::get('s_email'):null,['class'=>'form-control','placeholder'=>'Email ID']) }}
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-success"><i class="fa fa-search"></i> Search</button>
+                            </div>
+                            {{ Form::close() }}
+                        </div> 
+                        <div class="col-md-2 text-right"> 
+                            {!! Form::open(['route'=>'admin.distributors.addEdit','method'=>'post']) !!}
+                            {!! Form::submit('Add New Distributor',['class'=>'btn btn-info']) !!}
+                            {!! Form::close() !!}
                         </div>
-
-                        
-                        <div class="col-md-2">
-                            {{ Form::text('s_name',!empty(Input::get('s_name'))?Input::get('s_name'):null,['class'=>'form-control','placeholder'=>'Store']) }}
-                        </div>
-
-
-                        <div class="col-md-2">
-                            {{ Form::select('s_status',[''=>'Select Status','1'=>'Enabled','0'=>'Disabled'],!empty(Input::get('s_status'))?Input::get('s_status'):null,['class'=>"form-control"]) }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ Form::select('s_cat',$selCats,!empty(Input::get('s_cat'))?Input::get('s_cat'):null,['class'=>"form-control"]) }}
-                        </div>
-
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-success form-control"><i class="fa fa-search"></i> Search</button>
-                        </div>
-
-
-                        {{ Form::close() }}
                     </div>
+
                     @endif
-
-
-
 
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive">
                     <table class="table table-hover">
                         <tr>
-<!--                            <th>ID</th>
-                            <th></th>-->
-                            <th>Store</th>
-                            <th>Merchant</th>
-                            <th>Status</th>
-                            <!-- <th>Bank</th>-->
-                            <th>Category</th>
+                            <th>Distributor Name</th>
+                            <th>Email ID</th>
+                            <th>Mobile</th>
+                            <th>Industry</th>
                             <th>Created Date</th>
                             <th>Actions</th>
                         </tr>
-
-                        @foreach($distributor as $distributorData )
-						<tr>
+                        @foreach($distributor as $distributorData)
                             <?php
-                            if (!empty($distributorData->logo)) {
-                                $slogo = $distributorData->logo;
-                            } else {
-                                $slogo = "default-store.jpg";
-                            }
-                            ?>
-                            <td>{{ $distributorData->business_name }}</td>
-                            <td>{{ @$distributorData->getmerchant()->first()->firstname }}</td>
-                            <td>{{ ($distributorData->status == 1)?'Enabled':'Disabled' }}</td>
-								
-                            <td>{{ @$distributorData->getcategory->category }} </td>
-
-                            <td>{{ date("d-M-Y",strtotime($distributorData->created_at)) }}</td>
-                            <td> <a href="{{ route('admin.stores.addEdit') }}?id={{$store->id }}" class="btn btn-success btn-xs">Edit</a></td>
-                        </tr>
+                            $name = ucwords($distributorData->firstname." ".$distributorData->lastname);
+                            $industryName = '';
+                            $decodedBusiness = json_decode($distributorData->register_details,true);
+                            asort($decodedBusiness['business_name']);
+                            $decodedBusinessNameKey = array_keys($decodedBusiness['business_name']);
+                            $firstBusinesName = '';
+                            if(!empty($decodedBusiness['business_name']))
+                            {
+                                $industryName = implode(',',$decodedBusiness['business_name']);
+                                $firstBusinesName = $decodedBusiness['business_name'][$decodedBusinessNameKey[0]];
+                                if(count($decodedBusiness['business_name']) > 1)
+                                {
+                                    $countDisplay = ' +'.(count($decodedBusiness['business_name'])-1).' More';
+                                }
+                            } // End if here
+                            $businessNameArray  = $decodedBusiness['business_name'];
+                            array_shift($businessNameArray);
+                        ?>
+                            <tr>
+                                <td>{{ ucwords($distributorData->firstname." ".$distributorData->lastname) }}</td>
+                                <td>{{ $distributorData->email }}</td>
+                                <td>{{ $distributorData->phone_no }}</td>
+                                <td>
+                                    {{ $firstBusinesName}}
+                                    <a onmouseover="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').show();" onmouseout="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').hide();">{{ $countDisplay }}</a>
+                                    <div id="moreBusinessNameDisplayDiv_{{$distributorData->id}}" style="display: none;">
+                                        @foreach($businessNameArray AS $businessNameId => $businessName)
+                                            <span>{{$businessName}}</span><br>
+                                        @endforeach
+                                        
+                                    </div>
+                                </td>
+                                <td>{{ date('d-M-Y',strtotime($distributorData->created_at)) }}</td>
+                                <td>
+                                    <a href="{{ route('admin.distributors.addEdit') }}?id={{$distributorData->id }}" class="btn btn-success btn-xs">Edit</a>
+                                </td>
+                            </tr>
                         @endforeach
-
                     </table>
-                    
-                    <?php
-                    $arguments = [];
-                   
-                    !empty(Input::get('s_bank_name')) ? $arguments['s_bank_name'] = Input::get('s_bank_name') : '';
-                    !empty(Input::get('s_name')) ? $arguments['s_name'] = Input::get('s_name') : '';
-                    !empty(Input::get('s_status')) ? $arguments['s_status'] = Input::get('s_status') : '';
-                    !empty(Input::get('s_cat')) ? $arguments['s_cat'] = Input::get('s_cat') : '';
-                    !empty(Input::get('date_search')) ? $arguments['date_search'] = Input::get('date_search') : '';
-                    ?>
                     <div class="pull-right">
-                        {{ $stores->appends($arguments)->links() }}
+                        
                     </div>
+
 
                 </div>
                 <!-- /.box-body -->
@@ -156,7 +149,7 @@
                 }
             },
     function (start, end, label) {
-        //alert("A new date range was chosen: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        //   alert("A new date range was chosen: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
         $('#dateSearch').val(start.format('YYYY-MM-DD') + " - " + end.format('YYYY-MM-DD'));
 
     });

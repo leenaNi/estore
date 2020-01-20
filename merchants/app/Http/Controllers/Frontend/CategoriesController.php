@@ -245,10 +245,10 @@ class CategoriesController extends Controller {
                 $cnt = count($cats);
                 $cats = implode(",", $cats);
                 $products = $prods->join(DB::raw("
-(SELECT c.prod_id FROM " . DB::getTablePrefix() . "has_categories c
+(SELECT c.prod_id FROM has_categories c
 INNER JOIN products p ON p.id = c.prod_id
 WHERE c.cat_id IN ($cats)
-) " . DB::getTablePrefix() . "aa$i"), function($join) use ($i) {
+) aa$i"), function($join) use ($i) {
                     $join->on('products.id', '=', "aa$i.prod_id");
                 });
                 $i++;

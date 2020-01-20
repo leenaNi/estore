@@ -171,21 +171,17 @@ class HomeController extends Controller
 
     public function selectThemes()
     {
-       // dd(json_encode(Input::all()));
-//        if(empty(Session::get('storename'))){
-        //            return redirect()->to("/");
-        //        }
         $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
-        if (empty(Input::get('firstname')) && empty(Session::get('merchantid'))) {
-            
+        if (empty(Input::get('firstname')) && empty(Session::get('merchantid')))
+        {
             $cats = Category::where("status", 1)->get();
 
             $data = ['cats' => $cats, 'themeIds' => $themeIds];
             $viewname = Config('constants.frontendView') . ".select-themes";
             return Helper::returnView($viewname, $data);
         }
-        if (empty(Session::get('merchantid'))) {
-           
+        if (empty(Session::get('merchantid'))) 
+        {
             $allinput = Input::all();
             $storeType = $allinput['storeType'];
             $sendmsg = "Registred successfully.";
@@ -193,81 +189,141 @@ class HomeController extends Controller
             // Helper::sendsms(9930619304,$sendmsg);
             $names = explode(" ", $allinput['firstname']);
             
-            
             $validator = Validator::make($allinput, Merchant::rules(null));
             if ($validator->fails()) {
                 return $validator->messages()->toJson();
             } else {
-                if($storeType == 'merchant')
-                {
-                    $businessType = $allinput['m_business_type'];
-                    $storeTypeObj = new Merchant();
-                    if (!empty($allinput['provider_id'])) {
-                        $storeTypeObj->provider_id = $allinput['provider_id'];
-                        Session::put("provider_id", $allinput['provider_id']);
-                    }
-                   
-                    $storeTypeObj->company_name = $allinput['company_name'];
-                    $storeTypeObj->phone = $allinput['phone'];
-                    $storeTypeObj->country_code = $allinput['country_code'];
+                $businessType = $allinput['m_business_type'];
+                $merchantObj = new Merchant();
+                if (!empty($allinput['provider_id'])) {
+                    $merchantObj->provider_id = $allinput['provider_id'];
+                    Session::put("provider_id", $allinput['provider_id']);
                 }
-                else if($storeType == 'distributor')
-                {
-                    $businessType = $allinput['d_business_type'];
-                    $storeTypeObj = new Vendor();
-                    $storeTypeObj->country = $allinput['country_code'];
-                    $storeTypeObj->business_name = $allinput['company_name'];
-                    $storeTypeObj->phone_no = $allinput['phone'];
-                    $storeTypeObj->currency_code = $allinput['country_code'];
-                }
+                
+                $merchantObj->company_name = $allinput['company_name'];
+                $merchantObj->phone = $allinput['phone'];
+                $merchantObj->country_code = $allinput['country_code'];
                 
                 $allinput['business_type'] = $businessType;
-                $implodedBusinessTypeArray = implode(',',$businessType);
+                $cats = Category::where("status", 1)->where("id",$allinput['business_type'])->get();
                 
-                $cats = Category::where("status", 1)->whereIn("id",$allinput['business_type'])->get();
-                
-                $storeTypeObj->firstname = $names[0];
-                $storeTypeObj->lastname = @$names[1];
+                $merchantObj->firstname = $names[0];
+                $merchantObj->lastname = @$names[1];
                 if (!empty($allinput['password'])) {
-                    $storeTypeObj->password = Hash::make($allinput['password']);
+                    $merchantObj->password = Hash::make($allinput['password']);
                 }
                 unset($allinput['m_business_type']);
                 unset($allinput['d_business_type']);
-                $storeTypeObj->email = $allinput['email'];
-                $storeTypeObj->register_details = json_encode($allinput);
-                $storeTypeObj->save();
-                Session::put('merchantid', $storeTypeObj->id);
+                $merchantObj->email = $allinput['email'];
+                $merchantObj->register_details = json_encode($allinput);
+                $merchantObj->save();
+                $lastInsteredId = $merchantObj->id;
+
+                if($lastInsteredId > 0)
+                {
+                    $merchantObj1 = Merchant::find($lastInsteredId);
+                    $indentityCode = $this->createUniqueIdentityCode($allinput,$lastInsteredId);
+                    $merchantObj1->identity_code = $indentityCode;
+                    $merchantObj1->save();
+                }
+                Session::put('merchantid', $lastInsteredId);
                 Session::put('storename', $allinput['store_name']);
                 Session::put('merchantstorecount', 0);
-            }
+            } // end else
         } else {
            
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
             $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
             $checkStote = Merchant::find(Session::get('merchantid'))->getstores()->count();
-
             Session::put('merchantstorecount', $checkStote);
         }
         //echo "<pre>";print_r($allinput);
-        
-        //echo "<pre>";print_r($allinput);exit;
-        if($storeType == 'merchant')
-        {
-            // For merchant redirect on select them page after redirect on intermediat page
-            $data = ['cats' => $cats, 'allinput' => $allinput, 'themeIds' => $themeIds];
-            $viewname = Config('constants.frontendView') . ".select-themes";
-        }
-        else
-        {
-          
-            $data['themeInput'] = json_encode($allinput);
-            //dd($data);
-            // For distributor redirect on intermediat page
-            $viewname = Config('constants.frontendView') . ".wait-process";
-        }
+        $data = ['cats' => $cats, 'allinput' => $allinput, 'themeIds' => $themeIds];
+        $viewname = Config('constants.frontendView') . ".select-themes";
         return Helper::returnView($viewname, $data);
     }
 
+    public function distributorSignup()
+    {
+        if (empty(Session::get('merchantid'))) 
+        {
+            $allinput = Input::all();
+            $storeType = $allinput['storeType'];
+            $sendmsg = "Registred successfully.";
+            $names = explode(" ", $allinput['firstname']);
+            
+            $validator = Validator::make($allinput, Merchant::rules(null));
+            if ($validator->fails()) {
+                return $validator->messages()->toJson();
+            } else {
+                $businessType = $allinput['d_business_type'];
+                $distributorObj = new Vendor();
+                $distributorObj->country = $allinput['country_code'];
+                $distributorObj->business_name = $allinput['company_name'];
+                $distributorObj->phone_no = $allinput['phone'];
+                $distributorObj->currency_code = $allinput['currency'];
+                
+                $allinput['business_type'] = $businessType;
+                $implodedBusinessTypeArray = implode(',',$businessType);
+                
+                $cats = Category::where("status", 1)->whereIn("id",$allinput['business_type'])->get();
+                $selCats = [];
+                foreach ($cats as $cat) 
+                {
+                    $selCats[$cat->id] = $cat->category;
+                } // End foreach
+                $allinput['business_name'] = $selCats;
+
+                $distributorObj->firstname = $names[0];
+                $distributorObj->lastname = @$names[1];
+                if (!empty($allinput['password'])) {
+                    $distributorObj->password = Hash::make($allinput['password']);
+                }
+                unset($allinput['m_business_type']);
+                unset($allinput['d_business_type']);
+                $distributorObj->email = $allinput['email'];
+                $distributorObj->register_details = json_encode($allinput);
+                $distributorObj->save();
+                $lastInsteredId = $distributorObj->id;
+
+                if($lastInsteredId > 0)
+                {
+                    $distributorObj1 = Vendor::find($lastInsteredId);
+                    $indentityCode = $this->createUniqueIdentityCode($allinput,$lastInsteredId);
+                    $distributorObj1->identity_code = $indentityCode;
+                    $distributorObj1->save();
+                }
+
+                Session::put('merchantid', $lastInsteredId);
+                Session::put('storename', $allinput['store_name']);
+                Session::put('merchantstorecount', 0);
+            } // end else
+        } else {
+           
+            $allinput = json_decode(Vendor::find(Session::get('merchantid'))->register_details, true);
+            $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
+            $checkStote = Vendor::find(Session::get('merchantid'))->getstores()->count();
+
+            Session::put('merchantstorecount', $checkStote);
+        }
+        $data['themeInput'] = json_encode($allinput);
+
+        // For distributor redirect on intermediat page
+        $viewname = Config('constants.frontendView') . ".wait-process";
+        return Helper::returnView($viewname, $data);
+    } // End distributorSignup()
+
+    public function createUniqueIdentityCode($allinput,$lastInsteredId) // for merchnat and distributor
+    {
+        $storeName = $allinput['store_name'];
+        $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
+        $phoneNo = $allinput['phone'];
+        $randomFourDigit = rand(1000,9999);
+        $indentityCode = substr($storeName,0,3).substr($phoneNo,-3).$lastInsteredId.$randomFourDigit;
+        //dd($indentityCode);
+        return $indentityCode;
+        
+    } // End createUniqueIdentityCode(
     public function checkUser()
     {
         dd(Input::all());
@@ -961,8 +1017,9 @@ class HomeController extends Controller
     public function checkExistingUser()
     {
         //echo Input::get('email');
-       //dd("dsf >> ".Input::get('storeType'));
+        //dd("dsf >> ".Input::get('storeType'));
         $storeType = Input::get('storeType'); // merchant/ distributor
+        
         if($storeType == 'merchant')
         {
             $chkEmail = Merchant::where("email", Input::get('email'))->first();
@@ -974,10 +1031,7 @@ class HomeController extends Controller
         
         if (isset($chkEmail) && !empty($chkEmail)) 
         {
-            if( count($chkEmail) > 0)
-                return 1;
-            else
-                return 0;
+            return 1;
         } else {
             return 0;
         }
@@ -995,7 +1049,7 @@ class HomeController extends Controller
             $chkPhoneNo = Vendor::where("phone_no", Input::get('phone_no'))->first();
         } // End else
 
-        if (isset($chkPhoneNo) && count($chkPhoneNo) > 0) {
+        if (isset($chkPhoneNo) && !empty($chkPhoneNo)) {
             return 1;
         } else {
             return 0;

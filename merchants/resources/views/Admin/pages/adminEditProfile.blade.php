@@ -51,10 +51,37 @@
                             <label for="telephone" class="col-sm-4 control-label">Mobile</label><span class="red-astrik"> *</span>
                             <div class="col-sm-8">
 
-                                <input type="text" class="form-control  validate[required,custom[phone]]" name="telephone"  value="{{$user->telephone}}">
+                                <input type="text" class="form-control  validate[required,custom[phone]]" name="telephone"  value="{{$user->telephone}}" readonly>
 
                             </div>
                         </div>
+                        @if(Session::get('loggedinAdminId') && Auth::User()->user_type == 3)
+                        <div class="form-group">
+                            <label for="addressline1" class="col-sm-4 control-label">Address line 1</label><span class="red-astrik"></span>
+                            <div class="col-sm-8">
+                            <textarea name="addressLine1">{{$distributorIdData->address_line_1}}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="addressline2" class="col-sm-4 control-label">Address line 2</label><span class="red-astrik"></span>
+                            <div class="col-sm-8">
+                                <textarea name="addressLine2">{{$distributorIdData->address_line_2}}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="locality" class="col-sm-4 control-label">Locality</label><span class="red-astrik"></span>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="locality" value="{{$distributorIdData->locality}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pincode" class="col-sm-4 control-label">Pincode</label><span class="red-astrik"></span>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="pincode" value="{{$distributorIdData->zip}}">
+                            </div>
+                        </div>
+
+                        @endif
                         <div class="form-group">
                             <label for="profile" class="col-sm-4 control-label">Upload Photo</label>
                             <div class="col-sm-8">
@@ -91,6 +118,7 @@
                         </div>
 
                         <div class="col-sm-8 col-sm-offset-4 noAllpadding">
+                        <input type="hidden" id="hdnDistributorId" name="hdnDistributorId" value="{{$distributorIdData->id}}">
                             <input  type="submit" class="btn btn-primary " value="Submit">
                             <button type="button" class="btn btn-default">Cancel</button>
                         </div>	

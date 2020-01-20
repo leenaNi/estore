@@ -34,6 +34,8 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::group(['prefix' => 'distributors'], function () {
             //dd("inside group");
             Route::get('/', ["as" => "admin.distributors.view", "uses" => "DistributorController@index"]);
+            Route::any('/add-edit', ["as" => "admin.distributors.addEdit", "uses" => "DistributorController@addEdit"]);
+            Route::post('/save-update', ["as" => "admin.distributors.saveUpdate", "uses" => "DistributorController@saveUpdate"]);
         });
 
 
