@@ -200,6 +200,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/change-status', ['as' => 'admin.category.changeStatus', 'uses' => 'CategoryMasterController@changeStatus']);
             Route::any('/category-img-delete', ['as' => 'admin.category.catImgDelete', 'uses' => 'CategoryMasterController@catImgDelete']);
             Route::any('/size-chart', ['as' => 'admin.category.sizeChart', 'uses' => 'CategoryMasterController@sizeChart']);
+            Route::any('/requested-categories', ['as' => 'admin.category.categoriesRequested', 'uses' => 'CategoryMasterController@categoriesRequested']);
+            Route::any('/approve-category', ['as' => 'admin.category.approve', 'uses' => 'CategoryMasterController@approveCategory']);
         });
     });
 });

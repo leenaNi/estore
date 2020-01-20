@@ -47,7 +47,14 @@
                                         <div class="form-group">
                                             {!! Form::label('category', 'Category Name ',['class'=>'pull-left']) !!}<span class="red-astrik pull-left ml-3"> *</span>
                                             {!! Form::hidden('id',null,["id"=>"cat_category"]) !!}
+                                            @if(Session::get('requested_cat'))
+                                            <?php
+                                            $reqCat = App\Models\CategoryRequested::find(Session::get('requested_cat'));
+                                            ?>
+                                            {!! Form::text('category', @$reqCat->name, ["id"=>"category","class"=>'form-control validate[required]' ,"placeholder"=>'Enter Category Name', "required"]) !!}
+                                            @else
                                             {!! Form::text('category',null, ["id"=>"category","class"=>'form-control validate[required]' ,"placeholder"=>'Enter Category Name', "required"]) !!}
+                                            @endif
                                             <span id="catnameerror"></span>
                                         </div>
                                     </div> 

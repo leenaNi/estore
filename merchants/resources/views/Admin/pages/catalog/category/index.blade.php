@@ -75,8 +75,9 @@ echo "</ul>";
 function renderNode($node)
 {
     echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
-    echo '' . $node->categoryName->category . ''
-    . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
+    echo '' . $node->categoryName->category . '';
+    echo '<a class="add-new-category" data-catId="'. $node->id .'" data-parentcatId="'. $node->parent_id .'" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+    echo ''. '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
                             <!-- <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a> -->
 
 
@@ -107,7 +108,37 @@ function renderNode($node)
                 </div>
             </div><!-- /.box -->
         </div><!-- /.col -->
-
+    </div>
+    <div class="modal fade" id="new-category" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Request for new category</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('admin.category.newCategory')}}" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input class="form-control" name="category" required />
+                                    <input type="" class="form-control" name="parent_id" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-primary" type="submit" >Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class='clearfix'></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal fade" id="bulkCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -117,7 +148,7 @@ function renderNode($node)
                     <h4 class="modal-title" id="myModalLabel">Bulk Upload/Download</h4>
                 </div>
                 <div class="modal-body">
-<!--                    <div  class="bxmodal">
+                    <!--                    <div  class="bxmodal">
                         <div class='col-md-6'>
                             <label>Category Sample Download</label>
                         </div>
@@ -148,7 +179,7 @@ function renderNode($node)
 
                         <form id="fileupload" action="{{ asset(route('admin.category.catBulkImgUpload')) }}" method="POST" enctype="multipart/form-data">
                             <!-- Redirect browsers with JavaScript disabled to the origin page -->
-                    <!--        <noscript><input type="hidden" name="redirect" value="https://blueimp.github.io/jQuery-File-Upload/"></noscript>-->
+                            <!--        <noscript><input type="hidden" name="redirect" value="https://blueimp.github.io/jQuery-File-Upload/"></noscript>-->
                             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                             <div class="row fileupload-buttonbar">
                                 <div class="col-lg-12">
@@ -309,18 +340,21 @@ $(".bulkuploadprod").click(function () {
     $("#bulkCategory").modal("show");
 });
 
+$('.add-new-category').click(function() {
+    var catId = $(this).attr('data-catId');
+    $('input[name="parent_id"]').val(catId);
+    $('#new-category').modal('show');
+});
+
 $(".catSearcH").keyup(function () {
     searchString = $(this).val();
-
     $(".catTrEE").find("li").each(function () {
         str = $(this).text();
-
         if (str.toLowerCase().indexOf(searchString) >= 0) {
             $(this).show();
         } else {
             $(this).hide();
         }
-
     });
 });
 

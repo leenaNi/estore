@@ -57,7 +57,7 @@
                 <div class="box-header col-md-3 col-sm-12 col-xs-12">
                     <a href="{!! route('admin.category.add') !!}" class="btn btn-success pull-right col-md-12" type="button">Add New Category</a>
                 </div>
-<!--                <div class="box-header col-md-3">
+                <!--  <div class="box-header col-md-3">
                     <button class="btn btn-default pull-right col-md-12 bulkuploadprod" type="button" >Bulk Upload</button>
                 </div>-->
                 <div class="clearfix"></div>
@@ -85,17 +85,17 @@
                             @if($node->status == '1')
                               <a href="{{route('admin.category.changeStatus',['id' => $node->id]) }}" style="color:green;" class="changCatStatus" onclick="return confirm('Are you sure, you want to disable this category?')" data-toggle="tooltip" title="Enabled"><b><i class="fa fa-check fa-fw"></i></b></a>
                             @endif
-                      <?php      if ($node->adminChildren()->count() > 0) {
-                                echo "<ul class='treemap fl_left'>";
-                                foreach ($node->adminChildren as $child)
-                                    renderNode($child);
-                                // echo $child;
-                                echo "</ul>";
-                            }
-
-                            echo "</li>";
-                        }
-                        ?> 
+                            <?php   
+                                if ($node->adminChildren()->count() > 0) {
+                                        echo "<ul class='treemap fl_left'>";
+                                        foreach ($node->adminChildren as $child)
+                                            renderNode($child);
+                                        // echo $child;
+                                        echo "</ul>";
+                                    }
+                                    echo "</li>";
+                                }
+                            ?> 
 
                     </table>
                 </div><!-- /.box-body -->

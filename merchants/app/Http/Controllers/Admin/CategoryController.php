@@ -157,7 +157,7 @@ class CategoryController extends Controller
                     $childupdate = Category::find($childCat->id);
                     $getProductInfo = $this->check_product($childupdate);
 
-//                    $getProductInfo = Product::whereHas('categories', function($query) use ($childCat) {
+                    //                    $getProductInfo = Product::whereHas('categories', function($query) use ($childCat) {
                     //                                return $query->where('cat_id', $childCat->id);
                     //                            })->get();
                     if (count($getProductInfo) > 0) {
@@ -313,7 +313,7 @@ class CategoryController extends Controller
 
     private function category_import_csv($path, $filename)
     {
-//        dd($path);
+        //        dd($path);
         $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
 
         $csv_file = $path . $filename;
@@ -451,7 +451,7 @@ class CategoryController extends Controller
                         $updateCat->url = $og_url;
                     }
 
-//                    if (!empty($twitter_url))
+                    //                    if (!empty($twitter_url))
                     //                        $updateCat->twitter_url = $twitter_url;
                     //                    if (!empty($twitter_title))
                     //                        $updateCat->twitter_title = $twitter_title;
@@ -531,5 +531,25 @@ class CategoryController extends Controller
         $catImage->delete();
         Session::flash("messege", "Category image deleted successfully!");
         return $data = ["status" => "success"];
+    }
+
+    public function newCategory(){
+        if(Input::get('parent_id') && Input::get('parent_id') !='') {
+            $parentId = DB::table('store_categories')->where('id', Input::get('parent_id'))->first(['category_id'])->category_id;
+        } else {
+            $parentId = 0;
+        }
+        $newCatName = Input::get('category');
+        $newCategory = DB::table('temp_categories')->insert([
+            "name" => $newCatName,
+            "parent_id" => $parentId, 
+            "user_id" => Session::get('loggedinAdminId'), 
+        ]);
+        if($newCategory){
+            Session::flash("msg", "New category request sent successfully.");
+        } else {
+            Session::flash("message", "Oops, Something went wrong.");
+        }
+        return redirect()->route('admin.category.view');
     }
 }

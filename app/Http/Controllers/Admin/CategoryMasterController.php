@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Route;
 use Input;
 use App\Models\CategoryMaster;
+use App\Models\CategoryRequested;
 use App\Library\Helper;
 use App\Classes\UploadHandler;
 use App\Http\Controllers\Controller;
@@ -35,7 +36,6 @@ class CategoryMasterController extends Controller {
 
     public function add() {
         $category = new CategoryMaster();
-
         $action = route("admin.category.save");
         // return view(Config('constants.adminCategoryMasterView') . '.addEdit', compact('category', 'allTaxes', 'action'));
         $viewname = Config('constants.adminCategoryMasterView') . '.addEdit';
@@ -132,7 +132,7 @@ class CategoryMasterController extends Controller {
                 if (!empty(Input::file('images')[$imgK]))
                     $saveCImh->filename = is_null($fileName) ? $saveCImh->filename : $fileName;
                 $saveCImh->alt_text = Input::get('alt_text')[$imgK];
-//                $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
+                // $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
                 $saveCImh->catalog_id = $category->id;
                 $saveCImh->image_type = 2;
                 Session::flash('msg', "category added succesfully ");
@@ -152,14 +152,16 @@ class CategoryMasterController extends Controller {
                     if (!empty(Input::file('images')[$imgK]))
                         $saveCImh->filename = is_null($fileName) ? $saveCImh->filename : $fileName;
                     $saveCImh->alt_text = Input::get('alt_text')[$imgK];
-//                    $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
+                    //  $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
                     $saveCImh->catalog_id = $category->id;
                     $saveCImh->image_type = 2;
                     $saveCImh->save();
                 }
             }
         }
-
+        if(Session::get('requested_cat')){
+            $this->updateNewCategoryRequest($category->id);
+        }
         if (!empty(Input::get("parent_id")))
             $category->makeChildOf(Input::get("parent_id"));
         Session::flash("msg", "CategoryMaster updated successfully.");
@@ -199,9 +201,9 @@ class CategoryMasterController extends Controller {
                     $childupdate = CategoryMaster::find($childCat->id);
                     $getProductInfo = $this->check_product($childupdate);
 
-//                    $getProductInfo = Product::whereHas('categories', function($query) use ($childCat) {
-//                                return $query->where('cat_id', $childCat->id);
-//                            })->get();
+                    //                    $getProductInfo = Product::whereHas('categories', function($query) use ($childCat) {
+                    //                                return $query->where('cat_id', $childCat->id);
+                    //                            })->get();
                     if (count($getProductInfo) > 0) {
                         $flag++;
                     }
@@ -347,7 +349,7 @@ class CategoryMasterController extends Controller {
     }
 
     private function category_import_csv($path, $filename) {
-//        dd($path);
+        //        dd($path);
         $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key','status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
 
         $csv_file = $path . $filename;
@@ -390,9 +392,9 @@ class CategoryMasterController extends Controller {
                 $og_image = $col[22];
                 $og_url = $col[23];
                 //   $twitter_url = $col[23];
-//                $twitter_title = $col[24];
-//                $twitter_desc = $col[25];
-//                $twitter_image = $col[26];
+                //                $twitter_title = $col[24];
+                //                $twitter_desc = $col[25];
+                //                $twitter_image = $col[26];
                 $other_meta = $col[24];
 
                 if (!empty($id)) {
@@ -445,14 +447,14 @@ class CategoryMasterController extends Controller {
                     if (!empty($og_url))
                         $updateCat->url = $og_url;
 
-//                    if (!empty($twitter_url))
-//                        $updateCat->twitter_url = $twitter_url;
-//                    if (!empty($twitter_title))
-//                        $updateCat->twitter_title = $twitter_title;
-//                    if (!empty($twitter_desc))
-//                        $updateCat->twitter_desc = $twitter_desc;
-//                    if (!empty($twitter_image))
-//                        $updateCat->twitter_image = $twitter_image;
+                    //                    if (!empty($twitter_url))
+                    //                        $updateCat->twitter_url = $twitter_url;
+                    //                    if (!empty($twitter_title))
+                    //                        $updateCat->twitter_title = $twitter_title;
+                    //                    if (!empty($twitter_desc))
+                    //                        $updateCat->twitter_desc = $twitter_desc;
+                    //                    if (!empty($twitter_image))
+                    //                        $updateCat->twitter_image = $twitter_image;
 
                     $updateCat->save();
 
@@ -515,11 +517,79 @@ class CategoryMasterController extends Controller {
             return Helper::returnView($viewname, $data, $url = 'admin.category.view');
         }
     }
-   public function catImgDelete(){
+    public function catImgDelete(){
         $id=Input::get('catImgId');
-       $catImage= CatalogImage::find($id);
-       $catImage->delete();
-       Session::flash("messege","CategoryMaster image deleted successfully!");
-       return $data=["status" => "success"];
+        $catImage= CatalogImage::find($id);
+        $catImage->delete();
+        Session::flash("messege","CategoryMaster image deleted successfully!");
+        return $data=["status" => "success"];
+        }
+
+    public function categoriesRequested() {
+        $categories = CategoryRequested::with(['requestedBy.store'])->orderBy("id", "desc");
+        $search = Input::get('search');
+        if (!empty($search)) {
+            if (!empty(Input::get('s_category'))) {
+                $categories = $categories->where("name", "like", "%" . Input::get('s_category') . "%");
+            }
+            if (!empty(Input::get('date_search'))) {
+                $dateArr = explode(" - ", Input::get('date_search'));
+
+                $fromdate = date("Y-m-d", strtotime($dateArr[0]));
+                $todate = date("Y-m-d", strtotime($dateArr[1]));
+                $categories = $categories->where("created_at", ">=", "$fromdate")->where('created_at', "<", "$todate");
+            }
+        }
+        $categories = $categories->paginate(Config('constants.AdminPaginateNo'));
+        $data = [];
+        $viewname = Config('constants.adminCategoryMasterView') . ".new-category";
+        $data['categories'] = $categories;
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function approveCategory() {
+        $id = Input::get('id');
+        if($id && $id != ''){
+            Session::put('requested_cat', $id);
+            return redirect()->route('admin.category.add');
+        }
+    }
+
+    public function updateNewCategoryRequest($newCatId) {
+        $reqCat = Session::get('requested_cat');        
+        $catsave = [];
+        $reqCategory = CategoryRequested::find($reqCat);
+        //Add New category to store_categories
+        $newCat = CategoryMaster::find($newCatId);
+        //check if parent category present
+        $checkParentCat = DB::table('store_categories')->where('category_id', $newCat->parent_id)->where('store_id', $reqCategory->requestedBy->store_id)->first(['id']);
+        if($checkParentCat == null) {
+            //Add Parent Category
+            //Add New category to store_categories
+            $newParentCat = CategoryMaster::find($newCat->parent_id);
+            DB::table('store_categories')->insert([
+                "category_id" => $newParentCat->id,
+                "is_nav" => $newParentCat->is_nav,
+                "url_key" => strtolower(str_replace(" ", "-", $newParentCat->category)),
+                "lft" => $newParentCat->lft,
+                "rgt" => $newParentCat->rgt,
+                "depth" => 0,
+                "store_id" => $reqCategory->requestedBy->store_id,
+                "created_at" => date('Y-m-d H:i:s')
+            ]); 
+        }
+        $catsave['category_id'] = $newCat->id;
+        $catsave['is_nav'] = 1;
+        $catsave['url_key'] = strtolower(str_replace(" ", "-", $newCat->category));
+        $catsave['lft'] = $newCat->lft;
+        $catsave['rgt'] = $newCat->rgt;
+        $catsave['depth'] = 0;           
+        $catsave['parent_id'] = $newCat->parent_id;
+        $catsave['store_id'] = $reqCategory->requestedBy->store_id;
+        $catsave['created_at'] = date('Y-m-d H:i:s');
+        $addedcats = DB::table('store_categories')->insert($catsave); 
+        //Send mail to store admin who requested the category
+        //Delete record from table 
+        CategoryRequested::find($reqCat)->delete();
     }
 }
