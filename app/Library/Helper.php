@@ -177,24 +177,24 @@ class Helper
     public static function saveDefaultSet($catid, $prefix, $storeId)
     {
         $cat = Category::find($catid);
-        $categories = json_decode($cat->categories);
+        $assignedCategories = json_decode($cat->assigned_categories);
+        $categories = CategoryMaster::where('status', 1)->whereIn('id', $assignedCategories)->get();
         $catsave = [];
         $i = 0;
-
-        foreach ($categories as $ck => $cv) {
-            $catsave[$ck]['category'] = $cv;
-            $catsave[$ck]['is_nav'] = 1;
-            $catsave[$ck]['url_key'] = strtolower(str_replace(" ", "-", $cv));
-            $i++;
-            $catsave[$ck]['lft'] = $i;
-            $i++;
-            $catsave[$ck]['rgt'] = $i;
-            $catsave[$ck]['depth'] = 0;
-            $catsave[$ck]['store_id'] = $storeId;
-            $catsave[$ck]['created_at'] = date('Y-m-d H:i:s');
-
-        }
-        $addedcats = DB::table('categories')->insert($catsave);
+        if ($categories) {
+            foreach ($categories as $ck => $cv) {
+                $catsave[$ck]['category_id'] = $cv->id;
+                $catsave[$ck]['is_nav'] = 1;
+                $catsave[$ck]['url_key'] = strtolower(str_replace(" ", "-", $cv->category));
+                $i++;
+                $catsave[$ck]['lft'] = $i;
+                $i++;
+                $catsave[$ck]['rgt'] = $i;
+                $catsave[$ck]['depth'] = 0;
+                $catsave[$ck]['store_id'] = $storeId;
+                $catsave[$ck]['created_at'] = date('Y-m-d H:i:s');
+            }
+            $addedcats = DB::table('store_categories')->insert($catsave);
         //save attr set
         $attrset = json_decode($cat->attribute_sets, true);
         $saveAttrSet = [];
