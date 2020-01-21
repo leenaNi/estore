@@ -404,7 +404,7 @@ class HomeController extends Controller
         //print_r($getMerchat);exit;
         $registerDetails = json_decode($getMerchat->register_details);
         $store = new Store();
-        $store->store_name = $themeInput->store_name;
+        $store->store_name = Session::get('storename');
         $store->url_key = $domainname;
         $store->store_type = $storeType; // merchant/distributor
         $store->merchant_id = $getMerchat->id;
