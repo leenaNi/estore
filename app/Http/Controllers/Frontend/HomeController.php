@@ -666,7 +666,7 @@ class HomeController extends Controller
                     //dd("before switch case function storeid >> $storeId :: cat >> $catid");
 
                     // This json(product_category_json) file contain category id wise product and category data(static) 
-                    $jsonDataFromFile = File::get(public_path()."\public\product_category_json.json");
+                    $jsonDataFromFile = File::get(public_path()."/public/product_category_json.json");
                     $decodedJsonData = json_decode(trim($jsonDataFromFile),true);
                     DB::table('catalog_images')->delete();
                     for($j = 0 ; $j < count($insertedProductIdArray); $j++)
