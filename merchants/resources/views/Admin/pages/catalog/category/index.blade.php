@@ -76,8 +76,8 @@ function renderNode($node)
 {
     echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
     echo '' . $node->categoryName->category . '';
-    echo '<a class="add-new-category" data-catId="'. $node->id .'" data-parentcatId="'. $node->parent_id .'" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
-    echo ''. '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
+    echo '<a class="add-new-category" data-catId="' . $node->id . '" data-parentcatId="' . $node->parent_id . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+    echo '' . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
                             <!-- <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a> -->
 
 
@@ -100,7 +100,6 @@ function renderNode($node)
     echo "</li>";
 }
 ?>
-
                     </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer clearfix">
@@ -122,7 +121,7 @@ function renderNode($node)
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <input class="form-control" name="category" required />
-                                    <input type="" class="form-control" name="parent_id" required />
+                                    <input type="hidden" class="form-control" name="parent_id" required />
                                 </div>
                             </div>
                         </div>
