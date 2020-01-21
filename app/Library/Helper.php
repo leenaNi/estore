@@ -3,6 +3,7 @@
 namespace App\Library;
 
 use App\Models\Category;
+use App\Models\CategoryMaster;
 use App\Models\Currency;
 use App\Models\Settings;
 use DB;
@@ -179,24 +180,26 @@ class Helper
     public static function saveDefaultSet($catid, $prefix, $storeId)
     {
         $cat = Category::find($catid);
-        $categories = json_decode($cat->categories);
+        $assignedCategories = json_decode($cat->assigned_categories);
+        $categories = CategoryMaster::where('status', 1)->whereIn('id', $assignedCategories)->get();
         $catsave = [];
         $i = 0;
+        if($categories){
+            foreach ($categories as $ck => $cv) {
+                $catsave[$ck]['category_id'] = $cv->id;
+                $catsave[$ck]['is_nav'] = 1;
+                $catsave[$ck]['url_key'] = strtolower(str_replace(" ", "-", $cv->category));
+                $i++;
+                $catsave[$ck]['lft'] = $i;
+                $i++;
+                $catsave[$ck]['rgt'] = $i;
+                $catsave[$ck]['depth'] = 0;
+                $catsave[$ck]['store_id'] = $storeId;
+                $catsave[$ck]['created_at'] = date('Y-m-d H:i:s');
 
-        foreach ($categories as $ck => $cv) {
-            $catsave[$ck]['category'] = $cv;
-            $catsave[$ck]['is_nav'] = 1;
-            $catsave[$ck]['url_key'] = strtolower(str_replace(" ", "-", $cv));
-            $i++;
-            $catsave[$ck]['lft'] = $i;
-            $i++;
-            $catsave[$ck]['rgt'] = $i;
-            $catsave[$ck]['depth'] = 0;
-            $catsave[$ck]['store_id'] = $storeId;
-            $catsave[$ck]['created_at'] = date('Y-m-d H:i:s');
-
+            }
+            $addedcats = DB::table('store_categories')->insert($catsave);
         }
-        $addedcats = DB::table('categories')->insert($catsave);
         //save attr set
         $attrset = json_decode($cat->attribute_sets, true);
         $saveAttrSet = [];
@@ -343,17 +346,17 @@ class Helper
                 $option = '';
                 // dd($cart['price']);
                 $tableContant = $tableContant . '   <tr class="cart_item">
-													        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
+																			        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
                 if ($cart['options']['image'] != '') {
                     $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . $cart["options"]["image"]) . '" alt="">
-													          </a>';
+																			          </a>';
                 } else {
                     $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
                 }
                 $tableContant = $tableContant . '</td>
-													        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
-													            <br>
-													          <small><a href="#"> ';
+																			        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
+																			            <br>
+																			          <small><a href="#"> ';
                 if (!empty($cart['options']['options'])) {
 
                     foreach ($cart['options']['options'] as $key => $value) {
@@ -361,19 +364,19 @@ class Helper
                     }
                 }
                 $tableContant = $tableContant . @$option . ' </a></small></td>
-													        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
-													        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-													          <div class=""> ' . $cart["qty"] . '</div>
-													        </td>';
+																			        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
+																			        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
+																			          <div class=""> ' . $cart["qty"] . '</div>
+																			        </td>';
                 $tax_amt = 0;
                 if ($tax == 1) {
                     $tableContant = $tableContant . '   <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-													         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
-													        </td>';
+																			         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
+																			        </td>';
                     $tax_amt = $cart['options']["tax_amt"];
                 }
                 $tableContant = $tableContant . '<td class="cart-product-subtotal" align="center" style="border: 1px solid #ddd;border-left: 0;border-right:0px;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format((@$cart["subtotal"] * Session::get('currency_val')), 2, '.', '') . '</span> </td>
-													      </tr>';
+																			      </tr>';
                 $gettotal += $cart["subtotal"] + $tax_amt;
             endforeach;
             $tableContant = $tableContant . '  </tbody>

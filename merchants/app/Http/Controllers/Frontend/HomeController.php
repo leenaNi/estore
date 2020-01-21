@@ -64,13 +64,15 @@ class HomeController extends Controller {
         //        dd(Helper::saveImage("http://www.techhaking.com/wp-content/uploads/2017/09/default-slider-image-300x150.png",$saveto));
         //        $data1 = [];
         //        Helper::sendMyEmail('Frontend.emails.test_mail', $data1, 'Test mail from inficart.com', 'support@inficart.com', 'inficart.com', 'tapodnya@infiniteit.biz', 'Tapodnya');
-        $categoryA = Category::get(['id', 'category'])->toArray();
+        $categoryA = DB::table('store_categories')
+        ->leftJoin('categories', 'categories.id', '=', 'store_categories.category_id')
+        ->get(['store_categories.id', 'categories.category'])->toArray();
         $rootsS = Category::roots()->where("status", 1)->get();
         $category = [];
         $attr_sets = [];
         $prod_types = [];
         foreach ($categoryA as $val) {
-            $category[$val['id']] = $val['category'];
+            $category[$val->id] = $val->category;
         }
 
 
