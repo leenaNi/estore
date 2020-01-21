@@ -404,7 +404,7 @@ class HomeController extends Controller
         //print_r($getMerchat);exit;
         $registerDetails = json_decode($getMerchat->register_details);
         $store = new Store();
-        $store->store_name = $registerDetails->store_name;
+        $store->store_name = $themeInput->store_name;
         $store->url_key = $domainname;
         $store->store_type = $storeType; // merchant/distributor
         $store->merchant_id = $getMerchat->id;
@@ -535,7 +535,7 @@ class HomeController extends Controller
         {
             $totalCategory = count($catid) - 1;
             //echo "totla cat >> ".$totalCategory;
-          
+            $productDefaultData = [];
             for($i = 0 ; $i < $totalCategory; $i++)
             {
                 $productDefaultData[] = [
