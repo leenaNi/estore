@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui.css'}}">
 
 <noscript><link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-noscript.css'}}"></noscript>
-<noscript><link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui-noscript.css'}}"></noscript> 
+<noscript><link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui-noscript.css'}}"></noscript>
 
 @stop
 @section('content')
@@ -55,7 +55,7 @@
                 </div>
                 </div>
                 <div class="box-header col-md-3 col-sm-12 col-xs-12">
-                    <a href="{!! route('admin.category.add') !!}" class="btn btn-default pull-right col-md-12" type="button">Add New Category</a>
+                    <!-- <a href="{!! route('admin.category.add') !!}" class="btn btn-default pull-right col-md-12" type="button">Add New Category</a> -->
                 </div>
 <!--                <div class="box-header col-md-3">
                     <button class="btn btn-default pull-right col-md-12 bulkuploadprod" type="button" >Bulk Upload</button>
@@ -65,36 +65,41 @@
                 <div class="box-body no-padding">
                     <table class="table table-striped table-hover">
                         <?php
-                        echo "<ul  id='catTree' class='tree icheck catTrEE'>";
-                        foreach ($roots as $root)
-                            renderNode($root);
-                        echo "</ul>";
+echo "<ul  id='catTree' class='tree icheck catTrEE'>";
+foreach ($roots as $root) {
+    renderNode($root);
+}
 
-                        function renderNode($node) {
-                            echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
-                            echo '' . $node->category . '<a href="' . route("admin.category.add", ["parent_id" => $node->id]) . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>'
-                            . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>'  ?>
-                            <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a>
-                            
-                        
-                            @if ($node->status == '0')  
+echo "</ul>";
+
+function renderNode($node)
+{
+    echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
+    echo '' . $node->categoryName->category . '';
+    echo '<a class="add-new-category" data-catId="' . $node->id . '" data-parentcatId="' . $node->parent_id . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+    echo '' . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
+                            <!-- <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a> -->
+
+
+                            @if ($node->status == '0')
                                 <a href="{{route('admin.category.changeStatus',['id'=> $node->id])}}" class="changCatStatus" onclick="return confirm('Are you sure you  want to enable this category?')" data-toggle="tooltip" title="Disabled"><b><i class="fa fa-times fa-fw"></i></b></a>
                             @endif
                             @if($node->status == '1')
                               <a href="{{route('admin.category.changeStatus',['id' => $node->id]) }}"  class="changCatStatus" onclick="return confirm('Are you sure you want to disable this category?')" data-toggle="tooltip" title="Enabled"><b><i class="fa fa-check fa-fw"></i></b></a>
                             @endif
-                      <?php      if ($node->adminChildren()->count() > 0) {
-                                echo "<ul class='treemap fl_left'>";
-                                foreach ($node->adminChildren as $child)
-                                    renderNode($child);
-                                // echo $child;
-                                echo "</ul>";
-                            }
+                      <?php if ($node->adminChildren()->count() > 0) {
+        echo "<ul class='treemap fl_left'>";
+        foreach ($node->adminChildren as $child) {
+            renderNode($child);
+        }
 
-                            echo "</li>";
-                        }
-                        ?> 
+        // echo $child;
+        echo "</ul>";
+    }
 
+    echo "</li>";
+}
+?>
                     </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer clearfix">
@@ -102,7 +107,37 @@
                 </div>
             </div><!-- /.box -->
         </div><!-- /.col -->
-
+    </div>
+    <div class="modal fade" id="new-category" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Request for new category</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('admin.category.newCategory')}}" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input class="form-control" name="category" required />
+                                    <input type="hidden" class="form-control" name="parent_id" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-primary" type="submit" >Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class='clearfix'></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal fade" id="bulkCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -112,7 +147,7 @@
                     <h4 class="modal-title" id="myModalLabel">Bulk Upload/Download</h4>
                 </div>
                 <div class="modal-body">
-<!--                    <div  class="bxmodal">
+                    <!--                    <div  class="bxmodal">
                         <div class='col-md-6'>
                             <label>Category Sample Download</label>
                         </div>
@@ -132,7 +167,7 @@
                         <form action="{{ route('admin.category.categoryBulkUpload') }}" method="post" enctype="multipart/form-data">
                             <div class='col-md-6'>
                                 <label>Category Upload</label>
-                                <input type="file" name="file" class="fileUploder" onChange="validateFile(this.value)"/> 
+                                <input type="file" name="file" class="fileUploder" onChange="validateFile(this.value)"/>
                             </div>
                             <div class='col-md-6'>
                                 <input type="submit" class="btn btn-primary" value="Upload" >
@@ -143,7 +178,7 @@
 
                         <form id="fileupload" action="{{ asset(route('admin.category.catBulkImgUpload')) }}" method="POST" enctype="multipart/form-data">
                             <!-- Redirect browsers with JavaScript disabled to the origin page -->
-                    <!--        <noscript><input type="hidden" name="redirect" value="https://blueimp.github.io/jQuery-File-Upload/"></noscript>-->
+                            <!--        <noscript><input type="hidden" name="redirect" value="https://blueimp.github.io/jQuery-File-Upload/"></noscript>-->
                             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                             <div class="row fileupload-buttonbar">
                                 <div class="col-lg-12">
@@ -304,18 +339,21 @@ $(".bulkuploadprod").click(function () {
     $("#bulkCategory").modal("show");
 });
 
+$('.add-new-category').click(function() {
+    var catId = $(this).attr('data-catId');
+    $('input[name="parent_id"]').val(catId);
+    $('#new-category').modal('show');
+});
+
 $(".catSearcH").keyup(function () {
     searchString = $(this).val();
-
     $(".catTrEE").find("li").each(function () {
         str = $(this).text();
-
         if (str.toLowerCase().indexOf(searchString) >= 0) {
             $(this).show();
         } else {
             $(this).hide();
         }
-
     });
 });
 

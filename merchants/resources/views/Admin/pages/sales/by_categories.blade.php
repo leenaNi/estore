@@ -84,7 +84,7 @@
 
                             <tr>
 <!--                                <td>{{ $cat->id }}</td>-->
-                                <td>{{ $cat->category }}</td>
+                                <td>{{ $cat->categoryName->category }}</td>
                                 <td>{{ $orderCnt }}</td>
                                 <td><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';  ?> <span class="priceConvert"> {{number_format($totSales,2)}}</span></td>
                             </tr>

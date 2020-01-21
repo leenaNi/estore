@@ -23,6 +23,7 @@ use App\Models\Pincode;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Zone;
+use App\Models\OrderStatus;
 use Auth;
 use Cart;
 use Config;
@@ -2065,6 +2066,7 @@ foreach ($_POST as $a => $b) {
         // apply additional charge to payAmount
         $additional_charge_json = AdditionalCharge::ApplyAdditionalCharge($cartAmount);
         $order->additional_charge = $additional_charge_json;
+        $orderstatus = OrderStatus::where(['sort_order'=>1,'store_id'=>Session::get('store_id')])->first();
         // $order->order_amt = Cart::instance('shopping')->total() * Session::get("currency_val");
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
@@ -2077,7 +2079,7 @@ foreach ($_POST as $a => $b) {
         $order->currency_id = Session::get("currency_id");
         $order->currency_value = Session::get("currency_val");
         $order->cart = json_encode(Cart::instance('shopping')->content());
-        $order->order_status = 1;
+        $order->order_status = $orderstatus->id;
         $order->cod_charges = @Session::get('codCharges');
         $order->discount_type = (Session::get('discType')) ? Session::get('discType') : 0;
         $order->discount_amt = (Session::get('discAmt')) ? Session::get('discAmt') : 0;

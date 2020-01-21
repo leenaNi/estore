@@ -111,13 +111,13 @@ class CategoriesController extends Controller {
         $catChild = [];
 
 
-        $catChild = @Category::where('parent_id', $cat->id)->where('status', 1)->where('is_nav', 1)->select('id', 'category', 'url_key')->get();
+        $catChild = @Category::where('parent_id', $cat->id)->where('status', 1)->where('is_nav', 1)->select('id', 'url_key')->get();
         //tej code
         //  dd($catChild);
         if (!empty($cat)) {
-            $metaTitle = @$cat->meta_title == "" ? @$cat->category . " | Cartini " : @$cat->meta_title;
-            $metaDesc = @$cat->meta_desc == "" ? @$cat->category : @$cat->meta_desc;
-            $metaKeys = @$cat->meta_keys == "" ? @$cat->category : @$cat->meta_keys;
+            $metaTitle = @$cat->meta_title == "" ? @$cat->categoryName->category . " | Cartini " : @$cat->meta_title;
+            $metaDesc = @$cat->meta_desc == "" ? @$cat->categoryName->category : @$cat->meta_desc;
+            $metaKeys = @$cat->meta_keys == "" ? @$cat->categoryName->category : @$cat->meta_keys;
             $allCats = @$cat->getDescendantsAndSelf();
             $cats = [];
             foreach ($allCats as $catz) {
@@ -147,11 +147,11 @@ class CategoriesController extends Controller {
 //
 //        }
         
-        $prods = $prods->where(function($query) {
-            if (!empty(Input::get('tags'))) {
-                $query->withAnyTag(Input::get('tags'));
-            }
-        });
+        // $prods = $prods->where(function($query) {
+        //     if (!empty(Input::get('tags'))) {
+        //         $query->withAnyTag(Input::get('tags'));
+        //     }
+        // });
 
         if (!empty(Input::get('searchTerm'))) {
             $search = Input::get('searchTerm');
@@ -245,10 +245,10 @@ class CategoriesController extends Controller {
                 $cnt = count($cats);
                 $cats = implode(",", $cats);
                 $products = $prods->join(DB::raw("
-(SELECT c.prod_id FROM " . DB::getTablePrefix() . "has_categories c
+(SELECT c.prod_id FROM has_categories c
 INNER JOIN products p ON p.id = c.prod_id
 WHERE c.cat_id IN ($cats)
-) " . DB::getTablePrefix() . "aa$i"), function($join) use ($i) {
+) aa$i"), function($join) use ($i) {
                     $join->on('products.id', '=', "aa$i.prod_id");
                 });
                 $i++;

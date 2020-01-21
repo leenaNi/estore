@@ -12,7 +12,7 @@ ini_set('display_errors', 'On');
 @section('content')
 <section class="content-header">
     <h1>
-        Payments
+        Settlements
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>

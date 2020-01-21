@@ -14,7 +14,7 @@ $adminConstants = [
     
     'AdminPagesBank' => 'Admin.Pages.Bank',
     'AdminPagesMerchant' => 'Admin.Pages.Merchants',
-    'AdminPagesVendor' => 'Admin.Pages.Vendor',
+    'AdminPagesDistributors' => 'Admin.Pages.Distributors',
     'AdminPagesPaymentettlement' => 'Admin.Pages.paymentSettlement',
     'AdminPagesStores' => 'Admin.Pages.Stores',
     'AdminPagesAnalytic' => 'Admin.Pages.Analytic',
@@ -25,6 +25,7 @@ $adminConstants = [
     
     'AdminPagesReports' => 'Admin.Pages.Reports',
     'AdminStoreLogo' => 'public/admin/uploads/logos/',
+    'adminCategoryMasterView' => 'Admin.Pages.Category',
     'AdminPagesMastersCategory' => 'Admin.Pages.Masters.Category',
     'AdminPagesMastersTheme' => 'Admin.Pages.Masters.Themes',
     'AdminPagesMastersLanguage' => 'Admin.Pages.Masters.Language',

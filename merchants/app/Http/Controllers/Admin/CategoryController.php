@@ -2,39 +2,39 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Route;
-use Input;
-use App\Models\Category;
-use App\Library\Helper;
 use App\Classes\UploadHandler;
 use App\Http\Controllers\Controller;
+use App\Library\Helper;
 use App\Models\CatalogImage;
-use App\Models\Tax;
+use App\Models\Category;
 use App\Models\Product;
-use App\Models\HasTaxes;
-use App\Models\Sizechart; 
-use Illuminate\Http\Request;
+use App\Models\Sizechart;
 use DB;
+use Illuminate\Http\Request;
+use Input;
+use Route;
 use Session;
-use Validator;
 
-class CategoryController extends Controller {
+class CategoryController extends Controller
+{
 
-    public function index() {
-        $categories = Category::whereIn("status", [1, 0])->orderBy("id", "asc");
+    public function index()
+    {
+        $categories = Category::whereIn("status", [1, 0])->with('categoryName')->orderBy("id", "asc");
         $categories = $categories->paginate(Config('constants.paginateNo'));
         $roots = Category::roots()->get();
         //dd($roots);
         //return view(Config('constants.adminCategoryView') . '.index', compact('categories', 'roots'));
 
         $viewname = Config('constants.adminCategoryView') . '.index';
+        // dd($categories);
         $data = ['categories' => $categories, 'roots' => $roots];
         return Helper::returnView($viewname, $data);
     }
 
-    public function add() {
+    public function add()
+    {
         $category = new Category();
-
         $action = route("admin.category.save");
         // return view(Config('constants.adminCategoryView') . '.addEdit', compact('category', 'allTaxes', 'action'));
         $viewname = Config('constants.adminCategoryView') . '.addEdit';
@@ -43,7 +43,8 @@ class CategoryController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function edit() {
+    public function edit()
+    {
         $category = Category::find(Input::get('id'));
         $action = route("admin.category.save");
         $viewname = Config('constants.adminCategoryView') . '.addEdit';
@@ -51,14 +52,15 @@ class CategoryController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function save() {
+    public function save()
+    {
         // dd(Input::all());
         $category = Category::findOrNew(Input::get('id'));
-        $category->category = Input::get('category');
+        // $category->category = Input::get('category');
         $category->is_home = 0; //Input::get('is_home');
         $category->is_nav = Input::get('is_nav');
         $category->sort_order = Input::get('sort_order');
-        $category->url_key = strtolower(str_replace(" ","-",Input::get('category')));
+        $category->url_key = strtolower(str_replace(" ", "-", Input::get('category')));
         $category->status = Input::get('status');
         $category->short_desc = Input::get('short_desc');
         $category->store_id = Session::get('store_id');
@@ -72,15 +74,17 @@ class CategoryController extends Controller {
         if (Input::hasFile('images')) {
             foreach (Input::file('images') as $imgK => $imgV) {
                 if ($imgV != null) {
-                    $destinationPath = Config('constants.catImgUploadPath')."/";
+                    $destinationPath = Config('constants.catImgUploadPath') . "/";
                     $fileName = "cat-" . $imgK . date("YmdHis") . "." . $imgV->getClientOriginalExtension();
                     $upload_success = $imgV->move($destinationPath, $fileName);
                 } else {
                     $fileName = null;
                 }
                 $saveCImh = CatalogImage::findorNew(Input::get('catImgs')[$imgK]);
-                if (!empty(Input::file('images')[$imgK]))
+                if (!empty(Input::file('images')[$imgK])) {
                     $saveCImh->filename = is_null($fileName) ? $saveCImh->filename : $fileName;
+                }
+
                 $saveCImh->alt_text = Input::get('alt_text')[$imgK];
 //                $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
                 $saveCImh->catalog_id = $category->id;
@@ -88,19 +92,21 @@ class CategoryController extends Controller {
                 Session::flash('msg', "category added succesfully ");
                 $saveCImh->save();
             }
-        }else {
+        } else {
             if (!empty(Input::file('images')) && count(Input::file('images')) > 0) {
                 foreach (Input::file('images') as $imgK => $imgV) {
                     if ($imgV != null) {
-                        $destinationPath = Config('constants.catImgUploadPath')."/";
+                        $destinationPath = Config('constants.catImgUploadPath') . "/";
                         $fileName = "cat-" . $imgK . date("YmdHis") . "." . $imgV->getClientOriginalExtension();
                         $upload_success = $imgV->move($destinationPath, $fileName);
                     } else {
                         $fileName = null;
                     }
                     $saveCImh = CatalogImage::findorNew(Input::get('catImgs')[$imgK]);
-                    if (!empty(Input::file('images')[$imgK]))
+                    if (!empty(Input::file('images')[$imgK])) {
                         $saveCImh->filename = is_null($fileName) ? $saveCImh->filename : $fileName;
+                    }
+
                     $saveCImh->alt_text = Input::get('alt_text')[$imgK];
 //                    $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
                     $saveCImh->catalog_id = $category->id;
@@ -110,8 +116,10 @@ class CategoryController extends Controller {
             }
         }
 
-        if (!empty(Input::get("parent_id")))
-            $category->makeChildOf(Input::get("parent_id"));
+        // if (!empty(Input::get("parent_id"))) {
+        //     $category->makeChildOf(Input::get("parent_id"));
+        // }
+
         Session::flash("msg", "Category updated successfully.");
 
         if (is_null(Input::get('id')) || empty(Input::get('id'))) {
@@ -120,15 +128,15 @@ class CategoryController extends Controller {
             return redirect()->to(Input::get('return_url') . "?id=" . $category->id);
         } else {
             // Session::flash("msg", "Category added successfully.");
-            // dd($category);  
+            // dd($category);
             return redirect()->to(Input::get('return_url'));
         }
     }
 
-    public function delete() {
+    public function delete()
+    {
         $getId = Input::get('id');
         $cat = Category::find($getId);
-
 
         if ($cat->parent_id == null) {
             $chidCat = $cat->adminChildren()->get();
@@ -149,9 +157,9 @@ class CategoryController extends Controller {
                     $childupdate = Category::find($childCat->id);
                     $getProductInfo = $this->check_product($childupdate);
 
-//                    $getProductInfo = Product::whereHas('categories', function($query) use ($childCat) {
-//                                return $query->where('cat_id', $childCat->id);
-//                            })->get();
+                    //                    $getProductInfo = Product::whereHas('categories', function($query) use ($childCat) {
+                    //                                return $query->where('cat_id', $childCat->id);
+                    //                            })->get();
                     if (count($getProductInfo) > 0) {
                         $flag++;
                     }
@@ -180,12 +188,14 @@ class CategoryController extends Controller {
         return Helper::returnView($viewname, $data, $url = 'admin.category.view');
     }
 
-    public function sizeChart() {
+    public function sizeChart()
+    {
         $sizeChart = Sizechart::find(Input::get('id'));
         return $sizeChart;
     }
 
-    public function catSeo() {
+    public function catSeo()
+    {
         $category = Category::find(Input::get('id'));
         $action = route("admin.category.saveCatSeo");
         $viewname = Config('constants.adminCategoryView') . '.cat_seo';
@@ -193,15 +203,17 @@ class CategoryController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function check_product($product) {
-        $productInfo = Product::whereHas("categories", function($query) use($product) {
-                    return $query->where('cat_id', $product->id);
-                })->get();
+    public function check_product($product)
+    {
+        $productInfo = Product::whereHas("categories", function ($query) use ($product) {
+            return $query->where('cat_id', $product->id);
+        })->get();
         // dd($productInfo);
         return $productInfo;
     }
 
-    public function saveCatSeo() {
+    public function saveCatSeo()
+    {
         //  dd(Input::all());
         $saveS = Category::findOrNew(Input::get('id'));
         $saveS->meta_title = Input::get("meta_title");
@@ -219,7 +231,8 @@ class CategoryController extends Controller {
         return redirect()->to(Input::get('return_url'));
     }
 
-    public function sampleCategoryDownload() {
+    public function sampleCategoryDownload()
+    {
         $details = [];
         $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
         $lastId = DB::select(DB::raw("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'cartininew' AND TABLE_NAME = '" . DB::getTablePrefix() . "categories'"));
@@ -231,10 +244,11 @@ class CategoryController extends Controller {
         return Helper::getCsv($sampleCat, 'category_sample.csv', ',');
     }
 
-    public function sampleBulkDownload() {
+    public function sampleBulkDownload()
+    {
         $details = [];
-        $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key','status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
-        $category = Category::get(['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'status','meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta']);
+        $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
+        $category = Category::get(['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta']);
         $sampleCat = [];
         array_push($sampleCat, $arr);
         $arrP = [];
@@ -274,34 +288,36 @@ class CategoryController extends Controller {
                 $cat->desc,
                 $cat->image,
                 $cat->url,
-                $cat->other_meta
+                $cat->other_meta,
             ];
             array_push($sampleCat, $details);
         }
         return Helper::getCsv($sampleCat, 'category_data.csv', ',');
     }
 
-    public function categoryBulkUpload(Request $request) {
+    public function categoryBulkUpload(Request $request)
+    {
 
         if (Input::hasFile('file')) {
             $file = Input::file('file');
             $name = time() . '-' . $file->getClientOriginalName();
-            $path = Config('constants.catImgUploadPath')."/";
+            $path = Config('constants.catImgUploadPath') . "/";
             $file->move($path, $name);
             return $this->category_import_csv($path, $name);
-            //  echo "Success";       
+            //  echo "Success";
         } else {
 
             echo "Please select file";
         }
     }
 
-    private function category_import_csv($path, $filename) {
-//        dd($path);
-        $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key','status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
+    private function category_import_csv($path, $filename)
+    {
+        //        dd($path);
+        $arr = ['id', 'category', 'short_desc', 'long_desc', 'images', 'is_home', 'is_nav', 'url_key', 'status', 'meta_title', 'meta_keys', 'meta_desc', 'sort_order', 'parent_id', 'brandmake', 'brand_address', 'premiumness', 'vat', 'meta_robot', 'canonical', 'title', 'desc', 'image', 'url', 'other_meta'];
 
         $csv_file = $path . $filename;
-        if (($handle = fopen($csv_file, "r")) !== FALSE) {
+        if (($handle = fopen($csv_file, "r")) !== false) {
 
             $intersect = array_intersect($arr, fgetcsv($handle));
             if (count($arr) != count($intersect)) {
@@ -309,7 +325,7 @@ class CategoryController extends Controller {
                 exit;
             }
             // dd(Ca::select(fgetcsv($handle))->get());
-            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
                 //  dd($data);
                 $num = count($data);
                 for ($c = 0; $c < $num; $c++) {
@@ -340,69 +356,109 @@ class CategoryController extends Controller {
                 $og_image = $col[22];
                 $og_url = $col[23];
                 //   $twitter_url = $col[23];
-//                $twitter_title = $col[24];
-//                $twitter_desc = $col[25];
-//                $twitter_image = $col[26];
+                //                $twitter_title = $col[24];
+                //                $twitter_desc = $col[25];
+                //                $twitter_image = $col[26];
                 $other_meta = $col[24];
 
                 if (!empty($id)) {
                     $updateCat = Category::firstOrNew(array('id' => $id));
-                    if (!empty($category))
+                    if (!empty($category)) {
                         $updateCat->category = $category;
-                    if (!empty($short_desc))
+                    }
+
+                    if (!empty($short_desc)) {
                         $updateCat->short_desc = $short_desc;
-                    if (!empty($long_desc))
+                    }
+
+                    if (!empty($long_desc)) {
                         $updateCat->long_desc = $long_desc;
-                    if (!empty($is_home))
+                    }
+
+                    if (!empty($is_home)) {
                         $updateCat->is_home = $is_home;
-                    if (!empty($is_nav))
+                    }
+
+                    if (!empty($is_nav)) {
                         $updateCat->is_nav = $is_nav;
-                    if (!empty($url_key))
+                    }
+
+                    if (!empty($url_key)) {
                         $updateCat->url_key = $url_key;
-                    if (!empty($status))
+                    }
+
+                    if (!empty($status)) {
                         $updateCat->status = $status;
-                    if (!empty($meta_title))
+                    }
+
+                    if (!empty($meta_title)) {
                         $updateCat->meta_title = $meta_title;
-                    if (!empty($meta_key))
+                    }
+
+                    if (!empty($meta_key)) {
                         $updateCat->meta_keys = $meta_key;
-                    if (!empty($meta_desc))
+                    }
+
+                    if (!empty($meta_desc)) {
                         $updateCat->meta_desc = $meta_desc;
+                    }
 
-                    if (!empty($sort_order))
+                    if (!empty($sort_order)) {
                         $updateCat->sort_order = $sort_order;
-                    if (!empty($parent_id))
+                    }
+
+                    if (!empty($parent_id)) {
                         $updateCat->parent_id = $parent_id;
-                    if (!empty($brandmake))
+                    }
+
+                    if (!empty($brandmake)) {
                         $updateCat->brandmake = $brandmake;
-                    if (!empty($brand_address))
+                    }
+
+                    if (!empty($brand_address)) {
                         $updateCat->brand_address = $brand_address;
-                    if (!empty($premiumness))
+                    }
+
+                    if (!empty($premiumness)) {
                         $updateCat->premiumness = $premiumness;
-                    if (!empty($vat))
+                    }
+
+                    if (!empty($vat)) {
                         $updateCat->vat = $vat;
+                    }
 
-                    if (!empty($meta_robot))
+                    if (!empty($meta_robot)) {
                         $updateCat->meta_robot = $meta_robot;
+                    }
 
-                    if (!empty($canonical))
+                    if (!empty($canonical)) {
                         $updateCat->canonical = $canonical;
-                    if (!empty($og_title))
-                        $updateCat->title = $og_title;
-                    if (!empty($og_desc))
-                        $updateCat->desc = $og_desc;
-                    if (!empty($og_image))
-                        $updateCat->image = $og_image;
-                    if (!empty($og_url))
-                        $updateCat->url = $og_url;
+                    }
 
-//                    if (!empty($twitter_url))
-//                        $updateCat->twitter_url = $twitter_url;
-//                    if (!empty($twitter_title))
-//                        $updateCat->twitter_title = $twitter_title;
-//                    if (!empty($twitter_desc))
-//                        $updateCat->twitter_desc = $twitter_desc;
-//                    if (!empty($twitter_image))
-//                        $updateCat->twitter_image = $twitter_image;
+                    if (!empty($og_title)) {
+                        $updateCat->title = $og_title;
+                    }
+
+                    if (!empty($og_desc)) {
+                        $updateCat->desc = $og_desc;
+                    }
+
+                    if (!empty($og_image)) {
+                        $updateCat->image = $og_image;
+                    }
+
+                    if (!empty($og_url)) {
+                        $updateCat->url = $og_url;
+                    }
+
+                    //                    if (!empty($twitter_url))
+                    //                        $updateCat->twitter_url = $twitter_url;
+                    //                    if (!empty($twitter_title))
+                    //                        $updateCat->twitter_title = $twitter_title;
+                    //                    if (!empty($twitter_desc))
+                    //                        $updateCat->twitter_desc = $twitter_desc;
+                    //                    if (!empty($twitter_image))
+                    //                        $updateCat->twitter_image = $twitter_image;
 
                     $updateCat->save();
 
@@ -427,12 +483,14 @@ class CategoryController extends Controller {
         // echo "File data successfully imported to database!!";
     }
 
-    public function catBulkImgUpload() {
+    public function catBulkImgUpload()
+    {
         $path = '/public/Admin/uploads/catalog/category/';
         $upload_handler = new UploadHandler(null, true, null, $path);
     }
 
-    public function checkCatName() {
+    public function checkCatName()
+    {
         $catname = Input::get('catname');
         $catname = Category::where('category', $catname)->whereIn('status', [0, 1])->get();
         if (count($catname) > 0) {
@@ -442,7 +500,8 @@ class CategoryController extends Controller {
         }
     }
 
-    public function changeStatus() {
+    public function changeStatus()
+    {
         $cat = Category::find(Input::get('id'));
         //dd($cat);
         if ($cat->status == 1) {
@@ -465,11 +524,32 @@ class CategoryController extends Controller {
             return Helper::returnView($viewname, $data, $url = 'admin.category.view');
         }
     }
-   public function catImgDelete(){
-        $id=Input::get('catImgId');
-       $catImage= CatalogImage::find($id);
-       $catImage->delete();
-       Session::flash("messege","Category image deleted successfully!");
-       return $data=["status" => "success"];
+    public function catImgDelete()
+    {
+        $id = Input::get('catImgId');
+        $catImage = CatalogImage::find($id);
+        $catImage->delete();
+        Session::flash("messege", "Category image deleted successfully!");
+        return $data = ["status" => "success"];
+    }
+
+    public function newCategory(){
+        if(Input::get('parent_id') && Input::get('parent_id') !='') {
+            $parentId = DB::table('store_categories')->where('id', Input::get('parent_id'))->first(['category_id'])->category_id;
+        } else {
+            $parentId = 0;
+        }
+        $newCatName = Input::get('category');
+        $newCategory = DB::table('temp_categories')->insert([
+            "name" => $newCatName,
+            "parent_id" => $parentId, 
+            "user_id" => Session::get('loggedinAdminId'), 
+        ]);
+        if($newCategory){
+            Session::flash("msg", "New category request sent successfully.");
+        } else {
+            Session::flash("message", "Oops, Something went wrong.");
+        }
+        return redirect()->route('admin.category.view');
     }
 }

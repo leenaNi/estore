@@ -1,5 +1,4 @@
 <?php
-
 Route::group(['namespace' => 'Admin'], function () {
     Route::get('/', ["as" => "admin.login", "uses" => "LoginController@login"]);
     Route::get('/logout', ["as" => "admin.merchant.logout", "uses" => "LoginController@merchantLogout"]);

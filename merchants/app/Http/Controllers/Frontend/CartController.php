@@ -345,7 +345,11 @@ class CartController extends Controller {
         }else{
             $price = $product->selling_price; //$product->price;
         }
-        $price = $subProd->price + $price;
+        if($subProd != 'NULL')
+        {
+            $price = $subProd->price + $price;
+        }
+        
         $options = [];
         $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
 

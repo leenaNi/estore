@@ -14,6 +14,7 @@ use App\Library\Helper;
 use App\Models\Category;
 use App\Models\HasCurrency;
 use App\Models\Merchant;
+use App\Models\Vendor;
 use App\Models\MerchantOrder;
 use App\Models\Store;
 use App\Models\StoreTheme;
@@ -111,7 +112,6 @@ class HomeController extends Controller
 
     public function newStore()
     {
-
         if (Session::get('merchantid')) {
             Session::flash('storeadded', 'You can not create more than one store.');
             //return redirect()->back();
@@ -124,9 +124,12 @@ class HomeController extends Controller
         //  dd($availability);
         //  dd($checkdomain);
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
+        //$cat = Category::where("status", 1)->pluck('category', 'id');
+        
         $curr = HasCurrency::where('status', 1)->orderBy("currency_code", "asc")->get(['status', 'id', 'name', 'iso_code', 'currency_code']);
         $viewname = Config('constants.frontendView') . ".new-store";
         $data = ['cat' => $cat, 'curr' => $curr];
+        //echo "<pre>";print_r($data);
         return Helper::returnView($viewname, $data);
     }
 
@@ -168,63 +171,159 @@ class HomeController extends Controller
 
     public function selectThemes()
     {
-//        if(empty(Session::get('storename'))){
-        //            return redirect()->to("/");
-        //        }
         $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
-        if (empty(Input::get('firstname')) && empty(Session::get('merchantid'))) {
+        if (empty(Input::get('firstname')) && empty(Session::get('merchantid')))
+        {
             $cats = Category::where("status", 1)->get();
 
             $data = ['cats' => $cats, 'themeIds' => $themeIds];
             $viewname = Config('constants.frontendView') . ".select-themes";
             return Helper::returnView($viewname, $data);
         }
-        if (empty(Session::get('merchantid'))) {
-
+        if (empty(Session::get('merchantid'))) 
+        {
             $allinput = Input::all();
+            $storeType = $allinput['storeType'];
             $sendmsg = "Registred successfully.";
             // Helper::sendsms($allinput['phone'],$sendmsg);
             // Helper::sendsms(9930619304,$sendmsg);
             $names = explode(" ", $allinput['firstname']);
-            $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
+            
             $validator = Validator::make($allinput, Merchant::rules(null));
             if ($validator->fails()) {
                 return $validator->messages()->toJson();
             } else {
-                $getMerchat = new Merchant();
-                $getMerchat->email = $allinput['email'];
-                if (!empty($allinput['password'])) {
-                    $getMerchat->password = Hash::make($allinput['password']);
-                }
+                $businessType = $allinput['m_business_type'];
+                $merchantObj = new Merchant();
                 if (!empty($allinput['provider_id'])) {
-                    $getMerchat->provider_id = $allinput['provider_id'];
+                    $merchantObj->provider_id = $allinput['provider_id'];
                     Session::put("provider_id", $allinput['provider_id']);
                 }
-                $getMerchat->firstname = $names[0];
-                $getMerchat->company_name = $allinput['company_name'];
-                $getMerchat->country_code = $allinput['country_code'];
-                $getMerchat->lastname = @$names[1];
-                $getMerchat->phone = $allinput['phone'];
-                $getMerchat->register_details = json_encode(Input::all());
-                $getMerchat->save();
-                Session::put('merchantid', $getMerchat->id);
+                
+                $merchantObj->company_name = $allinput['company_name'];
+                $merchantObj->phone = $allinput['phone'];
+                $merchantObj->country_code = $allinput['country_code'];
+                
+                $allinput['business_type'] = $businessType;
+                $cats = Category::where("status", 1)->where("id",$allinput['business_type'])->get();
+                
+                $merchantObj->firstname = $names[0];
+                $merchantObj->lastname = @$names[1];
+                if (!empty($allinput['password'])) {
+                    $merchantObj->password = Hash::make($allinput['password']);
+                }
+                unset($allinput['m_business_type']);
+                unset($allinput['d_business_type']);
+                $merchantObj->email = $allinput['email'];
+                $merchantObj->register_details = json_encode($allinput);
+                $merchantObj->save();
+                $lastInsteredId = $merchantObj->id;
+
+                if($lastInsteredId > 0)
+                {
+                    $merchantObj1 = Merchant::find($lastInsteredId);
+                    $indentityCode = $this->createUniqueIdentityCode($allinput,$lastInsteredId);
+                    $merchantObj1->identity_code = $indentityCode;
+                    $merchantObj1->save();
+                }
+                Session::put('merchantid', $lastInsteredId);
                 Session::put('storename', $allinput['store_name']);
                 Session::put('merchantstorecount', 0);
-
-            }
+            } // end else
         } else {
+           
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
             $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
             $checkStote = Merchant::find(Session::get('merchantid'))->getstores()->count();
-
             Session::put('merchantstorecount', $checkStote);
         }
-
+        //echo "<pre>";print_r($allinput);
         $data = ['cats' => $cats, 'allinput' => $allinput, 'themeIds' => $themeIds];
         $viewname = Config('constants.frontendView') . ".select-themes";
         return Helper::returnView($viewname, $data);
     }
 
+    public function distributorSignup()
+    {
+        if (empty(Session::get('merchantid'))) 
+        {
+            $allinput = Input::all();
+            $storeType = $allinput['storeType'];
+            $sendmsg = "Registred successfully.";
+            $names = explode(" ", $allinput['firstname']);
+            
+            $validator = Validator::make($allinput, Merchant::rules(null));
+            if ($validator->fails()) {
+                return $validator->messages()->toJson();
+            } else {
+                $businessType = $allinput['d_business_type'];
+                $distributorObj = new Vendor();
+                $distributorObj->country = $allinput['country_code'];
+                $distributorObj->business_name = $allinput['company_name'];
+                $distributorObj->phone_no = $allinput['phone'];
+                $distributorObj->currency_code = $allinput['currency'];
+                
+                $allinput['business_type'] = $businessType;
+                $implodedBusinessTypeArray = implode(',',$businessType);
+                
+                $cats = Category::where("status", 1)->whereIn("id",$allinput['business_type'])->get();
+                $selCats = [];
+                foreach ($cats as $cat) 
+                {
+                    $selCats[$cat->id] = $cat->category;
+                } // End foreach
+                $allinput['business_name'] = $selCats;
+
+                $distributorObj->firstname = $names[0];
+                $distributorObj->lastname = @$names[1];
+                if (!empty($allinput['password'])) {
+                    $distributorObj->password = Hash::make($allinput['password']);
+                }
+                unset($allinput['m_business_type']);
+                unset($allinput['d_business_type']);
+                $distributorObj->email = $allinput['email'];
+                $distributorObj->register_details = json_encode($allinput);
+                $distributorObj->save();
+                $lastInsteredId = $distributorObj->id;
+
+                if($lastInsteredId > 0)
+                {
+                    $distributorObj1 = Vendor::find($lastInsteredId);
+                    $indentityCode = $this->createUniqueIdentityCode($allinput,$lastInsteredId);
+                    $distributorObj1->identity_code = $indentityCode;
+                    $distributorObj1->save();
+                }
+
+                Session::put('merchantid', $lastInsteredId);
+                Session::put('storename', $allinput['store_name']);
+                Session::put('merchantstorecount', 0);
+            } // end else
+        } else {
+           
+            $allinput = json_decode(Vendor::find(Session::get('merchantid'))->register_details, true);
+            $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
+            $checkStote = Vendor::find(Session::get('merchantid'))->getstores()->count();
+
+            Session::put('merchantstorecount', $checkStote);
+        }
+        $data['themeInput'] = json_encode($allinput);
+
+        // For distributor redirect on intermediat page
+        $viewname = Config('constants.frontendView') . ".wait-process";
+        return Helper::returnView($viewname, $data);
+    } // End distributorSignup()
+
+    public function createUniqueIdentityCode($allinput,$lastInsteredId) // for merchnat and distributor
+    {
+        $storeName = $allinput['store_name'];
+        $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
+        $phoneNo = $allinput['phone'];
+        $randomFourDigit = rand(1000,9999);
+        $indentityCode = substr($storeName,0,3).substr($phoneNo,-3).$lastInsteredId.$randomFourDigit;
+        //dd($indentityCode);
+        return $indentityCode;
+        
+    } // End createUniqueIdentityCode(
     public function checkUser()
     {
         dd(Input::all());
@@ -287,6 +386,7 @@ class HomeController extends Controller
 
     public function congrats()
     {
+        //dd((object) Input::get('themeInput'));
         $themeInput = (object) Input::get('themeInput');
         $domainname = str_replace(" ", '-', trim(strtolower($themeInput->domain_name), " "));
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
@@ -295,14 +395,34 @@ class HomeController extends Controller
         if (!empty($themeInput->email)) {
             // $this->confirmMail($themeInput);
         }
-        $getMerchat = Merchant::find(Session::get('merchantid'));
+        $storeType = $themeInput->storeType;
+        //echo "session :: ".Session::get('merchantid');exit;
+        if($storeType == 'merchant')
+            $getMerchat = Merchant::find(Session::get('merchantid'));
+        else
+            $getMerchat = Vendor::find(Session::get('merchantid')); //get distributor id. Variable name is kept merchantid to avoid any issue in the old code.
+        //print_r($getMerchat);exit;
         $registerDetails = json_decode($getMerchat->register_details);
         $store = new Store();
         $store->store_name = $registerDetails->store_name;
         $store->url_key = $domainname;
+        $store->store_type = $storeType; // merchant/distributor
         $store->merchant_id = $getMerchat->id;
-        $store->category_id = $themeInput->cat_id;
-        $store->template_id = $themeInput->theme_id;
+       
+        if($storeType == 'merchant')    //Theme selection is available only for merchants
+        {
+            $phoneNo = $getMerchat->phone;
+            $store->template_id = $themeInput->theme_id;
+            $store->category_id = $themeInput->cat_id;
+        }
+        else
+        {
+            $phoneNo = $getMerchat->phone_no;
+            $themeInput->cat_id = $themeInput->business_type;
+            $themeInput->theme_id = 0;
+            $store->template_id = 0;
+            $store->category_id = implode(',',$themeInput->cat_id);
+        }
         $store->store_domain = $actualDomain;
         $store->percent_to_charge = 1.00;
         $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
@@ -335,8 +455,10 @@ class HomeController extends Controller
         }
 
         if ($store->save()) {
+            //dd("teme id >> ".$themeInput->theme_id);
             if (empty($themeInput->id)) {
-                $result = $this->createInstance($store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $themeInput->storename, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $getMerchat->phone, $firstname, $domainname, $storeVersion, $store->expiry_date);
+                //dd((object) Input::get('themeInput')." :: ".$storeType);
+                $result = $this->createInstance($storeType,$store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $themeInput->storename, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $phoneNo, $firstname, $domainname, $storeVersion, $store->expiry_date);
                 // dd($result);
             }
         }
@@ -350,18 +472,30 @@ class HomeController extends Controller
 
     public function getcongrats()
     {
-
+       // echo "getcongrats  call function";
         $dataS = [];
         $dataS['id'] = Input::get('id');
         $dataS['storedata'] = Store::find(Input::get('id'));
+        //echo "<pre>";print_r($dataS);
         $viewname = Config('constants.frontendView') . ".congrats";
         return Helper::returnView($viewname, $dataS);
     }
 
-    public function createInstance($storeId, $prefix, $urlKey, $merchantEamil, $merchantPassword, $storeName, $themeid, $catid, $currency, $phone, $firstname, $domainname, $storeVersion, $expirydate)
+    public function createInstance($storeType,$storeId, $prefix, $urlKey, $merchantEamil, $merchantPassword, $storeName, $themeid, $catid, $currency, $phone, $firstname, $domainname, $storeVersion, $expirydate)
     {
+        //echo "createInstance function storeid >> $storeId ";
+        //echo "<br> Cat array >> <pre>";print_r($catid);
         ini_set('max_execution_time', 600);
-        $merchantd = Merchant::find(Session::get('merchantid'));
+        if($storeType == 'merchant')
+        {
+            $merchantd = Merchant::find(Session::get('merchantid'));
+            $country_code = $merchantd->country_code;
+        }
+        else
+        {
+            $distributorData = Vendor::find(Session::get('merchantid')); // distributor
+            $country_code = $distributorData->country;
+        }
         $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "' . env('GODADDY_IP') . '","ttl": 3600}]';
         $fields = array(
             'data' => $messagearray,
@@ -392,9 +526,94 @@ class HomeController extends Controller
         curl_close($ch);
         // stop Curl
 
+        // skeleton.sql :: This file contain with all the master table insert query which will run whenever new store created
         $contents = File::get(public_path() . "/public/skeleton.sql");
         $sql = str_replace('tblprfx_', $storeId, $contents);
         $test = DB::unprepared($sql);
+        
+        if($storeType == 'distributor')
+        {
+            $totalCategory = count($catid) - 1;
+            //echo "totla cat >> ".$totalCategory;
+          
+            for($i = 0 ; $i < $totalCategory; $i++)
+            {
+                $productDefaultData[] = [
+                    'id'=>NULL, 
+                    'product'=> 'Men Green Printed Custom Fit Polo Collar T-shirt', 
+                    'product_code'=>'',
+                    'alias'=>'', 
+                    'short_desc'=>'', 
+                    'long_desc'=> '', 
+                    'add_desc'=>'', 
+                    'is_featured'=>0, 
+                    'images'=> '/tmp/phpFCjDcZ',
+                    'prod_type'=>1,
+                    'is_stock'=>1, 
+                    'attr_set'=>1, 
+                    'url_key'=>'men-green-printed-custom-fit-polo-collar-t-shirt', 
+                    'is_avail'=>1, 
+                    'is_listing'=>0,
+                    'status'=>1,
+                    'stock'=>100,
+                    'cur'=>'',
+                    'max_price'=>0,
+                    'min_price'=>0,
+                    'purchase_price'=>'0.00',
+                    'price'=>'200173.54',
+                    'unit_measure'=>'',
+                    'consumption_uom'=>'',
+                    'conversion'=>'0.00',
+                    'height'=>0,
+                    'width'=>0,
+                    'length'=>0,
+                    'weight'=>0,
+                    'spl_price'=>'120077.43',
+                    'selling_price'=>'120077.43',
+                    'is_crowd_funded'=>0,
+                    'target_date'=>'0000-00-00 00:00:00',
+                    'target_qty'=>0,
+                    'parent_prod_id'=>0,
+                    'meta_title'=>'',
+                    'meta_keys'=>'', 
+                    'meta_desc'=>'', 
+                    'art_cut'=>0, 
+                    'is_cod'=>1, 
+                    'added_by'=>1, 
+                    'updated_by'=>1, 
+                    'is_individual'=>1, 
+                    'sort_order'=>0, 
+                    'meta_robot'=>'', 
+                    'canonical'=>'', 
+                    'og_title'=>'', 
+                    'og_desc'=>'', 
+                    'og_image'=>'', 
+                    'twitter_url'=>'', 
+                    'twitter_title'=>'', 
+                    'twitter_desc'=>'',
+                    'twitter_image'=>'', 
+                    'og_url'=>'', 
+                    'other_meta'=>'', 
+                    'is_referal_discount'=>0, 
+                    'is_shipped_international'=>0, 
+                    'eCount'=>0,
+                    'eNoOfDaysAllowed'=>0, 
+                    'barcode'=>'', 
+                    'is_tax'=>0, 
+                    'is_del'=>0, 
+                    'min_order_quantity'=>1, 
+                    'is_trending'=>1,
+                    'store_id'=>$storeId
+                ]; 
+            } // End i for loop           
+            $test =  DB::table('products')->insert($productDefaultData);
+        } // ENd $storeType check if
+        
+        // get primary key of inserted product table 
+        $productsData = DB::table('products')->select(DB::raw("GROUP_CONCAT(id) as product_id"))->where('store_id',$storeId)->get();
+        $insertedProductId = $productsData[0]->product_id;
+        $insertedProductIdArray = explode(",",$insertedProductId);
+
         if ($test) {
             $path = base_path() . "/merchants/" . "$domainname";
             $mk = File::makeDirectory($path, 0777, true, true);
@@ -418,7 +637,15 @@ class HomeController extends Controller
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
                     //Last record
                     $lastUser = DB::table('users')->latest('id')->first();
-                    $insertArr = ["id" => ($lastUser->id + 1), "email" => "$merchantEamil", "user_type" => 1, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
+                    if($storeType == 'merchant')
+                    {
+                        $userType = 1;
+                    }
+                    else
+                    {
+                        $userType = 3;
+                    }
+                    $insertArr = ["id" => ($lastUser->id + 1), "email" => "$merchantEamil", "user_type" => $userType, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
@@ -428,134 +655,56 @@ class HomeController extends Controller
                         $provider_id = Session::get("provider_id");
                         $insertArr["provider_id"] = "$provider_id";
                     }
-                    $country_code = $merchantd->country_code;
+                    
                     if ($country_code) {
-                        $insertArr["country_code"] = "$merchantd->country_code";
+                        $insertArr["country_code"] = "$country_code";
                     }
                     //                    $randno = $merchantPassword;
                     //                    $password = Hash::make($randno);
                     $newuserid = DB::table("users")->insertGetId($insertArr);
-                    switch ($catid) {
-                        case '4':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Lenovo Ideapad D330 81H300AKIN 10.1-inch Detachable Laptop', 'url_key' => 'laptop-cum-tablet', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '46000.00', 'spl_price' => '46000.00', 'selling_price' => '46000.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'electronics.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '5':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Vegan Aquafaba Chocolate Ice Cream', 'url_key' => 'chocolate-ice-cream', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '300.00', 'spl_price' => '300.00', 'selling_price' => '300.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
+
+                    //dd("before switch case function storeid >> $storeId :: cat >> $catid");
+
+                    // This json(product_category_json) file contain category id wise product and category data(static) 
+                    $jsonDataFromFile = File::get(public_path()."\public\product_category_json.json");
+                    $decodedJsonData = json_decode(trim($jsonDataFromFile),true);
+                    DB::table('catalog_images')->delete();
+                    for($j = 0 ; $j < count($insertedProductIdArray); $j++)
+                    {
+                        $categoryId = $catid[$j];
+                        if($categoryId != 1)
+                        {
+                            $productId = $insertedProductIdArray[$j];
+                            //echo "\ncat >> ".$categoryId." :: product >> ".$productId;
+
+                            $categoryJsonData = $decodedJsonData[$categoryId];
+                            $productName = $categoryJsonData['product_name'];
+                            //echo "\np name >> ".$productName;
+                            $urlKey = $categoryJsonData['url_key'];
+                            $prodType = $categoryJsonData['prod_type'];
+                            $stock = $categoryJsonData['stock'];
+                            $cur = $categoryJsonData['cur'];
+                            $maxPrice = $categoryJsonData['max_price'];
+                            $minPrice = $categoryJsonData['min_price'];
+                            $purchasePrice = $categoryJsonData['purchase_price'];
+                            $price = $categoryJsonData['price'];
+                            $splPrice = $categoryJsonData['spl_price'];
+                            $sellingPrice = $categoryJsonData['selling_price'];
+                            $categoryFilename = $categoryJsonData['category_filename'];
+                            $altText = $categoryJsonData['alt_text'];
+                            $imageType = $categoryJsonData['image_type'];
+                            $imageMode = $categoryJsonData['image_mode'];
+                            $sortOrder = $categoryJsonData['sort_order'];
+                            $imagePath = $categoryJsonData['image_path'];
                             
-                            DB::table('catalog_images')->insert(['filename' => 'icecream.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '7':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Frame All About You', 'url_key' => 'frame', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '1390.00', 'spl_price' => '1390.00', 'selling_price' => '1390.00']
+                            DB::table('products')->where([['store_id',$storeId],['id',$productId]])->update(
+                                ['product' => $productName, 'url_key' => $urlKey, 'prod_type' => $prodType, 'stock' => $stock, 'cur' => $cur, 'max_price' => $maxPrice, 'min_price' => $minPrice, 'purchase_price' => $purchasePrice, 'price' => $price, 'spl_price' => $splPrice, 'selling_price' => $sellingPrice]
                             );
                             
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            DB::table('catalog_images')->insert(['filename' => 'art.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '8':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Bryan & Candy New York Cocoa Shea Bath Tub Kit for Complete Home Spa Experience', 'url_key' => 'beauty-wellness', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '1200.00', 'spl_price' => '1200.00', 'selling_price' => '1200.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
                             
-                            DB::table('catalog_images')->insert(['filename' => 'beauty.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '9':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Flber Cotton Macrame Plant Hanger Handmade Rope Wall Hangings Home Decor', 'url_key' => 'home-decor', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '13450.00', 'spl_price' => '13450.00', 'selling_price' => '13450.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            
-                            DB::table('catalog_images')->insert(['filename' => 'homedecor.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '10':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'TAJ EXPERIENCES GIFT CARD', 'url_key' => 'gift-card', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '5000.00', 'spl_price' => '5000.00', 'selling_price' => '5000.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            
-                            DB::table('catalog_images')->insert(['filename' => 'gifts.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '11':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Cute Kids Dore moon Nobita generic Cartoon Fun Play Anime', 'url_key' => 'toy', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '575.00', 'spl_price' => '575.00', 'selling_price' => '575.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            
-                            DB::table('catalog_images')->insert(['filename' => 'toys.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '12':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Shining Diva Fashion Latest Design 18k Rose Gold Stylish Bracelet Earrings', 'url_key' => 'bracelet', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '850.00', 'spl_price' => '850.00', 'selling_price' => '850.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            
-                            DB::table('catalog_images')->insert(['filename' => 'jewellery.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '13':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Nutri Blend Mixer and Grinder with Jars with Chopper and Juicer', 'url_key' => 'blender', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '3599.00', 'spl_price' => '3599.00', 'selling_price' => '3599.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            
-                            DB::table('catalog_images')->insert(['filename' => 'kitchen.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '14':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Yonex AERO Comfort Badminton Shoes', 'url_key' => 'shoes', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '2899.00', 'spl_price' => '2899.00', 'selling_price' => '2899.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            
-                            DB::table('catalog_images')->insert(['filename' => 'footwear.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '15':
-                            DB::table('products')->where('id', 1)->update(
-                                ['product' => 'National Geographic Encyclopedia of Space', 'url_key' => 'book', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '3000.00', 'spl_price' => '3000.00', 'selling_price' => '3000.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            
-                            DB::table('catalog_images')->insert(['filename' => 'books.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '16':
-                            DB::table('products')->where('id', 1)->update(
-                                ['product' => 'Lenovo Ideapad D330 81H300AKIN 10.1-inch Detachable Laptop', 'url_key' => 'laptop-cum-tablet', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '850.00', 'spl_price' => '850.00', 'selling_price' => '850.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            
-                            DB::table('catalog_images')->insert(['filename' => 'electronics.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        case '17':
-                            DB::table('products')->where('store_id', $storeId)->update(
-                                ['product' => 'Fresho Capsicum - Green', 'url_key' => 'capsicum', 'prod_type' => 1, 'stock' => 100, 'cur' => '', 'max_price' => 0, 'min_price' => 0, 'purchase_price' => '0.00', 'price' => '55.00', 'spl_price' => '55.00', 'selling_price' => '55.00']
-                            );
-                            $prod_id = DB::table('products')->where('store_id', $storeId)->select('id')->first();
-                            DB::table('catalog_images')->where('catalog_id',$prod_id->id)->delete();
-                            
-                            DB::table('catalog_images')->insert(['filename' => 'market.jpg', 'alt_text' => '', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $prod_id->id, 'sort_order' => 1, 'image_path' => '']);
-                            break;
-                        default:
-                            # code...
-                            break;
-                    }
+                            DB::table('catalog_images')->insert(['filename' => $categoryFilename, 'alt_text' => $altText, 'image_type' => $imageType, 'image_mode' => $imageMode, 'catalog_id' => $productId, 'sort_order' => $sortOrder, 'image_path' => $imagePath]);
+                        } // End check if 
+                    } // End j loop
 
                     $json_url = base_path() . "/merchants/" . $domainname . "/storeSetting.json";
                     $json = file_get_contents($json_url);
@@ -567,16 +716,66 @@ class HomeController extends Controller
                     $decodeVal['prefix'] = $prefix;
                     $decodeVal['country_code'] = $country_code;
 
-                    if (!empty($themeid)) {
-                        $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
-                        $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
-                        $decodeVal['themeid'] = $themeid;
-                        $decodeVal['themedata'] = $themedata;
-                        $decodeVal['currencyId'] = @HasCurrency::find($currency)->iso_code;
-                        $decodeVal['store_version'] = @$storeVersion;
-                        $newJsonString = json_encode($decodeVal);
-                    }
+                    if($storeType == 'merchant')
+                    {
+                        if (!empty($themeid)) {
+                            $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
+                            $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
+                            $decodeVal['themeid'] = $themeid;
+                            $decodeVal['themedata'] = $themedata;
+                            $decodeVal['currencyId'] = @HasCurrency::find($currency)->iso_code;
+                            $decodeVal['store_version'] = @$storeVersion;
+                            //$newJsonString = json_encode($decodeVal);
+                        }
+                        /*$fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
+                        fwrite($fp, $newJsonString);
+                        fclose($fp);*/
 
+                        if (!empty($catid)) {
+                            Helper::saveDefaultSet($catid, $prefix, $storeId);
+                        }
+                        $banner = json_decode((StoreTheme::where("id", $themeid)->first()->banner_image), true);
+                        // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
+                        if (!empty($banner)) {
+                            $homeLayout = DB::table("layout")->where('url_key', 'LIKE', 'home-page-slider')->where('store_id', $storeId)->first();
+                            foreach ($banner as $image) {
+                                $homePageSlider = [];
+                                $file = $image['banner'];
+                                $homePageSlider['layout_id'] = $homeLayout->id;
+                                $homePageSlider['name'] = $image['banner_text'];
+                                $homePageSlider['is_active'] = $image['banner_status'];
+                                $homePageSlider['image'] = $image['banner'];
+                                $homePageSlider['sort_order'] = $image['sort_order'];
+                                $source = public_path() . '/public/admin/themes/';
+                                $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                                copy($source . $file, $destination . $file);
+                                DB::table("has_layouts")->insert($homePageSlider);
+                            }
+                        }
+                        $threeBoxes = json_decode((Category::where("id", $catid)->first()->threebox_image), true);
+                        // $threeBoxes = json_decode((StoreTheme::where("id", $themeid)->first()->threebox_image), true);
+                        if (!empty($threeBoxes)) {
+                            $boxLayout = DB::table("layout")->where('url_key', 'LIKE', 'home-page-3-boxes')->where('store_id', $storeId)->first();
+                            foreach ($threeBoxes as $image) {
+                                $homePageSlider = [];
+                                $file = $image['banner'];
+                                $homePageSlider['layout_id'] = $boxLayout->id;
+                                $homePageSlider['name'] = $image['banner_text'];
+                                $homePageSlider['is_active'] = $image['banner_status'];
+                                $homePageSlider['image'] = $image['banner'];
+                                $homePageSlider['sort_order'] = $image['sort_order'];
+                                $source = public_path() . '/public/admin/themes/';
+                                $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                                copy($source . $file, $destination . $file);
+                                DB::table("has_layouts")->insert($homePageSlider);
+                            }
+                        }
+                    } // end storetype check if
+                    $newJsonString = json_encode($decodeVal);
+                        
+                    $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
+                    fwrite($fp, $newJsonString);
+                    fclose($fp);
                     if (!empty($currency)) {
                         $decodeVal['currency'] = $currency;
                         $decodeVal['currency_code'] = HasCurrency::find($currency)->iso_code;
@@ -596,10 +795,6 @@ class HomeController extends Controller
                     }
                     //End Email Setting Update
 
-                    $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
-                    fwrite($fp, $newJsonString);
-                    fclose($fp);
-
                     $adminRoleId = DB::table('roles')->where('store_id', $storeId)->where('name', 'LIKE', 'admin')->first(['id']);
                     DB::table("role_user")->insert(["user_id" => @$newuserid, "role_id" => $adminRoleId->id]);
                     //Check acl setting from general settings
@@ -615,45 +810,6 @@ class HomeController extends Controller
                         $insertPermission = DB::table("permission_role")->insert($permissions);
                     }
 
-                    if (!empty($catid)) {
-                        Helper::saveDefaultSet($catid, $prefix, $storeId);
-                    }
-                    $banner = json_decode((StoreTheme::where("id", $themeid)->first()->banner_image), true);
-                    // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
-                    if (!empty($banner)) {
-                        $homeLayout = DB::table("layout")->where('url_key', 'LIKE', 'home-page-slider')->where('store_id', $storeId)->first();
-                        foreach ($banner as $image) {
-                            $homePageSlider = [];
-                            $file = $image['banner'];
-                            $homePageSlider['layout_id'] = $homeLayout->id;
-                            $homePageSlider['name'] = $image['banner_text'];
-                            $homePageSlider['is_active'] = $image['banner_status'];
-                            $homePageSlider['image'] = $image['banner'];
-                            $homePageSlider['sort_order'] = $image['sort_order'];
-                            $source = public_path() . '/public/admin/themes/';
-                            $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                            copy($source . $file, $destination . $file);
-                            DB::table("has_layouts")->insert($homePageSlider);
-                        }
-                    }
-                    $threeBoxes = json_decode((Category::where("id", $catid)->first()->threebox_image), true);
-                    // $threeBoxes = json_decode((StoreTheme::where("id", $themeid)->first()->threebox_image), true);
-                    if (!empty($threeBoxes)) {
-                        $boxLayout = DB::table("layout")->where('url_key', 'LIKE', 'home-page-3-boxes')->where('store_id', $storeId)->first();
-                        foreach ($threeBoxes as $image) {
-                            $homePageSlider = [];
-                            $file = $image['banner'];
-                            $homePageSlider['layout_id'] = $boxLayout->id;
-                            $homePageSlider['name'] = $image['banner_text'];
-                            $homePageSlider['is_active'] = $image['banner_status'];
-                            $homePageSlider['image'] = $image['banner'];
-                            $homePageSlider['sort_order'] = $image['sort_order'];
-                            $source = public_path() . '/public/admin/themes/';
-                            $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                            copy($source . $file, $destination . $file);
-                            DB::table("has_layouts")->insert($homePageSlider);
-                        }
-                    }
                     if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
@@ -666,7 +822,10 @@ class HomeController extends Controller
                     $mailcontent .= "Kindly find the links to view your store:" . "\n";
 
                     $mailcontent .= "Store Admin Link: https://" . $domainname . '.' . $domain . "/admin" . "\n";
-                    $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
+                    if($storeType == 'merchant')
+                    {
+                        $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
+                    }
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
@@ -858,22 +1017,39 @@ class HomeController extends Controller
     public function checkExistingUser()
     {
         //echo Input::get('email');
-        //    dd("dsf");
-        $chkEmail = Merchant::where("email", Input::get('email'))->first();
-        //  dd($chkEmail);
-
-        if (isset($chkEmail) && count($chkEmail) > 0) {
+        //dd("dsf >> ".Input::get('storeType'));
+        $storeType = Input::get('storeType'); // merchant/ distributor
+        
+        if($storeType == 'merchant')
+        {
+            $chkEmail = Merchant::where("email", Input::get('email'))->first();
+        } // End if
+        else
+        {
+            $chkEmail = Vendor::where("email", Input::get('email'))->first();
+        } // End else
+        
+        if (isset($chkEmail) && !empty($chkEmail)) 
+        {
             return 1;
         } else {
             return 0;
         }
-
     }
 
     public function checkExistingphone()
     {
-        $chkEmail = Merchant::where("phone", Input::get('phone_no'))->first();
-        if (isset($chkEmail) && count($chkEmail) > 0) {
+        $storeType = Input::get('storeType'); // merchant/ distributor
+        if($storeType == 'merchant')
+        {
+            $chkPhoneNo = Merchant::where("phone", Input::get('phone'))->first();
+        } // End if
+        else
+        {
+            $chkPhoneNo = Vendor::where("phone_no", Input::get('phone_no'))->first();
+        } // End else
+
+        if (isset($chkPhoneNo) && !empty($chkPhoneNo)) {
             return 1;
         } else {
             return 0;

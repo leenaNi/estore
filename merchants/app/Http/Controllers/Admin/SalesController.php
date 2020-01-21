@@ -114,10 +114,16 @@ class SalesController extends Controller {
     public function categories() {
        $storeId=$this->jsonString['store_id'];
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
-        $search_fields = ['category', 'short_desc', 'long_desc'];
-        $categories = Category::orderBy('category')->where("status",1);
-
-        $categories = $categories->with('children')->where('is_nav',1)->where(function($query) use($search_fields, $search) {
+        $search_fields = ['short_desc', 'long_desc'];
+        // $categories = Category::orderBy('category')->where("status",1);
+        $categories = Category::where("status",1);
+        $categories = $categories->with(['children', 'categoryName' => function($query) use($search) {
+            $query->orderBy('category');
+            if($search!=''){
+                $query->orWhere('category', "like", "%$search%");
+            }
+        }])->where('is_nav',1)
+        ->where(function($query) use($search_fields, $search) {
          // where("status", '1')->where('id', 1)->with('children.cat_tax')
             foreach ($search_fields as $field) {
                 $query->orWhere($field, "like", "%$search%");

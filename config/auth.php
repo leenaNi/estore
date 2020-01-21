@@ -52,7 +52,10 @@ return [
         ],'merchant-users-web-guard' => [
             'driver' => 'session',
             'provider' => 'merchants',
-        ],
+        ],'distributor-users-web-guard' => [
+            'driver' => 'session',
+            'provider' => 'distributors',
+        ]
         
         
     ],
@@ -88,6 +91,10 @@ return [
         'merchants' => [
             'driver' => 'eloquent',
             'model' => App\Models\Merchant::class,
+        ],
+        'distributors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Vendor::class,
         ]
     ],
     /*

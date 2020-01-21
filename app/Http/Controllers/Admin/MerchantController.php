@@ -43,7 +43,7 @@ class MerchantController extends Controller {
             $merchants = Merchant::orderBy('id', 'desc')->where("id", Session::get('authUserId'));
         }
 
-
+        
         $search = Input::get('search');
         if (!empty($search)) {
 

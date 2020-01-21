@@ -368,7 +368,7 @@ class ApiCreateStoreController extends Controller {
                         $currVal = @HasCurrency::find($currency);
                         if (!empty($currVal)) {
                             $currJson = json_encode(['name' => $currVal->name, 'iso_code' => $currVal->iso_code]);
-                            DB::table($prefix . "_general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0]);
+                            DB::table("general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0]);
                         }
                     }
     //Update Email Setting for mandrill and SMTP
@@ -376,7 +376,7 @@ class ApiCreateStoreController extends Controller {
                     foreach ($emailSett as $email) {
                         $emaildetails = json_decode(DB::table($prefix . "_general_setting")->where('url_key', $email)->first()->details);
                         $emaildetails->name = $storeName;
-                        DB::table($prefix . "_general_setting")->where('url_key', $email)->update(["details" => json_encode($emaildetails)]);
+                        DB::table("general_setting")->where('url_key', $email)->update(["details" => json_encode($emaildetails)]);
                     }
                     //End Email Setting Update
                     $fp = fopen( base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
@@ -384,20 +384,20 @@ class ApiCreateStoreController extends Controller {
                     fclose($fp);
 
 
-                    DB::table($prefix . "_role_user")->insert([
+                    DB::table("role_user")->insert([
                         ["user_id" => @$newuserid, "role_id" => "1"]
                     ]);
                     //Check acl setting from general settings
-                    $chkAcl = DB::table($prefix . "_general_setting")->where('url_key', 'acl')->select("status")->first();
+                    $chkAcl = DB::table("general_setting")->where('url_key', 'acl')->select("status")->first();
 
                     if ($chkAcl->status == '1') {
-                        $allPermissions = DB::table($prefix . "_permissions")->select("id")->get();
+                        $allPermissions = DB::table("permissions")->select("id")->get();
                         $permissions = [];
                         foreach ($allPermissions as $key => $ap) {
                             $permissions[$key]['permission_id'] = $ap->id;
                             $permissions[$key]['role_id'] = 1;
                         }
-                        $insertPermission = DB::table($prefix . "_permission_role")->insert($permissions);
+                        $insertPermission = DB::table("permission_role")->insert($permissions);
                     }
 
                     if (!empty($catid)) {
@@ -417,7 +417,7 @@ class ApiCreateStoreController extends Controller {
                         $source = public_path() . '/public/admin/themes/';
                         $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
                         copy($source . $file, $destination . $file);
-                        DB::table($prefix . "_has_layouts")->insert($homePageSlider);
+                        DB::table("has_layouts")->insert($homePageSlider);
                     }
                     }
                     $threeBoxes = json_decode((Category::where("id", $catid)->first()->threebox_image), true);
@@ -435,7 +435,7 @@ class ApiCreateStoreController extends Controller {
                         $source = public_path() . '/public/admin/themes/';
                         $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
                         copy($source . $file, $destination . $file);
-                        DB::table($prefix . "_has_layouts")->insert($homePageSlider);
+                        DB::table("has_layouts")->insert($homePageSlider);
                     }
                     }
                   if ($phone) {

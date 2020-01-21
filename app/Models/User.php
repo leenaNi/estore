@@ -32,4 +32,8 @@ class User extends Authenticatable
     public function userCashback() {
         return $this->hasOne('App\Models\HasCashbackLoyalty', 'user_id');
     }
+
+    public function store(){
+        return $this->belongsTo('App\Models\Store', 'store_id');
+    }
 }
