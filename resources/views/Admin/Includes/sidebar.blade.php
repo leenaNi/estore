@@ -122,6 +122,7 @@
                                'admin.category'
                             ]) ? 'menu-open' : '' }}">
                     <li class="{{ in_array(Route::currentRouteName(),['admin.category.view','admin.category.addEdit'])?'active':'' }}"><a href="{{ route('admin.category.view') }}"><i class="fa fa-circle-o"></i>General Categories</a></li>
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.category.categoriesRequested'])?'active':'' }}"><a href="{{ route('admin.category.categoriesRequested') }}"><i class="fa fa-circle-o"></i>Requested New Categories</a></li>
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.category.view','admin.masters.category.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.category.view') }}"><i class="fa fa-circle-o"></i>Store Categories</a></li>
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.language.view','admin.masters.language.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.language.view') }}"><i class="fa fa-circle-o"></i>Language</a></li>
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.translation.view'])?'active':'' }}"><a href="{{ route('admin.masters.translation.view') }}"><i class="fa fa-circle-o"></i>Translation</a></li>

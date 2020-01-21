@@ -18,7 +18,7 @@
                 <div class="box-header">
                     <div class="row">
                         <div class="col-md-10">
-                        <div class="row"> 
+                        <div class="row">
                             {{ Form::open(['method'=>'get']) }}
                             {{ Form::hidden('search',1) }}
                             <div class="col-md-3">
@@ -36,12 +36,12 @@
                             </div>
                             {{ Form::close() }}
                             </div>
-                        </div> 
-                        <div class="col-md-2 text-right"> 
+                        </div>
+                        <!-- <div class="col-md-2 text-right">
                             {!! Form::open(['route'=>'admin.masters.category.addEdit','method'=>'post']) !!}
                             {!! Form::submit('Add New Category',['class'=>'btn btn-info']) !!}
                             {!! Form::close() !!}
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -49,8 +49,8 @@
                     <table class="table table-hover">
                         <tr>
                             <th>Category</th>
-                            <th>Parent Category</th>  
-                            <th>Requested By</th>                         
+                            <th>Parent Category</th>
+                            <th>Requested By</th>
                             <th>Created On</th>
                             <th>Action</th>
                         </tr>
@@ -69,10 +69,10 @@
                     </table>
 
                     <?php
-                    $arguments = [];
-                    !empty(Input::get('s_category')) ? $arguments['s_category'] = Input::get('s_category') : '';
-                    !empty(Input::get('date_search')) ? $arguments['date_search'] = Input::get('date_search') : '';
-                    ?>
+$arguments = [];
+!empty(Input::get('s_category')) ? $arguments['s_category'] = Input::get('s_category') : '';
+!empty(Input::get('date_search')) ? $arguments['date_search'] = Input::get('date_search') : '';
+?>
                     <div class="pull-right">
                          {{ $categories->appends($arguments)->links() }}
                     </div>

@@ -46,7 +46,7 @@
                                         {{Form::select('status',[''=>'Please Select','1'=>'Enabled','0'=>'Disabled'],null ,['class'=>'form-control']) }}
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group hide">
                                     {{ Form::label('Master Categories *', 'Master Categories  *', ['class' => 'col-sm-3 control-label']) }}
                                     <span class="lable btn getHelp label-info" data-h='[  "Starters",  "Main Course",  "Desserts",  "Beverages"  "Soft Drinks",  "Pizza",  "Salad",  "Soups",  "Others"]'>Help</span>
                                     <div class="col-sm-6 col-xs-12">
