@@ -98,7 +98,7 @@ class ProductController extends Controller {
         $CustomerReviews = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->orderBy('id','desc')->take(2)->get();
         $totalRatings = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->sum('rating');
         // return $product;
-        $product->prodImage = @Config('constants.productImgPath') .'/'. $product->catalogimgs()->first()->filename;
+        $product->prodImage = @Config('constants.productImgPath') .'/'. @$product->catalogimgs()->first()->filename;
         if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
             $product->wishlist = 1;
         } else {

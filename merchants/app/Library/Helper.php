@@ -77,7 +77,7 @@ class Helper {
 
     public static function getmenu($node) {
         echo "<li>";
-        echo "<a href=" . route('category', ['slug' => $node->url_key]) . ">{$node->category}</a>";
+        echo "<a href=" . route('category', ['slug' => $node->url_key]) . ">{$node->categoryName->category}</a>";
         if ($node->children()->count() > 0) {
             echo "<ul>";
             foreach ($node->children as $child)
@@ -620,7 +620,8 @@ class Helper {
                 else
                     $urlkey = route('category', ['slug' => $datab->url_key]);
                 $breadcrumbs .="<li>";
-                $breadcrumbs .= "<a href='" . $urlkey . "'>" . $datab->category . " </a>";
+                $catName = DB::table('categories')->where('id', $datab->category_id)->select('category')->first();
+                $breadcrumbs .= "<a href='" . $urlkey . "'>" . $catName->category . " </a>";
                 $breadcrumbs .="</li>";
             }
             //return substr($breadcrumbs, 0, -1);

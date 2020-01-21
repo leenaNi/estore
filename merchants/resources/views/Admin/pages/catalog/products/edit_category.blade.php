@@ -29,7 +29,7 @@
                     {!! Form::hidden('id',null) !!}
                     <div class="line line-dashed b-b line-lg pull-in"></div>
                     <div class="col-sm-3 pull-right">           
-                        <a href="{!! route('admin.category.add') !!}?new_prod_cat={!! $prod->id !!}" class="btn btn-default pull-right" target="_" type="button">Add New Category</a>      
+                        <!-- <a href="{!! route('admin.category.add') !!}?new_prod_cat={!! $prod->id !!}" class="btn btn-default pull-right" target="_" type="button">Add New Category</a>       -->
                     </div>
                     <div class="col-sm-10">
                         {!! Form::label('category_id', 'Select Product Category') !!}
@@ -45,7 +45,7 @@
                             echo "<li class='tree-item fl_left ps_relative_li " . ($node->parent_id == '' ? 'parent' : '') . "'>";
                             $style=(App\Library\Helper::searchForKey("id", $node->id, $prodCats) ? 'checkbox-highlight' : '');
                             echo '<div class="checkbox">
-                                <label class='.$style.' class="i-checks checks-sm"><input type="checkbox"  name="category_id[]" value="' . $node->id . '"  ' . (App\Library\Helper::searchForKey("id", $node->id, $prodCats) ? 'checked' : '') . '  /> <i></i>' . $node->category . '</label>
+                                <label class='.$style.' class="i-checks checks-sm"><input type="checkbox"  name="category_id[]" value="' . $node->id . '"  ' . (App\Library\Helper::searchForKey("id", $node->id, $prodCats) ? 'checked' : '') . '  /> <i></i>' . $node->categoryName->category . '</label>
                               </div>';
                             if ($node->adminChildren()->count() > 0) {
                                 echo "<ul class='fl_left treemap'>";

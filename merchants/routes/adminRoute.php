@@ -45,6 +45,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::any('/change-status', ['as' => 'admin.category.changeStatus', 'uses' => 'CategoryController@changeStatus']);
                 Route::any('/category-img-delete', ['as' => 'admin.category.catImgDelete', 'uses' => 'CategoryController@catImgDelete']);
                 Route::any('/size-chart', ['as' => 'admin.category.sizeChart', 'uses' => 'CategoryController@sizeChart']);
+                Route::post('/request-new-category', ['as' => 'admin.category.newCategory', 'uses' => 'CategoryController@newCategory']);
             });
 
             Route::group(['prefix' => 'reviews', 'middlewareGroups' => ['web']], function () {

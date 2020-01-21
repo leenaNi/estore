@@ -111,13 +111,13 @@ class CategoriesController extends Controller {
         $catChild = [];
 
 
-        $catChild = @Category::where('parent_id', $cat->id)->where('status', 1)->where('is_nav', 1)->select('id', 'category', 'url_key')->get();
+        $catChild = @Category::where('parent_id', $cat->id)->where('status', 1)->where('is_nav', 1)->select('id', 'url_key')->get();
         //tej code
         //  dd($catChild);
         if (!empty($cat)) {
-            $metaTitle = @$cat->meta_title == "" ? @$cat->category . " | Cartini " : @$cat->meta_title;
-            $metaDesc = @$cat->meta_desc == "" ? @$cat->category : @$cat->meta_desc;
-            $metaKeys = @$cat->meta_keys == "" ? @$cat->category : @$cat->meta_keys;
+            $metaTitle = @$cat->meta_title == "" ? @$cat->categoryName->category . " | Cartini " : @$cat->meta_title;
+            $metaDesc = @$cat->meta_desc == "" ? @$cat->categoryName->category : @$cat->meta_desc;
+            $metaKeys = @$cat->meta_keys == "" ? @$cat->categoryName->category : @$cat->meta_keys;
             $allCats = @$cat->getDescendantsAndSelf();
             $cats = [];
             foreach ($allCats as $catz) {
@@ -147,11 +147,11 @@ class CategoriesController extends Controller {
 //
 //        }
         
-        $prods = $prods->where(function($query) {
-            if (!empty(Input::get('tags'))) {
-                $query->withAnyTag(Input::get('tags'));
-            }
-        });
+        // $prods = $prods->where(function($query) {
+        //     if (!empty(Input::get('tags'))) {
+        //         $query->withAnyTag(Input::get('tags'));
+        //     }
+        // });
 
         if (!empty(Input::get('searchTerm'))) {
             $search = Input::get('searchTerm');

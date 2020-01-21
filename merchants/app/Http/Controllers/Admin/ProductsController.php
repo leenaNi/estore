@@ -61,11 +61,15 @@ class ProductsController extends Controller
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
 
-        $categoryA = Category::get(['id', 'category'])->toArray();
-        $rootsS = Category::roots()->where("status", 1)->get();
+        // $categoryA = Category::get(['id', 'category'])->toArray();
+        $categoryA = DB::table('store_categories')
+                    ->leftJoin('categories', 'categories.id', '=', 'store_categories.category_id')
+                    ->get(['store_categories.id', 'categories.category'])
+                    ->toArray();
+        $rootsS = Category::roots()->with('categoryName')->where("status", 1)->get();
         $category = [];
         foreach ($categoryA as $val) {
-            $category[$val['id']] = $val['category'];
+            $category[$val->id] = $val->category;
         }
         $userA = User::get(['id', 'firstname', 'lastname'])->toArray();
         $user = [];
@@ -149,7 +153,6 @@ class ProductsController extends Controller
     public function add()
     {
         $has_attr = DB::table('has_attributes')->select('attr_set')->groupBy('attr_set')->get();
-
         $attr_has = [];
         foreach ($has_attr as $ah) {
             $attr_has[] = $ah->attr_set;
