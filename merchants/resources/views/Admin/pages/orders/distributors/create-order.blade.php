@@ -546,32 +546,34 @@
                 data: $(".custInfo").serialize(),
                 cache: false,
                 success: function (data) {
-                    $(".fa-spinner").hide();
-                    $("input[name='user_id']").val(data.id);
-                    $("input[name='firstname']").val(data.firstname);
-                    $("input[name='lastname']").val(data.lastname);
-                    $("input[name='phone_no']").val(data.telephone);
-                    $(".curRewPointsOld").text(data.cashback);
-                    $("input[name='cashback_hidden']").val(data.cashback);
-                    address = data.addresses;
-                    addDiv = "";
-                    $.each(address, function (addk, addv) {
-                        addData = JSON.stringify(addv);
-                        addDiv += "<div class='col-md-6'><div class='box addressColumn paddingAll10'>";
-                        addDiv += "<input data-add='" + addv.id + "' id='opt_" + addv.id + "'  class='addRadio pull-left marginright10' type='radio' value='" + addv.id + "' name='addRedioBut' >";
-                        addDiv += "<div data-adddiv='" + addv.id + "' class='appendedAddDiv'  style='cursor:pointer;'><p>" + addv.firstname + " " + addv.lastname + "</p>";
-                        addDiv += "<p>" + addv.address1 + " " + addv.address2 + " " + addv.address3 + "</p>";
-                        addDiv += "<p>" + addv.city + " - " + addv.postcode + "</p>";
-                        addDiv += "<p>" + addv.statename + "</p>";
-                        addDiv += "<p>" + addv.countryname + "</p>";
-                        addDiv += "<p> Contact Number: " + addv.phone_no + "</p>";
-                        addDiv += "</div></div></div>";
-                    });
-                    $(".addressDiv").html(addDiv);
-                    $("input[type='radio']:first").trigger('click');
-                    $('.nav-tabs a[href="#shipping-address"]').tab('show')
-                    $('.nav-tabs a[href="#customer-details"]').removeAttr('data-toggle');
-                    $('.nav-tabs a[href="#product-details"]').removeAttr('data-toggle');
+                    if(data) {
+                        $(".fa-spinner").hide();
+                        $("input[name='user_id']").val(data.id);
+                        $("input[name='firstname']").val(data.firstname);
+                        $("input[name='lastname']").val(data.lastname);
+                        $("input[name='phone_no']").val(data.telephone);
+                        $(".curRewPointsOld").text(data.cashback);
+                        $("input[name='cashback_hidden']").val(data.cashback);
+                        address = data.addresses;
+                        addDiv = "";
+                        $.each(address, function (addk, addv) {
+                            addData = JSON.stringify(addv);
+                            addDiv += "<div class='col-md-6'><div class='box addressColumn paddingAll10'>";
+                            addDiv += "<input data-add='" + addv.id + "' id='opt_" + addv.id + "'  class='addRadio pull-left marginright10' type='radio' value='" + addv.id + "' name='addRedioBut' >";
+                            addDiv += "<div data-adddiv='" + addv.id + "' class='appendedAddDiv'  style='cursor:pointer;'><p>" + addv.firstname + " " + addv.lastname + "</p>";
+                            addDiv += "<p>" + addv.address1 + " " + addv.address2 + " " + addv.address3 + "</p>";
+                            addDiv += "<p>" + addv.city + " - " + addv.postcode + "</p>";
+                            addDiv += "<p>" + addv.statename + "</p>";
+                            addDiv += "<p>" + addv.countryname + "</p>";
+                            addDiv += "<p> Contact Number: " + addv.phone_no + "</p>";
+                            addDiv += "</div></div></div>";
+                        });
+                        $(".addressDiv").html(addDiv);
+                        $("input[type='radio']:first").trigger('click');
+                        $('.nav-tabs a[href="#shipping-address"]').tab('show')
+                        $('.nav-tabs a[href="#customer-details"]').removeAttr('data-toggle');
+                        $('.nav-tabs a[href="#product-details"]').removeAttr('data-toggle');
+                    }
                 }
             });
         } else {
