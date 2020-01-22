@@ -77,13 +77,21 @@ class PagesController extends Controller {
 
         $totalOrders = Order::where("orders.store_id", $jsonString['store_id'])->count();
 
-        $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->limit(5)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+        $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->limit(5)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', 'sub_prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
         foreach ($topProducts as $prd) {
 //            $mallProd = DB::connection('mysql2')->table('mall_products')->where('id', $prd->prod_id)->first();
-            $prod = Product::find($prd->prod_id);
+            
+            if($prd->prod_id == $prd->sub_prod_id || $prd->sub_prod_id=='')
+            {
+                $prod = Product::find($prd->prod_id);
+            }else{
+                $prod = Product::find($prd->sub_prod_id);
+            }
+            $parentprod = Product::find($prd->prod_id);
             $prd->product = $prod;
             if (!empty($prod)) {
-                $catImg = $prod->catalogimgs()->where("image_mode", 1)->first();
+                $prd->product->selling_price = $parentprod->selling_price + $prod->price;
+                $catImg = $parentprod->catalogimgs()->where("image_mode", 1)->first();
                 if ($catImg) {
                     $prd->product->prodImage = (Config('constants.productImgPath') . '/' . $catImg->filename);
                 } else {
