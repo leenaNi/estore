@@ -1,4 +1,4 @@
-@extends('Admin.layouts.default')
+@extends('Admin.Layouts.default')
 @section('contents')
 <style type="text/css">
     input[type=checkbox]{display:none;}
