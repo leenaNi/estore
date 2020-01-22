@@ -196,9 +196,9 @@ class Helper
                 $i++;
                 $catsave[$ck]['rgt'] = $i;
                 $catsave[$ck]['depth'] = 0;
+                $catsave[$ck]['parent_id'] = $cv->parent_id;
                 $catsave[$ck]['store_id'] = $storeId;
                 $catsave[$ck]['created_at'] = date('Y-m-d H:i:s');
-
             }
             $addedcats = DB::table('store_categories')->insert($catsave);
         }
