@@ -61,7 +61,7 @@
                             <td>{{ $category->requestedBy->store->store_name }}</td>
                             <td>{{ date('d-M-Y',strtotime($category->created_at)) }}</td>
                             <td>
-                                <a href="{{ route('admin.category.approve') }}?id={{$category->id }}" class="btn btn-success btn-xs">Add</a>
+                                <a href="{{ route('admin.category.approve') }}?id={{@$category->id }}" class="btn btn-success btn-xs">Add</a>
                                 <!-- <a href="#" class="btn btn-warning btn-xs changeStatus" data-catid="{{$category->id }}" data-catstatus="{{$category->status }}" title="{{ ($category->status == 1)?'Disable':'Enable'}}" >{{ ($category->status == 1)?'Enabled':'Disabled' }}</a> -->
                             </td>
                         </tr>
@@ -70,11 +70,11 @@
 
                     <?php
 $arguments = [];
-!empty(Input::get('s_category')) ? $arguments['s_category'] = Input::get('s_category') : '';
-!empty(Input::get('date_search')) ? $arguments['date_search'] = Input::get('date_search') : '';
+!empty(Input::get('s_category')) ? @$arguments['s_category'] = @Input::get('s_category') : '';
+!empty(Input::get('date_search')) ? @$arguments['date_search'] = @Input::get('date_search') : '';
 ?>
                     <div class="pull-right">
-                         {{ $categories->appends($arguments)->links() }}
+                         {{ @$categories->appends($arguments)->links() }}
                     </div>
                 </div>
                 <!-- /.box-body -->
