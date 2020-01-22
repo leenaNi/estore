@@ -6,8 +6,13 @@
         </div>
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
-            <li class="{{ Route::currentRouteName() == 'admin.vendors.dashboard' ? 'active' : '' }}">
+            <!-- <li class="{{ Route::currentRouteName() == 'admin.vendors.dashboard' ? 'active' : '' }}">
                 <a href="{{ route('admin.vendors.dashboard') }}">
+                    <i class="fa fa-bar-chart"></i><span>Dashboard</span> <i class=""></i>
+                </a>
+            </li> -->
+            <li class="{{ Route::currentRouteName() == 'admin.dashboard' ? 'active' : '' }}">
+                <a href="{{ route('admin.dashboard') }}">
                     <i class="fa fa-bar-chart"></i><span>Dashboard</span> <i class=""></i>
                 </a>
             </li>
