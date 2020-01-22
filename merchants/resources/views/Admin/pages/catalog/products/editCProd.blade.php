@@ -3,7 +3,7 @@
 
 <section class="content-header">
     <h1>
-        Products fdsfasf
+        Products
 
     </h1>
     <ol class="breadcrumb">
@@ -39,7 +39,7 @@
                                 </div>
                                 @endforeach
                                 <div class="col-md-2">
-                                    {!! Form::label('price', 'Extra Price',['class'=>'control-label']) !!}
+                                    {!! Form::label('price', 'Price',['class'=>'control-label']) !!}
                                     {!! Form::text("price[]",0,["class"=>"form-control priceConvertTextBox"]) !!}
                                 </div>
 

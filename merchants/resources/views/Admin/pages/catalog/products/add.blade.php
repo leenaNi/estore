@@ -26,22 +26,15 @@
                <div class="box-2">
                   <div class="result-product" style="height: 200px"></div>
               </div>
-              <!--  <div class="options-product hide"> </div> -->
             </div>
         </div>
-        <!-- <div class="img-box">
-             <img id="blah" src="#" alt="your image" class="hide" />
-         </div> -->
+       
     </div>
 <div class="clearfix"></div>
     <div class="form-group col-md-6">
         <label class="control-label">Product Type <span class="red-astrik"> *</span></label>
           {!! Form::select('prod_type',$prod_types,null,["class"=>'form-control prod_type validate[required]']) !!}
-<!--            <select class="form-control">
-            <option value="1">Simple</option>
-            <option value="3">Configurable</option>
-            <option value="5">Downloadable Product</option>
-        </select>-->
+
     </div>
 
     <div class="form-group  col-md-6">
@@ -54,19 +47,19 @@
             {!! Form::select('attr_set',$attr_sets,null,["class"=>'form-control validate[required]']) !!}
 
     </div>
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-6" id="listingprice">
         <label class="control-label">MRP/Listing Price </label> <span class="red-astrik">*</span>
           {!! Form::number('price',null, ["class"=>'form-control priceConvertTextBox validate[required]','min'=>0 ,"placeholder"=>'Enter Mrp Price']) !!}
 
     </div>
 
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-6" id="sellprice">
         <label class="control-label">Selling Price </label>
         {!! Form::number('selling_price',null, ["class"=>'form-control priceConvertTextBox','min'=>0 ,"placeholder"=>'Enter Selling Price']) !!}
 
     </div>
  @if($settingStatus['stock'] == 1)
- <div class="form-group col-md-6 stockcheck">
+ <div class="form-group col-md-6 stockcheck" id="prodstock">
         <label class="control-label">Stock </label>
         {!! Form::number('stock',null, ["class"=>'form-control validate[required]','min'=>0 ,"placeholder"=>'Enter stock']) !!}
 

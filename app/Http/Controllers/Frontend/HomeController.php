@@ -404,7 +404,7 @@ class HomeController extends Controller
         //print_r($getMerchat);exit;
         $registerDetails = json_decode($getMerchat->register_details);
         $store = new Store();
-        $store->store_name = $registerDetails->store_name;
+        $store->store_name = Session::get('storename'); // $registerDetails->store_name;
         $store->url_key = $domainname;
         $store->store_type = $storeType; // merchant/distributor
         $store->merchant_id = $getMerchat->id;
@@ -669,14 +669,10 @@ class HomeController extends Controller
                     //                    $password = Hash::make($randno);
                     $newuserid = DB::table("users")->insertGetId($insertArr);
 
-                    //dd("before switch case function storeid >> $storeId :: cat >> $catid");
-
                     // This json(product_category_json) file contain category id wise product and category data(static) 
-                    $jsonDataFromFile = File::get(public_path()."\public\product_category_json.json");
+                    $jsonDataFromFile = File::get(public_path()."/public/product_category_json.json");
                     $decodedJsonData = json_decode(trim($jsonDataFromFile),true);
-                    DB::table('catalog_images')->delete();
-                    //print_r($insertedProductIdArray);
-                    //print_r($catid);
+                    
                     for($j = 0 ; $j < count($insertedProductIdArray); $j++)
                     {
                         $categoryId = $catid[$j];
@@ -708,7 +704,7 @@ class HomeController extends Controller
                             DB::table('products')->where([['store_id',$storeId],['id',$productId]])->update(
                                 ['product' => $productName, 'url_key' => $urlKey, 'prod_type' => $prodType, 'stock' => $stock, 'cur' => $cur, 'max_price' => $maxPrice, 'min_price' => $minPrice, 'purchase_price' => $purchasePrice, 'price' => $price, 'spl_price' => $splPrice, 'selling_price' => $sellingPrice]
                             );
-                            
+                            DB::table('catalog_images')->where('catalog_id',$productId)->delete();
                             DB::table('catalog_images')->insert(['filename' => $categoryFilename, 'alt_text' => $altText, 'image_type' => $imageType, 'image_mode' => $imageMode, 'catalog_id' => $productId, 'sort_order' => $sortOrder, 'image_path' => $imagePath]);
                         } // End check if 
                     } // End j loop
