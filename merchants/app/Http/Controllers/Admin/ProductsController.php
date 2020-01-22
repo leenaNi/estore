@@ -52,12 +52,6 @@ class ProductsController extends Controller
 
     public function index()
     {
-        //\Artisan::call("cache:clear");
-        //dd(Config('constants.productImgPath'));
-        //        $products = Product::find(3);
-        //          $products->is_share_on_mall=1;
-        //          $products->save();
-        //dd($products);
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
 
@@ -241,8 +235,6 @@ class ProductsController extends Controller
             }
         }
 
-        //dd($prod);
-        // Session::flash("msg","Product Added succesfully.");
         $prod->store_id = Session::get('store_id');
         $prod->update();
         if ($prod->prod_type != 3) {

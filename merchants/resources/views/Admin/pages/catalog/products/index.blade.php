@@ -161,15 +161,10 @@ function renderNode1($node, $dash)
                         <thead>
                             <tr>
                                 @if($barcode == 1)   <th><input type="checkbox" id="masterCheck" value="00"/></th>  @endif
-<!--                                <th>@sortablelink ('id', 'Sr No')</th>-->
-
                                 <th>@sortablelink ('product', 'Product')</th>
-                                <!-- <th>@sortablelink ('product_code', 'SKU')</th> -->
                                 <th>Categories</th>
-                                <th><?php //echo !empty(Session::get('currency_symbol')) ? "(".Session::get('currency_symbol').")" : '';                ?>@sortablelink ('price', 'Price') </th>
-                                <!-- <th>@sortablelink ('spl_price', 'Special Price')</th> -->
+                                <th>@sortablelink ('price', 'Price') </th>
                                 <th>Product Type</th>
-                               <!-- <th>Availability</th> -->
                                 @if($settingStatus['stock'] == 1)
                                 <th>Stock</th>
                                 @endif
@@ -185,8 +180,6 @@ function renderNode1($node, $dash)
                             <tr> @if($barcode == 1)  <td>
                                     <input type="checkbox" class="singleCheck" name="singleCheck[]" value="{{ $product->id }}-{{ $product->prod_type }}"/></td>
                                 @endif
-
-<!--                                <td>{{$product->id }}</td>-->
                                 <td>
                                     <div class="product-name vMiddle">
                                         <span>
@@ -202,16 +195,16 @@ function renderNode1($node, $dash)
                                         </span>
                                     </div>
                                 </td>
-                                <!-- <td>{{$product->product_code }}</td> -->
+                            
                                 <td>
                                     <?php
                                     $prodCategories = $product->categories()->get();
-if ($prodCategories->count() > 0) {
-    echo $prodCategories[0]->categoryName->category;
-} else {
-    echo '-';
-}
-?>
+                                    if ($prodCategories->count() > 0) {
+                                        echo $prodCategories[0]->categoryName->category;
+                                    } else {
+                                        echo '-';
+                                    }
+                                    ?>
                                 </td>
                                 <td>
 
@@ -225,8 +218,7 @@ if ($prodCategories->count() > 0) {
                         @endif
                         </td>
                         <td> {{ $product->producttype->type }}</td>
-                        <!-- <td><i class="fa fa-rupee"></i> {{$product->spl_price }}</td> -->
-                        <!-- <td>{{ $product->is_avail ? 'Yes' : 'No'   }}</td> -->
+                       
                         @if($settingStatus['stock'] == 1)
                         <td>{{ $product->stock }}</td>
                         @endif
@@ -663,8 +655,14 @@ if (empty(Input::get('prdSearch'))) {
                                         var prod_type = $('.prod_type').val();
                                         if (prod_type == 3) {
                                             $('#attribute').removeClass("hide");
+                                            $('#listingprice').addClass("hide");
+                                            $('#sellprice').addClass("hide");
+                                            $('#prodstock').addClass("hide");
                                         } else if (prod_type == 1 || prod_type == 2 || prod_type == 5) {
                                             $('#attribute').addClass("hide");
+                                            $('#listingprice').removeClass("hide");
+                                            $('#sellprice').removeClass("hide");
+                                            $('#prodstock').removeClass("hide");
                                         }
                                     });
                                     $(".bulkuploadprod").click(function () {
