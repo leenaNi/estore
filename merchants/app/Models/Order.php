@@ -117,7 +117,7 @@ class Order extends Model {
     return $this->belongsTo('App\Models\Coupon', 'coupon_used');
     }
     public function store() {
-    return $this->belongsTo('App\Models\store', 'store_id');
+    return $this->belongsTo('App\Models\Store', 'store_id');
     }
     public function distributorOrderstatus() {
         return $this->belongsTo("App\Models\DistributorOrderStatus", "order_status");
