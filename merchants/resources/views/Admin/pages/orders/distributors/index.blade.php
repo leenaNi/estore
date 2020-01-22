@@ -187,8 +187,7 @@
                                 <td>{{ @$order->store->store_name }}</td>
                                 <td>
                                     @foreach($order->categories as $orderCategory)
-                                    {{$orderCategory->category}} {{($loop->last)? '': '\r\n'}}
-                                    @endforeach
+                                    {{$orderCategory->category}} @if(!$loop->last) <br/>                                    @endforeach
                                 </td>
                                 <td>{{ @$order->distributorOrderstatus['order_status'] }}</td>
                                 <td>{{ @$order->paymentstatus['payment_status'] }}</td>
