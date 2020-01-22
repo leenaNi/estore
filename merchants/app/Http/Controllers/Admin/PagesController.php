@@ -36,7 +36,7 @@ class PagesController extends Controller {
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
         ->sum('pay_amt');
 
-        $weeklySales = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
+        $weeklySales = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
         ->sum('pay_amt');
 
@@ -45,11 +45,11 @@ class PagesController extends Controller {
         $weeklySaleschart = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id',$this->jsonString['store_id'])->get();
         //dd($weeklySaleschart);
-        $monthlySales = HasProducts::whereRaw("MONTH(created_at) = '" . date('m') . "'")
+        $monthlySales = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
         ->sum('pay_amt');
 
-        $yearlySales = HasProducts::whereRaw("YEAR(created_at) = '" . date('Y') . "'")
+        $yearlySales = Order::whereRaw("YEAR(created_at) = '" . date('Y') . "'")
         ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
         ->sum('pay_amt');
 
@@ -77,13 +77,21 @@ class PagesController extends Controller {
 
         $totalOrders = Order::where("orders.store_id", $jsonString['store_id'])->count();
 
-        $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->limit(5)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+        $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->limit(5)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', 'sub_prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
         foreach ($topProducts as $prd) {
 //            $mallProd = DB::connection('mysql2')->table('mall_products')->where('id', $prd->prod_id)->first();
-            $prod = Product::find($prd->prod_id);
+            
+            if($prd->prod_id == $prd->sub_prod_id || $prd->sub_prod_id=='')
+            {
+                $prod = Product::find($prd->prod_id);
+            }else{
+                $prod = Product::find($prd->sub_prod_id);
+            }
+            $parentprod = Product::find($prd->prod_id);
             $prd->product = $prod;
             if (!empty($prod)) {
-                $catImg = $prod->catalogimgs()->where("image_mode", 1)->first();
+                $prd->product->selling_price = $parentprod->selling_price + $prod->price;
+                $catImg = $parentprod->catalogimgs()->where("image_mode", 1)->first();
                 if ($catImg) {
                     $prd->product->prodImage = (Config('constants.productImgPath') . '/' . $catImg->filename);
                 } else {
@@ -99,7 +107,7 @@ class PagesController extends Controller {
         ->join('users', 'orders.user_id', '=', 'users.id')
         ->whereNotIn("has_products.order_status", [0, 4, 6, 10])->where('has_products.prefix', $this->jsonString['prefix'])
         ->limit(10)->groupBy('orders.user_id')
-        ->orderBy('total_amount', 'desc')->get(['orders.user_id', 'users.firstname', 'users.lastname', 'users.email', DB::raw('count(orders.user_id) as top'), DB::raw('sum(has_products.pay_amt) as total_amount')]);
+        ->orderBy('total_amount', 'desc')->get(['orders.user_id', 'users.firstname', 'users.lastname', 'users.email', DB::raw('count(orders.user_id) as top'), DB::raw('sum(orders.pay_amt) as total_amount')]);
 
         // dd($jsonString["store_id"]);
        $latestOrders = Order::where("orders.store_id", $jsonString['store_id'])->orderBy("orders.created_at", "desc")->join("payment_method as pm", "pm.id", '=', 'orders.payment_method')->join("order_status as os", "os.id", '=', 'orders.order_status')->join("payment_status as ps", "ps.id", '=', 'orders.payment_status')->select(["orders.id as order_id","orders.created_at as order_date","orders.first_name","orders.last_name","os.order_status","pm.name as payment_method","ps.payment_status","orders.pay_amt as total_amount","orders.order_amt as amount","orders.email","orders.gifting_charges","orders.discount_amt","orders.shipping_amt","orders.referal_code_amt","orders.phone_no","orders.coupon_amt_used"])->limit(10)->orderBy('orders.created_at', 'desc')->get();
@@ -158,10 +166,15 @@ class PagesController extends Controller {
         $chart_prodname = array();   
        foreach($topProducts as $key => $product)
        {
-        $products[$key]["product_name"] = $product->product;
-        $products[$key]["quantity"] = $product->quantity;
-        $products[$key]['color'] = '#'.$this->random_color_part() . $this->random_color_part() . $this->random_color_part();
-        $chart_prodname[] = $product->quantity;
+            if($product->prod_id == $product->sub_prod_id || $prd->sub_prod_id=='')
+            {
+                $parentprod = Product::find($product->prod_id);
+                $product->product->price += $parentprod->selling_price;
+            }
+            $products[$key]["product_name"] = $product->product;
+            $products[$key]["quantity"] = $product->quantity;
+            $products[$key]['color'] = '#'.$this->random_color_part() . $this->random_color_part() . $this->random_color_part();
+            $chart_prodname[] = $product->quantity;
          }
         
         $orders_chart = Charts::database($weeklyOrderschart, 'line', 'highcharts')

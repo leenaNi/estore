@@ -114,8 +114,11 @@ class Order extends Model {
     public function getcourier(){
         return $this->belongsTo('App\Models\Courier','courier');
     }
-       public function coupon() {
-        return $this->belongsTo('App\Models\Coupon', 'coupon_used');
-       }
+    public function coupon() {
+    return $this->belongsTo('App\Models\Coupon', 'coupon_used');
+    }
+    public function store() {
+    return $this->belongsTo('App\Models\store', 'store_id');
+    }
 
 }

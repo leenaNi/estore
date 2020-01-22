@@ -148,7 +148,6 @@
                                     <tr>
                                         <th>Order Id</th>
                                         <th>Name</th>
-                                        <th>Email</th>
                                         <th>Mobile</th>
                                         <th>Order Status</th>
                                         <th>Payment Status</th>
@@ -161,7 +160,6 @@
                                     <tr>
                                         <td>{{ @$order["order_id"] }}</td>
                                         <td>{{ ucfirst(@$order["first_name"]) }} {{ @$order["last_name"] }} </td>
-                                        <td>{{ @$order["email"] }}  </td>
                                         <td>{{ @$order["phone_no"] }}</td>
                                         <td>{{ @$order["order_status"] }}</td>  
                                         <td>{{ @$order["payment_status"] }}</td>
