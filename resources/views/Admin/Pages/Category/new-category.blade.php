@@ -57,8 +57,8 @@
                         @foreach($categories as $category)
                         <tr>
                             <td>{{ $category->name }}</td>
-                            <td>{{ $category->parent->category }}</td>
-                            <td>{{ $category->requestedBy->store->store_name }}</td>
+                            <td>{{ @$category->parent->category }}</td>
+                            <td>{{ @$category->requestedBy->store->store_name }}</td>
                             <td>{{ date('d-M-Y',strtotime($category->created_at)) }}</td>
                             <td>
                                 <a href="{{ route('admin.category.approve') }}?id={{@$category->id }}" class="btn btn-success btn-xs">Add</a>
