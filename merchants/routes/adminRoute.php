@@ -100,7 +100,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::get('/comboProds/{id?}', array('as' => 'admin.combo.products.view', 'uses' => 'ProductsController@comboProds'));
                 Route::get('/update-product-variant', array('as' => 'admin.products.variant.update', 'uses' => 'ProductsController@updateProdVariant'));
                 Route::post('/update-attributes', array('as' => 'admin.products.attributes.update', 'uses' => 'ProductsController@update2'));
-//            Route::get('/update-config-product-attr/{id}', array('as' => 'admin.products.configurable.edit.update', 'uses' => 'ProductsController@configProdAttrs'));
+                //            Route::get('/update-config-product-attr/{id}', array('as' => 'admin.products.configurable.edit.update', 'uses' => 'ProductsController@configProdAttrs'));
                 Route::post('/update-related-upsell', array('as' => 'admin.products.upsell', 'uses' => 'ProductsController@update3'));
                 Route::get('/update-related-upsell-products/{id}', array('as' => 'admin.products.upsell.related', 'uses' => 'ProductsController@updateRelatedUpsellProds'));
                 Route::get('/update-upsell-products/{id}', array('as' => 'admin.products.upsell.product', 'uses' => 'ProductsController@updateUpsellProds'));
@@ -766,5 +766,18 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::get('/add-new-settlement', ['as' => 'admin.payments.newSettlement', 'uses' => 'PaymentsController@addNewSettlement']);
         Route::post('/settle-payments', ['as' => 'admin.payments.settlePayments', 'uses' => 'PaymentsController@settlePayments']);
         Route::get('/export', ['as' => 'admin.payments.export', 'uses' => 'PaymentsController@export']);
+    });
+
+    Route::group(['prefix' => 'distributor', 'middlewareGroups' => ['CheckUser', 'web']], function () {
+        Route::get('/', ['as' => 'admin.distributor.orders.view', 'uses' => 'DistributorOrdersController@index']);
+        Route::get('/new', ['as' => 'admin.distributor.orders.new', 'uses' => 'DistributorOrdersController@createOrder']);
+        Route::get('/get-distributor', ['as' => 'admin.distributor.orders.getDistributor', 'uses' => 'DistributorOrdersController@getDistributor']);
+        Route::post('/get-addresses', ['as' => 'admin.distributor.orders.getCustomerData', 'uses' => 'DistributorOrdersController@getCustomerData']);
+        Route::any('/get-products', ['as' => 'admin.distributor.orders.getSearchProds', 'uses' => 'DistributorOrdersController@getSearchProds']);
+        Route::any('/get-sub-prods', ['as' => 'admin.distributor.orders.getSubProds', 'uses' => 'DistributorOrdersController@getSubProds']);
+        Route::any('/get-prod-price', ['as' => 'admin.distributor.orders.getProdPrice', 'uses' => 'DistributorOrdersController@getProdPrice']);
+        Route::any('/add-to-cart', ['as' => 'admin.distributor.orders.addToCart', 'uses' => 'DistributorOrdersController@add_to_cart']);
+        Route::post('/check-order-coupon', ['as' => 'admin.distributor.orders.checkOrderCoupon', 'uses' => 'DistributorOrdersController@checkOrderCoupon']);
+        Route::any('/save-cart-data', ['as' => 'admin.distributor.orders.saveCartData', 'uses' => 'DistributorOrdersController@saveCartData']);
     });
 });

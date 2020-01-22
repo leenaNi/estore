@@ -51,4 +51,8 @@ class Store extends Model {
         return $this->belongsTo('App\Models\Language', 'language_id');
     }
 
+    public function distributor() {
+        return $this->belongsTo('App\Models\Vendor', 'merchant_id');
+    }
+
 }

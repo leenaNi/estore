@@ -2050,7 +2050,7 @@ foreach ($_POST as $a => $b) {
             $order->courier = @$courier->courier_id;
         }
         if ($this->courierService == 1 && $this->pincodeStatus == 1) {
-//            if ($courier_status == 1) {
+            //            if ($courier_status == 1) {
             //                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
             //                $order->courier = $courier->courier_id;
             //                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
@@ -2223,7 +2223,7 @@ foreach ($_POST as $a => $b) {
             }
             $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
                 'pay_amt' => $payamt, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix']];
-//            $market_place = Helper::generalSetting(35);
+            //            $market_place = Helper::generalSetting(35);
             //            if (isset($market_place) && $market_place->status == 1) {
             //                $prior_vendor = $product->vendorPriority()->first();
             //                $vendor['order_status'] = 1;
@@ -2396,7 +2396,7 @@ foreach ($_POST as $a => $b) {
         if ($result === false) {
             die('Curl failed: ' . curl_error($ch));
         } else {
-//           // echo $result;
+            //           // echo $result;
             //            $resultData = json_decode($result);
             //            if($resultData){
             //            $pushNotification = new Pushnotification();
