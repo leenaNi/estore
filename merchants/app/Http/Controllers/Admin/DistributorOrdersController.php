@@ -22,6 +22,7 @@ use App\Models\OrderFlagHistory;
 use App\Models\OrderReturnCashbackHistory;
 use App\Models\OrderReturnStatus;
 use App\Models\OrderStatus;
+use App\Models\DistributorOrderStatus;
 use App\Models\OrderStatusHistory;
 use App\Models\PaymentHistory;
 use App\Models\PaymentMethod;
