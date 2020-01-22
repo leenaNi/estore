@@ -180,7 +180,9 @@ class Helper
     public static function saveDefaultSet($catid, $prefix, $storeId)
     {
         $cat = Category::find($catid);
+       
         $assignedCategories = json_decode($cat->assigned_categories);
+        
         $categories = CategoryMaster::where('status', 1)->whereIn('id', $assignedCategories)->get();
         $catsave = [];
         $i = 0;

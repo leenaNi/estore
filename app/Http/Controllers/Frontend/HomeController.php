@@ -414,11 +414,13 @@ class HomeController extends Controller
             $phoneNo = $getMerchat->phone;
             $store->template_id = $themeInput->theme_id;
             $store->category_id = $themeInput->cat_id;
+            $storeName = $themeInput->storename;
         }
         else
         {
             $phoneNo = $getMerchat->phone_no;
             $themeInput->cat_id = $themeInput->business_type;
+            $storeName = $themeInput->store_name;
             $themeInput->theme_id = 0;
             $store->template_id = 0;
             $store->category_id = implode(',',$themeInput->cat_id);
@@ -458,7 +460,7 @@ class HomeController extends Controller
             //dd("teme id >> ".$themeInput->theme_id);
             if (empty($themeInput->id)) {
                 //dd((object) Input::get('themeInput')." :: ".$storeType);
-                $result = $this->createInstance($storeType,$store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $themeInput->storename, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $phoneNo, $firstname, $domainname, $storeVersion, $store->expiry_date);
+                $result = $this->createInstance($storeType,$store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $storeName, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $phoneNo, $firstname, $domainname, $storeVersion, $store->expiry_date);
                 // dd($result);
             }
         }
@@ -530,10 +532,10 @@ class HomeController extends Controller
         $contents = File::get(public_path() . "/public/skeleton.sql");
         $sql = str_replace('tblprfx_', $storeId, $contents);
         $test = DB::unprepared($sql);
-        
+        $insertedProductIdArray = array();
         if($storeType == 'distributor')
         {
-            $totalCategory = count($catid) - 1;
+            $totalCategory = count($catid) - 1; // industry
             //echo "totla cat >> ".$totalCategory;
           
             for($i = 0 ; $i < $totalCategory; $i++)
@@ -637,15 +639,19 @@ class HomeController extends Controller
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
                     //Last record
                     $lastUser = DB::table('users')->latest('id')->first();
+                    if(isset($lastUser) && !empty($lastUser))
+                        $lastRecordUserId = $lastUser->id + 1;
+                    else
+                        $lastRecordUserId = 1;
                     if($storeType == 'merchant')
                     {
                         $userType = 1;
                     }
                     else
                     {
-                        $userType = 3;
+                        $userType = 3; // distributor
                     }
-                    $insertArr = ["id" => ($lastUser->id + 1), "email" => "$merchantEamil", "user_type" => $userType, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
+                    $insertArr = ["id" => ($lastRecordUserId), "email" => "$merchantEamil", "user_type" => $userType, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
@@ -669,6 +675,8 @@ class HomeController extends Controller
                     $jsonDataFromFile = File::get(public_path()."\public\product_category_json.json");
                     $decodedJsonData = json_decode(trim($jsonDataFromFile),true);
                     DB::table('catalog_images')->delete();
+                    //print_r($insertedProductIdArray);
+                    //print_r($catid);
                     for($j = 0 ; $j < count($insertedProductIdArray); $j++)
                     {
                         $categoryId = $catid[$j];
@@ -701,7 +709,6 @@ class HomeController extends Controller
                                 ['product' => $productName, 'url_key' => $urlKey, 'prod_type' => $prodType, 'stock' => $stock, 'cur' => $cur, 'max_price' => $maxPrice, 'min_price' => $minPrice, 'purchase_price' => $purchasePrice, 'price' => $price, 'spl_price' => $splPrice, 'selling_price' => $sellingPrice]
                             );
                             
-                            
                             DB::table('catalog_images')->insert(['filename' => $categoryFilename, 'alt_text' => $altText, 'image_type' => $imageType, 'image_mode' => $imageMode, 'catalog_id' => $productId, 'sort_order' => $sortOrder, 'image_path' => $imagePath]);
                         } // End check if 
                     } // End j loop
@@ -715,6 +722,30 @@ class HomeController extends Controller
                     $decodeVal['store_id'] = $storeId;
                     $decodeVal['prefix'] = $prefix;
                     $decodeVal['country_code'] = $country_code;
+
+                    if($storeType == 'distributor')
+                    {
+                        //echo "if store id >> $storeId";
+                        //print_r($catid);
+                       
+                        $totalCategory = count($catid); // industry
+                        //echo "totla cat >> ".$totalCategory;
+                    
+                        for($k = 0 ; $k < $totalCategory; $k++)
+                        {
+                            if (!empty($catid[$k])) {
+                                Helper::saveDefaultSet($catid[$k], $prefix, $storeId);
+                            }
+                        }
+                    } // end if
+                    else
+                    {
+                       // echo "store id >> $storeId :: cat id >> $catid";
+                        
+                        if (!empty($catid)) {
+                            Helper::saveDefaultSet($catid, $prefix, $storeId);
+                        }
+                    }
 
                     if($storeType == 'merchant')
                     {
@@ -730,10 +761,7 @@ class HomeController extends Controller
                         /*$fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                         fwrite($fp, $newJsonString);
                         fclose($fp);*/
-
-                        if (!empty($catid)) {
-                            Helper::saveDefaultSet($catid, $prefix, $storeId);
-                        }
+                        
                         $banner = json_decode((StoreTheme::where("id", $themeid)->first()->banner_image), true);
                         // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
                         if (!empty($banner)) {
@@ -771,6 +799,7 @@ class HomeController extends Controller
                             }
                         }
                     } // end storetype check if
+                    
                     $newJsonString = json_encode($decodeVal);
                         
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
@@ -893,6 +922,7 @@ class HomeController extends Controller
         $dataW['themeInput'] = json_encode($themeInput);
 
         $viewname = Config('constants.frontendView') . ".wait-process";
+        //echo $viewname;
         return Helper::returnView($viewname, $dataW);
     }
 

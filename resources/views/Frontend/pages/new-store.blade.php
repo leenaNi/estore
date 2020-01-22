@@ -153,7 +153,7 @@
         var storeName = this.value;
         if(storeName != '')
         {
-            storeName = storeName.replace(/[^a-zA-Z ]/g, "").split(" ").join("").toLowerCase();
+            storeName = storeName.replace(/[^a-zA-Z0-9 ]/g, "").split(" ").join("").toLowerCase();
             $("#domain_name").val(storeName);
         }
     })
@@ -366,7 +366,7 @@
 
     $(".sendOtpOnMobile").on("click", function () {
        
-        //$("#newStoreForm").submit();
+       // $("#newStoreForm").submit();
         
        if ($("#newStoreForm").valid()) {
             $("#sendOTP").modal('show');
