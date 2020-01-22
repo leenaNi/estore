@@ -86,6 +86,44 @@
                 <a href="{{ route('admin.vendors.product') }}">
                     <i class="fa fa-bar-chart"></i><span>Products</span> <i class=""></i>
                 </a>
+                <ul class="treeview-menu">
+                    <li class="{{ preg_match("/admin.products/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.products.view') }}"><i class="fa fa-angle-right"></i>All Products</a></li>
+                    <li class="{{ preg_match("/admin.reviews/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.reviews.view') }}"><i class="fa fa-angle-right"></i>Customer Reviews</a></li>
+                    <li class="{{ preg_match("/admin.category/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.category.view') }}"><i class="fa fa-angle-right"></i>Categories</a></li>
+
+                    @if($settingStatus['products-with-variants'] == 1)
+
+                    <li class="{{ preg_match("/admin.attribute.set/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.attribute.set.view') }}"><i class="fa fa-angle-right"></i>Variant Sets</a></li>
+                    <li class="{{ preg_match("/admin.attributes/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.attributes.view') }}"><i class="fa fa-angle-right"></i>Attributes</a></li>
+                    @endif
+
+                    @if($feature['stock'] == 1)
+                    <li class="{{ preg_match("/admin.stock/",Route::currentRouteName()) ? 'active' : '' }}"">
+                        <a href="#"><i class="fa fa-angle-right"></i>Inventory</a>
+                        <ul class="treeview-menu">
+                            <li class="treeview {{ preg_match("/admin.stock.view/",Route::currentRouteName()) ? 'active' : '' }}">
+                                <a href="{{ route('admin.stock.view') }}"><i class="fa fa-angle-right"></i>In Stock</a>
+                            </li>
+                            <li class="treeview {{ preg_match("/admin.stock.runningShort/",Route::currentRouteName()) ? 'active' : '' }}">
+                                <a href="{{ route('admin.stock.runningShort') }}"><i class="fa fa-angle-right"></i>Running Short</a>
+                            </li>
+                            <li class="treeview {{ preg_match("/admin.stock.outOfStock/",Route::currentRouteName()) ? 'active' : '' }}">
+                                <a href="{{ route('admin.stock.outOfStock') }}"><i class="fa fa-angle-right"></i>Out of Stock</a>
+                            </li>
+
+
+                        </ul>
+                    </li>
+                    @endif
+                    @if($feature['tax']==1)  
+                    <li class="{{ preg_match("/admin.tax/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.tax.view') }}"><i class="fa fa-angle-right"></i>Taxes</a></li>
+                    @endif
+
+                    @if($feature['row-material'] == 1)
+                    <li class="{{ preg_match("/admin.raw-material/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.raw-material.view') }}"><i class="fa fa-angle-right"></i>Raw Material</a></li>
+                    @endif
+
+                </ul>
             </li>
             <li class="{{ Route::currentRouteName() == 'admin.vendors.orders' ? 'active' : '' }}">
                 <a href="{{ route('admin.vendors.orders') }}">
@@ -220,6 +258,12 @@
                     <li class="{{ preg_match("/admin.domains/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.domains.view') }}"><i class="fa fa-angle-right"></i>Domain</a></li>
                     <li class="{{ preg_match("/admin.bankDetails/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.bankDetails.view') }}"><i class="fa fa-angle-right"></i>Bank Details </a></li>
                 </ul>                                                  
+            </li>
+            <li  class="{{ Route::currentRouteName() == 'admin.vendors.addMerchant' ? 'active' : '' }}">
+                <a href="{{ route('admin.vendors.addMerchant') }}">
+                    <i class="fa fa-user-plus"></i><span>Add Merchant</span>
+                    <i></i>
+                </a>
             </li>
             
         </ul>

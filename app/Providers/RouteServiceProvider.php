@@ -36,13 +36,13 @@ class RouteServiceProvider extends ServiceProvider {
         //$req_uri = \URL::to('/');
         //$_SERVER['REQUEST_URI']
 
-        $req_uri = $_SERVER['REQUEST_URI'];
+         $req_uri = $_SERVER['REQUEST_URI'];
        
         $path = explode('/admin', $req_uri);
         
         $getprefix = explode("/",$req_uri);
      
- 
+
         if ($getprefix[1] == 'merchant') {
           
             //echo  "2".$path[0]; die;

@@ -676,6 +676,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::any('/export-by-order', array('as' => 'admin.vendor.export.order', 'uses' => 'VendorsController@orderExport'));
                 Route::any('/update-order-status', array('as' => 'admin.vendor.order.status', 'uses' => 'VendorsController@updateOrderStatus'));
                 // Route::post('/getState', ['as' => 'admin.vendors.state', 'uses' => 'VendorsController@getState']);
+
+                // add merchant
+                Route::any('/add-merchant', array('as' => 'admin.vendors.addMerchant', 'uses' => 'VendorsController@addMerchant'));
+                Route::any('/verify-code', array('as' => 'admin.vendors.verifyCode', 'uses' => 'VendorsController@verifyMerchantCode'));
+                Route::get('/send-notification', array('as' => 'admin.vendors.send-notification', 'uses' => 'VendorsController@sendNotificationToMerchant'));
+                
             });
 
             Route::group(['prefix' => 'purchase-requisition', 'middlewareGroups' => ['CheckUser', 'web']], function () {
