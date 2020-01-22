@@ -60,7 +60,6 @@ class Order extends Model {
     }
 
     public function orderstatus() {
-
         return $this->belongsTo("App\Models\OrderStatus", "order_status");
     }
 
@@ -119,6 +118,9 @@ class Order extends Model {
     }
     public function store() {
     return $this->belongsTo('App\Models\store', 'store_id');
+    }
+    public function distributorOrderstatus() {
+        return $this->belongsTo("App\Models\DistributorOrderStatus", "order_status");
     }
 
 }

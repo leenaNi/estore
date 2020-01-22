@@ -163,6 +163,7 @@
                                 <th>Date</th>
                                 <th>Distributor</th>
                                 <th>Categories</th>
+                                <th>Order Status</th>
                                 <th>Payment Status</th>
                                 <th>@sortablelink ('pay_amt', 'Amount')</th>
                                 <!-- <th>Order Source</th>
@@ -189,6 +190,7 @@
                                     {{$orderCategory->category}} {{($loop->last)? '': '\r\n'}}
                                     @endforeach
                                 </td>
+                                <td>{{ @$order->distributorOrderstatus['order_status'] }}</td>
                                 <td>{{ @$order->paymentstatus['payment_status'] }}</td>
                                 <td>@if(@$order->prefix)
                                     <span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
