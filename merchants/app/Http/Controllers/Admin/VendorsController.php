@@ -516,7 +516,7 @@ class VendorsController extends Controller
         print_r($distributorResult);
 
         $decodedDistributorDetail = $distributorResult->register_details;
-        dd($decodedDistributorDetail);
+        dd($decodedDistributorDetail->business_type);
         $distributorbusinessIdArray = $decodedDistributorDetail->business_type;
 
         if (!empty($merchantIdentityCode)) {
