@@ -52,7 +52,7 @@ class DistributorOrdersController extends Controller
         $jsonString = Helper::getSettings();
         $merchant = DB::table('stores')->where('id', Session::get('store_id'))->first();
         $allDistributors = DB::table('has_distributors')
-        ->where(['has_distributors.merchant_id' => $merchant->merchant_id])->get(['has_distributos.distributor_id']);
+        ->where(['has_distributors.merchant_id' => $merchant->merchant_id])->get(['has_distributors.distributor_id']);
         $distributorsIds = [];
         foreach($allDistributors as $allDistributor) {
             array_push($distributorsIds, $allDistributor->distributor_id);
