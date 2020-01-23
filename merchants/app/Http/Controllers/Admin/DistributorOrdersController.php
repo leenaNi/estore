@@ -52,12 +52,12 @@ class DistributorOrdersController extends Controller
         $jsonString = Helper::getSettings();
         $merchant = DB::table('stores')->where('id', Session::get('store_id'))->first();
         $allDistributors = DB::table('has_distributors')
-        ->where(['has_distributos.merchant_id' => $merchant->merchant_id])->get(['has_distributos.distributor_id']);
+        ->where(['has_distributors.merchant_id' => $merchant->merchant_id])->get(['has_distributos.distributor_id']);
         $distributorsIds = [];
         foreach($allDistributors as $allDistributor) {
             array_push($distributorsIds, $allDistributor->distributor_id);
         }
-        $distributorStores = DB::table('stores')->whereIn('merchant_id', $distributorsIds)->get(['id']);
+        $distributorStores = DB::table('stores')->where('store_type', 'LIKE', 'distributor')->whereIn('merchant_id', $distributorsIds)->get(['id']);
         
         $distributorsStoreIds = [];
         foreach($distributorStores as $distributorStore) {
