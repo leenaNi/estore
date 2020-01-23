@@ -520,13 +520,13 @@ class VendorsController extends Controller
             $merchantResult = DB::table('merchants')->where("identity_code", $merchantIdentityCode)->first();
 
             if (isset($merchantResult) && !empty($merchantResult)) {
-                $decodedMerchantDetail = json_decode($merchantResult->register_details);
-                $merchantbussinessId = $decodedMerchantDetail->business_type[0];
-                if (in_array($merchantbussinessId, $distributorbusinessIdArray)) {
+                // $decodedMerchantDetail = json_decode($merchantResult->register_details);
+                // $merchantbussinessId = $decodedMerchantDetail->business_type[0];
+                // if (in_array($merchantbussinessId, $distributorbusinessIdArray)) {
                     $data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
-                } else {
-                    $data = ['status' => 0, 'error' => "Industry not matched"];
-                }
+                // } else {
+                //     $data = ['status' => 0, 'error' => "Industry not matched"];
+                // }
             } else {
                 $data = ['status' => 0, 'error' => "Invalid merchant code"];
             }
