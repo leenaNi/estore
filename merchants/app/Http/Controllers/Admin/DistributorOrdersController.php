@@ -50,13 +50,18 @@ class DistributorOrdersController extends Controller
         Session::forget('distributor_store_id');
         Session::forget('distributor_store_prefix');
         $jsonString = Helper::getSettings();
+        $merchant = DB::table('stores')->where('id', Session::get('store_id'))->first();
         $allDistributors = DB::table('has_distributors')
-        ->join("stores", "stores.merchant_id", "=", "has_distributors.distributor_id")
-        ->where('stores.store_type', 'LIKE', 'distributor')
-        ->where(['has_distributors.merchant_id' => Session::get('store_id')])->get(['stores.id']);
-        $distributorsStoreIds = [];
+        ->where(['has_distributors.merchant_id' => $merchant->merchant_id])->get(['has_distributors.distributor_id']);
+        $distributorsIds = [];
         foreach($allDistributors as $allDistributor) {
-            array_push($distributorsStoreIds, $allDistributor->id);
+            array_push($distributorsIds, $allDistributor->distributor_id);
+        }
+        $distributorStores = DB::table('stores')->where('store_type', 'LIKE', 'distributor')->whereIn('merchant_id', $distributorsIds)->get(['id']);
+        
+        $distributorsStoreIds = [];
+        foreach($distributorStores as $distributorStore) {
+            array_push($distributorsStoreIds, $distributorStore->id);
         }
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
@@ -64,7 +69,7 @@ class DistributorOrdersController extends Controller
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
 
-        $orders = Order::where("orders.order_status", "!=", 0)->where('order_type', 1)->join("has_products", "has_products.order_id", '=', 'orders.id')->whereIn("has_products.store_id", $distributorsStoreIds)->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        $orders = Order::where("orders.order_status", "!=", 0)->where('created_by', Session::get('loggedinAdminId'))->where('order_type', 1)->join("has_products", "has_products.order_id", '=', 'orders.id')->whereIn("has_products.store_id", $distributorsStoreIds)->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
         //   dd($orders);
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
@@ -1688,13 +1693,14 @@ class DistributorOrdersController extends Controller
     {
         $term = Input::get('term');
         if (!empty($term)) {
+            $merchant = DB::table('stores')->where('id', Session::get('store_id'))->first();
             $result = DB::table('has_distributors')
                 ->join("distributor", "distributor.id", "=", "has_distributors.distributor_id")
                 ->join("stores", "stores.merchant_id", "=", "has_distributors.distributor_id")
                 ->join("users", "stores.id", "=", "users.store_id")
                 ->where('stores.store_type', 'LIKE', 'distributor')
                 ->whereDate('stores.expiry_date', ">=", date('Y-m-d'))
-                ->where(['has_distributors.merchant_id' => Session::get('store_id')])
+                ->where(['has_distributors.merchant_id' => $merchant->merchant_id])
                 ->where(function ($q) use ($term) {
                     $q->orWhere("stores.store_name", "like", "%$term%")
                         ->orWhere("distributor.identity_code", "like", "%$term%")

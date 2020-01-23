@@ -10,88 +10,98 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Enter Merchant Code
+        Add Merchant
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">Enter Code</li>
+        <li class="active">Add merchant</li>
     </ol>
 </section>
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
-            <div class="box">
-                <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12 noBorder">                
-                    <form action="{{ route('admin.vendors.verifyCode') }}" method="get" id="merchantCodeForm">
-                        <div class="form-group col-md-8 col-sm-6 col-xs-12" id="inputDiv">
-                            <input type="text" name="merchantIdentityCode" id="merchantIdentityCode" value="{{isset($identityCode)?$identityCode:''}}" onkeypress="hideErrorMsg('errorLbl')" class="form-control medium pull-right " placeholder="Enter Merchant Code">
-                        <label class="error" id="errorLbl">{{isset($error)?$error:''}}</label>
-                        </div>
-                        <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                            <button type="submit" id="searchMerchant" class="btn btn-primary form-control" style="margin-left: 0px;">Search</button>
-                        </div>
-                    </form>
+        <div id="addMerchantDiv">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12 noBorder">                
+                        <form  method="get" id="merchantCodeForm">
+                            <div class="form-group col-md-8 col-sm-6 col-xs-12" id="inputDiv">
+                                <input type="text" name="merchantIdentityCode" id="merchantIdentityCode" value="{{isset($identityCode)?$identityCode:''}}" onkeypress="hideErrorMsg('errorLbl')" class="form-control medium pull-right " placeholder="Enter Merchant Code">
+                            <label class="error" id="errorLbl"></label>
+                            </div>
+                            <div class="form-group col-md-2 col-sm-3 col-xs-12">
+                                <button id="searchMerchant" class="btn btn-primary form-control" style="margin-left: 0px;">Search</button>
+                            </div>
+                            <input type="hidden" id="hdnStoreId" name="hdnStoreId" value="{{$storeId}}">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-sm-6 col-xs-12" id="merchantDetailDiv" style="display:none">
+                <div class="info-box">
+                <form action="{{ route('admin.vendors.send-notification') }}" method="get">
+                   
+                        <label>Business Name: </label> <span id="storeName"></span><br>
+                        <label>Person Name: </label> <span id="firstname"></span><br>
+                        <label>Email: </label> <span id="email"></span><br>
+                        <label>Mobile number: </label> <span id="phone"></span><br>
+                        <label>Industry: </label> <span id="businessName"></span><br>
+                        
+                        <input type="hidden" id="hdnMerchantEmail" name="hdnMerchantEmail" value="">
+                        <input type="hidden" id="hdnMerchantPhone" name="hdnMerchantPhone" value="">
+                        <input type="hidden" id="hdnMerchantId" name="hdnMerchantId" value="">
+                        <input type="hidden" id="hdnStoreIdForNotification" name="hdnStoreIdForNotification" value="">
+                        <input type="hidden" id="hdnCountryCode" name="hdnCountryCode" value="">
+                        <button type="submit">Connect</button>
+                    {{-- @else
+                        <label> No merchant found.</label>
+                    @endif --}}
+                </form>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-3 col-sm-6 col-xs-12" id="merchantDetailDiv" style={{isset($merchantData)?'display:block':'display:none'}}>
-            <div class="info-box">
-               <form action="{{ route('admin.vendors.send-notification') }}" method="get">
-                @if(!empty($merchantData))
-                    <label>Business Name: </label> <span>{{$merchantData->store_name}}</span><br>
-                    <label>Person Name: </label> <span>{{$merchantData->firstname}}</span><br>
-                    <label>Email: </label> <span>{{$merchantData->email}}</span><br>
-                    <label>Mobile number: </label> <span>{{$merchantData->phone}}</span><br>
-                    <label>Industry: </label> <span>{{$merchantData->business_name}}</span><br>
-
-                    <input type="hidden" id="hdnMerchantEmail" name="hdnMerchantEmail" value="{{$merchantData->email}}">
-                    <input type="hidden" id="hdnMerchantPhone" name="hdnMerchantPhone" value="{{$merchantData->phone}}">
-                    <input type="hidden" id="hdnMerchantId" name="hdnMerchantId" value="{{$merchantId}}">
-                    <input type="hidden" id="hdnMerchantCode" name="hdnMerchantCode" value="{{$identityCode}}">
-                    <button type="submit">Connect</button>
-                @else
-                    <label> No merchant found.</label>
-                @endif
-               </form>
-            </div>
-        </div>
-
-
+       
         <!--Listing Template start from here -->
-        <div class="tableListing">
-                  
-                  <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <caption>Distributor Listing</caption>
-                     <thead>
-                         <tr>
-                             <th>#</th>
-                             <th>Business Name</th>
-                             <th>Concern Person Name</th>
-                             <th>Mobile Number</th>
-                             <th>Connection Date</th>
-                             <th>Ledgs</th>
-                         </tr>
-                     </thead>	
-                     <tbody>
-                        @if(!empty($merchantData))
-                        <tr>
-                             <td>1</td>
-                             <td>{{$merchantData->store_name}}</td>
-                             <td>{{$merchantData->firstname}}</td>
-                             <td>{{$merchantData->phone}}</td>
-                             <td>-</td>
-                             <td>-</td>
-                        </tr> 
-                        @else
-                            <label> No records found.</label>
-                        @endif 
-                        
-                     </tbody>
-                 </table>
+        <div>
+            <table class="table table-striped table-hover tableVaglignMiddle">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Business Name</th>
+                        <th>Concern Person Name</th>
+                        <th>Mobile Number</th>
+                        <th>Connection Date</th>
+                        <th>Ledger</th>
+                    </tr>
+                </thead>	
+                <tbody>
+                @if(!empty($merchantListingData))
+                <?php
+                $i = 0;
+                ?>
+                    @foreach($merchantListingData as $data)
+                    <?php
+                        $i++;
+                        $decodedMerchantDetail = json_decode($data->register_details);
+                        $connectionData = date("d-m-Y", strtotime($data->updated_at));;
+                    ?>
+                    <tr>
+                        <td>{{$i}}</td>
+                        <td>{{$decodedMerchantDetail->store_name}}</td>
+                        <td>{{$decodedMerchantDetail->firstname}}</td>
+                        <td>{{$decodedMerchantDetail->phone}}</td>
+                        <td>{{$connectionData}}</td>
+                        <td><i class="fa fa-pencil-square-o fa-fw" title="Ledger"></i></td>
+                    </tr> 
+                    @endforeach
+                @else
+                    <label> No records found.</label>
+                @endif 
+                
+                </tbody>
+            </table>
         </div>
         <!--Listing Template ends from here -->
-        
     </div> 
 </section>
 @stop
@@ -100,12 +110,45 @@
     $("#searchMerchant").on("click", function () 
     {
         var identityCode = $("#merchantIdentityCode").val();
+        var hdnStoreId = $("#hdnStoreId").val();
 
         if(identityCode != '')
         {
             if(identityCode.length > 9)
             {
-                $("#merchantCodeForm").submit();
+                $.ajax({
+                    method: "POST",
+                    data: {'merchantIdentityCode': identityCode,'hdnStoreId':hdnStoreId},
+                    url: "{{route('admin.vendors.verifyCode')}}",
+                    dataType: "json",
+                    success: function (data) {
+                        if(data['status'] == 0)
+                        {
+                            $("#errorLbl").html(data['error']);
+                            $("#merchantDetailDiv").hide();
+                        }
+                        else
+                        {
+                            var resgisterDetail = data['merchantData']['register_details'];
+                            var parsedRegistrationDtaa = JSON.parse(resgisterDetail);
+
+                            $("#storeName").html(parsedRegistrationDtaa['store_name']);
+                            $("#firstname").html(parsedRegistrationDtaa['firstname']);
+                            $("#email").html(parsedRegistrationDtaa['email']);
+                            $("#phone").html(parsedRegistrationDtaa['phone']);
+                            $("#businessName").html(parsedRegistrationDtaa['business_name']);
+                            $("#hdnMerchantEmail").html(data['merchantData']['email']);
+                            $("#hdnMerchantPhone").html(data['merchantData']['phone']);
+                            $("#hdnMerchantId").val(data['merchantId']);
+                            $("#hdnCountryCode").val(data['merchantData']['country_code']);
+                            $("#hdnStoreIdForNotification").val(hdnStoreId);
+                            $("#merchantDetailDiv").show();
+                        }
+                        return false;
+                        // location.reload();courier-services
+                    }
+                });
+                return false;
             }
             else
             {
