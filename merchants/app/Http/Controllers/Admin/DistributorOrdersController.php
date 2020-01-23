@@ -54,7 +54,7 @@ class DistributorOrdersController extends Controller
         $allDistributors = DB::table('has_distributors')
         ->join("stores", "stores.merchant_id", "=", "has_distributors.distributor_id")
         ->where('stores.store_type', 'LIKE', 'distributor')
-        ->where(['has_distributors.distributor_id' => $merchant->merchant_id])->get(['stores.id']);
+        ->where(['has_distributors.merchant_id' => $merchant->merchant_id])->get(['stores.id']);
         dd($allDistributors);
         $distributorsStoreIds = [];
         foreach($allDistributors as $allDistributor) {
