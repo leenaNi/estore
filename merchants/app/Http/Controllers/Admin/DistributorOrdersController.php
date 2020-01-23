@@ -1693,13 +1693,13 @@ class DistributorOrdersController extends Controller
                 ->join("stores", "stores.merchant_id", "=", "has_distributors.distributor_id")
                 ->join("users", "stores.id", "=", "users.store_id")
                 ->where('stores.store_type', 'LIKE', 'distributor')
-                ->whereDate('stores.expiry_date', ">=", date('Y-m-d'))
+                // ->whereDate('stores.expiry_date', ">=", date('Y-m-d'))
                 ->where(['has_distributors.merchant_id' => Session::get('store_id')])
                 ->where(function ($q) use ($term) {
                     $q->orWhere("stores.store_name", "like", "%$term%")
                         ->orWhere("distributor.identity_code", "like", "%$term%")
                         ->orWhere("distributor.email", "like", "%$term%")
-                        ->orWhere("distributor.firstname", "like", "%$term%");
+                        ->orWhere("distributo.firstname", "like", "%$term%");
                 })
                 ->get(['stores.id', 'users.id as user_id', 'stores.store_name', 'distributor.identity_code', 'distributor.firstname', 'distributor.phone_no', 'distributor.email']);
         }
