@@ -69,7 +69,7 @@ class DistributorOrdersController extends Controller
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
 
-        $orders = Order::where("orders.order_status", "!=", 0)->where('order_type', 1)->join("has_products", "has_products.order_id", '=', 'orders.id')->whereIn("has_products.store_id", $distributorsStoreIds)->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        $orders = Order::where("orders.order_status", "!=", 0)->where('created_by', Session::get('loggedinAdminId'))->where('order_type', 1)->join("has_products", "has_products.order_id", '=', 'orders.id')->whereIn("has_products.store_id", $distributorsStoreIds)->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
         //   dd($orders);
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
