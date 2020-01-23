@@ -176,7 +176,7 @@ function renderNode1($node, $dash)
                         <tbody>
                             @if(count($products) >0 )
                             @foreach($products as $product)
-
+                            <?php //dd($product->price); ?>
                             <tr> @if($barcode == 1)  <td>
                                     <input type="checkbox" class="singleCheck" name="singleCheck[]" value="{{ $product->id }}-{{ $product->prod_type }}"/></td>
                                 @endif
@@ -208,8 +208,8 @@ function renderNode1($node, $dash)
                                 </td>
                                 <td>
 
-                                    @if( $product->spl_price <= 0 )
-                                    <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert"> {{ $product->price }} </span>
+                                    @if( $product->spl_price <= 0.00 )
+                                    <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class=""> {{ $product->price }} </span>
                                     @else
                         <strike>
                             <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
