@@ -465,45 +465,33 @@ class VendorsController extends Controller {
 
     public function addMerchant()  // Display view
     {
+        $loggedInUserId = Session::get('loggedin_user_id');
+        $loginUserType = Session::get('login_user_type');
+        // get store id
+        $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
+        $storeId = $userResult->store_id;
+
+        // Get distributor id from store table
+        $storeResult = DB::table('stores')->where("id", $storeId)->first();
+        $distributorId = $storeResult->merchant_id;
+
         $viewname = Config('constants.adminAddMerchantView') . '.index';
        
-        $allinput = Input::all();
-        $merchantIdentityCode = $allinput['merchantIdentityCode'];
-        if(!empty($merchantIdentityCode))
+        $merchantListingResult = DB::table('has_distributors as hd')
+        ->select(['hd.merchant_id', 'm.register_details','hd.updated_at'])
+        ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
+        ->where("hd.distributor_id", $distributorId)
+        ->orderBy('hd.id','desc')->get();
+        
+        if (isset($merchantListingResult) && !empty($merchantListingResult)) 
         {
-            $merchantListingResult = DB::table('has_distributors as hd')
-            ->select(['hd.merchant_id', 'm.register_details','hd.created_at'])
-            ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
-            //->where("identity_code", $merchantIdentityCode)
-            ->orderBy('hd.id','desc')->get();
-            
-            //DB::enableQueryLog(); // Enable query log
-            // Your Eloquent query executed by using get()
-            //dd(DB::getQueryLog()); // Show results of log
-            //dd(json_decode($merchantListingResult->register_details));
-
-            if (isset($merchantListingResult) && !empty($merchantListingResult)) 
-            {
-                $decodedMerchantDetail = json_decode($merchantListingResult->register_details);
-                $data = ['merchantData' => $decodedMerchantDetail,'connectionDate' => $merchantListingResult->created_at];
-                //$data = ['merchantData' => json_decode($merchantListingResult->register_details, true)];
-                /*$merchantData = [];
-                foreach (json_decode($merchantListingResult->register_details) as $merchantDataValue)
-                {
-                        $merchantData[] = $merchantDataValue;
-                    
-                }
-                $data = ['merchantData' => $merchantData];*/
-            }
-            else 
-            {
-                $data = ['error' => "Invalid merchant code",'identityCode' => $merchantIdentityCode];
-            }
+            $data = ['merchantListingData' => $merchantListingResult,"storeId"=>$storeId];
         }
-        else
+        else 
         {
-            $data = ['error' => "No Recoords Found"];
+            $data = ['error' => "Invalid merchant code","storeId"=>$storeId];
         }
+       
         return Helper::returnView($viewname, $data);
     }
 
@@ -512,6 +500,17 @@ class VendorsController extends Controller {
         $viewname = Config('constants.adminAddMerchantView') . '.index';
         $allinput = Input::all();
         $merchantIdentityCode = $allinput['merchantIdentityCode'];
+        $storeId =  $allinput['hdnStoreId'];
+       
+        // Get distributor id from store table
+        $storeResult = DB::table('stores')->where("id", $storeId)->first();
+        $distributorId = $storeResult->merchant_id;
+        
+        // Get distributor industry id
+        $distributorResult = DB::table('distributor')->where("id", $distributorId)->first();
+        $decodedDistributorDetail = json_decode($distributorResult->register_details);
+        $distributorbusinessIdArray = $decodedDistributorDetail->business_type;
+        
         if(!empty($merchantIdentityCode))
         {
             $merchantResult = DB::table('merchants')->where("identity_code", $merchantIdentityCode)->first();
@@ -519,18 +518,27 @@ class VendorsController extends Controller {
             if (isset($merchantResult) && !empty($merchantResult)) 
             {
                 $decodedMerchantDetail = json_decode($merchantResult->register_details);
-                $data = ['merchantData' => $decodedMerchantDetail,'identityCode' => $merchantIdentityCode,'merchantId'=>$merchantResult->id];
+                $merchantbussinessId = $decodedMerchantDetail->business_type[0];
+                if(in_array($merchantbussinessId, $distributorbusinessIdArray))
+                {
+                    $data = ['status'=>1,'merchantData' => $merchantResult,'merchantId'=>$merchantResult->id];
+                }
+                else
+                {
+                    $data = ['status'=>0,'error' => "Industry not matched"];
+                }
             }
             else 
             {
-                $data = ['error' => "Invalid merchant code",'identityCode' => $merchantIdentityCode];
+                $data = ['status'=>0,'error' => "Invalid merchant code"];
             }
         }
         else
         {
-            $data = ['error' => "Enter merchant code"];
+            $data = ['status'=>0,'error' => "Enter merchant code"];
         }
-        return Helper::returnView($viewname, $data);
+        //return Helper::returnView($viewname, $data);
+        return $data;
         
     } // End verifyMerchantCode()
 
@@ -538,16 +546,11 @@ class VendorsController extends Controller {
     {
         $allinput = Input::all();
        
-        $hdnMerchantCode = $allinput['hdnMerchantCode'];
         $hdnMerchantEmail = $allinput['hdnMerchantEmail'];
         $hdnMerchantPhone = $allinput['hdnMerchantPhone'];
         $hdnMerchantId = $allinput['hdnMerchantId'];
-        $loggedInUserId = Session::get('loggedin_user_id');
-        $loginUserType = Session::get('login_user_type');
-
-        // get store id
-        $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
-        $storeId = $userResult->store_id;
+        $storeId = $allinput['hdnStoreIdForNotification'];
+        $countryCode = $allinput['hdnCountryCode'];
 
         // Get distributor id from store table
         $storeResult = DB::table('stores')->where("id", $storeId)->first();
@@ -557,23 +560,14 @@ class VendorsController extends Controller {
         $insertData = ["distributor_id"=>$distributorId,"merchant_id"=>$hdnMerchantId];
         $isInserted =  DB::table('has_distributors')->insert($insertData);
 
-        /*$hasDistributorObj = new hasDistributor();
-        $hasDistributorObj->distributor_id = $distributorId;
-        $hasDistributorObj->merchant_id = $hdnMerchantId;
-        $hasDistributorObj->is_approved = 0;
-        $hasDistributorObj->is_deleted = 0;
-        $hasDistributorObj>save();
-        $lastInsteredId = $hasDistributorObj->id;
-        echo "last id >> ".$lastInsteredId;
-        */
-
         if($isInserted)
         {
             $storeName = $distributorStoreName;
             $baseurl = str_replace("\\", "/", base_path());
+
             //SMS
             $msgOrderSucc = $storeName." is trying to connect with you for business Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
-            //Helper::sendsms($hdnMerchantPhone, $msgOrderSucc, $country_code);
+            Helper::sendsms($hdnMerchantPhone, $msgOrderSucc, $countryCode);
 
             //Email        
             $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
@@ -583,9 +577,10 @@ class VendorsController extends Controller {
             $mailcontent .= "Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
         
             if (!empty($hdnMerchantEmail)) {
-                //Helper::withoutViewSendMail($hdnMerchantEmail, $sub, $mailcontent);
+                Helper::withoutViewSendMail($hdnMerchantEmail, $sub, $mailcontent);
             }
             
         } // End if
+        return $this->addMerchant();
     } // End sendNotificationToMerchant();
 }

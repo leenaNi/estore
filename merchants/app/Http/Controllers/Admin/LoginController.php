@@ -56,7 +56,8 @@ class LoginController extends Controller
                 $r = Role::find($roles->id);
                 $per = $r->perms()->get()->toArray();
                 if (Auth::user()->user_type == 3) {
-                    return redirect()->route('admin.vendors.dashboard');
+                    //return redirect()->route('admin.vendors.dashboard');
+                    return redirect()->route('admin.home.view');
                 }
                 return redirect()->route('admin.home.view');
             } else {
