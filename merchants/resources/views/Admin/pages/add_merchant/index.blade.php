@@ -21,7 +21,9 @@
     <div class="row">
         <div id="addMerchantDiv">
             <div class="col-md-12">
+                <label class="error" id="sendRequestErorr">{{$sendRequestError}}</label>
                 <div class="box">
+                    
                     <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12 noBorder">                
                         <form  method="get" id="merchantCodeForm">
                             <div class="form-group col-md-8 col-sm-6 col-xs-12" id="inputDiv">
@@ -39,7 +41,7 @@
             
             <div class="col-md-3 col-sm-6 col-xs-12" id="merchantDetailDiv" style="display:none">
                 <div class="info-box">
-                <form action="{{ route('admin.vendors.send-notification') }}" method="get">
+                <form action="{{ route('admin.vendors.send-notification') }}" method="post">
                    
                         <label>Business Name: </label> <span id="storeName"></span><br>
                         <label>Person Name: </label> <span id="firstname"></span><br>
@@ -137,8 +139,8 @@
                             $("#email").html(parsedRegistrationDtaa['email']);
                             $("#phone").html(parsedRegistrationDtaa['phone']);
                             $("#businessName").html(parsedRegistrationDtaa['business_name']);
-                            $("#hdnMerchantEmail").html(data['merchantData']['email']);
-                            $("#hdnMerchantPhone").html(data['merchantData']['phone']);
+                            $("#hdnMerchantEmail").val(data['merchantData']['email']);
+                            $("#hdnMerchantPhone").val(data['merchantData']['phone']);
                             $("#hdnMerchantId").val(data['merchantId']);
                             $("#hdnCountryCode").val(data['merchantData']['country_code']);
                             $("#hdnStoreIdForNotification").val(hdnStoreId);

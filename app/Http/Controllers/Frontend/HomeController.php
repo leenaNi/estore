@@ -532,6 +532,7 @@ class HomeController extends Controller
         $contents = File::get(public_path() . "/public/skeleton.sql");
         $sql = str_replace('tblprfx_', $storeId, $contents);
         $test = DB::unprepared($sql);
+        
         $insertedProductIdArray = array();
         if($storeType == 'distributor')
         {
@@ -614,6 +615,7 @@ class HomeController extends Controller
         // get primary key of inserted product table 
         $productsData = DB::table('products')->select(DB::raw("GROUP_CONCAT(id) as product_id"))->where('store_id',$storeId)->get();
         $insertedProductId = $productsData[0]->product_id;
+        //echo "id >> ".$insertedProductId;
         $insertedProductIdArray = explode(",",$insertedProductId);
 
         if ($test) {
@@ -721,12 +723,7 @@ class HomeController extends Controller
 
                     if($storeType == 'distributor')
                     {
-                        //echo "if store id >> $storeId";
-                        //print_r($catid);
-                       
                         $totalCategory = count($catid); // industry
-                        //echo "totla cat >> ".$totalCategory;
-                    
                         for($k = 0 ; $k < $totalCategory; $k++)
                         {
                             if (!empty($catid[$k])) {
@@ -736,8 +733,7 @@ class HomeController extends Controller
                     } // end if
                     else
                     {
-                       // echo "store id >> $storeId :: cat id >> $catid";
-                        
+                        //echo "store id >> $storeId :: cat id >> $catid";
                         if (!empty($catid)) {
                             Helper::saveDefaultSet($catid, $prefix, $storeId);
                         }

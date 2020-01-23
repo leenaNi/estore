@@ -366,7 +366,7 @@
 
     $(".sendOtpOnMobile").on("click", function () {
        
-       // $("#newStoreForm").submit();
+        //$("#newStoreForm").submit();
         
        if ($("#newStoreForm").valid()) {
             $("#sendOTP").modal('show');

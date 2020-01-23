@@ -31,10 +31,11 @@ use App\Models\Order;
 use App\Models\Merchant;
 use App\Models\hasDistributor;
 use Hash;
+use Config;
 use DB;
 use Session;
 use Auth;
-
+use Crypt;
 
 class VendorsController extends Controller {
 
@@ -480,16 +481,16 @@ class VendorsController extends Controller {
         $merchantListingResult = DB::table('has_distributors as hd')
         ->select(['hd.merchant_id', 'm.register_details','hd.updated_at'])
         ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
-        ->where("hd.distributor_id", $distributorId)
+        ->where([["hd.distributor_id", $distributorId],['is_approved', '1']])
         ->orderBy('hd.id','desc')->get();
         
         if (isset($merchantListingResult) && !empty($merchantListingResult)) 
         {
-            $data = ['merchantListingData' => $merchantListingResult,"storeId"=>$storeId];
+            $data = ['merchantListingData' => $merchantListingResult,"storeId"=>$storeId,"sendRequestError" => Session::get('sendRequestMsg')];
         }
         else 
         {
-            $data = ['error' => "Invalid merchant code","storeId"=>$storeId];
+            $data = ['error' => "Invalid merchant code","storeId"=>$storeId,"sendRequestError" => Session::get('sendRequestMsg')];
         }
        
         return Helper::returnView($viewname, $data);
@@ -558,29 +559,89 @@ class VendorsController extends Controller {
         $distributorStoreName = $storeResult->store_name;
 
         $insertData = ["distributor_id"=>$distributorId,"merchant_id"=>$hdnMerchantId];
-        $isInserted =  DB::table('has_distributors')->insert($insertData);
-
+        $isInserted =  DB::table('has_distributors')->insertGetId($insertData);
+       
         if($isInserted)
         {
             $storeName = $distributorStoreName;
             $baseurl = str_replace("\\", "/", base_path());
-
+            $linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
             //SMS
-            $msgOrderSucc = $storeName." is trying to connect with you for business Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
-            Helper::sendsms($hdnMerchantPhone, $msgOrderSucc, $countryCode);
+            if(!empty($hdnMerchantPhone))
+            {
+                $massage = $storeName." is trying to connect with you for business. ";
+                $massage .= "Click on below link, if you want to connect with distributor ".$linkToConnect;
+                Helper::sendsms($hdnMerchantPhone, $massage, $countryCode);
+            }
 
             //Email        
             $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
-            $sub = "Connect with distributor";
+            $sub = "Distributor request";
         
-            $mailcontent = $storeName." is trying to connect with you for business.";
-            $mailcontent .= "Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            $mailcontent = $storeName." is trying to connect with you for business. ";
+            $mailcontent .= "Click on below link, if you want to connect with distributor ".$linkToConnect;
         
             if (!empty($hdnMerchantEmail)) {
                 Helper::withoutViewSendMail($hdnMerchantEmail, $sub, $mailcontent);
             }
+            Session::flash('sendRequestMsg', 'Your request successfully sent to the merchant.');
             
         } // End if
-        return $this->addMerchant();
+        else
+        {
+            Session::flash('sendRequestMsg', 'There is somthing wrong.');
+        }
+        //return $this->addMerchant();
+       
+        return redirect()->route('admin.vendors.addMerchant');
+       
     } // End sendNotificationToMerchant();
+
+    public function approveRequest($id)
+    {
+        if(isset($id) && !empty($id))
+        {
+            $decryptedId = Crypt::decrypt($id);
+            
+            $isUpdated = DB::table('has_distributors')
+            ->where('id', $decryptedId)
+            ->update(array('is_approved' => 1));  // update the record in the DB. 
+            
+            if($isUpdated)
+            {
+                // Get distributor id from has_distributor
+                $hasDistributorResult = DB::table('has_distributors')->where("id", $decryptedId)->first();
+                $distributorId = $hasDistributorResult->distributor_id;
+
+                // Distributor data
+                $distributorResult = DB::table('distributor')->where("id", $distributorId)->first();
+                $distributorEmail = $distributorResult->email;
+                $distributorPhoneNo = $distributorResult->phone_no;
+                $countryCode = $distributorResult->country;
+
+                //SMS
+                if(!empty($distributorPhoneNo))
+                {
+                    $massage = "Request accepted by merchant";
+                    Helper::sendsms($distributorPhoneNo, $massage, $countryCode);
+                }
+
+                //Email        
+                //$domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
+                $sub = "Request  accepted by merchant";
+            
+                $mailcontent = "Request accepted by merchant";
+            
+                if (!empty($distributorEmail)) {
+                    Helper::withoutViewSendMail($distributorEmail, $sub, $mailcontent);
+                }
+                
+            } // End isUpdated if
+           $viewname = Config('constants.adminAddMerchantView') . '.thank_you';
+           //$viewname = "Frontend.pages.thank_you";
+            return Helper::returnView($viewname, '');
+            //return view($viewname);
+        } // End if here
+    } // ENd approveRequest() 
+    
 }

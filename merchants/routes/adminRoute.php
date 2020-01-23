@@ -1,5 +1,4 @@
 <?php
-
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web']], function () {
     Route::get('/', ["as" => "adminLogin", "uses" => "LoginController@index"]);
     Route::get('/unauthorized', ["as" => "unauthorized", "uses" => "LoginController@unauthorized"]);
@@ -680,7 +679,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 // add merchant
                 Route::any('/add-merchant', array('as' => 'admin.vendors.addMerchant', 'uses' => 'VendorsController@addMerchant'));
                 Route::any('/verify-code', array('as' => 'admin.vendors.verifyCode', 'uses' => 'VendorsController@verifyMerchantCode'));
-                Route::get('/send-notification', array('as' => 'admin.vendors.send-notification', 'uses' => 'VendorsController@sendNotificationToMerchant'));
+                Route::post('/send-notification', array('as' => 'admin.vendors.send-notification', 'uses' => 'VendorsController@sendNotificationToMerchant'));
+                Route::get('/accept/{id}', array('as' => 'admin.vendors.accept', 'uses' => 'VendorsController@approveRequest'));
                 
             });
 
