@@ -450,6 +450,7 @@ class HomeController extends Controller
         // $merchantPassword = $getMerchat->password;
         $storeVersion = $themeInput->store_version;
         $firstname = $getMerchat->firstname;
+        $identityCode = $getMerchat->identity_code;
         if (!empty($themeInput->password)) {
             $password = $themeInput->password;
         } else {
@@ -460,7 +461,7 @@ class HomeController extends Controller
             //dd("teme id >> ".$themeInput->theme_id);
             if (empty($themeInput->id)) {
                 //dd((object) Input::get('themeInput')." :: ".$storeType);
-                $result = $this->createInstance($storeType,$store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $storeName, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $phoneNo, $firstname, $domainname, $storeVersion, $store->expiry_date);
+                $result = $this->createInstance($storeType,$store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $storeName, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $phoneNo, $firstname, $domainname, $storeVersion, $store->expiry_date, $identityCode);
                 // dd($result);
             }
         }
@@ -483,7 +484,7 @@ class HomeController extends Controller
         return Helper::returnView($viewname, $dataS);
     }
 
-    public function createInstance($storeType,$storeId, $prefix, $urlKey, $merchantEamil, $merchantPassword, $storeName, $themeid, $catid, $currency, $phone, $firstname, $domainname, $storeVersion, $expirydate)
+    public function createInstance($storeType, $storeId, $prefix, $urlKey, $merchantEamil, $merchantPassword, $storeName, $themeid, $catid, $currency, $phone, $firstname, $domainname, $storeVersion, $expirydate, $identityCode)
     {
         //echo "createInstance function storeid >> $storeId ";
         //echo "<br> Cat array >> <pre>";print_r($catid);
@@ -851,6 +852,7 @@ class HomeController extends Controller
                     {
                         $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
                     }
+                    $mailcontent .= "Your Unique Code is: <b>" . $identityCode . "</b>" . "\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
