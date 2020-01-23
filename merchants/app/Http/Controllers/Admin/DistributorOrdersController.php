@@ -50,10 +50,11 @@ class DistributorOrdersController extends Controller
         Session::forget('distributor_store_id');
         Session::forget('distributor_store_prefix');
         $jsonString = Helper::getSettings();
+        $merchant = DB::table('stores')->where('id', Session::get('store_id'))->first();
         $allDistributors = DB::table('has_distributors')
         ->join("stores", "stores.merchant_id", "=", "has_distributors.distributor_id")
         ->where('stores.store_type', 'LIKE', 'distributor')
-        ->where(['has_distributors.merchant_id' => Session::get('store_id')])->get(['stores.id']);
+        ->where(['has_distributors.merchant_id' => $merchant->merchant_id])->get(['stores.id']);
         $distributorsStoreIds = [];
         foreach($allDistributors as $allDistributor) {
             array_push($distributorsStoreIds, $allDistributor->id);
