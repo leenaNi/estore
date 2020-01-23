@@ -55,6 +55,7 @@ class DistributorOrdersController extends Controller
         ->join("stores", "stores.merchant_id", "=", "has_distributors.distributor_id")
         ->where('stores.store_type', 'LIKE', 'distributor')
         ->where(['has_distributors.merchant_id' => $merchant->merchant_id])->get(['stores.id']);
+        dd($allDistributors);
         $distributorsStoreIds = [];
         foreach($allDistributors as $allDistributor) {
             array_push($distributorsStoreIds, $allDistributor->id);
