@@ -139,6 +139,7 @@ class ProductController extends Controller {
         } else {
             $product->wishlist = 0;
         }
+        
         $nattrs = AttributeSet::find($product->attributeset['id'])->attributes()->where("is_filterable", "=", 1)->get()->toArray();
         $data = ['product' => $product, 'nattrs' => $nattrs, 'is_desc' => $is_desc, 'is_rel_prod' => $is_rel_prod, 'is_like_prod' => $is_like_prod];
 
@@ -154,7 +155,10 @@ class ProductController extends Controller {
                 $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
             }
         }
-
+        $CustomerReviews = CustomerReview::where(['product_id'=>$prodid,'publish'=>1])->orderBy('id','desc')->take(2)->get();
+        $totalRatings = CustomerReview::where(['product_id'=>$prodid,'publish'=>1])->sum('rating');
+        $data['CustomerReviews'] = $CustomerReviews;
+        $data['totalRatings'] = $totalRatings;
         $data['selAttrs'] = $selAttrs;
         $data['product'] = $product;
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
@@ -188,6 +192,13 @@ class ProductController extends Controller {
                         $product->wishlist = 1;
                     } else {
                         $product->wishlist = 0;
+                    }
+                    $totstock = Product::where('parent_prod_id',$product->id)->sum('stock');  
+                    if($totstock > 0)
+                    {
+                        $startprice = Product::where('parent_prod_id',$product->id)->orderBy('price','asc')->pluck('price');
+                        $endprice = Product::where('parent_prod_id',$product->id)->orderBy('price','desc')->pluck('price');
+                        $product->price = $startprice[0].' - '.$endprice[0];
                     }
                     $selAttrs = [];
 
@@ -244,46 +255,6 @@ class ProductController extends Controller {
                     abort(404, "File not found");
                 }
             }
-
-//    public function comboProduct($pId) {
-//        $product = Product::find($pId);
-//        $options = [];
-//        $extraprice = [];
-//        $combos = [];
-//        /* Loop through The Products in the Combo */
-//        foreach ($product->comboproducts as $combo) {
-//            $combos[$combo->id] = ['name' => $combo->product, 'url_key' => $combo->url_key];
-//            if ($combo->prod_type == 3) {
-//                $options[$combo->id] = [];
-//                $extraprice[$combo->id] = [];
-//                /* Loop through The Attributes belonging to the Attribute Set of the Current Product */
-//                $attrs = AttributeSet::find($combo->attributeset['id'])->attributes()->where("is_filterable", "=", 1)->get()->toArray();
-//                foreach ($attrs as $attr) {
-//                    $options[$combo->id][$attr['attr']] = [];
-//                    $attrvals = explode("\n", $attr['attr_values']);
-//                    /* Loop through The Attributes Values */
-//                    foreach ($attrvals as $attrval) {
-//                        $options[$combo->id][$attr['attr']]["options"][trim($attrval)] = [];
-//                        $prods = Attribute::find($attr['id'])->products()->where("parent_prod_id", "=", $combo->id)->wherePivot('attr_val', 'like', trim($attrval) . "%")->get();
-//                        /* Loop through The Products Having Same Value */
-//                        if (!$prods->isEmpty()) {
-//                            foreach ($prods as $pid) {
-//                                $options[$combo->id][$attr['attr']]["options"][trim($attrval)]["products"][] = $pid->id;
-//                                if (!array_key_exists($pid->id, $extraprice)) {
-//                                    $extraprice[$combo->id][$pid->id] = $pid->price;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        $product->prodImage = asset(Config('constants.productImgPath') . $product->catalogimgs()->first()->filename);
-//        $data = ['combos' => $combos, 'product' => $product];
-//        $viewname = Config('constants.frontendCatlogProducts') . '.comboProduct';
-//        return Helper::returnView($viewname, $data);
-//    }
-
 
             public function comboProduct($pId) {
                 $data = [];

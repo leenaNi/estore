@@ -133,13 +133,17 @@ class ProductsController extends Controller
         }
 
         foreach ($products as $prd) {
-//if(count($prd->wishlist) > 0){
-            //             $dd[$prd->product]=  $prd->wishlist;
-            //           }
+            $totstock = Product::where('parent_prod_id',$prd->id)->sum('stock');  
+            if($totstock > 0)
+            {
+                $prd->stock = $totstock;
+                $startprice = Product::where('parent_prod_id',$prd->id)->orderBy('price','asc')->pluck('price');
+                $endprice = Product::where('parent_prod_id',$prd->id)->orderBy('price','desc')->pluck('price');
+                $prd->price = $startprice[0].'-'.$endprice[0];
+            }
             $getPrdImg = ($prd->catalogimgs()->where("image_mode", 1)->count() > 0) ? $prd->catalogimgs()->where("image_mode", 1)->first()->filename : 'default_product.png';
             $prd->prodImage = Config('constants.productImgPath') . "/" . @$getPrdImg;
         }
-        //dd($prod_types);
 
         return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets'));
     }

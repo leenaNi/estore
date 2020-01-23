@@ -14,10 +14,10 @@ use App\Library\Helper;
 use App\Models\Category;
 use App\Models\HasCurrency;
 use App\Models\Merchant;
-use App\Models\Vendor;
 use App\Models\MerchantOrder;
 use App\Models\Store;
 use App\Models\StoreTheme;
+use App\Models\Vendor;
 use Auth;
 use Crypt;
 use DB;
@@ -125,7 +125,7 @@ class HomeController extends Controller
         //  dd($checkdomain);
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
         //$cat = Category::where("status", 1)->pluck('category', 'id');
-        
+
         $curr = HasCurrency::where('status', 1)->orderBy("currency_code", "asc")->get(['status', 'id', 'name', 'iso_code', 'currency_code']);
         $viewname = Config('constants.frontendView') . ".new-store";
         $data = ['cat' => $cat, 'curr' => $curr];
@@ -172,23 +172,21 @@ class HomeController extends Controller
     public function selectThemes()
     {
         $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
-        if (empty(Input::get('firstname')) && empty(Session::get('merchantid')))
-        {
+        if (empty(Input::get('firstname')) && empty(Session::get('merchantid'))) {
             $cats = Category::where("status", 1)->get();
 
             $data = ['cats' => $cats, 'themeIds' => $themeIds];
             $viewname = Config('constants.frontendView') . ".select-themes";
             return Helper::returnView($viewname, $data);
         }
-        if (empty(Session::get('merchantid'))) 
-        {
+        if (empty(Session::get('merchantid'))) {
             $allinput = Input::all();
             $storeType = $allinput['storeType'];
             $sendmsg = "Registred successfully.";
             // Helper::sendsms($allinput['phone'],$sendmsg);
             // Helper::sendsms(9930619304,$sendmsg);
             $names = explode(" ", $allinput['firstname']);
-            
+
             $validator = Validator::make($allinput, Merchant::rules(null));
             if ($validator->fails()) {
                 return $validator->messages()->toJson();
@@ -199,14 +197,14 @@ class HomeController extends Controller
                     $merchantObj->provider_id = $allinput['provider_id'];
                     Session::put("provider_id", $allinput['provider_id']);
                 }
-                
+
                 $merchantObj->company_name = $allinput['company_name'];
                 $merchantObj->phone = $allinput['phone'];
                 $merchantObj->country_code = $allinput['country_code'];
-                
+
                 $allinput['business_type'] = $businessType;
-                $cats = Category::where("status", 1)->where("id",$allinput['business_type'])->get();
-                
+                $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
+
                 $merchantObj->firstname = $names[0];
                 $merchantObj->lastname = @$names[1];
                 if (!empty($allinput['password'])) {
@@ -219,10 +217,9 @@ class HomeController extends Controller
                 $merchantObj->save();
                 $lastInsteredId = $merchantObj->id;
 
-                if($lastInsteredId > 0)
-                {
+                if ($lastInsteredId > 0) {
                     $merchantObj1 = Merchant::find($lastInsteredId);
-                    $indentityCode = $this->createUniqueIdentityCode($allinput,$lastInsteredId);
+                    $indentityCode = $this->createUniqueIdentityCode($allinput, $lastInsteredId);
                     $merchantObj1->identity_code = $indentityCode;
                     $merchantObj1->save();
                 }
@@ -231,7 +228,7 @@ class HomeController extends Controller
                 Session::put('merchantstorecount', 0);
             } // end else
         } else {
-           
+
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
             $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
             $checkStote = Merchant::find(Session::get('merchantid'))->getstores()->count();
@@ -245,13 +242,12 @@ class HomeController extends Controller
 
     public function distributorSignup()
     {
-        if (empty(Session::get('merchantid'))) 
-        {
+        if (empty(Session::get('merchantid'))) {
             $allinput = Input::all();
             $storeType = $allinput['storeType'];
             $sendmsg = "Registred successfully.";
             $names = explode(" ", $allinput['firstname']);
-            
+
             $validator = Validator::make($allinput, Merchant::rules(null));
             if ($validator->fails()) {
                 return $validator->messages()->toJson();
@@ -262,14 +258,13 @@ class HomeController extends Controller
                 $distributorObj->business_name = $allinput['company_name'];
                 $distributorObj->phone_no = $allinput['phone'];
                 $distributorObj->currency_code = $allinput['currency'];
-                
+
                 $allinput['business_type'] = $businessType;
-                $implodedBusinessTypeArray = implode(',',$businessType);
-                
-                $cats = Category::where("status", 1)->whereIn("id",$allinput['business_type'])->get();
+                $implodedBusinessTypeArray = implode(',', $businessType);
+
+                $cats = Category::where("status", 1)->whereIn("id", $allinput['business_type'])->get();
                 $selCats = [];
-                foreach ($cats as $cat) 
-                {
+                foreach ($cats as $cat) {
                     $selCats[$cat->id] = $cat->category;
                 } // End foreach
                 $allinput['business_name'] = $selCats;
@@ -286,10 +281,9 @@ class HomeController extends Controller
                 $distributorObj->save();
                 $lastInsteredId = $distributorObj->id;
 
-                if($lastInsteredId > 0)
-                {
+                if ($lastInsteredId > 0) {
                     $distributorObj1 = Vendor::find($lastInsteredId);
-                    $indentityCode = $this->createUniqueIdentityCode($allinput,$lastInsteredId);
+                    $indentityCode = $this->createUniqueIdentityCode($allinput, $lastInsteredId);
                     $distributorObj1->identity_code = $indentityCode;
                     $distributorObj1->save();
                 }
@@ -299,7 +293,7 @@ class HomeController extends Controller
                 Session::put('merchantstorecount', 0);
             } // end else
         } else {
-           
+
             $allinput = json_decode(Vendor::find(Session::get('merchantid'))->register_details, true);
             $cats = Category::where("status", 1)->where("id", $allinput['business_type'])->get();
             $checkStote = Vendor::find(Session::get('merchantid'))->getstores()->count();
@@ -313,16 +307,17 @@ class HomeController extends Controller
         return Helper::returnView($viewname, $data);
     } // End distributorSignup()
 
-    public function createUniqueIdentityCode($allinput,$lastInsteredId) // for merchnat and distributor
+    public function createUniqueIdentityCode($allinput, $lastInsteredId) // for merchnat and distributor
+
     {
         $storeName = $allinput['store_name'];
         $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
         $phoneNo = $allinput['phone'];
-        $randomFourDigit = rand(1000,9999);
-        $indentityCode = substr($storeName,0,3).substr($phoneNo,-3).$lastInsteredId.$randomFourDigit;
+        $randomFourDigit = rand(1000, 9999);
+        $indentityCode = substr($storeName, 0, 3) . substr($phoneNo, -3) . $lastInsteredId . $randomFourDigit;
         //dd($indentityCode);
         return $indentityCode;
-        
+
     } // End createUniqueIdentityCode(
     public function checkUser()
     {
@@ -397,10 +392,12 @@ class HomeController extends Controller
         }
         $storeType = $themeInput->storeType;
         //echo "session :: ".Session::get('merchantid');exit;
-        if($storeType == 'merchant')
+        if ($storeType == 'merchant') {
             $getMerchat = Merchant::find(Session::get('merchantid'));
-        else
-            $getMerchat = Vendor::find(Session::get('merchantid')); //get distributor id. Variable name is kept merchantid to avoid any issue in the old code.
+        } else {
+            $getMerchat = Vendor::find(Session::get('merchantid'));
+        }
+        //get distributor id. Variable name is kept merchantid to avoid any issue in the old code.
         //print_r($getMerchat);exit;
         $registerDetails = json_decode($getMerchat->register_details);
         $store = new Store();
@@ -408,22 +405,20 @@ class HomeController extends Controller
         $store->url_key = $domainname;
         $store->store_type = $storeType; // merchant/distributor
         $store->merchant_id = $getMerchat->id;
-       
-        if($storeType == 'merchant')    //Theme selection is available only for merchants
+
+        if ($storeType == 'merchant') //Theme selection is available only for merchants
         {
             $phoneNo = $getMerchat->phone;
             $store->template_id = $themeInput->theme_id;
             $store->category_id = $themeInput->cat_id;
             $storeName = $themeInput->storename;
-        }
-        else
-        {
+        } else {
             $phoneNo = $getMerchat->phone_no;
             $themeInput->cat_id = $themeInput->business_type;
             $storeName = $themeInput->store_name;
             $themeInput->theme_id = 0;
             $store->template_id = 0;
-            $store->category_id = implode(',',$themeInput->cat_id);
+            $store->category_id = implode(',', $themeInput->cat_id);
         }
         $store->store_domain = $actualDomain;
         $store->percent_to_charge = 1.00;
@@ -450,6 +445,7 @@ class HomeController extends Controller
         // $merchantPassword = $getMerchat->password;
         $storeVersion = $themeInput->store_version;
         $firstname = $getMerchat->firstname;
+        $identityCode = $getMerchat->identity_code;
         if (!empty($themeInput->password)) {
             $password = $themeInput->password;
         } else {
@@ -460,7 +456,7 @@ class HomeController extends Controller
             //dd("teme id >> ".$themeInput->theme_id);
             if (empty($themeInput->id)) {
                 //dd((object) Input::get('themeInput')." :: ".$storeType);
-                $result = $this->createInstance($storeType,$store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $storeName, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $phoneNo, $firstname, $domainname, $storeVersion, $store->expiry_date);
+                $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $themeInput->email, $password, $storeName, $themeInput->theme_id, $themeInput->cat_id, $themeInput->currency, $phoneNo, $firstname, $domainname, $storeVersion, $store->expiry_date, $identityCode);
                 // dd($result);
             }
         }
@@ -474,7 +470,7 @@ class HomeController extends Controller
 
     public function getcongrats()
     {
-       // echo "getcongrats  call function";
+        // echo "getcongrats  call function";
         $dataS = [];
         $dataS['id'] = Input::get('id');
         $dataS['storedata'] = Store::find(Input::get('id'));
@@ -483,18 +479,15 @@ class HomeController extends Controller
         return Helper::returnView($viewname, $dataS);
     }
 
-    public function createInstance($storeType,$storeId, $prefix, $urlKey, $merchantEamil, $merchantPassword, $storeName, $themeid, $catid, $currency, $phone, $firstname, $domainname, $storeVersion, $expirydate)
+    public function createInstance($storeType, $storeId, $prefix, $urlKey, $merchantEamil, $merchantPassword, $storeName, $themeid, $catid, $currency, $phone, $firstname, $domainname, $storeVersion, $expirydate, $identityCode)
     {
         //echo "createInstance function storeid >> $storeId ";
         //echo "<br> Cat array >> <pre>";print_r($catid);
         ini_set('max_execution_time', 600);
-        if($storeType == 'merchant')
-        {
+        if ($storeType == 'merchant') {
             $merchantd = Merchant::find(Session::get('merchantid'));
             $country_code = $merchantd->country_code;
-        }
-        else
-        {
+        } else {
             $distributorData = Vendor::find(Session::get('merchantid')); // distributor
             $country_code = $distributorData->country;
         }
@@ -534,89 +527,86 @@ class HomeController extends Controller
         $test = DB::unprepared($sql);
         
         $insertedProductIdArray = array();
-        if($storeType == 'distributor')
-        {
+        if ($storeType == 'distributor') {
             $totalCategory = count($catid) - 1; // industry
             //echo "totla cat >> ".$totalCategory;
-          
-            for($i = 0 ; $i < $totalCategory; $i++)
-            {
+
+            for ($i = 0; $i < $totalCategory; $i++) {
                 $productDefaultData[] = [
-                    'id'=>NULL, 
-                    'product'=> 'Men Green Printed Custom Fit Polo Collar T-shirt', 
-                    'product_code'=>'',
-                    'alias'=>'', 
-                    'short_desc'=>'', 
-                    'long_desc'=> '', 
-                    'add_desc'=>'', 
-                    'is_featured'=>0, 
-                    'images'=> '/tmp/phpFCjDcZ',
-                    'prod_type'=>1,
-                    'is_stock'=>1, 
-                    'attr_set'=>1, 
-                    'url_key'=>'men-green-printed-custom-fit-polo-collar-t-shirt', 
-                    'is_avail'=>1, 
-                    'is_listing'=>0,
-                    'status'=>1,
-                    'stock'=>100,
-                    'cur'=>'',
-                    'max_price'=>0,
-                    'min_price'=>0,
-                    'purchase_price'=>'0.00',
-                    'price'=>'200173.54',
-                    'unit_measure'=>'',
-                    'consumption_uom'=>'',
-                    'conversion'=>'0.00',
-                    'height'=>0,
-                    'width'=>0,
-                    'length'=>0,
-                    'weight'=>0,
-                    'spl_price'=>'120077.43',
-                    'selling_price'=>'120077.43',
-                    'is_crowd_funded'=>0,
-                    'target_date'=>'0000-00-00 00:00:00',
-                    'target_qty'=>0,
-                    'parent_prod_id'=>0,
-                    'meta_title'=>'',
-                    'meta_keys'=>'', 
-                    'meta_desc'=>'', 
-                    'art_cut'=>0, 
-                    'is_cod'=>1, 
-                    'added_by'=>1, 
-                    'updated_by'=>1, 
-                    'is_individual'=>1, 
-                    'sort_order'=>0, 
-                    'meta_robot'=>'', 
-                    'canonical'=>'', 
-                    'og_title'=>'', 
-                    'og_desc'=>'', 
-                    'og_image'=>'', 
-                    'twitter_url'=>'', 
-                    'twitter_title'=>'', 
-                    'twitter_desc'=>'',
-                    'twitter_image'=>'', 
-                    'og_url'=>'', 
-                    'other_meta'=>'', 
-                    'is_referal_discount'=>0, 
-                    'is_shipped_international'=>0, 
-                    'eCount'=>0,
-                    'eNoOfDaysAllowed'=>0, 
-                    'barcode'=>'', 
-                    'is_tax'=>0, 
-                    'is_del'=>0, 
-                    'min_order_quantity'=>1, 
-                    'is_trending'=>1,
-                    'store_id'=>$storeId
-                ]; 
-            } // End i for loop           
-            $test =  DB::table('products')->insert($productDefaultData);
+                    'id' => null,
+                    'product' => 'Men Green Printed Custom Fit Polo Collar T-shirt',
+                    'product_code' => '',
+                    'alias' => '',
+                    'short_desc' => '',
+                    'long_desc' => '',
+                    'add_desc' => '',
+                    'is_featured' => 0,
+                    'images' => '/tmp/phpFCjDcZ',
+                    'prod_type' => 1,
+                    'is_stock' => 1,
+                    'attr_set' => 1,
+                    'url_key' => 'men-green-printed-custom-fit-polo-collar-t-shirt',
+                    'is_avail' => 1,
+                    'is_listing' => 0,
+                    'status' => 1,
+                    'stock' => 100,
+                    'cur' => '',
+                    'max_price' => 0,
+                    'min_price' => 0,
+                    'purchase_price' => '0.00',
+                    'price' => '200173.54',
+                    'unit_measure' => '',
+                    'consumption_uom' => '',
+                    'conversion' => '0.00',
+                    'height' => 0,
+                    'width' => 0,
+                    'length' => 0,
+                    'weight' => 0,
+                    'spl_price' => '120077.43',
+                    'selling_price' => '120077.43',
+                    'is_crowd_funded' => 0,
+                    'target_date' => '0000-00-00 00:00:00',
+                    'target_qty' => 0,
+                    'parent_prod_id' => 0,
+                    'meta_title' => '',
+                    'meta_keys' => '',
+                    'meta_desc' => '',
+                    'art_cut' => 0,
+                    'is_cod' => 1,
+                    'added_by' => 1,
+                    'updated_by' => 1,
+                    'is_individual' => 1,
+                    'sort_order' => 0,
+                    'meta_robot' => '',
+                    'canonical' => '',
+                    'og_title' => '',
+                    'og_desc' => '',
+                    'og_image' => '',
+                    'twitter_url' => '',
+                    'twitter_title' => '',
+                    'twitter_desc' => '',
+                    'twitter_image' => '',
+                    'og_url' => '',
+                    'other_meta' => '',
+                    'is_referal_discount' => 0,
+                    'is_shipped_international' => 0,
+                    'eCount' => 0,
+                    'eNoOfDaysAllowed' => 0,
+                    'barcode' => '',
+                    'is_tax' => 0,
+                    'is_del' => 0,
+                    'min_order_quantity' => 1,
+                    'is_trending' => 1,
+                    'store_id' => $storeId,
+                ];
+            } // End i for loop
+            $test = DB::table('products')->insert($productDefaultData);
         } // ENd $storeType check if
-        
-        // get primary key of inserted product table 
-        $productsData = DB::table('products')->select(DB::raw("GROUP_CONCAT(id) as product_id"))->where('store_id',$storeId)->get();
+
+        // get primary key of inserted product table
+        $productsData = DB::table('products')->select(DB::raw("GROUP_CONCAT(id) as product_id"))->where('store_id', $storeId)->get();
         $insertedProductId = $productsData[0]->product_id;
-        //echo "id >> ".$insertedProductId;
-        $insertedProductIdArray = explode(",",$insertedProductId);
+        $insertedProductIdArray = explode(",", $insertedProductId);
 
         if ($test) {
             $path = base_path() . "/merchants/" . "$domainname";
@@ -641,16 +631,15 @@ class HomeController extends Controller
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
                     //Last record
                     $lastUser = DB::table('users')->latest('id')->first();
-                    if(isset($lastUser) && !empty($lastUser))
+                    if (isset($lastUser) && !empty($lastUser)) {
                         $lastRecordUserId = $lastUser->id + 1;
-                    else
+                    } else {
                         $lastRecordUserId = 1;
-                    if($storeType == 'merchant')
-                    {
-                        $userType = 1;
                     }
-                    else
-                    {
+
+                    if ($storeType == 'merchant') {
+                        $userType = 1;
+                    } else {
                         $userType = 3; // distributor
                     }
                     $insertArr = ["id" => ($lastRecordUserId), "email" => "$merchantEamil", "user_type" => $userType, "status" => 1, "telephone" => "$phone", "firstname" => "$firstname", "store_id" => "$storeId", "prefix" => "$prefix"];
@@ -663,7 +652,7 @@ class HomeController extends Controller
                         $provider_id = Session::get("provider_id");
                         $insertArr["provider_id"] = "$provider_id";
                     }
-                    
+
                     if ($country_code) {
                         $insertArr["country_code"] = "$country_code";
                     }
@@ -671,15 +660,13 @@ class HomeController extends Controller
                     //                    $password = Hash::make($randno);
                     $newuserid = DB::table("users")->insertGetId($insertArr);
 
-                    // This json(product_category_json) file contain category id wise product and category data(static) 
-                    $jsonDataFromFile = File::get(public_path()."/public/product_category_json.json");
-                    $decodedJsonData = json_decode(trim($jsonDataFromFile),true);
-                    
-                    for($j = 0 ; $j < count($insertedProductIdArray); $j++)
-                    {
+                    // This json(product_category_json) file contain category id wise product and category data(static)
+                    $jsonDataFromFile = File::get(public_path() . "/public/product_category_json.json");
+                    $decodedJsonData = json_decode(trim($jsonDataFromFile), true);
+
+                    for ($j = 0; $j < count($insertedProductIdArray); $j++) {
                         $categoryId = $catid[$j];
-                        if($categoryId != 1)
-                        {
+                        if ($categoryId != 1) {
                             $productId = $insertedProductIdArray[$j];
                             //echo "\ncat >> ".$categoryId." :: product >> ".$productId;
 
@@ -702,13 +689,13 @@ class HomeController extends Controller
                             $imageMode = $categoryJsonData['image_mode'];
                             $sortOrder = $categoryJsonData['sort_order'];
                             $imagePath = $categoryJsonData['image_path'];
-                            
-                            DB::table('products')->where([['store_id',$storeId],['id',$productId]])->update(
+
+                            DB::table('products')->where([['store_id', $storeId], ['id', $productId]])->update(
                                 ['product' => $productName, 'url_key' => $urlKey, 'prod_type' => $prodType, 'stock' => $stock, 'cur' => $cur, 'max_price' => $maxPrice, 'min_price' => $minPrice, 'purchase_price' => $purchasePrice, 'price' => $price, 'spl_price' => $splPrice, 'selling_price' => $sellingPrice]
                             );
-                            DB::table('catalog_images')->where('catalog_id',$productId)->delete();
+                            DB::table('catalog_images')->where('catalog_id', $productId)->delete();
                             DB::table('catalog_images')->insert(['filename' => $categoryFilename, 'alt_text' => $altText, 'image_type' => $imageType, 'image_mode' => $imageMode, 'catalog_id' => $productId, 'sort_order' => $sortOrder, 'image_path' => $imagePath]);
-                        } // End check if 
+                        } // End check if
                     } // End j loop
 
                     $json_url = base_path() . "/merchants/" . $domainname . "/storeSetting.json";
@@ -721,26 +708,28 @@ class HomeController extends Controller
                     $decodeVal['prefix'] = $prefix;
                     $decodeVal['country_code'] = $country_code;
 
-                    if($storeType == 'distributor')
-                    {
+                    if ($storeType == 'distributor') {
+                        //echo "if store id >> $storeId";
+                        //print_r($catid);
+
                         $totalCategory = count($catid); // industry
-                        for($k = 0 ; $k < $totalCategory; $k++)
-                        {
+                        //echo "totla cat >> ".$totalCategory;
+
+                        for ($k = 0; $k < $totalCategory; $k++) {
                             if (!empty($catid[$k])) {
                                 Helper::saveDefaultSet($catid[$k], $prefix, $storeId);
                             }
                         }
                     } // end if
-                    else
-                    {
-                        //echo "store id >> $storeId :: cat id >> $catid";
+                    else {
+                        // echo "store id >> $storeId :: cat id >> $catid";
+
                         if (!empty($catid)) {
                             Helper::saveDefaultSet($catid, $prefix, $storeId);
                         }
                     }
 
-                    if($storeType == 'merchant')
-                    {
+                    if ($storeType == 'merchant') {
                         if (!empty($themeid)) {
                             $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
                             $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
@@ -753,7 +742,7 @@ class HomeController extends Controller
                         /*$fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                         fwrite($fp, $newJsonString);
                         fclose($fp);*/
-                        
+
                         $banner = json_decode((StoreTheme::where("id", $themeid)->first()->banner_image), true);
                         // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
                         if (!empty($banner)) {
@@ -791,9 +780,9 @@ class HomeController extends Controller
                             }
                         }
                     } // end storetype check if
-                    
+
                     $newJsonString = json_encode($decodeVal);
-                        
+
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
@@ -843,10 +832,10 @@ class HomeController extends Controller
                     $mailcontent .= "Kindly find the links to view your store:" . "\n";
 
                     $mailcontent .= "Store Admin Link: https://" . $domainname . '.' . $domain . "/admin" . "\n";
-                    if($storeType == 'merchant')
-                    {
+                    if ($storeType == 'merchant') {
                         $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
                     }
+                    $mailcontent .= "Unique Code is: " . $identityCode . " " . "\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
@@ -1041,18 +1030,15 @@ class HomeController extends Controller
         //echo Input::get('email');
         //dd("dsf >> ".Input::get('storeType'));
         $storeType = Input::get('storeType'); // merchant/ distributor
-        
-        if($storeType == 'merchant')
-        {
+
+        if ($storeType == 'merchant') {
             $chkEmail = Merchant::where("email", Input::get('email'))->first();
         } // End if
-        else
-        {
+        else {
             $chkEmail = Vendor::where("email", Input::get('email'))->first();
         } // End else
-        
-        if (isset($chkEmail) && !empty($chkEmail)) 
-        {
+
+        if (isset($chkEmail) && !empty($chkEmail)) {
             return 1;
         } else {
             return 0;
@@ -1062,12 +1048,10 @@ class HomeController extends Controller
     public function checkExistingphone()
     {
         $storeType = Input::get('storeType'); // merchant/ distributor
-        if($storeType == 'merchant')
-        {
+        if ($storeType == 'merchant') {
             $chkPhoneNo = Merchant::where("phone", Input::get('phone'))->first();
         } // End if
-        else
-        {
+        else {
             $chkPhoneNo = Vendor::where("phone_no", Input::get('phone_no'))->first();
         } // End else
 
