@@ -63,7 +63,6 @@ class DistributorOrdersController extends Controller
         foreach($distributorStores as $distributorStore) {
             array_push($distributorsStoreIds, $distributorStore->id);
         }
-        dd($distributorsStoreIds);
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
