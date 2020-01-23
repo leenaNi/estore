@@ -834,7 +834,7 @@ class HomeController extends Controller
                     if ($storeType == 'merchant') {
                         $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
                     }
-                    $mailcontent .= "Unique Code is: <b>" . $identityCode . "</b>" . "\n";
+                    $mailcontent .= "Unique Code is: " . $identityCode . " " . "\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
