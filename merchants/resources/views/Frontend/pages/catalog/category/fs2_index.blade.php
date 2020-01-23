@@ -96,7 +96,10 @@
                         </div>
                         <div class="product-desc product-desc-transparent" style="margin-bottom: -20px;">
                             <div class="product-title"><h3><a href="{{ route('home')}}/[[prd.url_key]]">[[prd.product]]</a></h3></div>
-                            <div class="product-price"><del ng-show="prd.delPrice == 1"> <span class="currency-sym"></span> <span class="priceConvert">[[ prd.price * currencyVal | number : 2 ]]</span></del> <ins><span class="currency-sym"></span>[[ prd.getPrice *currencyVal | number : 2 ]]</ins></div>
+                            <div class="product-price"><del ng-show="prd.delPrice == 1"> <span class="currency-sym"></span> <span class="priceConvert">[[ prd.price * currencyVal | number : 2 ]]</span></del>
+                            <ins> <span class="currency-sym"></span> <span class="">[[ prd.getPrice ]]</span></ins>
+                            <!-- <ins><span class="currency-sym"></span>[[ prd.getPrice *currencyVal | number : 2 ]]</ins> -->
+                            </div>
                         </div>
                             <div>
                                 [[prd.reviews]] reviews , [[prd.ratings]]<i class="fa fa-star" aria-hidden="true"></i>
