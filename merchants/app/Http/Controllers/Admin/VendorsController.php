@@ -509,6 +509,7 @@ class VendorsController extends Controller {
         // Get distributor industry id
         $distributorResult = DB::table('distributor')->where("id", $distributorId)->first();
         $decodedDistributorDetail = json_decode($distributorResult->register_details);
+        dd($decodedDistributorDetail);
         $distributorbusinessIdArray = $decodedDistributorDetail->business_type;
         
         if(!empty($merchantIdentityCode))
