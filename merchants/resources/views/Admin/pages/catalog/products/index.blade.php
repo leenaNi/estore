@@ -183,7 +183,7 @@ function renderNode1($node, $dash)
                                 <td>
                                     <div class="product-name vMiddle">
                                         <span>
-                                            <img src="{{($product->catalogimgs()->first())?  Config('constants.productImgPath')."/".$product->catalogimgs()->first()->filename:'' }}" class="admin-profile-picture" />
+                                            <img src="{{($product->catalogimgs()->first())?  Config('constants.productImgPath').'/'.$product->catalogimgs()->first()->filename:'' }}" class="admin-profile-picture" />
                                         </span>
                                         <span class="marginleft10">
                                             {{$product->product }}<br>
@@ -313,8 +313,9 @@ if (empty(Input::get('prdSearch'))) {
                                         <i class="glyphicon glyphicon-plus"></i>
                                         <span>Add files...</span>
                                         <input type="file" name="files[]" multiple>
+                                        <input type="hidden" name="redirect" value="back">
                                     </span>
-                                    <button type="submit" class="btn btn-primary start  col-lg-4 ">
+                                    <button type="submit" class="btn btn-primary start uploadBulkImages col-lg-4 ">
                                         <i class="glyphicon glyphicon-upload"></i>
                                         <span>Start upload</span>
                                     </button>
@@ -337,14 +338,14 @@ if (empty(Input::get('prdSearch'))) {
                                         <div class="progress-bar progress-bar-success" style="width:0%;"></div>
                                     </div>
                                     <!-- The extended global progress state -->
-                                    <div class="progress-extended">&nbsp;</div>
+                                    <!-- <div class="progress-extended">&nbsp;</div> -->
                                 </div>
                             </div>
                             <!-- The table listing the files available for upload/download -->
-                            <table role="presentation" class="table table-striped">
+                            <!-- <table role="presentation" id="show-uploaded-images" class="table table-striped">
                                 <tbody class="files"></tbody>
-                            </table>
-                            <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
+                            </table> -->
+                            <!-- <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
                                 <div class="slides"></div>
                                 <h3 class="title"></h3>
                                 <a class="prev">‹</a>
@@ -352,7 +353,7 @@ if (empty(Input::get('prdSearch'))) {
                                 <a class="close">×</a>
                                 <a class="play-pause"></a>
                                 <ol class="indicator"></ol>
-                            </div>
+                            </div> -->
                         </form>
                         <br>
                     </div>
@@ -414,7 +415,7 @@ if (empty(Input::get('prdSearch'))) {
                                     <th class="product_loop"></th>
                                 </tr>
                             </thead>
-<!--                            <tbody class="product_loop">
+                            <!--                            <tbody class="product_loop">
                             </tbody>-->
                         </table>
                     </div>
@@ -573,6 +574,21 @@ if (empty(Input::get('prdSearch'))) {
     {% } %}
 </script>
 <script>
+    // $('#uploadBulkImages').click(function(){
+    //     var form = $("form#fileupload");
+    //     $.ajax({
+    //         url: form.attr('action'),
+    //         type: 'post',
+    //         data: form.serialize(),
+    //         beforeSend: function () {
+    //             // $("#barerr" + id).text('Please wait');
+    //         },
+    //         success: function (res) {
+    //             console.log(res);
+
+    //         }
+    //     });
+    // });
                                     $(".shareProductToMall").click(function () {
                                         $("#selCat").empty();                //    alert("for ");
                                         var prodId = ($(this).attr('prod-id'));
