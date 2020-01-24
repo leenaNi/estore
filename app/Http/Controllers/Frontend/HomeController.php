@@ -525,6 +525,7 @@ class HomeController extends Controller
         $contents = File::get(public_path() . "/public/skeleton.sql");
         $sql = str_replace('tblprfx_', $storeId, $contents);
         $test = DB::unprepared($sql);
+        
         $insertedProductIdArray = array();
         if ($storeType == 'distributor') {
             $totalCategory = count($catid) - 1; // industry

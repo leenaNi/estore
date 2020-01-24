@@ -80,7 +80,7 @@
                                 <input type="text" class="form-control" name="pincode" value="{{$distributorIdData->zip}}">
                             </div>
                         </div>
-
+                        <input type="hidden" id="hdnDistributorId" name="hdnDistributorId" value="{{$distributorIdData->id}}">
                         @endif
                         <div class="form-group">
                             <label for="profile" class="col-sm-4 control-label">Upload Photo</label>
@@ -118,7 +118,7 @@
                         </div>
 
                         <div class="col-sm-8 col-sm-offset-4 noAllpadding">
-                        <input type="hidden" id="hdnDistributorId" name="hdnDistributorId" value="{{$distributorIdData->id}}">
+                        
                             <input  type="submit" class="btn btn-primary " value="Submit">
                             <button type="button" class="btn btn-default">Cancel</button>
                         </div>	
