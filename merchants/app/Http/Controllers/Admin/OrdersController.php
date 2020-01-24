@@ -47,10 +47,6 @@ class OrdersController extends Controller
     public function index()
     {
         $jsonString = Helper::getSettings();
-
-//      $data=  DB::table('has_industries')->join("general_setting as g",'g.id','=','has_industries.general_setting_id')
-        //             ->join("categories",'has_industries1.industry_id','=','categories.id')
-        //              ->select('g.id','g.name','g.is_active','g.is_question','g.question_category_id','categories.category')->get();
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
