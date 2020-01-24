@@ -1315,12 +1315,9 @@ class ProductsController extends Controller
 
     public function prodUploadDel()
     {
-
         $id = Input::get('imgId');
-
         DownlodableProd::find($id)->delete();
         // echo "Deleted Successfully";
-
         Session::flash("delDownloadableProd", "Deleted Successfully.");
     }
 
@@ -1425,20 +1422,14 @@ class ProductsController extends Controller
 
     public function productBulkUpload()
     {
-
         if (Input::hasFile('file')) {
-
             $file = Input::file('file');
             $name = time() . '-' . $file->getClientOriginalName();
-
             // $path = public_path() . '/theSoul/uploads/pincodes/';
             $path = public_path() . '/public/Admin/uploads/products/';
-
             $file->move($path, $name);
-
             return $this->product_import_csv($path, $name);
         } else {
-
             echo "Please select file";
         }
     }
@@ -1496,16 +1487,14 @@ class ProductsController extends Controller
                 $related = $col[33];
                 $upsell = $col[34];
                 if (!empty($id)) {
-
                     $updateProd = Product::firstOrNew(array('id' => $id));
-
                     if (!empty($product)) {
                         $updateProd->product = $product;
                     }
 
                     if (!empty($prodT)) {
                         if (is_numeric($prodT)) {
-                            $prodtype_id = ProductType::whereIn('id', [1, 2, 3])->pluck("id")->toArray();
+                            $prodtype_id = ProductType::whereIn('type_id', [1, 2, 3])->pluck("type_id")->toArray();
                             // dd($prodtype_id);
                             if (in_array($prodT, $prodtype_id)) {
                                 $updateProd->prod_type = $prodT;
@@ -1643,8 +1632,8 @@ class ProductsController extends Controller
                     if (!empty($is_referal_discount)) {
                         $updateProd->is_referal_discount = $is_referal_discount;
                     }
-
-                    $updateProd->save();
+                    $updateProd->store_id = Session::get('store_id');
+                    // $updateProd->save();
 
                     if ($id == 'NULL' || $id == 'null') {
                         $updateProd->attr_set = $attr_set;
@@ -1652,14 +1641,15 @@ class ProductsController extends Controller
 
                         if ($updateProd->prod_type != 3) {
                             if ($updateProd->prod_type == 1) {
-                                if ($attr_set != 1) {
+                                $defaultAttributeSet = AttributeSet::first();
+                                if ($defaultAttributeSet->id != $updateProd->attr_set) {
                                     Session::flash("message", "Variant set value " . $attr_set . " not allowd for product Name " . $product . " in " . $row_id . " product record");
                                     $updateProd->delete();
-
                                     return redirect()->back();
                                 }
                             } else {
                                 $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes;
+                                // dd($attributes);
                                 if (count($attributes) == 0) {
                                     Session::flash("message", "There is no Attribute Found in database with id value " . $attr_set . " product Name " . $product . " in " . $row_id . " product record");
                                     $updateProd->delete();
@@ -1674,6 +1664,7 @@ class ProductsController extends Controller
                             }
                         } else {
                             $chkAttr = AttributeSet::find($updateProd->attributeset['id']);
+                            // dd($chkAttr);
                             if ($chkAttr == null) {
                                 Session::flash("message", "There is no Variant set found in database with id value " . $attr_set . " for product name " . $product . " in  " . $row_id . " product record.");
                                 $updateProd->delete();
@@ -1690,12 +1681,12 @@ class ProductsController extends Controller
                                 }
                             }
 
-//                            $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes()->where('is_filterable', "=", "0")->get();
+                            //                            $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes()->where('is_filterable', "=", "0")->get();
                             //                            if (!empty($attributes))
                             //                                $updateProd->attributes()->sync($attributes);
                         }
                     }
-
+                    $updateProd->update();
                     $tagsArr = explode(",", $tags);
 
                     if (!empty($tags)) {
@@ -1706,17 +1697,21 @@ class ProductsController extends Controller
 
                     if (!empty($categories)) {
                         foreach ($categoryids as $categoryid) {
-                            $category = Category::where(DB::raw(strtolower('category')), $categoryid)->first();
-                            if (count($category) > 0) {
+                            // $category = Category::where(DB::raw(strtolower('category')), $categoryid)->first();
+                            $category = DB::table('store_categories')
+                            ->join('categories', 'categories.id', '=', 'store_categories.category_id')
+                            ->where('categories.'.DB::raw(strtolower('category')), $categoryid)->select('store_categories.id')->first();
+                            if ($category && $category != null) {
                                 $cat_id[] = $category->id;
                             } else {
                                 Session::flash("message", "Given category " . $categoryid . " does not exist for product name " . $product . " in " . $row_id . " product record.");
-                                $updateProd->delete();
+                                // $updateProd->delete();
                                 return redirect()->back();
                             }
                         }
+                        // dd($updateProd);
                         $updateProd->categories()->detach();
-                        $updateProd->categories()->sync($categoryids);
+                        $updateProd->categories()->attach($cat_id);
                     } else {
                         Session::flash("message", "Category name can't be blank for product name " . $product . " in " . $row_id . " product record.");
                         $updateProd->delete();
@@ -1737,17 +1732,18 @@ class ProductsController extends Controller
                     }
 
                     $prdimgsData = explode(",", $prdimgs);
-
-                    if (!empty($prdimgsData)) {
-
-                        $updateProd->catalogimgs()->delete();
+                    if (!empty($prdimgsData) && $prdimgsData != '') {
                         $getimgs = [];
-
                         foreach ($prdimgsData as $fileNm) {
-                            array_push($getimgs, new CatalogImage(array('filename' => $fileNm, 'image_type' => 1, 'image_mode', 1)));
+                            if($fileNm != ''){
+                                $newImg = new CatalogImage(['filename' => $fileNm, 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $updateProd->id]);
+                                array_push($getimgs, $newImg);
+                            }
                         }
-
-                        $updateProd->catalogimgs()->saveMany($getimgs);
+                        if(!empty($getimgs)){                            
+                            $updateProd->catalogimgs()->delete();
+                            $updateProd->catalogimgs()->saveMany($getimgs);
+                        }
                     }
                 } else {
                     Session::flash("message", "Plese Insert Product Id value NULL for product " . $product . "and row id " . $row_id);
@@ -1767,8 +1763,16 @@ class ProductsController extends Controller
 
     public function prdBulkImgUpload()
     {
-        $path = '/public/Admin/uploads/catalog/products/';
+        $path = Config('constants.productBulkUploadImgPath'); // '/public/Admin/uploads/catalog/products/';
         $upload_handler = new UploadHandler(null, true, null, $path);
+        if(!empty($upload_handler)){
+            // dd($upload_handler->response);
+            $data = ['uploadedImages' => $upload_handler->response];
+            $viewname =Config('constants.adminProductView') . '.bulk-images-upload';
+            return Helper::returnView($viewname, $data);
+        } else {
+            return redirect()->back();
+        }
     }
 
     public function generateBarcode()
