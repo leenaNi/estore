@@ -139,8 +139,7 @@ class ProductsController extends Controller
                 $prd->stock = $totstock;
                 $startprice = Product::where('parent_prod_id',$prd->id)->orderBy('price','asc')->pluck('price');
                 $endprice = Product::where('parent_prod_id',$prd->id)->orderBy('price','desc')->pluck('price');
-                $prdprice = $startprice[0].'-'.$endprice[0];
-                $prd->price = $prdprice;
+                $prd->price = $startprice[0].'-'.$endprice[0];
             }
             $getPrdImg = ($prd->catalogimgs()->where("image_mode", 1)->count() > 0) ? $prd->catalogimgs()->where("image_mode", 1)->first()->filename : 'default_product.png';
             $prd->prodImage = Config('constants.productImgPath') . "/" . @$getPrdImg;

@@ -948,6 +948,7 @@ class Helper {
             }
 
             public static function sendsms($mobile = null, $msg = null,$country = null) {
+                
                 $mobile = $mobile;
                 if($mobile){
                 $msg = $msg;
@@ -1001,6 +1002,15 @@ class Helper {
                 $file = Config("constants.logoUploadImgPath"). 'logo.png';
                 $success = file_put_contents($file, $data);
                 return $file;
+            }
+            public static function withoutViewSendMail($to, $sub, $body)
+            {
+                // echo $to;
+                Mail::send([], [], function ($message) use ($to, $sub, $body) {
+                    $message->to($to)
+                        ->subject($sub)
+                        ->setBody($body);
+                });
             }
 
         }

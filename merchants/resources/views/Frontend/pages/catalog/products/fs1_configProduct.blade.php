@@ -5,6 +5,78 @@
 <?php $imgUrl = $product->prodImage; ?>
 @section('og:image', $imgUrl)
 @section('content')
+@php 
+use App\Models\User;
+use App\Models\CustomerReview;
+@endphp
+<style type="text/css">
+      .rating {
+  /*display: inline-block;*/
+  position: relative;
+  height: 50px;
+  line-height: 50px;
+  font-size: 50px;
+}
+
+.rating label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  cursor: pointer;
+}
+
+.rating label:last-child {
+  position: static;
+}
+
+.rating label:nth-child(1) {
+  z-index: 5;
+}
+
+.rating label:nth-child(2) {
+  z-index: 4;
+}
+
+.rating label:nth-child(3) {
+  z-index: 3;
+}
+
+.rating label:nth-child(4) {
+  z-index: 2;
+}
+
+.rating label:nth-child(5) {
+  z-index: 1;
+}
+
+.rating label input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.rating label .icon {
+  float: left;
+  color: transparent;
+  font-size: medium;
+}
+
+.rating label:last-child .icon {
+  color: #000;
+}
+
+.rating:not(:hover) label input:checked ~ .icon,
+.rating:hover label:hover input ~ .icon {
+  color: #09f;
+}
+
+.rating label input:focus:not(:checked) ~ .icon:last-child {
+  color: #000;
+  text-shadow: 0 0 5px #09f;
+}   
+</style>
 <div  ng-controller="configProductController">
     <form id="form[[product.id]]" action="{{ route('addToCart')}}">
     <div class="clearfix"></div>
@@ -50,11 +122,14 @@
                                 </div>   
                                                        
                                 <div class="product-price prodDetailPrice" ng-show="product.spl_price > 0"> 
-                                    <del><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</del> <span class="currency-sym"></span><ins class="mrp_price"> [[product.spl_price * currencyVal |number :2 ]]</ins>
+                                    <del><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</del> <span class="currency-sym"></span>
+                                    <ins class="mrp_price"> [[product.spl_price * currencyVal |number :2 ]]</ins>
+                                    <ins class=""> [[product.spl_price]]</ins>
                                     <input type="hidden" name="price" value="[[product.spl_price]]" class="parent_price">
                                 </div>
                                 <div class="product-price prodDetailPrice" ng-show="product.spl_price == 0"> 
-                                    <ins class="mrp_price"><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</ins>
+                                <ins class=""><span class="currency-sym"></span> [[product.price]]</ins>
+                                    <!-- <ins class="mrp_price"><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</ins> -->
                                 </div>
                                 @if($isstock==1)
                                 <span class="span2 hide" style="color:red;" ng-show="product.is_stock == 1">STOCK LEFT : [[ product.stock ]]</span>
@@ -94,6 +169,66 @@
                                 <div class="line"></div>
                                 <!-- Product Single - Short Description  ============================================= -->
                                 <div class="shortDesc" ng-show="product.short_desc!=''">[[product.short_desc | removeHTMLTags]]</div>            
+                                @php 
+                            $publishReviews = CustomerReview::where(['product_id'=>$product->id,'publish'=>1])->orderBy('id','desc')->get();
+                             if(count($publishReviews)>0)
+                             {
+                                $ratings = $totalRatings/count($publishReviews);
+                             }
+                             else{
+                                $ratings = $totalRatings;
+                             }
+                            @endphp
+                            <div><h4>Reviews({{count($publishReviews)}} reviews, {{$ratings}} <i class="fa fa-star" aria-hidden="true"></i>)</h4>
+                               @if(count($CustomerReviews)>0)
+                               @foreach($CustomerReviews as $review)
+                               @php 
+                               $user = User::find($review->user_id);
+                               @endphp
+
+                               <span>{{$user->firstname}}</span>
+                               <h5 style="margin-bottom: 0px;">{{$review->title}}</h5>
+       <div class="rating" style="    margin-bottom: -35px;line-height: 11px;">
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="1" {{$review->rating==1?'checked':''}} />
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="2" {{$review->rating==2?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="3" {{$review->rating==3?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>   
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="4" {{$review->rating==4?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="5" {{$review->rating==5?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+</div>
+                               <span>{{$review->description}}</span><br><br>
+                               @endforeach
+                            @if(count($publishReviews)>2) 
+                            <a href="{{ route('home')}}/reviews/{{$review->product_id}}"><u>View All Reviews</u></a>
+                            @endif
+                            @else
+                               No reviews found
+                               @endif
+                            </div><br>
                                 <!-- AddToAny BEGIN -->
                                 <div class="shareSociIconBox">
                                 <strong>Share:</strong> 
