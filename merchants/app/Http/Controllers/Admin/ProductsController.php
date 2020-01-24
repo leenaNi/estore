@@ -1895,7 +1895,6 @@ class ProductsController extends Controller
                 $pid = explode('-', $id);
                 array_push($pids, $pid[0]);
             }
-            dd(Input::get('productId'));
             $products = Product::orderBy("id", "asc")->find($pids);
             Excel::create('products', function ($excel) use ($products) {
                 $excel->sheet('Sheet 1', function ($sheet) use ($products) {

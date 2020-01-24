@@ -44,7 +44,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('read', ['as' => 'read', 'uses' => 'HomeController@read']);
     Route::any('/veestores-logout', ['as' => 'veestoresLogout', 'uses' => 'HomeController@veestoresLogout']);
     Route::any('/veestore-login', ['as' => 'veestoreLogin', 'uses' => 'HomeController@veestoreLogin']);
-    Route::any('/veestore-myaccount', ['as' => 'veestoreMyaccount', 'uses' => 'HomeController@veestoresMyaccount']);
+    Route::any('/myaccount', ['as' => 'veestoreMyaccount', 'uses' => 'HomeController@veestoresMyaccount']);
     Route::any('/veestore-change-password', ['as' => 'veestoresChangePassword', 'uses' => 'HomeController@veestoresChangePassword']);
     Route::any('/veestore-updateProfile', ['as' => 'veestoresUpdateProfile', 'uses' => 'HomeController@veestoresUpdateProfile']);
     Route::any('/veestore-UpdateChangePassword', ['as' => 'veestoresUpdateChangePassword', 'uses' => 'HomeController@veestoresUpdateChangePassword']);
