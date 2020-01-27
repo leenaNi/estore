@@ -38,7 +38,7 @@
                         <thead>
                             <tr>
                                 <th>Product</th>
-                                <th>Product</th>
+                                <th>Variant</th>
                                 <th>Price</th>
                                 <th>New Price</th>
                                 <th>Qty</th>
