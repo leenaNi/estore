@@ -77,7 +77,16 @@
                         <tbody>
                             @foreach($combo_prods as $prd)
                             <tr>
-                                <td>{!! $prd['product'] !!}</td>
+                                <td>
+                                    <?php if(@$prd['pivot']['sub_prod_id'] && $prd['pivot']['sub_prod_id'] != null) {
+                                        $subProd = DB::table('products')->where('id', $prd['pivot']['sub_prod_id'])->first(['product']);
+                                        $prodName = str_replace(')', '', str_replace('Variant (', '', $subProd->product));
+                                        } else {
+                                            $prodName = $prd['product'];
+                                        }
+                                    ?>
+                                     {!! $prodName !!}
+                                </td>
                                 <td>{!! $prd['pivot']['new_price'] !!}</td>
                                 <td>{!! $prd['pivot']['qty'] !!}</td>
                                 <!-- <td>{!! $prd['is_avail'] == 0 ? "Out of Stock" : "In Stock" !!}</td> -->
@@ -120,7 +129,7 @@
             // str += '<div class="col-md-2" ><a href="#" class="pull-left remove-rag"><i class="fa fa-trash"></i></a></div></div>';
 
             var str = "<tr data-prdid='"+ui.item.id+"' id='"+ui.item.id+"'><td>"+ui.item.product+"<input type='hidden' name='prod_id[]' value='" + ui.item.id + "' ></td>";
-            str += "<td><select name='subprodid' class='form-control subprodid' style='display:none;'></select></td>";
+            str += "<td><select name='subprodid[]' class='form-control subprodid' style='display:none;'></select></td>";
             str += "<td><input class='form-control' type='hidden' name='old_price[]' value='" + price + "' ><span class='ProdPrice'>"+price+"</span></td>";
             str += "<td><input class='form-control' type='text' name='new_price[]' required value='" + price + "' ></td>";
             str += "<td><input class='form-control' type='tel' name='qty[]' required value='' ></td>";

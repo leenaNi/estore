@@ -1034,7 +1034,17 @@ class ProductsController extends Controller
         }
         // dd($comboProds);
         DB::table('has_combo_prods')->insert($comboProds);
+        $this->updateComboProdPrice($prod);
         return redirect()->back()->with('Added successfully.');
+    }
+
+    public function updateComboProdPrice($prod) {
+        $comboProds = DB::table('has_combo_prods')->where('prod_id', $prod->id)->get();
+        $price = 0;
+        foreach($comboProds as $comboProdKey => $comboProd) {
+            $price += $comboProd->new_price;
+        }
+        DB::table('products')->where('id', $prod->id)->update(['price' => $price]);
     }
 
     public function comboDetach()
