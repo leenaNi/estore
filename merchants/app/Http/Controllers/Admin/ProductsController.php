@@ -1427,9 +1427,462 @@ class ProductsController extends Controller
             // $path = public_path() . '/theSoul/uploads/pincodes/';
             $path = public_path() . '/public/Admin/uploads/products/';
             $file->move($path, $name);
-            return $this->product_import_csv($path, $name);
+            return $this->product_import_csv1($path, $name);
         } else {
             echo "Please select file";
+        }
+    }
+
+    public function product_import_csv1($path, $filename) {
+        $csv_file = $path . $filename;
+        if (($handle = fopen($csv_file, "r")) !== FALSE) {
+            fgetcsv($handle);
+            $row_id = 1;
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $num = count($data);
+                for ($c = 0; $c < $num; $c++) {
+                    $col[$c] = $data[$c];
+                }
+                $id = $col[0];
+                $sku = @$col[1];
+                $hsn_code = $col[2];
+                $size_chart = $col[3];
+                $product = $col[4];
+                $barcode = $col[5];
+                $prodT = $col[6];
+                $prdimgs = $col[7];
+                $attr_set = $col[8];
+                $attributes = $col[9];
+                $is_avail = $col[10];
+                $is_listing = $col[11];
+                $stock = $col[12];
+                $price = $col[13];
+                $spl_price = $col[14];
+                $sort_order = $col[15];
+                $is_cod = $col[16];
+                $length = $col[17];
+                $width = $col[18];
+                $height = $col[19];
+                $weight = $col[20];
+                $url_key = $col[21];
+                $short_desc = $col[22];
+                $long_desc = $col[23];
+                $meta_title = $col[24];
+                $meta_key = $col[25];
+                $meta_desc = $col[26];
+                $is_shipped_inter = $col[27];
+                $is_referal_discount = $col[28];
+                $tags = $col[29];
+                $categories = $col[30];
+                $related = $col[31];
+                $upsell = $col[32];
+                $parent_SKU = $col[33];
+                $rackSpace = $col[34];
+                //dd($id);
+                if (!empty($id)) {
+                   //$skuExists = Product::where('product_code', $sku)->count();
+                
+                    if (empty($parent_SKU)) {
+                        $updateProd = Product::firstOrNew(array('id' => $id));
+                        if (!empty($product))
+                            $updateProd->product = $product;
+
+                        if (!empty($prodT)) {
+                            if (is_numeric($prodT)) {
+                                // $prodtype_id = ProductType::whereIn('id', [1, 2, 3])->pluck("id")->toArray();
+                              
+                                // if (in_array($prodT, $prodtype_id)) {
+                                //     $updateProd->prod_type = $prodT;
+                                // } else {
+                                //     Session::flash("message", "Product type " . $prodT . " not allowed for product Name " . $product . " and row id " . $row_id);
+                                //     return redirect()->back();
+                                // }
+                                $updateProd->prod_type = $prodT;
+                            } else {
+                                Session::flash("message", "Product type must be a Integer value for product Name " . $product . " and row id " . $row_id);
+                                return redirect()->back();
+                            }
+                        }
+
+                        if (!empty($is_avail))
+                            $updateProd->is_avail = $is_avail;
+
+                        if (!empty($is_listing))
+                            $updateProd->is_listing = $is_listing;
+
+                        if (!empty($stock))
+                            $updateProd->stock = $stock;
+
+                        if (!empty($price))
+                            $updateProd->price = $price;
+
+                        if ($spl_price > 0 && $spl_price < $price) {
+                            $selling_price = $spl_price;
+                        } else {
+                            $selling_price = $price;
+                        }
+
+                        if (!empty($spl_price))
+                            $updateProd->spl_price = $spl_price;
+
+                        if (!empty($selling_price))
+                            $updateProd->selling_price = $selling_price;
+
+                        if (!empty($sort_order))
+                            $updateProd->sort_order = $sort_order;
+
+                        if (!empty($length))
+                            $updateProd->length = $length;
+                        if (!empty($width))
+                            $updateProd->width = $width;
+                        if (!empty($height))
+                            $updateProd->height = $height;
+                        if (!empty($weight))
+                            $updateProd->weight = $weight;
+                        if (!empty($attr_set)) {
+                            $updateProd->attr_set = $attr_set;
+                        }
+
+                        if (!empty($is_cod))
+                            $updateProd->is_cod = $is_cod;
+
+                        if (!empty($url_key))
+                            $updateProd->url_key = $url_key;
+
+                        if (!empty($short_desc))
+                            $updateProd->short_desc = $short_desc;
+
+                        if (!empty($long_desc))
+                            $updateProd->long_desc = $long_desc;
+
+                        if (!empty($meta_title))
+                            $updateProd->meta_title = $meta_title;
+
+                        if (!empty($meta_key))
+                            $updateProd->meta_keys = $meta_key;
+
+                        if (!empty($meta_desc))
+                            $updateProd->meta_desc = $meta_desc;
+
+                        if (!empty($is_shipped_inter))
+                            $updateProd->is_shipped_international = $is_shipped_inter;
+
+                        if (!empty($is_referal_discount))
+                            $updateProd->is_referal_discount = $is_referal_discount;
+
+                        $updateProd->is_individual = 1;
+                        $updateProd->is_stock = 1;
+                        $updateProd->save();
+                    }
+                    
+                    if (!empty($parent_SKU)) {
+                        //Parent product insert
+                        if(strtolower($id) == 'null' && $parent_SKU==1){
+                            //Insert parent product
+
+                            $updateProd = Product::firstOrNew(array('id' => $id));
+                            if (!empty($product))
+                                $updateProd->product = $product;
+
+                            if (!empty($prodT)) {
+                                if (is_numeric($prodT)) {
+                                    $updateProd->prod_type = $prodT;
+                                } else {
+                                    Session::flash("message", "Product type must be a Integer value for product Name " . $product . " and row id " . $row_id);
+                                    return redirect()->back();
+                                }
+                            }
+
+                            if (!empty($is_avail))
+                                $updateProd->is_avail = $is_avail;
+
+                            if (!empty($is_listing))
+                                $updateProd->is_listing = $is_listing;
+
+                            if (!empty($stock))
+                                $updateProd->stock = $stock;
+
+                            if (!empty($price))
+                                $updateProd->price = $price;
+
+                            if ($spl_price > 0 && $spl_price < $price) {
+                                $selling_price = $spl_price;
+                            } else {
+                                $selling_price = $price;
+                            }
+
+                            if (!empty($spl_price))
+                                $updateProd->spl_price = $spl_price;
+
+                            if (!empty($selling_price))
+                                $updateProd->selling_price = $selling_price;
+
+                            if (!empty($sort_order))
+                                $updateProd->sort_order = $sort_order;
+
+                            if (!empty($length))
+                                $updateProd->length = $length;
+                            if (!empty($width))
+                                $updateProd->width = $width;
+                            if (!empty($height))
+                                $updateProd->height = $height;
+                            if (!empty($weight))
+                                $updateProd->weight = $weight;
+                            if (!empty($attr_set)) {
+                                $updateProd->attr_set = $attr_set;
+                            }
+
+                            if (!empty($is_cod))
+                                $updateProd->is_cod = $is_cod;
+
+                            if (!empty($url_key))
+                                $updateProd->url_key = $url_key;
+
+                            if (!empty($short_desc))
+                                $updateProd->short_desc = $short_desc;
+
+                            if (!empty($long_desc))
+                                $updateProd->long_desc = $long_desc;
+
+                            if (!empty($meta_title))
+                                $updateProd->meta_title = $meta_title;
+
+                            if (!empty($meta_key))
+                                $updateProd->meta_keys = $meta_key;
+
+                            if (!empty($meta_desc))
+                                $updateProd->meta_desc = $meta_desc;
+
+                            if (!empty($is_shipped_inter))
+                                $updateProd->is_shipped_international = $is_shipped_inter;
+
+                            if (!empty($is_referal_discount))
+                                $updateProd->is_referal_discount = $is_referal_discount;
+
+                            $updateProd->is_individual = 1;
+                            $updateProd->is_stock = 1;
+                            $updateProd->store_id = Session::get('store_id');
+                            $updateProd->save();
+                            
+                            $parent_SKU = $updateProd->id;
+                        }
+
+                        if (strtolower($id) == '30' && !empty($attributes)) {
+                            $updateProd = Product::where("id", 30)->first();
+                            $count = @Product::find($updateProd->id)->subproducts()->count();
+                            
+                            $attrs_array = explode("|", $attributes);
+                            //$at = array();
+                            foreach($attrs_array as $key=> $att_ids)
+                            {
+                                $attrs = explode(",",$att_ids);
+                                $newConfigProduct = Product::create(['product' => $updateProd->product . ' - Variant - ' . $count, 'is_avail' => $is_avail, 'stock' => $stock, 'is_stock' => 1, 'parent_prod_id' => $updateProd->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $updateProd->attr_set, 'price' => $price]);
+                           
+                                $attributes = AttributeSet::find($newConfigProduct->attributeset['id'])->attributes;
+
+                                $newConfigProduct->attributes()->sync($attributes);
+                                $name = $updateProd->product . ' - Variant ( ';
+
+                                foreach ($attrs as $op => $value) {
+                                    $opt = explode("=>", $value);
+                                    $optionName = AttributeValue::find($opt[1])->option_name;
+                                    $name .= "$optionName, ";
+                                    DB::update(DB::raw("update has_options set attr_val = '" . $opt[1] . "' where attr_id = " . $opt[0] . " and prod_id = " . $newConfigProduct->id));
+                                }
+                                $name = rtrim($name, ", ");
+                                $name .= " )";
+                                $newConfigProduct->barcode = $barcode;
+                                $newConfigProduct->product = $name;
+
+                                if ($spl_price > 0 && $spl_price < $price) {
+                                    $newConfigProduct->selling_price = $spl_price;
+                                } else {
+                                    $newConfigProduct->selling_price = $price;
+                                }
+                                if (!empty($spl_price))
+                                    $newConfigProduct->spl_price = $spl_price;
+                                $newConfigProduct->store_id = Session::get('store_id');
+                                $newConfigProduct->update();
+                            }//dd($at);
+                            
+                            
+                        }
+                        else {
+                            $update_prod = Product::find($id);
+                            $update_prod->is_avail = $is_avail;
+                            $update_prod->is_listing = $is_listing;
+                            $update_prod->barcode = $barcode;
+                            $update_prod->stock = $stock;
+                            $update_prod->price = $price;
+                             
+                            if (!empty($long_desc))
+                            $updateProd->long_desc = $long_desc;
+                            
+                            if ($spl_price > 0 && $spl_price < $price) {
+                                $update_prod->selling_price = $spl_price;
+                            } else {
+                                $update_prod->selling_price = $price;
+                            }
+                            if (!empty($spl_price))
+                                $update_prod->spl_price = $spl_price;
+                            
+                            // $childProds = Product::where("parent_prod_id",$id)->where("prod_type",3)->get();
+                            // if(count($childProds)> 0){
+                            //     foreach($childProds as $child)
+                            //     {
+                            //         if($sku != ''){
+                            //         $child->product_code = $sku;
+                            //         $child->update();
+                            //         }
+                            //     }
+                            // }
+                            
+                            $update_prod->update();
+                        }
+                    }
+
+                    if (strtolower($id) == 'null' && empty($attributes)) {
+                       
+                        if ($updateProd->prod_type != 3) {
+                            if ($updateProd->prod_type == 1) {
+                                if ($attr_set != 1) {
+                                    Session::flash("message", "Variant set value " . $attr_set . " not allowd for product Name " . $product . " in " . $row_id . " product record");
+                                    $updateProd->delete();
+
+                                    return redirect()->back();
+                                }
+                            } else {
+                                $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes;
+                                if (count($attributes) == 0) {
+                                    Session::flash("message", "There is no Attribute Found in database with id value " . $attr_set . " product Name " . $product . " in " . $row_id . " product record");
+                                    $updateProd->delete();
+                                    return redirect()->back();
+                                }
+                                if (!empty($attributes))
+                                    $updateProd->attributes()->sync($attributes);
+                                else
+                                    $updateProd->attributes()->detach();
+                            }
+                        } else {
+                            $chkAttr = AttributeSet::find($updateProd->attributeset['id']);
+                            if ($chkAttr == null) {
+                                Session::flash("message", "There is no Variant set found in database with id value " . $attr_set . " for product name " . $product . " in  " . $row_id . " product record.");
+                                $updateProd->delete();
+                                return redirect()->back();
+                            } else {
+                                $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes()->where('is_filterable', "=", "0")->get();
+                                //  dd($attributes);
+                                if (!empty($attributes)) {
+                                    $updateProd->attributes()->sync($attributes);
+                                } else {
+                                    Session::flash("message", "There is no Attribute found in database with id value " . $attr_set . " for product name " . $product . " in " . $row_id . " product records.");
+                                    $updateProd->delete();
+                                    return redirect()->back();
+                                }
+                            }
+                        }
+
+                        $tagsArr = explode(",", $tags);
+
+                        //$this->mapProductCat($categories,$mapProductCat);
+                       
+                        $relatedProdIds = explode(",", $related);
+    
+                        if (!empty($related)) {
+                            $updateProd->relatedproducts()->detach();
+                            $updateProd->relatedproducts()->attach($relatedProdIds);
+                        }
+    
+                        $upsellProdIds = explode(",", $upsell);
+    
+                        if (!empty($upsell)) {
+                            $updateProd->relatedproducts()->detach();
+                            $updateProd->upsellproducts()->attach($upsellProdIds);
+                        }
+
+                    }
+                    $categoryids = explode(",", $categories);
+
+                        if (!empty($categories)) {
+                            foreach ($categoryids as $categoryid) {
+                                $category = DB::table('store_categories')
+                                ->join('categories', 'categories.id', '=', 'store_categories.category_id')
+                                ->where('categories.'.DB::raw(strtolower('category')), $categoryid)->select('store_categories.id')->first();
+                                if ($category && $category != null) {
+                                    $cat_id[] = $category->id;
+                                } else {
+                                    Session::flash("message", "Given category " . $categoryid . " does not exist for product name " . $product . " in " . $row_id . " product record.");
+                                    return redirect()->back();
+                                }
+                            }
+                            $updateProd->categories()->detach();
+                            $updateProd->categories()->attach($cat_id);
+                        }
+
+                        $prdimgsData = explode(",", $prdimgs);
+                        if (!empty($prdimgsData) && $prdimgsData != '') {
+                            $getimgs = [];
+                            foreach ($prdimgsData as $fileNm) {
+                                if($fileNm != ''){
+                                    $newImg = new CatalogImage(['filename' => $fileNm, 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $updateProd->id]);
+                                    array_push($getimgs, $newImg);
+                                }
+                            }
+                            if(!empty($getimgs)){                            
+                                $updateProd->catalogimgs()->delete();
+                                $updateProd->catalogimgs()->saveMany($getimgs);
+                            }
+                        }
+                   
+                }
+                $row_id++;
+            }
+            fclose($handle);
+            Session::flash("msg", "Product uploaded successfully.");
+            return redirect()->back();
+        } else {
+            echo "Error being upload pincodes";
+        }
+    }
+
+    public function mapProductImages($prdimgs,$updateProd){
+        $prdimgsData = explode(",", $prdimgs);
+        if (!empty($prdimgsData) && $prdimgsData != '') {
+            $getimgs = [];
+            foreach ($prdimgsData as $fileNm) {
+                if($fileNm != ''){
+                    $newImg = new CatalogImage(['filename' => $fileNm, 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $updateProd->id]);
+                    array_push($getimgs, $newImg);
+                }
+            }
+            if(!empty($getimgs)){                            
+                $updateProd->catalogimgs()->delete();
+                $updateProd->catalogimgs()->saveMany($getimgs);
+            }
+        }
+    }
+    
+    public function mapProductCat($categories,$updateProd)
+    {
+        $categoryids = explode(",", $categories);
+
+        if (!empty($categories)) {
+            foreach ($categoryids as $categoryid) {
+                // $category = Category::where(DB::raw(strtolower('category')), $categoryid)->first();
+                $category = DB::table('store_categories')
+                ->join('categories', 'categories.id', '=', 'store_categories.category_id')
+                ->where('categories.'.DB::raw(strtolower('category')), $categoryid)->select('store_categories.id')->first();
+                if ($category && $category != null) {
+                    $cat_id[] = $category->id;
+                } else {
+                    Session::flash("message", "Given category " . $categoryid . " does not exist for product name " . $product . " in " . $row_id . " product record.");
+                    // $updateProd->delete();
+                    return redirect()->back();
+                }
+            }
+            // dd($updateProd);
+            $updateProd->categories()->detach();
+            $updateProd->categories()->attach($cat_id);
         }
     }
 
