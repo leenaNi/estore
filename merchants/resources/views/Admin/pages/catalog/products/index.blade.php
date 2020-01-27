@@ -125,8 +125,10 @@ function renderNode1($node, $dash)
                 <div class="box-header col-md-3 noBottompadding col-sm-12 col-xs-12">
                     <a class="btn btn-default pull-right col-md-12 marginBottom15 mobAddnewflagBTN" type="button" data-toggle="modal" data-target="#addProduct{{$cat}}">Add New Product</a>
                     <div class="clearfix"></div>
-                    <a href="{{route('admin.product.wishlist')}}"><button type="button" class="btn btn-default pull-right col-md-12 marginBottom15 mobAddnewflagBTN" >Export Wishlist Products</button></a>
-                    <div class="clearfix"></div>
+                    @if(Session::get('login_user_type') != 3)
+                        <a href="{{route('admin.product.wishlist')}}"><button type="button" class="btn btn-default pull-right col-md-12 marginBottom15 mobAddnewflagBTN" >Export Wishlist Products</button></a>
+                        <div class="clearfix"></div>
+                    @endif
                     <button class="btn btn-default pull-right col-md-12 bulkuploadprod marginBottom15 mobAddnewflagBTN" type="button">Bulk Upload</button>
                     <div class="clearfix"></div>
                     <select id="bulk_action" class="dropdown-toggle form-control mob-marBottom15 mobAddnewflagBTN" type="button">
@@ -169,7 +171,9 @@ function renderNode1($node, $dash)
                                 <th>Stock</th>
                                 @endif
                                 <th>Status</th>
+                                @if(Session::get('login_user_type') != 3)
                                 <th>Sell On Estorifi Mall</th>
+                                @endif
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -230,13 +234,15 @@ function renderNode1($node, $dash)
                             <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this product?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn"></i></a>
                             @endif
                         </td>
+                        @if(Session::get('login_user_type') != 3)
                           <td>
-                           @if($product->is_share_on_mall==0)
-                            <a prod-id="{{$product->id}}" class="   shareProductToMall" ui-toggle-class="" title="Publish To Mall"> <i class="fa fa-check btn-plen btn"></i></a>
+                            @if($product->is_share_on_mall==0)
+                                <a prod-id="{{$product->id}}" class="   shareProductToMall" ui-toggle-class="" title="Publish To Mall"> <i class="fa fa-check btn-plen btn"></i></a>
                             @else
-                            <a prod-id="{{$product->id}}" class="  unpublishToMall" ui-toggle-class=""  title="Unpublish" ><i class="fa fa-times  btn-plen btn"></i></a>
+                                <a prod-id="{{$product->id}}" class="  unpublishToMall" ui-toggle-class=""  title="Unpublish" ><i class="fa fa-times  btn-plen btn"></i></a>
                             @endif
-                        </td>
+                            </td>
+                        @endif
                         <td>
                             <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw"></i></a>
 

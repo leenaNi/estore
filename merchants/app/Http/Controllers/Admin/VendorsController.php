@@ -18,6 +18,7 @@ use App\Models\ProductType;
 use App\Models\AttributeSet;
 use App\Models\Merchant;
 use App\Models\hasDistributor;
+use App\Models\User;
 use Hash;
 use Config;
 use DB;

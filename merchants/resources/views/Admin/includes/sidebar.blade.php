@@ -36,7 +36,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.miscellaneous.flags/",Route::currentRouteName()) ? 'active' : '' }} {{$storeViesion}}" >
                         <a  href="{{ route('admin.miscellaneous.flags') }}"><i class="fa fa-angle-right"></i>Flags</a></li>
                     @endif
-                    <li class="{{ preg_match("/admin.order_status.view/",Route::currentRouteName()) ? 'active' : '' }}">
+                    <li class="{{ preg_match("/admin.order_status.view/",Route::currentRouteName()) ? 'active' : '' }}"> 
                         <a  href="{{ route('admin.order_status.view') }}"><i class="fa fa-angle-right"></i>Order Status</a></li>
                     @if($feature['additional-charge'] == 1)
                     <li class="{{ preg_match("/admin.additional-charges.view/",Route::currentRouteName()) ? 'active' : '' }}">

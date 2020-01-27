@@ -112,6 +112,8 @@
                 <input type="hidden" name="storename" value="{{ Session::get('storename') }}">
                 <input type="hidden" name="company_name" value="estorifi">
                 <input type="hidden" name="business_name" value="" id="bussiness_name">
+                <input type="hidden" name="default_currency" value="{{$default_currency}}">
+                <input type="hidden" name="default_country" value="{{$default_country}}">
                 <input type="button" class="btn btn-default theme-btn btn-block nomargin reg-sub-btn sendOtpOnMobile" value="Send OTP on Mobile" >
                <!--<input type="submit" class="btn btn-default theme-btn btn-block nomargin reg-sub-btn " value="Submit & Continue" >-->
             </form>
@@ -366,9 +368,9 @@
 
     $(".sendOtpOnMobile").on("click", function () {
        
-        //$("#newStoreForm").submit();
+        $("#newStoreForm").submit();
         
-       if ($("#newStoreForm").valid()) {
+      /* if ($("#newStoreForm").valid()) {
             $("#sendOTP").modal('show');
             var country=$('.county_code').val();
             var mobile= $('.telephone').val();
@@ -388,7 +390,7 @@
                     console.log(e.responseText);
                 }
             });
-        }
+        }*/
     });
 
 //    $("#otpForm").validate({
