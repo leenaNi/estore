@@ -999,12 +999,12 @@ class ProductsController extends Controller
     public function update5()
     {
         $prod = Product::find(Input::get("id"));
-        if (!empty(Input::get('combo_prods'))) {
-            $prod->comboproducts()->sync(Input::get('combo_prods'));
-        } else {
-            $prod->comboproducts()->detach();
-        }
-
+        // if (!empty(Input::get('combo_prods'))) {
+        //     $prod->comboproducts()->sync(Input::get('combo_prods'));
+        // } else {
+        //     $prod->comboproducts()->detach();
+        // }
+        $this->comboAttach();
         $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
 
         if (!empty(Input::get('return_url'))) {
@@ -1021,6 +1021,7 @@ class ProductsController extends Controller
 
     public function comboAttach()
     {
+        // dd(Input::all());
         $prod = Product::find(Input::get("id"));
         $prodIds = Input::get("prod_id");
         $subprodid = Input::get("subprodid");
@@ -1029,7 +1030,7 @@ class ProductsController extends Controller
         $prodQty = Input::get("qty");
         $comboProds = [];
         foreach($prodIds as $prodIdKey => $prodId){
-            $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'sub_prod_id'=> $subprodid[$prodIdKey], 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
+            $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'sub_prod_id'=> @$subprodid[$prodIdKey], 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
             array_push($comboProds, $comboProd);
         }
         // dd($comboProds);
@@ -1040,11 +1041,12 @@ class ProductsController extends Controller
 
     public function updateComboProdPrice($prod) {
         $comboProds = DB::table('has_combo_prods')->where('prod_id', $prod->id)->get();
-        $price = 0;
+        $price = $sellingPrice = 0;
         foreach($comboProds as $comboProdKey => $comboProd) {
-            $price += $comboProd->new_price;
+            $price += $comboProd->old_price;
+            $sellingPrice += $comboProd->new_price;
         }
-        DB::table('products')->where('id', $prod->id)->update(['price' => $price]);
+        DB::table('products')->where('id', $prod->id)->update(['price' => $price, 'selling_price' => $sellingPrice, 'spl_price' => $sellingPrice]);
     }
 
     public function comboDetach()

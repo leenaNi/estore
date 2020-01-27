@@ -19,6 +19,7 @@
     {!! view('Admin.includes.productHeader',['id' => $prod->id, 'prod_type' => $prod->prod_type]) !!}
     <div class="tab-content">
         <div class="tab-pan-active" id="activity">
+        {!! Form::model($prod, ['method' => 'post', 'files'=> true, 'url' => $action ,'id'=>'ComboProdID' ,'class' => 'form-horizontal' ]) !!}
             <div class="panel-body">
             <div class="search-box-header">
                 <form method="post" action="{{route('admin.products.update.combo.attach') }}"  id="searchForm">
@@ -28,9 +29,9 @@
                         <!-- <label for="related_prod">Related Product: </label> -->
                         <input id="combo_prod" class="form-control" name="combo_prod" placeholder="Search Product">
                     </div>
-                    <div class="form-group col-md-2">
+                    <!-- <div class="form-group col-md-2">
                         <input type="submit" name="search" class="btn sbtn btn-block" value="Add">
-                    </div>
+                    </div> -->
                     </div>
                     <div id="prod_log" class="hidden">
                     <table class="table tableVaglignMiddle table-hover priceTable">
@@ -56,13 +57,16 @@
                         <div class='col-md-2 form-group'><label class="control-label">Qty</label></div>
                         <div class='col-md-2 form-group'><label class="control-label pull-left">Remove</label></div>
                     </div> -->
+                    <div class="row">
+                    <div class="form-group col-md-2 pull-right">
+                        <input type="submit" name="search" class="btn sbtn btn-block pull-right" value="Add">
+                    </div>
+                    </div>
                     </div>
                 </form>
-            </div>
-                {!! Form::model($prod, ['method' => 'post', 'files'=> true, 'url' => $action ,'id'=>'ComboProdID' ,'class' => 'form-horizontal' ]) !!}
+            </div>                
                 {!! Form::hidden("id",$prod->id) !!}
-                <?php $combo_prods = $prod->comboproducts()->get()->toArray();
-?>
+                    <?php $combo_prods = $prod->comboproducts()->get()->toArray(); ?>
                 <div class="table-responsive">
                     <table class="table comboProds table-striped b-t b-light">
                         <thead>
