@@ -97,6 +97,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/update-conf-without-stock', array('as' => 'admin.products.configurable.update.without.stock', 'uses' => 'ProductsController@updateWithoutStock'));
                 Route::get('/config-attrs-without-stock/{id}', array('as' => 'admin.products.configurable.without.stock.attributes', 'uses' => 'ProductsController@configProdAttrsWithoutStock'));
                 Route::get('/comboProds/{id?}', array('as' => 'admin.combo.products.view', 'uses' => 'ProductsController@comboProds'));
+                Route::any('/admin-products-combo-search', array('as' => 'admin.products.combo.search', 'uses' => 'ProductsController@ProductsComboSearch'));
                 Route::get('/update-product-variant', array('as' => 'admin.products.variant.update', 'uses' => 'ProductsController@updateProdVariant'));
                 Route::post('/update-attributes', array('as' => 'admin.products.attributes.update', 'uses' => 'ProductsController@update2'));
                 //            Route::get('/update-config-product-attr/{id}', array('as' => 'admin.products.configurable.edit.update', 'uses' => 'ProductsController@configProdAttrs'));

@@ -579,7 +579,7 @@ class ProductsController extends Controller
                             array_push($att_files, $fileName);
                         }
                     }
-//                    dd($att_files);
+                //  dd($att_files);
                     $attributes[$att_id] = array('attr_val' => json_encode($att_files), 'attr_type_id' => $attribute['attr_type_id']);
                 } else {
                     $attributes[$att_id] = array('attr_val' => $attribute['file_multi_val'], 'attr_type_id' => $attribute['attr_type_id']);
@@ -723,7 +723,7 @@ class ProductsController extends Controller
                 $newConfigProduct->store_id = Session::get('store_id');
                 $newConfigProduct->update();
             }
-//dd($newConfigProduct);
+            //dd($newConfigProduct);
         }
         $view = !empty(Input::get('return_url')) ? redirect()->to(Input::get('return_url')) : redirect()->route("admin.product.vendors", ['id' => $prod->id]);
         Session::flash("msg", "Product updated succesfully.");
@@ -882,10 +882,8 @@ class ProductsController extends Controller
 
     public function ProductsRelatedSearch()
     {
-
         $prodId = Input::get("id");
         $relatedId = DB::table('has_related_prods')->where('prod_id', $prodId)->pluck("related_prod_id");
-
         if ($_GET['term'] != "") {
             $prods = Product::where('is_individual', '=', '1')->where('product', "like", '%' . $_GET['term'] . '%')->whereNotIn("id", $relatedId)->select("id", "product")->get();
             return $prods;
@@ -953,7 +951,7 @@ class ProductsController extends Controller
                 ->where("products.id", "!=", $prodId)
                 ->get(['products.*'])->toArray();
 
-//      $prods = Product::where('is_individual', '=', '1')
+            //      $prods = Product::where('is_individual', '=', '1')
             //                ->where("id", "!=", $prod->id)
             //                ->where("is_crowd_funded", "=", 0)
             //                ->orderBy("product", "asc");
@@ -963,7 +961,7 @@ class ProductsController extends Controller
             //            }
             //        });
         } else {
-//            die('bhavana123');
+            //            die('bhavana123');
             $prods = [];
             foreach ($cat->descendantsAndSelf()->get() as $child) {
                 foreach ($child->products()
@@ -985,6 +983,17 @@ class ProductsController extends Controller
 
         $action = route('admin.products.update.combo');
         return view(Config('constants.adminProductView') . '.edit4Prod', compact('prod', 'prods', 'action'));
+    }
+    public function ProductsComboSearch()
+    {
+        $prodId = Input::get("id");
+        $comboId = DB::table('has_combo_prods')->where('prod_id', $prodId)->pluck("combo_prod_id");
+        if ($_GET['term'] != "") {
+            $prods = Product::where('is_individual', '=', '1')->where('product', "like", '%' . $_GET['term'] . '%')->whereNotIn("id", $comboId)->select("id", "product", "selling_price", "price")->get();
+            return $prods;
+        } else {
+            return '';
+        }
     }
 
     public function update5()
@@ -1013,13 +1022,30 @@ class ProductsController extends Controller
     public function comboAttach()
     {
         $prod = Product::find(Input::get("id"));
-        $prod->comboproducts()->attach(Input::get("prod_id"));
+        $prodIds = Input::get("prod_id");
+        $prodPrice = Input::get("price");
+        $prodNewPrice = Input::get("new_price");
+        $prodQty = Input::get("qty");
+        $comboProds = [];
+        foreach($prodIds as $prodIdKey => $prodId){
+            $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
+            array_push($comboProds, $comboProd);
+        }
+        // dd($comboProds);
+        DB::table('has_combo_prods')->insert($comboProds);
+        return redirect()->back()->with('Added successfully.');
     }
 
     public function comboDetach()
     {
-        $prod = Product::find(Input::get("id"));
-        $prod->comboproducts()->detach(Input::get("prod_id"));
+        $count = HasProducts::where("prod_id", Input::get('id'))->count();
+        if($count == 0){
+            $prod = Product::find(Input::get("id"));
+            $prod->comboproducts()->detach(Input::get("prod_id"));
+            return $data = ['status' => 1, 'msg' => 'Deleted Successfully.'];
+        } else {
+            return $data = ['status' => 0, 'msg' => 'Sorry this product is part of some configuration.'];
+        }
     }
 
     //attr
@@ -1225,7 +1251,7 @@ class ProductsController extends Controller
             if ($prod->attributes()->count() >= 1) {
                 @$prod->attributes()->detach();
             }
-//            if ($prod->catalogimgs()->count() >= 2) {
+            //            if ($prod->catalogimgs()->count() >= 2) {
             //                $prod->catalogimgs()->delete();
             //            }
             //            if ($prod->savedlist()->count() >= 1) {
@@ -1314,12 +1340,9 @@ class ProductsController extends Controller
 
     public function prodUploadDel()
     {
-
         $id = Input::get('imgId');
-
         DownlodableProd::find($id)->delete();
         // echo "Deleted Successfully";
-
         Session::flash("delDownloadableProd", "Deleted Successfully.");
     }
 
@@ -1424,20 +1447,14 @@ class ProductsController extends Controller
 
     public function productBulkUpload()
     {
-
         if (Input::hasFile('file')) {
-
             $file = Input::file('file');
             $name = time() . '-' . $file->getClientOriginalName();
-
             // $path = public_path() . '/theSoul/uploads/pincodes/';
             $path = public_path() . '/public/Admin/uploads/products/';
-
             $file->move($path, $name);
-
             return $this->product_import_csv($path, $name);
         } else {
-
             echo "Please select file";
         }
     }
@@ -1495,16 +1512,14 @@ class ProductsController extends Controller
                 $related = $col[33];
                 $upsell = $col[34];
                 if (!empty($id)) {
-
                     $updateProd = Product::firstOrNew(array('id' => $id));
-
                     if (!empty($product)) {
                         $updateProd->product = $product;
                     }
 
                     if (!empty($prodT)) {
                         if (is_numeric($prodT)) {
-                            $prodtype_id = ProductType::whereIn('id', [1, 2, 3])->pluck("id")->toArray();
+                            $prodtype_id = ProductType::whereIn('type_id', [1, 2, 3])->pluck("type_id")->toArray();
                             // dd($prodtype_id);
                             if (in_array($prodT, $prodtype_id)) {
                                 $updateProd->prod_type = $prodT;
@@ -1642,8 +1657,8 @@ class ProductsController extends Controller
                     if (!empty($is_referal_discount)) {
                         $updateProd->is_referal_discount = $is_referal_discount;
                     }
-
-                    $updateProd->save();
+                    $updateProd->store_id = Session::get('store_id');
+                    // $updateProd->save();
 
                     if ($id == 'NULL' || $id == 'null') {
                         $updateProd->attr_set = $attr_set;
@@ -1651,14 +1666,15 @@ class ProductsController extends Controller
 
                         if ($updateProd->prod_type != 3) {
                             if ($updateProd->prod_type == 1) {
-                                if ($attr_set != 1) {
+                                $defaultAttributeSet = AttributeSet::first();
+                                if ($defaultAttributeSet->id != $updateProd->attr_set) {
                                     Session::flash("message", "Variant set value " . $attr_set . " not allowd for product Name " . $product . " in " . $row_id . " product record");
                                     $updateProd->delete();
-
                                     return redirect()->back();
                                 }
                             } else {
                                 $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes;
+                                // dd($attributes);
                                 if (count($attributes) == 0) {
                                     Session::flash("message", "There is no Attribute Found in database with id value " . $attr_set . " product Name " . $product . " in " . $row_id . " product record");
                                     $updateProd->delete();
@@ -1673,6 +1689,7 @@ class ProductsController extends Controller
                             }
                         } else {
                             $chkAttr = AttributeSet::find($updateProd->attributeset['id']);
+                            // dd($chkAttr);
                             if ($chkAttr == null) {
                                 Session::flash("message", "There is no Variant set found in database with id value " . $attr_set . " for product name " . $product . " in  " . $row_id . " product record.");
                                 $updateProd->delete();
@@ -1689,12 +1706,12 @@ class ProductsController extends Controller
                                 }
                             }
 
-//                            $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes()->where('is_filterable', "=", "0")->get();
+                            //                            $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes()->where('is_filterable', "=", "0")->get();
                             //                            if (!empty($attributes))
                             //                                $updateProd->attributes()->sync($attributes);
                         }
                     }
-
+                    $updateProd->update();
                     $tagsArr = explode(",", $tags);
 
                     if (!empty($tags)) {
@@ -1705,17 +1722,21 @@ class ProductsController extends Controller
 
                     if (!empty($categories)) {
                         foreach ($categoryids as $categoryid) {
-                            $category = Category::where(DB::raw(strtolower('category')), $categoryid)->first();
-                            if (count($category) > 0) {
+                            // $category = Category::where(DB::raw(strtolower('category')), $categoryid)->first();
+                            $category = DB::table('store_categories')
+                            ->join('categories', 'categories.id', '=', 'store_categories.category_id')
+                            ->where('categories.'.DB::raw(strtolower('category')), $categoryid)->select('store_categories.id')->first();
+                            if ($category && $category != null) {
                                 $cat_id[] = $category->id;
                             } else {
                                 Session::flash("message", "Given category " . $categoryid . " does not exist for product name " . $product . " in " . $row_id . " product record.");
-                                $updateProd->delete();
+                                // $updateProd->delete();
                                 return redirect()->back();
                             }
                         }
+                        // dd($updateProd);
                         $updateProd->categories()->detach();
-                        $updateProd->categories()->sync($categoryids);
+                        $updateProd->categories()->attach($cat_id);
                     } else {
                         Session::flash("message", "Category name can't be blank for product name " . $product . " in " . $row_id . " product record.");
                         $updateProd->delete();
@@ -1736,17 +1757,18 @@ class ProductsController extends Controller
                     }
 
                     $prdimgsData = explode(",", $prdimgs);
-
-                    if (!empty($prdimgsData)) {
-
-                        $updateProd->catalogimgs()->delete();
+                    if (!empty($prdimgsData) && $prdimgsData != '') {
                         $getimgs = [];
-
                         foreach ($prdimgsData as $fileNm) {
-                            array_push($getimgs, new CatalogImage(array('filename' => $fileNm, 'image_type' => 1, 'image_mode', 1)));
+                            if($fileNm != ''){
+                                $newImg = new CatalogImage(['filename' => $fileNm, 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $updateProd->id]);
+                                array_push($getimgs, $newImg);
+                            }
                         }
-
-                        $updateProd->catalogimgs()->saveMany($getimgs);
+                        if(!empty($getimgs)){                            
+                            $updateProd->catalogimgs()->delete();
+                            $updateProd->catalogimgs()->saveMany($getimgs);
+                        }
                     }
                 } else {
                     Session::flash("message", "Plese Insert Product Id value NULL for product " . $product . "and row id " . $row_id);
@@ -1766,8 +1788,16 @@ class ProductsController extends Controller
 
     public function prdBulkImgUpload()
     {
-        $path = '/public/Admin/uploads/catalog/products/';
+        $path = Config('constants.productBulkUploadImgPath'); // '/public/Admin/uploads/catalog/products/';
         $upload_handler = new UploadHandler(null, true, null, $path);
+        if(!empty($upload_handler)){
+            // dd($upload_handler->response);
+            $data = ['uploadedImages' => $upload_handler->response];
+            $viewname =Config('constants.adminProductView') . '.bulk-images-upload';
+            return Helper::returnView($viewname, $data);
+        } else {
+            return redirect()->back();
+        }
     }
 
     public function generateBarcode()
@@ -1865,7 +1895,6 @@ class ProductsController extends Controller
                 $pid = explode('-', $id);
                 array_push($pids, $pid[0]);
             }
-            dd(Input::get('productId'));
             $products = Product::orderBy("id", "asc")->find($pids);
             Excel::create('products', function ($excel) use ($products) {
                 $excel->sheet('Sheet 1', function ($sheet) use ($products) {
