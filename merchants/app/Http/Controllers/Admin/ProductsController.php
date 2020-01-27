@@ -1023,12 +1023,13 @@ class ProductsController extends Controller
     {
         $prod = Product::find(Input::get("id"));
         $prodIds = Input::get("prod_id");
-        $prodPrice = Input::get("price");
+        $subprodid = Input::get("subprodid");
+        $prodPrice = Input::get("old_price");
         $prodNewPrice = Input::get("new_price");
         $prodQty = Input::get("qty");
         $comboProds = [];
         foreach($prodIds as $prodIdKey => $prodId){
-            $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
+            $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'sub_prod_id'=> $subprodid[$prodIdKey], 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
             array_push($comboProds, $comboProd);
         }
         // dd($comboProds);
