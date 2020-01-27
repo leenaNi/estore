@@ -89,7 +89,7 @@
                                             $prodName = $prd['product'];
                                         }
                                     ?>
-                                     {!! $prodName !!}
+                                    {!! $prodName !!}
                                 </td>
                                 <td>{!! $prd['pivot']['new_price'] !!}</td>
                                 <td>{!! $prd['pivot']['qty'] !!}</td>
