@@ -368,9 +368,9 @@
 
     $(".sendOtpOnMobile").on("click", function () {
        
-        $("#newStoreForm").submit();
+        //$("#newStoreForm").submit();
         
-      /* if ($("#newStoreForm").valid()) {
+       if ($("#newStoreForm").valid()) {
             $("#sendOTP").modal('show');
             var country=$('.county_code').val();
             var mobile= $('.telephone').val();
@@ -390,7 +390,7 @@
                     console.log(e.responseText);
                 }
             });
-        }*/
+        }
     });
 
 //    $("#otpForm").validate({
