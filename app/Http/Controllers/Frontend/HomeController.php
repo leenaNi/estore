@@ -18,6 +18,8 @@ use App\Models\MerchantOrder;
 use App\Models\Store;
 use App\Models\StoreTheme;
 use App\Models\Vendor;
+use App\Models\Country;
+use App\Models\Currency;
 use Auth;
 use Crypt;
 use DB;
@@ -125,10 +127,12 @@ class HomeController extends Controller
         //  dd($checkdomain);
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
         //$cat = Category::where("status", 1)->pluck('category', 'id');
+        $country = Country::where("status", 1)->get()->first();
+        $currency = Currency::where("status", 1)->get()->first();
 
         $curr = HasCurrency::where('status', 1)->orderBy("currency_code", "asc")->get(['status', 'id', 'name', 'iso_code', 'currency_code']);
         $viewname = Config('constants.frontendView') . ".new-store";
-        $data = ['cat' => $cat, 'curr' => $curr];
+        $data = ['cat' => $cat, 'curr' => $curr,'default_currency'=>$currency['id'],'default_country'=>$country['country_code']];
         //echo "<pre>";print_r($data);
         return Helper::returnView($viewname, $data);
     }
@@ -171,6 +175,7 @@ class HomeController extends Controller
 
     public function selectThemes()
     {
+        
         $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
         if (empty(Input::get('firstname')) && empty(Session::get('merchantid'))) {
             $cats = Category::where("status", 1)->get();
@@ -197,7 +202,8 @@ class HomeController extends Controller
                     $merchantObj->provider_id = $allinput['provider_id'];
                     Session::put("provider_id", $allinput['provider_id']);
                 }
-
+                $allinput['country_code'] = $allinput['default_country'];
+                $allinput['currency'] = $allinput['default_currency'];
                 $merchantObj->company_name = $allinput['company_name'];
                 $merchantObj->phone = $allinput['phone'];
                 $merchantObj->country_code = $allinput['country_code'];
@@ -253,6 +259,8 @@ class HomeController extends Controller
                 return $validator->messages()->toJson();
             } else {
                 $businessType = $allinput['d_business_type'];
+                $allinput['country_code'] = $allinput['default_country'];
+                $allinput['currency'] = $allinput['default_currency'];
                 $distributorObj = new Vendor();
                 $distributorObj->country = $allinput['country_code'];
                 $distributorObj->business_name = $allinput['company_name'];
@@ -717,7 +725,7 @@ class HomeController extends Controller
 
                         for ($k = 0; $k < $totalCategory; $k++) {
                             if (!empty($catid[$k])) {
-                                Helper::saveDefaultSet($catid[$k], $prefix, $storeId);
+                                Helper::saveDefaultSet($catid[$k], $prefix, $storeId,$storeType);
                             }
                         }
                     } // end if
@@ -725,7 +733,7 @@ class HomeController extends Controller
                         // echo "store id >> $storeId :: cat id >> $catid";
 
                         if (!empty($catid)) {
-                            Helper::saveDefaultSet($catid, $prefix, $storeId);
+                            Helper::saveDefaultSet($catid, $prefix, $storeId,$storeType);
                         }
                     }
 

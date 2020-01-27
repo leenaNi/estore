@@ -184,6 +184,7 @@ if (isset($data->expiry_date)) {
 
 
                             {{--- seo starts --}}
+                            @if(Session::get('login_user_type') != 3)
                             <div class="form-group row">
                                 <div class="col-sm-6">
                                     {!! Form::label('meta_title', 'Meta Title',['class'=>'control-label']) !!}
@@ -204,11 +205,14 @@ if (isset($data->expiry_date)) {
                                     {!! Form::text('meta_robot',isset($data->meta_robot) ? $data->meta_robot : '',["class"=>'form-control',"placeholder"=>"Enter Meta Robots"]) !!}
                                 </div>
                             </div>
+                            @endif
                             <div class="form-group row">
+                                @if(Session::get('login_user_type') != 3)
                                 <div class="col-sm-6">
                                     {!! Form::label('canonical', 'Canonical',['class'=>'control-label']) !!}
                                     {!! Form::text('canonical',isset($data->canonical) ? $data->canonical : '',["class"=>'form-control',"placeholder"=>"Enter Meta Canonical"]) !!}
                                 </div>
+                                @endif
                                 <div class="col-sm-6">
                                     {!! Form::label('Social Shared Title', 'Social Shared Title',['class'=>'control-label']) !!}
                                     {!! Form::text('title',isset($data->title) ? $data->title : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared Title"]) !!}

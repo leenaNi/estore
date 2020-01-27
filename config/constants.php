@@ -30,6 +30,8 @@ $adminConstants = [
     'AdminPagesMastersTheme' => 'Admin.Pages.Masters.Themes',
     'AdminPagesMastersLanguage' => 'Admin.Pages.Masters.Language',
     'AdminPagesMastersTranslation' => 'Admin.Pages.Masters.Translation',
+    "AdminPagesMastersCountry" => 'Admin.Pages.Masters.Country',
+    "AdminPagesMastersCurrency" => 'Admin.Pages.Masters.Currency',
     
     'AdminPagesSystemUsersRoles' => 'Admin.Pages.SystemUsers.Roles',
     'AdminPagesSystemUsersUsers' => 'Admin.Pages.SystemUsers.Users',
@@ -39,7 +41,8 @@ $adminConstants = [
     'AdminPagesTemplates' => 'Admin.Pages.Templates',
     'AdminPagesCourier' => 'Admin.Pages.Courier',
     
-     'AdminPaginateNo' => '10'
+     'AdminPaginateNo' => '10',
+     
 ];
 
 
