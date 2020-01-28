@@ -579,7 +579,7 @@ class ProductsController extends Controller
                             array_push($att_files, $fileName);
                         }
                     }
-//                    dd($att_files);
+                //  dd($att_files);
                     $attributes[$att_id] = array('attr_val' => json_encode($att_files), 'attr_type_id' => $attribute['attr_type_id']);
                 } else {
                     $attributes[$att_id] = array('attr_val' => $attribute['file_multi_val'], 'attr_type_id' => $attribute['attr_type_id']);
@@ -723,7 +723,7 @@ class ProductsController extends Controller
                 $newConfigProduct->store_id = Session::get('store_id');
                 $newConfigProduct->update();
             }
-//dd($newConfigProduct);
+            //dd($newConfigProduct);
         }
         $view = !empty(Input::get('return_url')) ? redirect()->to(Input::get('return_url')) : redirect()->route("admin.product.vendors", ['id' => $prod->id]);
         Session::flash("msg", "Product updated succesfully.");
@@ -882,10 +882,8 @@ class ProductsController extends Controller
 
     public function ProductsRelatedSearch()
     {
-
         $prodId = Input::get("id");
         $relatedId = DB::table('has_related_prods')->where('prod_id', $prodId)->pluck("related_prod_id");
-
         if ($_GET['term'] != "") {
             $prods = Product::where('is_individual', '=', '1')->where('product', "like", '%' . $_GET['term'] . '%')->whereNotIn("id", $relatedId)->select("id", "product")->get();
             return $prods;
@@ -953,7 +951,7 @@ class ProductsController extends Controller
                 ->where("products.id", "!=", $prodId)
                 ->get(['products.*'])->toArray();
 
-//      $prods = Product::where('is_individual', '=', '1')
+            //      $prods = Product::where('is_individual', '=', '1')
             //                ->where("id", "!=", $prod->id)
             //                ->where("is_crowd_funded", "=", 0)
             //                ->orderBy("product", "asc");
@@ -963,7 +961,7 @@ class ProductsController extends Controller
             //            }
             //        });
         } else {
-//            die('bhavana123');
+            //            die('bhavana123');
             $prods = [];
             foreach ($cat->descendantsAndSelf()->get() as $child) {
                 foreach ($child->products()
@@ -986,16 +984,27 @@ class ProductsController extends Controller
         $action = route('admin.products.update.combo');
         return view(Config('constants.adminProductView') . '.edit4Prod', compact('prod', 'prods', 'action'));
     }
+    public function ProductsComboSearch()
+    {
+        $prodId = Input::get("id");
+        $comboId = DB::table('has_combo_prods')->where('prod_id', $prodId)->pluck("combo_prod_id");
+        if ($_GET['term'] != "") {
+            $prods = Product::where('is_individual', '=', '1')->where('product', "like", '%' . $_GET['term'] . '%')->whereNotIn("id", $comboId)->select("id", "product", "selling_price", "price")->get();
+            return $prods;
+        } else {
+            return '';
+        }
+    }
 
     public function update5()
     {
         $prod = Product::find(Input::get("id"));
-        if (!empty(Input::get('combo_prods'))) {
-            $prod->comboproducts()->sync(Input::get('combo_prods'));
-        } else {
-            $prod->comboproducts()->detach();
-        }
-
+        // if (!empty(Input::get('combo_prods'))) {
+        //     $prod->comboproducts()->sync(Input::get('combo_prods'));
+        // } else {
+        //     $prod->comboproducts()->detach();
+        // }
+        $this->comboAttach();
         $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
 
         if (!empty(Input::get('return_url'))) {
@@ -1012,14 +1021,44 @@ class ProductsController extends Controller
 
     public function comboAttach()
     {
+        // dd(Input::all());
         $prod = Product::find(Input::get("id"));
-        $prod->comboproducts()->attach(Input::get("prod_id"));
+        $prodIds = Input::get("prod_id");
+        $subprodid = Input::get("subprodid");
+        $prodPrice = Input::get("old_price");
+        $prodNewPrice = Input::get("new_price");
+        $prodQty = Input::get("qty");
+        $comboProds = [];
+        foreach($prodIds as $prodIdKey => $prodId){
+            $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'sub_prod_id'=> @$subprodid[$prodIdKey], 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
+            array_push($comboProds, $comboProd);
+        }
+        // dd($comboProds);
+        DB::table('has_combo_prods')->insert($comboProds);
+        $this->updateComboProdPrice($prod);
+        return redirect()->back()->with('Added successfully.');
+    }
+
+    public function updateComboProdPrice($prod) {
+        $comboProds = DB::table('has_combo_prods')->where('prod_id', $prod->id)->get();
+        $price = $sellingPrice = 0;
+        foreach($comboProds as $comboProdKey => $comboProd) {
+            $price += $comboProd->old_price;
+            $sellingPrice += $comboProd->new_price;
+        }
+        DB::table('products')->where('id', $prod->id)->update(['price' => $price, 'selling_price' => $sellingPrice, 'spl_price' => $sellingPrice]);
     }
 
     public function comboDetach()
     {
-        $prod = Product::find(Input::get("id"));
-        $prod->comboproducts()->detach(Input::get("prod_id"));
+        $count = HasProducts::where("prod_id", Input::get('id'))->count();
+        if($count == 0){
+            $prod = Product::find(Input::get("id"));
+            $prod->comboproducts()->detach(Input::get("prod_id"));
+            return $data = ['status' => 1, 'msg' => 'Deleted Successfully.'];
+        } else {
+            return $data = ['status' => 0, 'msg' => 'Sorry this product is part of some configuration.'];
+        }
     }
 
     //attr
@@ -1225,7 +1264,7 @@ class ProductsController extends Controller
             if ($prod->attributes()->count() >= 1) {
                 @$prod->attributes()->detach();
             }
-//            if ($prod->catalogimgs()->count() >= 2) {
+            //            if ($prod->catalogimgs()->count() >= 2) {
             //                $prod->catalogimgs()->delete();
             //            }
             //            if ($prod->savedlist()->count() >= 1) {

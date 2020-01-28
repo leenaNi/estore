@@ -115,15 +115,28 @@ Route::group(['namespace' => 'Admin'], function () {
                 Route::post('/delete', ["as" => "admin.masters.translation.delete", "uses" => "TranslationController@delete"]);
             });
             
-              Route::group(['prefix' => 'themes'], function () {
+            Route::group(['prefix' => 'themes'], function () {
                 Route::get('/', ["as" => "admin.masters.themes.view", "uses" => "StoreThemesController@index"]);
                 Route::any('/add-edit', ["as" => "admin.masters.themes.addEdit", "uses" => "StoreThemesController@addEdit"]);
                 Route::post('/save-update', ["as" => "admin.masters.themes.saveUpdate", "uses" => "StoreThemesController@saveUpdate"]);
                 Route::post('/change-status', ["as" => "admin.masters.themes.changeStatus", "uses" => "StoreThemesController@changeStatus"]);
                 Route::get('/delete-banner', ["as" => "admin.masters.themes.deleteBanner", "uses" => "StoreThemesController@deleteBanner"]);
             });
+            Route::group(['prefix' => 'country'], function () {
+                Route::get('/', ["as" => "admin.masters.country.view", "uses" => "CountryController@index"]);
+                Route::any('/add-edit', ["as" => "admin.masters.country.addEdit", "uses" => "CountryController@addEditCountry"]);
+                Route::post('/save-update', ["as" => "admin.masters.country.saveUpdate", "uses" => "CountryController@saveUpdate"]);
+                Route::any('/change-status', ["as" => "admin.masters.country.changeStatus", "uses" => "CountryController@changeStatus"]);
+            });
 
+            Route::group(['prefix' => 'currency'], function () {
+                Route::get('/', ["as" => "admin.masters.currency.view", "uses" => "CurrencyController@index"]);
+                Route::any('/add-edit', ["as" => "admin.masters.currency.addEdit", "uses" => "CurrencyController@addEditCountry"]);
+                Route::post('/save-update', ["as" => "admin.masters.currency.saveUpdate", "uses" => "CurrencyController@saveUpdate"]);
+                Route::any('/change-status', ["as" => "admin.masters.currency.changeStatus", "uses" => "CurrencyController@changeStatus"]);
+            });
         });
+
         Route::group(['prefix' => 'settings'], function () {
             Route::get('/', ["as" => "admin.settings.view", "uses" => "SettingsController@index"]);
             Route::post('/', ["as" => "admin.settings.update", "uses" => "SettingsController@update"]);

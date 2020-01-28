@@ -177,14 +177,22 @@
 
                                                 {!! Form::label('MRP/Listing Price', 'MRP/Listing Price ',['class'=>'pull-left']) !!}
                                                 <span class="red-astrik pull-left ml-2">*</span>
+                                                @if($prod->prod_type != 2)
                                                 {!! Form::text('price',null,["class"=>'form-control priceConvertTextBox validate[required,custom[number]] priceConvertTextBox',"placeholder"=>"Max Price"]) !!}
+                                                @else
+                                                {!! Form::text('price',null,["class"=>'form-control priceConvertTextBox validate[required,custom[number]] priceConvertTextBox',"placeholder"=>"Max Price", "readonly"]) !!}
+                                                @endif
                                             </div>
                                         </div>
 
                                         <div class="col-md-4">
                                             <div class="form-group">                      
                                                 {!! Form::label('Selling Price', 'Selling Price',['class'=>'pull-left']) !!}
+                                                @if($prod->prod_type != 2)
                                                 {!! Form::text('spl_price',null,["class"=>'form-control priceConvertTextBox  validate[custom[number]]',"placeholder"=>"Selling Price"]) !!}
+                                                @else
+                                                {!! Form::text('spl_price',null,["class"=>'form-control priceConvertTextBox  validate[custom[number]]',"placeholder"=>"Selling Price", "readonly"]) !!}
+                                                @endif
                                             </div>
                                         </div>
 

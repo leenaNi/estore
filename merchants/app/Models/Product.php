@@ -91,7 +91,7 @@ class Product extends \Eloquent
     }
     public function comboproducts()
     {
-        return $this->belongsToMany('App\Models\Product', 'has_combo_prods', 'prod_id', 'combo_prod_id');
+        return $this->belongsToMany('App\Models\Product', 'has_combo_prods', 'prod_id', 'combo_prod_id')->withPivot("id", "qty", "new_price", "sub_prod_id");
     }
 
     public function catalogimgs()

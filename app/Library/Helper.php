@@ -177,7 +177,7 @@ class Helper
         fclose($fp);
     }
 
-    public static function saveDefaultSet($catid, $prefix, $storeId)
+    public static function saveDefaultSet($catid, $prefix, $storeId,$storeType)
     {
         $cat = Category::find($catid);
        
@@ -265,6 +265,8 @@ class Helper
             ->select('general_setting_id', 'url_key')
             ->get();
         $saveIndustryQuestion = [];
+        $updateGeneralSetting = [];
+        
         foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
             $generalSettingId = DB::table('general_setting')->where('url_key', $hasIndVal->url_key)->where('store_id', $storeId)->first();
             if ($generalSettingId && $generalSettingId != null) {
@@ -274,6 +276,19 @@ class Helper
             }
         }
         DB::table('has_industries')->insert($saveIndustryQuestion);
+
+        if($storeType == 'distributor')
+        {
+            $distributorDefaultSettingUrlKey = array("email-facility"=>1,"acl"=>1,"invoice"=>1,"additional-charge"=>1,"default-courier"=>0,"cod"=>0,"stock"=>1,"related-products"=>0);
+            foreach ($industriQuestions as $hasIndKey => $hasIndVal)
+            {
+                if(array_key_exists($hasIndVal->url_key,$distributorDefaultSettingUrlKey))
+                {
+                    $value = $distributorDefaultSettingUrlKey[$hasIndVal->url_key];
+                    DB::table('general_setting')->where(['url_key'=>$hasIndVal->url_key,'store_id'=> $storeId])->update(array('is_question'=>$value));
+                }
+            } // End foreach
+        }
     }
 
     public static function getUserCashBack($prifix, $phone = null, $userId = null)
