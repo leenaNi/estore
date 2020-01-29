@@ -32,6 +32,9 @@ use App\Models\ReturnOrder;
 use App\Models\StaticPage;
 use App\Models\User;
 use App\Models\Zone;
+use App\Models\ProductMapping;
+use App\Models\InwardTransaction;
+use App\Models\ProductWiseInwardTransaction;
 use App\Traits\Admin\OrdersTrait;
 use Cart;
 use Config;
@@ -65,7 +68,7 @@ class DistributorOrdersController extends Controller
             array_push($distributorsIds, $allDistributor->distributor_id);
         }
         $distributorStores = DB::table('stores')->where('store_type', 'LIKE', 'distributor')->whereIn('merchant_id', $distributorsIds)->get(['id']);
-        
+       
         $distributorsStoreIds = [];
         foreach($distributorStores as $distributorStore) {
             array_push($distributorsStoreIds, $distributorStore->id);
@@ -78,6 +81,7 @@ class DistributorOrdersController extends Controller
         foreach($storeAdminUsers as $storeAdminUser) {
             array_push($storeAdminUserIds, $storeAdminUser->id);
         }
+        
         $orders = Order::where("orders.order_status", "!=", 0)
         ->whereIn('user_id', $storeAdminUserIds)
         ->where('order_type', 1)
@@ -85,6 +89,7 @@ class DistributorOrdersController extends Controller
         ->whereIn("has_products.store_id", $distributorsStoreIds)
         ->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))
         ->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        //echo "<pre>";print_r($orders);exit;
         //   dd($orders);
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
@@ -163,6 +168,7 @@ class DistributorOrdersController extends Controller
         }
         $flags = Flags::all();
         $viewname = Config('constants.adminDistributorOrderView') . '.index';
+        
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
         return Helper::returnView($viewname, $data);
     }
@@ -1708,7 +1714,9 @@ class DistributorOrdersController extends Controller
     {
         $term = Input::get('term');
         if (!empty($term)) {
+            
             $merchant = DB::table('stores')->where('id', Session::get('store_id'))->first();
+            
             $result = DB::table('has_distributors')
                 ->join("distributor", "distributor.id", "=", "has_distributors.distributor_id")
                 ->join("stores", "stores.merchant_id", "=", "has_distributors.distributor_id")
@@ -3170,4 +3178,312 @@ class DistributorOrdersController extends Controller
         Session::forget('usedCouponCode');
     }
 
+    public function getTotalQtyProductWise($orderId) // for validation of received qty total
+    {
+        $inwardTransactionResult = DB::table('inward_transaction')
+        ->join('productwise_inward_transaction', 'inward_transaction.id', '=', 'productwise_inward_transaction.inward_transaction_id')
+        ->where('inward_transaction.order_id', $orderId)
+        ->orderBy('productwise_inward_transaction.has_product_id', 'asc')
+        ->get();
+        $totalQtyAndPriceArray = array();
+        $tempProductId = 0;
+        $totalQty = 0;
+        
+        foreach($inwardTransactionResult as $inwardTransactionData)
+        {
+            $hasProductId = $inwardTransactionData->has_product_id;
+            if($tempProductId > 0 && $hasProductId != $tempProductId)
+            {
+                $totalQtyAndPriceArray[$tempProductId] = $totalQty;
+                $totalQty = 0;
+            }
+            $totalQty = $totalQty+$inwardTransactionData->qty;
+            $tempProductId = $hasProductId;
+        }
+        $totalQtyAndPriceArray[$tempProductId] = $totalQty;
+        return $totalQtyAndPriceArray;
+    }
+
+    public function getOrderDataForInward() // listing for inward
+    {
+        $orderId = Input::get('id');
+        $totalQtyAndPriceArray = $this->getTotalQtyProductWise($orderId);
+       
+        $orders = DB::table('has_products')
+            ->leftJoin('product_mapping', 'has_products.prod_id', '=', 'product_mapping.distributor_product_id')
+            ->join("stores", "stores.id", "=", "has_products.store_id") // For get distributor id
+            ->where('has_products.order_id', $orderId)
+            ->get(['has_products.id','has_products.order_id','has_products.product_details','stores.merchant_id AS distributor_id','product_mapping.merchant_product_id','product_mapping.merchant_id as mappedMerchantId']);
+        
+        $viewname = Config('constants.adminDistributorOrderView') . '.inward-order';
+        $data = ['orders' => $orders,'totalQtyProductwise'=>$totalQtyAndPriceArray];
+        return Helper::returnView($viewname, $data);
+    } // End getOrderDataForInward()
+
+    public function getProductForMapping() // from search product
+    {
+        if (!empty(Input::get('term'))) 
+        {
+            $term = Input::get('term');
+            //echo "insdei if".Session::get('store_id');
+            $productResult = DB::table('products')
+            ->join("stores", "stores.id", "=", "products.store_id")
+            ->where('store_id', Session::get('store_id'))
+            ->where('product', 'LIKE',"%$term%")
+            ->get(['products.id', 'products.product as product_name','stores.merchant_id']);
+            //echo "<pre>";print_r($productResult);
+            $data = [];
+            $k = 0;
+            foreach ($productResult as $productData) 
+            {
+                $data[$k]['id'] = $productData->id;
+                $data[$k]['label'] = $productData->product_name;
+                $data[$k]['name'] = $productData->product_name;
+                $data[$k]['merchant_id'] = $productData->merchant_id;
+                $k++;
+            }
+            echo json_encode($data);
+        }
+      
+    } // Edn getProductForMapping()
+
+    public function saveInwardData() // save inward data
+    {
+        $allinput = Input::all();
+        $orderId = $allinput['order_id'];
+        $totalData = count($allinput['data']);
+        $insertData = array();
+        $totalReceivedProductPrice = 0;
+        $totalReceivedQty = 0;
+        $productStockArray = array();
+
+        for($i = 0; $i < $totalData; $i++)
+        {
+            $productData = $allinput['data'][$i];
+            $orderProductId = $productData['order_product_id'];
+            $merchantId = $productData['m_id'];
+            $distributorId = $productData['d_id'];
+            $merchantProductId = $productData['m_product_id'];
+            $distributorProductId = $productData['d_product_id'];
+            $receivedQty = $productData['received_qty'];
+            $unitPrice = $productData['unit_price'];
+            $totalPrice = $productData['total_price'];
+            $isMapped = $productData['is_mapped'];
+            $totalReceivedQty = $totalReceivedQty + $receivedQty;
+            $totalReceivedProductPrice = $totalReceivedProductPrice + $totalPrice;
+
+            if($isMapped == 0)
+            {
+                $insertData[] = [
+                    'distributor_id'=> $distributorId,
+                    'merchant_id'=> $merchantId,
+                    'distributor_product_id'=> $distributorProductId,
+                    'merchant_product_id'=> $merchantProductId,
+                ];
+            }
+
+            $productWiseInwardInsert[] = [
+                'inward_transaction_id' => 0,
+                'has_product_id' => $orderProductId,
+                'order_type' => 'receive',
+                'qty'=> $receivedQty,
+                'total_price' => $totalPrice
+            ];
+
+            $productStockArray[$merchantProductId] = $receivedQty;
+        } // End for loop
+        
+        $isSuccess = 1;
+        if(count($insertData) > 0)
+            $isSuccess = DB::table('product_mapping')->insert($insertData);
+
+        if($isSuccess)
+        {
+            $inwardTransactionObj = new InwardTransaction();
+            $inwardTransactionObj->order_id = $orderId;
+            $inwardTransactionObj->order_type = 'receive';
+            $inwardTransactionObj->grn_date = date('Y-m-d');
+            $inwardTransactionObj->received_qty = $totalReceivedQty;
+            $inwardTransactionObj->total_price = $totalReceivedProductPrice;
+            $inwardTransactionObj->save();
+            $lastInsertId = $inwardTransactionObj->id;
+            
+            if($lastInsertId > 0)
+            {
+                $inwardTransactionObj1 = InwardTransaction::find($lastInsertId);
+                $inwardTransactionObj1->grn_number = $lastInsertId;
+                $inwardTransactionObj1->save();
+                
+                $finalInsertData = [];
+                foreach($productWiseInwardInsert as $productWiseInwardInsertData)
+                {
+                    $productWiseInwardInsertData['inward_transaction_id'] = $lastInsertId;
+                    $finalInsertData[] = $productWiseInwardInsertData;
+                }
+                $isSuccess = DB::table('productwise_inward_transaction')->insert($finalInsertData);
+                if($isSuccess)
+                {
+                    // update product stock
+                    foreach($productStockArray as $merchantProductId => $receivedQty)
+                    {
+                        $productObj = Product::find($merchantProductId);
+                        $productObj->stock = ($productObj->stock + $receivedQty);
+                        $productObj->update();
+                    }
+                    echo true;  
+                }
+                else
+                {
+                    echo false;
+                }
+            } // End lastInsertId check if
+            else
+            {
+                echo false;
+            }
+        } // End isSuccess check if
+        else
+        {
+            echo false;
+        }
+        
+    } // End saveInwardData()
+
+    public function getInwardTransaction() // inwward transaction list 
+    {
+        $orderId = Input::get('id');
+        $inwardTransactionResult = DB::table('inward_transaction')
+            ->join("orders", "inward_transaction.order_id", "=", "orders.id")
+            ->where('orders.id', $orderId)
+            ->get(['orders.id','inward_transaction.grn_number','inward_transaction.grn_date','inward_transaction.received_qty','inward_transaction.total_price','orders.created_at']);
+        $viewname = Config('constants.adminDistributorOrderView') . '.inward-list';
+        $data = ['inwardTransaction' => $inwardTransactionResult];
+        
+        return Helper::returnView($viewname, $data);
+
+    } // End getInwardTransaction()
+
+    public function getProductDiscrepancy() // display discrepancy page
+    {
+        $orderId = Input::get('id');
+        $totalQtyAndPriceArray = $this->getTotalQtyProductWise($orderId);
+
+        $inwardTransactionResult = DB::table('has_products')
+            ->leftJoin('product_mapping', 'has_products.prod_id', '=', 'product_mapping.distributor_product_id')
+            ->join("stores", "stores.id", "=", "has_products.store_id") // For get distributor id
+            ->where('has_products.order_id', $orderId)
+            ->get(['has_products.id','has_products.order_id','has_products.product_details','stores.merchant_id as distributor_id','product_mapping.merchant_product_id','product_mapping.merchant_id as mappedMerchantId']);
+        
+        $viewname = Config('constants.adminDistributorOrderView') . '.product-discrepancy';
+        $data = ['inwardTransaction' => $inwardTransactionResult,'totalQtyProductwise'=>$totalQtyAndPriceArray];
+        
+        return Helper::returnView($viewname, $data);
+    } // End getProductDiscrepency()
+
+    public function saveDiscrepancyData()
+    {
+        $allinput = Input::all();
+        $orderId = $allinput['order_id'];
+        $totalData = count($allinput['data']);
+        $insertData = array();
+        $totalReceivedProductPrice = 0;
+        $totalScrapQty = 0;
+        for($i = 0; $i < $totalData; $i++)
+        {
+            $productData = $allinput['data'][$i];
+            $orderProductId = $productData['order_product_id'];
+            $merchantId = $productData['m_id'];
+            $distributorId = $productData['d_id'];
+            $merchantProductId = $productData['m_product_id'];
+            $distributorProductId = $productData['d_product_id'];
+            $scrapQty = $productData['scrap_qty'];
+            $isMapped = $productData['is_mapped'];
+            $totalScrapQty = $totalScrapQty + $scrapQty;
+
+            if($isMapped == 0)
+            {
+                $insertData[] = [
+                    'distributor_id'=> $distributorId,
+                    'merchant_id'=> $merchantId,
+                    'distributor_product_id'=> $distributorProductId,
+                    'merchant_product_id'=> $merchantProductId,
+                ];
+            }
+
+            $productWiseInwardInsert[] = [
+                'inward_transaction_id' => 0,
+                'has_product_id' => $orderProductId,
+                'order_type' => 'scrap',
+                'qty'=> $scrapQty,
+            ];
+
+            // return order insert json
+            $insertOrderReturnData[] = [
+                'order_id'=> $orderId,
+                'product_id'=> $distributorProductId,
+                'quantity'=> $scrapQty,
+                'reason_id'=> 1,
+                'order_status' => 2, // returned
+                'store_id'=> Session::get('store_id')
+            ];
+        } // End for loop
+
+        $isSuccess = 1;
+        if(count($insertData) > 0)
+            $isSuccess = DB::table('product_mapping')->insert($insertData);
+
+        if($isSuccess)
+        {
+            $inwardTransactionObj = new InwardTransaction();
+            $inwardTransactionObj->order_id = $orderId;
+            $inwardTransactionObj->order_type = 'return';
+            $inwardTransactionObj->grn_date = date('Y-m-d');
+            $inwardTransactionObj->save();
+            $lastInsertId = $inwardTransactionObj->id;
+            
+            if($lastInsertId > 0)
+            {
+                $inwardTransactionObj1 = InwardTransaction::find($lastInsertId);
+                $inwardTransactionObj1->grn_number = $lastInsertId;
+                $inwardTransactionObj1->save();
+                
+                $finalInsertData = [];
+                foreach($productWiseInwardInsert as $productWiseInwardInsertData)
+                {
+                    $productWiseInwardInsertData['inward_transaction_id'] = $lastInsertId;
+                    $finalInsertData[] = $productWiseInwardInsertData;
+                }
+                // echo "<pre>";print_r($finalInsertData);
+                $isSuccess = DB::table('productwise_inward_transaction')->insert($finalInsertData);
+                //echo "is succes >> ".$isSuccess;exit;
+
+                if($isSuccess)
+                {
+                    //return order 
+                    $isSuccess = DB::table('return_order')->insert($insertOrderReturnData);
+                    if($isSuccess)
+                    {
+                        echo true;
+                    }
+                    else
+                    {
+                        echo false;
+                    }
+                }
+                else
+                {
+                    echo false;
+                }
+            } // End lastInsertId check if
+            else
+            {
+                echo false;
+            }
+        } // End isSuccess check if
+        else
+        {
+            echo false;
+        }
+
+    } // Edn saveDiscrepancyData()
 }
