@@ -1483,9 +1483,6 @@ class ProductsController extends Controller
                     $col[$c] = $data[$c];
                 }
                 $id = trim($col[0],' ');
-                // $sku = @$col[1];
-                // $hsn_code = $col[2];
-                // $size_chart = $col[3];
                 $product = $col[1];
                 $barcode = $col[2];
                 $prodT = $col[3];
@@ -1576,6 +1573,13 @@ class ProductsController extends Controller
                     if (!empty($weight))
                         $updateProd->weight = $weight;
                     if (!empty($attr_set)) {
+                        $atr = AttributeSet::where([strtolower('attr_set')=>$attr_set,'store_id'=>Session::get('store_id')])->first();
+                        if(!empty($atr)){
+                            $attr_set = $atr->id;
+                        }else{
+                            Session::flash("message", "Given Variant Set Name " . $attr_set . " does not exist in " . $row_id . " product record.");
+                                            return redirect()->back();
+                        }
                         $updateProd->attr_set = $attr_set;
                     }
 
@@ -1611,7 +1615,7 @@ class ProductsController extends Controller
                     $updateProd->store_id = Session::get('store_id');
                     $updateProd->save();
 
-                    if (!empty($attributes)) {
+                    if (!empty($attributes) && $prodT=='3') {
                        
                         $attrs_array = explode("|", $attributes);
                         foreach($attrs_array as $key=> $att_ids)
@@ -1626,6 +1630,11 @@ class ProductsController extends Controller
 
                             foreach ($attrs as $op => $value) {
                                 $opt = explode("=>", $value);
+                                $p_attr = Attribute::where([strtolower('attr')=>$opt[0],'store_id'=>Session::get('store_id')])->first();
+                                $attr_val = AttributeValue::where([strtolower('option_name')=>$opt[1],'attr_id'=>$p_attr->id])->first();
+                                $opt[0] = $p_attr->id;
+                                $opt[1] = $attr_val->id;
+
                                 $optionName = AttributeValue::find($opt[1])->option_name;
                                 $name .= "$optionName, ";
                                 DB::update(DB::raw("update has_options set attr_val = '" . $opt[1] . "' where attr_id = " . $opt[0] . " and prod_id = " . $newConfigProduct->id));
@@ -1700,6 +1709,13 @@ class ProductsController extends Controller
                         if (!empty($weight))
                             $updateProd->weight = $weight;
                         if (!empty($attr_set)) {
+                            $atr = AttributeSet::where([strtolower('attr_set')=>$attr_set,'store_id'=>Session::get('store_id')])->first();
+                            if(!empty($atr)){
+                                $attr_set = $atr->id;
+                            }else{
+                                Session::flash("message", "Given Variant Set Name " . $attr_set . " does not exist in " . $row_id . " product record.");
+                                                return redirect()->back();
+                            }
                             $updateProd->attr_set = $attr_set;
                         }
 
@@ -1734,7 +1750,7 @@ class ProductsController extends Controller
                         $updateProd->is_stock = 1;
                         $updateProd->store_id = Session::get('store_id');
                         $updateProd->save();
-                        if (!empty($attributes)) {
+                        if (!empty($attributes) && $prodT=='3') {
                             
                             $del_subproducts = @Product::find($updateProd->id)->subproducts()->delete();
                             $count = @Product::find($updateProd->id)->subproducts()->count();
@@ -1753,6 +1769,10 @@ class ProductsController extends Controller
     
                                 foreach ($attrs as $op => $value) {
                                     $opt = explode("=>", $value);
+                                    $p_attr = Attribute::where([strtolower('attr')=>$opt[0],'store_id'=>Session::get('store_id')])->first();
+                                    $attr_val = AttributeValue::where([strtolower('option_name')=>$opt[1],'attr_id'=>$p_attr->id])->first();
+                                    $opt[0] = $p_attr->id;
+                                    $opt[1] = $attr_val->id;
                                     $optionName = AttributeValue::find($opt[1])->option_name;
                                     $name .= "$optionName, ";
                                     DB::update(DB::raw("update has_options set attr_val = '" . $opt[1] . "' where attr_id = " . $opt[0] . " and prod_id = " . $newConfigProduct->id));
@@ -1773,8 +1793,7 @@ class ProductsController extends Controller
                                     $newConfigProduct->update();
                             }
                         }
-                        }
-
+                    }
                     $categoryids = explode(",", $categories);
 
                         if (!empty($categories)) {
@@ -1820,7 +1839,7 @@ class ProductsController extends Controller
                             $updateProd->relatedproducts()->detach();
                             $updateProd->upsellproducts()->attach($upsellProdIds);
                         }
-                   
+
                 }
                 $row_id++;
             }
@@ -1832,46 +1851,6 @@ class ProductsController extends Controller
         }
     }
 
-    public function mapProductImages($prdimgs,$updateProd){
-        $prdimgsData = explode(",", $prdimgs);
-        if (!empty($prdimgsData) && $prdimgsData != '') {
-            $getimgs = [];
-            foreach ($prdimgsData as $fileNm) {
-                if($fileNm != ''){
-                    $newImg = new CatalogImage(['filename' => $fileNm, 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $updateProd->id]);
-                    array_push($getimgs, $newImg);
-                }
-            }
-            if(!empty($getimgs)){                            
-                $updateProd->catalogimgs()->delete();
-                $updateProd->catalogimgs()->saveMany($getimgs);
-            }
-        }
-    }
-    
-    public function mapProductCat($categories,$updateProd)
-    {
-        $categoryids = explode(",", $categories);
-
-        if (!empty($categories)) {
-            foreach ($categoryids as $categoryid) {
-                // $category = Category::where(DB::raw(strtolower('category')), $categoryid)->first();
-                $category = DB::table('store_categories')
-                ->join('categories', 'categories.id', '=', 'store_categories.category_id')
-                ->where('categories.'.DB::raw(strtolower('category')), $categoryid)->select('store_categories.id')->first();
-                if ($category && $category != null) {
-                    $cat_id[] = $category->id;
-                } else {
-                    Session::flash("message", "Given category " . $categoryid . " does not exist for product name " . $product . " in " . $row_id . " product record.");
-                    // $updateProd->delete();
-                    return redirect()->back();
-                }
-            }
-            // dd($updateProd);
-            $updateProd->categories()->detach();
-            $updateProd->categories()->attach($cat_id);
-        }
-    }
 
     private function product_import_csv($path, $filename)
     {
