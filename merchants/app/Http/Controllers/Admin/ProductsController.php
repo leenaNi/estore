@@ -1482,7 +1482,7 @@ class ProductsController extends Controller
                 for ($c = 0; $c < $num; $c++) {
                     $col[$c] = $data[$c];
                 }
-                $id = $col[0];
+                $id = trim($col[0],' ');
                 // $sku = @$col[1];
                 // $hsn_code = $col[2];
                 // $size_chart = $col[3];
@@ -1517,7 +1517,7 @@ class ProductsController extends Controller
                 $upsell = $col[29];
                 
                 if (!empty($id)) {
-                   //$skuExists = Product::where('product_code', $sku)->count();
+                    //dd($id);
                    if (strtolower($id) == 'null') {
                     $updateProd = Product::firstOrNew(array('id' => $id));
                     if (!empty($product))
@@ -1608,18 +1608,19 @@ class ProductsController extends Controller
 
                     $updateProd->is_individual = 1;
                     $updateProd->is_stock = 1;
+                    $updateProd->store_id = Session::get('store_id');
                     $updateProd->save();
 
                     if (!empty($attributes)) {
                         //$updateProd = Product::where("id", 30)->first();
-                        $count = @Product::find($updateProd->id)->subproducts()->count();
-                        
+                        //$count = @Product::find($updateProd->id)->subproducts()->count();
+                       // dd($count);$count = 
                         $attrs_array = explode("|", $attributes);
                         //$at = array();
                         foreach($attrs_array as $key=> $att_ids)
                         {
                             $attrs = explode(",",$att_ids);
-                            $newConfigProduct = Product::create(['product' => $updateProd->product . ' - Variant - ' . $count, 'is_avail' => $is_avail, 'stock' => $stock, 'is_stock' => 1, 'parent_prod_id' => $updateProd->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $updateProd->attr_set, 'price' => $price]);
+                            $newConfigProduct = Product::create(['product' => $updateProd->product . ' - Variant - ', 'is_avail' => $is_avail, 'stock' => $stock, 'is_stock' => 1, 'parent_prod_id' => $updateProd->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $updateProd->attr_set, 'price' => $price]);
                        
                             $attributes = AttributeSet::find($newConfigProduct->attributeset['id'])->attributes;
 
@@ -1654,7 +1655,7 @@ class ProductsController extends Controller
                     if (strtolower($id) != 'null') {
                         
                         $updateProd = Product::find($id);
-                        if (!empty($product))
+                        if (!empty($product)) //dd($updateProd->product);
                             $updateProd->product = $product;
 
                         if (!empty($prodT)) {
