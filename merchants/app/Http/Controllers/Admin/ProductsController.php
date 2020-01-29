@@ -1612,11 +1612,8 @@ class ProductsController extends Controller
                     $updateProd->save();
 
                     if (!empty($attributes)) {
-                        //$updateProd = Product::where("id", 30)->first();
-                        //$count = @Product::find($updateProd->id)->subproducts()->count();
-                       // dd($count);$count = 
+                       
                         $attrs_array = explode("|", $attributes);
-                        //$at = array();
                         foreach($attrs_array as $key=> $att_ids)
                         {
                             $attrs = explode(",",$att_ids);
@@ -1655,7 +1652,7 @@ class ProductsController extends Controller
                     if (strtolower($id) != 'null') {
                         
                         $updateProd = Product::find($id);
-                        if (!empty($product)) //dd($updateProd->product);
+                        if (!empty($product))
                             $updateProd->product = $product;
 
                         if (!empty($prodT)) {
@@ -1809,6 +1806,19 @@ class ProductsController extends Controller
                                 $updateProd->catalogimgs()->delete();
                                 $updateProd->catalogimgs()->saveMany($getimgs);
                             }
+                        }
+                        $relatedProdIds = explode(",", $related);
+
+                        if (!empty($related)) {
+                            $updateProd->relatedproducts()->detach();
+                            $updateProd->relatedproducts()->attach($relatedProdIds);
+                        }
+
+                        $upsellProdIds = explode(",", $upsell);
+
+                        if (!empty($upsell)) {
+                            $updateProd->relatedproducts()->detach();
+                            $updateProd->upsellproducts()->attach($upsellProdIds);
                         }
                    
                 }
