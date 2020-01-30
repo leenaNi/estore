@@ -54,8 +54,11 @@
                             @if(count($orders) >0 )
                             <?php
                             $totalOrderedQty = 0;
+                            //echo "<pre>"; print_r($productMappingData);
+                            //echo "<pre>"; print_r($orders);exit;
                             //$orderId = Input::get('id');
                             ?>
+                            
                             @foreach($orders as $orderData)  {{-- has_product table data --}}
                             <?php
                             $hasProductId = $orderData->id;
@@ -63,7 +66,7 @@
                             $productDetail = json_decode($orderData->product_details);
                             $totalOrderedQty = $totalOrderedQty + $productDetail->qty;
                             $productType = $orderData->prod_type;
-                            $productName = $inputAttr = '';
+                            $merchantProductName = $inputAttr = $merchantProductId = '';
                             $merchantId = $isProductMapped = 0;
                            // echo count($productMappingData);exit;
                             if(count($productMappingData) > 0)
@@ -76,15 +79,18 @@
                                 {
                                     $productId = $orderData->prod_id;
                                 }
-                                $merchantProductId = $productMappingData[$productId]['m_product_id'];
                                 
-                                if($merchantProductId > 0)
+                                if(isset($productMappingData[$productId]) && !empty($productMappingData[$productId]))
                                 {
-                                    $productData = DB::table('products')->where('id', $merchantProductId)->get(['product']);
-                                    $productName = $productData[0]->product;
-                                    $merchantId = $productMappingData[$productId]['m_id'];
-                                    $inputAttr = 'readonly';
-                                    $isProductMapped = 1;
+                                    $merchantProductId = $productMappingData[$productId]['m_product_id'];
+                                    if($merchantProductId > 0)
+                                    {
+                                        $productData = DB::table('products')->where('id', $merchantProductId)->get(['product']);
+                                        $merchantProductName = $productData[0]->product;
+                                        $merchantId = $productMappingData[$productId]['m_id'];
+                                        $inputAttr = 'readonly';
+                                        $isProductMapped = 1;
+                                    }
                                 }
                             }
 
@@ -103,9 +109,9 @@
                                 <td id="totalPrice_{{$hasProductId}}">0</td>
                                 <td>
                                     @if($isProductMapped == 1)
-                                    <span>{{$productName}}</span>
+                                    <span>{{$merchantProductName}}</span>
                                     @else
-                                        <input type="text" id="searchProduct_{{$hasProductId}}" name="searchProduct_{{$hasProductId}}" onkeypress="searchProduct({{$hasProductId}})" value="{{$productName}}" {{$inputAttr}} placeholder="Search & Select" size="15" >
+                                        <input type="text" id="searchProduct_{{$hasProductId}}" name="searchProduct_{{$hasProductId}}" onkeypress="searchProduct({{$hasProductId}})" value="" {{$inputAttr}} placeholder="Search & Select" size="15" >
                                     @endif
                                 <input type="hidden" id="merchantProductId_{{$hasProductId}}" name="merchantProductId_{{$hasProductId}}" value="{{$merchantProductId}}">
                                 <input type="hidden" id="merchantId_{{$hasProductId}}" name="merchantId_{{$hasProductId}}" value="{{$merchantId}}">
@@ -115,7 +121,7 @@
                                 <input type="hidden" id="distributorProductId_{{$hasProductId}}" name="distributorProductId_{{$hasProductId}}" value="{{$productDetail->id}}">
                                 <input type="hidden" id="orderProductId_{{$hasProductId}}" name="orderProductId_{{$hasProductId}}" value="{{$hasProductId}}">
                                 <input type="hidden" id="totalReceivedQty_{{$hasProductId}}" name="totalReceivedQty_{{$hasProductId}}"  value="{{$totalReceivedQty}}">
-                                <input type="hidden" id="qtyErorr_{{$hasProductId}}" name="qtyErorr_{{$hasProductId}}"  value="{{$totalReceivedQty}}">
+                                <input type="hidden" id="qtyErorr_{{$hasProductId}}" name="qtyErorr_{{$hasProductId}}"  value="0">
                                 
                             </tr>
                             @endforeach
@@ -135,6 +141,7 @@
                     </table>
                     <div class="box-footer clearfix">
                     <button type="button" onclick="saveData()">Submit</button>
+                    <button type="button" onclick="clickOnCancel()">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -146,6 +153,10 @@
 @stop
 @section('myscripts')
 <script>
+    function clickOnCancel()
+    {
+        window.location = "{{route('admin.distributor.orders.view')}}";
+    }
     function calculateQtyAndPrice(productId)
     {
         var receivedQty = $("#receivedQty_"+productId).val();
@@ -221,8 +232,8 @@
         var dataJson = [];
         var i=0;
         var orderId = $("#orderId").val();
-        var isSubmit = 0;
-        var isMapping = 0;
+        var isSubmit = 1;
+        var isMapping = 1;
         $("tr[id^='tr_']" ).each(function( index ) 
         {
             var orderProductId = $(this).attr('id').split('_')[1];
@@ -237,40 +248,43 @@
                 var receivedQty = $("#receivedQty_"+orderProductId).val();
                 var unitPrice = $("#unitPrice_"+orderProductId).html();
                 var totalPrice = $("#totalPrice_"+orderProductId).html();
-                var orderProductId = $("#orderProductId_"+orderProductId).val(); // had_product table primary key
+                var orderProductId = $("#orderProductId_"+orderProductId).val(); // has_product table primary key
                 var isProductMapped = $("#isProductMapped_"+orderProductId).val();
-                if((receivedQty > 0 || receivedQty != '') && merchantProductId == '')
-                {
-                    isMapping = 1;
-                    isSubmit = 1;
-                    return false;
-                }
-
+               
                 if(receivedQty > 0 || receivedQty != '')
                 {
-                    dataJson[i] = 
+                    if(merchantProductId != '')
                     {
-                        'order_id': orderId,
-                        'order_product_id': orderProductId,
-                        'm_id': merchantId,
-                        'd_id': distributorId,
-                        'm_product_id': merchantProductId,
-                        'd_product_id': distributorProductId,
-                        'received_qty': receivedQty,
-                        'unit_price': unitPrice,
-                        'total_price': totalPrice,
-                        'is_mapped': isProductMapped
-                    };
+                        dataJson[i] = 
+                        {
+                            'order_id': orderId,
+                            'order_product_id': orderProductId,
+                            'm_id': merchantId,
+                            'd_id': distributorId,
+                            'm_product_id': merchantProductId,
+                            'd_product_id': distributorProductId,
+                            'received_qty': receivedQty,
+                            'unit_price': unitPrice,
+                            'total_price': totalPrice,
+                            'is_mapped': isProductMapped
+                        };
+                        i++;
+                    }
+                    else
+                    {
+                        isMapping = 0;
+                        isSubmit = 0;
+                        return false;
+                    }
                 }
-                i++;
+                
             }
             else
             {
-                isSubmit = 1;
+                isSubmit = 0;
             }
         });
-       
-        if(isSubmit == 0)
+        if(isSubmit == 1)
         {
             $.ajax({
                     type: "POST",
@@ -292,7 +306,7 @@
         }
         else
         {
-            if(isMapping == 1)
+            if(isMapping == 0)
             {
                 alert("Please select product for mapping");
             }

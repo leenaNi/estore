@@ -3278,7 +3278,11 @@ class DistributorOrdersController extends Controller
     {
         $allinput = Input::all();
         $orderId = $allinput['order_id'];
-        $totalData = count($allinput['data']);
+        $totalData = 0;
+        if(isset($allinput['data']) && !empty($allinput['data']))
+        {
+            $totalData = count($allinput['data']);
+        }
         $insertData = array();
         $totalReceivedProductPrice = 0;
         $totalReceivedQty = 0;
@@ -3319,44 +3323,56 @@ class DistributorOrdersController extends Controller
 
             $productStockArray[$merchantProductId] = $receivedQty;
         } // End for loop
-        
+        //echo "<pre>";print_r($productStockArray);exit;
         $isSuccess = 1;
         if(count($insertData) > 0)
             $isSuccess = DB::table('product_mapping')->insert($insertData);
 
         if($isSuccess)
         {
-            $inwardTransactionObj = new InwardTransaction();
-            $inwardTransactionObj->order_id = $orderId;
-            $inwardTransactionObj->order_type = 'receive';
-            $inwardTransactionObj->grn_date = date('Y-m-d');
-            $inwardTransactionObj->received_qty = $totalReceivedQty;
-            $inwardTransactionObj->total_price = $totalReceivedProductPrice;
-            $inwardTransactionObj->save();
-            $lastInsertId = $inwardTransactionObj->id;
-            
+            $lastInsertId = 1;
+            if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
+            {
+                $inwardTransactionObj = new InwardTransaction();
+                $inwardTransactionObj->order_id = $orderId;
+                $inwardTransactionObj->order_type = 'receive';
+                $inwardTransactionObj->grn_date = date('Y-m-d');
+                $inwardTransactionObj->received_qty = $totalReceivedQty;
+                $inwardTransactionObj->total_price = $totalReceivedProductPrice;
+                $inwardTransactionObj->save();
+                $lastInsertId = $inwardTransactionObj->id;
+            }
+
             if($lastInsertId > 0)
             {
-                $inwardTransactionObj1 = InwardTransaction::find($lastInsertId);
-                $inwardTransactionObj1->grn_number = $lastInsertId;
-                $inwardTransactionObj1->save();
-                
                 $finalInsertData = [];
-                foreach($productWiseInwardInsert as $productWiseInwardInsertData)
+                $isSuccess = 1;
+                if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
                 {
-                    $productWiseInwardInsertData['inward_transaction_id'] = $lastInsertId;
-                    $finalInsertData[] = $productWiseInwardInsertData;
+                    $inwardTransactionObj1 = InwardTransaction::find($lastInsertId);
+                    $inwardTransactionObj1->grn_number = $lastInsertId;
+                    $inwardTransactionObj1->save();
+
+                    foreach($productWiseInwardInsert as $productWiseInwardInsertData)
+                    {
+                        $productWiseInwardInsertData['inward_transaction_id'] = $lastInsertId;
+                        $finalInsertData[] = $productWiseInwardInsertData;
+                    }
+                    $isSuccess = DB::table('productwise_inward_transaction')->insert($finalInsertData);
                 }
-                $isSuccess = DB::table('productwise_inward_transaction')->insert($finalInsertData);
                 if($isSuccess)
                 {
                     // update product stock
-                    foreach($productStockArray as $merchantProductId => $receivedQty)
+                    if(isset($productStockArray) && !empty($productStockArray))
                     {
-                        $productObj = Product::find($merchantProductId);
-                        $productObj->stock = ($productObj->stock + $receivedQty);
-                        $productObj->update();
+                        foreach($productStockArray as $merchantProductId => $receivedQty)
+                        {
+                            $productObj = Product::find($merchantProductId);
+                            $productObj->stock = ($productObj->stock + $receivedQty);
+                            $productObj->update();
+                        }
                     }
+                    
                     echo true;  
                 }
                 else
@@ -3418,7 +3434,11 @@ class DistributorOrdersController extends Controller
     {
         $allinput = Input::all();
         $orderId = $allinput['order_id'];
-        $totalData = count($allinput['data']);
+        $totalData = 0;
+        if(isset($allinput['data']) && !empty($allinput['data']))
+        {
+            $totalData = count($allinput['data']);
+        }
         $insertData = array();
         $totalReceivedProductPrice = 0;
         $totalScrapQty = 0;
@@ -3468,33 +3488,48 @@ class DistributorOrdersController extends Controller
 
         if($isSuccess)
         {
-            $inwardTransactionObj = new InwardTransaction();
-            $inwardTransactionObj->order_id = $orderId;
-            $inwardTransactionObj->order_type = 'return';
-            $inwardTransactionObj->grn_date = date('Y-m-d');
-            $inwardTransactionObj->save();
-            $lastInsertId = $inwardTransactionObj->id;
+            $lastInsertId = 1;
+            if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
+            {
+                $inwardTransactionObj = new InwardTransaction();
+                $inwardTransactionObj->order_id = $orderId;
+                $inwardTransactionObj->order_type = 'return';
+                $inwardTransactionObj->grn_date = date('Y-m-d');
+                $inwardTransactionObj->save();
+                $lastInsertId = $inwardTransactionObj->id;
+            }
+            
             
             if($lastInsertId > 0)
             {
-                $inwardTransactionObj1 = InwardTransaction::find($lastInsertId);
-                $inwardTransactionObj1->grn_number = $lastInsertId;
-                $inwardTransactionObj1->save();
-                
-                $finalInsertData = [];
-                foreach($productWiseInwardInsert as $productWiseInwardInsertData)
+                if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
                 {
-                    $productWiseInwardInsertData['inward_transaction_id'] = $lastInsertId;
-                    $finalInsertData[] = $productWiseInwardInsertData;
+                    $inwardTransactionObj1 = InwardTransaction::find($lastInsertId);
+                    $inwardTransactionObj1->grn_number = $lastInsertId;
+                    $inwardTransactionObj1->save();
                 }
-                // echo "<pre>";print_r($finalInsertData);
-                $isSuccess = DB::table('productwise_inward_transaction')->insert($finalInsertData);
-                //echo "is succes >> ".$isSuccess;exit;
+                $finalInsertData = [];
+                $isSuccess = 1;
+                if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
+                {
+                    foreach($productWiseInwardInsert as $productWiseInwardInsertData)
+                    {
+                        $productWiseInwardInsertData['inward_transaction_id'] = $lastInsertId;
+                        $finalInsertData[] = $productWiseInwardInsertData;
+                    }
+                    // echo "<pre>";print_r($finalInsertData);
+                    $isSuccess = DB::table('productwise_inward_transaction')->insert($finalInsertData);
+                    //echo "is succes >> ".$isSuccess;exit;
+                }
 
                 if($isSuccess)
                 {
-                    //return order 
-                    $isSuccess = DB::table('return_order')->insert($insertOrderReturnData);
+                    $isSuccess = 1;
+                    if(isset($insertOrderReturnData) && !empty($insertOrderReturnData))
+                    {
+                        //return order 
+                        $isSuccess = DB::table('return_order')->insert($insertOrderReturnData);
+                    }
                     if($isSuccess)
                     {
                         echo true;
