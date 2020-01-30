@@ -3026,7 +3026,6 @@ class DistributorOrdersController extends Controller
     // For order Update stock
     public function updateStock($orderId)
     {
-
         $jsonString = Helper::getSettings();
         // $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         $stock_limit = GeneralSetting::where('url_key', 'stock')->first();
@@ -3034,7 +3033,7 @@ class DistributorOrdersController extends Controller
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-
+        
         HasProducts::where("order_id", $orderId)->delete();
         foreach ($cartContent as $cart) {
             $product = DistributorProduct::find($cart->id);
@@ -3061,7 +3060,7 @@ class DistributorOrdersController extends Controller
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
+            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
                 'pay_amt' => $payamt, 'store_id' => Session::get('distributor_store_id'), 'prefix' => Session::get('distributor_store_prefix')];
             //            $market_place = Helper::generalSetting(35);
             //            if (isset($market_place) && $market_place->status == 1) {
@@ -3069,10 +3068,11 @@ class DistributorOrdersController extends Controller
             //                $vendor['order_status'] = 1;
             //                $vendor['tracking_id'] = 1;
             //                $vendor['vendor_id'] = is_null($prior_vendor) ? null : $prior_vendor->id;
-            //                $cart_ids[$cart->id] = array_merge($cart_ids[$cart->id], $vendor);
+            //                $cart_ids[$cart->rowid] = array_merge($cart_ids[$cart->rowid], $vendor);
             //            }
+            // print_r($cart->options->has('sub_prod'));
             if ($cart->options->has('sub_prod')) {
-                $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
+                $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = DistributorProduct::find($cart->options->sub_prod);
                 $proddetails['id'] = $prddataS->id;
@@ -3082,10 +3082,10 @@ class DistributorOrdersController extends Controller
                 $proddetails['qty'] = $cart->qty;
                 $proddetails['subtotal'] = $subtotal;
                 $proddetails['is_cod'] = $prddataS->is_cod;
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);
+                $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetails);
                 $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
 
                 if ($prddataS->is_stock == 1) {
                     $prddataS->stock = $prddataS->stock - $cart->qty;
@@ -3126,10 +3126,10 @@ class DistributorOrdersController extends Controller
                         }
                     }
                 }
-                $cart_ids[$cart->id]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
-                $prddataSp = DistributorProduct::find($cart->id);
+                $prddataSp = DistributorProduct::find($cart->rowid);
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
@@ -3138,12 +3138,12 @@ class DistributorOrdersController extends Controller
                 $proddetailsp['subtotal'] = $subtotal * Session::get('currency_val');
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
 
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetailsp);
-                //$cart_ids[$cart->id]["eCount"] = $cart->options->eCount;
+                $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetailsp);
+                //$cart_ids[$cart->rowid]["eCount"] = $cart->options->eCount;
                 $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
-                $prd = DistributorProduct::find($cart->id);
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
+                $prd = DistributorProduct::find($cart->rowid);
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
                     $prd->update();
@@ -3155,15 +3155,18 @@ class DistributorOrdersController extends Controller
             }
             // $order->products()->attach($cart_ids);
             //  HasProducts::on('mysql2');
-            $cart_ids[$cart->id]["order_id"] = $orderId;
-            $cart_ids[$cart->id]["prod_id"] = $cart->id;
-            $cart_ids[$cart->id]["order_status"] = 1;
-            $cart_ids[$cart->id]["order_source"] = 2;
+            $cart_ids[$cart->rowid]["order_id"] = $orderId;
+            $cart_ids[$cart->rowid]["prod_id"] = $cart->id;
+            $cart_ids[$cart->rowid]["order_status"] = 1;
+            $cart_ids[$cart->rowid]["order_source"] = 2;
 
             // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
-            //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);
+            //  $order->products()->attach($cart->rowid, $cart_ids[$cart->rowid]);
         }
         HasProducts::insert($cart_ids);
+        // print_r($cart_ids);  
+        // dd(Cart::instance('shopping')->content());
+        // dd($cart_ids);
         //  $this->orderSuccess();
     }
 

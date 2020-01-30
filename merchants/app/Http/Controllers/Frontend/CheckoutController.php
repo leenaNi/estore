@@ -2221,7 +2221,7 @@ foreach ($_POST as $a => $b) {
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
+            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
                 'pay_amt' => $payamt, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix']];
             //            $market_place = Helper::generalSetting(35);
             //            if (isset($market_place) && $market_place->status == 1) {
@@ -2229,10 +2229,10 @@ foreach ($_POST as $a => $b) {
             //                $vendor['order_status'] = 1;
             //                $vendor['tracking_id'] = 1;
             //                $vendor['vendor_id'] = is_null($prior_vendor) ? null : $prior_vendor->id;
-            //                $cart_ids[$cart->id] = array_merge($cart_ids[$cart->id], $vendor);
+            //                $cart_ids[$cart->rowid] = array_merge($cart_ids[$cart->rowid], $vendor);
             //            }
             if ($cart->options->has('sub_prod')) {
-                $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
+                $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = Product::find($cart->options->sub_prod);
                 $proddetails['id'] = $prddataS->id;
@@ -2242,10 +2242,10 @@ foreach ($_POST as $a => $b) {
                 $proddetails['qty'] = $cart->qty;
                 $proddetails['subtotal'] = $subtotal;
                 $proddetails['is_cod'] = $prddataS->is_cod;
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);
+                $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetails);
                 $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
 
                 if ($prddataS->is_stock == 1) {
                     $prddataS->stock = $prddataS->stock - $cart->qty;
@@ -2286,7 +2286,7 @@ foreach ($_POST as $a => $b) {
                         }
                     }
                 }
-                $cart_ids[$cart->id]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
                 $prddataSp = Product::find($cart->id);
@@ -2298,11 +2298,11 @@ foreach ($_POST as $a => $b) {
                 $proddetailsp['subtotal'] = $subtotal * Session::get('currency_val');
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
 
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetailsp);
-                //$cart_ids[$cart->id]["eCount"] = $cart->options->eCount;
+                $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetailsp);
+                //$cart_ids[$cart->rowid]["eCount"] = $cart->options->eCount;
                 $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
                 $prd = Product::find($cart->id);
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
@@ -2315,10 +2315,10 @@ foreach ($_POST as $a => $b) {
             }
             // $order->products()->attach($cart_ids);
             //  HasProducts::on('mysql2');
-            $cart_ids[$cart->id]["order_id"] = $orderId;
-            $cart_ids[$cart->id]["prod_id"] = $cart->id;
-            $cart_ids[$cart->id]["order_status"] = 1;
-            $cart_ids[$cart->id]["order_source"] = 2;
+            $cart_ids[$cart->rowid]["order_id"] = $orderId;
+            $cart_ids[$cart->rowid]["prod_id"] = $cart->id;
+            $cart_ids[$cart->rowid]["order_status"] = 1;
+            $cart_ids[$cart->rowid]["order_source"] = 2;
 
             // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
             //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);

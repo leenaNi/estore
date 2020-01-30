@@ -54,39 +54,39 @@ class DistributorProduct extends \Eloquent
 
     public function relatedproducts()
     {
-        return $this->belongsToMany('App\Models\Product', 'has_related_prods', 'prod_id', 'related_prod_id');
+        return $this->belongsToMany('App\Models\DistributorProduct', 'has_related_prods', 'prod_id', 'related_prod_id');
     }
 
     public function upsellproducts()
     {
-        return $this->belongsToMany('App\Models\Product', 'has_upsell_prods', 'prod_id', 'upsell_prod_id');
+        return $this->belongsToMany('App\Models\DistributorProduct', 'has_upsell_prods', 'prod_id', 'upsell_prod_id');
     }
 
     public function parentproduct()
     {
-        return $this->belongsTo('App\Models\Product', 'parent_prod_id');
+        return $this->belongsTo('App\Models\DistributorProduct', 'parent_prod_id');
     }
 
     public function subproducts()
     {
-        return $this->hasMany('App\Models\Product', 'parent_prod_id')->where('status', 1);
+        return $this->hasMany('App\Models\DistributorProduct', 'parent_prod_id')->where('status', 1);
     }
 
     public function getsubproducts()
     {
-        return $this->hasMany('App\Models\Product', 'parent_prod_id')->where('status', 1)->where("stock", ">", 0);
+        return $this->hasMany('App\Models\DistributorProduct', 'parent_prod_id')->where('status', 1)->where("stock", ">", 0);
     }
     public function subproductsoutofstock()
     {
-        return $this->hasMany('App\Models\Product', 'parent_prod_id')->where('status', 1)->where("stock", "<=", 0);
+        return $this->hasMany('App\Models\DistributorProduct', 'parent_prod_id')->where('status', 1)->where("stock", "<=", 0);
     }
     public function subproductrunnigshort($stockLimit)
     {
-        return $this->hasMany('App\Models\Product', 'parent_prod_id')->where('status', 1)->whereBetween('stock', ['1', $stockLimit]);
+        return $this->hasMany('App\Models\DistributorProduct', 'parent_prod_id')->where('status', 1)->whereBetween('stock', ['1', $stockLimit]);
     }
     public function comboproducts()
     {
-        return $this->belongsToMany('App\Models\Product', 'has_combo_prods', 'prod_id', 'combo_prod_id');
+        return $this->belongsToMany('App\Models\DistributorProduct', 'has_combo_prods', 'prod_id', 'combo_prod_id');
     }
 
     public function catalogimgs()
