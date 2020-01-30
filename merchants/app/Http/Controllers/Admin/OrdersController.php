@@ -1903,11 +1903,11 @@ class OrdersController extends Controller
 
     public function getProdPrice()
     {
-        $qty = Input::get('qty');
+        $qty = (Input::get('qty'))? Input::get('qty'): 1;
 
         if (Input::get('pprd') == 1) {
             $pprod = Product::find(Input::get('parentprdid'));
-            $price = $pprod->selling_price;
+            $price = ($pprod->selling_price != 0)? $pprod->selling_price: $pprod->price;
             $tax_type = $pprod->is_tax;
             $tax_rate = $pprod->totalTaxRate();
         } else {
