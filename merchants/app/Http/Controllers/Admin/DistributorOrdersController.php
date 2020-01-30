@@ -3204,28 +3204,43 @@ class DistributorOrdersController extends Controller
         return $totalQtyAndPriceArray;
     }
 
+    public function getProductMappingData($loggedinMerchantId)
+    {
+        $productMappingResult = DB::table('product_mapping')->where('merchant_id',$loggedinMerchantId)->get();
+        
+        $productMappingArray = [];
+        foreach($productMappingResult as $productMappingData)
+        {
+            $distributorProdId = $productMappingData->distributor_product_id;
+            $productMappingArray[$distributorProdId]['m_product_id'] = $productMappingData->merchant_product_id;
+            $productMappingArray[$distributorProdId]['m_id'] = $productMappingData->merchant_id;
+        } // End foreach
+        //echo "<pre>";print_r($productMappingArray);exit;
+        return $productMappingArray;
+    }
+
     public function getOrderDataForInward() // listing for inward
     {
         $orderId = Input::get('id');
         $totalQtyAndPriceArray = $this->getTotalQtyProductWise($orderId);
        
-        $productType = DB::table('has_products')->where('id',$orderId)->first();
-        //print_r($productType);
-        $productType = $productType->prod_type;
-        if($productType == 3)
-            $culumnName = 'has_products.sub_prod_id';
-        else
-            $culumnName = 'has_products.prod_id';
+        // get merchant id
+        $storeMerchantId = DB::table('stores')->where('id',Session::get('store_id'))->first();
+        $loggedinMerchantId = $storeMerchantId->merchant_id;
 
+        // Data from product_mapping table
+        $productMappingArray = $this->getProductMappingData($loggedinMerchantId);
+       
+        // get ordered product
         $orders = DB::table('has_products')
-            ->leftJoin('product_mapping', $culumnName, '=', 'product_mapping.distributor_product_id')
-            ->join("stores", "stores.id", "=", "has_products.store_id") // For get distributor id
             ->where('has_products.order_id', $orderId)
-            ->get(['has_products.id','has_products.order_id','has_products.product_details','stores.merchant_id AS distributor_id','product_mapping.merchant_product_id','product_mapping.merchant_id as mappedMerchantId']);
+            ->join("stores", "stores.id", "=", "has_products.store_id") // For get distributor id
+            ->get(['has_products.id','has_products.prod_id','has_products.sub_prod_id','has_products.order_id','has_products.product_details','stores.merchant_id AS distributor_id','has_products.prod_type']);
         
         //echo "<pre>";print_r($orders);exit;
         $viewname = Config('constants.adminDistributorOrderView') . '.inward-order';
-        $data = ['orders' => $orders,'totalQtyProductwise'=>$totalQtyAndPriceArray];
+        $data = ['orders' => $orders,'totalQtyProductwise'=>$totalQtyAndPriceArray,'productMappingData'=>$productMappingArray];
+        //echo "<pre>";print_r($data);exit;
         return Helper::returnView($viewname, $data);
     } // End getOrderDataForInward()
 
@@ -3376,16 +3391,23 @@ class DistributorOrdersController extends Controller
     {
         $orderId = Input::get('id');
         $totalQtyAndPriceArray = $this->getTotalQtyProductWise($orderId);
+       
+        // get merchant id
+        $storeMerchantId = DB::table('stores')->where('id',Session::get('store_id'))->first();
+        $loggedinMerchantId = $storeMerchantId->merchant_id;
 
-        $inwardTransactionResult = DB::table('has_products')
-            ->leftJoin('product_mapping', 'has_products.prod_id', '=', 'product_mapping.distributor_product_id')
-            ->join("stores", "stores.id", "=", "has_products.store_id") // For get distributor id
+        // Data from product_mapping table
+        $productMappingArray = $this->getProductMappingData($loggedinMerchantId);
+       
+        // get ordered product
+        $orders = DB::table('has_products')
             ->where('has_products.order_id', $orderId)
-            ->get(['has_products.id','has_products.order_id','has_products.product_details','stores.merchant_id as distributor_id','product_mapping.merchant_product_id','product_mapping.merchant_id as mappedMerchantId']);
+            ->join("stores", "stores.id", "=", "has_products.store_id") // For get distributor id
+            ->get(['has_products.id','has_products.prod_id','has_products.sub_prod_id','has_products.order_id','has_products.product_details','stores.merchant_id AS distributor_id','has_products.prod_type']);
         
+        $data = ['orders' => $orders,'totalQtyProductwise'=>$totalQtyAndPriceArray,'productMappingData'=>$productMappingArray];
+        //echo "<pre>";print_r($data);exit;
         $viewname = Config('constants.adminDistributorOrderView') . '.product-discrepancy';
-        $data = ['inwardTransaction' => $inwardTransactionResult,'totalQtyProductwise'=>$totalQtyAndPriceArray];
-        
         return Helper::returnView($viewname, $data);
     } // End getProductDiscrepency()
 

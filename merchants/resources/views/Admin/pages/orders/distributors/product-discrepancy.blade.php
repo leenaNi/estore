@@ -48,34 +48,48 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if(count($inwardTransaction) >0 )
+                        @if(count($orders) >0 )
                         <?php
                         $totalOrderedQty = 0;
-                        $orderId = Input::get('id');
+                        //$orderId = Input::get('id');
                         ?>
-                        @foreach($inwardTransaction as $inwardTransactionData)
+                        @foreach($orders as $orderData)
                         <?php
-                        $hasProductId = $inwardTransactionData->id;
-                        $productDetail = json_decode($inwardTransactionData->product_details);
+                        $hasProductId = $orderData->id;
+                        $orderId = $orderData->order_id;
+                        $productDetail = json_decode($orderData->product_details);
                         $totalOrderedQty = $totalOrderedQty + $productDetail->qty;
-                        $merchantProductId = $inwardTransactionData->merchant_product_id;
-                        $totalReceivedQty = 0;
+                        $productType = $orderData->prod_type;
+                       
                         if(isset($totalQtyProductwise[$hasProductId]) && !empty($totalQtyProductwise[$hasProductId]))
                         {
                             $totalReceivedQty = $totalQtyProductwise[$hasProductId];
                         }
-                        $productName = '';
-                        $inputAttr = '';
-                        $merchantId = 0;
-                        $isProductMapped = 0;
-                        if($merchantProductId > 0)
+                        $productName = $inputAttr = '';
+                        $merchantId = $isProductMapped = 0;
+                        // echo count($productMappingData);exit;
+                        if(count($productMappingData) > 0)
                         {
-                            $productData = DB::table('products')->where('id', $merchantProductId)->get(['product']);
-                            $productName = $productData[0]->product;
-                            $merchantId = $inwardTransactionData->mappedMerchantId;
-                            $inputAttr = 'readonly';
-                            $isProductMapped = 1;
+                            if($productType == 3)
+                            {
+                                $productId = $orderData->sub_prod_id;
+                            }
+                            else
+                            {
+                                $productId = $orderData->prod_id;
+                            }
+                            $merchantProductId = $productMappingData[$productId]['m_product_id'];
+                            
+                            if($merchantProductId > 0)
+                            {
+                                $productData = DB::table('products')->where('id', $merchantProductId)->get(['product']);
+                                $productName = $productData[0]->product;
+                                $merchantId = $productMappingData[$productId]['m_id'];
+                                $inputAttr = 'readonly';
+                                $isProductMapped = 1;
+                            }
                         }
+
                         ?>
                         <tr id="tr_{{$hasProductId}}">
                             <td>{{$productDetail->name}}</td>
@@ -83,14 +97,20 @@
                             <td>{{$totalReceivedQty}}</td>
                             <td><input type="text" id="scrapQty_{{$hasProductId}}" name="scrapQty_{{$hasProductId}}" value="" size="4" onkeyup="calculateQtyAndPrice('{{$hasProductId}}')"></td>
                             <td>
-                            <input type="text" id="searchProduct_{{$hasProductId}}" name="searchProduct_{{$hasProductId}}" onkeypress="searchProduct({{$hasProductId}})" value="{{$productName}}" {{$inputAttr}} placeholder="Search & Select" size="15" >
+                                @if($isProductMapped == 1)
+                                    <span title="{{$productName}}">{{$productName}}</span>
+                                @else
+                                <input type="text" id="searchProduct_{{$hasProductId}}" name="searchProduct_{{$hasProductId}}" onkeypress="searchProduct({{$hasProductId}})" value="{{$productName}}" {{$inputAttr}} placeholder="Search & Select" size="15" >
+                                @endif
+
+                            
                             <input type="hidden" id="merchantProductId_{{$hasProductId}}" name="merchantProductId_{{$hasProductId}}" value="{{$merchantProductId}}">
                             <input type="hidden" id="merchantId_{{$hasProductId}}" name="merchantId_{{$hasProductId}}" value="{{$merchantId}}">
                             <input type="hidden" id="isProductMapped_{{$hasProductId}}" name="isProductMapped_{{$hasProductId}}"  value="{{$isProductMapped}}">
                             </td>
-                            <input type="hidden" id="distributorId_{{$hasProductId}}" name="distributorId_{{$hasProductId}}" value="{{$inwardTransactionData->distributor_id}}">
+                            <input type="hidden" id="distributorId_{{$hasProductId}}" name="distributorId_{{$hasProductId}}" value="{{$orderData->distributor_id}}">
                             <input type="hidden" id="distributorProductId_{{$hasProductId}}" name="distributorProductId_{{$hasProductId}}" value="{{$productDetail->id}}">
-                            <input type="hidden" id="orderProductId_{{$hasProductId}}" name="orderProductId_{{$hasProductId}}" value="{{$inwardTransactionData->id}}">
+                            <input type="hidden" id="orderProductId_{{$hasProductId}}" name="orderProductId_{{$hasProductId}}" value="{{$orderData->id}}">
                             <input type="hidden" id="totalReceivedQty_{{$hasProductId}}" name="totalReceivedQty_{{$hasProductId}}"  value="{{$totalReceivedQty}}">
                             <input type="hidden" id="qtyErorr_{{$hasProductId}}" name="qtyErorr_{{$hasProductId}}"  value="{{$totalReceivedQty}}">
                             <input type="hidden" id="orderId" name="orderId" value="{{$orderId}}">

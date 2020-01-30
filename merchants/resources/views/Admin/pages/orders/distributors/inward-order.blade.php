@@ -54,49 +54,68 @@
                             @if(count($orders) >0 )
                             <?php
                             $totalOrderedQty = 0;
-                            $orderId = Input::get('id');
+                            //$orderId = Input::get('id');
                             ?>
-                            @foreach($orders as $orderData)
+                            @foreach($orders as $orderData)  {{-- has_product table data --}}
                             <?php
                             $hasProductId = $orderData->id;
+                            $orderId = $orderData->order_id;
                             $productDetail = json_decode($orderData->product_details);
                             $totalOrderedQty = $totalOrderedQty + $productDetail->qty;
-                            $merchantProductId = $orderData->merchant_product_id;
+                            $productType = $orderData->prod_type;
+                            $productName = $inputAttr = '';
+                            $merchantId = $isProductMapped = 0;
+                           // echo count($productMappingData);exit;
+                            if(count($productMappingData) > 0)
+                            {
+                                if($productType == 3)
+                                {
+                                    $productId = $orderData->sub_prod_id;
+                                }
+                                else
+                                {
+                                    $productId = $orderData->prod_id;
+                                }
+                                $merchantProductId = $productMappingData[$productId]['m_product_id'];
+                                
+                                if($merchantProductId > 0)
+                                {
+                                    $productData = DB::table('products')->where('id', $merchantProductId)->get(['product']);
+                                    $productName = $productData[0]->product;
+                                    $merchantId = $productMappingData[$productId]['m_id'];
+                                    $inputAttr = 'readonly';
+                                    $isProductMapped = 1;
+                                }
+                            }
+
                             $totalReceivedQty = 0;
                             if(isset($totalQtyProductwise[$hasProductId]) && !empty($totalQtyProductwise[$hasProductId]))
                             {
                                 $totalReceivedQty = $totalQtyProductwise[$hasProductId];
                             }
-                            $productName = '';
-                            $inputAttr = '';
-                            $merchantId = 0;
-                            $isProductMapped = 0;
-                            if($merchantProductId > 0)
-                            {
-                                $productData = DB::table('products')->where('id', $merchantProductId)->get(['product']);
-                                $productName = $productData[0]->product;
-                                $merchantId = $orderData->mappedMerchantId;
-                                $inputAttr = 'readonly';
-                                $isProductMapped = 1;
-                            }
+                            
                             ?>
-                            <tr id="tr_{{$orderData->id}}">
+                            <tr id="tr_{{$hasProductId}}">
                                 <td>{{$productDetail->name}}</td>
-                                <td id="orderedQty_{{$orderData->id}}">{{$productDetail->qty}}</td>
-                                <td><input type="text" id="receivedQty_{{$orderData->id}}" name="receivedQty_{{$orderData->id}}" value="" size="4" onkeyup="calculateQtyAndPrice('{{$orderData->id}}')"></td>
-                                <td id="unitPrice_{{$orderData->id}}">{{$productDetail->price}}</td>
-                                <td id="totalPrice_{{$orderData->id}}">0</td>
+                                <td id="orderedQty_{{$hasProductId}}">{{$productDetail->qty}}</td>
+                                <td><input type="text" id="receivedQty_{{$hasProductId}}" name="receivedQty_{{$hasProductId}}" value="" size="4" onkeyup="calculateQtyAndPrice('{{$hasProductId}}')"></td>
+                                <td id="unitPrice_{{$hasProductId}}">{{$productDetail->price}}</td>
+                                <td id="totalPrice_{{$hasProductId}}">0</td>
                                 <td>
-                                <input type="text" id="searchProduct_{{$orderData->id}}" name="searchProduct_{{$orderData->id}}" onkeypress="searchProduct({{$orderData->id}})" value="{{$productName}}" {{$inputAttr}} placeholder="Search & Select" size="15" >
-                                <input type="hidden" id="merchantProductId_{{$orderData->id}}" name="merchantProductId_{{$orderData->id}}" value="{{$merchantProductId}}">
-                                <input type="hidden" id="merchantId_{{$orderData->id}}" name="merchantId_{{$orderData->id}}" value="{{$merchantId}}">
-                                <input type="hidden" id="isProductMapped_{{$orderData->id}}" name="isProductMapped_{{$orderData->id}}"  value="{{$isProductMapped}}">
+                                    @if($isProductMapped == 1)
+                                    <span>{{$productName}}</span>
+                                    @else
+                                        <input type="text" id="searchProduct_{{$hasProductId}}" name="searchProduct_{{$hasProductId}}" onkeypress="searchProduct({{$hasProductId}})" value="{{$productName}}" {{$inputAttr}} placeholder="Search & Select" size="15" >
+                                    @endif
+                                <input type="hidden" id="merchantProductId_{{$hasProductId}}" name="merchantProductId_{{$hasProductId}}" value="{{$merchantProductId}}">
+                                <input type="hidden" id="merchantId_{{$hasProductId}}" name="merchantId_{{$hasProductId}}" value="{{$merchantId}}">
+                                <input type="hidden" id="isProductMapped_{{$hasProductId}}" name="isProductMapped_{{$hasProductId}}"  value="{{$isProductMapped}}">
                                 </td>
-                                <input type="hidden" id="distributorId_{{$orderData->id}}" name="distributorId_{{$orderData->id}}" value="{{$orderData->distributor_id}}">
-                                <input type="hidden" id="distributorProductId_{{$orderData->id}}" name="distributorProductId_{{$orderData->id}}" value="{{$productDetail->id}}">
-                                <input type="hidden" id="orderProductId_{{$orderData->id}}" name="orderProductId_{{$orderData->id}}" value="{{$orderData->id}}">
-                                <input type="hidden" id="totalReceivedQty_{{$orderData->id}}" name="totalReceivedQty_{{$orderData->id}}"  value="{{$totalReceivedQty}}">
-                                <input type="hidden" id="qtyErorr_{{$orderData->id}}" name="qtyErorr_{{$orderData->id}}"  value="{{$totalReceivedQty}}">
+                                <input type="hidden" id="distributorId_{{$hasProductId}}" name="distributorId_{{$hasProductId}}" value="{{$orderData->distributor_id}}">
+                                <input type="hidden" id="distributorProductId_{{$hasProductId}}" name="distributorProductId_{{$hasProductId}}" value="{{$productDetail->id}}">
+                                <input type="hidden" id="orderProductId_{{$hasProductId}}" name="orderProductId_{{$hasProductId}}" value="{{$hasProductId}}">
+                                <input type="hidden" id="totalReceivedQty_{{$hasProductId}}" name="totalReceivedQty_{{$hasProductId}}"  value="{{$totalReceivedQty}}">
+                                <input type="hidden" id="qtyErorr_{{$hasProductId}}" name="qtyErorr_{{$hasProductId}}"  value="{{$totalReceivedQty}}">
                                 
                             </tr>
                             @endforeach
