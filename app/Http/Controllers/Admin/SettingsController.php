@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Merchant;
 use App\Models\Document;
 use App\Models\Currency;
+use App\Models\Country;
 use App\Models\Language;
 use App\Models\Settings;
 use App\Library\Helper;
@@ -22,6 +23,13 @@ class SettingsController extends Controller {
         foreach ($curr as $sCur) {
             $selCurr[$sCur->id] = $sCur->iso_code;
         }
+
+        $countryResult = Country::where('status', 1)->get();
+        //echo "<pre>";print_r($countryResult);exit;
+        $selCountry = [];
+        foreach ($countryResult as $countryData) {
+            $selCountry[$countryData->id] = $countryData->name.' ('.$countryData->country_code.')';
+        }
         $selLang = [];
         $langs = Language::all();
         foreach ($langs as $sLang) {
@@ -30,7 +38,7 @@ class SettingsController extends Controller {
         $settings = Helper::getsettings();
 
         $action = route('admin.settings.update');
-        return view(Config('constants.AdminPagesSettings') . ".index", compact('settings', 'selCurr', 'selLang', 'action'));
+        return view(Config('constants.AdminPagesSettings') . ".index", compact('settings', 'selCurr','selCountry', 'selLang', 'action'));
     }
 
     public function update() {
@@ -39,14 +47,16 @@ class SettingsController extends Controller {
             'primary_color' => 'required',
             'secondary_color' => 'required',
             'language_id' => 'required',
-            'currency_id' => 'required'
+            'currency_id' => 'required',
+            'country_id' => 'required'
         ];
         $messages = [
 
             'primary color.required' => 'Primary Color is required.',
             'secondary color.required' => 'Secondary Color is required.',
             'language_id.required' => 'Language is required.',
-            'currency_id.required' => 'Currency is required.'
+            'currency_id.required' => 'Currency is required.',
+            'country_id.required' => 'Country is required.'
         ];
         $validator = Validator::make(Input::all(), $rules, $messages);
         if ($validator->fails()) {
@@ -72,6 +82,7 @@ class SettingsController extends Controller {
             $settings->secondary_color = $scolor;
             $settings->language_id = Input::get('language_id');
             $settings->currency_id = Input::get('currency_id');
+            $settings->country_id = Input::get('country_id');
             $settings->update();
 
             $symb = Currency::find(Input::get('currency_id'))->css_code;

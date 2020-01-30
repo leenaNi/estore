@@ -45,9 +45,10 @@
                     </div>
                     <div class="col_half bottommargin-xs">
                         <select class="sm-form-control county_code" required="true" name="country_code">
-                            <option value="">Select Country Code</option>
+                            <option value="{{$settings->country_code}}" selected>{{'(+'.$settings->country_code.') '.$settings->country_name}}</option>
+                            {{-- <option value="">Select Country Code</option>
                             <option value="+91">(+91) India</option>
-                            <option value="+880">(+880) Bangladesh</option>
+                            <option value="+880">(+880) Bangladesh</option> --}}
                         </select>
                           <span id="country_code_re_validate"></span>
                     </div>
@@ -60,10 +61,11 @@
                     </div>
                     <div class="col_half col_last bottommargin-xs">
                         <select class="sm-form-control" name="currency" required="true">
-                            <option value="">Store Currency *</option>
-                            @foreach($curr as $cur)
+                            {{-- <option value="">Store Currency *</option> --}}
+                            <option value="{{$settings->currency_id}}" selected>{{$settings->currency_code}}</option>
+                            {{-- @foreach($curr as $cur)
                             <option value="{{$cur->id}}">{{ $cur->currency_code." - ".ucwords(strtolower($cur->name)) }}</option>
-                            @endforeach
+                            @endforeach --}}
                         </select>
                     </div>
                     @if(empty(Session::get("fbId")))
@@ -112,8 +114,8 @@
                 <input type="hidden" name="storename" value="{{ Session::get('storename') }}">
                 <input type="hidden" name="company_name" value="estorifi">
                 <input type="hidden" name="business_name" value="" id="bussiness_name">
-                <input type="hidden" name="default_currency" value="{{$default_currency}}">
-                <input type="hidden" name="default_country" value="{{$default_country}}">
+                <input type="hidden" name="default_currency" value="{{$settings->currency_id}}">
+                <input type="hidden" name="default_country" value="{{$settings->country_code}}">
                 <input type="button" class="btn btn-default theme-btn btn-block nomargin reg-sub-btn sendOtpOnMobile" value="Send OTP on Mobile" >
                <!--<input type="submit" class="btn btn-default theme-btn btn-block nomargin reg-sub-btn " value="Submit & Continue" >-->
             </form>
