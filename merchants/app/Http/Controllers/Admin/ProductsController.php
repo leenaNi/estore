@@ -989,7 +989,7 @@ class ProductsController extends Controller
         $prodId = Input::get("id");
         $comboId = DB::table('has_combo_prods')->where('prod_id', $prodId)->pluck("combo_prod_id");
         if ($_GET['term'] != "") {
-            $prods = Product::where('is_individual', '=', '1')->where('product', "like", '%' . $_GET['term'] . '%')->whereNotIn("id", $comboId)->select("id", "product", "selling_price", "price")->get();
+            $prods = Product::where('is_individual', '=', '1')->where('prod_type', '!=', 2)->where('product', "like", '%' . $_GET['term'] . '%')->whereNotIn("id", $comboId)->select("id", "product", "selling_price", "price")->get();
             return $prods;
         } else {
             return '';

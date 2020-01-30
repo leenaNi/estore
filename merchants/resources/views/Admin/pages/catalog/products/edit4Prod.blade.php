@@ -126,7 +126,7 @@
         minLength: 2,
         select: function( event, ui ) {
             // var str = "<div class='row'><div class='col-md-4 form-group'><input class='form-control' value='"+ui.item.product+"' readonly><input type='hidden' name='prod_id[]' value='" + ui.item.id + "' ></div>";
-            var price = (ui.item.selling_price<ui.item.price)? ui.item.selling_price: ui.item.price;
+            var price = (ui.item.selling_price != 0 && ui.item.selling_price<ui.item.price)? ui.item.selling_price: ui.item.price;
             // str += "<div class='col-md-2 form-group'><input class='form-control' type='text' name='price[]' value='" + price + "' readonly></div>";
             // str += "<div class='col-md-2 form-group'><input class='form-control' type='text' name='new_price[]' value='" + price + "' ></div>";
             // str += "<div class='col-md-2 form-group'><input class='form-control' type='tel' name='qty[]' value='' ></div>";
@@ -193,6 +193,7 @@
         subp.parent().parent().find('.qty').attr('subprod-id', subprdid);
         $.post("{{route('admin.orders.getProdPrice')}}", {subprdid: subprdid, qty: qty, pprd: 0}, function (data) {
             var price = (data.unitPrice).toFixed(2);
+            console.log(price);
             subp.parent().parent().find('.ProdPrice').text((data.unitPrice).toFixed(2));
             subp.parent().parent().find('input[name="old_price[]"]').val(price);
             subp.parent().parent().find('input[name="new_price[]"]').val(price);
