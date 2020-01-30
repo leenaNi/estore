@@ -166,6 +166,7 @@
                                 <th>Order Status</th>
                                 <th>Payment Status</th>
                                 <th>@sortablelink ('pay_amt', 'Amount')</th>
+                                <th>Action</th>
                                 <!-- <th>Order Source</th>
                                 @if($feature['flag'] == 1)
                                 <th>Flag</th>
@@ -196,6 +197,11 @@
                                     @else
                                     <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
                                     @endif
+                                </td>
+                                <td>
+                                    <a href="{!! route('admin.distributor.orders.inwardOrder',['id'=>$order->id]) !!}" data-toggle="tooltip" title="Inward">Inward</a> | 
+                                    <a href="{!! route('admin.distributor.orders.inwardList',['id'=>$order->id]) !!}" data-toggle="tooltip" title="Inward List">view</a> | 
+                                    <a href="{!! route('admin.distributor.orders.discrepancy',['id'=>$order->id]) !!}" data-toggle="tooltip" title="Discrepancy">Discrepancy</a>
                                 </td>
                                <!--  <td>@if(@$order->order_source==1)
                                     Mall

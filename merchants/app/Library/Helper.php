@@ -165,7 +165,7 @@ class Helper {
 
     public static function checkStock($prodid, $qtty = null, $subprodId = null) {
         $getprod = Product::find($prodid);
-
+        
         if ($getprod->prod_type == 1) {
             $searchCart = Cart::instance("shopping")->search(array('id' => $prodid));
             $cartDataS = Cart::get($searchCart[0]);

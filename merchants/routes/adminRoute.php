@@ -786,5 +786,13 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::any('/add-to-cart', ['as' => 'admin.distributor.orders.addToCart', 'uses' => 'DistributorOrdersController@add_to_cart']);
         Route::post('/check-order-coupon', ['as' => 'admin.distributor.orders.checkOrderCoupon', 'uses' => 'DistributorOrdersController@checkOrderCoupon']);
         Route::any('/save-cart-data', ['as' => 'admin.distributor.orders.saveCartData', 'uses' => 'DistributorOrdersController@saveCartData']);
+        Route::any('/inward-order', ['as' => 'admin.distributor.orders.inwardOrder', 'uses' => 'DistributorOrdersController@getOrderDataForInward']);
+        Route::get('/get-product', ['as' => 'admin.distributor.orders.getProduct', 'uses' => 'DistributorOrdersController@getProductForMapping']);
+        Route::any('/save-inward-data', ['as' => 'admin.distributor.orders.saveInwardData', 'uses' => 'DistributorOrdersController@saveInwardData']);
+        Route::get('/inward-list', ['as' => 'admin.distributor.orders.inwardList', 'uses' => 'DistributorOrdersController@getInwardTransaction']);
+        Route::get('/discrepancy', ['as' => 'admin.distributor.orders.discrepancy', 'uses' => 'DistributorOrdersController@getProductDiscrepancy']);
+        Route::any('/save-discrepancy', ['as' => 'admin.distributor.orders.saveDiscrepancyData', 'uses' => 'DistributorOrdersController@saveDiscrepancyData']);
+        
     });
+    
 });
