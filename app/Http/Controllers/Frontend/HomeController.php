@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
+use App\Models\Settings;
 use App\Models\Category;
 use App\Models\HasCurrency;
 use App\Models\Merchant;
@@ -127,12 +128,20 @@ class HomeController extends Controller
         //  dd($checkdomain);
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
         //$cat = Category::where("status", 1)->pluck('category', 'id');
-        $country = Country::where("status", 1)->get()->first();
-        $currency = Currency::where("status", 1)->get()->first();
+        //$country = Country::where("status", 1)->get()->first();
+        //$currency = Currency::where("status", 1)->get()->first();
+
+        $settings = Settings::where('bank_id', 0)->first();
+        $country = Country::where("id", $settings->country_id)->get()->first();
+        $currency = Currency::where("id", $settings->currency_id)->get()->first();
+        $settings['country_code'] = $country['country_code'];
+        $settings['country_name'] = $country['name'];
+        $settings['currency_code'] = $currency['currency_code'];
 
         $curr = HasCurrency::where('status', 1)->orderBy("currency_code", "asc")->get(['status', 'id', 'name', 'iso_code', 'currency_code']);
         $viewname = Config('constants.frontendView') . ".new-store";
-        $data = ['cat' => $cat, 'curr' => $curr,'default_currency'=>$currency['id'],'default_country'=>$country['country_code']];
+        //$data = ['cat' => $cat, 'curr' => $curr,'default_currency'=>$settings['id'],'default_country'=>$country['country_code']];
+        $data = ['cat' => $cat, 'curr' => $curr,'settings'=>$settings];
         //echo "<pre>";print_r($data);
         return Helper::returnView($viewname, $data);
     }
@@ -186,6 +195,7 @@ class HomeController extends Controller
         }
         if (empty(Session::get('merchantid'))) {
             $allinput = Input::all();
+            //echo "<pre>";print_r($allinput);exit;
             $storeType = $allinput['storeType'];
             $sendmsg = "Registred successfully.";
             // Helper::sendsms($allinput['phone'],$sendmsg);

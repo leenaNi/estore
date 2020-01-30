@@ -1836,7 +1836,7 @@ class DistributorOrdersController extends Controller
 
     public function getSubProds()
     {
-        return $subprods = DistributorProduct::find(Input::get('prodid'))->subproducts()->where("status", 1)->get();
+        return $subprods = DistributorProduct::find(Input::get('prodid'))->subproducts()->get();
     }
 
     public function saveCartData()
@@ -3212,12 +3212,21 @@ class DistributorOrdersController extends Controller
         $orderId = Input::get('id');
         $totalQtyAndPriceArray = $this->getTotalQtyProductWise($orderId);
        
+        $productType = DB::table('has_products')->where('id',$orderId)->first();
+        //print_r($productType);
+        $productType = $productType->prod_type;
+        if($productType == 3)
+            $culumnName = 'has_products.sub_prod_id';
+        else
+            $culumnName = 'has_products.prod_id';
+
         $orders = DB::table('has_products')
-            ->leftJoin('product_mapping', 'has_products.prod_id', '=', 'product_mapping.distributor_product_id')
+            ->leftJoin('product_mapping', $culumnName, '=', 'product_mapping.distributor_product_id')
             ->join("stores", "stores.id", "=", "has_products.store_id") // For get distributor id
             ->where('has_products.order_id', $orderId)
             ->get(['has_products.id','has_products.order_id','has_products.product_details','stores.merchant_id AS distributor_id','product_mapping.merchant_product_id','product_mapping.merchant_id as mappedMerchantId']);
         
+        //echo "<pre>";print_r($orders);exit;
         $viewname = Config('constants.adminDistributorOrderView') . '.inward-order';
         $data = ['orders' => $orders,'totalQtyProductwise'=>$totalQtyAndPriceArray];
         return Helper::returnView($viewname, $data);
