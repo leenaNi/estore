@@ -393,7 +393,7 @@ class CartController extends Controller {
         
         $options = [];
         $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-
+        $option_name = [];
         foreach ($hasOptn as $optn) {
             $options[$optn->pivot->attr_id] = $optn->pivot->attr_val;
             $option_name[] = AttributeValue::find($optn->pivot->attr_id)->option_name;
