@@ -9,6 +9,7 @@ use App\Models\HasCashbackLoyalty;
 use App\Models\Loyalty;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\PaymentHistory;
 use Carbon\Carbon;
 use Config;
 use DB;
@@ -338,6 +339,62 @@ class CustomersController extends Controller
             array_push($payment_data, $details);
         }
         return Helper::getCsv($payment_data, 'customers-payments.csv', ',');
+    }
+
+    public function customerLedger(){
+        $search = !empty(Input::get("custSearch")) ? Input::get("custSearch") : '';
+        $search_fields = ['users.firstname', 'users.lastname', 'users.email', 'users.telephone'];
+
+        $payments = DB::table('orders')
+            ->leftjoin('payment_history', 'payment_history.order_id', 'orders.id')
+            ->leftjoin('users', 'users.id', 'orders.user_id')
+            ->whereIn('orders.payment_method', [1,10])
+            ->where('orders.store_id', Session::get('store_id'));
+        if (!empty(Input::get('custSearch'))) {
+            $payments = $payments
+                ->where(function ($query) use ($search_fields, $search) {
+                    foreach ($search_fields as $field) {
+                        $query->orWhere($field, "like", "%$search%");
+                    }
+                });
+        }
+        $payments = $payments->select('payment_history.*', 'orders.id as orderId', 'orders.pay_amt', 'orders.amt_paid', DB::raw('concat(users.firstname, " ",  users.lastname) as name'), 'users.email', 'users.telephone')
+            //->groupBy('orders.id')
+            ->orderBy('orders.created_at', 'ASC')
+            ->paginate(Config('constants.paginateNo'));
+        $totalPaid = DB::table('payment_history')
+            ->leftjoin('orders', 'orders.id', 'payment_history.order_id')
+            ->leftjoin('users', 'users.id', 'orders.user_id')
+            ->where('orders.store_id', Session::get('store_id'))
+            ->where('orders.payment_method', 10);
+        if (!empty(Input::get('custSearch'))) {
+            $totalPaid = $totalPaid
+                ->where(function ($query) use ($search_fields, $search) {
+                    foreach ($search_fields as $field) {
+                        $query->orWhere($field, "like", "%$search%");
+                    }
+                });
+        }
+        $totalPaid = $totalPaid->select(DB::raw('SUM(payment_history.pay_amount) as total_paid'))
+            ->first();
+        $totalCreditAmount = DB::table('orders')
+            ->where('orders.payment_method', 10)
+            ->where('orders.store_id', Session::get('store_id'))
+            ->leftjoin('users', 'users.id', 'orders.user_id');      
+        if (!empty(Input::get('custSearch'))) {
+            $totalCreditAmount = $totalCreditAmount
+                ->where(function ($query) use ($search_fields, $search) {
+                    foreach ($search_fields as $field) {
+                        $query->orWhere($field, "like", "%$search%");
+                    }
+                });
+        }
+        $totalCreditAmount = $totalCreditAmount->select(DB::raw('SUM(orders.pay_amt) as total_credit'))
+            ->first();
+        $viewname = Config('constants.adminCustomersView') . '.ledger';
+        $data = ['status' => 'success', 'userPayments' => $payments, 'totalPaid' => $totalPaid, 'totalCreditAmount' => $totalCreditAmount];
+        // dd($data);
+        return Helper::returnView($viewname, $data);
     }
 
 }

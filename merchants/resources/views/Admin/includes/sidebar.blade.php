@@ -237,9 +237,14 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </a>
                 <ul class="treeview-menu">
                     @if($feature['acl'] == 1)
-                    <li class="{{ preg_match("/admin.customers/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"><i class="fa fa-angle-right"></i>All Customers</a></li> 
+                    <li class="{{ preg_match("/admin.customers.view/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"><i class="fa fa-angle-right"></i>All Customers</a></li> 
                     <li class="{{ preg_match("/admin.storecontacts/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.storecontacts.view') }}"><i class="fa fa-angle-right"></i>All Contacts</a></li> 
                     @endif
+                    <li class="{{ Route::currentRouteName() == 'admin.customers.ledger' ? 'active' : '' }}">
+                    <a href="{{ route('admin.customers.ledger') }}">
+                        <i class="fa fa-user"></i><span>Customer Ledger</span> <i class=""></i>
+                    </a>
+            </li>
                 </ul>
             </li> 
             <li class="{{ Route::currentRouteName() == 'admin.payments.view' ? 'active' : '' }}">
@@ -247,6 +252,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <i class="fa fa-money"></i><span>Settlements</span> <i class=""></i>
                 </a>
             </li>
+            
             <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-user-plus"></i><span>ACL</span>
