@@ -380,6 +380,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::get('/edit', array('as' => 'admin.customers.edit', 'uses' => 'CustomersController@edit'));
                 Route::post('/update', array('as' => 'admin.customers.update', 'uses' => 'CustomersController@update'));
                 Route::get('/delete', array('as' => 'admin.customers.delete', 'uses' => 'CustomersController@delete'));
+                Route::get('/ledger', array('as' => 'admin.customers.ledger', 'uses' => 'CustomersController@customerLedger'));
                 Route::get('/change-status', array('as' => 'admin.customers.changeStatus', 'uses' => 'CustomersController@changeStatus'));
                 Route::get('/export', ['as' => 'admin.customers.export', 'uses' => 'CustomersController@export']);
                 Route::post('/chk-existing-useremail', ['as' => 'admin.customers.chkExistingUseremail', 'uses' => 'CustomersController@chkExistingUseremail']);
