@@ -1841,7 +1841,7 @@ class DistributorOrdersController extends Controller
 
     public function saveCartData()
     {
-        //dd(Session::get('usedCouponId'));
+        //\dd(Session::get('usedCouponId'));
         if (!Session::get('usedCouponId')) {
             Cart::instance("shopping")->destroy();
             $mycarts = Input::get('mycart');
@@ -1980,6 +1980,7 @@ class DistributorOrdersController extends Controller
 
     public function checkOrderCoupon()
     {
+        
         Session::put('currency_val', 1);
         Cart::instance('shopping')->destroy();
         // Remove all discount session before adding new discount
@@ -1995,6 +1996,7 @@ class DistributorOrdersController extends Controller
         Session::forget("codCharges");
         Session::forget('shippingCost');
         $mycarts = Input::get('mycart');
+        
         if (!empty($mycarts)) {
             foreach ($mycarts as $key => $mycart) {
                 $getProd = DistributorProduct::find($mycart['prod_id']);
@@ -2003,7 +2005,7 @@ class DistributorOrdersController extends Controller
         } else {
             $cartContent = Cart::instance('shopping')->destroy();
         }
-
+        
         // dd(Cart::instance('shopping')->content()->toArray());
         $couponCode = Input::get('couponCode');
         $cartContent = Cart::instance('shopping')->content()->toArray();
@@ -3394,13 +3396,51 @@ class DistributorOrdersController extends Controller
 
     public function getInwardTransaction() // inwward transaction list 
     {
-        $orderId = Input::get('id');
-        $inwardTransactionResult = DB::table('inward_transaction')
-            ->join("orders", "inward_transaction.order_id", "=", "orders.id")
-            ->where('orders.id', $orderId)
+        //dd(Input::all());
+        $sign = '=';
+        if(!empty(Input::get('id')))
+        {
+            $orderId = Input::get('id');
+            
+        }
+        else  if(!empty(Input::get('hdnOrderId')))
+        {
+            $orderId = Input::get('hdnOrderId');
+        }
+        else 
+        {
+            $orderId = 0;
+            $sign = '>';
+        }
+        if (!empty(Input::get('order_ids'))) {
+            $orderId =  Input::get('order_ids');
+            
+        }
+
+        $inwardTransactionResult = InwardTransaction::
+            join("orders", "inward_transaction.order_id", "=", "orders.id")
+            ->where("inward_transaction.order_id",$sign, $orderId)
             ->get(['orders.id','inward_transaction.grn_number','inward_transaction.grn_date','inward_transaction.received_qty','inward_transaction.total_price','orders.created_at']);
+
+        if (!empty(Input::get('order_number_from'))) {
+            $inwardTransactionResult = $inwardTransactionResult->where('inward_transaction.order_id', '>=', Input::get('order_number_from'));
+        }
+        if (!empty(Input::get('order_number_to'))) {
+            $inwardTransactionResult = $inwardTransactionResult->where('inward_transaction.order_id', '<=', Input::get('order_number_to'));
+        }
+        /*if (!empty(Input::get('date'))) {
+            $dates = explode(' - ', Input::get('date'));
+            $dates[0] = date("Y-m-d", strtotime($dates[0]));
+            $dates[1] = date("Y-m-d", strtotime($dates[1]));
+           // dd($dates[0]);
+            $inwardTransactionResult = $inwardTransactionResult->where('inward_transaction.grn_date', '>=', $dates[0])->where('inward_transaction.grn_date', '<=', $dates[1]);
+        }*/
+        
+        //dd($inwardTransactionResult);
+
+        //print_r($inwardTransactionResult);
         $viewname = Config('constants.adminDistributorOrderView') . '.inward-list';
-        $data = ['inwardTransaction' => $inwardTransactionResult];
+        $data = ['inwardTransaction' => $inwardTransactionResult,'hdnOrderId'=>$orderId];
         
         return Helper::returnView($viewname, $data);
 

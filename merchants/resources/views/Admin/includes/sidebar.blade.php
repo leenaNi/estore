@@ -125,6 +125,16 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <i class="fa fa-bar-chart"></i><span>Distributor Order</span> <i class=""></i>
                 </a>
             </li>
+            <li class="{{ preg_match('/admin.distributor/',Route::currentRouteName())? 'active' : ''}}">
+                <a href="{{ route('admin.distributor.orders.inwardList') }}">
+                    <i class="fa fa-bar-chart"></i><span>Inward transaction</span> <i class=""></i>
+                </a>
+            </li>
+            <li class="{{ preg_match('/admin.distributor/',Route::currentRouteName())? 'active' : ''}}">
+                <a href="{{ route('admin.distributor.addDistributor') }}">
+                    <i class="fa fa-bar-chart"></i><span>Add Distributor</span> <i class=""></i>
+                </a>
+            </li>
             <li class="treeview {{ preg_match("/admin.vendors|admin.requisition/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-credit-card"></i>
