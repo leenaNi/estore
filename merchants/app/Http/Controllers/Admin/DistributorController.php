@@ -118,7 +118,7 @@ class DistributorController extends Controller
         $merchantId = $storeResult->merchant_id;
         $merchantStoreName = $storeResult->store_name;
 
-        $insertData = ["merchant_id" => $merchantId, "distributor_id" => $hdnDistributorId,'is_approved'=>1];
+        $insertData = ["merchant_id" => $merchantId, "distributor_id" => $hdnDistributorId,'is_approved'=>1,'raised_by'=>'merchant'];
         $isInserted = DB::table('has_distributors')->insert($insertData);
 
         if ($isInserted) {

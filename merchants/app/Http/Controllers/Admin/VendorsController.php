@@ -562,7 +562,7 @@ class VendorsController extends Controller
         $distributorId = $storeResult->merchant_id;
         $distributorStoreName = $storeResult->store_name;
 
-        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId];
+        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId,'raised_by'=>'distributor'];
         $isInserted = DB::table('has_distributors')->insert($insertData);
 
         if ($isInserted) {
