@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Library\Helper;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Kyslik\ColumnSortable\Sortable;
 
@@ -86,7 +85,7 @@ class DistributorProduct extends \Eloquent
     }
     public function comboproducts()
     {
-        return $this->belongsToMany('App\Models\DistributorProduct', 'has_combo_prods', 'prod_id', 'combo_prod_id');
+        return $this->belongsToMany('App\Models\DistributorProduct', 'has_combo_prods', 'prod_id', 'combo_prod_id')->withPivot("combo_prod_id", "sub_prod_id", "old_price", "new_price", "qty");
     }
 
     public function catalogimgs()

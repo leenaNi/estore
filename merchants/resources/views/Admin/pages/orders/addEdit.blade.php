@@ -422,14 +422,16 @@
                                 <?php
                                 $cmb = json_decode($prd->sub_prod_id);
                                 $comboSub = [];
-                                foreach ($cmb as $combos) {
-                                    $comboSub[Product::find($combos)->parent_prod_id] = $combos;
-                                }
+                                // foreach ($cmb as $combos) {
+                                //     $comboSub[App\Models\Product::find($combos)->parent_prod_id] = $combos;
+                                // }
+                                    $comboSub[App\Models\Product::find($prd->sub_prod_id)->parent_prod_id] = $prd->sub_prod_id;
                                 ?>
                                 <td>
                                     <?php
-                                    foreach ($prd->comboproducts()->get() as $combP) {
-                                        $cprd = Product::find($combP->id);
+                                    $comboProds = App\Models\Product::find($prd->id)->comboproducts()->get();
+                                    foreach ($comboProds as $combP) {
+                                        $cprd = App\Models\Product::find($combP->id);
                                         if ($cprd->prod_type == 1) {
                                             echo $cprd->product . "(" . $cprd->categories()->first()->category . ")<br/>";
                                         }
@@ -450,7 +452,7 @@
                                                 $csub[$getSub->id] = $prodSize1;
                                             }
                                             ?>
-                                            {{ Form::select("cartdata[".$i."][".$prd->id."][subprd][]",$csub,$comboSub,['class'=>'form-control subComboProd selPrdVar']) }}
+                                            {{ Form::select("cartdata[".$i."][".$prd->id."][subprd][]", $csub, $prd->sub_prod_id,['class'=>'form-control subComboProd selPrdVar']) }}
                                             <?php
                                         }
                                     }
