@@ -201,6 +201,7 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'adminReports' => 'Admin.pages.reports',        
         'adminPaymentsView' => 'Admin.pages.payments',
         'adminDistributorOrderView' => 'Admin.pages.orders.distributors',
+        'adminDistributorView' => 'Admin.pages.add_distributor',
     ];
 }
 

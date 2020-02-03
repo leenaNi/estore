@@ -380,6 +380,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::get('/edit', array('as' => 'admin.customers.edit', 'uses' => 'CustomersController@edit'));
                 Route::post('/update', array('as' => 'admin.customers.update', 'uses' => 'CustomersController@update'));
                 Route::get('/delete', array('as' => 'admin.customers.delete', 'uses' => 'CustomersController@delete'));
+                Route::get('/ledger', array('as' => 'admin.customers.ledger', 'uses' => 'CustomersController@customerLedger'));
                 Route::get('/change-status', array('as' => 'admin.customers.changeStatus', 'uses' => 'CustomersController@changeStatus'));
                 Route::get('/export', ['as' => 'admin.customers.export', 'uses' => 'CustomersController@export']);
                 Route::post('/chk-existing-useremail', ['as' => 'admin.customers.chkExistingUseremail', 'uses' => 'CustomersController@chkExistingUseremail']);
@@ -793,6 +794,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::get('/discrepancy', ['as' => 'admin.distributor.orders.discrepancy', 'uses' => 'DistributorOrdersController@getProductDiscrepancy']);
         Route::any('/save-discrepancy', ['as' => 'admin.distributor.orders.saveDiscrepancyData', 'uses' => 'DistributorOrdersController@saveDiscrepancyData']);
         
+        // add distributor
+        Route::any('/add-distributor', array('as' => 'admin.distributor.addDistributor', 'uses' => 'DistributorController@index'));
+        Route::any('/verify-code', array('as' => 'admin.distributor.verifyCode', 'uses' => 'DistributorController@verifyDistributorCode'));
+        Route::post('/send-notification', array('as' => 'admin.distributor.send-notification', 'uses' => 'DistributorController@sendNotificationToDistributor'));
     });
     
 });

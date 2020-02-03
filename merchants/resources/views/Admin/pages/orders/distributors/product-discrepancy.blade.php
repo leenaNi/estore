@@ -48,34 +48,52 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if(count($inwardTransaction) >0 )
+                        @if(count($orders) >0 )
                         <?php
                         $totalOrderedQty = 0;
-                        $orderId = Input::get('id');
+                        //$orderId = Input::get('id');
                         ?>
-                        @foreach($inwardTransaction as $inwardTransactionData)
+                        @foreach($orders as $orderData)
                         <?php
-                        $hasProductId = $inwardTransactionData->id;
-                        $productDetail = json_decode($inwardTransactionData->product_details);
+                        $hasProductId = $orderData->id;
+                        $orderId = $orderData->order_id;
+                        $productDetail = json_decode($orderData->product_details);
                         $totalOrderedQty = $totalOrderedQty + $productDetail->qty;
-                        $merchantProductId = $inwardTransactionData->merchant_product_id;
+                        $productType = $orderData->prod_type;
+                       
                         $totalReceivedQty = 0;
                         if(isset($totalQtyProductwise[$hasProductId]) && !empty($totalQtyProductwise[$hasProductId]))
                         {
                             $totalReceivedQty = $totalQtyProductwise[$hasProductId];
                         }
-                        $productName = '';
-                        $inputAttr = '';
-                        $merchantId = 0;
-                        $isProductMapped = 0;
-                        if($merchantProductId > 0)
+                        $productName = $inputAttr = $merchantProductId = '';
+                        $merchantId = $isProductMapped = 0;
+                        // echo count($productMappingData);exit;
+                        if(count($productMappingData) > 0)
                         {
-                            $productData = DB::table('products')->where('id', $merchantProductId)->get(['product']);
-                            $productName = $productData[0]->product;
-                            $merchantId = $inwardTransactionData->mappedMerchantId;
-                            $inputAttr = 'readonly';
-                            $isProductMapped = 1;
+                            if($productType == 3)
+                            {
+                                $productId = $orderData->sub_prod_id;
+                            }
+                            else
+                            {
+                                $productId = $orderData->prod_id;
+                            }
+                            if(isset($productMappingData[$productId]) && !empty($productMappingData[$productId]))
+                            {
+                                $merchantProductId = $productMappingData[$productId]['m_product_id'];
+                                
+                                if($merchantProductId > 0)
+                                {
+                                    $productData = DB::table('products')->where('id', $merchantProductId)->get(['product']);
+                                    $productName = $productData[0]->product;
+                                    $merchantId = $productMappingData[$productId]['m_id'];
+                                    $inputAttr = 'readonly';
+                                    $isProductMapped = 1;
+                                }
+                            }
                         }
+
                         ?>
                         <tr id="tr_{{$hasProductId}}">
                             <td>{{$productDetail->name}}</td>
@@ -83,16 +101,22 @@
                             <td>{{$totalReceivedQty}}</td>
                             <td><input type="text" id="scrapQty_{{$hasProductId}}" name="scrapQty_{{$hasProductId}}" value="" size="4" onkeyup="calculateQtyAndPrice('{{$hasProductId}}')"></td>
                             <td>
-                            <input type="text" id="searchProduct_{{$hasProductId}}" name="searchProduct_{{$hasProductId}}" onkeypress="searchProduct({{$hasProductId}})" value="{{$productName}}" {{$inputAttr}} placeholder="Search & Select" size="15" >
+                                @if($isProductMapped == 1)
+                                    <span title="{{$productName}}">{{$productName}}</span>
+                                @else
+                                <input type="text" id="searchProduct_{{$hasProductId}}" name="searchProduct_{{$hasProductId}}" onkeypress="searchProduct({{$hasProductId}})" value="" {{$inputAttr}} placeholder="Search & Select" size="15" >
+                                @endif
+
+                            
                             <input type="hidden" id="merchantProductId_{{$hasProductId}}" name="merchantProductId_{{$hasProductId}}" value="{{$merchantProductId}}">
                             <input type="hidden" id="merchantId_{{$hasProductId}}" name="merchantId_{{$hasProductId}}" value="{{$merchantId}}">
                             <input type="hidden" id="isProductMapped_{{$hasProductId}}" name="isProductMapped_{{$hasProductId}}"  value="{{$isProductMapped}}">
                             </td>
-                            <input type="hidden" id="distributorId_{{$hasProductId}}" name="distributorId_{{$hasProductId}}" value="{{$inwardTransactionData->distributor_id}}">
+                            <input type="hidden" id="distributorId_{{$hasProductId}}" name="distributorId_{{$hasProductId}}" value="{{$orderData->distributor_id}}">
                             <input type="hidden" id="distributorProductId_{{$hasProductId}}" name="distributorProductId_{{$hasProductId}}" value="{{$productDetail->id}}">
-                            <input type="hidden" id="orderProductId_{{$hasProductId}}" name="orderProductId_{{$hasProductId}}" value="{{$inwardTransactionData->id}}">
+                            <input type="hidden" id="orderProductId_{{$hasProductId}}" name="orderProductId_{{$hasProductId}}" value="{{$orderData->id}}">
                             <input type="hidden" id="totalReceivedQty_{{$hasProductId}}" name="totalReceivedQty_{{$hasProductId}}"  value="{{$totalReceivedQty}}">
-                            <input type="hidden" id="qtyErorr_{{$hasProductId}}" name="qtyErorr_{{$hasProductId}}"  value="{{$totalReceivedQty}}">
+                            <input type="hidden" id="qtyErorr_{{$hasProductId}}" name="qtyErorr_{{$hasProductId}}"  value="0">
                             <input type="hidden" id="orderId" name="orderId" value="{{$orderId}}">
                         </tr>
                         @endforeach
@@ -103,6 +127,7 @@
                 </table>
                 <div class="box-footer clearfix">
                 <button type="button" onclick="saveData()">Submit</button>
+                <button type="button" onclick="clickOnCancel()">Cancel</button>
                 </div>
             </div>
         
@@ -113,6 +138,10 @@
 @stop
 @section('myscripts')
 <script>
+    function clickOnCancel()
+    {
+        window.location = "{{route('admin.distributor.orders.view')}}";
+    }
     function calculateQtyAndPrice(productId)
     {
         var scrapQty = $("#scrapQty_"+productId).val();
@@ -161,8 +190,8 @@
         var dataJson = [];
         var i=0;
         var orderId = $("#orderId").val();
-        var isSubmit = 0;
-        var isMapping = 0;
+        var isSubmit = 1;
+        var isMapping = 1;
         $("tr[id^='tr_']" ).each(function( index ) 
         {
             var orderProductId = $(this).attr('id').split('_')[1];
@@ -177,38 +206,41 @@
                 var scrapQty = $("#scrapQty_"+orderProductId).val();
                 var orderProductId = $("#orderProductId_"+orderProductId).val(); // had_product table primary key
                 var isProductMapped = $("#isProductMapped_"+orderProductId).val();
-                if((scrapQty > 0 || scrapQty != '') && merchantProductId == '')
-                {
-                    isMapping = 1;
-                    isSubmit = 1;
-                    return false;
-                }
-
+                
                 if(scrapQty > 0 || scrapQty != '')
                 {
-                    dataJson[i] = 
+                    if(merchantProductId != '')
                     {
-                        'order_id': orderId,
-                        'order_product_id': orderProductId,
-                        'm_id': merchantId,
-                        'd_id': distributorId,
-                        'm_product_id': merchantProductId,
-                        'd_product_id': distributorProductId,
-                        'scrap_qty': scrapQty,
-                        'is_mapped': isProductMapped
-                    };
+                        dataJson[i] = 
+                        {
+                            'order_id': orderId,
+                            'order_product_id': orderProductId,
+                            'm_id': merchantId,
+                            'd_id': distributorId,
+                            'm_product_id': merchantProductId,
+                            'd_product_id': distributorProductId,
+                            'scrap_qty': scrapQty,
+                            'is_mapped': isProductMapped
+                        };
+                        i++;
+                    }
+                    else
+                    {
+                        isMapping = 0;
+                        isSubmit = 0;
+                        return false;
+                    }
                 }
-                i++;
+                
             }
             else
             {
-                isSubmit = 1;
+                isSubmit = 0;
             }
         }); // End each loop
        
-        if(isSubmit == 0)
+        if(isSubmit == 1)
         {
-            alert("orderId >> "+orderId);
             $.ajax({
                     type: "POST",
                     url: "{{ route('admin.distributor.orders.saveDiscrepancyData') }}",
@@ -229,7 +261,7 @@
         }
         else
         {
-            if(isMapping == 1)
+            if(isMapping == 0)
             {
                 alert("Please select product for mapping");
             }
