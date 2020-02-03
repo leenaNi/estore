@@ -69,7 +69,7 @@ class Merchant extends Authenticatable {
     }
 
     public function getstores() {
-        return $this->hasMany("App\Models\Store", 'merchant_id');
+        return $this->hasMany("App\Models\Store", 'merchant_id')->where('store_type', 'merchant');
     }
 
 }
