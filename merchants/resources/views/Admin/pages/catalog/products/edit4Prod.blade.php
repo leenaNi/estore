@@ -24,6 +24,7 @@
             <div class="search-box-header">
                 <form method="post" action="{{route('admin.products.update.combo.attach') }}"  id="searchForm">
                     <input type="hidden" name="id" value="{{$prod->id}}">
+                    <input type="hidden" name="add" value="1">
                     <div class="row">
                     <div class="form-group col-md-4 ">
                         <!-- <label for="related_prod">Related Product: </label> -->
@@ -105,7 +106,7 @@
                 <div class="form-group col-sm-12 ">
                     {!! Form::button('Save & Exit',["class" => "btn btn-primary pull-right saveComboExit"]) !!}
                     {!! Form::button('Save & Continue',["class" => "btn btn-primary pull-right saveComboContine"]) !!}
-                    {!! Form::submit('Save & Next',["class" => "btn btn-primary pull-right"]) !!}
+                    {!! Form::submit('Save & Next',["class" => "btn btn-primary pull-right saveComboNext"]) !!}
                 </div>
             </div>
             {!! Form::close() !!}
@@ -154,11 +155,17 @@
         sync("{{ $prod->id }}", $(this).attr("id"), "{{ URL::route('admin.products.update.combo.detach') }}",$(this));
     });
 
+    $(".saveComboNext").click(function() {
+        $("input[name='add']").val('2');
+        $("#ComboProdID").submit();
+    });
     $(".saveComboExit").click(function() {
+        $("input[name='add']").val('2');
         $(".rtUrl").val("{!! route('admin.products.view')!!}");
         $("#ComboProdID").submit();
     });
     $(".saveComboContine").click(function() {
+        $("input[name='add']").val('2');
         $(".rtUrl").val("{!! route('admin.combo.products.view',['id'=>$prod->id])!!}");
        // $(".rtUrl").val("{!! route('admin.combo.products.view')!!}");
         $("#ComboProdID").submit();
