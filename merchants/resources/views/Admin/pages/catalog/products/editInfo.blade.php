@@ -25,13 +25,10 @@
     <div class="nav-tabs-custom"> 
 
         {!! view('Admin.includes.productHeader',['id' => $prod->id, 'prod_type' => $prod->prod_type]) !!}
-
-
         <div class="tab-content">
             <div class="tab-pan-active" id="activity">
                 <div class="panel-body">
                     <div class="row">
-             
                     </div>
                     <div class="row"> 
                         {!! Form::model($prod, ['method' => 'post', 'files'=> true, 'url' => $action ,'id'=>'EditGeneralInfo']) !!}
@@ -61,17 +58,12 @@
                                                 </div>
                                             </div>
                                         </div>  -->
-
-
                                         <div class="col-md-3">
                                             <div class="form-group"> 
                                                 {!! Form::label('Status', 'Status ',['class'=>'pull-left']) !!}
                                                 <span class="red-astrik pull-left ml-2">*</span>
                                                 {!! Form::select('status',["0"=>"Disabled", "1"=>"Enabled"] ,null, ["class"=>'form-control validate[required]']) !!}
                                                <!--  <p style="color: red;" class="errorPrdCode"></p> -->
-
-
-
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -87,6 +79,23 @@
 
                                                 {!! Form::text('product_code',null, ["class"=>'form-control ProdC' ,"placeholder"=>'Enter Product Code']) !!}
                                                 <p style="color: red;" class="errorPrdCode"></p>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">                       
+                                                {!! Form::label('Brand *', 'Brand *',['class'=>'pull-left']) !!}
+                                                {{-- {!! Form::select('brand_id',$brandList,null, ["class"=>'form-control' ,"placeholder"=>'Select Brand']) !!} --}}
+                                                <select class="form-control" name="brand_id" id="brand_id" required>
+                                                     @foreach($brandList as $brandId=> $brandName)
+                                                        @if($brandId == $prod->brand_id)
+                                                            <option value="{{$brandId}}" selected>{{$brandName}}</option>
+                                                        @else
+                                                            <option value="{{$brandId}}">{{$brandName}}</option>
+                                                        @endif
+                                                    @endforeach 
+                                                </select>
+                                                <p style="color: red;" class="errorBrandId"></p>
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>

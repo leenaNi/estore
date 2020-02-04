@@ -9,8 +9,6 @@
         padding: 15px;
     }
 
-
-
 </style>
 
 <!--<link rel="stylesheet" href="{{asset(Config('constants.fileUploadPluginPath').'css/style.css')}}">-->

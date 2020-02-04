@@ -282,16 +282,19 @@ class ProductsController extends Controller
 
         $is_desc = GeneralSetting::where('url_key', 'des')->first();
 
-        return view(Config('constants.adminProductView') . '.editInfo', compact('prod', 'action', 'barcode', 'unit_measure', 'taxes', 'selected_taxes', 'is_desc'));
+        $brandList = DB::table("brand")->pluck('name','id')->prepend('Select Brand','');
+        //echo "<pre>";print_r($brandList);exit;
+        return view(Config('constants.adminProductView') . '.editInfo', compact('prod', 'action', 'barcode', 'unit_measure', 'taxes', 'selected_taxes', 'is_desc','brandList'));
     }
 
     public function update()
     {
-
+        //dd(Input::all());
         $is_desc = GeneralSetting::where('url_key', 'des')->first();
         $retunUrl = Input::get('return_url');
         $prod = Product::find(Input::get('id'));
         $prod->status = Input::get('status');
+        $prod->brand_id = Input::get('brand_id');
         $prod->updated_by = Input::get('updated_by');
         $prod->eCount = Input::get('eCount');
         $prod->eNoOfDaysAllowed = Input::get('eNoOfDaysAllowed');
