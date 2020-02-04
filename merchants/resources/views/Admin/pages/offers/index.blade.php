@@ -30,16 +30,16 @@
                             <tr>
                                 <th>Offer ID</th>
                                 <th>Offer Name</th>
-                                <!--<th>Offer Discount Type</th>-->
                                 <th>Offer Type</th>
-                                <th>Offer Discount Value</th>
+                                <th>Discount Type</th>
+                                <th>Discount Value</th>
 <!--                                <th>Min Order Discount</th>
                                 <th>Min Free Quantity</th>-->
                                 <th>User Specific</th>
                                 <th>Status</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
-                                <th>Created At</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,19 +47,27 @@
                             <tr>
                                 <td>{{$offer->id}}</td>
                                 <td>{{$offer->offer_name}}</td>
-                                <!--<td>{{$offer->offer_discount_type == 1 ? "Percentage" : "Fixed"}}</td>-->
+                                <td>{{$offer->type == 1 ? "Buy X qty of A, Get Y/Y% OFF" : "Buy X qty of A, Get Y qty of B"}}</td>
                                 <td>{{$offer->offer_type == 1 ? "Entire Order" : ($offer->offer_type == 2 ? "Specific Categories" : "Specific Products")}}</td>
-                                <td>{{$offer->offer_discount_value}} {{$offer->offer_discount_type == 1 ? "%" : "Rs."}}</td>
+                                <td>
+                                    @if($offer->type == 1)
+                                    {{$offer->offer_discount_value}} {{$offer->offer_discount_type == 1 ? "%" : "Rs."}}
+                                    @endif
+                                </td>
 <!--                                <td>{{$offer->min_order_discount}}</td>
                                 <td>{{$offer->min_free_quantity}}</td>-->
                                 <td>{{$offer->user_specific == 1 ? "Yes" : "No"}}</td>
-                                <td>{{$offer->status == 1 ? "Yes" : "No"}}</td>
-                                <td>{{$offer->start_date}}</td>
-                                <td>{{$offer->end_date}}</td>
-                                <td>{{$offer->created_at}}</td>
-                                <td>
-                                    <a href="{{route('admin.offers.edit',['id'=>$offer->id])}}" class="label label-success active" ui-toggle-class="" class="btnNo-margn-padd">Edit</a> 
-                                    <a href="{{route('admin.offers.delete',['id'=>$offer->id])}}" class="label label-danger active" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this record?')">Delete</a>
+                                <td>{{$offer->status == 1 ? "Enabled" : "Disabled"}}</td>
+                                <td>{{date('d-M-Y', strtotime($offer->start_date))}}</td>
+                                <td>{{date('d-M-Y', strtotime($offer->end_date))}}</td>
+                                <td>  <?php if ($offer->status == 1) { ?>
+                                            <a href="{!! route('admin.offers.changeStatus',['id'=>$offer->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this coupon?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btnNo-margn-padd"></i></a>
+                                        <?php } elseif ($offer->status == 0) { ?>
+                                            <a href="{!! route('admin.offers.changeStatus',['id'=>$offer->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this coupon?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btnNo-margn-padd"></i></a>
+                                        <?php } ?> </td>
+                                <td><!---label label-danger active -->
+                                    <a href="{{route('admin.offers.edit',['id'=>$offer->id])}}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btnNo-margn-padd"></i></a> 
+                                    <a href="{{route('admin.offers.delete',['id'=>$offer->id])}}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this record?')"data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                             @endforeach

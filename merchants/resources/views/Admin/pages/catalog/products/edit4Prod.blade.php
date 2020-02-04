@@ -24,6 +24,7 @@
             <div class="search-box-header">
                 <form method="post" action="{{route('admin.products.update.combo.attach') }}"  id="searchForm">
                     <input type="hidden" name="id" value="{{$prod->id}}">
+                    <input type="hidden" name="add" value="1">
                     <div class="row">
                     <div class="form-group col-md-4 ">
                         <!-- <label for="related_prod">Related Product: </label> -->
@@ -91,7 +92,7 @@
                                     ?>
                                     {!! $prodName !!}
                                 </td>
-                                <td>{!! $prd['pivot']['new_price'] !!}</td>
+                                <td><span class="priceConvert">{!! $prd['pivot']['new_price'] !!}</span></td>
                                 <td>{!! $prd['pivot']['qty'] !!}</td>
                                 <!-- <td>{!! $prd['is_avail'] == 0 ? "Out of Stock" : "In Stock" !!}</td> -->
                                 <!-- <td>{!! $prd['stock'] !!}</td> -->
@@ -105,7 +106,7 @@
                 <div class="form-group col-sm-12 ">
                     {!! Form::button('Save & Exit',["class" => "btn btn-primary pull-right saveComboExit"]) !!}
                     {!! Form::button('Save & Continue',["class" => "btn btn-primary pull-right saveComboContine"]) !!}
-                    {!! Form::submit('Save & Next',["class" => "btn btn-primary pull-right"]) !!}
+                    {!! Form::submit('Save & Next',["class" => "btn btn-primary pull-right saveComboNext"]) !!}
                 </div>
             </div>
             {!! Form::close() !!}
@@ -134,8 +135,8 @@
 
             var str = "<tr data-prdid='"+ui.item.id+"' id='"+ui.item.id+"'><td>"+ui.item.product+"<input type='hidden' name='prod_id[]' value='" + ui.item.id + "' ></td>";
             str += "<td><select name='subprodid[]' class='form-control subprodid' style='display:none;'></select></td>";
-            str += "<td><input class='form-control' type='hidden' name='old_price[]' value='" + price + "' ><span class='ProdPrice'>"+price+"</span></td>";
-            str += "<td><input class='form-control' type='text' name='new_price[]' required value='" + price + "' ></td>";
+            str += "<td><input class='form-control priceConvertTextBox ' type='hidden' name='old_price[]' value='" + price + "' ><span class='ProdPrice'>"+price+"</span></td>";
+            str += "<td><input class='form-control ' type='text' name='new_price[]' required value='" + price + "' ></td>";
             str += "<td><input class='form-control' type='tel' name='qty[]' required value='' ></td>";
             str += "<td><a href='#' class='pull-left remove-rag'><i class='fa fa-trash'></i></a></td></tr>";
             console.log(str);
@@ -154,11 +155,17 @@
         sync("{{ $prod->id }}", $(this).attr("id"), "{{ URL::route('admin.products.update.combo.detach') }}",$(this));
     });
 
+    $(".saveComboNext").click(function() {
+        $("input[name='add']").val('2');
+        $("#ComboProdID").submit();
+    });
     $(".saveComboExit").click(function() {
+        $("input[name='add']").val('2');
         $(".rtUrl").val("{!! route('admin.products.view')!!}");
         $("#ComboProdID").submit();
     });
     $(".saveComboContine").click(function() {
+        $("input[name='add']").val('2');
         $(".rtUrl").val("{!! route('admin.combo.products.view',['id'=>$prod->id])!!}");
        // $(".rtUrl").val("{!! route('admin.combo.products.view')!!}");
         $("#ComboProdID").submit();

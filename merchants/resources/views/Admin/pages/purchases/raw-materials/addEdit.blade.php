@@ -36,6 +36,7 @@
                     
                     {!! Form::hidden('id',null) !!}
                     {!! Form::hidden('prod_type',6) !!}
+                    {!! Form::hidden('store_id',Session::get('store_id')) !!}
                     @if($prod->id == 0)
                         {!! Form::hidden('added_by', Auth::id()) !!}
                     @else
@@ -52,7 +53,7 @@
                         <div class="form-group">                        
                         {!! Form::label('product SKU', 'Product SKU ', ["class"=>'span_made']) !!}
                         <span class="red-astrik"> *</span>
-                            {!! Form::text('product SKU',null, ["class"=>'form-control ProdC validate[required]' ,"placeholder"=>'Enter Product SKU']) !!}
+                            {!! Form::text('product_code',null, ["class"=>'form-control ProdC validate[required]' ,"placeholder"=>'Enter Product SKU']) !!}
                             <p style="color: red;" class="errorPrdCode"></p>
                         </div>
                     </div>
