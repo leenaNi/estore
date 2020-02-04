@@ -197,7 +197,6 @@ class MerchantController extends Controller
         if ($validator->fails()) {
             return $validator->errors()->all();
         } else {
-
             foreach (Input::get('des') as $imgK => $imgV) {
                 $saveCImh = Document::findOrNew(Input::get('id_doc')[$imgK]);
                 $saveCImh->parent_id = Input::get('id');
