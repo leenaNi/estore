@@ -1022,21 +1022,25 @@ class ProductsController extends Controller
     public function comboAttach()
     {
         // dd(Input::all());
-        $prod = Product::find(Input::get("id"));
-        $prodIds = Input::get("prod_id");
-        $subprodid = Input::get("subprodid");
-        $prodPrice = Input::get("old_price");
-        $prodNewPrice = Input::get("new_price");
-        $prodQty = Input::get("qty");
-        $comboProds = [];
-        foreach($prodIds as $prodIdKey => $prodId){
-            $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'sub_prod_id'=> @$subprodid[$prodIdKey], 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
-            array_push($comboProds, $comboProd);
+        if(Input::get("prod_id")){
+            $prod = Product::find(Input::get("id"));
+            $prodIds = Input::get("prod_id");
+            $subprodid = Input::get("subprodid");
+            $prodPrice = Input::get("old_price");
+            $prodNewPrice = Input::get("new_price");
+            $prodQty = Input::get("qty");
+            $comboProds = [];
+            if(!empty($prodIds)){
+                foreach($prodIds as $prodIdKey => $prodId){
+                    $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'sub_prod_id'=> @$subprodid[$prodIdKey], 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
+                    array_push($comboProds, $comboProd);
+                }
+                // dd($comboProds);
+                DB::table('has_combo_prods')->insert($comboProds);
+                $this->updateComboProdPrice($prod);
+                return redirect()->back()->with('Added successfully.');
+            }
         }
-        // dd($comboProds);
-        DB::table('has_combo_prods')->insert($comboProds);
-        $this->updateComboProdPrice($prod);
-        return redirect()->back()->with('Added successfully.');
     }
 
     public function updateComboProdPrice($prod) {
