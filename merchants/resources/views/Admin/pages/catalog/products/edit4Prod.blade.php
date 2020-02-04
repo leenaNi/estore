@@ -91,7 +91,7 @@
                                     ?>
                                     {!! $prodName !!}
                                 </td>
-                                <td>{!! $prd['pivot']['new_price'] !!}</td>
+                                <td><span class="priceConvert">{!! $prd['pivot']['new_price'] !!}</span></td>
                                 <td>{!! $prd['pivot']['qty'] !!}</td>
                                 <!-- <td>{!! $prd['is_avail'] == 0 ? "Out of Stock" : "In Stock" !!}</td> -->
                                 <!-- <td>{!! $prd['stock'] !!}</td> -->
@@ -134,8 +134,8 @@
 
             var str = "<tr data-prdid='"+ui.item.id+"' id='"+ui.item.id+"'><td>"+ui.item.product+"<input type='hidden' name='prod_id[]' value='" + ui.item.id + "' ></td>";
             str += "<td><select name='subprodid[]' class='form-control subprodid' style='display:none;'></select></td>";
-            str += "<td><input class='form-control' type='hidden' name='old_price[]' value='" + price + "' ><span class='ProdPrice'>"+price+"</span></td>";
-            str += "<td><input class='form-control' type='text' name='new_price[]' required value='" + price + "' ></td>";
+            str += "<td><input class='form-control priceConvertTextBox ' type='hidden' name='old_price[]' value='" + price + "' ><span class='ProdPrice'>"+price+"</span></td>";
+            str += "<td><input class='form-control ' type='text' name='new_price[]' required value='" + price + "' ></td>";
             str += "<td><input class='form-control' type='tel' name='qty[]' required value='' ></td>";
             str += "<td><a href='#' class='pull-left remove-rag'><i class='fa fa-trash'></i></a></td></tr>";
             console.log(str);
