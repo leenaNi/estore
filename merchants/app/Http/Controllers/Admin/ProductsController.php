@@ -1004,8 +1004,8 @@ class ProductsController extends Controller
         // } else {
         //     $prod->comboproducts()->detach();
         // }
-        $this->comboAttach();
-        $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
+        // $this->comboAttach();
+        // $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
 
         if (!empty(Input::get('return_url'))) {
             $nextView = redirect()->to(Input::get('return_url'));
