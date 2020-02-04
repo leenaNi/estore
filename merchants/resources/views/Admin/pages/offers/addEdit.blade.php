@@ -46,25 +46,27 @@
                         @endif
                     </div>
                     <div class="line line-dashed b-b line-lg pull-in"></div>
-
                     <div class="form-group discount_type">
                         {!!Form::label('offer_discount_type','Offer Discount Type ?',['class'=>'col-sm-2 control-label']) !!}
                         <div class="col-sm-10">
                             {!! Form::select('offer_discount_type',["2" => "Fixed", "1" => "Percentage"],null,["class"=>'form-control']) !!}
                         </div>
                     </div>
-
                     <div class="line line-dashed b-b line-lg pull-in"></div>
-
                     <div class="form-group discount_type">
                         {!!Form::label('offer_discount_value','Offer Discount Value',['class'=>'col-sm-2 control-label']) !!}
                         <div class="col-sm-10">
                             {!! Form::text('offer_discount_value',null,["class"=>'form-control',"placeholder"=>"Enter Offer Discount Value"]) !!}
                         </div>
                     </div>
-
                     <div class="line line-dashed b-b line-lg pull-in"></div>
-
+                    <div class="form-group">
+                        {!!Form::label('can_combined','Can offer be combined ?',['class'=>'col-sm-2 control-label']) !!}
+                        <div class="col-sm-10">
+                            {!! Form::select('can_combined',["2" => "No", "1" => "Yes"],null,["class"=>'form-control']) !!}
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
                     <!-- <div class="form-group">
                         {!!Form::label('min_order_qty','Enter Minimum Order Quantity',['class'=>'col-sm-2 control-label']) !!}
                         <div class="col-sm-10">
