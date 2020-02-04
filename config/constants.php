@@ -10,6 +10,8 @@ $adminConstants = [
     'AdminPluginPath' => 'public/admin/plugins/',
     'AdminUploadPath' => 'public/admin/uploads/',
     'notificationImgPath' => 'public/admin/uploads/notification/',
+    'companyImgPath' => 'public/admin/uploads/company/',
+    'brandImgPath' => 'public/admin/uploads/brand/',
     'AdminPages' => 'Admin.Pages',
     
     'AdminPagesBank' => 'Admin.Pages.Bank',
@@ -32,6 +34,8 @@ $adminConstants = [
     'AdminPagesMastersTranslation' => 'Admin.Pages.Masters.Translation',
     "AdminPagesMastersCountry" => 'Admin.Pages.Masters.Country',
     "AdminPagesMastersCurrency" => 'Admin.Pages.Masters.Currency',
+    "AdminPagesMastersCompany" => 'Admin.Pages.Masters.Company',
+    "AdminPagesMastersBrand" => 'Admin.Pages.Masters.Brand',
     
     'AdminPagesSystemUsersRoles' => 'Admin.Pages.SystemUsers.Roles',
     'AdminPagesSystemUsersUsers' => 'Admin.Pages.SystemUsers.Users',

@@ -122,6 +122,20 @@ Route::group(['namespace' => 'Admin'], function () {
                 Route::post('/change-status', ["as" => "admin.masters.themes.changeStatus", "uses" => "StoreThemesController@changeStatus"]);
                 Route::get('/delete-banner', ["as" => "admin.masters.themes.deleteBanner", "uses" => "StoreThemesController@deleteBanner"]);
             });
+
+            Route::group(['prefix' => 'company'], function () {
+                Route::get('/', ["as" => "admin.masters.company.view", "uses" => "CompanyController@index"]);
+                Route::any('/add-edit', ["as" => "admin.masters.company.addEdit", "uses" => "CompanyController@addEditCompany"]);
+                Route::post('/save-update', ["as" => "admin.masters.company.saveUpdate", "uses" => "CompanyController@saveCompany"]);
+            });
+
+            Route::group(['prefix' => 'brand'], function () {
+                Route::get('/', ["as" => "admin.masters.brand.view", "uses" => "BrandController@index"]);
+                Route::any('/add-edit', ["as" => "admin.masters.brand.addEdit", "uses" => "BrandController@addEditBrand"]);
+                Route::post('/save-update', ["as" => "admin.masters.brand.saveUpdate", "uses" => "BrandController@saveBrand"]);
+                Route::get('/delete-brand', ["as" => "admin.masters.brand.deleteBrand", "uses" => "BrandController@deleteBrand"]);
+            });
+
             Route::group(['prefix' => 'country'], function () {
                 Route::get('/', ["as" => "admin.masters.country.view", "uses" => "CountryController@index"]);
                 Route::any('/add-edit', ["as" => "admin.masters.country.addEdit", "uses" => "CountryController@addEditCountry"]);

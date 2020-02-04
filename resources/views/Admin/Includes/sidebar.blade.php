@@ -127,6 +127,8 @@
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.language.view','admin.masters.language.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.language.view') }}"><i class="fa fa-circle-o"></i>Language</a></li>
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.translation.view'])?'active':'' }}"><a href="{{ route('admin.masters.translation.view') }}"><i class="fa fa-circle-o"></i>Translation</a></li>
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.themes.view','admin.masters.themes.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.themes.view') }}"><i class="fa fa-circle-o"></i>Themes</a></li>
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.masters.company.view','admin.masters.company.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.company.view') }}"><i class="fa fa-circle-o"></i>Company</a></li>
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.masters.brand.view','admin.masters.brand.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.brand.view') }}"><i class="fa fa-circle-o"></i>Brand</a></li>
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.country.view','admin.masters.country.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.country.view') }}"><i class="fa fa-circle-o"></i>Country</a></li>
                     <li class="{{ in_array(Route::currentRouteName(),['admin.masters.currency.view','admin.masters.currency.addEdit'])?'active':'' }}"><a href="{{ route('admin.masters.currency.view') }}"><i class="fa fa-circle-o"></i>Currency</a></li>
 
