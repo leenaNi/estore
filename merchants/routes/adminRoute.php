@@ -327,6 +327,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::get('/search-user', ['as' => 'admin.offers.searchUser', 'uses' => 'OffersController@searchUser']);
             Route::any('/search-product', ['as' => 'admin.offers.searchProduct', 'uses' => 'OffersController@searchProduct']);
             Route::any('/search-offer-product', ['as' => 'admin.offers.searchOfferProduct', 'uses' => 'OffersController@searchOfferProduct']);
+            Route::get('/change-status', ['as' => 'admin.offers.changeStatus', 'uses' => 'OffersController@changeStatus']);
         });
 
         Route::group(['prefix' => 'apicat'], function () {

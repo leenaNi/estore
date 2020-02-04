@@ -130,6 +130,23 @@ class OffersController extends Controller {
         return redirect()->route('admin.offers.view');
     }
 
+    public function changeStatus() {
+        $attr = Offer::find(Input::get('id'));
+        if ($attr->status == 1) {
+            $attrStatus = 0;
+            $msg = "Offer disabled successfully.";
+            $attr->status = $attrStatus;
+            $attr->update();
+            return redirect()->back()->with('message', $msg);
+        } else if ($attr->status == 0) {
+            $attrStatus = 1;
+            $msg = "Offer enabled successfully.";
+            $attr->status = $attrStatus;
+            $attr->update();
+            return redirect()->back()->with('msg', $msg);
+        }
+    }
+
     public function searchUser() {
         if ( $_GET['term'] != "" ) {
             $data = User::where("email", "like", "%" . $_GET['term'] . "%")

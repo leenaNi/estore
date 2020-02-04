@@ -215,7 +215,7 @@ class CouponsController extends Controller {
     public function delete() {
         $coupon = Coupon::find(Input::get('id'));
         $getcount = Order::where("coupon_used", "=", Input::get('id'))->count();
-//dd($getcount);
+        //dd($getcount);
         if ($getcount == 0) {
             $coupon->categories()->sync([]);
             $coupon->products()->sync([]);

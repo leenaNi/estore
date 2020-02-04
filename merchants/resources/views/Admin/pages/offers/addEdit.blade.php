@@ -389,12 +389,33 @@ foreach ($arr as $a) {
         var newProduct = '<tr><td><input type="text" class="col-md-12 form-control prod-search validate[required]" placeholder="Search Product" name="prod[]"><input type="hidden" class="col-md-12 form-control prod" name="prod_id[]"></td><td><input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="prod_qty[]"></tr>';
         console.log(newProduct);
         $('#product-list').append(newProduct);
+        $(".prod-search").autocomplete({
+        source: "{{route('admin.offers.searchProduct')}}",
+        minLength: 1,
+        select: function (event, ui) {
+            // getSubprods(ui.item.id, $(this));
+            $(this).attr('data-prdid', ui.item.id);
+            $(this).parent().find('input.prod').val(ui.item.id);
+            $(this).parent().parent().attr('data-prod-id', ui.item.id);
+        }
+    });
     });
     $('#add-offer-product').click(function () {
         // var newProduct = $('#sample-product').html();
         var newProduct = '<tr><td><input type="text" class="col-md-12 form-control offer-prod-search validate[required]" placeholder="Search Product" name="offer_prod[]"><input type="hidden" class="col-md-12 form-control offer-prod" name="offer_prod_id[]"></td><td><input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="offer_prod_qty[]"></tr>';
         console.log(newProduct);
         $('#offer-product-list').append(newProduct);
+        $(".offer-prod-search").autocomplete({
+        source: "{{route('admin.offers.searchOfferProduct')}}",
+        minLength: 1,
+        select: function (event, ui) {
+            // getSubprods(ui.item.id, $(this));
+            $(this).attr('data-prdid', ui.item.id);
+            console.log($(this).parent().find('input.offer-prod'));
+            $(this).parent().find('input.offer-prod').val(ui.item.id);
+            $(this).parent().parent().attr('data-offered-prod-id', ui.item.id);
+        }
+    });
     });
 
     $(".prod-search").autocomplete({
@@ -409,20 +430,6 @@ foreach ($arr as $a) {
     });
     $(".offer-prod-search").autocomplete({
         source: "{{route('admin.offers.searchOfferProduct')}}",
-        // source: function(request, response) {
-        //     console.log($(this));
-        //     $.ajax({
-        //         url: "{{route('admin.offers.searchOfferProduct')}}",
-        //         dataType: "json",
-        //         data: {
-        //             term : request.term,
-        //             prod_id : $(this).parent().parent().attr('data-prod-id')
-        //         },
-        //         success: function(data) {
-        //             response(data);
-        //         }
-        //     });
-        // },
         minLength: 1,
         select: function (event, ui) {
             // getSubprods(ui.item.id, $(this));
