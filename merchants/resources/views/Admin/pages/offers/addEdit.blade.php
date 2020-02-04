@@ -264,6 +264,7 @@ foreach ($arr as $a) {
                                             <td>
                                             {{$offerProduct->pivot->qty}}
                                             </td>
+                                            <td><a href="{{route('admin.offers.deleteProduct',['id'=>$offerProduct->pivot->id])}}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')"data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a></td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -271,7 +272,8 @@ foreach ($arr as $a) {
                             </div>
                         </div>
                     </div>
-                    @else
+                    @endif
+                    @if($offerUsedcount==0)
                     <div class="row">
                     <div class="col-md-2"><label class="control-label text-right" style="float: right;">Product Group</label></div>
                         <div class="col-md-10">
@@ -330,7 +332,8 @@ foreach ($arr as $a) {
                             </div>
                         </div>
                     </div>
-                    @else
+                    @endif
+                    @if($offerUsedcount==0)
                     <div class="row" id="show-offer-products">
                         <div class="col-md-2"><label class="control-label text-right" style="float: right;">Offered Product Group</label></div>
                         <div class="col-md-10">

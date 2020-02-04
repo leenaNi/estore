@@ -27,22 +27,23 @@ class OffersController extends Controller {
 
     public function index() {
         $offerInfo = Offer::orderBy('id', 'DESC')->get();
-
         return view(Config('constants.adminOfferView') . '.index', compact('offerInfo'));
     }
 
     public function add() {
         $offer = new Offer();
+        $offerUsedcount = 0;
         // $products = Product::all();
         $action = route("admin.offers.save");
-        return view(Config('constants.adminOfferView') . '.addEdit', compact('offer', 'products', 'action'));
+        return view(Config('constants.adminOfferView') . '.addEdit', compact('offer', 'products', 'action', 'offerUsedcount'));
     }
 
     public function edit() {
         $offer = Offer::find(Input::get('id'));
+        $offerUsedcount = Order::where("offer_used", "=", Input::get('id'))->count();
         // $products = Product::all();
         $action = route("admin.offers.save");
-        return view(Config('constants.adminOfferView') . '.addEdit', compact('offer', 'products', 'action'));
+        return view(Config('constants.adminOfferView') . '.addEdit', compact('offer', 'products', 'action', 'offerUsedcount'));
     }
 
     public function save() {
@@ -122,12 +123,25 @@ class OffersController extends Controller {
     }
 
     public function delete() {
-        $offer = Offer::find(Input::get('id'));        
-        $offer->categories()->sync([]);
-        $offer->products()->sync([]);
-        $offer->userspecific()->sync([]);
-        $offer->delete();
-        return redirect()->route('admin.offers.view');
+        $offer = Offer::find(Input::get('id')); 
+        $getcount = Order::where("offer_used", "=", Input::get('id'))->count();
+        //dd($getcount);
+        if ($getcount == 0) {
+            $offer->categories()->sync([]);
+            $offer->products()->sync([]);
+            $offer->delete();
+             DB::table("offer_users")->where("c_id", $offer->id)->delete();
+            //  $offer->userspecific()->sync([]);
+            $offer->delete();
+            Session::flash('message', 'Offer deleted successfully.');
+            $data = ['status' => '1', "message" => "Offer deleted successfully."];
+        } else {
+            Session::flash('message', 'Sorry, This offer is part of a order. Delete the order first.');
+            $data = ['status' => '0', "msg" => "Sorry, This offer is part of a order. Delete the order first."];
+        }
+        $url = 'admin.offers.view';
+        $viewname = '';
+        return Helper::returnView($viewname, $data, $url);
     }
 
     public function changeStatus() {
@@ -214,6 +228,14 @@ class OffersController extends Controller {
         }
 
         echo json_encode($data);
+    }
+
+    public function deleteProduct() {
+        $id = Input::get('id');
+        DB::table('offers_products')->where('id', $id)->delete();
+        Session::flash('message', 'Product deleted successfully.');
+        $data = ['status' => '1', "message" => "Product deleted successfully."];
+        return redirect()->back();
     }
 
 }

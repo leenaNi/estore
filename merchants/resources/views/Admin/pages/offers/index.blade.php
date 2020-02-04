@@ -39,7 +39,6 @@
                                 <th>Status</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
-                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,17 +56,24 @@
 <!--                                <td>{{$offer->min_order_discount}}</td>
                                 <td>{{$offer->min_free_quantity}}</td>-->
                                 <td>{{$offer->user_specific == 1 ? "Yes" : "No"}}</td>
-                                <td>{{$offer->status == 1 ? "Enabled" : "Disabled"}}</td>
+                                <td>
+                                    <!--- ////$offer->status == 1 ? "Enabled" : "Disabled"}} -->
+                                    @if($offer->status == 1)
+                                    <label class="label label-success active">Enabled</label>
+                                    @else
+                                    <label class="label label-danger active">Disabled</label>
+                                    @endif
+                                </td>
                                 <td>{{date('d-M-Y', strtotime($offer->start_date))}}</td>
                                 <td>{{date('d-M-Y', strtotime($offer->end_date))}}</td>
-                                <td>  <?php if ($offer->status == 1) { ?>
-                                            <a href="{!! route('admin.offers.changeStatus',['id'=>$offer->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this coupon?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btnNo-margn-padd"></i></a>
-                                        <?php } elseif ($offer->status == 0) { ?>
-                                            <a href="{!! route('admin.offers.changeStatus',['id'=>$offer->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this coupon?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btnNo-margn-padd"></i></a>
-                                        <?php } ?> </td>
                                 <td><!---label label-danger active -->
+                                <?php if ($offer->status == 1) { ?>
+                                            <a href="{!! route('admin.offers.changeStatus',['id'=>$offer->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this offer?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btnNo-margn-padd"></i></a>
+                                        <?php } elseif ($offer->status == 0) { ?>
+                                            <a href="{!! route('admin.offers.changeStatus',['id'=>$offer->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this offer?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btnNo-margn-padd"></i></a>
+                                        <?php } ?>
                                     <a href="{{route('admin.offers.edit',['id'=>$offer->id])}}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btnNo-margn-padd"></i></a> 
-                                    <a href="{{route('admin.offers.delete',['id'=>$offer->id])}}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this record?')"data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a>
+                                    <a href="{{route('admin.offers.delete',['id'=>$offer->id])}}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this offer?')"data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                             @endforeach
