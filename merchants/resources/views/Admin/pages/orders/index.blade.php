@@ -4,19 +4,10 @@
 <link rel="stylesheet" href="{{ Config('constants.adminPlugins').'/daterangepicker/daterangepicker-bs3.css' }}">
 <link rel="stylesheet" href="{{  Config('constants.adminPlugins').'/bootstrap-multiselect/bootstrap-multiselect.css' }}">
 <style type="text/css">
-    .multiselect-container {
-        width: 100% !important;
-    }
-    .brbottom1{
-        margin-bottom: 10px;
-        padding: 10px;
-    }
-    .success{
-        color: #3c763d;
-    }
-    .error{
-        color: #d73925;
-    }
+.multiselect-container {width: 100% !important;}
+.brbottom1{margin-bottom: 10px; padding: 10px;}
+.success{color: #3c763d;}
+.error{color: #d73925;}
 </style>
 @stop
 
@@ -31,21 +22,26 @@
         <li class="active">All Orders</li>
     </ol>
 </section>
-<section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box">
-                @if(!empty(Session::get('message')))
-                <div class="alert alert-success" role="alert">
-                    {{ Session::get('message') }}
-                </div>
-                @endif
-                @if(!empty(Session::get('messageError')))
-                <div class="alert alert-danger" role="alert">
-                    {{ Session::get('messageError') }}
-                </div>
-                @endif
-                <div class="box-header box-tools filter-box col-md-9 noBorder rightBorder">
+
+<section class="main-content">
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Filter</h1>
+        </div>
+        <div class="filter-section">
+            <div class="col-md-9 noAll-padding">
+                <div class="filter-left-section">
+                    @if(!empty(Session::get('message')))
+                    <div class="alert alert-success" role="alert">
+                        {{ Session::get('message') }}
+                    </div>
+                    @endif
+                    @if(!empty(Session::get('messageError')))
+                    <div class="alert alert-danger" role="alert">
+                        {{ Session::get('messageError') }}
+                    </div>
+                    @endif
+
                     {!! Form::open(['method' => 'get', 'route' => 'admin.orders.view' , 'id' => 'searchForm' ]) !!}
                     <div class="form-group col-md-4">
                         {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"Order Id"]) !!}
@@ -67,10 +63,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         {!! Form::text('date',Input::get('date'), ["class"=>'form-control  date', "placeholder"=>"Order Date"]) !!}
-                    </div>
-                    <!-- <div class="form-group col-md-4">
-                        {!! Form::text('dateto',Input::get('dateto'), ["class"=>'form-control  toDate', "placeholder"=>"To Date"]) !!}
-                    </div> -->
+                    </div> 
 
                     @if($order_status->count())
                     @php echo Input::get('searchStatus[]'); @endphp
@@ -100,31 +93,31 @@
                         </div>
                     </div>
                     {!! Form::close() !!}
-
-
                 </div>
+            </div>
 
-                <div class="box-header col-md-3 col-xs-12 pull-right mobPadding noMob-leftBorder mob-bottomBorder">
-                    <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default pull-right col-md-12 fullMobile-width">Create New Order</a>
-
-                    <div class="clearfix" style="margin-bottom:15px;"></div>
-                    <a class="btn btn-primary" href="{{route('admin.orders.sampleexport')}}"style="margin-bottom:15px; margin-left: 0; width: 100%;">Download Sample</a>
-                    <div class="clearfix"></div>
+            <div class="col-md-3 noAll-padding">
+                <div class="filter-right-section">
+                    <div class="form-group">
+                        <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default fullWidth noAll-margin">Create New Order</a>  
+                    </div>
+                    <div class="form-group">
+                    <a class="btn btn-default fullWidth noAll-margin" href="{{route('admin.orders.sampleexport')}}">Download Sample</a>
+                    </div> 
                     <form action="{{route('admin.traits.orders')}}"  method="post" enctype="multipart/form-data">
-                        <div class="">
-                            <input type="file" class="form-control validate[required] fileUploder" name="order_file" placeholder="Browse CSV file"  required style="margin-bottom:15px; "  onChange="validateFile(this.value)"/>
+                        <div class="form-group">
+                            <input type="file" class="form-control validate[required] fileUploder fullWidth" name="order_file" placeholder="Browse CSV file"  required onChange="validateFile(this.value)"/>
                         </div>
-                        <div class="">
-                            <input type="submit" class="btn sbtn btn-primary submitBulkUpload" value="Bulk Order Upload"  style="margin-left: 0; margin-bottom:15px; width: 100%; "/>
+                        <div class="form-group">
+                            <input type="submit" class="btn sbtn btn-primary submitBulkUpload fullWidth noAll-margin" value="Bulk Order Upload"/>
                         </div>
-                    </form>
-                    <div class="clearfix" style="margin-bottom:15px;"></div>
-                    <a href="{{route('admin.orders.export')}}"  class="btn btn-default pull-right col-md-12 fullMobile-width">Export All Order</a>
-
-                    <div class="clearfix" style="margin-bottom:15px;"></div>
+                    </form> 
+                    <div class="form-group">
+                     <a href="{{route('admin.orders.export')}}"  class="btn btn-default noAll-margin fullWidth">Export All Order</a>
+                    </div>
                     <form action="" class="formMul" method="post" >
                         <input type="hidden" value="" name="OrderIds" />
-                        <select name="orderAction" id="orderAction" class="form-control pull-right col-md-12" style="margin-bottom:15px;">
+                        <select name="orderAction" id="orderAction" class="form-control">
                             <option value="">Select Bulk Action</option>
                             <!--                            <option value="">Generate Waybill</option>-->
                             <option value="1">Print Invoice</option>
@@ -133,11 +126,9 @@
                             @if($feature['flag'] == 1)
                             <option value="30" >Flag</option>
                             @endif
-
                             <optgroup label="Courier Services">
                                 <option value="31">E-courier</option>
                             </optgroup>
-
                             <!--<option value="25" >Warehouse Order Export</option>-->
                             <optgroup label="Update Order Status">
                                 <option value="8">Cancelled</option>
@@ -150,7 +141,6 @@
                                 <option value="21">Refunded</option>
                                 <option value="5">Shipped</option>
                                 <option value="11">Undelivered</option>
-
                             </optgroup>
                             <optgroup label="Update Payment Status">
                                 <option value="13">Pending</option>
@@ -162,225 +152,244 @@
                         </select>
                     </form>
                 </div>
-                <div class="dividerhr"></div>
-                <div style="clear: both"></div>
-                <div class="box-body table-responsive no-padding">
-                    <table class="table orderTable table-striped table-hover tableVaglignMiddle">
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox" id="checkAll" /></th>
-                                <th>@sortablelink ('id', 'Order Id')</th>
-                                <th>Date</th>
-                                <th>Name</th>
-                                <th>Mobile</th>
-                                <th>Order Status</th>
-                                <th>Payment Status</th>
-                                <th>@sortablelink ('pay_amt', 'Amount')</th>
-                                <th>Paid Amount</th>
-                                <!-- <th>Order Source</th>
-                                @if($feature['flag'] == 1)
-                                <th>Flag</th>
-                                @endif -->
-                                @if($feature['courier-services'] == 1)
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>All Orders ({{$ordersCount }})</h1>
+        </div>
+        <div class="listing-section">
+            <div class="table-responsive overflowVisible no-padding">
+                <table class="table orderTable table-striped table-hover tableVaglignMiddle">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><input type="checkbox" id="checkAll" /></th>
+                            <th class="text-center">@sortablelink ('id', 'Order Id')</th>
+                            <th class="text-center">Date</th>
+                            <th class="text-left">Name</th>
+                            <th class="text-center">Mobile</th>
+                            <th class="text-center">Order Status</th>
+                            <th class="text-center">Payment Status</th>
+                            <th class="text-right">@sortablelink ('pay_amt', 'Amount')</th>
+                            <th class="text-right">Paid Amount</th> 
+                            @if($feature['courier-services'] == 1)
 <!--                                <th>Courier Service</th>-->
-                                @endif
-                                <th width="6%">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(count($orders) >0 )
-                            @foreach($orders as $order)
-                         
-                            <tr>
-                                <td><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /></td>
-                                <td><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
-                                <td>{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
-                                <td>{{ @$order->users->firstname }} {{ @$order->users->lastname }} </td>
-                                <td>{{ @$order->users->telephone }}</td>
-                                <td>{{ @$order->orderstatus['order_status']  }}</td>
-                                <td>{{ @$order->paymentstatus['payment_status'] }}</td>
-                                <td>@if(@$order->prefix)
-                                    <span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
-                                    @else
-                                    <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if(@$order->prefix)
-                                    <span class="currency-sym"></span> {{ number_format((@$order->amt_paid  * Session::get('currency_val')), 2) }}
-                                    @endif
-                                </td>
-                               <!--  <td>@if(@$order->order_source==1)
-                                    Mall
-                                    @elseif(@$order->order_source==2)
-                                    {{ Session::get("storeName")}}
-                                    @endif
-                                </td>
-                             
-                                @if($feature['flag'] == 1)
-                                <td>
-                                    <div id="flagD{{$order->id }}" class="flagD">
-                                        <div class="flagDName" id="flagDName{{$order->id }}">
-                                            <div style='width: 20px;height: 20px;background:{{ @$order->orderFlag->value }} ; border-radius: 50%'></div>
-                                            <br/>{{  (strpos(@$order->orderFlag->flag, 'No Flag') !== false)?"":@$order->orderFlag->flag}} <br> {{  $order->flag_remark}}
-                                        </div>
-                                    </div>
-                                </td> -->
-
-                                @endif
-                                @if($feature['courier-services'] == 1)
-<!--                                   <td>{{ ($order->courier != 0)?$order->getcourier['name']:'-' }}</td>-->
-                                @endif
-                                <td>
-                                    
-                                    <a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
-                                    <a href="#" data-ordId ="{{$order->id}}"  class="flage"  ui-toggle-class="" data-toggle="tooltip" title="Flag"><i class="fa fa-flag-o btn-plen"></i></a>
-                                    <a data-orderId="{{$order->id}}" class="add-payment" ui-toggle-class="" data-toggle="tooltip" title="Add Payment"><i class="fa fa-money" ></i></a>
-                                    <a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this order?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash "></i></a>
-                                   <!--  <a href="{!! route('admin.orders.waybill',['id'=>$order->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="waybill"><i class="fa fa-barcode fa-fw btnNo-margn-padd"></i></a> -->
-
-                                </td>
-                            </tr>
-                            @endforeach
-                            @else
-                            <tr><td colspan=14> No Record Found.</td></tr>
                             @endif
-                        </tbody>
-                    </table>
-                    <div class="box-footer clearfix">
-                        <?php
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(count($orders) >0 )
+                        @foreach($orders as $order)
+                     
+                        <tr>
+                            <td class="text-center"><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /></td>
+                            <td class="text-center"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
+                            <td class="text-center">{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
+                            <td class="text-left">{{ @$order->users->firstname }} {{ @$order->users->lastname }} </td>
+                            <td class="text-center">{{ @$order->users->telephone }}</td>
+                            <td class="text-center"><span class="alertWarning">{{ @$order->orderstatus['order_status']  }}</span></td>
+                            <td class="text-center">{{ @$order->paymentstatus['payment_status'] }}</td>
+                            <td class="text-right">@if(@$order->prefix)
+                                <span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
+                                @else
+                                <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
+                                @endif
+                            </td>
+                            <td class="text-right">
+                                @if(@$order->prefix)
+                                <span class="currency-sym"></span> {{ number_format((@$order->amt_paid  * Session::get('currency_val')), 2) }}
+                                @endif
+                            </td>
+                           <!--  <td>@if(@$order->order_source==1)
+                                Mall
+                                @elseif(@$order->order_source==2)
+                                {{ Session::get("storeName")}}
+                                @endif
+                            </td>
+                         
+                            @if($feature['flag'] == 1)
+                            <td>
+                                <div id="flagD{{$order->id }}" class="flagD">
+                                    <div class="flagDName" id="flagDName{{$order->id }}">
+                                        <div style='width: 20px;height: 20px;background:{{ @$order->orderFlag->value }} ; border-radius: 50%'></div>
+                                        <br/>{{  (strpos(@$order->orderFlag->flag, 'No Flag') !== false)?"":@$order->orderFlag->flag}} <br> {{  $order->flag_remark}}
+                                    </div>
+                                </div>
+                            </td> -->
+
+                            @endif
+                            @if($feature['courier-services'] == 1)
+<!--                                   <td>{{ ($order->courier != 0)?$order->getcourier['name']:'-' }}</td>-->
+                            @endif
+                            <td class="text-center"> 
+                                <!-- <div class='dropdown'>
+                                    <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown'><span class="caret"></span></button>
+                                    <ul class='dropdown-menu'>
+                                        <li><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i> Edit</a></li>
+                                        <li><a href="#" data-ordId ="{{$order->id}}"  class="flage"><i class="fa fa-flag-o btn-plen"></i> Flag</a></li>
+                                        <li><a data-orderId="{{$order->id}}" class="add-payment"><i class="fa fa-money" ></i> Add Payment</a></li>
+                                        <li><a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
+                                    </ul>
+                                </div> -->
+                            <div class="dropdown pull-right">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                    <li><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i> Edit</a></li>
+                                    <li><a href="#" data-ordId ="{{$order->id}}"  class="flage"><i class="fa fa-flag-o btn-plen"></i> Flag</a></li>
+                                    <li><a data-orderId="{{$order->id}}" class="add-payment"><i class="fa fa-money" ></i> Add Payment</a></li>
+                                    <li><a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
+                                </div>
+                            </div>  
+                            </td>
+                        </tr>
+                        @endforeach
+                        @else
+                        <tr><td colspan=14> No Record Found.</td></tr>
+                        @endif
+                    </tbody>
+                </table>
+                <div class="box-footer clearfix">
+                    <?php
 echo $orders->appends(Input::except('page'))->render();
 ?>
-                        <?php //}
+                    <?php //}
 ?>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="mulModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">Change Order Status</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form method="post" id="mulForm" action="{{ route('admin.orders.update.status') }}">
-                                <input  type="checkbox" name="notify" value="1">  Confirm & Notify Customer.
-                                <br/>
-                                <label>Comments</label>
-                                <textarea name="remark"  class="form-control"></textarea>
-                                <input type="hidden" name="status" class="OdStatus">
-                                <input type='hidden' name='commentChanges' value='1'>
-                                <input type="hidden" value="" name="OrderIds" />
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary saveMulChanges">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="commentBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel"></h4>
-                    </div>
-                    <div class="modal-body">
-                        <p class="ordComment"></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="flagBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Flag</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post" id="flagForm" action="">
-                            <label>Select Flag</label>
-                            <select name="flagid" class="form-control selFlag">
-                                <option value="">Please select</option>
-                                @foreach($flags as $flag)
-                                <option value="{{ $flag->id }}">{{ $flag->flag  }}</option>
-                                @endforeach
-                            </select>
-                            <br/>
-                            <label>Comments</label>
-                            <textarea name="flag_remark"  class="form-control flagComment"></textarea>
-                            <input type="hidden" name="ord_id" class="OdID">
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="saveFlag" class="btn btn-primary saveFlag" >Submit</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="add-payment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Add Payment for order ID: <span class="payment-order-id"></span></h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label class="control-label"><b>Pending Amount:</b> <span class="currency-sym"></span><span class="remaining-amt"></span></label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 payment-msg">
-                            </div>
-                        </div>
-                        <div class="clear-fix"></div>
-                        <div class="row brbottom1">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Enter amount" name="pay_amt" value="" required />
-                                    <input type="hidden" name="remaining_amt" required/>
-                                    <input type="hidden" name="order_id" required/>
-                                </div>
-                            </div>
-                            <div class="col-md-6"><button class="btn btn-primary add-new-payment">Submit</button></div>
-                        </div>
-                        <div class="clear-fix"></div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th class="text-right">Amount Paid</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="payment-details"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </section>
+
+ <div class="clearfix"></div>
+
+<div class="modal fade" id="mulModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Change Order Status</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="mulForm" action="{{ route('admin.orders.update.status') }}">
+                    <input  type="checkbox" name="notify" value="1">  Confirm & Notify Customer.
+                    <br/>
+                    <label>Comments</label>
+                    <textarea name="remark"  class="form-control"></textarea>
+                    <input type="hidden" name="status" class="OdStatus">
+                    <input type='hidden' name='commentChanges' value='1'>
+                    <input type="hidden" value="" name="OrderIds" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary saveMulChanges">Submit</button>
+            </div>
+        </div>
+    </div>
+</div> 
+<div class="modal fade" id="commentBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"></h4>
+            </div>
+            <div class="modal-body">
+                <p class="ordComment"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="flagBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Flag</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="flagForm" action="">
+                    <label>Select Flag</label>
+                    <select name="flagid" class="form-control selFlag">
+                        <option value="">Please select</option>
+                        @foreach($flags as $flag)
+                        <option value="{{ $flag->id }}">{{ $flag->flag  }}</option>
+                        @endforeach
+                    </select>
+                    <br/>
+                    <label>Comments</label>
+                    <textarea name="flag_remark"  class="form-control flagComment"></textarea>
+                    <input type="hidden" name="ord_id" class="OdID">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveFlag" class="btn btn-primary saveFlag" >Submit</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="add-payment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add Payment for order ID: <span class="payment-order-id"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="control-label"><b>Pending Amount:</b> <span class="currency-sym"></span><span class="remaining-amt"></span></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 payment-msg">
+                    </div>
+                </div>
+                <div class="clear-fix"></div>
+                <div class="row brbottom1">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Enter amount" name="pay_amt" value="" required />
+                            <input type="hidden" name="remaining_amt" required/>
+                            <input type="hidden" name="order_id" required/>
+                        </div>
+                    </div>
+                    <div class="col-md-6"><button class="btn btn-primary add-new-payment">Submit</button></div>
+                </div>
+                <div class="clear-fix"></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th class="text-right">Amount Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="payment-details"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div> 
 @stop
 @section('myscripts')
 <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>

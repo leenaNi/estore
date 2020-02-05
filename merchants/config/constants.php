@@ -98,6 +98,7 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'adminStorePath' => storage_path() . '/json',
         'adminMarketingEmailsView' => 'Admin.pages.marketing-emails',
         'adminDistributorOrderView' => 'Admin.pages.orders.distributors',
+        'adminDistCssTempPath' => asset('css')
     ];
 
 } else {
@@ -201,6 +202,7 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'adminReports' => 'Admin.pages.reports',        
         'adminPaymentsView' => 'Admin.pages.payments',
         'adminDistributorOrderView' => 'Admin.pages.orders.distributors',
+        'adminDistCssTempPath' => asset('css')
     ];
 }
 

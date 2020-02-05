@@ -545,6 +545,7 @@ class HomeController extends Controller
         $test = DB::unprepared($sql);
         
         $insertedProductIdArray = array();
+        $productDefaultData = array();
         if ($storeType == 'distributor') {
             $totalCategory = count($catid) - 1; // industry
             //echo "totla cat >> ".$totalCategory;
