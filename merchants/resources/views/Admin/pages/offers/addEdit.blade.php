@@ -240,9 +240,9 @@ foreach ($arr as $a) {
                             {!! Form::select('status',["0" => "Disable", "1" => "Enable"],null,["class"=>'form-control']) !!}
                         </div>
                     </div>
-                    <?php 
-                    $offerProducts = $offer->products()->whereIn('type', [1, 0])->get();
-                    ?>
+                    <?php
+$offerProducts = $offer->products()->whereIn('type', [1, 0])->get();
+?>
                     @if(count($offerProducts) > 0)
                     <div class="row">
                     <div class="col-md-2"><label class="control-label text-right" style="float: right;">Product Group</label></div>
@@ -264,7 +264,7 @@ foreach ($arr as $a) {
                                             <td>
                                             {{$offerProduct->pivot->qty}}
                                             </td>
-                                            <td><a href="{{route('admin.offers.deleteProduct',['id'=>$offerProduct->pivot->id])}}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')"data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a></td>
+                                            <td><a href="{{route('admin.offers.deleteProduct',['id'=>$offerProduct->pivot->id, 'offer_id' => $offer->id])}}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')"data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a></td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -288,11 +288,11 @@ foreach ($arr as $a) {
                                     <tbody id="product-list">
                                         <tr>
                                             <td>
-                                                <input type="text" class="col-md-12 form-control prod-search validate[required]" placeholder="Search Product" name="prod[]">
+                                                <input type="text" class="col-md-12 form-control prod-search {{(count($offerProducts)==0)? 'validate[required]': ''}}" placeholder="Search Product" name="prod[]">
                                                 <input type="hidden" class="col-md-12 form-control prod" name="prod_id[]">
                                             </td>
                                             <td>
-                                                <input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="prod_qty[]">
+                                                <input type="tel" class="col-md-12 form-control {{(count($offerProducts)==0)? 'validate[required]': ''}}" placeholder="Enter Order Quantity" name="prod_qty[]">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -301,10 +301,10 @@ foreach ($arr as $a) {
                         </div>
                     </div>
                     @endif
-                    <?php 
-                    $offerProducts = $offer->products()->where('type', 2)->get();
-                    ?>
-                    @if($offer->type == '2' && count($offerProducts) > 0)
+                    <?php
+$offerProducts1 = $offer->products()->where('type', 2)->get();
+?>
+                    @if($offer->type == '2' && count($offerProducts1) > 0)
                     <div class="row">
                         <div class="col-md-2"><label class="control-label text-right" style="float: right;">Offer Product Group</label></div>
                         <div class="col-md-10">
@@ -317,14 +317,15 @@ foreach ($arr as $a) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($offerProducts as $offerProdcutKey => $offerProduct)
+                                        @foreach($offerProducts1 as $offerProdcutKey1 => $offerProduct1)
                                         <tr>
                                             <td>
-                                                {{$offerProduct->product}}
+                                                {{$offerProduct1->product}}
                                             </td>
                                             <td>
-                                            {{$offerProduct->pivot->qty}}
+                                            {{$offerProduct1->pivot->qty}}
                                             </td>
+                                            <td><a href="{{route('admin.offers.deleteProduct',['id'=>$offerProduct1->pivot->id, 'offer_id' => $offer->id])}}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')"data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a></td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -348,11 +349,11 @@ foreach ($arr as $a) {
                                     <tbody id="offer-product-list">
                                         <tr>
                                             <td>
-                                                <input type="text" class="col-md-12 form-control offer-prod-search validate[required]" placeholder="Search Product" name="offer_prod[]">
+                                                <input type="text" class="col-md-12 form-control offer-prod-search {{(count($offerProducts1)==0)? 'validate[required]': ''}}" placeholder="Search Product" name="offer_prod[]">
                                                 <input type="hidden" class="col-md-12 form-control offer-prod" name="offer_prod_id[]">
                                             </td>
                                             <td>
-                                                <input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="offer_prod_qty[]">
+                                                <input type="tel" class="col-md-12 form-control {{(count($offerProducts1)==0)? 'validate[required]': ''}}" placeholder="Enter Order Quantity" name="offer_prod_qty[]">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -391,7 +392,7 @@ foreach ($arr as $a) {
 
     $('#add-product').click(function () {
         // var newProduct = $('#sample-product').html();
-        var newProduct = '<tr><td><input type="text" class="col-md-12 form-control prod-search validate[required]" placeholder="Search Product" name="prod[]"><input type="hidden" class="col-md-12 form-control prod" name="prod_id[]"></td><td><input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="prod_qty[]"></tr>';
+        var newProduct = '<tr><td><input type="text" class="col-md-12 form-control prod-search validate[required]" placeholder="Search Product" name="prod[]"><input type="hidden" class="col-md-12 form-control prod" name="prod_id[]"></td><td><input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="prod_qty[]"></td><td><a class="del-product"><i class="fa fa-trash"></i></a></td></tr>';
         console.log(newProduct);
         $('#product-list').append(newProduct);
         $(".prod-search").autocomplete({
@@ -407,7 +408,7 @@ foreach ($arr as $a) {
     });
     $('#add-offer-product').click(function () {
         // var newProduct = $('#sample-product').html();
-        var newProduct = '<tr><td><input type="text" class="col-md-12 form-control offer-prod-search validate[required]" placeholder="Search Product" name="offer_prod[]"><input type="hidden" class="col-md-12 form-control offer-prod" name="offer_prod_id[]"></td><td><input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="offer_prod_qty[]"></tr>';
+        var newProduct = '<tr><td><input type="text" class="col-md-12 form-control offer-prod-search validate[required]" placeholder="Search Product" name="offer_prod[]"><input type="hidden" class="col-md-12 form-control offer-prod" name="offer_prod_id[]"></td><td><input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="offer_prod_qty[]"></td><td><a class="del-product"><i class="fa fa-trash"></i></a></td></tr>';
         console.log(newProduct);
         $('#offer-product-list').append(newProduct);
         $(".offer-prod-search").autocomplete({
@@ -445,6 +446,11 @@ foreach ($arr as $a) {
         }
     });
 
+    $('body').on('click', '.del-product', function () {
+        // console.log($(this).parent().parent());
+        $(this).parent().parent().remove();
+    });
+
     $('.offer-type').change(function () {
         var offerType = $(this).val();
         console.log(offerType);
@@ -472,7 +478,7 @@ foreach ($arr as $a) {
             $('.discount_type').hide();
         }else {
             $('.discount_type').show();
-            $('#show-offer-products').hide();            
+            $('#show-offer-products').hide();
         }
         // if ($("#offer_type").val() == 2) {
         //     $("#showProducts").hide();

@@ -2,35 +2,27 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Route;
-use Input;
-use App\Models\Product;
-use App\Models\OrderStatus;
-use App\Models\PaymentMethod;
-use App\Models\PaymentStatus;
-use App\Models\Order;
-use App\Models\User;
-use App\Models\Country;
-use App\Models\State;
-use App\Models\ProductType;
-use App\Models\AttributeSet;
-use App\Models\CatalogImage;
-use App\Models\Attribute;
-use App\Models\AttributeValue;
-use App\Models\Offer;
-use App\Models\Category;
 use App\Http\Controllers\Controller;
+use App\Models\Offer;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
 use DB;
+use Input;
+use Route;
 use Session;
 
-class OffersController extends Controller {
+class OffersController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
         $offerInfo = Offer::orderBy('id', 'DESC')->get();
         return view(Config('constants.adminOfferView') . '.index', compact('offerInfo'));
     }
 
-    public function add() {
+    public function add()
+    {
         $offer = new Offer();
         $offerUsedcount = 0;
         // $products = Product::all();
@@ -38,7 +30,8 @@ class OffersController extends Controller {
         return view(Config('constants.adminOfferView') . '.addEdit', compact('offer', 'products', 'action', 'offerUsedcount'));
     }
 
-    public function edit() {
+    public function edit()
+    {
         $offer = Offer::find(Input::get('id'));
         $offerUsedcount = Order::where("offer_used", "=", Input::get('id'))->count();
         // $products = Product::all();
@@ -46,7 +39,8 @@ class OffersController extends Controller {
         return view(Config('constants.adminOfferView') . '.addEdit', compact('offer', 'products', 'action', 'offerUsedcount'));
     }
 
-    public function save() {
+    public function save()
+    {
         $categoryIds = explode(",", Input::get('CategoryIds'));
         $productIds = explode(",", Input::get('ProductIds'));
         // print_r(Input::all());
@@ -56,11 +50,11 @@ class OffersController extends Controller {
         $offerNew->offer_type = Input::get('offer_type');
         $offerNew->type = Input::get('type');
         $offerNew->offer_discount_value = Input::get('offer_discount_value');
-        $offerNew->min_order_qty = (Input::get('min_order_qty'))? Input::get('min_order_qty'): 0;
-        $offerNew->min_free_qty = (Input::get('min_free_qty'))? Input::get('min_free_qty'): 0;
-        $offerNew->min_order_amt = (Input::get('min_order_amt'))? Input::get('min_order_amt'): 0;
-        $offerNew->max_discount_amt = (Input::get('max_discount_amt'))? Input::get('max_discount_amt'): 0;
-        $offerNew->full_incremental_order = (Input::get('full_incremental_order'))? Input::get('full_incremental_order'): 0;
+        $offerNew->min_order_qty = (Input::get('min_order_qty')) ? Input::get('min_order_qty') : 0;
+        $offerNew->min_free_qty = (Input::get('min_free_qty')) ? Input::get('min_free_qty') : 0;
+        $offerNew->min_order_amt = (Input::get('min_order_amt')) ? Input::get('min_order_amt') : 0;
+        $offerNew->max_discount_amt = (Input::get('max_discount_amt')) ? Input::get('max_discount_amt') : 0;
+        $offerNew->full_incremental_order = (Input::get('full_incremental_order')) ? Input::get('full_incremental_order') : 0;
         $offerNew->start_date = Input::get('start_date');
         $offerNew->end_date = Input::get('end_date');
         $offerNew->user_specific = Input::get('user_specific');
@@ -82,7 +76,7 @@ class OffersController extends Controller {
             $prod_ids = Input::get('prod_id');
             $prod_qtys = Input::get('prod_qty');
             $products = [];
-            foreach ($prod_ids as $prodIdKey => $prodId ) {
+            foreach ($prod_ids as $prodIdKey => $prodId) {
                 $products[$prodIdKey]['offer_id'] = $offerNew->id;
                 $products[$prodIdKey]['prod_id'] = $prodId;
                 $products[$prodIdKey]['type'] = 1;
@@ -97,7 +91,7 @@ class OffersController extends Controller {
             $prod_ids = Input::get('offer_prod');
             $prod_qtys = Input::get('offer_prod_qty');
             $products = [];
-            foreach ($prod_ids as $prodIdKey => $prodId ) {
+            foreach ($prod_ids as $prodIdKey => $prodId) {
                 $products[$prodIdKey]['offer_id'] = $offerNew->id;
                 $products[$prodIdKey]['prod_id'] = $prodId;
                 $products[$prodIdKey]['type'] = 2;
@@ -107,13 +101,14 @@ class OffersController extends Controller {
             // dd($products);
             DB::table('offers_products')->insert($products);
         }
-        
-        if (!empty(Input::get('uid')))
+
+        if (!empty(Input::get('uid'))) {
             $offerNew->userspecific()->sync(Input::get('uid'));
-        else
+        } else {
             $offerNew->userspecific()->detach();
-        
-        if ( Input::get('user_specific') == 0 ) {
+        }
+
+        if (Input::get('user_specific') == 0) {
             $offerNew->userspecific()->sync([]);
         }
 
@@ -122,15 +117,16 @@ class OffersController extends Controller {
         //        return redirect()->back();
     }
 
-    public function delete() {
-        $offer = Offer::find(Input::get('id')); 
+    public function delete()
+    {
+        $offer = Offer::find(Input::get('id'));
         $getcount = Order::where("offer_used", "=", Input::get('id'))->count();
         //dd($getcount);
         if ($getcount == 0) {
             $offer->categories()->sync([]);
             $offer->products()->sync([]);
             $offer->delete();
-             DB::table("offer_users")->where("c_id", $offer->id)->delete();
+            DB::table("offer_users")->where("c_id", $offer->id)->delete();
             //  $offer->userspecific()->sync([]);
             $offer->delete();
             Session::flash('message', 'Offer deleted successfully.');
@@ -144,7 +140,8 @@ class OffersController extends Controller {
         return Helper::returnView($viewname, $data, $url);
     }
 
-    public function changeStatus() {
+    public function changeStatus()
+    {
         $attr = Offer::find(Input::get('id'));
         if ($attr->status == 1) {
             $attrStatus = 0;
@@ -161,13 +158,15 @@ class OffersController extends Controller {
         }
     }
 
-    public function searchUser() {
-        if ( $_GET['term'] != "" ) {
+    public function searchUser()
+    {
+        if ($_GET['term'] != "") {
             $data = User::where("email", "like", "%" . $_GET['term'] . "%")
-                    ->select(DB::raw('id, email'))
-                    ->get();
-        } else
+                ->select(DB::raw('id, email'))
+                ->get();
+        } else {
             $data = "";
+        }
 
         echo json_encode($data);
     }
@@ -230,14 +229,20 @@ class OffersController extends Controller {
         echo json_encode($data);
     }
 
-    public function deleteProduct() {
+    public function deleteProduct()
+    {
         $id = Input::get('id');
+        $offerId = Input::get('offer_id');
         DB::table('offers_products')->where('id', $id)->delete();
+        $offerProducts = DB::table('offers_products')->where('offer_id', $offerId)->get();
+        if (count($offerProducts) == 0) {
+            $offer = Offer::find($offerId);
+            $offer->status = 0;
+            $offer->update();
+        }
         Session::flash('message', 'Product deleted successfully.');
         $data = ['status' => '1', "message" => "Product deleted successfully."];
         return redirect()->back();
     }
 
 }
-
-?>
