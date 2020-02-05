@@ -11,12 +11,14 @@
         <div class="">
             <div id="wrapper" class="shop">
                 <div class="w1">
-                    @include('Frontend.includes.header')
-                    
+                
+                @if(Route::currentRouteName() != 'newstore' && Route::currentRouteName() != 'waitProcess' && Route::currentRouteName() != 'getcongrats')
+                    @include('Frontend.includes.header')  
+                @endif 
                     @yield('content')
-                    
+                @if(Route::currentRouteName() != 'newstore' && Route::currentRouteName() != 'waitProcess' && Route::currentRouteName() != 'getcongrats')
                     @include('Frontend.includes.footer')
-                    
+                @endif    
                     @include('Frontend.includes.foot')
                     
                     @yield('myscripts')

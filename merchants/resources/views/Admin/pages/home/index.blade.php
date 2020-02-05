@@ -1,9 +1,4 @@
 @extends('Admin.layouts.default')
-<style type="text/css">
-    .toggle.btn{ float: right; }
-    .modalBodyScroll{ overflow-y: scroll; height: 400px;}
-    .modalFullWidth{width: 90%!important;}
-</style>
 <style>
     div.logo {
         position: relative;
@@ -191,24 +186,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="box box-solid marginBottom20">
-                        <div class="box-header with-border noleftBorder">
-                                <h3 class="box-title">See all your orders & sales</h3>
-                                <div class="pull-right box-tools">
-                                        <button type="button" class="btn btn-defualt btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-defualt btn-sm" data-widget="remove"><i class="fa fa-times"></i>
-                                        </div>
-                                </div>
-                                <div class="box-body">
-                                        <div class="row">
-                                                <div class="col-sm-12 col-md-12">
-                                                        <a href="{{ route('admin.orders.view') }}" class="btn btn-default noAllMargin">View Orders</a> &nbsp;&nbsp;&nbsp;
-                                                        <a href="{{ route('admin.sales.byorder') }}" class="btn btn-default noAllMargin">View Sales</a>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div> -->
+            
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Tutorials</h3>
@@ -228,95 +206,17 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="box box-solid">
-                <div class="box-header with-border noleftBorder">
-                        <h3 class="box-title">Dashboard</h3>
-                        
-                        <div class="pull-right box-tools">
-                                <button type="button" class="btn btn-defualt btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-defualt btn-sm" data-widget="remove"><i class="fa fa-times"></i>
-                                </div>
-                        </div>
-                        <div class="box-body">
-                                <div class="row">
-                                        <div class="col-sm-12 col-md-12">
-                                                <center> <img src="{{ asset('public/Admin/dist/img/img-upload-dummy2.svg') }}" width="300"><br><br>
-                                                <p>It's a simpler way to track your progress. latest orders, total users, top selling products, top buyers etc. here
-                                                </p>										
-                                                <a href="{{ route('admin.dashboard') }}" class="btn btn-default noAllMargin">View Dashboard</a>
-                                        </div>
-                                </div>
-                        </div>
-                </div> -->
+            
 
             </div>
         </div>
     </div>
     <!-- open popup model -->
-    <div class="modal in cstmodal" id="myModal" role="dialog" style="display: none; padding-left: 17px;">
-        <div class="modal-dialog modal-lg modalFullWidth">
-            <!-- Modal content-->
-            <div class="modal-content" style="background-image: url('{{  Config('constants.adminImgPath').'/bgimage.jpg' }}'); background-repeat: no-repeat; background-position: right;">
-                <div class="modal-header">
-                    <h4 class="modal-title">Let's set up your store -  Help us with few important questions</h4>
-                </div>
-                <div class="modal-body modalBodyScroll">
-                    <form action="#">
-                        <div class="col-md-8 noAllpadding">
-                            <div class="panel-body questionPopup">
-                                @foreach($general_setting as $set)
-                                <div class="col-md-8 noAllpadding">
-                                    <p>
-                                        <a href="javascript:;" data-placement="right"  title="{{$set->info}}" data-toggle="tooltip" class="tooltip-style">  
-                                            <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20">
-                                        </a> {{ $set->name }} </p>
-                                </div>
-                                @if($set->url_key =='default-courier')
-                                <div class="col-md-4">
-                                    <input type="checkbox" <?php echo $set->status == 1 ? 'checked' : ''; ?> data-id="{{ $set->id }}" data-url="{{ $set->url_key}}"  data-toggle="toggle" name="onOff" data-size="normal" class="toggle-two courier-services" data-on="Yes" data-off="No">
-                                </div>
-                                <div class="col-md-4 courierSelect hide">
-                                    <select class="form-control" id='courierSelect' name="courier_service">
-                                        <option value="" >Select</option>
-                                        @foreach($courier as $cour)
-                                        <option value="{{$cour->id}}">{{$cour->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @else
-                                <div class="col-md-4">
-                                    <input type="checkbox" <?php echo $set->status == 1 ? 'checked' : ''; ?> data-id="{{ $set->id }}" data-url="{{ $set->url_key}}"  data-toggle="toggle" name="onOff" data-size="normal" class="toggle-two" data-on="Yes" data-off="No">
-                                </div>
-                                @endif	
-                                <hr class="style1">
-                                @endforeach
-
-                                <div class="col-md-8 noAllpadding"><p> <a href="javascript:;" data-placement="right" title="Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." data-toggle="tooltip" class="tooltip-style"> <img src="{{  Config('constants.adminImgPath').'/info-icon.png' }}" width="20"> </a> Your products will be inclusive/exclusive of taxes? </p></div>
-                                <div class="col-md-4">
-                                    <select class="form-control" name="">
-                                        <option>Select</option>
-                                        <option value="1" selected>Inclusive</option>
-                                        <option value="0">Exclusive</option>
-                                    </select>
-                                </div>
-                                <hr class="style1">
-                            </div>
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn pull-left btn-default" id="submit" data-dismiss="modal">Set Up My Store</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
+  
 </section>
 @stop
 @section('myscripts')
 
-<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script>
 $(".toggle-two").change(function () {
     userId = $(this).attr('data-id');
