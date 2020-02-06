@@ -84,6 +84,9 @@ use App\Models\Order;
 
 <section class="main-content">
     <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Customer Reviews</h1>
+        </div>
       <div class="filter-section">
          <div class="col-md-12 noAll-padding">
            <div class="filter-full-section">
