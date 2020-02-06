@@ -8,8 +8,10 @@
         <div class="login-box">
             <div class="login-box-body">
                 <div class="col-md-12 col-lg-12">
-                    <h3>Powered By <br>                    
-                    <img src="{{ Config('constants.adminImgPath').'/veestore.png' }}" alt="Logo" style="width:200px;"></h3>
+                    <h3>Powered By <br>            
+                    <span class="logo-holder">       
+                        <img src="{{ Config('constants.adminImgPath').'/login-logo.svg' }}" alt="eStorifi logo"></h3>
+                    </span>
                 </div>
                 <p style="color: red;text-align: center;" class="errorMessage">{{ Session::get('invalidUser') }}</p>
                 <!-- <p class="login-box-msg">Sign in to start your session</p> -->
@@ -17,19 +19,20 @@
                 <form action="{{ route('check_admin_user') }}" method="post" id="adminLogin">
                     <div class="form-group has-feedback">
                         <input type="text" class="form-control" name="email" placeholder="Mobile / Email" id="email">
-                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span><p id="email_re_validate"></p>
+                        <!-- <span class="glyphicon glyphicon-envelope form-control-feedback"></span> -->
+                        <p id="email_re_validate"></p>
                     </div>
                     <div class="form-group has-feedback">
                         <input type="password" class="form-control" name="password" placeholder="Password" required="true">
-                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        <!-- <span class="glyphicon glyphicon-lock form-control-feedback"></span> -->
                     </div>
-                    <div class="row">
-                        <div class="col-xs-12 text-center">
+                    <div class="row marginBottom-sm">
+                        <div class="col-xs-12 text-center bottommargin-xs">
                             <button type="submit" class="btn btn-primary bottommargin-xs fullWidthBtn">Sign In</button>
                         </div><!-- /.col -->
                     </div>
                 </form>
-                <div class="col-md-12 orDivider-box">
+                <!-- <div class="col-md-12 orDivider-box">
                     <div class="orDivider">
                         OR
                     </div>
@@ -38,7 +41,7 @@
          <div class="col-md-12 fbBTN" >
              <div class="fbBtnfull">
             <img src="{{ Config('constants.frontendPublicImgPath').'/fb_login.jpg'}}" onclick="fbLogin()" id="fbLink" class="fb_login_btn"></div>
-        </div>
+        </div> -->
          <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('adminForgotPassword') }}" class="">Forgot Password?</a> </div>
                 <!--        <div class="social-auth-links text-center">
                           <p>- OR -</p>

@@ -82,11 +82,12 @@ use App\Models\Order;
     </ol>
 </section>
 
-<section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box">
-                @if(!empty(Session::get('message')))
+<section class="main-content">
+    <div class="grid-content">
+      <div class="filter-section">
+         <div class="col-md-12 noAll-padding">
+           <div class="filter-full-section">
+             @if(!empty(Session::get('message')))
                 <div class="alert alert-danger" role="alert">
                     {{ Session::get('message') }}
                 </div>
@@ -96,17 +97,15 @@ use App\Models\Order;
                     {{Session::get('msg')}}
                 </div>
                 @endif
-                
 
-                <div class="box-header box-tools filter-box col-md-6 noBorder rightBorder">
-                    {!! Form::open(['method' => 'get', 'route' => 'admin.reviews.view' , 'id' => 'searchForm' ]) !!}
-                    <div class="form-group col-md-6">
+                {!! Form::open(['method' => 'get', 'route' => 'admin.reviews.view' , 'id' => 'searchForm' ]) !!}
+                    <div class="form-group col-md-4">
                         {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"Order Id"]) !!}
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control ', "placeholder"=>"Order No. From"]) !!}
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control ', "placeholder"=>"Order No. To"]) !!}
                     </div>
                     <div class="clearfix"></div>
@@ -119,14 +118,13 @@ use App\Models\Order;
                         </div>
                     </div>
                     {!! Form::close() !!}
-                </div>
-
-
-                <div class="clearfix"></div>
-                <div class="dividerhr"></div>             
-                <div class="clearfix"></div>
-                <div class="box-body table-responsive">
-                    <table class="table table-striped table-hover tableVaglignMiddle">
+</div>
+         </div>
+      </div>
+    </div>
+    <div class="grid-content">
+      <div class="listing-section">
+      <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
                                 <th>Customer</th>
@@ -172,15 +170,13 @@ use App\Models\Order;
                             <?php } ?>      
                         </tbody>
                     </table>
-                </div><!-- /.box-body -->
-
-                <div class="box-footer clearfix">
+                    <div class="box-footer clearfix">
                    
 
                 </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 </section>
 <div class="modal fade" id="reviewModal" role="dialog">
     <div class="modal-dialog">
