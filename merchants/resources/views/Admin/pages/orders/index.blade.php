@@ -14,8 +14,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        All Orders ({{$ordersCount }})
-        <small></small>
+        All Orders ({{$ordersCount }}) 
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
@@ -24,24 +23,27 @@
 </section>
 
 <section class="main-content">
+
+    <div class="notification-column">           
+        @if(!empty(Session::get('message')))
+        <div class="alert alert-success" role="alert">
+            {{ Session::get('message') }}
+        </div>
+        @endif
+        @if(!empty(Session::get('messageError')))
+        <div class="alert alert-danger" role="alert">
+            {{ Session::get('messageError') }}
+        </div>
+        @endif
+    </div>
+
     <div class="grid-content">
         <div class="section-main-heading">
             <h1>Filter</h1>
         </div>
         <div class="filter-section">
             <div class="col-md-9 noAll-padding">
-                <div class="filter-left-section">
-                    @if(!empty(Session::get('message')))
-                    <div class="alert alert-success" role="alert">
-                        {{ Session::get('message') }}
-                    </div>
-                    @endif
-                    @if(!empty(Session::get('messageError')))
-                    <div class="alert alert-danger" role="alert">
-                        {{ Session::get('messageError') }}
-                    </div>
-                    @endif
-
+                <div class="filter-left-section min-height335">
                     {!! Form::open(['method' => 'get', 'route' => 'admin.orders.view' , 'id' => 'searchForm' ]) !!}
                     <div class="form-group col-md-4">
                         {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"Order Id"]) !!}
@@ -92,10 +94,10 @@
                     <div class="clearfix"></div>
                     <div class="form-group col-md-4 noBottomMargin">
                         <div class="button-filter-search col-md-4 col-xs-12 no-padding mob-marBottom15">
-                            <button type="submit" class="btn btn-primary fullWidth" style="margin-left: 0px;"> Filter</button>
+                            <button type="submit" class="btn btn-primary fullWidth noAll-margin"> Filter</button>
                         </div>
-                        <div class=" button-filter col-md-4 col-xs-12 no-padding noBottomMargin">
-                            <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn  fullWidth noMob-leftmargin">Reset</button></a>
+                        <div class="button-filter col-md-4 col-xs-12 no-padding noBottomMargin">
+                            <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn fullWidth noMob-leftmargin">Reset</button></a>
                         </div>
                     </div>
                     {!! Form::close() !!}
@@ -103,7 +105,7 @@
             </div>
 
             <div class="col-md-3 noAll-padding">
-                <div class="filter-right-section">
+                <div class="filter-right-section min-height335">
                     <div class="form-group">
                         <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default fullWidth noAll-margin">Create New Order</a>  
                     </div>
@@ -243,7 +245,6 @@
                                     <span class="caret"></span>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
-                                        <li><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i> Edit</a></li>
                                         <li><a href="#" data-ordId ="{{$order->id}}"  class="flage"><i class="fa fa-flag-o btn-plen"></i> Flag</a></li>
                                         <li><a data-orderId="{{$order->id}}" class="add-payment"><i class="fa fa-money" ></i> Add Payment</a></li>
                                         <li><a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
