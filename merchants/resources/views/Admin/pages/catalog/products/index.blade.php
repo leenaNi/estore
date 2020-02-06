@@ -44,7 +44,7 @@
         </div>
         <div class="filter-section">
         <div class="col-md-9 noAll-padding">
-            <div class="filter-left-section">
+            <div class="filter-left-section min-height335">
                 @if(!empty(Session::get('message')))
                 <div class="alert alert-danger" role="alert">
                 {{ Session::get('message') }}
@@ -129,8 +129,8 @@
                 {!! Form::close() !!}
         </div>
       </div>
-      <div class="col-md-3 noAll-padding">
-        <div class="filter-right-section">
+      <div class="col-md-3 noAll-padding ">
+        <div class="filter-right-section  min-height335">
             <?php $cat = count($rootsS) > 0 ? '' : "Cat";?>
             <a class="btn btn-default pull-right col-md-12 marginBottom15 mobAddnewflagBTN" type="button" data-toggle="modal" data-target="#addProduct{{$cat}}">Add New Product
             </a>
@@ -148,6 +148,8 @@
             </button>
             <div class="clearfix">
             </div>
+
+            <div class="clearfix">
             <select id="bulk_action" class="dropdown-toggle form-control mob-marBottom15 mobAddnewflagBTN" type="button">
                 <option value="">Bulk Action
                 </option>
@@ -165,6 +167,7 @@
                 @endif
                 <option value="update_availability">Update Availability</option>-->
             </select>
+            </div>
             @if($barcode == 1)
                     <!--                <div class="box-header col-md-3">
             <button id="print_all" class="btn btn-info pull-right col-md-12 barcode_print" type="button">Print Barcode</button>
@@ -296,17 +299,19 @@
                   @endif
                 </td>
                 @endif
-                <td>
-                  <a href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit">
-                    <i class="fa fa-pencil-square-o fa-fw">
-                    </i>
-                  </a>
-                  <!--
-                    <a href="#" class="" ui-toggle-class="" data-toggle="tooltip" title="View Product"><i class="fa fa-eye fa-fw"></i></a>-->
-                  <a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this product?')" data-toggle="tooltip" title="Delete">
-                    <i class="fa fa-trash fa-fw">
-                    </i>
-                  </a>
+                <td class="text-center">
+                <div class="actionCenter">
+                                <span><a class="btn-action-default" href="{!! route('admin.products.delete',['id'=>$product->id]) !!}">Edit</a></span> 
+                                <span class="dropdown">
+                                    <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+                                        <li><a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
+                                    </div>
+                                </span>  
+                            </div>
+                 
                   <!--                            @if($barcode == 1)  <a class="" data-id="{{ $product->id }}-{{ $product->prod_type }}" data-toggle="tooltip" title="Print"><i class="fa fa-print fa-fw"></i></a>
                     <span id="barerr{{ $product->id }}"></span> @endif-->
                 </td>
