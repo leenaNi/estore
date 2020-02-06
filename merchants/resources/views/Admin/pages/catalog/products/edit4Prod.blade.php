@@ -25,6 +25,9 @@
                 <form method="post" action="{{route('admin.products.update.combo.attach') }}"  id="searchForm">
                     <input type="hidden" name="id" value="{{$prod->id}}">
                     <input type="hidden" name="add" value="1">
+                    <div class="row" id="msg">
+
+                    </div>
                     <div class="row">
                     <div class="form-group col-md-4 ">
                         <!-- <label for="related_prod">Related Product: </label> -->
@@ -60,14 +63,16 @@
                     </div> -->
                     <div class="row">
                     <div class="form-group col-md-2 pull-right">
-                        <input type="submit" name="search" class="btn sbtn btn-block pull-right" value="Add">
+                        <button type="button" class="btn sbtn btn-block pull-right addComboProducts" >Add</button>
                     </div>
                     </div>
                     </div>
                 </form>
             </div>                
                 {!! Form::hidden("id",$prod->id) !!}
-                    <?php $combo_prods = $prod->comboproducts()->get()->toArray(); ?>
+                    <?php $combo_prods = $prod->comboproducts()->get()->toArray();
+                        $prodIds = [];
+                    ?>
                 <div class="table-responsive">
                     <table class="table comboProds table-striped b-t b-light">
                         <thead>
@@ -84,9 +89,11 @@
                             <tr>
                                 <td>
                                     <?php if(@$prd['pivot']['sub_prod_id'] && $prd['pivot']['sub_prod_id'] != null) {
-                                        $subProd = DB::table('products')->where('id', $prd['pivot']['sub_prod_id'])->first(['product']);
-                                        $prodName = str_replace(')', '', str_replace('Variant (', '', $subProd->product));
+                                            array_push($prodIds, $prd['pivot']['sub_prod_id']);
+                                            $subProd = DB::table('products')->where('id', $prd['pivot']['sub_prod_id'])->first(['product']);
+                                            $prodName = str_replace(')', '', str_replace('Variant (', '', $subProd->product));
                                         } else {
+                                            array_push($prodIds, $prd['pivot']['combo_prod_id']);
                                             $prodName = $prd['product'];
                                         }
                                     ?>
@@ -106,7 +113,7 @@
                 <div class="form-group col-sm-12 ">
                     {!! Form::button('Save & Exit',["class" => "btn btn-primary pull-right saveComboExit"]) !!}
                     {!! Form::button('Save & Continue',["class" => "btn btn-primary pull-right saveComboContine"]) !!}
-                    {!! Form::submit('Save & Next',["class" => "btn btn-primary pull-right saveComboNext"]) !!}
+                    {!! Form::button('Save & Next',["class" => "btn btn-primary pull-right saveComboNext"]) !!}
                 </div>
             </div>
             {!! Form::close() !!}
@@ -116,6 +123,9 @@
 @stop
 @section('myscripts')
 <script>
+    var prodCnt = <?=count($combo_prods);?>;
+    var prodIds = <?php echo json_encode($prodIds); ?>;
+    console.log(prodIds);
     function log( message ) {
         console.log();
         $( "#prod_log" ).removeClass("hidden");
@@ -123,9 +133,10 @@
         $( "#prod_log" ).scrollTop( 0 );
     }
     $( "#combo_prod" ).autocomplete({
-        source: "{{route('admin.products.combo.search',['id'=>$prod->id])}}",
+        source: "{{route('admin.products.combo.search',['id'=>$prod->id])}}&prodIds="+JSON.stringify(prodIds),
         minLength: 2,
         select: function( event, ui ) {
+            prodCnt++;
             // var str = "<div class='row'><div class='col-md-4 form-group'><input class='form-control' value='"+ui.item.product+"' readonly><input type='hidden' name='prod_id[]' value='" + ui.item.id + "' ></div>";
             var price = (ui.item.selling_price != 0 && ui.item.selling_price<ui.item.price)? ui.item.selling_price: ui.item.price;
             // str += "<div class='col-md-2 form-group'><input class='form-control' type='text' name='price[]' value='" + price + "' readonly></div>";
@@ -150,25 +161,49 @@
         .appendTo(ul);
     };
 
+    $('.addComboProducts').click(function () {
+        if(prodCnt<2) {
+            // alert('Add atleast 2 products!');
+            $('#msg').html('<div class="col-md-12 alert alert-danger">Add atleast 2 products!</div>');
+        } else {
+            $("#ComboProdID").submit();
+        }
+    });
+
     $(".deletecombo").click(function(e) {
         e.preventDefault;
         sync("{{ $prod->id }}", $(this).attr("id"), "{{ URL::route('admin.products.update.combo.detach') }}",$(this));
     });
 
     $(".saveComboNext").click(function() {
-        $("input[name='add']").val('2');
-        $("#ComboProdID").submit();
+        if(prodCnt<2) {
+            // alert('Add atleast 2 products!');
+            $('#msg').html('<div class="col-md-12 alert alert-danger">Add atleast 2 products!</div>');
+        } else {
+            $("input[name='add']").val('2');
+            $("#ComboProdID").submit();
+        }
     });
     $(".saveComboExit").click(function() {
-        $("input[name='add']").val('2');
-        $(".rtUrl").val("{!! route('admin.products.view')!!}");
-        $("#ComboProdID").submit();
+        if(prodCnt<2) {
+            // alert('Add atleast 2 products!');
+            $('#msg').html('<div class="col-md-12 alert alert-danger">Add atleast 2 products!</div>');
+        } else {
+            $("input[name='add']").val('2');
+            $(".rtUrl").val("{!! route('admin.products.view')!!}");
+            $("#ComboProdID").submit();
+        }
     });
     $(".saveComboContine").click(function() {
-        $("input[name='add']").val('2');
-        $(".rtUrl").val("{!! route('admin.combo.products.view',['id'=>$prod->id])!!}");
-       // $(".rtUrl").val("{!! route('admin.combo.products.view')!!}");
-        $("#ComboProdID").submit();
+        if(prodCnt<2) {
+            // alert('Add atleast 2 products!');
+            $('#msg').html('<div class="col-md-12 alert alert-danger">Add atleast 2 products!</div>');
+        } else {
+            $("input[name='add']").val('2');
+            $(".rtUrl").val("{!! route('admin.combo.products.view',['id'=>$prod->id])!!}");
+            // $(".rtUrl").val("{!! route('admin.combo.products.view')!!}");
+            $("#ComboProdID").submit();
+        }
     });
     $(".comboProds input[type='checkbox']").click(function() {
         if ($(this).prop("checked")) {
@@ -192,6 +227,7 @@
 
     $("table").delegate(".subprodid", "change", function () {
         subprdid = $(this).val();
+        prodIds.push(subprdid);
         subp = $(this);
         parentprodid = subp.parent().parent().attr('id');
         removeError(subp);
@@ -257,6 +293,8 @@
             } else {
                 qty = prodSel.parent().parent().find('.qty').val();
                 parentprdid = prodid;
+                prodIds.push(prodid);
+                console.log(prodIds);
                 //console.log(parentprdid);exite;
                 $.post("{{route('admin.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1}, function (price) {
                     //console.log(JSON.stringify(price));

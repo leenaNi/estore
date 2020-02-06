@@ -22,7 +22,7 @@ class Offer extends \Eloquent
 
     public function products()
     {
-        return $this->belongsToMany('App\Models\Product', 'offers_products', 'offer_id', 'prod_id')->withPivot('type', 'qty');
+        return $this->belongsToMany('App\Models\Product', 'offers_products', 'offer_id', 'prod_id')->withPivot('id', 'type', 'qty');
     }
 
     public function userspecific()
