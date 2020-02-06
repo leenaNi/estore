@@ -1,7 +1,7 @@
 @extends('Admin.layouts.default')
 
 @section('mystyles')
-<link rel="stylesheet" href="{{ Config('constants.adminPlugins').'/daterangepicker/daterangepicker-bs3.css' }}">
+<link rel="stylesheet" href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css">
 <link rel="stylesheet" href="{{  Config('constants.adminPlugins').'/bootstrap-multiselect/bootstrap-multiselect.css' }}">
 <style type="text/css">
 .multiselect-container {width: 100% !important;}
@@ -61,9 +61,15 @@
                     <div class="form-group col-md-4">
                         {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control ', "placeholder"=>"Maximum Amount"]) !!}
                     </div>
+
                     <div class="form-group col-md-4">
-                        {!! Form::text('date',Input::get('date'), ["class"=>'form-control  date', "placeholder"=>"Order Date"]) !!}
-                    </div> 
+                        <div class="input-group date">
+                            {!! Form::text('date',Input::get('date'), ["class"=>'form-control date', "placeholder"=>"Order Date"]) !!}
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div> 
+                    </div>  
 
                     @if($order_status->count())
                     @php echo Input::get('searchStatus[]'); @endphp
@@ -85,11 +91,11 @@
                     @endif
                     <div class="clearfix"></div>
                     <div class="form-group col-md-4 noBottomMargin">
-                        <div class=" button-filter-search col-md-6 col-xs-12 no-padding mob-marBottom15">
-                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Filter</button>
+                        <div class="button-filter-search col-md-4 col-xs-12 no-padding mob-marBottom15">
+                            <button type="submit" class="btn btn-primary fullWidth" style="margin-left: 0px;"> Filter</button>
                         </div>
-                        <div class=" button-filter col-md-5 col-xs-12 no-padding noBottomMargin">
-                            <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn form-control noMob-leftmargin">Reset</button></a>
+                        <div class=" button-filter col-md-4 col-xs-12 no-padding noBottomMargin">
+                            <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn  fullWidth noMob-leftmargin">Reset</button></a>
                         </div>
                     </div>
                     {!! Form::close() !!}
@@ -160,7 +166,7 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>All Orders ({{$ordersCount }})</h1>
+            <h1>All Orders  <span class="listing-counter">{{$ordersCount }}</span> </h1>
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">
@@ -169,17 +175,16 @@
                         <tr>
                             <th class="text-center"><input type="checkbox" id="checkAll" /></th>
                             <th class="text-center">@sortablelink ('id', 'Order Id')</th>
-                            <th class="text-center">Date</th>
-                            <th class="text-left">Name</th>
-                            <th class="text-center">Mobile</th>
+                            <th class="text-left">Customer</th>
+                            <th class="text-right">Order Date</th> 
                             <th class="text-center">Order Status</th>
                             <th class="text-center">Payment Status</th>
                             <th class="text-right">@sortablelink ('pay_amt', 'Amount')</th>
-                            <th class="text-right">Paid Amount</th> 
+                            <!-- <th class="text-right">Paid Amount</th>  -->
                             @if($feature['courier-services'] == 1)
 <!--                                <th>Courier Service</th>-->
                             @endif
-                            <th class="text-right">Action</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -189,23 +194,27 @@
                         <tr>
                             <td class="text-center"><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /></td>
                             <td class="text-center"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
-                            <td class="text-center">{{ date('d-M-Y',strtotime($order->created_at)) }}</td>
-                            <td class="text-left">{{ @$order->users->firstname }} {{ @$order->users->lastname }} </td>
-                            <td class="text-center">{{ @$order->users->telephone }}</td>
+                            <td class="text-left"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"><span class="list-dark-color">{{ @$order->users->firstname }} {{ @$order->users->lastname }} </span></a><div class="clearfix"></div>
+                                <span class="list-light-color list-small-font">{{ @$order->users->telephone }}</span>
+                            </td>
+                            <td class="text-right">{{ date('d-M-Y',strtotime($order->created_at)) }}
+                                <div class="clearfix"></div>
+                                <span class="list-light-color list-small-font">8:30 PM</span>
+                            </td> 
                             <td class="text-center"><span class="alertWarning">{{ @$order->orderstatus['order_status']  }}</span></td>
-                            <td class="text-center">{{ @$order->paymentstatus['payment_status'] }}</td>
+                            <td class="text-center"><span class="alertWarning">{{ @$order->paymentstatus['payment_status'] }}</span></td>
                             <td class="text-right">@if(@$order->prefix)
                                 <span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
                                 @else
                                 <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
                                 @endif
                             </td>
-                            <td class="text-right">
+                            <!-- <td class="text-right">
                                 @if(@$order->prefix)
                                 <span class="currency-sym"></span> {{ number_format((@$order->amt_paid  * Session::get('currency_val')), 2) }}
                                 @endif
                             </td>
-                           <!--  <td>@if(@$order->order_source==1)
+                            <td>@if(@$order->order_source==1)
                                 Mall
                                 @elseif(@$order->order_source==2)
                                 {{ Session::get("storeName")}}
@@ -226,27 +235,21 @@
                             @if($feature['courier-services'] == 1)
 <!--                                   <td>{{ ($order->courier != 0)?$order->getcourier['name']:'-' }}</td>-->
                             @endif
-                            <td class="text-center"> 
-                                <!-- <div class='dropdown'>
-                                    <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown'><span class="caret"></span></button>
-                                    <ul class='dropdown-menu'>
+                            <td class="text-center">  
+                            <div class="actionCenter">
+                                <span><a class="btn-action-default" href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">Edit</a></span> 
+                                <span class="dropdown">
+                                    <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
                                         <li><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i> Edit</a></li>
                                         <li><a href="#" data-ordId ="{{$order->id}}"  class="flage"><i class="fa fa-flag-o btn-plen"></i> Flag</a></li>
                                         <li><a data-orderId="{{$order->id}}" class="add-payment"><i class="fa fa-money" ></i> Add Payment</a></li>
                                         <li><a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
-                                    </ul>
-                                </div> -->
-                            <div class="dropdown pull-right">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                    <li><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i> Edit</a></li>
-                                    <li><a href="#" data-ordId ="{{$order->id}}"  class="flage"><i class="fa fa-flag-o btn-plen"></i> Flag</a></li>
-                                    <li><a data-orderId="{{$order->id}}" class="add-payment"><i class="fa fa-money" ></i> Add Payment</a></li>
-                                    <li><a href="{!! route('admin.orders.delete',['id'=>$order->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
-                                </div>
-                            </div>  
+                                    </div>
+                                </span>  
+                            </div>
                             </td>
                         </tr>
                         @endforeach
@@ -392,7 +395,7 @@ echo $orders->appends(Input::except('page'))->render();
 </div> 
 @stop
 @section('myscripts')
-<script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
+<script src="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script src="{{  Config('constants.adminPlugins').'/bootstrap-multiselect/bootstrap-multiselect.js' }}"></script>
 <script>
 $(document).ready(function() {
