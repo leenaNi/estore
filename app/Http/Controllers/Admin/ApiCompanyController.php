@@ -131,15 +131,59 @@ class ApiCompanyController extends Controller
                         $brandIds[] = $brandIdsData->brand_id;
                     }
 
-                    // Get compnay ids
-                    $companyIdsResult = DB::table('company')->join('brand', 'company.id', '=', 'brand.company_id')
+                    // Get company ids
+                    $companyResult = DB::table('company')->join('brand', 'company.id', '=', 'brand.company_id')
                     ->whereIn('brand.id',$brandIds)
-                    ->groupBy('company.id')
-                    ->get(['company.id','company.name','company.logo']);
-
-                    if(count($companyIdsResult) > 0)
+                    ->get(['company.id as company_id','company.name as company_name','company.logo as company_logo','brand.id as brand_id','brand.name as brand_name','brand.logo as brand_logo']);
+                    if(count($companyResult) > 0)
                     {
+                        $tempId = 0;
+                        $i = 0;
+                        $j = 0;
+                        $companyArray = array();
+                        $brandArray = array();
+                        foreach($companyResult as $companyData)
+                        {
+                            $companyId = $companyData->company_id;
+                            $companyName = $companyData->company_name;
+                            $companyLogo = $companyData->company_logo;
+                            $brandId = $companyData->brand_id;
+                            $brandName = $companyData->brand_name;
+                            $brandLogo = $companyData->brand_logo;
+                            
+                            if($tempId > 0 && $companyId != $tempId)
+                            {
+                                $companyArray[$i]['brand'] = $brandArray;
+                                $brandArray = array();
+                                $i++;
+                                $j = 0;
+                                $companyArray[$i]['compnay_id'] = $companyId;
+                                $companyArray[$i]['company_name'] = $companyName;
+                                $companyArray[$i]['company_logo'] = $companyLogo;
+                            }
+                            else
+                            {
+                                if($tempId == 0)
+                                {
+                                    $companyArray[$i]['compnay_id'] = $companyId;
+                                    $companyArray[$i]['company_name'] = $companyName;
+                                    $companyArray[$i]['company_logo'] = $companyLogo;
+                                }
+                            }
+                            
+                            $brandArray[$j]['brand_id'] = $brandId;
+                            $brandArray[$j]['brand_name'] = $brandName;
+                            $brandArray[$j]['brand_logo'] = $brandLogo;
+                            $j++;
+                            $tempId = $companyId;
+                            
+                        } // End foreach
                         $isError = 0;
+                        
+                        if(!empty($brandArray))
+                        {
+                            $companyArray[$i]['brand'] = $brandArray;
+                        }
                     }
                     else
                     {
@@ -162,7 +206,7 @@ class ApiCompanyController extends Controller
             }
             else if($isError == 0)
             {
-                return response()->json(["status" => 1, 'result' => $companyIdsResult]);
+                return response()->json(["status" => 1, 'result' => $companyArray]);
             }
             else
             {
