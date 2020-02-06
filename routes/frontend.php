@@ -57,7 +57,8 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/contact', ['as' => 'contact', 'uses' => 'HomeController@contactUs']);
     Route::any('/contact-send', ['as' => 'contactSend', 'uses' => 'HomeController@contactSend']);
     Route::any('/faqs', ['as' => 'faqs', 'uses' => 'HomeController@faqS']);
-   Route::any('/send-otp', ['as' => 'sendOpt', 'uses' => 'HomeController@sendOtp']);
+    Route::any('/check-storename', ['as' => 'checkStorename', 'uses' => 'HomeController@checkStorename']);
+    Route::any('/send-otp', ['as' => 'sendOpt', 'uses' => 'HomeController@sendOtp']);
     Route::any('/check-otp', ['as' => 'checkOtp', 'uses' => 'HomeController@checkOtp']);
     Route::any('/not-found', ['as' => 'not-found', 'uses' => 'HomeController@notFound']);
     

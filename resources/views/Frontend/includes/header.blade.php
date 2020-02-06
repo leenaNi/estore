@@ -57,6 +57,14 @@
               		<li><a href="#">Drop Down 5</a></li>
             	</ul>
           	</li>
+			  @if(Session::get('merchantid'))
+                     
+                        @if(Session::get('merchantstorecount') <=0)
+                    <li><a href="{{ route('veestoresLogout') }}" ><div>Logout</div></a></li>
+                        @endif
+                    @else 
+                    <li class="loginLink"><a href="#" data-toggle="modal" data-target=".loginpop" data-backdrop="static" data-keyboard="false"><div>Login</div></a></li>
+                    @endif
         </ul>
 	  </nav><!-- .main-nav -->
 	  <div class="clearfix"></div>

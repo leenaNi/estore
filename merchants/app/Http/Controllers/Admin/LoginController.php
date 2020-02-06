@@ -79,10 +79,12 @@ class LoginController extends Controller
                 //if (Auth::attempt($userData, true)) {
                 // dd($userData);
                 $user = User::with('roles')->find($userDetails->id);
+                $store = Store::find($user->store_id);
                 Session::put('loggedinAdminId', $userDetails->id);
                 Session::put('profile', $userDetails->profile);
                 Session::put('loggedin_user_id', $user->id);
                 Session::put('login_user_type', $user->user_type);
+                Session::put('merchantid', $store->merchant_id);
                 $roles = $user->roles()->first();
                 $r = Role::find($roles->id);
                 $per = $r->perms()->get()->toArray();

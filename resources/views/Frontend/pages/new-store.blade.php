@@ -31,10 +31,10 @@
 										<div class="form-group">
 											<label>Business Name <!--<span class="mand">*</span>--></label>
 											<div class="input-group">
-												<input type="text" class="form-control" name="store_name" id="store_name" placeholder="Business Name">
+												<input type="text" class="form-control" name="store_name" id="store_name" placeholder="Business Name" onBlur="checkStorename(this.value)">
 												<span>
-													<img src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success"/ class="success-tick">
-													<img src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success"/ class="error-mark hidden">
+													<img id="successimg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success"/ class="success-tick hidden">
+													<img id="errorimg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success"/ class="error-mark hidden">
 												</span>
 												<input type="hidden" class="form-control custom-formControl required checkAvailability"  value="" name="domain_name" id="domain_name" placeholder="Domain Name (Cannot be changed later)">
 											</div>
@@ -54,8 +54,8 @@
 													<input type="text" name="phone" class="form-control" id="mobNumber" placeholder="Mobile Number">
 													
 													<span>
-														<img src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success" class="success-tick hidden">
-														<img src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success" class="error-mark">
+														<img id="mobsmsg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success" class="success-tick hidden">
+														<img id="mobemsg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success" class="error-mark hidden">
 													</span>
 												</div>
 											</div>
@@ -137,7 +137,7 @@
 												<input type="tel" class="form-control col" id="otp4" placeholder="">
 												
 											</div>
-											<span class="error otperr">Please enter valid OTP</span>
+											<span class="error otperr" style="display:none">Please enter valid OTP</span>
 										</div>
 										
 									</div>
@@ -154,6 +154,27 @@
 		</div>
 	</section>
 <script>
+function checkStorename(storename){
+	//alert(storename);
+	$.ajax({
+            type: 'POST',
+            url: "{{route('checkStorename')}}",
+            data: {storename: storename},
+            success: function (response) {
+                console.log('@@@@' + response['status']);
+                if (response['status'] == 'success') {
+					$("#business_name_err").hide();  $("#errorimg").hide();
+					$("#successimg").show();
+                } else if (response['status'] == 'fail') {
+					$("#business_name_err").show().html(response['msg']);
+					$("#errorimg").show();$("#successimg").hide();
+                }
+            },
+            error: function (e) {
+                console.log(e.responseText);
+            }
+        });
+}
 $("#nextstep").click(function(){
     if($("input[name=store_name]").val() == '' && $("input[name=phone]").val() == '')
     {
@@ -176,7 +197,6 @@ $("#nextstep").click(function(){
         var country=$('#country_code').val();
         var mobile= $("input[name=phone]").val();
 		$("#mobno").html(mobile);
-        //  alert(country + '' +mobile);
         $.ajax({
             type: 'POST',
             url: "{{route('sendOpt')}}",
@@ -184,8 +204,9 @@ $("#nextstep").click(function(){
             success: function (response) {
                 console.log('@@@@' + response['otp']);
                 if (response['status'] == 'success') {
-                        $('.otperr').html('<label class="error">' + response['msg'] + '</label>');
+                        //$("#mobsmsg").show();
                 } else if (response['status'] == 'fail') {
+					//$("#mobemsg").show();
                 }
             },
             error: function (e) {
@@ -222,8 +243,6 @@ $('#store_name').keyup(function(){
     });
 
 $("#registerAndSubmit").on("click", function () {
-        $(".otperr").find("label").remove();
-        $(".otperr").removeClass('error');
         var otp = $("#otp1").val()+$("#otp2").val()+$("#otp3").val()+$("#otp4").val();
         console.log(otp);
         //console.log("otp" +otp);
@@ -235,10 +254,8 @@ $("#registerAndSubmit").on("click", function () {
                     if (response==otp) {
                         $("#createStore").submit();
                     } else  {
-                        $(".otperr").find("label").remove();
-                        $(".otperr").removeClass('error');
-                        //$("input[name='input_otp']").addClass('error');
-                        $("input[name='input_otp']").after("<label class='error'>Invalid OTP. </label>");
+                        $(".otperr").show().css("color","red");
+                        
                     }
                 },
                 error: function (e) {

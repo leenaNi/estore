@@ -483,59 +483,6 @@ class HomeController extends Controller
                     $decodeVal['prefix'] = $prefix;
                     $decodeVal['country_code'] = $country_code;
 
-
-                    if ($storeType == 'merchant') {
-                        if (!empty($themeid)) {
-                            $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
-                            $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
-                            $decodeVal['themeid'] = $themeid;
-                            $decodeVal['themedata'] = $themedata;
-                            $decodeVal['currencyId'] = @HasCurrency::find($currency)->iso_code;
-                            $decodeVal['store_version'] = @$storeVersion;
-                            //$newJsonString = json_encode($decodeVal);
-                        }
-                        /*$fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
-                        fwrite($fp, $newJsonString);
-                        fclose($fp);*/
-
-                        // $banner = json_decode((StoreTheme::where("id", $themeid)->first()->banner_image), true);
-                       
-                        // if (!empty($banner)) {
-                        //     $homeLayout = DB::table("layout")->where('url_key', 'LIKE', 'home-page-slider')->where('store_id', $storeId)->first();
-                        //     foreach ($banner as $image) {
-                        //         $homePageSlider = [];
-                        //         $file = $image['banner'];
-                        //         $homePageSlider['layout_id'] = $homeLayout->id;
-                        //         $homePageSlider['name'] = $image['banner_text'];
-                        //         $homePageSlider['is_active'] = $image['banner_status'];
-                        //         $homePageSlider['image'] = $image['banner'];
-                        //         $homePageSlider['sort_order'] = $image['sort_order'];
-                        //         $source = public_path() . '/public/admin/themes/';
-                        //         $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                        //         copy($source . $file, $destination . $file);
-                        //         DB::table("has_layouts")->insert($homePageSlider);
-                        //     }
-                        // }
-                        // $threeBoxes = json_decode((Category::where("id", $catid)->first()->threebox_image), true);
-                       
-                        // if (!empty($threeBoxes)) {
-                        //     $boxLayout = DB::table("layout")->where('url_key', 'LIKE', 'home-page-3-boxes')->where('store_id', $storeId)->first();
-                        //     foreach ($threeBoxes as $image) {
-                        //         $homePageSlider = [];
-                        //         $file = $image['banner'];
-                        //         $homePageSlider['layout_id'] = $boxLayout->id;
-                        //         $homePageSlider['name'] = $image['banner_text'];
-                        //         $homePageSlider['is_active'] = $image['banner_status'];
-                        //         $homePageSlider['image'] = $image['banner'];
-                        //         $homePageSlider['sort_order'] = $image['sort_order'];
-                        //         $source = public_path() . '/public/admin/themes/';
-                        //         $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                        //         copy($source . $file, $destination . $file);
-                        //         DB::table("has_layouts")->insert($homePageSlider);
-                        //     }
-                        // }
-                    } // end storetype check if
-
                     $newJsonString = json_encode($decodeVal);
 
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
@@ -595,6 +542,7 @@ class HomeController extends Controller
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
+                    Session::flush();
                     return "Extracted Successfully to $path";
                 } else {
                     return "Error Encountered while extracting the Zip";
@@ -1142,7 +1090,6 @@ class HomeController extends Controller
         $mobile = Input::get("mobile");
         $otp = rand(1000, 9999);
         Session::put('otp', $otp);
-
         if ($mobile) {
             $msgOrderSucc = "Your one time password is. " . $otp . " Team eStorifi";
             Helper::sendsms($mobile, $msgOrderSucc, $country);
@@ -1160,6 +1107,17 @@ class HomeController extends Controller
             return $otp;
         } else {
             return 2;
+        }
+    }
+
+    public function checkStorename()
+    {
+        $storename = strtolower(Input::get("storename"));
+        $storedata = Store::where(strtolower("store_name"),$storename)->first();
+        if (empty($storedata)) {
+            return $data = ["status" => "success", "msg" => "Correct Business Name"];
+        } else {
+            return $data = ["status" => "fail", "msg" => "Business Name Already Exists"];
         }
     }
 }
