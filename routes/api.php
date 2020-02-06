@@ -220,8 +220,15 @@ Route::group(['namespace' => 'Admin'], function () {
            
         });
        
+        Route::group(['prefix' => 'company'], function() {
+            Route::get('/merchant-company', ["as" => "admin.company.getMerchantCompany", "uses" => "ApiCompanyController@getMerchantCompanyList"]);
+            Route::get('/all-company', ["as" => "admin.company.getCompany", "uses" => "ApiCompanyController@getAllCompany"]);
+            Route::get('/all-brand', ["as" => "admin.company.getBrand", "uses" => "ApiCompanyController@getAllBrand"]);
+            Route::get('/company-detail', ["as" => "admin.company.companyDetail", "uses" => "ApiCompanyController@getCompanyDetail"]);
+            Route::get('/brand-detail', ["as" => "admin.company.brandDetail", "uses" => "ApiCompanyController@getBrandDetail"]);
+            
+            
+        });
         
    });
-
-
 });
