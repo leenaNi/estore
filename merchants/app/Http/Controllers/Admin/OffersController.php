@@ -59,7 +59,19 @@ class OffersController extends Controller
         $offerNew->end_date = Input::get('end_date');
         $offerNew->user_specific = Input::get('user_specific');
         $offerNew->status = Input::get('status');
+        $offerNew->preference = Input::get('preference');
         $offerNew->store_id = Session::get('store_id');
+
+        if (Input::hasFile('c_image')) {
+            $destinationPath = Config('constants.offerImgUploadPath') . "/";
+            $fileName = date("dmYHis") . "." . Input::File('c_image')->getClientOriginalExtension();
+            $upload_success = Input::File('c_image')->move($destinationPath, $fileName);
+        } else {
+            $fileName = (!empty(Input::get('c_image')) ? Input::get('c_image') : '');
+        }
+
+        $offerNew->offer_image = $fileName;
+
         $offerNew->save();
 
         // if (!empty(Input::get('category_id')))
@@ -111,6 +123,7 @@ class OffersController extends Controller
         if (Input::get('user_specific') == 0) {
             $offerNew->userspecific()->sync([]);
         }
+        
 
         return redirect()->route('admin.offers.view');
 

@@ -235,14 +235,38 @@ foreach ($arr as $a) {
                     </div>
                     <div class="line line-dashed b-b line-lg pull-in"></div>
                     <div class="form-group">
+                        {!!Form::label('preference','Preference',['class'=>'col-sm-2 control-label']) !!}
+                        <div class="col-sm-10">
+                            {!! Form::number('preference',null,["class"=>'form-control',"placeholder"=>"Select Preference"]) !!}
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-group">
                         {!!Form::label('status','Status ?',['class'=>'col-sm-2 control-label']) !!}
                         <div class="col-sm-10">
                             {!! Form::select('status',["0" => "Disable", "1" => "Enable"],null,["class"=>'form-control']) !!}
                         </div>
                     </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>                    
+                    <div class="form-group">
+                        {!!Form::label('image','Offer Image',['class'=>'col-sm-2 control-label']) !!}
+                        <div class="col-md-10">
+                            <input type="file" name="c_image" id="c_image">
+                        </div>
+                    </div>
+                    <?php if (!empty($offer->offer_image)) {?>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-md-6">
+                                <img height="150" width="150" src="{{asset('public/Admin/uploads/offers/').'/'.$offer->offer_image}}" class="img-responsive"   >
+                                <a href="javascript:void();" class="deleteImg" data-value="{{ $offer->offer_image }}"><span class="label label-danger label-mini">Delete</span></a>
+                            </div>
+                        </div>
+                        <?php } ?>
+                    {!! Form::hidden('c_image', $offer->offer_image) !!}
                     <?php
-$offerProducts = $offer->products()->whereIn('type', [1, 0])->get();
-?>
+                    $offerProducts = $offer->products()->whereIn('type', [1, 0])->get();
+                    ?>
                     @if(count($offerProducts) > 0)
                     <div class="row">
                     <div class="col-md-2"><label class="control-label text-right" style="float: right;">Product Group</label></div>
@@ -388,6 +412,17 @@ $offerProducts1 = $offer->products()->where('type', 2)->get();
             return $(this).val();
         }).toArray();
         $("input[name='CategoryIds']").val(ids);
+    });
+
+    $("a.deleteImg").click(function () {
+        var imgs = $("input[name='c_image']").val();
+        var r = confirm("Are You Sure You want to Delete this Image?");
+        if (r == true) {
+            $("input[name='c_image']").val('');
+            $(this).parent().hide();
+        } else {
+
+        }
     });
 
     $('#add-product').click(function () {
