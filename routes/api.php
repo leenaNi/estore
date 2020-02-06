@@ -84,49 +84,49 @@ Route::group(['namespace' => 'Admin'], function () {
         });   
         
         Route::group(['prefix' => 'products'], function () {
-          Route::get('/', ['as' => 'admin.apiprod.view', 'uses' => 'ApiProductController@index']);
-          Route::get('/categoryListing', ['as' => 'admin.apiprod.add', 'uses' => 'ApiProductController@categoryListing']);
-          Route::post('/save', ['as' => 'admin.apiprod.save', 'uses' => 'ApiProductController@save']);
-          Route::post('/save-config-prod', ['as' => 'admin.apiprod.saveConfigProd', 'uses' => 'ApiProductController@saveConfigProd']);
-          Route::post('/get-config-product', ['as' => 'admin.apiprod.getConfigProduct', 'uses' => 'ApiProductController@getConfigProduct']);
-          Route::post('/edit-product', ['as' => 'admin.apiprod.editProduct', 'uses' => 'ApiProductController@editProduct']);
-          Route::post('/save-edit-variant', ['as' => 'admin.apiprod.saveEditVariant', 'uses' => 'ApiProductController@saveEditVariant']);
-          Route::post('/delete', ['as' => 'admin.apiprod.delete', 'uses' => 'ApiProductController@delete']);
-          Route::post('/delete-variant', ['as' => 'admin.apiprod.deleteVariant', 'uses' => 'ApiProductController@deleteVariant']);
-          Route::post('/calculate-tax', ['as' => 'admin.apiprod.calculateTaxWithDis', 'uses' => 'ApiProductController@calculateTaxWithDis']);
-          Route::get('/prodSeo', ['as' => 'admin.apiseo.view', 'uses' => 'ApiProductController@prodSeo']);
-          Route::post('/prodSaveSeo', ['as' => 'admin.apiseo.save', 'uses' => 'ApiProductController@prodSaveSeo']);
-          Route::get('/catSeo', ['as' => 'admin.apicat.catSeo', 'uses' => 'ApiProductController@catSeo']);
-          Route::post('/catSeoSave', ['as' => 'admin.apicat.saveCatSeo', 'uses' => 'ApiProductController@catSeoSave']);
+            Route::get('/', ['as' => 'admin.apiprod.view', 'uses' => 'ApiProductController@index']);
+            Route::get('/categoryListing', ['as' => 'admin.apiprod.add', 'uses' => 'ApiProductController@categoryListing']);
+            Route::post('/save', ['as' => 'admin.apiprod.save', 'uses' => 'ApiProductController@save']);
+            Route::post('/save-config-prod', ['as' => 'admin.apiprod.saveConfigProd', 'uses' => 'ApiProductController@saveConfigProd']);
+            Route::post('/get-config-product', ['as' => 'admin.apiprod.getConfigProduct', 'uses' => 'ApiProductController@getConfigProduct']);
+            Route::post('/edit-product', ['as' => 'admin.apiprod.editProduct', 'uses' => 'ApiProductController@editProduct']);
+            Route::post('/save-edit-variant', ['as' => 'admin.apiprod.saveEditVariant', 'uses' => 'ApiProductController@saveEditVariant']);
+            Route::post('/delete', ['as' => 'admin.apiprod.delete', 'uses' => 'ApiProductController@delete']);
+            Route::post('/delete-variant', ['as' => 'admin.apiprod.deleteVariant', 'uses' => 'ApiProductController@deleteVariant']);
+            Route::post('/calculate-tax', ['as' => 'admin.apiprod.calculateTaxWithDis', 'uses' => 'ApiProductController@calculateTaxWithDis']);
+            Route::get('/prodSeo', ['as' => 'admin.apiseo.view', 'uses' => 'ApiProductController@prodSeo']);
+            Route::post('/prodSaveSeo', ['as' => 'admin.apiseo.save', 'uses' => 'ApiProductController@prodSaveSeo']);
+            Route::get('/catSeo', ['as' => 'admin.apicat.catSeo', 'uses' => 'ApiProductController@catSeo']);
+            Route::post('/catSeoSave', ['as' => 'admin.apicat.saveCatSeo', 'uses' => 'ApiProductController@catSeoSave']);
 
         }); 
         
           Route::group(['prefix' => 'order'], function () {
-          Route::get('/', ['as' => 'admin.apiorder.view', 'uses' => 'ApiOrderController@index']);
-          Route::post('/checkOut', ['as' => 'admin.apiorder.checkout', 'uses' => 'ApiOrderController@checkOut']);
-          Route::any('/saveOrder', ['as' => 'admin.apiorder.saveOrder', 'uses' => 'ApiOrderController@saveOrder']);
-          Route::any('/checkOutSaveOrder', ['as' => 'admin.apiorder.checkOutSaveOrder', 'uses' => 'ApiOrderController@checkOutSaveOrder']);
-          Route::any('/returnOrder', ['as' => 'admin.apiorder.returnOrder', 'uses' => 'ApiOrderController@returnOrder']);
-          Route::any('/editReturnOrder', ['as' => 'admin.apiorder.editReturnOrder', 'uses' => 'ApiOrderController@editReturnOrder']);
-          Route::any('/cancelOrder', ['as' => 'admin.apiorder.cancelOrder', 'uses' => 'ApiOrderController@cancelOrder']);
-          Route::any('/order-success-mail', ['as' => 'admin.apiorder.orderSuccessEmail', 'uses' => 'ApiOrderController@orderSuccessEmail']);
-          Route::post('/update-payment-status', ['as' => 'admin.apiorder.updatePaymentStatus', 'uses' => 'ApiOrderController@updatePaymentStatus']);
-          Route::post('/update-order-status', ['as' => 'admin.apiorder.updateOrderStatus', 'uses' => 'ApiOrderController@updateOrderStatus']);
-          Route::any('/cal-aditional-charge', ['as' => 'admin.apiorder.calAditionalCharge', 'uses' => 'ApiOrderController@calAditionalCharge']);
+            Route::get('/', ['as' => 'admin.apiorder.view', 'uses' => 'ApiOrderController@index']);
+            Route::post('/checkOut', ['as' => 'admin.apiorder.checkout', 'uses' => 'ApiOrderController@checkOut']);
+            Route::any('/saveOrder', ['as' => 'admin.apiorder.saveOrder', 'uses' => 'ApiOrderController@saveOrder']);
+            Route::any('/checkOutSaveOrder', ['as' => 'admin.apiorder.checkOutSaveOrder', 'uses' => 'ApiOrderController@checkOutSaveOrder']);
+            Route::any('/returnOrder', ['as' => 'admin.apiorder.returnOrder', 'uses' => 'ApiOrderController@returnOrder']);
+            Route::any('/editReturnOrder', ['as' => 'admin.apiorder.editReturnOrder', 'uses' => 'ApiOrderController@editReturnOrder']);
+            Route::any('/cancelOrder', ['as' => 'admin.apiorder.cancelOrder', 'uses' => 'ApiOrderController@cancelOrder']);
+            Route::any('/order-success-mail', ['as' => 'admin.apiorder.orderSuccessEmail', 'uses' => 'ApiOrderController@orderSuccessEmail']);
+            Route::post('/update-payment-status', ['as' => 'admin.apiorder.updatePaymentStatus', 'uses' => 'ApiOrderController@updatePaymentStatus']);
+            Route::post('/update-order-status', ['as' => 'admin.apiorder.updateOrderStatus', 'uses' => 'ApiOrderController@updateOrderStatus']);
+            Route::any('/cal-aditional-charge', ['as' => 'admin.apiorder.calAditionalCharge', 'uses' => 'ApiOrderController@calAditionalCharge']);
           
         });  
         
           Route::group(['prefix' => 'systemUser'], function () {
-          Route::get('/', ['as' => 'admin.apiuser.view', 'uses' => 'ApiUserController@index']);
-          Route::get('/roles', ['as' => 'admin.apiuser.roles', 'uses' => 'ApiUserController@AddEdit']);
-          Route::post('/saveAddEdit', ['as' => 'admin.apiuser.saveAddEdit', 'uses' => 'ApiUserController@saveAddEdit']);
-          Route::post('/deleteSysUser', ['as' => 'admin.apiuser.deleteSysUser', 'uses' => 'ApiUserController@deleteSystemUser']);   
-          Route::get('/getLoyalty', ['as' => 'admin.apiuser.getLoyalty', 'uses' => 'ApiUserController@getLoyalty']);
-          Route::get('/getReferral', ['as' => 'admin.apiuser.getReferral', 'uses' => 'ApiUserController@getReferral']);
-          Route::post('/updateReferral', ['as' => 'admin.apiuser.updateReferral', 'uses' => 'ApiUserController@updateReferral']);
-          Route::post('/customerAddEdit', ['as' => 'admin.apiuser.customerAddEdit', 'uses' => 'ApiUserController@customerAddEdit']);
-          Route::post('/delete-customer', ['as' => 'admin.apiuser.deleteCustomer', 'uses' => 'ApiUserController@deleteCustomer']);
-          Route::get('/getCustomer', ['as' => 'admin.apiuser.getCustomer', 'uses' => 'ApiUserController@getCustomer']);
+            Route::get('/', ['as' => 'admin.apiuser.view', 'uses' => 'ApiUserController@index']);
+            Route::get('/roles', ['as' => 'admin.apiuser.roles', 'uses' => 'ApiUserController@AddEdit']);
+            Route::post('/saveAddEdit', ['as' => 'admin.apiuser.saveAddEdit', 'uses' => 'ApiUserController@saveAddEdit']);
+            Route::post('/deleteSysUser', ['as' => 'admin.apiuser.deleteSysUser', 'uses' => 'ApiUserController@deleteSystemUser']);   
+            Route::get('/getLoyalty', ['as' => 'admin.apiuser.getLoyalty', 'uses' => 'ApiUserController@getLoyalty']);
+            Route::get('/getReferral', ['as' => 'admin.apiuser.getReferral', 'uses' => 'ApiUserController@getReferral']);
+            Route::post('/updateReferral', ['as' => 'admin.apiuser.updateReferral', 'uses' => 'ApiUserController@updateReferral']);
+            Route::post('/customerAddEdit', ['as' => 'admin.apiuser.customerAddEdit', 'uses' => 'ApiUserController@customerAddEdit']);
+            Route::post('/delete-customer', ['as' => 'admin.apiuser.deleteCustomer', 'uses' => 'ApiUserController@deleteCustomer']);
+            Route::get('/getCustomer', ['as' => 'admin.apiuser.getCustomer', 'uses' => 'ApiUserController@getCustomer']);
   
         }); 
         
@@ -142,7 +142,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/check-user-discount', array('as' => 'admin.coupons.checkUserdiscount', 'uses' => 'ApiCouponController@checkUserdiscount'));
             Route::post('/revert-user-discount', array('as' => 'admin.coupons.revertUserdiscount', 'uses' => 'ApiCouponController@revertUserdiscount'));
             Route::post('/tax-re-calculate', array('as' => 'admin.coupons.taxReCalculate', 'uses' => 'ApiCouponController@taxReCalculate'));
-//            Route::get('/history', ['as' => 'admin.coupons.history', 'uses' => 'CouponsController@couponHistory']);
+            // Route::get('/history', ['as' => 'admin.coupons.history', 'uses' => 'CouponsController@couponHistory']);
           
             // Route::get('/search-user', ['as' => 'admin.coupons.searchUser', 'uses' => 'CouponsController@searchUser']);
         });
@@ -159,14 +159,14 @@ Route::group(['namespace' => 'Admin'], function () {
             });
         
             Route::group(['prefix' => 'loyalty'], function() {
-            Route::get('/', array('as' => 'admin.loyalty.view', 'uses' => 'ApiCouponController@getLoyalty'));
-            Route::get('/add', array('as' => 'admin.loyalty.add', 'uses' => 'LoyaltyController@add'));
-            Route::post('/saveLoyalty', array('as' => 'admin.loyalty.save', 'uses' => 'ApiCouponController@saveLoyalty'));
-            Route::get('/editLoyalty', array('as' => 'admin.loyalty.edit', 'uses' => 'ApiCouponController@editLoyalty'));
-            Route::post('/update', array('as' => 'admin.loyalty.update', 'uses' => 'LoyaltyController@update'));
-            Route::post('/delete', array('as' => 'admin.loyalty.delete', 'uses' => 'LoyaltyController@delete'));
-            Route::post('/loyalty-cashback', array('as' => 'admin.loyalty.LoyaltyCashback', 'uses' => 'LoyaltyController@LoyaltyCashback'));
-        });
+              Route::get('/', array('as' => 'admin.loyalty.view', 'uses' => 'ApiCouponController@getLoyalty'));
+              Route::get('/add', array('as' => 'admin.loyalty.add', 'uses' => 'LoyaltyController@add'));
+              Route::post('/saveLoyalty', array('as' => 'admin.loyalty.save', 'uses' => 'ApiCouponController@saveLoyalty'));
+              Route::get('/editLoyalty', array('as' => 'admin.loyalty.edit', 'uses' => 'ApiCouponController@editLoyalty'));
+              Route::post('/update', array('as' => 'admin.loyalty.update', 'uses' => 'LoyaltyController@update'));
+              Route::post('/delete', array('as' => 'admin.loyalty.delete', 'uses' => 'LoyaltyController@delete'));
+              Route::post('/loyalty-cashback', array('as' => 'admin.loyalty.LoyaltyCashback', 'uses' => 'LoyaltyController@LoyaltyCashback'));
+          });
         
           Route::group(['prefix' => 'sales'], function() {
             Route::post('/by-order', array('as' => 'admin.sales.byorder', 'uses' => 'ApiSalesController@order'));
@@ -174,13 +174,13 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/by-customer', array('as' => 'admin.sales.bycustomer', 'uses' => 'ApiSalesController@byCustomer'));
             Route::post('/by-category', array('as' => 'admin.sales.bycategory', 'uses' => 'ApiSalesController@byCategory'));
             Route::post('/by-attribute', array('as' => 'admin.sales.byattribute', 'uses' => 'ApiSalesController@byAttribute'));
-        });
+          });
         
-           Route::group(['prefix' => 'tax'], function() {
-            Route::get('/', array('as' => 'admin.tax.view', 'uses' => 'ApiUserController@getTax'));
-            Route::post('/save-tax', array('as' => 'admin.tax.save', 'uses' => 'ApiUserController@saveTax'));
-            Route::post('/delete-tax', array('as' => 'admin.tax.deleteTax', 'uses' => 'ApiUserController@deleteTax'));
-        }); 
+            Route::group(['prefix' => 'tax'], function() {
+              Route::get('/', array('as' => 'admin.tax.view', 'uses' => 'ApiUserController@getTax'));
+              Route::post('/save-tax', array('as' => 'admin.tax.save', 'uses' => 'ApiUserController@saveTax'));
+              Route::post('/delete-tax', array('as' => 'admin.tax.deleteTax', 'uses' => 'ApiUserController@deleteTax'));
+            }); 
         
         Route::group(['prefix' => 'stock'], function() {
             Route::get('/', ['as' => 'admin.stock.view', 'uses' => 'StockController@index']);
@@ -189,34 +189,34 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/update-prod-stock', ['as' => 'admin.stock.updateProdStock', 'uses' => 'StockController@updateProdStock']);
         });
             Route::group(['prefix' => 'miscellaneous'], function() {
-            Route::get('/', ['as' => 'admin.miscellaneous.view', 'uses' => 'MiscellaneousController@contactListing']);
-            Route::post('/contact-save', ['as' => 'admin.miscellaneous.saveUpdate', 'uses' => 'MiscellaneousController@saveUpdate']);
-            Route::get('/aditional-charges', ['as' => 'admin.miscellaneous.aditionalCharges', 'uses' => 'MiscellaneousController@aditionalCharges']);
-            Route::post('/aditional-charges-save', ['as' => 'admin.miscellaneous.aditionalChargesSave', 'uses' => 'MiscellaneousController@aditionalChargesSave']);
-            Route::post('/aditional-charges-delete', ['as' => 'admin.miscellaneous.aditionalChargesDelete', 'uses' => 'MiscellaneousController@aditionalChargesDelete']);
-            Route::get('/social-media-link', ['as' => 'admin.miscellaneous.socialMediaLink', 'uses' => 'MiscellaneousController@socialMediaLink']);
-            Route::post('/social-media-update', ['as' => 'admin.miscellaneous.socialMediaUpdate', 'uses' => 'MiscellaneousController@socialMediaUpdate']);
-            Route::get('/get-country', ['as' => 'admin.miscellaneous.getcountry', 'uses' => 'MiscellaneousController@getCountry']);
-            Route::post('/get-state', ['as' => 'admin.miscellaneous.getState', 'uses' => 'MiscellaneousController@getState']);
-            Route::post('/get-online-page', ['as' => 'admin.miscellaneous.getOnlinePage', 'uses' => 'MiscellaneousController@getOnlinePage']);
-            Route::post('/update-online-page', ['as' => 'admin.miscellaneous.updateOnlinePage', 'uses' => 'MiscellaneousController@updateOnlinePage']);
-            Route::get('/get-store-setting', ['as' => 'admin.miscellaneous.getStoreSetting', 'uses' => 'MiscellaneousController@getStoreSetting']);
-            Route::post('/update-store-setting', ['as' => 'admin.miscellaneous.updateStoreSetting', 'uses' => 'MiscellaneousController@updateStoreSetting']);
-            Route::post('/online-pages-with-key', ['as' => 'admin.miscellaneous.getContactDetails', 'uses' => 'MiscellaneousController@getContactDetails']);
-            Route::get('/storeSeo', ['as' => 'admin.miscellaneous.seoview', 'uses' => 'MiscellaneousController@storeSeo']);
-            Route::post('/storeSaveSeo', ['as' => 'admin.miscellaneous.seosave', 'uses' => 'MiscellaneousController@storeSaveSeo']);
+              Route::get('/', ['as' => 'admin.miscellaneous.view', 'uses' => 'MiscellaneousController@contactListing']);
+              Route::post('/contact-save', ['as' => 'admin.miscellaneous.saveUpdate', 'uses' => 'MiscellaneousController@saveUpdate']);
+              Route::get('/aditional-charges', ['as' => 'admin.miscellaneous.aditionalCharges', 'uses' => 'MiscellaneousController@aditionalCharges']);
+              Route::post('/aditional-charges-save', ['as' => 'admin.miscellaneous.aditionalChargesSave', 'uses' => 'MiscellaneousController@aditionalChargesSave']);
+              Route::post('/aditional-charges-delete', ['as' => 'admin.miscellaneous.aditionalChargesDelete', 'uses' => 'MiscellaneousController@aditionalChargesDelete']);
+              Route::get('/social-media-link', ['as' => 'admin.miscellaneous.socialMediaLink', 'uses' => 'MiscellaneousController@socialMediaLink']);
+              Route::post('/social-media-update', ['as' => 'admin.miscellaneous.socialMediaUpdate', 'uses' => 'MiscellaneousController@socialMediaUpdate']);
+              Route::get('/get-country', ['as' => 'admin.miscellaneous.getcountry', 'uses' => 'MiscellaneousController@getCountry']);
+              Route::post('/get-state', ['as' => 'admin.miscellaneous.getState', 'uses' => 'MiscellaneousController@getState']);
+              Route::post('/get-online-page', ['as' => 'admin.miscellaneous.getOnlinePage', 'uses' => 'MiscellaneousController@getOnlinePage']);
+              Route::post('/update-online-page', ['as' => 'admin.miscellaneous.updateOnlinePage', 'uses' => 'MiscellaneousController@updateOnlinePage']);
+              Route::get('/get-store-setting', ['as' => 'admin.miscellaneous.getStoreSetting', 'uses' => 'MiscellaneousController@getStoreSetting']);
+              Route::post('/update-store-setting', ['as' => 'admin.miscellaneous.updateStoreSetting', 'uses' => 'MiscellaneousController@updateStoreSetting']);
+              Route::post('/online-pages-with-key', ['as' => 'admin.miscellaneous.getContactDetails', 'uses' => 'MiscellaneousController@getContactDetails']);
+              Route::get('/storeSeo', ['as' => 'admin.miscellaneous.seoview', 'uses' => 'MiscellaneousController@storeSeo']);
+              Route::post('/storeSaveSeo', ['as' => 'admin.miscellaneous.seosave', 'uses' => 'MiscellaneousController@storeSaveSeo']);
         });
         
             Route::group(['prefix' => 'attributes'], function() {
-            Route::get('/attribute-set', ['as' => 'admin.attributes.view', 'uses' => 'AttributeController@index']);
-            Route::post('/attributeSet-save', ['as' => 'admin.attributes.attributeSetSave', 'uses' => 'AttributeController@attributeSetSave']);
-            Route::post('/attributeSet-delete', ['as' => 'admin.attributes.attributeSetDelete', 'uses' => 'AttributeController@attributeSetDelete']);
-            Route::get('/attribute-type', ['as' => 'admin.attributes.attributeType', 'uses' => 'AttributeController@attributeType']);
-            Route::get('/get-attribute', ['as' => 'admin.attributes.getAttribute', 'uses' => 'AttributeController@attributes']);
-            Route::post('/attribute-delete', ['as' => 'admin.attributes.attributeDelete', 'uses' => 'AttributeController@attributesDelete']);
-            Route::post('/attribute-save', ['as' => 'admin.attributes.attributeSave', 'uses' => 'AttributeController@attributeSave']);
-            Route::post('/attribute-options-delete', ['as' => 'admin.attributes.attributeOptionDelete', 'uses' => 'AttributeController@deleteAttributeOption']);
-           
+              Route::get('/attribute-set', ['as' => 'admin.attributes.view', 'uses' => 'AttributeController@index']);
+              Route::post('/attributeSet-save', ['as' => 'admin.attributes.attributeSetSave', 'uses' => 'AttributeController@attributeSetSave']);
+              Route::post('/attributeSet-delete', ['as' => 'admin.attributes.attributeSetDelete', 'uses' => 'AttributeController@attributeSetDelete']);
+              Route::get('/attribute-type', ['as' => 'admin.attributes.attributeType', 'uses' => 'AttributeController@attributeType']);
+              Route::get('/get-attribute', ['as' => 'admin.attributes.getAttribute', 'uses' => 'AttributeController@attributes']);
+              Route::post('/attribute-delete', ['as' => 'admin.attributes.attributeDelete', 'uses' => 'AttributeController@attributesDelete']);
+              Route::post('/attribute-save', ['as' => 'admin.attributes.attributeSave', 'uses' => 'AttributeController@attributeSave']);
+              Route::post('/attribute-options-delete', ['as' => 'admin.attributes.attributeOptionDelete', 'uses' => 'AttributeController@deleteAttributeOption']);
+            
            
         });
        
@@ -228,6 +228,12 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('/brand-detail', ["as" => "admin.company.brandDetail", "uses" => "ApiCompanyController@getBrandDetail"]);
             
             
+        });
+
+
+        Route::group(['prefix' => 'distributor'], function() {
+          Route::get('/offers', ["as" => "admin.company.getDistributorOffers", "uses" => "ApiPurchasesController@getDistributorOffers"]);
+          Route::get('/all-offers', ["as" => "admin.company.getAllOffers", "uses" => "ApiPurchasesController@getAllOffers"]);
         });
         
    });
