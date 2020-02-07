@@ -4,6 +4,7 @@ namespace App\Library;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\DistributorProduct;
 use App\Models\Loyalty;
 use App\Models\AttributeValue;
 use App\Models\AttributeSet;
@@ -164,7 +165,11 @@ class Helper {
     }
 
     public static function checkStock($prodid, $qtty = null, $subprodId = null) {
-        $getprod = Product::find($prodid);
+        if(Session::get('distributor_store_id')){
+            $product = DistributorProduct::find($prodid);
+        } else {
+            $getprod = Product::find($prodid);
+        }
         
         if ($getprod->prod_type == 1) {
             $searchCart = Cart::instance("shopping")->search(array('id' => $prodid));
