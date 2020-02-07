@@ -196,11 +196,17 @@ class Helper
                 $i++;
                 $catsave[$ck]['rgt'] = $i;
                 $catsave[$ck]['depth'] = 0;
-                $catsave[$ck]['parent_id'] = $cv->parent_id;
+                if($cv->parent_id !== NULL) {
+                    $parentID = DB::table('store_categories')->where('category_id', $cv->parent_id)->where('store_id', 11)->first()->id;
+                } else {
+                    $parentID = $cv->parent_id;
+                }
+                $catsave[$ck]['parent_id'] = $parentID;
                 $catsave[$ck]['store_id'] = $storeId;
                 $catsave[$ck]['created_at'] = date('Y-m-d H:i:s');
+                $addedcats = DB::table('store_categories')->insert($catsave);
             }
-            $addedcats = DB::table('store_categories')->insert($catsave);
+            // $addedcats = DB::table('store_categories')->insert($catsave);
         }
         //save attr set
         $attrset = json_decode($cat->attribute_sets, true);

@@ -46,7 +46,8 @@ class ApiMerchantController extends Controller
         
         $userMerchant = User::where('id', Session::get('authUserId'))->first()->store()->first();
         $merchant = Merchant::find($userMerchant->merchant_id)->getstores()->first();
-        $store = Merchant::find($userMerchant->merchant_id)->getstores()->count();
+        $store = Merchant::find($userMerchant->merchant_id)->getstores()->count();        
+        $user->merchant_id  = $userMerchant->merchant_id;
         if ($store > 0) {
             $popupStatus = DB::table('general_setting')->where('name', 'set_popup')->first()->status;
             $storeUrl = $merchant->store_domain;
