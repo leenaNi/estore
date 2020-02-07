@@ -92,7 +92,7 @@ class DistributorController extends Controller
             }
             else
             {
-                $data = ['status' => 0, 'error' => "You are already connected with thid distributor. You can place order for this distributor."];
+                $data = ['status' => 0, 'error' => "You are already connected with this distributor. You can place order for this distributor."];
             }
         } else {
             $data = ['status' => 0, 'error' => "Enter distributor code"];

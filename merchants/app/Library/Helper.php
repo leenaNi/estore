@@ -165,12 +165,10 @@ class Helper {
     }
 
     public static function checkStock($prodid, $qtty = null, $subprodId = null) {
-        if(Session::get('distributor_store_id')){
-            $getprod = DistributorProduct::find($prodid);
-        } else {
-            $getprod = Product::find($prodid);
-        }
-        
+       
+        $getprod = DB::table('products')->where('id',$prodid)->first();
+        //$getprod = Product::find($prodid);
+        //dd($getprod);
         if ($getprod->prod_type == 1) {
             $searchCart = Cart::instance("shopping")->search(array('id' => $prodid));
             $cartDataS = Cart::get($searchCart[0]);
