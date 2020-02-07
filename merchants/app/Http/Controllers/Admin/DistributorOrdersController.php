@@ -3144,7 +3144,7 @@ class DistributorOrdersController extends Controller
                 $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
-                $prddataSp = DistributorProduct::find($cart->rowid);
+                $prddataSp = DistributorProduct::find($cart->id);
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
