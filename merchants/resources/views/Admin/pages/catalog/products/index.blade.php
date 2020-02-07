@@ -116,7 +116,7 @@
                 </div>
                 <div class="form-group col-md-4 noBottomMargin">
                     <div class=" button-filter-search col-md-6 no-padding">
-                    <button type="submit" name="search" class="btn sbtn btn-primary form-control" style="margin-left: 0px;" value="Search"> Filter
+                    <button type="submit" name="search" class="btn btn-primary fullWidth noAll-margin" style="margin-left: 0px;" value="Search"> Filter
                     </button>
                     </div>
                     <div class="btn-group button-filter col-md-5 noBottomMargin no-padding">
