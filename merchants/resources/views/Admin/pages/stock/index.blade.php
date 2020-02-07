@@ -12,21 +12,24 @@
     </ol>
 </section>
 
-<section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box">
-                @if(!empty(Session::get('message')))
-                <div class="alert alert-danger" role="alert">
-                    {{ Session::get('message') }}
-                </div>
-                @endif
-                @if(!empty(Session::get('msg')))
-                <div class="alert alert-success" role="alert">
-                    {{Session::get('msg')}}
-                </div>
-                @endif
-                <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12 noBorder">
+<section class="main-content">
+  <div class="grid-content">
+        <div class="section-main-heading">
+            <h1> Products</h1>
+        </div>
+        <div class="filter-section">
+            <div class="col-md-12 noAll-padding">
+                <div class="filter-full-section min-height100">
+                    @if(!empty(Session::get('message')))
+                    <div class="alert alert-danger" role="alert">
+                        {{ Session::get('message') }}
+                    </div>
+                    @endif
+                    @if(!empty(Session::get('msg')))
+                    <div class="alert alert-success" role="alert">
+                        {{Session::get('msg')}}
+                    </div>
+                    @endif
                     <form action="{{route('admin.stock.view')}}" method="get">
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                            <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control medium" placeholder="Product Name">    
@@ -38,12 +41,17 @@
                           <a href="{{ route('admin.stock.view')}}" class="form-control medium btn btn-default noMob-leftmargin"> Reset </a>
                         </div>
                   </form>
-              </div>
-              <div class="clearfix"></div>
-              <div class="dividerhr"></div>
-          
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-striped table-hover">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Products ({{$productCount }})</h1>
+        </div>
+        <div class="listing-section">
+             <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <!--@if($barcode == 1)   <th><input type="checkbox" id="masterCheck" value="00"/></th>  @endif -->
@@ -64,8 +72,9 @@
                                 <td>{{$product->product }}</td>
                                 <!--<td><b>{{$product->stock }}</b></td>-->
                                 <td><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?><span class="priceConvert">{{$product->selling_price }}</span></td>
-                                <td>
-                                    <a data-prodId="{{$product->prod_type}}" data-prod-name="{{$product->prod_type==3?$product->subproduct:$product}}" data-toggle="tooltip" title="Update Stock" class="active update-stock"><i class="fa fa-stack-overflow" aria-hidden="true"></i></a>
+                                <td class="actionLeft">
+                                <span><a data-prodId="{{$product->prod_type}}" data-prod-name="{{$product->prod_type==3?$product->subproduct:$product}}" data-toggle="tooltip" title="Update Stock" class="btn-action-default"><i class="fa fa-stack-overflow" aria-hidden="true"></i> Update Stock</a></span> 
+                                    <!-- <a data-prodId="{{$product->prod_type}}" data-prod-name="{{$product->prod_type==3?$product->subproduct:$product}}" data-toggle="tooltip" title="Update Stock" class="active update-stock"><i class="fa fa-stack-overflow" aria-hidden="true"></i></a> -->
                                 </td>
                             </tr>
                             @endforeach
@@ -74,22 +83,24 @@
                             @endif
                         </tbody>
                     </table>
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
 
-                    <?php
+            <div class="box-footer clearfix">
+                <?php
                     $args = [];
                    if(empty(Input::get('product_name'))){
                   
                        echo $products->appends($args)->render();
                    }
                     ?>
-
-                </div>
-            </div><!-- /.box -->
-        </div><!-- /.col -->
-
+            </div>
+        </div>
     </div>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            
     <!-- Modal --> 
     <div class="modal fade" id="update-stock-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-md">

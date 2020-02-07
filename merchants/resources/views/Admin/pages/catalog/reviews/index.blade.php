@@ -113,11 +113,11 @@ use App\Models\Order;
                     </div>
                     <div class="clearfix"></div>
                     <div class="form-group col-md-4 noBottomMargin">
-                        <div class=" button-filter-search col-md-6 col-xs-12 no-padding mob-marBottom15">
-                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Filter</button>
+                      <div class=" button-filter-search col-md-4 col-xs-12 no-padding mob-marBottom15">
+                            <button type="submit" class="btn btn-primary fullWidth noAll-margin" style="margin-left: 0px;"> Filter</button>
                         </div>
-                        <div class=" button-filter col-md-5 col-xs-12 no-padding noBottomMargin">
-                            <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn form-control noMob-leftmargin">Reset</button></a>
+                        <div class=" button-filter col-md-4 col-xs-12 no-padding noBottomMargin">
+                            <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn fullWidth noMob-leftmargin">Reset</button></a>
                         </div>
                     </div>
                     {!! Form::close() !!}
@@ -161,8 +161,11 @@ use App\Models\Order;
                                 <td>{{date("d-M-Y",strtotime($review->created_at))}}</td>
                                 <td><span>{{$status}}</span></td>
                                 <td>
-                                    <button  class="btn sbtn btn-primary" data-toggle="tooltip" onclick="getReviewData('{{$review->id}}');" 
-                                     title="View Review" data-original-title="Edit"><i class="fa fa-eye"></i></button>
+                                  <div class="">
+                                    <span><a class="btn-action-default" href="getReviewData('{{$review->id}}">View</a></span>
+                                  </div>
+                                  <!-- <button  class="btn sbtn btn-primary" data-toggle="tooltip" onclick="getReviewData('{{$review->id}}');" 
+                                      title="View Review" data-original-title="Edit"><i class="fa fa-eye"></i></button> -->
                                 </td>
                                 </tr>
                                 @endforeach
