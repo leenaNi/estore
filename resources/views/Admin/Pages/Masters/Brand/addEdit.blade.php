@@ -57,14 +57,14 @@
                         {{ Form::label('Logo', 'Logo', ['class' => 'col-sm-3 control-label']) }}
                         <div class="col-sm-6 col-xs-12">
                             <input type="file" id="logo" name="logo" class="form-control">
-                            <span>(Logo size must be 170px W X 100px H )</span>
+                            {{-- <span>(Logo size must be 170px W X 100px H )</span> --}}
                             <input type="hidden" name="hdnLogo" value="{{@$brandResult->logo}}" class="form-control">
                             <input type="hidden" name="isValidImage" id="isValidImage" value="1" class="form-control">
                             <div id="imgError" style="color:red;"></div>
                             @if(!empty($brandResult->logo))
-                                <img src="{{ asset(Config('constants.brandImgPath').''.$brandResult->logo) }}" class="img-responsive brandLogo" /> 
+                                <img height="100px" width="100px" src="{{ asset(Config('constants.brandImgPath').''.$brandResult->logo) }}" class="img-responsive brandLogo" /> 
                             @else
-                                <img  class="img-responsive brandLogo" />
+                                <img  height="100px" width="100px" class="img-responsive brandLogo" />
                             @endif
                             
                         </div>
@@ -141,8 +141,11 @@
                     {
                         var height = this.height;
                         var width = this.width;
+
+                        $("#isValidImage").val(1);
+                        $('.brandLogo').attr('src', e.target.result);
                         //alert(height+" :: "+width);
-                        if(height <= 100 && width <= 170)
+                        /*if(height <= 100 && width <= 170)
                         {
                             $("#isValidImage").val(1);
                             $('.brandLogo').attr('src', e.target.result);
@@ -151,7 +154,7 @@
                         {
                             $("#isValidImage").val(0);
                             $("#imgError").html("Upload valid image");
-                        }
+                        }*/
                     }
                 };
                 reader.readAsDataURL(input.files[0]);

@@ -80,13 +80,13 @@ class CompanyController extends Controller
                     {
                         unlink($destinationPath.Input::get('hdnLogo'));
                     }
-                }
-                else
+                }   
+            }
+            else
+            {
+                if(!empty(Input::get('hdnLogo')))
                 {
-                    if(!empty(Input::get('hdnLogo')))
-                    {
-                        $fileName = Input::get('hdnLogo');
-                    }
+                    $fileName = Input::get('hdnLogo');
                 }
             }
             $companyObj->logo = $fileName;
