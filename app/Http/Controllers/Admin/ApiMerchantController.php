@@ -19,9 +19,51 @@ use Crypt;
 use Mail;
 use Illuminate\Http\Response;
 use App\Models\Merchant;
+use App\Models\User;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class ApiMerchantController extends Controller {
+
+    public function sendOtp(){
+        $country = Input::get("country");
+        $phone = Input::get("phone");
+        $otp = rand(1000, 9999);
+        $userdata = User::where('telephone',$phone)->first();
+        if (!empty($userdata)) {
+            $userdata->otp = $otp;
+            $userdata->save();
+            $msgSucc = "Your one time password is. " . $otp;
+            Helper::sendsms($phone, $msgSucc, $country);
+            $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber", "otp" => $otp];
+        }
+        else{
+            $data = ["status" => "fail", "msg" => "Mobile Number is not Registered"];
+        }
+        return response()->json($data);
+    }
+
+    public function verifyOTP(){
+        $phone = Input::get("phone");
+        $otp = Input::get("otp");
+        $userdata = User::where(['telephone'=>$phone,'otp'=>$otp])->first();
+        //dd($userdata);
+        if (!empty($userdata)) {
+      
+            if (!$token = JWTAuth::fromUser($userdata)) {
+
+                return response()->json(["status" => 0, 'msg' => "Invalid Mobile Number"]);
+            }
+            $result = response()->json(compact('token'));
+            $getData = $result->getdata();
+            $user = JWTAuth::toUser($getData->token);
+            $merchant = Merchant::where(['phone'=>$phone])->first();
+            
+            return response()->json(["status" => 1, 'msg' => "Successfully Loggedin", 'merchant' => $merchant])->header('token', $getData->token);
+        }
+        else{
+            $data = ["status" => "fail", "msg" => "Please Enter Valid OTP"];
+        }
+    }
 
     public function merchantLogin() {
 
@@ -29,11 +71,11 @@ class ApiMerchantController extends Controller {
         Config::set('auth.providers.users.model', Merchant::Class);
         $credentials = [];
         $inputEmailPhone = Input::get('email');
+        $inputEmailPhone = Input::get('phone');
         $login_type = filter_var($inputEmailPhone, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
         $credentials[$login_type] = $inputEmailPhone;
         $credentials['password'] = Input::get('password');
-
         if (!$token = JWTAuth::attempt($credentials)) {
 
             return response()->json(["status" => 0, 'msg' => "Invalid Mobile / Email or Password"]);

@@ -76,7 +76,7 @@ class LoginController extends Controller
 
        
         if (!empty($userDetails)) {
-                //if (Auth::attempt($userData, true)) {
+                //if (Auth::login($userData, true)) {
                 // dd($userData);
                 $user = User::with('roles')->find($userDetails->id);
                 $store = Store::find($user->store_id);

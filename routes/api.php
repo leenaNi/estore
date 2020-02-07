@@ -17,6 +17,8 @@ Route::get('/', function () {
 });
  
 Route::group(['namespace' => 'Admin'], function () {
+  Route::post('/send-otp', ["as" => "admin.merchant.sendotp" ,"uses" => "ApiMerchantController@sendOtp"]);
+  Route::post('/verify-otp', ["as" => "admin.merchant.verifyotp" ,"uses" => "ApiMerchantController@verifyOTP"]);
   Route::post('/merchant-login', ["as" => "admin.merchant.login" ,"uses" => "ApiMerchantController@merchantLogin"]);
   Route::post('/merchant-fb-login', ["as" => "admin.merchant.fblogin" ,"uses" => "ApiMerchantController@FbMerchantLogin"]);
   Route::any('/merchant-forgot_password', ["as" => "admin.merchant.forgotPassword" ,"uses" => "ApiMerchantController@forgotPassword"]);
