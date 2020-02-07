@@ -1809,7 +1809,9 @@ class DistributorOrdersController extends Controller
         $added_prod = [];
         if (count($cart_products) > 0) {
             foreach ($cart_products as $key => $product) {
-                if ($product['id'] == $product['options']['sub_prod']) {
+                if (array_key_exists('sub_prod', $product['options']['sub_prod']) && $product['options']['sub_prod'] != null && $product['id'] == $product['options']['sub_prod']) {
+                    $added_prod[] = $product['id'];
+                } else {
                     $added_prod[] = $product['id'];
                 }
             }
