@@ -28,7 +28,7 @@ class DistributorProduct extends \Eloquent
 
     public function categories()
     {
-        return $this->belongsToMany('App\Models\Category', 'has_categories', 'prod_id', 'cat_id');
+        return $this->belongsToMany('App\Models\StoreCategory', 'has_categories', 'prod_id', 'cat_id');
     }
 
     public function attributeset()

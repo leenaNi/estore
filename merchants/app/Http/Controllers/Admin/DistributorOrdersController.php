@@ -401,7 +401,6 @@ class DistributorOrdersController extends Controller
 
             $newcart = $newCartData;
             HasProducts::where("order_id", Input::get('id'))->delete();
-            // dd($newcart);
             foreach ($newcart as $cart) {
                 $checkPrd = DistributorProduct::find($cart->id);
                 $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $cart->subtotal, "created_at" => date('Y-m-d H:i:s'), "disc" => @$cart->options->disc];
@@ -3086,7 +3085,7 @@ class DistributorOrdersController extends Controller
             //                $cart_ids[$cart->rowid] = array_merge($cart_ids[$cart->rowid], $vendor);
             //            }
             // print_r($cart->options->has('sub_prod'));
-            if ($cart->options->has('sub_prod')) {
+            if ($cart->options->has('sub_prod') && $cart->options->sub_prod != null) {
                 $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = DistributorProduct::find($cart->options->sub_prod);

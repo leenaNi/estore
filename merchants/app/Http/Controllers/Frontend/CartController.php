@@ -293,6 +293,7 @@ class CartController extends Controller {
 
     public function comboProduct($prod_id, $quantity, $sub_prod) {
         $jsonString = Helper::getSettings();
+        // echo $prod_id.'======='.Session::get('distributor_store_id');
         if(Session::get('distributor_store_id')){
             $product = DistributorProduct::find($prod_id);
             $store_id = Session::get('distributor_store_id');
