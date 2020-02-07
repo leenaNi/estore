@@ -231,6 +231,7 @@ Route::group(['namespace' => 'Admin'], function () {
 
         Route::group(['prefix' => 'offer'], function() {
           Route::get('/distributor-offer', ["as" => "admin.offer.getOffer", "uses" => "ApiOfferController@getDistributorOffer"]);
+          Route::get('/product-wise-offer', ["as" => "admin.offer.getProductWiseOffer", "uses" => "ApiOfferController@getProductWiseOffer"]);
       });
 
         Route::group(['prefix' => 'distributor'], function() {
