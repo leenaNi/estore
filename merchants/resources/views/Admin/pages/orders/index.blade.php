@@ -41,9 +41,9 @@
         <div class="section-main-heading">
             <h1>Filter</h1>
         </div>
-        <div class="filter-section">
-            <div class="col-md-9 noAll-padding">
-                <div class="filter-left-section min-height335">
+        <div class="filter-section displayFlex">
+            <div class="col-md-9 noAll-padding displayFlex">
+                <div class="filter-left-section">
                     {!! Form::open(['method' => 'get', 'route' => 'admin.orders.view' , 'id' => 'searchForm' ]) !!}
                     <div class="form-group col-md-4">
                         {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"Order Id"]) !!}
@@ -104,7 +104,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3 noAll-padding">
+            <div class="col-md-3 noAll-padding displayFlex">
                 <div class="filter-right-section min-height335">
                     <div class="form-group">
                         <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default fullWidth noAll-margin">Create New Order</a>  
@@ -255,7 +255,7 @@
                         </tr>
                         @endforeach
                         @else
-                        <tr><td colspan=14> No Record Found.</td></tr>
+                        <tr><td class="text-center" colspan="8"> No Record Found.</td></tr>
                         @endif
                     </tbody>
                 </table>
