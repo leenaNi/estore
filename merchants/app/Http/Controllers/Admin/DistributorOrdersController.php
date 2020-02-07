@@ -3159,7 +3159,7 @@ class DistributorOrdersController extends Controller
                 $date = $cart->options->eNoOfDaysAllowed;
                 $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
-                $prd = DistributorProduct::find($cart->rowid);
+                $prd = DistributorProduct::find($cart->id);
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
                     $prd->update();
