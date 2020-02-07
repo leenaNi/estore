@@ -67,6 +67,10 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/update-bank-details', ["as" => "admin.merchants.updateBankDetails", "uses" => "ApiMerchantController@updateBankDetails"]);
             Route::post('/store-info', ["as" => "admin.merchants.storeInfo", "uses" => "MerchantController@storeInfo"]);
             Route::any('/get-courier', ["as" => "admin.merchants.getCourier", "uses" => "MerchantController@getCourier"]);
+            Route::any('/search-distributor', ["as" => "admin.merchants.searchDistributor", "uses" => "ApiMerchantController@searchDistributor"]);
+            Route::any('/add-distributor', ["as" => "admin.merchants.addDistributor", "uses" => "ApiMerchantController@addDistributor"]);
+            Route::get('/get-distributor', ["as" => "admin.merchants.getDistributor", "uses" => "ApiMerchantController@getDistributors"]);
+            
         });
         Route::group(['prefix' => 'stores'], function () {
             Route::get('/', ["as" => "admin.stores.view", "uses" => "StoreController@index"]);
@@ -226,9 +230,17 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('/all-brand', ["as" => "admin.company.getBrand", "uses" => "ApiCompanyController@getAllBrand"]);
             Route::get('/company-detail', ["as" => "admin.company.companyDetail", "uses" => "ApiCompanyController@getCompanyDetail"]);
             Route::get('/brand-detail', ["as" => "admin.company.brandDetail", "uses" => "ApiCompanyController@getBrandDetail"]);
-            
-            
         });
+
+        Route::group(['prefix' => 'offer'], function() {
+          Route::get('/distributor-offer', ["as" => "admin.offer.getOffer", "uses" => "ApiOfferController@getDistributorOffer"]);
+      });
+
+        Route::group(['prefix' => 'distributor'], function() {
+          Route::get('/product', ["as" => "admin.distributor.getProduct", "uses" => "ApiDistributorController@getProduct"]);
+          Route::get('/search-product', ["as" => "admin.distributor.searchProduct", "uses" => "ApiDistributorController@searchProductWithDistributor"]);
+          Route::get('/search-distributor', ["as" => "admin.distributor.searchDistributor", "uses" => "ApiDistributorController@getDistributorByProduct"]);
+      });
         
    });
 });
