@@ -39,8 +39,8 @@ class CategoryMasterController extends Controller {
         $action = route("admin.category.save");
         // return view(Config('constants.adminCategoryMasterView') . '.addEdit', compact('category', 'allTaxes', 'action'));
         $viewname = Config('constants.adminCategoryMasterView') . '.addEdit';
-        $data = ['category' => $category, 'action' => $action, 'status' => 'success', 'msg' => 'Sorry, Can not delete this root category.'];
-        Session::flash("message", "Sorry, Can not delete this root category.");
+        $data = ['category' => $category, 'action' => $action, 'status' => 'success']; //, 'msg' => 'Sorry, Can not delete this root category.'
+        // Session::flash("message", "Sorry, Can not delete this root category.");
         return Helper::returnView($viewname, $data);
     }
 
