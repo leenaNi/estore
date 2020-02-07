@@ -220,7 +220,7 @@ class CartController extends Controller {
             $tax_amt = round($tax, 2);
         }
         if(Session::get('distributor_store_id')){
-            $is_stockable = DB::table('general_settings')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
+            $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
         } else {
             $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         }
@@ -276,7 +276,7 @@ class CartController extends Controller {
             $tax_amt = round($tax, 2);
         }
         if(Session::get('distributor_store_id')){
-            $is_stockable = DB::table('general_settings')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
+            $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
         } else {
             $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         }
@@ -353,7 +353,7 @@ class CartController extends Controller {
             $combos[$cmb->id]["sub_prod"] = $sub_prod;
         }
         if(Session::get('distributor_store_id')){
-            $is_stockable = DB::table('general_settings')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
+            $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
         } else {
             $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
         }
@@ -376,7 +376,7 @@ class CartController extends Controller {
             $product = DistributorProduct::find($prod_id);
             $store_id = Session::get('distributor_store_id');
             $prefix = Session::get('distributor_store_prefix');
-            $is_stockable = DB::table('general_settings')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
+            $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
         } else {
             $product = Product::find($prod_id);
             $store_id = $jsonString['store_id'];
