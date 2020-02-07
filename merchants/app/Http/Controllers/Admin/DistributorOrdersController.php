@@ -401,7 +401,6 @@ class DistributorOrdersController extends Controller
 
             $newcart = $newCartData;
             HasProducts::where("order_id", Input::get('id'))->delete();
-            // dd($newcart);
             foreach ($newcart as $cart) {
                 $checkPrd = DistributorProduct::find($cart->id);
                 $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $cart->subtotal, "created_at" => date('Y-m-d H:i:s'), "disc" => @$cart->options->disc];
@@ -1810,7 +1809,9 @@ class DistributorOrdersController extends Controller
         $added_prod = [];
         if (count($cart_products) > 0) {
             foreach ($cart_products as $key => $product) {
-                if ($product['id'] == $product['options']['sub_prod']) {
+                if (array_key_exists('sub_prod', $product['options']['sub_prod']) && $product['options']['sub_prod'] != null && $product['id'] == $product['options']['sub_prod']) {
+                    $added_prod[] = $product['id'];
+                } else {
                     $added_prod[] = $product['id'];
                 }
             }
@@ -3086,7 +3087,7 @@ class DistributorOrdersController extends Controller
             //                $cart_ids[$cart->rowid] = array_merge($cart_ids[$cart->rowid], $vendor);
             //            }
             // print_r($cart->options->has('sub_prod'));
-            if ($cart->options->has('sub_prod')) {
+            if ($cart->options->has('sub_prod') && $cart->options->sub_prod != null) {
                 $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = DistributorProduct::find($cart->options->sub_prod);
@@ -3144,7 +3145,7 @@ class DistributorOrdersController extends Controller
                 $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
-                $prddataSp = DistributorProduct::find($cart->rowid);
+                $prddataSp = DistributorProduct::find($cart->id);
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
@@ -3158,7 +3159,7 @@ class DistributorOrdersController extends Controller
                 $date = $cart->options->eNoOfDaysAllowed;
                 $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
-                $prd = DistributorProduct::find($cart->rowid);
+                $prd = DistributorProduct::find($cart->id);
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
                     $prd->update();
