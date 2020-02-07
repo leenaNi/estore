@@ -174,6 +174,7 @@ class ProductsController extends Controller
         $storedata->template_id = Input::get('theme_id');
         $storedata->save();
         $prefix = $storedata->prefix;
+        $storeId =  Session::get('store_id');
         $login_user_type = Session::get('login_user_type');
         if($login_user_type ==1){
             $storeType = 'merchant';
@@ -194,13 +195,13 @@ class ProductsController extends Controller
 
             for ($k = 0; $k < $totalCategory; $k++) {
                 if (!empty($catid[$k])) {
-                    Helper::saveDefaultSet($catid[$k], $prefix, Session::get('store_id'),$storeType);
+                    Helper::saveDefaultSet($catid[$k], $prefix,$storeId,$storeType);
                 }
             }
         } 
         if ($login_user_type == 1) {
             if (!empty($catid)) {
-                Helper::saveDefaultSet($catid, $prefix, Session::get('store_id'),$storeType);
+                Helper::saveDefaultSet($catid, $prefix,$storeId,$storeType);
             }
             if (!empty($themeid)) {
                 $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
@@ -226,7 +227,7 @@ class ProductsController extends Controller
                     $homePageSlider['image'] = $image['banner'];
                     $homePageSlider['sort_order'] = $image['sort_order'];
                     $source = public_path() . '/public/admin/themes/';
-                    $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                    $destination = base_path() . "/" . strtolower($storedata->store_name) . "/public/uploads/layout/";
                     copy($source . $file, $destination . $file);
                     DB::table("has_layouts")->insert($homePageSlider);
                 }
@@ -244,7 +245,7 @@ class ProductsController extends Controller
                     $homePageSlider['image'] = $image['banner'];
                     $homePageSlider['sort_order'] = $image['sort_order'];
                     $source = public_path() . '/public/admin/themes/';
-                    $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                    $destination = base_path() . "/" . strtolower($storedata->store_name) . "/public/uploads/layout/";
                     copy($source . $file, $destination . $file);
                     DB::table("has_layouts")->insert($homePageSlider);
                 }
