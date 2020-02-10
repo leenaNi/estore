@@ -238,6 +238,8 @@ Route::group(['namespace' => 'Admin'], function () {
           Route::get('/product', ["as" => "admin.distributor.getProduct", "uses" => "ApiDistributorController@getProduct"]);
           Route::get('/search-product', ["as" => "admin.distributor.searchProduct", "uses" => "ApiDistributorController@searchProductWithDistributor"]);
           Route::get('/search-distributor', ["as" => "admin.distributor.searchDistributor", "uses" => "ApiDistributorController@getDistributorByProduct"]);
+          Route::get('/merchant-wise-search-distributor', ["as" => "admin.distributor.merchantwiseSearchDistributor", "uses" => "ApiDistributorController@getDistributorByMerchant"]);
+          Route::get('/company-wise-distributor', ["as" => "admin.distributor.companywiseDistributor", "uses" => "ApiDistributorController@getDistributorByCompany"]);
       });
         
    });
