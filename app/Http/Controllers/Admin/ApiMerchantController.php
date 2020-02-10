@@ -10,6 +10,7 @@ use Auth;
 use Crypt;
 use DB;
 use Hash;
+use Input;
 use Illuminate\Http\Response;
 
 class ApiMerchantController extends Controller {
