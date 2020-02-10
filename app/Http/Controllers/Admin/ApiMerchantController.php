@@ -11,9 +11,6 @@ use Crypt;
 use DB;
 use Hash;
 use Illuminate\Http\Response;
-use App\Models\Merchant;
-use App\Models\User;
-use Tymon\JWTAuth\Exceptions\JWTException;
 
 class ApiMerchantController extends Controller {
 
@@ -57,11 +54,6 @@ class ApiMerchantController extends Controller {
             $data = ["status" => "fail", "msg" => "Please Enter Valid OTP"];
         }
     }
-
-    public function merchantLogin() {
-
-class ApiMerchantController extends Controller
-{
 
     public function merchantLogin()
     {
