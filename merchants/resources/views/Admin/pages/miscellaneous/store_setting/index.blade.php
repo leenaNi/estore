@@ -30,6 +30,7 @@
 
 <?php
 $jsonString = App\Library\Helper::getSettings();
+// dd($jsonString);
 $data = (object) $jsonString;
 $country_code = (int)explode("+", $data->country_code)[1]; 
 if($country_code != '')

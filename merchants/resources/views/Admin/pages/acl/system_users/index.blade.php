@@ -10,22 +10,24 @@
     </ol>
 </section>
 
-<section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box">
-               
-                @if(!empty(Session::get('msg')))
-                <div  class="alert alert-success" role="alert">
-                    {{ Session::get('msg') }}
-                </div>
-                @endif
-                @if(!empty(Session::get('message')))
-                <div  class="alert alert-danger" role="alert">
-                    {{ Session::get('message') }}
-                </div>
-                @endif
-                <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12 noBorder">
+<section class="main-content">
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>System Users</h1>
+        </div>
+        <div class="filter-section">
+            <div class="col-md-9 noAll-padding">
+                <div class="filter-left-section min-height150">
+                    @if(!empty(Session::get('msg')))
+                    <div  class="alert alert-success" role="alert">
+                        {{ Session::get('msg') }}
+                    </div>
+                    @endif
+                    @if(!empty(Session::get('message')))
+                    <div  class="alert alert-danger" role="alert">
+                        {{ Session::get('message') }}
+                    </div>
+                    @endif
 
                     <form action="{{ route('admin.systemusers.view') }}" method="get" >
                         <div class="form-group col-md-8 col-sm-6 col-xs-12">
@@ -37,22 +39,30 @@
                         <div class='form-group col-md-2 col-sm-3 col-xs-12'>
                             <a href="{{route('admin.systemusers.view')}}" class='form-control btn reset-btn noMob-leftmargin'>Reset </a>
                         </div>
-                    </form>                  
+                    </form>   
+                </div>
+            </div>
 
+            <div class="col-md-3 noAll-padding ">
+                <div class="filter-right-section  min-height150">
+                    <div class="clearfix">
+                        <a href="{!! route('admin.systemusers.add') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN marginBottom15" target="_" type="button">Add New User</a>
+                        <div class="clearfix"></div>
+                        <a href="{!! route('admin.systemusers.export') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" target="_" type="button">Export</a>
+                    </div>
                 </div>
-                <div class="box-header col-md-3 col-sm-12 col-xs-12 ">
-                    <a href="{!! route('admin.systemusers.add') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN marginBottom15" target="_" type="button">Add New User</a>
-                    <div class="clearfix"></div>
-                    <a href="{!! route('admin.systemusers.export') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" target="_" type="button">Export</a>
-                </div>
-                <div class="clearfix"></div>
-                <div class="dividerhr"></div>
-             
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-striped table-hover tableVaglignMiddle">
+            </div>
+        </div>
+    </div>
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>System Users<span class="listing-counter"> ({{$userCount }})</span> </h1>
+        </div>
+        <div class="listing-section">
+            <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
-<!--                                <th>id</th>-->
+                            <!--<th>id</th>-->
                                 <th>System User</th>
 
                                 <th>Email Id</th>
@@ -64,7 +74,7 @@
                         <tbody>
                             @if(count($system_users) >0 )
                             @foreach($system_users as $system_user)
-<!--                            <tr> <td>{{$system_user->id }}</td>-->
+                        <!--<tr> <td>{{$system_user->id }}</td>-->
                         <td>{{$system_user->firstname }} {{$system_user->lastname }}</td>
 
                         <td>{{ $system_user->email }}</td>
@@ -79,9 +89,22 @@
 
                         <td>
                         @if($system_user->id!=1)
+                                    <div class="actionLeft">
+                                        <span><a class="btn-action-default" href="{!! route('admin.systemusers.edit',['id'=>$system_user->id]) !!}">Edit</a></span> 
+                                        <span class="dropdown">
+                                            <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+                                                <li><a href="{!! route('admin.systemusers.delete',['id'=>$system_user->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
+                                            </div>
+                                        </span>  
+                                    </div>
+                                    @endif
+                        <!-- @if($system_user->id!=1)
                             <a href="{!! route('admin.systemusers.edit',['id'=>$system_user->id]) !!}"  ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                             <a href="{!! route('admin.systemusers.delete',['id'=>$system_user->id]) !!}" onclick="return confirm('Are you sure you want to delete this user?')"  ui-toggle-class="" data-toggle="tooltip" title="Delete"><i class="fa fa-trash btn-plen btn"></i></a>
-                        @endif
+                        @endif -->
                         </td>
                         </tr>
                         @endforeach
@@ -90,8 +113,7 @@
                         @endif
                         </tbody>
                     </table>
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
+                    <div class="box-footer clearfix">
                     <?php
                     if (empty(Input::get('empSearch'))) {
                         echo $system_users->render();
@@ -99,10 +121,10 @@
                     ?> 
 
                 </div>
-            </div><!-- /.box -->
-        </div><!-- /.col -->
-
-    </div> 
+        </div>
+        </div>
 </section>
+
+
 
 @stop 

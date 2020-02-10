@@ -12,25 +12,24 @@
     </ol>
 </section>
 
-<section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box">
-              <div class="box">
-                 @if(!empty(Session::get('msg')))
-                <div class="alert {{(Session::get('aletC')== 1)?'alert-success':'alert-danger'}}" role="alert">
-                    {{Session::get('msg')}}
-                </div>
-                  @endif
-                    @if(!empty(Session::get('message')))
-                <div class="alert {{(Session::get('aletC')== 1)?'alert-success':'alert-danger'}}" role="alert">
-                    {{Session::get('message')}}
-                </div>
-                  @endif
-
-
-
-                <div class="box-body table-responsive no-padding">
+<section class="main-content">
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Bank Details</h1>
+        </div>
+        <div class="filter-section">
+            <div class="col-md-12 noAll-padding">
+                <div class="listing-section"> 
+                    @if(!empty(Session::get('msg')))
+                    <div class="alert {{(Session::get('aletC')== 1)?'alert-success':'alert-danger'}}" role="alert">
+                        {{Session::get('msg')}}
+                    </div>
+                    @endif
+                        @if(!empty(Session::get('message')))
+                    <div class="alert {{(Session::get('aletC')== 1)?'alert-success':'alert-danger'}}" role="alert">
+                        {{Session::get('message')}}
+                    </div>
+                    @endif
                     <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
@@ -57,23 +56,24 @@
                                 
 
                                 <td>
-                                    <a href="{!! route('admin.bankDetails.addEdit',['id'=>$bank->id]) !!}" data-toggle="tooltip" title="Configure" ui-toggle-class=""><i class="fa fa-cog btnNo-margn-padd" aria-hidden="true"></i></a>
+                                    <div class="actionLeft">
+                                        <span><a class="btn-action-default" href="{!! route('admin.bankDetails.addEdit',['id'=>$bank->id]) !!}"><i class="fa fa-cog" aria-hidden="true"></i> Configure</a></span> 
+                                    
+                                    </div>
+                                    <!-- <a href="{!! route('admin.bankDetails.addEdit',['id'=>$bank->id]) !!}" data-toggle="tooltip" title="Configure" ui-toggle-class=""><i class="fa fa-cog btnNo-margn-padd" aria-hidden="true"></i></a> -->
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
-
-                   
-
+                    <div class="box-footer clearfix"></div>
                 </div>
-            </div><!-- /.box -->
-        </div><!-- /.col -->
-
-    </div> 
+            </div>
+        </div>
+    </div>
 </section>
+
+
 
 @stop
 
