@@ -104,9 +104,9 @@
                                             <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <span class="caret"></span>
                                             </button>
-                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+                                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
                                                 <li><a href="{!! route('admin.attributes.delete',['id'=>$attr->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
-                                            </div>
+                                            </ul>
                                         </span>  
                                     </div>
                                     <!-- <a href="{!! route('admin.attributes.edit',['id'=>$attr->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o"></i></a>

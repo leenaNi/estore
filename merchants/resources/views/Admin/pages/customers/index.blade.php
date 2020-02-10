@@ -112,11 +112,11 @@
                             <td class="text-left">{{$customer->firstname }} {{$customer->lastname }}</td>
                             <td class="text-left">{{ $customer->email }}</td>
                             <td class="text-center">{{ $customer->telephone }}</td>
-                            <td class="text-center">{{ count($customer->orders) }}</td>
+                            <td class="text-right">{{ count($customer->orders) }}</td>
                             <td class="text-right">{{ $customer->total_order_amt }}</td>
                             <td class="text-right">
-                                <a class="btn btn-default view-payments" data-toggle="tooltip" title="View payments" data-userId="{{$customer->id}}">
-                                    {{ number_format(($customer->credit_amt  * Session::get('currency_val')), 2) }}</a>
+                                <a class="cursorPointer view-payments" data-toggle="tooltip" title="View payments" data-userId="{{$customer->id}}">
+                                    <b>{{ number_format(($customer->credit_amt  * Session::get('currency_val')), 2) }}</b></a>
                             </td>
                             @if($setting->status ==1)
                             <?php 
@@ -126,20 +126,31 @@
                             <td class="text-right"><span class="currency-sym"> </span> {{ number_format((@$customer->userCashback->cashback * Session::get('currency_val')), 2) }}</td>
                             @endif
                             <td class="text-center">@if($customer->status==1)
-                                <a class="btn btn-default"  title="Enabled">Enabled</a>
+                                <a class="alertSuccess"  title="Enabled">Enabled</a>
                                 @elseif($customer->status==0)
-                                <a class="btn btn-default" title="Disabled">Disabled</a>
+                                <a class="alertDanger" title="Disabled">Disabled</a>
                                 @endif
                             </td>
                             <td class="text-center">
-                                @if($customer->status==1)
-                                <a href="{!! route('admin.customers.changeStatus',['id'=>$customer->id]) !!}"  onclick="return confirm('Are you sure you want to disable this customer?')" data-toggle='tooltip' title='Enabled' ><i class="fa fa-check btn-plen btn btnNo-margn-padd"></i></a>
-                                @elseif($customer->status==0)
-                                <a href="{!! route('admin.customers.changeStatus',['id'=>$customer->id]) !!}"  onclick="return confirm('Are you sure you want to enable this customer?')" data-toggle="tooltip" title="Disabled"> <i class="fa fa-times btn-plen btn btnNo-margn-padd"></i></a>
-                                @endif
-                                <a href="{!! route('admin.customers.edit',['id'=>$customer->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn-plen btn btnNo-margn-padd" ></i></a>               
-                                <a href="{!! route('admin.customers.delete',['id'=>$customer->id]) !!}" onclick="return confirm('Are you sure you want to delete this customer?')" class="" ui-toggle-class="" data-toggle="tooltip" title="Delete"> <i class="fa fa-trash btn-plen btn"></i></a>
-                                <a href="{!! route('admin.orders.view',['search'=> $customer->firstname.' '.$customer->lastname]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="View Order"> <i class="fa fa-eye btn-plen btn"></i></a>
+
+                                <div class="actionCenter">
+                                    <span><a class="btn-action-default" href="{!! route('admin.customers.edit',['id'=>$customer->id]) !!}">Edit</a></span> 
+                                    <span class="dropdown">
+                                        <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">  
+                                            @if($customer->status==1)
+                                            <li><a href="{!! route('admin.customers.changeStatus',['id'=>$customer->id]) !!}"  onclick="return confirm('Are you sure you want to disable this customer?')"><i class="fa fa-check"></i> Enabled</a></li>
+                                            @elseif($customer->status==0)
+                                            <li><a href="{!! route('admin.customers.changeStatus',['id'=>$customer->id]) !!}"  onclick="return confirm('Are you sure you want to enable this customer?')"><i class="fa fa-times"></i> Disabled</a></li>
+                                            @endif
+                                            <li><a href="{!! route('admin.orders.view',['search'=> $customer->firstname.' '.$customer->lastname]) !!}"><i class="fa fa-eye"></i> View Order</a></li>
+
+                                            <li><a href="{!! route('admin.customers.delete',['id'=>$customer->id]) !!}"  onclick="return confirm('Are you sure you want to delete this customer?')"><i class="fa fa-trash"></i> Delete</a></li>
+                                        </ul>
+                                    </span>  
+                                </div> 
                             </td>
                         </tr>
                         @endforeach
