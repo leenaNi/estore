@@ -5,6 +5,7 @@ Route::group(['namespace' => 'Cron', 'prefix' => 'cron', 'middleware' => ['web']
 //       });
     Route::group(['prefix' => 'currencyUpdate','middleware' => ['web']], function() {
         Route::any('/update-currency-cron', ["as" => "cron.CurrencyUpdate.UpdateCurrencyCron", "uses" => "UpdateCurrencyController@index"]);
+        Route::any('/update-rolewise-permissions', ["as" => "cron.rolewise.permissions", "uses" => "CronController@updateRolewisePermissions"]);
     
     });
 });

@@ -21,10 +21,12 @@ use App\Models\MallProducts;
 use App\Models\Product;
 use App\Models\ProductHasTaxes;
 use App\Models\ProductType;
+use App\Models\Store;
 use App\Models\StockUpdateHistory;
 use App\Models\Tax;
 use App\Models\UnitMeasure;
 use App\Models\User;
+use App\Models\MerchantOrder;
 use DB;
 use DNS1D;
 use DNS2D;
@@ -52,6 +54,13 @@ class ProductsController extends Controller
 
     public function index()
     {
+        $userinfo = User::find(Session::get('loggedinAdminId'));
+        $storeinfo = Store::find($userinfo->store_id);
+        $industryid = $storeinfo->category_id;
+        if($industryid == 0){
+            $cat = DB::table("industries")->where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
+            return Helper::returnView(Config('constants.adminProductView') . '.select-industry', compact('cat'));
+        }
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
 
@@ -146,6 +155,103 @@ class ProductsController extends Controller
         }
 
         return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets'));
+    }
+
+    public function selectThemes()
+    {
+        $allinput = Input::all();
+        $themeIds = DB::table("themes")->where("cat_id",$allinput['cat_id'])->get();
+        $cat = DB::table("industries")->where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
+        $data = ['cat' => $cat, 'allinput' => $allinput, 'themeIds' => $themeIds];
+        $viewname = Config('constants.adminProductView') . ".select-theme";
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function applyTheme(){
+        $catid = implode(',',Input::get('cat_id'));
+        $storedata = Store::find(Session::get('store_id'));
+        $storedata->category_id = $catid;
+        $storedata->template_id = Input::get('theme_id');
+        $storedata->save();
+        $prefix = $storedata->prefix;
+        $storeId =  Session::get('store_id');
+        $login_user_type = Session::get('login_user_type');
+        if($login_user_type ==1){
+            $storeType = 'merchant';
+        }
+        else if($login_user_type ==3){
+            $storeType = 'distributor';
+        }
+        $json_url = base_path() . "/" . strtolower($storedata->store_name) . "/storeSetting.json";
+        $json = file_get_contents($json_url);
+        $decodeVal = json_decode($json, true);
+        $decodeVal['industry_id'] = $catid;
+        if ($login_user_type == 3) {
+            //echo "if store id >> $storeId";
+            //print_r($catid);
+
+            $totalCategory = count($catid); // industry
+            //echo "totla cat >> ".$totalCategory;
+
+            for ($k = 0; $k < $totalCategory; $k++) {
+                if (!empty($catid[$k])) {
+                    Helper::saveDefaultSet($catid[$k], $prefix,$storeId,$storeType);
+                }
+            }
+        } 
+        if ($login_user_type == 1) {
+            if (!empty($catid)) {
+                Helper::saveDefaultSet($catid, $prefix,$storeId,$storeType);
+            }
+            if (!empty($themeid)) {
+                $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
+                $themeData = DB::table("themes")->where('id',Input::get('theme_id'))->first();
+                $decodeVal['theme'] = strtolower($themeData->theme_category);
+                $decodeVal['themeid'] = Input::get('theme_id');
+                $decodeVal['themedata'] = $themedata;
+                $decodeVal['currencyId'] = @HasCurrency::find($currency)->iso_code;
+                $decodeVal['store_version'] = @$storeVersion;
+                //$newJsonString = json_encode($decodeVal);
+            }
+           
+            $banner = json_decode((DB::table("themes")->where("id", Input::get('theme_id'))->first()->banner_image), true);
+            // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
+            if (!empty($banner)) {
+                $homeLayout = DB::table("layout")->where('url_key', 'LIKE', 'home-page-slider')->where('store_id', $storeId)->first();
+                foreach ($banner as $image) {
+                    $homePageSlider = [];
+                    $file = $image['banner'];
+                    $homePageSlider['layout_id'] = $homeLayout->id;
+                    $homePageSlider['name'] = $image['banner_text'];
+                    $homePageSlider['is_active'] = $image['banner_status'];
+                    $homePageSlider['image'] = $image['banner'];
+                    $homePageSlider['sort_order'] = $image['sort_order'];
+                    $source = public_path() . '/public/admin/themes/';
+                    $destination = base_path() . "/" . strtolower($storedata->store_name) . "/public/uploads/layout/";
+                    copy($source . $file, $destination . $file);
+                    DB::table("has_layouts")->insert($homePageSlider);
+                }
+            }
+            $threeBoxes = json_decode((DB::table("industries")->where("id", $catid)->first()->threebox_image), true);
+            // $threeBoxes = json_decode((StoreTheme::where("id", $themeid)->first()->threebox_image), true);
+            if (!empty($threeBoxes)) {
+                $boxLayout = DB::table("layout")->where('url_key', 'LIKE', 'home-page-3-boxes')->where('store_id', $storeId)->first();
+                foreach ($threeBoxes as $image) {
+                    $homePageSlider = [];
+                    $file = $image['banner'];
+                    $homePageSlider['layout_id'] = $boxLayout->id;
+                    $homePageSlider['name'] = $image['banner_text'];
+                    $homePageSlider['is_active'] = $image['banner_status'];
+                    $homePageSlider['image'] = $image['banner'];
+                    $homePageSlider['sort_order'] = $image['sort_order'];
+                    $source = public_path() . '/public/admin/themes/';
+                    $destination = base_path() . "/" . strtolower($storedata->store_name) . "/public/uploads/layout/";
+                    copy($source . $file, $destination . $file);
+                    DB::table("has_layouts")->insert($homePageSlider);
+                }
+            }
+        } // end storetype check if
+        $this->index();
     }
 
     public function add()

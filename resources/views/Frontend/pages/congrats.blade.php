@@ -14,7 +14,7 @@
             </div>
             
             <div class="clearfix text-center setUpStoreBtn">
-            <a href='#' class="btn theme-btn yourOnlineStore">Go to your Online Store </a>
+            <!-- <a href='#' class="btn theme-btn yourOnlineStore">Go to your Online Store </a> -->
             <a href='#' test='{{$storedata->store_domain}}/admin' class="btn theme-btn setUpStoreButton">Let's Set up your Store</a>
             </div>
            

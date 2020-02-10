@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="97.495" height="97.495" viewBox="0 0 97.495 97.495">
+    <defs>
+        <style>
+            .cls-1{fill:#ffc107}.cls-2{fill:#359bdb}.cls-3{fill:#88b740}.cls-4{filter:url(#Path_681)}.cls-5{filter:url(#Path_680)}.cls-6{filter:url(#Path_679)}
+        </style>
+        <filter id="Path_679" width="57.753" height="57.748" x="39.743" y="0" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur result="blur" stdDeviation="3"/>
+            <feFlood flood-opacity=".161"/>
+            <feComposite in2="blur" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+        <filter id="Path_680" width="52.779" height="79.649" x="0" y="5.093" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur result="blur-2" stdDeviation="3"/>
+            <feFlood flood-opacity=".161"/>
+            <feComposite in2="blur-2" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+        <filter id="Path_681" width="79.649" height="52.779" x="12.754" y="44.716" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur result="blur-3" stdDeviation="3"/>
+            <feFlood flood-opacity=".161"/>
+            <feComposite in2="blur-3" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <g id="analytics-3">
+        <g class="cls-6">
+            <path id="Path_679-2" d="M256.057 29.821a9.94 9.94 0 0 1 9.852 9.927h29.811A39.794 39.794 0 0 0 255.973 0z" class="cls-1" data-name="Path 679" transform="translate(-207.23 6)"/>
+        </g>
+        <g class="cls-5">
+            <path id="Path_680-2" d="M23.382 80.3a17.237 17.237 0 0 1 11.4-27.5v-20A37.191 37.191 0 0 0 9.241 94.449z" class="cls-2" data-name="Path 680" transform="translate(9 -21.71)"/>
+        </g>
+        <g class="cls-4">
+            <path id="Path_681-2" d="M123.79 288a17.235 17.235 0 0 1-27.505 11.393l-14.14 14.145A37.191 37.191 0 0 0 143.793 288z" class="cls-3" data-name="Path 681" transform="translate(-60.39 -237.28)"/>
+        </g>
+    </g>
+</svg>

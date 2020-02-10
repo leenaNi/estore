@@ -35,36 +35,67 @@ class LoginController extends Controller
         return view(Config('constants.adminView') . '.unauthorized');
     }
 
+    public function checkExistingphone() {
+        $chkEmail = User::where("telephone", Input::get('phone_no'))->first();
+        if (count($chkEmail) > 0){
+            $country = '+'.$chkEmail->country_code;
+            $mobile = Input::get("phone_no");
+            $otp = rand(1000, 9999);
+            Session::put('otp', $otp);
+            if ($mobile) {
+                $msgOrderSucc = "Your one time password is. " . $otp . " Team eStorifi";
+                Helper::sendsms($mobile, $msgOrderSucc, $country);
+            }
+            $data = ["otp" => $otp, "status" => "success", "msg" => "OTP Successfully send on your mobileNumber"];
+            return $data;
+        }else{
+            $data = ["status" => "fail", "msg" => "Invalid mobile Number"];
+            return $data;
+        }
+    }
+
+    public function checkOtp()
+    {
+        $inputOtp = Input::get("otp");
+        $otp = Session::get('otp');
+        if ($inputOtp == $otp) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
     public function chk_admin_user()
     {
-        $input = Input::get("email");
+        $input = Input::get("phone");
         $login_type = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
-        $userDetails = User::where($login_type, "=", Input::get("email"))->whereIn('user_type', [1, 3])->where('store_id', Helper::getSettings()['store_id'])->where("status", 1)->first();
-        // dd($userDetails);
-        $userData = [$login_type => Input::get('email'),
-            'password' => Input::get('password'), 'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
+        $userDetails = User::where('telephone',Input::get("phone"))->whereIn('user_type', [1, 3])->where('store_id', Helper::getSettings()['store_id'])->where("status", 1)->first();
+        $userData = [$login_type => Input::get('phone'),'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
+        // $userData = [$login_type => Input::get('phone'),
+        //     'password' => Input::get('password'), 'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
+
+       
         if (!empty($userDetails)) {
-            // dd(Auth::attempt($userData, true));
-            if (Auth::attempt($userData, true)) {
+                //if (Auth::login($userData, true)) {
                 // dd($userData);
                 $user = User::with('roles')->find($userDetails->id);
+                $store = Store::find($user->store_id);
                 Session::put('loggedinAdminId', $userDetails->id);
                 Session::put('profile', $userDetails->profile);
                 Session::put('loggedin_user_id', $user->id);
                 Session::put('login_user_type', $user->user_type);
+                Session::put('merchantid', $store->merchant_id);
                 $roles = $user->roles()->first();
                 $r = Role::find($roles->id);
                 $per = $r->perms()->get()->toArray();
-                if (Auth::user()->user_type == 3) {
-                    //return redirect()->route('admin.vendors.dashboard');
+                //if (Auth::user()->user_type == 3) {
                     return redirect()->route('admin.home.view');
-                }
+                //}
                 return redirect()->route('admin.home.view');
-            } else {
-                // dd('1 Unauthorized user');
-                Session::flash('invalidUser', 'Invalid Username or Password');
-                return redirect()->route('adminLogin');
-            }
+            // } else {
+            //     Session::flash('invalidUser', 'Invalid Username or Password');
+            //     return redirect()->route('adminLogin');
+            // }
         } else {
             // dd('2 Unauthorized user');
             Session::flash('invalidUser', 'Invalid Username or Password');

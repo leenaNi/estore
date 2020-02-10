@@ -3,6 +3,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
     Route::get('/', ["as" => "adminLogin", "uses" => "LoginController@index"]);
     Route::get('/unauthorized', ["as" => "unauthorized", "uses" => "LoginController@unauthorized"]);
     Route::post('/check-user', ["as" => "check_admin_user", "uses" => "LoginController@chk_admin_user"]);
+    Route::post('/check-existing-phone', ['as' => 'checkExistingphone', 'uses' => 'LoginController@checkExistingphone']);
+    Route::any('/check-otp', ['as' => 'checkOtp', 'uses' => 'LoginController@checkOtp']);
     Route::post('/check-fb-user', ["as" => "check_fb_admin_user", "uses" => "LoginController@chk_fb_admin_user"]);
     Route::get('/admin-logout', ["as" => "adminLogout", "uses" => "LoginController@admin_logout"]);
     Route::any('/forgot-password', ["as" => "adminForgotPassword", "uses" => "LoginController@forgotPassword"]);
@@ -75,6 +77,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
 
             Route::group(['prefix' => 'products', 'middlewareGroups' => ['web']], function () {
                 Route::get('/', ['as' => 'admin.products.view', 'uses' => 'ProductsController@index']);
+                Route::any('/select-themes', ['as' => 'selectThemes', 'uses' => 'ProductsController@selectThemes']);
+                Route::any('/apply-themes', ['as' => 'applyTheme', 'uses' => 'ProductsController@applyTheme']);
                 Route::get('/add', ['as' => 'admin.products.add', 'uses' => 'ProductsController@add']);
                 Route::get('/delete', ['as' => 'admin.products.delete', 'uses' => 'ProductsController@delete']);
                 Route::get('/delete-varient', ['as' => 'admin.products.deleteVarient', 'uses' => 'ProductsController@deleteVarient']);
