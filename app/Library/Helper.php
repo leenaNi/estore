@@ -69,18 +69,16 @@ class Helper
                 $urlto = "http://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage&send_to=$mobile&msg=$msg&msg_type=TEXT&userid=2000164017&auth_scheme=plain&password=GClWepNxL&v=1.1&format=text";
             }
             $ch = curl_init();
-// set URL and other appropriate options
+            // set URL and other appropriate options
             curl_setopt($ch, CURLOPT_URL, $urlto);
             //curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-// grab URL and pass it to the browser
+            // grab URL and pass it to the browser
             $output = curl_exec($ch);
-
             // print_r($output);
-
-// close cURL resource, and free up system resources
+            // close cURL resource, and free up system resources
             curl_close($ch);
-            //return $output;
+            return $output;
         }
     }
 

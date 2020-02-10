@@ -33,6 +33,7 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::post('/check-store', array('as' => 'admin.createStore.checkStore', 'uses' => 'ApiCreateStoreController@checkStore'));
         Route::post('/check-mobile', array('as' => 'admin.createStore.checkMobile', 'uses' => 'ApiCreateStoreController@checkMobile'));
         Route::any('/send-otp', array('as' => 'admin.createStore.sendOtp', 'uses' => 'ApiCreateStoreController@sendOtp'));
+        Route::any('/verify-otp', array('as' => 'admin.createStore.verifyotp', 'uses' => 'ApiCreateStoreController@verifyotp'));
     });
 
     Route::group(['middleware' => ['jwt-auth']], function () {

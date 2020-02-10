@@ -17,7 +17,8 @@ class Vendor extends Model
                 'business_name' => 'required',
                 // 'firstname' => 'required',
                 // 'email' => 'email|unique:merchants' . ($id ? ",email,$id" : ''),
-                'phone' => 'required|numeric|unique:merchants' . ($id ? ",phone,$id" : '')
+                // 'phone' => 'required|numeric|unique:merchants' . ($id ? ",phone,$id" : '')
+                'phone' => 'required|numeric'
                     ], $merge);
         }
 
@@ -26,7 +27,7 @@ class Vendor extends Model
             // 'firstname.required' => 'Firstname is required.',
             // 'email.unique' => 'Email Id have been already taken!',
             'phone.required' => 'Phone is required',
-            'phone.unique' => 'Phone number have been already taken',
+            // 'phone.unique' => 'Phone number have been already taken',
             'phone.numeric' => 'Phone number should be valid'
         ];
         protected $fillable = [

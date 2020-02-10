@@ -11,24 +11,30 @@ use Crypt;
 use DB;
 use Hash;
 use Input;
+use JWTAuth;
 use Illuminate\Http\Response;
 
 class ApiMerchantController extends Controller {
 
     public function sendOtp(){
-        $country = Input::get("country");
+        $country = Input::get("country_code");
         $phone = Input::get("phone");
-        $otp = rand(1000, 9999);
-        $userdata = User::where('telephone', $phone)->first();
-        if (!empty($userdata)) {
-            $userdata->otp = $otp;
-            $userdata->save();
-            $msgSucc = "Your one time password is. " . $otp;
-            Helper::sendsms($phone, $msgSucc, $country);
-            $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber", "otp" => $otp];
-        }
-        else{
-            $data = ["status" => "fail", "msg" => "Mobile Number is not Registered"];
+        if(Input::get("phone") && !empty(Input::get("phone"))){
+            $otp = rand(1000, 9999);
+            $userdata = User::where('telephone', $phone)->first();
+            if (!empty($userdata)) {
+                $userdata->otp = $otp;
+                $userdata->save();
+                $msgSucc = "Your one time password is. " . $otp;
+                Helper::sendsms($phone, $msgSucc, $country);
+                $data = ["status" => 1, "msg" => "OTP Successfully send on your mobileNumber", "otp" => $otp];
+            }
+            else{
+                $data = ["status" => 0, "msg" => "Mobile Number is not Registered"];
+            }
+            
+        } else {
+            $data = ["status" => 0, "msg" => "Mobile Number is missing"];
         }
         return response()->json($data);
     }
