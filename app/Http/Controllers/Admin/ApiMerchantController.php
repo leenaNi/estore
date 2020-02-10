@@ -19,7 +19,7 @@ class ApiMerchantController extends Controller {
         $country = Input::get("country");
         $phone = Input::get("phone");
         $otp = rand(1000, 9999);
-        $userdata = User::where('telephone',$phone)->first();
+        $userdata = User::where('telephone', $phone)->first();
         if (!empty($userdata)) {
             $userdata->otp = $otp;
             $userdata->save();
@@ -53,6 +53,7 @@ class ApiMerchantController extends Controller {
         }
         else{
             $data = ["status" => "fail", "msg" => "Please Enter Valid OTP"];
+            return response()->json($data);
         }
     }
 

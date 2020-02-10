@@ -67,7 +67,7 @@
 											<div class="role-radio-group">
 												<ul>
 													<li>
-														<input type="radio" name="roleType"  id="merchant" value="merchant" class="input-hidden" checked />
+														<input type="radio" name="roleType"  id="merchant" value="1" class="input-hidden" checked />
 														<label for="merchant">
 															<img src="{{ asset('public/Frontend/images/merchant-grey.svg')}}" alt="merchant" class="dective-merchant" />
 															<img src="{{ asset('public/Frontend/images/merchant.svg')}}" alt="merchant" class="active-merchant" />
@@ -75,7 +75,7 @@
 														</label>
 													</li>
 													<li>
-														<input type="radio" name="roleType" id="distributor" value="distributor" class="input-hidden" />
+														<input type="radio" name="roleType" id="distributor" value="2" class="input-hidden" />
 														<label for="distributor">
 															<img src="{{ asset('public/Frontend/images/distributor-grey.svg')}}" alt="distributor" class="dective-distributor" />
 															<img src="{{ asset('public/Frontend/images/distributor.svg')}}" alt="distributor" class="active-distributor" />

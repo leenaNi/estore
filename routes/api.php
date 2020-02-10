@@ -26,7 +26,7 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::group(['prefix' => 'createStore'], function () {
         Route::get('/Sing-up-dropdown', array('as' => 'admin.createStore.signUpDropDown', 'uses' => 'ApiCreateStoreController@signUpDropDown'));
         Route::post('/fb-signup-check', array('as' => 'admin.createStore.fbSignUpCheck', 'uses' => 'ApiCreateStoreController@fbSignUpCheck'));
-        Route::post('/save-sign-up', array('as' => 'admin.createStore.saveSignUp', 'uses' => 'ApiCreateStoreController@saveSignUp'));
+        Route::any('/save-sign-up', array('as' => 'admin.createStore.saveSignUp', 'uses' => 'ApiCreateStoreController@saveSignUp'));
         Route::post('/apply-store-theme', array('as' => 'admin.createStore.applyStoreTheme', 'uses' => 'ApiCreateStoreController@applyStoreTheme'));
         Route::post('/get-theme', array('as' => 'admin.createStore.getTheme', 'uses' => 'ApiCreateStoreController@getTheme'));
         Route::post('/check-domain', array('as' => 'admin.createStore.checkDomain', 'uses' => 'ApiCreateStoreController@checkDomain'));

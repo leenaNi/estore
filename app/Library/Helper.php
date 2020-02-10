@@ -590,4 +590,16 @@ class Helper
         fclose($jsonfile);
         return 1;
     }
+
+    public static function createUniqueIdentityCode($allinput, $lastInsteredId) // for merchnat and distributor
+    {
+        $storeName = $allinput['store_name'];
+        $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
+        $phoneNo = $allinput['phone'];
+        $randomFourDigit = rand(1000, 9999);
+        $indentityCode = substr($storeName, 0, 3) . substr($phoneNo, -3) . $lastInsteredId . $randomFourDigit;
+        //dd($indentityCode);
+        return $indentityCode;
+
+    } // End createUniqueIdentityCode
 }

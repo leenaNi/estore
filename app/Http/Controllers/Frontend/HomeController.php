@@ -144,7 +144,7 @@ class HomeController extends Controller
             $lastInsteredId = $merchantObj->id;
             if ($lastInsteredId > 0) {
                 $merchantObj1 = Merchant::find($lastInsteredId);
-                $indentityCode = $this->createUniqueIdentityCode($allinput, $lastInsteredId);
+                $indentityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
                 $merchantObj1->identity_code = $indentityCode;
                 $merchantObj1->save();
             }
@@ -180,7 +180,7 @@ class HomeController extends Controller
 
             if ($lastInsteredId > 0) {
                 $distributorObj1 = Vendor::find($lastInsteredId);
-                $indentityCode = $this->createUniqueIdentityCode($allinput, $lastInsteredId);
+                $indentityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
                 $distributorObj1->identity_code = $indentityCode;
                 $distributorObj1->save();
             }
@@ -211,7 +211,7 @@ class HomeController extends Controller
         //dd($indentityCode);
         return $indentityCode;
 
-    } // End createUniqueIdentityCode(
+    } // End createUniqueIdentityCode
     public function checkUser()
     {
         dd(Input::all());
