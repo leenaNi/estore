@@ -17,6 +17,8 @@ Route::get('/', function () {
 });
 
 Route::group(['namespace' => 'Admin'], function () {
+    Route::post('/send-otp', ["as" => "admin.merchant.sendotp", "uses" => "ApiMerchantController@sendOtp"]);
+    Route::post('/verify-otp', ["as" => "admin.merchant.verifyotp", "uses" => "ApiMerchantController@verifyOTP"]);
     Route::post('/merchant-login', ["as" => "admin.merchant.login", "uses" => "ApiMerchantController@merchantLogin"]);
     Route::post('/merchant-fb-login', ["as" => "admin.merchant.fblogin", "uses" => "ApiMerchantController@FbMerchantLogin"]);
     Route::any('/merchant-forgot_password', ["as" => "admin.merchant.forgotPassword", "uses" => "ApiMerchantController@forgotPassword"]);
@@ -24,13 +26,14 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::group(['prefix' => 'createStore'], function () {
         Route::get('/Sing-up-dropdown', array('as' => 'admin.createStore.signUpDropDown', 'uses' => 'ApiCreateStoreController@signUpDropDown'));
         Route::post('/fb-signup-check', array('as' => 'admin.createStore.fbSignUpCheck', 'uses' => 'ApiCreateStoreController@fbSignUpCheck'));
-        Route::post('/save-sign-up', array('as' => 'admin.createStore.saveSignUp', 'uses' => 'ApiCreateStoreController@saveSignUp'));
+        Route::any('/save-sign-up', array('as' => 'admin.createStore.saveSignUp', 'uses' => 'ApiCreateStoreController@saveSignUp'));
         Route::post('/apply-store-theme', array('as' => 'admin.createStore.applyStoreTheme', 'uses' => 'ApiCreateStoreController@applyStoreTheme'));
         Route::post('/get-theme', array('as' => 'admin.createStore.getTheme', 'uses' => 'ApiCreateStoreController@getTheme'));
         Route::post('/check-domain', array('as' => 'admin.createStore.checkDomain', 'uses' => 'ApiCreateStoreController@checkDomain'));
         Route::post('/check-store', array('as' => 'admin.createStore.checkStore', 'uses' => 'ApiCreateStoreController@checkStore'));
         Route::post('/check-mobile', array('as' => 'admin.createStore.checkMobile', 'uses' => 'ApiCreateStoreController@checkMobile'));
         Route::any('/send-otp', array('as' => 'admin.createStore.sendOtp', 'uses' => 'ApiCreateStoreController@sendOtp'));
+        Route::any('/verify-otp', array('as' => 'admin.createStore.verifyotp', 'uses' => 'ApiCreateStoreController@verifyotp'));
     });
 
     Route::group(['middleware' => ['jwt-auth']], function () {
@@ -70,7 +73,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/search-distributor', ["as" => "admin.merchants.searchDistributor", "uses" => "ApiMerchantController@searchDistributor"]);
             Route::any('/add-distributor', ["as" => "admin.merchants.addDistributor", "uses" => "ApiMerchantController@addDistributor"]);
             Route::get('/get-distributor', ["as" => "admin.merchants.getDistributor", "uses" => "ApiMerchantController@getDistributors"]);
-            
+
         });
         Route::group(['prefix' => 'stores'], function () {
             Route::get('/', ["as" => "admin.stores.view", "uses" => "StoreController@index"]);
@@ -229,10 +232,10 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('/brand-detail', ["as" => "admin.company.brandDetail", "uses" => "ApiCompanyController@getBrandDetail"]);
         });
 
-        Route::group(['prefix' => 'offer'], function() {
-          Route::get('/distributor-offer', ["as" => "admin.offer.getOffer", "uses" => "ApiOfferController@getDistributorOffer"]);
-          Route::get('/product-wise-offer', ["as" => "admin.offer.getProductWiseOffer", "uses" => "ApiOfferController@getProductWiseOffer"]);
-      });
+        Route::group(['prefix' => 'offer'], function () {
+            Route::get('/distributor-offer', ["as" => "admin.offer.getOffer", "uses" => "ApiOfferController@getDistributorOffer"]);
+            Route::get('/product-wise-offer', ["as" => "admin.offer.getProductWiseOffer", "uses" => "ApiOfferController@getProductWiseOffer"]);
+        });
 
         Route::group(['prefix' => 'distributor'], function() {
           Route::get('/product', ["as" => "admin.distributor.getProduct", "uses" => "ApiDistributorController@getProduct"]);

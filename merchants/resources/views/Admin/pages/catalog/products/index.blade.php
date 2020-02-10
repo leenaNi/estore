@@ -11,7 +11,6 @@
 
 </style>
 
-<!--<link rel="stylesheet" href="{{asset(Config('constants.fileUploadPluginPath').'css/style.css')}}">-->
 <link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload.css'}}">
 
 <link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui.css'}}">
@@ -434,6 +433,7 @@ if (empty(Input::get('prdSearch'))) {
     <!-- Product Add Modal -->
     <!-- Product Close Modal Open -->
 </section>
+
 <div id="addProductCat" class="modal fade"tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog addProduct-modal-dialog">
         <div class="modal-content">
@@ -578,21 +578,6 @@ if (empty(Input::get('prdSearch'))) {
     {% } %}
 </script>
 <script>
-    // $('#uploadBulkImages').click(function(){
-    //     var form = $("form#fileupload");
-    //     $.ajax({
-    //         url: form.attr('action'),
-    //         type: 'post',
-    //         data: form.serialize(),
-    //         beforeSend: function () {
-    //             // $("#barerr" + id).text('Please wait');
-    //         },
-    //         success: function (res) {
-    //             console.log(res);
-
-    //         }
-    //     });
-    // });
                                     $(".shareProductToMall").click(function () {
                                         $("#selCat").empty();                //    alert("for ");
                                         var prodId = ($(this).attr('prod-id'));
