@@ -421,6 +421,8 @@ class ApiCreateStoreController extends Controller {
                   if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
+                        $idcodeMsg = "Your unique identification code is ".$identityCode;
+                        Helper::sendsms($phone, $idcodeMsg, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
