@@ -193,10 +193,13 @@ class ProductsController extends Controller
             $totalCategory = count($catid); // industry
             //echo "totla cat >> ".$totalCategory;
 
-            for ($k = 0; $k < $totalCategory; $k++) {
-                if (!empty($catid[$k])) {
-                    Helper::saveDefaultSet($catid[$k], $prefix,$storeId,$storeType);
-                }
+            // for ($k = 0; $k < $totalCategory; $k++) {
+            //     if (!empty($catid[$k])) {
+            //         Helper::saveDefaultSet($catid[$k], $prefix,$storeId,$storeType);
+            //     }
+            // }
+            if (!empty($catid)) {
+                Helper::saveDefaultSet($catid, $prefix,$storeId,$storeType);
             }
         } 
         if ($login_user_type == 1) {
