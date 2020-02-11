@@ -210,7 +210,7 @@ class ApiCreateStoreController extends Controller {
                     $user = JWTAuth::toUser($token);
                     $store = $getMerchat->getstores;
                     $data = ['storeCount'=>count($store)]; 
-                    return response()->json(["status" => 1, 'result' => $user,'store'=>$store, 'setupStatus' =>$data])->header('token', $token);
+                    return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'data' => ['user' => $user,'store'=>$store, 'setupStatus' =>$data]])->header('token', $token);
                 } else {
                     return response()->json(["status" => 0, 'result' => 'Something went wrong!']);
                 }
@@ -697,12 +697,12 @@ class ApiCreateStoreController extends Controller {
         $mobile = Input::get("phone");
         $otp = rand(1000, 9999);        
         if ($mobile) {
-            $msgOrderSucc = "Your one time password is. " . $otp . ". Contact 1800 3000 2020 for real time support.! Team eStorifi";
+            $msgOrderSucc = "[#] Your one time password is. " . $otp . ". M7IdXLCi2Au"; // "Contact 1800 3000 2020 for real time support.! Team eStorifi";
             $smsOutput = Helper::sendsms($mobile, $msgOrderSucc, $country);
             $smsOutput = explode(' | ', $smsOutput);
             if($smsOutput[0] === 'success') {
                 DB::table('user_otp')->insert(['phone' => $mobile, 'otp' => $otp, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]);
-                $data = ["status" => 1, "msg" => "OTP Successfully send on your phone Number", "otp"=> $otp, 'smsOutput' => $smsOutput];
+                $data = ["status" => 1, "msg" => "OTP Successfully send on your phone Number"]; //, "otp"=> $otp, 'smsOutput' => $smsOutput
                 return $data;
             } else {
                 $data = ["status" => 0, "msg" => "Invalid phone number"];

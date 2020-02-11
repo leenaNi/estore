@@ -56,7 +56,7 @@ class Helper
         }
     }
 
-    public static function sendsms($mobile = null, $msg = null, $country = null)
+    public static function sendsms($mobile = null, $msg = null, $country = null, $isOtp = 0)
     {
         $mobile = $mobile;
         if ($mobile) {

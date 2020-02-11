@@ -6,66 +6,66 @@ use App\Http\Controllers\Controller;
 use App\Library\Helper;
 use App\Models\Merchant;
 use App\Models\User;
+use App\Models\Store;
 use Auth;
 use Crypt;
 use DB;
 use Hash;
+use Illuminate\Http\Response;
 use Input;
 use JWTAuth;
-use Illuminate\Http\Response;
 
-class ApiMerchantController extends Controller {
+class ApiMerchantController extends Controller
+{
 
-    public function sendOtp(){
+    public function sendOtp()
+    {
         $country = Input::get("country_code");
         $phone = Input::get("phone");
-        if(Input::get("phone") && !empty(Input::get("phone"))){
+        if (Input::get("phone") && !empty(Input::get("phone"))) {
             $otp = rand(1000, 9999);
-            $userdata = User::where('telephone', $phone)->first();
+            $userdata = User::where('telephone', $phone)->where('user_type', 1)->first();
             if (!empty($userdata)) {
                 $userdata->otp = $otp;
                 $userdata->save();
-                $msgSucc = "Your one time password is. " . $otp;
+                $msgSucc = "[#] Your one time password is. " . $otp . ". M7IdXLCi2Au";
                 Helper::sendsms($phone, $msgSucc, $country);
                 $data = ["status" => 1, "msg" => "OTP Successfully send on your mobileNumber", "otp" => $otp];
-            }
-            else{
+            } else {
                 $data = ["status" => 0, "msg" => "Mobile Number is not Registered"];
             }
-            
+
         } else {
             $data = ["status" => 0, "msg" => "Mobile Number is missing"];
         }
         return response()->json($data);
     }
 
-    public function verifyOTP(){
+    public function verifyOTP()
+    {
         $phone = Input::get("phone");
         $otp = Input::get("otp");
-        $userdata = User::where(['telephone'=>$phone,'otp'=>$otp])->first();
+        $userdata = User::where(['telephone' => $phone, 'otp' => $otp])->first();
         //dd($userdata);
         if (!empty($userdata)) {
-      
             if (!$token = JWTAuth::fromUser($userdata)) {
-
                 return response()->json(["status" => 0, 'msg' => "Invalid Mobile Number"]);
             }
             $result = response()->json(compact('token'));
             $getData = $result->getdata();
             $user = JWTAuth::toUser($getData->token);
-            $merchant = Merchant::where(['phone'=>$phone])->first();
-            
-            return response()->json(["status" => 1, 'msg' => "Successfully Loggedin", 'merchant' => $merchant])->header('token', $getData->token);
-        }
-        else{
-            $data = ["status" => "fail", "msg" => "Please Enter Valid OTP"];
+            $merchant = Merchant::where(['phone' => $phone])->first(['id', 'company_name', 'phone']);
+            $store = Store::where('merchant_id', $merchant)->where('store_type', 'merchant')->first();
+            return response()->json(["status" => 1, 'msg' => "Successfully Loggedin", 'data' => ['merchant' => $merchant, 'store' => $store]])->header('token', $getData->token);
+        } else {
+            $data = ["status" => "0", "msg" => "Please Enter Valid OTP"];
             return response()->json($data);
         }
     }
 
     public function merchantLogin()
     {
-        
+
         // Config::set('auth.providers.users.model', Merchant::Class);
         $credentials = [];
         $inputEmailPhone = Input::get('email');
@@ -80,17 +80,17 @@ class ApiMerchantController extends Controller {
         }
         $result = response()->json(compact('token'));
         //dd($result);
-        
+
         $getData = $result->getdata();
         $user = JWTAuth::toUser($getData->token);
         if (Auth::guard('merchant-users-web-guard')->attempt($credentials)) {
             Helper::postLogin();
         }
-        
+
         $userMerchant = User::where('id', Session::get('authUserId'))->first()->store()->first();
         $merchant = Merchant::find($userMerchant->merchant_id)->getstores()->first();
-        $store = Merchant::find($userMerchant->merchant_id)->getstores()->count();        
-        $user->merchant_id  = $userMerchant->merchant_id;
+        $store = Merchant::find($userMerchant->merchant_id)->getstores()->count();
+        $user->merchant_id = $userMerchant->merchant_id;
         if ($store > 0) {
             $popupStatus = DB::table('general_setting')->where('name', 'set_popup')->first()->status;
             $storeUrl = $merchant->store_domain;
@@ -99,7 +99,7 @@ class ApiMerchantController extends Controller {
         } else {
             $data = ['storeCount' => $store];
         }
-        
+
         return response()->json(["status" => 1, 'msg' => "Successfully Loggedin", 'result' => $user, 'setupStatus' => $data])->header('token', $getData->token);
     }
 
@@ -251,56 +251,43 @@ class ApiMerchantController extends Controller {
     {
         $distributorIdentityCode = Input::get("distributorCode");
         $merchantId = Input::get("merchantId");
-       
+
         // Get merchant industry id
         $merchantsResult = DB::table('merchants')->where("id", $merchantId)->get(['register_details']);
-        
+
         $decodedDistributorDetail = json_decode($merchantsResult[0]->register_details, true);
         $merchantbusinessId = $decodedDistributorDetail['business_type'][0];
 
-        if (!empty($distributorIdentityCode)) 
-        {
-            $distributorResult = DB::table('distributor')->where("identity_code", $distributorIdentityCode)->get(['id','business_name','email','firstname','lastname','country','phone_no','register_details']);
-            
-            if (count($distributorResult) > 0) 
-            {
+        if (!empty($distributorIdentityCode)) {
+            $distributorResult = DB::table('distributor')->where("identity_code", $distributorIdentityCode)->get(['id', 'business_name', 'email', 'firstname', 'lastname', 'country', 'phone_no', 'register_details']);
+
+            if (count($distributorResult) > 0) {
                 // Check already connected with distributor or not
                 $hasDistributor = DB::table('has_distributors')
-                ->where("distributor_id", $distributorResult[0]->id)
-                ->where('merchant_id',$merchantId)->get();
+                    ->where("distributor_id", $distributorResult[0]->id)
+                    ->where('merchant_id', $merchantId)->get();
 
-                if(count($hasDistributor) > 0)
-                {
+                if (count($hasDistributor) > 0) {
                     $decodedDistributorDetail = json_decode($distributorResult[0]->register_details);
                     $distributorbussinessArray = $decodedDistributorDetail->business_type;
 
-                    if (in_array($merchantbusinessId, $distributorbussinessArray)) 
-                    {
+                    if (in_array($merchantbusinessId, $distributorbussinessArray)) {
                         $data = ['status' => 1, 'distributorData' => $distributorResult[0]];
-                    } 
-                    else 
-                    {
+                    } else {
                         $data = ['status' => 0, 'error' => "Industry not matched"];
                     }
-                }
-                else
-                {
+                } else {
                     $data = ['status' => 0, 'error' => "You are already connected with this distributor. You can place order for this distributor."];
                 }
-            }
-            else 
-            {
+            } else {
                 $data = ['status' => 0, 'error' => "Invalid distributor code"];
             }
-        } 
-        else 
-        {
+        } else {
             $data = ['status' => 0, 'error' => "Enter distributor code"];
         }
-       
+
         return $data;
     } // End searchDistributor()
-
 
     public function addDistributor()
     {
@@ -308,9 +295,9 @@ class ApiMerchantController extends Controller {
         $merchantId = Input::get("merchantId");
 
         // Get distributor detail
-        $distributorResult = DB::table('distributor')->where("id", $distributorId)->get(['id','business_name','email','country','phone_no']);
-        $merchantResult = DB::table('merchants')->where("id", $merchantId)->get(['id','register_details']);
-       // echo "<pre>";print_r($merchantResult);exit;
+        $distributorResult = DB::table('distributor')->where("id", $distributorId)->get(['id', 'business_name', 'email', 'country', 'phone_no']);
+        $merchantResult = DB::table('merchants')->where("id", $merchantId)->get(['id', 'register_details']);
+        // echo "<pre>";print_r($merchantResult);exit;
 
         $distributorEmail = $distributorResult[0]->email;
         $distributorPhone = $distributorResult[0]->phone_no;
@@ -320,61 +307,54 @@ class ApiMerchantController extends Controller {
         $merchantRegisterDetail = json_decode($merchantResult[0]->register_details);
         $merchantStoreName = $merchantRegisterDetail->store_name;
 
-        $insertData = ["merchant_id" => $merchantId, "distributor_id" => $distributorId,'is_approved'=>1,'raised_by'=>'merchant'];
+        $insertData = ["merchant_id" => $merchantId, "distributor_id" => $distributorId, 'is_approved' => 1, 'raised_by' => 'merchant'];
         $isInserted = DB::table('has_distributors')->insert($insertData);
-        
+
         if ($isInserted) {
             $storeName = $merchantStoreName;
             $baseurl = str_replace("\\", "/", base_path());
             //$linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
             //SMS
-            $msgOrderSucc = $storeName . " is connected with you for business";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            $msgOrderSucc = $storeName . " is connected with you for business"; // Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
             Helper::sendsms($distributorPhone, $msgOrderSucc, $countryCode);
 
             //Email
             $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
             $sub = "Merchant Connect with you";
-        
-            $mailcontent = $storeName." is connected with you for business. ";
+
+            $mailcontent = $storeName . " is connected with you for business. ";
             //$mailcontent .= "Click on below link, if you want to connect with distributor ".$linkToConnect;
-        
+
             if (!empty($distributorEmail)) {
                 Helper::withoutViewSendMail($distributorEmail, $sub, $mailcontent);
             }
             $data = ['status' => 1, 'error' => "Your request successfully sent to the distributor."];
-            
+
         } // End if
-        else
-        {
+        else {
             $data = ['status' => 0, 'error' => "There is somthing wrong."];
         }
-       
+
         return $data;
-       
+
     } // End sendNotificationToDistributor();
 
     public function getDistributors()
     {
-        if(!empty(Input::get("merchantId")))
-        {
+        if (!empty(Input::get("merchantId"))) {
             $merchantId = Input::get("merchantId");
             $hasDistributorsResult = DB::table('has_distributors as hd')
-            ->join("distributor as d","d.id","=","hd.merchant_id")
-            ->where("hd.merchant_id",$merchantId)
-            ->get(['d.id','d.register_details']);;
-            if(count($hasDistributorsResult) > 0)
-            {
+                ->join("distributor as d", "d.id", "=", "hd.merchant_id")
+                ->where("hd.merchant_id", $merchantId)
+                ->get(['d.id', 'd.register_details']);
+            if (count($hasDistributorsResult) > 0) {
                 return response()->json(["status" => 1, 'result' => $hasDistributorsResult]);
+            } else {
+                return response()->json(["status" => 0, 'msg' => 'Record not found']);
             }
-            else
-            {
-                return response()->json(["status" => 0,  'msg' => 'Record not found']);
-            }
-        }
-        else
-        {
+        } else {
             return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
         }
-        
+
     } // End getDistributors()
 }
