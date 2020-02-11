@@ -14,6 +14,7 @@ use Hash;
 use Illuminate\Http\Response;
 use Input;
 use JWTAuth;
+use Request;
 
 class ApiMerchantController extends Controller
 {
@@ -55,7 +56,7 @@ class ApiMerchantController extends Controller
             $getData = $result->getdata();
             $user = JWTAuth::toUser($getData->token);
             $merchant = Merchant::where(['phone' => $phone])->first(['id', 'company_name', 'phone']);
-            $store = Store::where('merchant_id', $merchant)->where('store_type', 'merchant')->first();
+            $store = Store::where('merchant_id', $merchant->id)->where('store_type', 'merchant')->first();
             return response()->json(["status" => 1, 'msg' => "Successfully Loggedin", 'data' => ['merchant' => $merchant, 'store' => $store]])->header('token', $getData->token);
         } else {
             $data = ["status" => "0", "msg" => "Please Enter Valid OTP"];
