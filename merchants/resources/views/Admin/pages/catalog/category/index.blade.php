@@ -34,13 +34,7 @@
 </section>
 
 <section class="main-content">
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1>Categories</h1>
-        </div>
-      <div class="filter-section">
-            <div class="col-md-12 noAll-padding">
-                <div class="filter-full-section">
+    <div class="notification-column">
                     @if(!empty(Session::get('message')))
                     <div  class="alert alert-danger" role="alert">
                         {{ Session::get('message') }}
@@ -51,6 +45,15 @@
                         {{ Session::get('msg') }}
                     </div>
                     @endif
+    </div>
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Categories</h1>
+        </div>
+      <div class="filter-section">
+            <div class="col-md-12 noAll-padding">
+                <div class="filter-full-section">
+                   
                     <div class="form-group col-md-6 noBottomMargin">
                         <div class="input-group-btn">
                             <input type="text" name="catSearch" class="form-control medium pull-right catSearcH" placeholder="Search Category">

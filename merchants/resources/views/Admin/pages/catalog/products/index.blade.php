@@ -38,23 +38,26 @@
   </ol>
 </section>
 <section class="main-content">
+  <div class="notification-column">
+                @if(!empty(Session::get('message')))
+                  <div class="alert alert-danger" role="alert">
+                  {{ Session::get('message') }}
+                  </div>
+                  @endif
+                  @if(!empty(Session::get('msg')))
+                  <div class="alert alert-success" role="alert">
+                  {{Session::get('msg')}}
+                  </div>
+                  @endif
+  </div>
   <div class="grid-content">
         <div class="section-main-heading">
             <h1>Filter</h1>
         </div>
-        <div class="filter-section">
-        <div class="col-md-9 noAll-padding">
-            <div class="filter-left-section min-height335">
-                @if(!empty(Session::get('message')))
-                <div class="alert alert-danger" role="alert">
-                {{ Session::get('message') }}
-                </div>
-                @endif
-                @if(!empty(Session::get('msg')))
-                <div class="alert alert-success" role="alert">
-                {{Session::get('msg')}}
-                </div>
-                @endif
+        <div class="filter-section displayFlex">
+        <div class="col-md-9 noAll-padding displayFlex">
+            <div class="filter-left-section">
+               
 
                 {!! Form::open(['method' => 'get', 'route' => 'admin.products.view' , 'id' => 'searchForm' ]) !!}
                 {!! Form::hidden('productsCatalog',null) !!}
@@ -129,8 +132,8 @@
                 {!! Form::close() !!}
         </div>
       </div>
-      <div class="col-md-3 noAll-padding ">
-        <div class="filter-right-section  min-height335">
+      <div class="col-md-3 noAll-padding displayFlex">
+        <div class="filter-right-section">
             <?php $cat = count($rootsS) > 0 ? '' : "Cat";?>
             <a class="btn btn-default pull-right col-md-12 marginBottom15 mobAddnewflagBTN" type="button" data-toggle="modal" data-target="#addProduct{{$cat}}">Add New Product
             </a>
@@ -187,28 +190,28 @@
             <thead>
               <tr>
                 @if($barcode == 1)   
-                <th>
+                <th class="text-center">
                   <input type="checkbox" id="masterCheck" value="00"/>
                 </th>  @endif
-                <th>@sortablelink ('product', 'Product')
+                <th class="text-left">@sortablelink ('product', 'Product')
                 </th>
-                <th>Categories
+                <th class="text-left">Categories
                 </th>
-                <th>@sortablelink ('price', 'Price') 
+                <th class="text-right">@sortablelink ('price', 'Price') 
                 </th>
-                <th>Product Type
+                <th class="text-center">Product Type
                 </th>
                 @if($settingStatus['stock'] == 1)
-                <th>Stock
+                <th class="text-center">Stock
                 </th>
                 @endif
-                <th>Status
+                <th class="text-center">Status
                 </th>
                 @if(Session::get('login_user_type') != 3)
-                <th>Sell On Estorifi Mall
+                <th class="text-center">Sell On Estorifi Mall
                 </th>
                 @endif
-                <th>Action
+                <th class="text-center">Action
                 </th>
               </tr>
             </thead>
@@ -217,11 +220,11 @@
               @foreach($products as $product)
               <?php //dd($product->price); ?>
               <tr> @if($barcode == 1)  
-                <td>
+                <td class="text-center">
                   <input type="checkbox" class="singleCheck" name="singleCheck[]" value="{{ $product->id }}-{{ $product->prod_type }}"/>
                 </td>
                 @endif
-                <td>
+                <td class="text-left">
                   <div class="product-name vMiddle">
                     <span>
                       <img src="{{($product->catalogimgs()->first())?  Config('constants.productImgPath').'/'.$product->catalogimgs()->first()->filename:'' }}" class="admin-profile-picture" />
@@ -237,7 +240,7 @@
                     </span>
                   </div>
                 </td>
-                <td>
+                <td class="text-left">
                   <?php
                     $prodCategories = $product->categories()->get();
                     if ($prodCategories->count() > 0) {
@@ -247,7 +250,7 @@
                     }
                     ?>
                 </td>
-                <td>
+                <td class="text-right">
                   @if( $product->spl_price 
                   <= 0.00 )
                         <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> 
@@ -265,13 +268,13 @@
                   </span>
                   @endif
                 </td>
-                <td> {{ $product->producttype->type }}
+                <td class="text-center"> {{ $product->producttype->type }}
                 </td>
                 @if($settingStatus['stock'] == 1)
-                <td>{{ $product->stock }}
+                <td class="text-center">{{ $product->stock }}
                 </td>
                 @endif
-                <td>
+                <td class="text-center">
                   @if($product->status==1)
                   <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this product?')" data-toggle="tooltip" title="Enabled">
                     <i class="fa fa-check btn-plen btn">
@@ -285,7 +288,7 @@
                   @endif
                 </td>
                 @if(Session::get('login_user_type') != 3)
-                <td>
+                <td class="text-center">
                   @if($product->is_share_on_mall==0)
                   <a prod-id="{{$product->id}}" class="   shareProductToMall" ui-toggle-class="" title="Publish To Mall"> 
                     <i class="fa fa-check btn-plen btn">
@@ -523,6 +526,7 @@
   <!-- Product Add Modal -->
   <!-- Product Close Modal Open -->
 </section>
+<div class="clearfix"></div>
 <div id="addProductCat" class="modal fade"tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog addProduct-modal-dialog">
     <div class="modal-content">

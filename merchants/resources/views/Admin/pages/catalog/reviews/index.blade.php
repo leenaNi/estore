@@ -83,14 +83,8 @@ use App\Models\Order;
 </section>
 
 <section class="main-content">
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1>Customer Reviews</h1>
-        </div>
-      <div class="filter-section">
-         <div class="col-md-12 noAll-padding">
-           <div class="filter-full-section">
-             @if(!empty(Session::get('message')))
+    <div class="notification-column">
+               @if(!empty(Session::get('message')))
                 <div class="alert alert-danger" role="alert">
                     {{ Session::get('message') }}
                 </div>
@@ -100,6 +94,15 @@ use App\Models\Order;
                     {{Session::get('msg')}}
                 </div>
                 @endif
+    </div>
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Customer Reviews</h1>
+        </div>
+      <div class="filter-section displayFlex">
+         <div class="col-md-12 noAll-padding displayFlex">
+           <div class="filter-full-section">
+            
 
                 {!! Form::open(['method' => 'get', 'route' => 'admin.reviews.view' , 'id' => 'searchForm' ]) !!}
                     <div class="form-group col-md-4">
@@ -130,13 +133,13 @@ use App\Models\Order;
       <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
-                                <th>Customer</th>
-                                <th>Product</th>
-                                <th>OrderID</th>
-                                <th>Order Date</th>
-                                <th>Review Date</th>
-                                <th>Status</th>
-                                <th>Action </th>
+                                <th class="text-left">Customer</th>
+                                <th class="text-left">Product</th>
+                                <th class="text-center">OrderID</th>
+                                <th class="text-right">Order Date</th>
+                                <th class="text-right">Review Date</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action </th>
                             </tr>
                         </thead>
                         <tbody>
