@@ -9,8 +9,6 @@
         padding: 15px;
     }
 
-
-
 </style>
 
 <link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload.css'}}">

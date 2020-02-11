@@ -388,16 +388,19 @@ class ProductsController extends Controller
 
         $is_desc = GeneralSetting::where('url_key', 'des')->first();
 
-        return view(Config('constants.adminProductView') . '.editInfo', compact('prod', 'action', 'barcode', 'unit_measure', 'taxes', 'selected_taxes', 'is_desc'));
+        $brandList = DB::table("brand")->pluck('name','id')->prepend('Select Brand','');
+        //echo "<pre>";print_r($brandList);exit;
+        return view(Config('constants.adminProductView') . '.editInfo', compact('prod', 'action', 'barcode', 'unit_measure', 'taxes', 'selected_taxes', 'is_desc','brandList'));
     }
 
     public function update()
     {
-
+        //dd(Input::all());
         $is_desc = GeneralSetting::where('url_key', 'des')->first();
         $retunUrl = Input::get('return_url');
         $prod = Product::find(Input::get('id'));
         $prod->status = Input::get('status');
+        $prod->brand_id = Input::get('brand_id');
         $prod->updated_by = Input::get('updated_by');
         $prod->eCount = Input::get('eCount');
         $prod->eNoOfDaysAllowed = Input::get('eNoOfDaysAllowed');
@@ -1093,9 +1096,10 @@ class ProductsController extends Controller
     public function ProductsComboSearch()
     {
         $prodId = Input::get("id");
+        $prodIds = json_decode(Input::get("prodIds"));
         $comboId = DB::table('has_combo_prods')->where('prod_id', $prodId)->pluck("combo_prod_id");
         if ($_GET['term'] != "") {
-            $prods = Product::where('is_individual', '=', '1')->where('prod_type', '!=', 2)->where('product', "like", '%' . $_GET['term'] . '%')->whereNotIn("id", $comboId)->select("id", "product", "selling_price", "price")->get();
+            $prods = Product::where('is_individual', '=', '1')->where('prod_type', '!=', 2)->where('product', "like", '%' . $_GET['term'] . '%')->whereNotIn("id", $comboId)->whereNotIn("id", $prodIds)->select("id", "product", "selling_price", "price")->get();
             return $prods;
         } else {
             return '';
@@ -1111,7 +1115,7 @@ class ProductsController extends Controller
         //     $prod->comboproducts()->detach();
         // }
         $this->comboAttach();
-        $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
+        // $attrs = AttributeSet::find($prod->attributeset['id'])->attributes->toArray();
 
         if (!empty(Input::get('return_url'))) {
             $nextView = redirect()->to(Input::get('return_url'));
@@ -1128,21 +1132,25 @@ class ProductsController extends Controller
     public function comboAttach()
     {
         // dd(Input::all());
-        $prod = Product::find(Input::get("id"));
-        $prodIds = Input::get("prod_id");
-        $subprodid = Input::get("subprodid");
-        $prodPrice = Input::get("old_price");
-        $prodNewPrice = Input::get("new_price");
-        $prodQty = Input::get("qty");
-        $comboProds = [];
-        foreach($prodIds as $prodIdKey => $prodId){
-            $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'sub_prod_id'=> @$subprodid[$prodIdKey], 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
-            array_push($comboProds, $comboProd);
+        if(Input::get("prod_id")){
+            $prod = Product::find(Input::get("id"));
+            $prodIds = Input::get("prod_id");
+            $subprodid = Input::get("subprodid");
+            $prodPrice = Input::get("old_price");
+            $prodNewPrice = Input::get("new_price");
+            $prodQty = Input::get("qty");
+            $comboProds = [];
+            if(!empty($prodIds)){
+                foreach($prodIds as $prodIdKey => $prodId){
+                    $comboProd = ['prod_id' => $prod->id, 'combo_prod_id' => $prodId, 'sub_prod_id'=> @$subprodid[$prodIdKey], 'old_price' => $prodPrice[$prodIdKey], 'new_price' => $prodNewPrice[$prodIdKey] , 'qty' => $prodQty[$prodIdKey]];
+                    array_push($comboProds, $comboProd);
+                }
+                // dd($comboProds);
+                DB::table('has_combo_prods')->insert($comboProds);
+                $this->updateComboProdPrice($prod);
+                return redirect()->back()->with('Added successfully.');
+            }
         }
-        // dd($comboProds);
-        DB::table('has_combo_prods')->insert($comboProds);
-        $this->updateComboProdPrice($prod);
-        return redirect()->back()->with('Added successfully.');
     }
 
     public function updateComboProdPrice($prod) {

@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     use Notifiable;
-  protected $table = 'users';
+    protected $table = 'users';
     /**
      * The attributes that are mass assignable.
      *
@@ -26,14 +26,22 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-      public function addresses() {
+    public function addresses()
+    {
         return $this->hasMany('App\Models\Address', 'user_id', 'id')->orderBy('id', 'desc');
     }
-    public function userCashback() {
+    public function userCashback()
+    {
         return $this->hasOne('App\Models\HasCashbackLoyalty', 'user_id');
     }
 
-    public function store(){
+    public function store()
+    {
         return $this->belongsTo('App\Models\Store', 'store_id');
+    }
+
+    public function getstores()
+    {
+        return $this->hasMany("App\Models\Store", 'store_id');
     }
 }

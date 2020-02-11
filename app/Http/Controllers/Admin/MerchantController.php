@@ -3,24 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Merchant;
+use App\Library\Helper;
 use App\Models\Bank;
 use App\Models\Category;
 use App\Models\Currency;
-use App\Library\Helper;
 use App\Models\Document;
-use App\Models\Layout;
-use Validator;
-use Illuminate\Support\Facades\Input;
-use Hash;
-use Session;
+use App\Models\Merchant;
+use App\Models\User;
 use Auth;
 use DB;
+use Hash;
+use Illuminate\Support\Facades\Input;
+use Session;
+use Validator;
 
-class MerchantController extends Controller {
+class MerchantController extends Controller
+{
 
-    public function index(\Illuminate\Http\Request $request) {
-
+    public function index(\Illuminate\Http\Request $request)
+    {
 
         $headers = $request->headers->all();
 
@@ -29,26 +30,25 @@ class MerchantController extends Controller {
         foreach ($allBanks as $allB) {
             $bank[$allB->id] = $allB->name;
         }
-
+        $userMerchant = User::where('id', Session::get('authUserId'))->first()->store()->first();
         if (Auth::guard('vswipe-users-web-guard')->check() !== false) {
             $merchants = Merchant::orderBy('id', 'desc');
         } else if (Auth::guard('bank-users-web-guard')->check() !== false) {
             $bkid = $this->getbankid();
-            $merchants = Merchant::whereHas('hasMarchants', function($q) use($bkid) {
-                        $q->where("bank_id", $bkid);
-                    })->orderBy('id', 'desc');
+            $merchants = Merchant::whereHas('hasMarchants', function ($q) use ($bkid) {
+                $q->where("bank_id", $bkid);
+            })->orderBy('id', 'desc');
         } else if (Auth::guard('merchant-users-web-guard')->check() !== false) {
-            $merchants = Merchant::orderBy('id', 'desc')->where("id", Session::get('authUserId'));
+            $merchants = Merchant::orderBy('id', 'desc')->where("id", $userMerchant->merchant_id);
         } else if (array_key_exists('token', $headers)) {
-            $merchants = Merchant::orderBy('id', 'desc')->where("id", Session::get('authUserId'));
+            $merchants = Merchant::orderBy('id', 'desc')->where("id", $userMerchant->merchant_id);
         }
 
-        
         $search = Input::get('search');
         if (!empty($search)) {
 
             if (!empty(Input::get('s_bank_name'))) {
-                $merchants = $merchants->whereHas("hasMerchants", function($query) {
+                $merchants = $merchants->whereHas("hasMerchants", function ($query) {
                     $query->where("banks.id", Input::get('s_bank_name'));
                 });
             }
@@ -81,7 +81,7 @@ class MerchantController extends Controller {
         //     $temp_data->industry = json_decode($dt["register_details"])->business_name;
         //     $temp_data->currency = Currency::where("id", json_decode($dt["register_details"])->currency)->pluck('name')[0];
         //     $res_merchant[$i] = $temp_data;
-        //     $i++; 
+        //     $i++;
         // }
         // dd($res_merchant);
         $data = [];
@@ -92,7 +92,9 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function addEdit() {
+    public function addEdit()
+    {
+        // dd(Input::get('id'));
         $merchant = Merchant::findOrNew(Input::get('id'));
         $data = [];
         $data['already_selling'] = [];
@@ -115,11 +117,12 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function saveUpdate() {
+    public function saveUpdate()
+    {
 
         $validation = new Merchant();
         $merchant = Merchant::findOrNew(Input::get('id'));
-        $business_name = Category::where("id",(int)Input::get('business_type'))->get(['category'])->toArray();
+        $business_name = Category::where("id", (int) Input::get('business_type'))->get(['category'])->toArray();
         $validator = Validator::make(Input::all(), Merchant::rules(Input::get('id')), $validation->messages);
         if ($validator->fails()) {
             return $validator->messages()->toJson();
@@ -137,8 +140,10 @@ class MerchantController extends Controller {
                     $merchant->password = $password;
                     $merchant->save();
 
-                    if (!empty($this->getbankid()))
+                    if (!empty($this->getbankid())) {
                         $merchant->hasMarchants()->attach($merchant->id, $addArr);
+                    }
+
                 } else {
                     //existing merchant gets add
                     $merchant = Merchant::findOrNew($chkmerch->id);
@@ -148,7 +153,6 @@ class MerchantController extends Controller {
                         return "VsMerchantError";
                     }
                 }
-
 
                 if (!empty($merchant)) {
                     $sub = "Login credentials for " . $merchant->company_name . ". You can create one or more store using app";
@@ -181,19 +185,18 @@ class MerchantController extends Controller {
             $data['docs'] = @$merchant->documents()->get();
             $data['status'] = "Saved successfully";
 
-
             return Helper::returnView(null, $data);
         }
     }
 
-    public function saveUpdateDocuments(\Illuminate\Http\Request $request) {
+    public function saveUpdateDocuments(\Illuminate\Http\Request $request)
+    {
         $validation = new Merchant();
         $rules = ['des.*' => 'required', 'docs.*' => 'required|mimes:png,gif,jpeg,txt,pdf,doc'];
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
             return $validator->errors()->all();
         } else {
-
             foreach (Input::get('des') as $imgK => $imgV) {
                 $saveCImh = Document::findOrNew(Input::get('id_doc')[$imgK]);
                 $saveCImh->parent_id = Input::get('id');
@@ -213,9 +216,9 @@ class MerchantController extends Controller {
             }
             $data['documents'] = Merchant::find(Input::get('id'))->documents()->get();
             $data['status'] = "Saved successfully";
-            if($request->submitbutton == 'Save & Exit'){
+            if ($request->submitbutton == 'Save & Exit') {
                 $redirectView = 'admin.merchants.view';
-            }else{
+            } else {
                 // $redirectView = ;
                 return redirect()->back();
             }
@@ -223,14 +226,16 @@ class MerchantController extends Controller {
         }
     }
 
-    public function deleteDocument() {
+    public function deleteDocument()
+    {
         $id = Input::get('docId');
         $del = Document::find($id);
         $del->delete();
         echo "Successfully deleted";
     }
 
-    public function merchantAutocomplete() {
+    public function merchantAutocomplete()
+    {
         $term = Input::get('term');
         $getMerchants = [];
         $merchants = Merchant::where("company_name", "like", "%" . $term . "%")->get();
@@ -243,7 +248,8 @@ class MerchantController extends Controller {
         echo json_encode($getMerchants);
     }
 
-    public function checkExistingMerchant() {
+    public function checkExistingMerchant()
+    {
         $term = Input::get('term');
         $getMerchants = [];
         $merchants = Merchant::where("company_name", "like", "$term")->get();
@@ -257,7 +263,8 @@ class MerchantController extends Controller {
         return $getMerchants;
     }
 
-    public function storeSetUp() {
+    public function storeSetUp()
+    {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $storePath = base_path() . '/merchants/' . $merchant->url_key;
@@ -283,7 +290,6 @@ class MerchantController extends Controller {
         if ($popupStatus) {
             $set_popup = DB::table($merchant->prefix . '_general_setting')->where('is_question', 1)->orderBy('question_category_id', 'DESC')->where('name', '<>', 'set_popup')->whereIn('id', $id)->get();
 
-
             foreach ($questionCategory as $cat) {
                 foreach ($set_popup as $setting) {
                     if ($cat->id == $setting->question_category_id) {
@@ -292,7 +298,7 @@ class MerchantController extends Controller {
                 }
             }
 //     $set_popup = DB::table($merchant->prefix.'_general_setting')->where('is_question',1)->orderBy('sort_order','DESC')->where('name','<>','set_popup')->where('question_category_id',1)
-//             ->join($merchant->prefix.'_has_industries',$merchant->prefix.'_has_industries.general_setting_id','=',$merchant->prefix.'_general_setting.id')->get();
+            //             ->join($merchant->prefix.'_has_industries',$merchant->prefix.'_has_industries.general_setting_id','=',$merchant->prefix.'_general_setting.id')->get();
         } else {
             $set_popup = [];
         }
@@ -301,7 +307,8 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function storeSetUpSave() {
+    public function storeSetUpSave()
+    {
         $marchantId = Input::get("merchantId");
         $settingData = Input::get("questions");
 
@@ -313,18 +320,18 @@ class MerchantController extends Controller {
         foreach ($settingData as $value) {
 
             $status['status'] = $value['status'];
-             if($value['url_key']=='default-courier'){
-                if(Input::get("courier_id")){
-                $courier['courier_id']=Input::get("courier_id");
-                $courier['preference']=1;
-                $courier['store_id']=$merchant->id;
-                $courier['status']=1;
-                DB::table("has_couriers")->insert($courier);
+            if ($value['url_key'] == 'default-courier') {
+                if (Input::get("courier_id")) {
+                    $courier['courier_id'] = Input::get("courier_id");
+                    $courier['preference'] = 1;
+                    $courier['store_id'] = $merchant->id;
+                    $courier['status'] = 1;
+                    DB::table("has_couriers")->insert($courier);
                 }
             }
             //$ids[]=$value['id'];
             DB::table($merchant->prefix . '_general_setting')->where('id', $value['id'])->update($status);
-            // $ids[]=$value['id']; 
+            // $ids[]=$value['id'];
         }
         $general = [];
         $popupStatus['status'] = 0;
@@ -338,7 +345,8 @@ class MerchantController extends Controller {
         //  dd($ids);
     }
 
-    public function storeDesign() {
+    public function storeDesign()
+    {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $storePath = base_path() . '/merchants/' . $merchant->url_key;
@@ -356,7 +364,8 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function storeLogo() {
+    public function storeLogo()
+    {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $storePath = base_path() . '/merchants/' . $merchant->url_key;
@@ -364,15 +373,16 @@ class MerchantController extends Controller {
         $filePath = $merchant->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/layout/';
         $homePageSlider = DB::table($merchant->prefix . '_has_layouts')->where('layout_id', 1)->orderBy("sort_order", "asc")->get();
         $homePageThreeBoxes = DB::table($merchant->prefix . '_has_layouts')->where('layout_id', 4)->orderBy("sort_order", "asc")->get();
-//   $categories= DB::table($merchant->prefix.'_categories')->where('status',1)->where('is_home',1)->get(); 
-//   $products= DB::table($merchant->prefix.'_products')->where('status',1)->where('is_individual',1)->get(); 
-//   $contact= DB::table($merchant->prefix.'_contacts')->where('status',1)->get(); 
+//   $categories= DB::table($merchant->prefix.'_categories')->where('status',1)->where('is_home',1)->get();
+        //   $products= DB::table($merchant->prefix.'_products')->where('status',1)->where('is_individual',1)->get();
+        //   $contact= DB::table($merchant->prefix.'_contacts')->where('status',1)->get();
         $data = ['storeLogo' => $store, 'homePageSlider' => $homePageSlider, 'homePageThreeBoxes' => $homePageThreeBoxes, 'filePath' => $filePath];
         $viewname = '';
         return Helper::returnView($viewname, $data);
     }
 
-    public function updateStoreLogo() {
+    public function updateStoreLogo()
+    {
         $marchantId = Input::get("merchantId");
         $logoType = Input::get("logoType");
         $logoImage = Input::get("logoImage");
@@ -380,9 +390,9 @@ class MerchantController extends Controller {
         // dd(Input::all());
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
 // $data=json_decode($data);
-// foreach($data as $data1){
-//     dd($data1->status);
-// }
+        // foreach($data as $data1){
+        //     dd($data1->status);
+        // }
         //DB::table($merchant->prefix.'_has_layouts')->where('layout_id', 1)->delete();
         if ($logoType == 1) {
             $storePath = base_path() . '/merchants/' . $merchant->url_key;
@@ -466,19 +476,24 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function getCategory() {
+    public function getCategory()
+    {
         $marchantId = Input::get("merchantId");
-        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-        $categories = DB::table($merchant->prefix . '_categories')->select("id", "category", "url_key", "status")->get();
+        // $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $merchant = User::find(Input::get('merchantId'))->getstores()->first();
+        $categories = DB::table('store_categories')->where('store_categories.store_id', $merchant->id)
+            ->join('categories', 'categories.id', '=', 'store_categories.category_id')
+            ->select("store_categories.id", "categories.category", "store_categories.url_key", "store_categories.status")->get();
         foreach ($categories as $category) {
-            $category->catImage = "http://" . $merchant->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/category/' . @DB::table($merchant->prefix . '_catalog_images')->where("image_type", 2)->where('catalog_id', $category->id)->latest()->first()->filename;
+            $category->catImage = "http://" . $merchant->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/category/' . @DB::table('catalog_images')->where("image_type", 2)->where('catalog_id', $category->id)->latest()->first()->filename;
         }
         $data = ['categories' => $categories];
         $viewname = '';
         return Helper::returnView($viewname, $data);
     }
 
-    public function updateCategory() {
+    public function updateCategory()
+    {
         $marchantId = Input::get("merchantId");
         $categories = Input::get("categories");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
@@ -487,7 +502,7 @@ class MerchantController extends Controller {
         foreach ($categoryData as $value) {
             $status['status'] = $value['status'];
             $status['updated_at'] = date("y-m-d h:i:s");
-            DB::table($merchant->prefix . '_categories')->where('id', $value['id'])->update($status);
+            DB::table('store_categories')->where('id', $value['id'])->update($status);
         }
         $data = [];
         $data['status'] = "success";
@@ -495,7 +510,8 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function getContactInfo() {
+    public function getContactInfo()
+    {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $contact = DB::table($merchant->prefix . '_contacts')->get();
@@ -504,7 +520,8 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function updateContactInfo() {
+    public function updateContactInfo()
+    {
         $marchantId = Input::get("merchantId");
         $id = Input::get("id");
         $customer_name = Input::get("contact_name");
@@ -526,7 +543,8 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function getProducts() {
+    public function getProducts()
+    {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $products = DB::table($merchant->prefix . '_products')->where("is_individual", 1)->where("status", 1)->get();
@@ -536,7 +554,8 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function viewStore() {
+    public function viewStore()
+    {
         $marchantId = Input::get("merchantId");
 
         //  $data= $_SERVER['SERVER_NAME'];
@@ -547,7 +566,8 @@ class MerchantController extends Controller {
         return Helper::returnView($viewname, $data);
     }
 
-    public function featureList() {
+    public function featureList()
+    {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $settings = DB::table($merchant->prefix . '_general_setting')->get();
@@ -562,7 +582,8 @@ class MerchantController extends Controller {
         return $data;
     }
 
-    public function saveCategory() {
+    public function saveCategory()
+    {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $id = Input::get("id");
@@ -602,7 +623,8 @@ class MerchantController extends Controller {
         return $data;
     }
 
-    public function addCatImage($catImage, $catId, $catName, $merchant) {
+    public function addCatImage($catImage, $catId, $catName, $merchant)
+    {
         if ($catImage) {
             //$catImage=Input::get('cat_img');
             $image_parts = explode(";base64,", $catImage);
@@ -623,13 +645,13 @@ class MerchantController extends Controller {
         return 1;
     }
 
-    public function deleteCategory() {
+    public function deleteCategory()
+    {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
         $getId = Input::get('id');
         $cat = DB::table($prifix . '_categories')->find($getId);
-
 
         if ($cat->parent_id == null) {
             $chidCat = DB::table($prifix . '_categories')->where("id", $cat->parent_id)->get();
@@ -673,35 +695,43 @@ class MerchantController extends Controller {
         return $data;
     }
 
-    public function check_product($product, $prifix) {
+    public function check_product($product, $prifix)
+    {
         $productInfo = DB::table($prifix . '_products')
-                ->join($prifix . '_categories', $prifix . '_categories.id', '=', $prifix . '_products.id')
-                ->get();
+            ->join($prifix . '_categories', $prifix . '_categories.id', '=', $prifix . '_products.id')
+            ->get();
 
         return $productInfo;
     }
 
-    public function checkExistingUser() {
+    public function checkExistingUser()
+    {
         $chkEmail = Merchant::where("email", Input::get('email'))->first();
-        if (count($chkEmail) > 0)
+        if (count($chkEmail) > 0) {
             return 1;
-        else
+        } else {
             return 0;
+        }
+
     }
 
-    public function checkExistingphone() {
+    public function checkExistingphone()
+    {
         $chkEmail = Merchant::where("phone", Input::get('phone_no'))->first();
-        if (count($chkEmail) > 0)
+        if (count($chkEmail) > 0) {
             return 1;
-        else
+        } else {
             return 0;
+        }
+
     }
 
-    public function updateFeature() {
+    public function updateFeature()
+    {
         $marchantId = Input::get("merchantId");
         $id = Input::get("id");
         $status = Input::get("status");
-       
+
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $featuredata = [];
         if ($id) {
@@ -709,21 +739,22 @@ class MerchantController extends Controller {
             if (!empty(Input::get("details"))) {
                 $featuredata['details'] = Input::get("details");
             }
-           
+
             DB::table($merchant->prefix . '_general_setting')->where('id', $id)->update($featuredata);
             $feature = DB::table($merchant->prefix . '_general_setting')->find($id);
             $general = [];
             $general[strtolower($feature->url_key)] = $feature->status;
 //         foreach ($feature as $key => $value) {
-//            
-//        }
+            //
+            //        }
             return $data = ['status' => 1, 'msg' => "Feature status change successfully", "feature" => $feature, "general" => $general];
         } else {
             return $data = ['status' => 0, 'msg' => "Opps somethings went wromg"];
         }
     }
 
-    public function storeInfo() {
+    public function storeInfo()
+    {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
@@ -731,16 +762,17 @@ class MerchantController extends Controller {
         $storePath = base_path() . '/merchants/' . $merchant->url_key;
         $store = Helper::getStoreSettings($storePath)['storeName'];
         $storeData = DB::table($prifix . '_static_pages')->where("url_key", "contact-us")->first()->contact_details;
-        $storeData=json_decode($storeData);
+        $storeData = json_decode($storeData);
         $data['storeContact'] = $storeData;
         $data['storeName'] = $store;
         //dd($storeData);
         return $data;
     }
-   public function getCourier() {
-       
-         $couriers = DB::table('couriers')->where("status", "1")->get(["id","name"]);
-          $data['couriers'] =$couriers;
-          return $data;
+    public function getCourier()
+    {
+
+        $couriers = DB::table('couriers')->where("status", "1")->get(["id", "name"]);
+        $data['couriers'] = $couriers;
+        return $data;
     }
 }

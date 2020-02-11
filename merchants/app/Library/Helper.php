@@ -4,6 +4,7 @@ namespace App\Library;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\DistributorProduct;
 use App\Models\Loyalty;
 use App\Models\AttributeValue;
 use App\Models\AttributeSet;
@@ -164,8 +165,10 @@ class Helper {
     }
 
     public static function checkStock($prodid, $qtty = null, $subprodId = null) {
-        $getprod = Product::find($prodid);
-        
+       
+        $getprod = DB::table('products')->where('id',$prodid)->first();
+        //$getprod = Product::find($prodid);
+        //dd($getprod);
         if ($getprod->prod_type == 1) {
             $searchCart = Cart::instance("shopping")->search(array('id' => $prodid));
             $cartDataS = Cart::get($searchCart[0]);
@@ -179,7 +182,11 @@ class Helper {
             $searchCartCf = Cart::instance("shopping")->search(array('id' => $prodid, 'options' => array('sub_prod' => (int) $subprodId)));
             $cartDataCf = Cart::get($searchCartCf[0]);
             $subProdid = $subprodId;
-            $getstockConfig = Product::find($subProdid)->stock;
+            if(Session::get('distributor_store_id')){
+                $getstockConfig = DistributorProduct::find($subProdid)->stock;
+            } else {
+                $getstockConfig = Product::find($subProdid)->stock;
+            }
             $totQtyCf = @$cartDataCf->qty + $qtty;
 
             if ($totQtyCf <= $getstockConfig)
@@ -196,7 +203,11 @@ class Helper {
             }
             $chkArr = [];
             foreach ($prodIds as $idsV) {
-                $getprodC = Product::find($idsV);
+                if(Session::get('distributor_store_id')){
+                    $getprodC = DistributorProduct::find($idsV);
+                }else{
+                    $getprodC = Product::find($idsV);
+                }
                 if ($getprodC->prod_type == 1) {
                     $getstockSimp1 = $getprodC->stock;
                     $totQtyS1 = @$cartDataCmbo->qty + $qtty;
@@ -208,8 +219,11 @@ class Helper {
                 } else if ($getprodC->prod_type == 3) {
 
                     $subProdid1 = $subprodId[$idsV];
-
-                    $getstockConf1 = Product::find($subProdid1)->stock;
+                    if(Session::get('distributor_store_id')){
+                        $getstockConf1 = DistributorProduct::find($subProdid1)->stock;
+                    } else {
+                        $getstockConf1 = Product::find($subProdid1)->stock;
+                    }
                     $totQtyCf2 = @$cartDataCmbo->qty + $qtty;
                     if ($totQtyCf2 <= $getstockConf1) {
                         array_push($chkArr, 1);

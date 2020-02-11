@@ -1,6 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
-	
+
 	<!--==========================
 	    step1 Section starts
 	  ============================-->
@@ -40,14 +40,14 @@
 											</div>
 											<span class="error" style="display:none" id="business_name_err">Business name can not be blank</span>
 										</div>
-										
+
 										<div class="form-group">
 											<label for="">Mobile Number</label>
 											<div class="mob-num-ctcode">
 												<div class="ct-select">
 													<select name="country_code" id="country_code">
                                                     <option value="{{$settings->country_code}}" selected data-image="{{ asset('public/Frontend/images/india.png')}}">{{$settings->country_code}}</option>
-														
+
 													</select>
 												</div>
 												<div class="input-group">
@@ -59,24 +59,29 @@
 													</span>
 												</div>
 											</div>
+<<<<<<< HEAD
 										
 											<span class="error" style="display:none" id="mobileno_err">Mobile No. can not be blank</span>
+=======
+
+											<span class="error" style="display:none" id="mobileno_err">Please enter valid mobile number</span>
+>>>>>>> ad4a16a285901979131d47360a1b6a296f8d7c27
 										</div>
 										<div class="form-group">
 											<label for="">Who are you?</label>
 											<div class="role-radio-group">
 												<ul>
 													<li>
-														<input type="radio" name="roleType"  id="merchant" value="merchant" class="input-hidden" checked />
-														<label for="merchant"> 
+														<input type="radio" name="roleType"  id="merchant" value="1" class="input-hidden" checked />
+														<label for="merchant">
 															<img src="{{ asset('public/Frontend/images/merchant-grey.svg')}}" alt="merchant" class="dective-merchant" />
 															<img src="{{ asset('public/Frontend/images/merchant.svg')}}" alt="merchant" class="active-merchant" />
 															<span>Merchant</span>
 														</label>
 													</li>
 													<li>
-														<input type="radio" name="roleType" id="distributor" value="distributor" class="input-hidden" />
-														<label for="distributor"> 
+														<input type="radio" name="roleType" id="distributor" value="2" class="input-hidden" />
+														<label for="distributor">
 															<img src="{{ asset('public/Frontend/images/distributor-grey.svg')}}" alt="distributor" class="dective-distributor" />
 															<img src="{{ asset('public/Frontend/images/distributor.svg')}}" alt="distributor" class="active-distributor" />
 															<span>Distributor</span>
@@ -135,11 +140,11 @@
 												<input type="tel" max="1" class="form-control col" id="otp2" placeholder="">
 												<input type="tel" class="form-control col" id="otp3" placeholder="">
 												<input type="tel" class="form-control col" id="otp4" placeholder="">
-												
+
 											</div>
 											<span class="error otperr" style="display:none">Please enter valid OTP</span>
 										</div>
-										
+
 									</div>
 </div>
 										<div class="form-group text-center">
@@ -232,7 +237,7 @@ $("#nextstep").click(function(){
             }
         });
     }
-    
+
 });
 $("#backbtn").click(function(e){
     $("#step2").hide();
@@ -246,7 +251,7 @@ $('input[type=radio][name=roleType]').change(function(){
             $("#createStore").attr("action","{{route('distributorSignup')}}");
         }
         else if(seletedUserType == 'merchant'){
-            
+
             $("#createStore").attr("action","{{route('selectThemes')}}");
         }
 });
@@ -273,7 +278,7 @@ $("#registerAndSubmit").on("click", function () {
                         $("#createStore").submit();
                     } else  {
                         $(".otperr").show().css("color","red");
-                        
+
                     }
                 },
                 error: function (e) {

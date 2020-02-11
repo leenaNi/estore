@@ -17,7 +17,8 @@ class Merchant extends Authenticatable {
             'company_name' => 'required',
             //'firstname' => 'required',
             //'email' => 'email|unique:merchants' . ($id ? ",email,$id" : ''),
-            'phone' => 'required|numeric|unique:merchants' . ($id ? ",phone,$id" : '')
+            // 'phone' => 'required|numeric|unique:merchants' . ($id ? ",phone,$id" : '')
+            'phone' => 'required|numeric'
                 ], $merge);
     }
 
@@ -26,7 +27,7 @@ class Merchant extends Authenticatable {
         'firstname.required' => 'Firstname is required.',
         'email.unique' => 'Email Id have been already taken!',
         'phone.required' => 'Phone is required',
-        'phone.unique' => 'Phone number have been already taken',
+        // 'phone.unique' => 'Phone number have been already taken',
         'phone.numeric' => 'Phone number should be valid'
     ];
     protected $fillable = [
@@ -46,7 +47,7 @@ class Merchant extends Authenticatable {
     }
 
     public function getstores() {
-        return $this->hasMany("App\Models\Store", 'merchant_id');
+        return $this->hasMany("App\Models\Store", 'merchant_id')->where('store_type', 'merchant');
     }
 
 }

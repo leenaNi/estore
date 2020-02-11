@@ -203,8 +203,9 @@
                                         <td width="30%">
                                             <input type="text" class="form-control prodSearch validate[required]" placeholder="Search Product" name="prod_search" >
                                         </td >
-                                        <td width="20%">
-                                            {{ Form::select("cartData[prod_id][sub_prod_id]",[],null,['class'=>'form-control subprodid validate[required]','style'=>"display:none;"]) }}
+                                        <td width="20%" >
+                                            <div class="subprod"></div>
+                                            <!-- // Form::select("cartData[prod_id][sub_prod_id]",[],null,['class'=>'form-control subprodid validate[required]','style'=>"display:none;"]) }} -->
                                         </td>
                                         <td width="20%">
                                             <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span>
@@ -364,7 +365,8 @@
                                         <input type="text" class="form-control prodSearch validate[required]" placeholder="Search Product" name="prod_search">
                                     </td>
                                     <td width="20%">
-                                        {{ Form::select("cartData[prod_id][sub_prod_id]",[],null,['class'=>'form-control subprodid validate[required]','style'=>"display:none;"]) }}
+                                        <div class="subprod"></div>
+                                        <!-- //Form::select("cartData[prod_id][sub_prod_id]",[],null,['class'=>'form-control subprodid validate[required]','style'=>"display:none;"]) }} -->
                                     </td>
                                     <td width="20%" >
                                         <span class='prodQty' style="display:none"><input type="number" min="1" value="1" name='cartData[prod_id][qty]' class='qty form-control'></span>
@@ -464,25 +466,33 @@
         prodSel = ele;
         removeError(prodSel);
         prodSel.attr("name", "cartData[" + prodid + "]");
-        $.post("{{ route('admin.distributor.orders.getSubProds') }}", {prodid: prodid, data: selected_prod}, function (subprods) {
-            prodSel.parent().parent().find('.subprodid').html("");
+        $.post("{{ route('admin.distributor.orders.getSubProds') }}", {prodid: prodid, data: selected_prod}, function (subprodsData) {
+            prodSel.parent().parent().find('.subprod').html("");
             // prodSel.parent().parent().find('.prodPrice').text(0);
             prodSel.parent().parent().find('.prodQty').show();
-            if (subprods.length > 0) {
-                prodSel.parent().parent().find('.subprodid').show();
-                // attr('data-subpr', ui.item.id);
-                subProdOpt = "<option value=''>Please select</option>";
-                $.each(subprods, function (subprdk, subprdv) {
-                    subprodname = subprdv.product.split("Variant (");
-                    if (selected_prod.indexOf(subprdv.id) == -1) {
-                        subProdOpt += "<option value='" + subprdv.id + "'>" + subprodname[1].replace(")", "") + "</option>";
-                    }
+            if (subprodsData.length > 0) {
+                prodSel.parent().parent().find('.subprod').show();
+                subProdOpt = '<select name="cartData[prod_id][sub_prod_id]" class="form-control subprodid validate[required]" >'
+                subprodsData.forEach((subprods, subprodKey) => {
+                console.log(subprods, subprodKey);
+                    // attr('data-subpr', ui.item.id);
+                    subProdOpt += "<option value=''>Please select</option>";
+                    $.each(subprods, function (subprdk, subprdv) {
+                        subprodname = subprdv.product.split("Variant (");
+                        if (selected_prod.indexOf(subprdv.id) == -1) {
+                            subProdOpt += "<option value='" + subprdv.id + "'>" + subprodname[1].replace(")", "") + "</option>";
+                        }
+                    });
                 });
-                prodSel.parent().parent().find('.subprodid').html(subProdOpt);
+                subProdOpt += '</select>';
+                console.log(subProdOpt);
+                console.log(prodSel.parent().parent().find('.subprod'));
+                prodSel.parent().parent().find('.subprod').html(subProdOpt);
             } else {
                 qty = prodSel.parent().parent().find('.qty').val();
                 parentprdid = prodid;
-                //console.log(parentprdid);exite;
+                console.log(parentprdid);
+                // exite;
                 $.post("{{route('admin.distributor.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1}, function (price) {
                     //console.log(JSON.stringify(price));
                     prodSel.parent().parent().find('.prodPrice').text((price.price).toFixed(2));
@@ -491,7 +501,7 @@
                     <?php }?>
                     // calc();
                 });
-                prodSel.parent().parent().find('.subprodid').hide();
+                prodSel.parent().parent().find('.subprod').hide();
                 clearAllDiscount();
             }
         });
@@ -659,19 +669,25 @@
         select: function (event, ui) {
             getSubprods(ui.item.id, $(this));
             $(this).attr('data-prdid', ui.item.id);
+            $(this).attr('data-prdtype', ui.item.type);
 
         }
     });
 
     $("table").delegate(".subprodid", "change", function () {
-        subprdid = $(this).val();
         subp = $(this);
         parentprodid = subp.parent().parent().find('.prodSearch').attr('data-prdid');
+        parentprodtype = subp.parent().parent().find('.prodSearch').attr('data-prdtype');        
+        subprdid = (parentprodtype != 2)? $(this).val(): null;
         removeError(subp);
         $(this).attr("name", "cartData[" + parentprodid + "][subprodid]");
         qty = subp.parent().parent().find('.qty').val();
         subp.parent().parent().find('.qty').attr('subprod-id', subprdid);
-        $.post("{{route('admin.distributor.orders.getProdPrice')}}", {subprdid: subprdid, qty: qty, pprd: 0}, function (data) {
+        if(parentprodtype != 2)
+            var params = {subprdid: subprdid, qty: qty, pprd: 0};
+        else 
+            var params = {qty: qty, parentprdid: parentprodid, pprd: 1};
+        $.post("{{route('admin.distributor.orders.getProdPrice')}}", params, function (data) {
             subp.parent().parent().find('.prodPrice').text((data.price).toFixed(2));
             <?php if ($feature['tax'] == 1) {?>
                 subp.parent().parent().find('.taxAmt').text((data.tax).toFixed(2));
@@ -731,7 +747,13 @@
         jQuery.each(rows, function (i, item) {
             if ($(item).attr('data-ppid') != "") {
                 var prod_id = $(this).find('.prodSearch').attr('data-prdid');
-                var subprodid = $(this).find('.subprodid').val();
+                var subprodid = $(this).find('.subprodid').val(); //  []; //
+                // var subProdEle = $(this).find('.subprodid');
+                // console.log(subProdEle);
+                // $.each(subProdEle, (key, ele) => {
+                //     console.log(ele, key);
+                //     subprodid.push(ele.val());
+                // });
                 var qty = $(this).find('.qty').val();
                 var prodPrice = $(this).find('.prodPrice').text();
                 var data = {prod_id: prod_id, subprodid: subprodid, qty: qty, prodPrice: prodPrice};
