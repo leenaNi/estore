@@ -67,7 +67,9 @@ class DistributorController extends Controller
         $merchantsResult = DB::table('merchants')->where("id", $merchantId)->first();
         //echo "<pre>";print_r($merchantsResult);exit;
         $decodedDistributorDetail = json_decode($merchantsResult->register_details, true);
-        $merchantbusinessId = $decodedDistributorDetail['business_type'][0];
+        if(!empty($decodedDistributorDetail['business_type'][0])){
+            $merchantbusinessId = $decodedDistributorDetail['business_type'][0];
+        }
         //echo "id >> ".$merchantbusinessId;
         if (!empty($distributorIdentityCode)) {
             $distributorResult = DB::table('distributor')->where("identity_code", $distributorIdentityCode)->first();
