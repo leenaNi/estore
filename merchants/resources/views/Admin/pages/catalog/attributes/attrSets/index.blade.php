@@ -114,7 +114,7 @@
                                         @else
                                         
                             <tr>
-                                <td colspan=6>No Record Found</td>
+                                <td colspan=6 class="text-center">No Record Found</td>
                             </tr>
                                         @endif
                                     

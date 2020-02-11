@@ -18,16 +18,19 @@
     </ol>
 </section>
 <section class="main-content">
+    <div class="notification-column">
+        <label class="error" id="sendRequestErorr">{{$sendRequestError}}</label>
+    </div>
     <div id="addMerchantDiv">
         <div class="grid-content">
             <div class="section-main-heading">
                 <h1>Add merchant</h1>
             </div>
-            <div class="filter-section">
+            <div class="filter-section displayFlex">
 
-                <div class="col-md-9 noAll-padding">
-                    <div class="filter-left-section min-height150">
-                        <label class="error" id="sendRequestErorr">{{$sendRequestError}}</label>
+                <div class="col-md-9 noAll-padding displayFlex">
+                    <div class="filter-left-section">
+                       
                         <form  method="get" id="merchantCodeForm">
                             <div class="form-group col-md-8 col-sm-6 col-xs-12" id="inputDiv">
                                 <input type="text" name="merchantIdentityCode" id="merchantIdentityCode" value="{{isset($identityCode)?$identityCode:''}}" onkeypress="hideErrorMsg('errorLbl')" class="form-control medium pull-right " placeholder="Enter Merchant Code">
@@ -40,7 +43,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-md-3 noAll-padding  min-height150" style="background:#fff;">
+                <div class="col-md-3 noAll-padding displayFlex" style="background:#fff;">
                     <div class="filter-right-section">
                         <div class="clearfix" id="merchantDetailDiv" style="display:none;" >
                             <div class="info-box">
@@ -73,12 +76,12 @@
                 <table class="table table-striped table-hover tableVaglignMiddle">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Business Name</th>
-                            <th>Concern Person Name</th>
-                            <th>Mobile Number</th>
-                            <th>Connection Date</th>
-                            <th>Ledger</th>
+                            <th class="text-left">#</th>
+                            <th class="text-left">Business Name</th>
+                            <th class="text-center">Concern Person Name</th>
+                            <th class="text-center">Mobile Number</th>
+                            <th class="text-right">Connection Date</th>
+                            <th class="text-center">Ledger</th>
                         </tr>
                     </thead>	
                     <tbody>
@@ -93,13 +96,13 @@
                             $connectionData = date("d-m-Y", strtotime($data->updated_at));;
                         ?>
                         <tr>
-                            <td>{{$i}}</td>
-                            <td>{{$decodedMerchantDetail->store_name}}</td>
-                            <td>{{$decodedMerchantDetail->firstname}}</td>
-                            <td>{{$decodedMerchantDetail->phone}}</td>
-                            <td>{{$connectionData}}</td>
-                            <td>
-                                <div class="actionLeft">
+                            <td  class="text-left">{{$i}}</td>
+                            <td  class="text-left">{{$decodedMerchantDetail->store_name}}</td>
+                            <td  class="text-center">{{$decodedMerchantDetail->firstname}}</td>
+                            <td  class="text-center">{{$decodedMerchantDetail->phone}}</td>
+                            <td  class="text-Right">{{$connectionData}}</td>
+                            <td  class="text-center">
+                                <div class="actionCenter">
                                         <span><a class="btn-action-default" href=""><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> Ledger</a></span> 
                                     
                                 </div>
@@ -107,7 +110,7 @@
                         </tr> 
                         @endforeach
                     @else
-                        <label> No records found.</label>
+                        <label class="text-center"> No records found.</label>
                     @endif 
                     
                     </tbody>
@@ -205,6 +208,7 @@
         
     </div> 
 </section> -->
+<div class="clearfix"></div>
 @stop
 @section('myscripts')
 <script>

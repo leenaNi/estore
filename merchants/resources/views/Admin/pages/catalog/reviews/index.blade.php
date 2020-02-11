@@ -174,7 +174,7 @@ use App\Models\Order;
                                 @endforeach
                             <?php } else { ?>
                                 <tr>
-                                    <td colspan="5">No Record Found.</td>
+                                    <td colspan="5" class="text-center">No Record Found.</td>
                                 </tr>
                             <?php } ?>      
                         </tbody>

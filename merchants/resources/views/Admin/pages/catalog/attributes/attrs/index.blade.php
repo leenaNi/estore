@@ -14,13 +14,7 @@
 
 
 <section class="main-content">
-  <div class="grid-content">
-        <div class="section-main-heading">
-            <h1> Attributes</h1>
-        </div>
-        <div class="filter-section">
-            <div class="col-md-9 noAll-padding">
-                <div class="filter-left-section min-height100">
+    <div class="notification-column">
                     @if(!empty(Session::get('message')))
                     <div class="alert alert-danger" role="alert">
                         {{ Session::get('message') }}
@@ -31,6 +25,15 @@
                         {{Session::get('msg')}}
                     </div>
                     @endif
+    </div>
+  <div class="grid-content">
+        <div class="section-main-heading">
+            <h1> Attributes</h1>
+        </div>
+        <div class="filter-section displayFlex">
+            <div class="col-md-9 noAll-padding displayFlex">
+                <div class="filter-left-section">
+                    
                     <form method="get" action=" " id="searchForm">
                       
                         <div class="form-group col-md-8 col-sm-6 col-xs-12">
@@ -47,8 +50,8 @@
 
                 </div>
             </div>
-            <div class="col-md-3 noAll-padding">
-                <div class="filter-right-section  min-height100">
+            <div class="col-md-3 noAll-padding displayFlex">
+                <div class="filter-right-section">
                     <a href="{!! route('admin.attributes.add') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" type="button">Add New Attribute</a>
                 </div>
             </div>
@@ -56,7 +59,7 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Attributes ({{$attrsCount }})</h1>
+            <h1>Attributes <span class="listing-counter">{{$attrsCount }}</span></h1>
         </div>
         <div class="listing-section">
         <table class="table table-striped table-hover tableVaglignMiddle">
@@ -64,14 +67,14 @@
                             <tr>
                 <!--                <th>id</th>-->
 
-                                <th>Attribute Name</th>
-                                <th>Attribute Set</th>
-                                <th>Sort Order</th>
-                                <th>Is Filterable</th>
-                                <th>Is Required</th>
-                                <th>Date</th>
-                                <th> Status </th>
-                                <th>Action</th>
+                                <th class="text-left">Attribute Name</th>
+                                <th class="text-left">Attribute Set</th>
+                                <th class="text-center">Sort Order</th>
+                                <th class="text-center">Is Filterable</th>
+                                <th class="text-center">Is Required</th>
+                                <th class="text-right">Date</th>
+                                <th class="text-center"> Status </th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,25 +82,25 @@
                             @foreach($attrs as $attr)
                             <tr> 
                 <!--                <td>{{$attr->id }}</td>-->
-                                <td>{{$attr->attr }}</td>
-                                <td>
+                                <td class="text-left">{{$attr->attr }}</td>
+                                <td class="text-left">
                                     @foreach($attr->attributesets as $set)
                                     <div>{{$set->attr_set }}</div>
                                     @endforeach
                                 </td>
-                                <td>{{$attr->att_sort_order }}</td>
-                                <td>{{$attr->is_filterable? 'Yes' : 'No' }}</td>
-                                <td>{{$attr->is_required? 'Yes' : 'No' }}</td>
+                                <td class="text-center">{{$attr->att_sort_order }}</td>
+                                <td class="text-center">{{$attr->is_filterable? 'Yes' : 'No' }}</td>
+                                <td class="text-center">{{$attr->is_required? 'Yes' : 'No' }}</td>
 
-                                <td>{{ date("d-M-Y",strtotime($attr->created_at)) }}</td>
-                                <td>
+                                <td class="text-right">{{ date("d-M-Y",strtotime($attr->created_at)) }}</td>
+                                <td class="text-center">
                                     <?php if ($attr->status == 1) { ?>
                                     <a href="{!! route('admin.attributes.changeStatus',['id'=>$attr->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this attribute ?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check" ></i></a><br>
                                     <?php } elseif ($attr->status == 0) { ?>
                                     <a href="{!! route('admin.attributes.changeStatus',['id'=>$attr->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this attribute ?')" data-toggle="tooltip" title="Disabled"> <i class="fa fa-times"></i></a><br>
                                     <?php } ?>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <div class="actionLeft">
                                         <span><a class="btn-action-default" href="{!! route('admin.attributes.edit',['id'=>$attr->id]) !!}">Edit</a></span> 
                                         <span class="dropdown">
@@ -116,7 +119,7 @@
                             </tr>
                             @endforeach 
                              @else
-                            <tr><td colspan=9>No Record Found</td></tr>
+                            <tr><td colspan=9 class="text-center">No Record Found</td></tr>
                             @endif
                         </tbody>
                     </table>

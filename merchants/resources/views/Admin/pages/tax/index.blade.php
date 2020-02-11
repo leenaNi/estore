@@ -12,13 +12,7 @@
     </ol>
 </section>
 <section class="main-content">
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1>Tax</h1>
-        </div>
-        <div class="filter-section">
-            <div class="col-md-9 noAll-padding">
-                <div class="filter-left-section min-height100"> 
+    <div class="notification-column">
                     @if(!empty(Session::get('message')))
                         <div class="alert alert-danger" role="alert">
                             {{ Session::get('message') }}
@@ -29,6 +23,15 @@
                             {{Session::get('msg')}}
                         </div>
                     @endif
+    </div>
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Tax</h1>
+        </div>
+        <div class="filter-section displayFlex">
+            <div class="col-md-9 noAll-padding displayFlex">
+                <div class="filter-left-section"> 
+                    
                     <form action="{{ route('admin.tax.view') }}" method="get" >
                             <div class="form-group col-md-8 col-sm-6 col-xs-12">
                                 <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Search Tax"/>
@@ -42,8 +45,8 @@
                     </form> 
                 </div>
             </div>
-            <div class="col-md-3 noAll-padding ">
-                <div class="filter-right-section  min-height100">
+            <div class="col-md-3 noAll-padding displayFlex">
+                <div class="filter-right-section">
                     <div class="clearfix">
                         <a href="{!! route('admin.tax.add') !!}" class="btn btn-default pull-right form-control mobAddnewflagBTN" type="button">Add New Tax</a> 
                     </div>
@@ -60,13 +63,13 @@
                 <thead>
                     <tr>
 
-                        <th>Tax Name</th>
+                        <th class="text-left">Tax Name</th>
 <!--                        <th>Display Name</th>-->
-                        <th>Tax Rate (%)</th>
-                        <th>Tax Number</th>
-                        <th>Created At</th>
-                        <th>Status</th>
-                        <th>Action</th>
+                        <th class="text-center">Tax Rate (%)</th>
+                        <th class="text-left">Tax Number</th>
+                        <th class="text-right">Created At</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,19 +77,19 @@
                   @foreach ($taxInfo as $tax)
                   <tr>
 
-                    <td>{{$tax->name}}</td>
+                    <td class="text-left">{{$tax->name}}</td>
 <!--                    <td>{{ $tax->label }}</td>-->
-                    <td>{{$tax->rate}} </td>
-                    <td>{{$tax->tax_number}}</td>
-                    <td>{{date('d-M-Y',strtotime($tax->created_at))}}</td>
-                    <td>@if($tax->status==1)
+                    <td class="text-center">{{$tax->rate}} </td>
+                    <td class="text-left">{{$tax->tax_number}}</td>
+                    <td class="text-right">{{date('d-M-Y',strtotime($tax->created_at))}}</td>
+                    <td class="text-center">@if($tax->status==1)
                         <a href="{!! route('admin.tax.changeStatus',['id'=>$tax->id]) !!}"  ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this tax?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn btnNo-margn-padd"></i></a>
                         @elseif($tax->status==0)
                         <a href="{!! route('admin.tax.changeStatus',['id'=>$tax->id]) !!}" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this tax?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn  btnNo-margn-padd"></i></a>
                         @endif</td>
 
-                        <td class="">
-                            <div class="actionLeft">
+                        <td class="text-center">
+                            <div class="actionCenter">
                                 <span><a class="btn-action-default" href="{{route('admin.tax.edit',['id'=>$tax->id])}}">Edit</a></span> 
                                 <span class="dropdown">
                                     <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -105,7 +108,7 @@
                     </tr>
                     @endforeach
                     @else
-                    <tr><td colspan=7> No Record Found</td></tr>
+                    <tr><td colspan=7 class="text-center"> No Record Found</td></tr>
                     @endif
                 </tbody>
             </table>

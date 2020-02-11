@@ -322,7 +322,7 @@
               @endforeach
               @else
               <tr>
-                <td colspan=10> No Record Found
+                <td colspan=10 class="text-center"> No Record Found
                 </td>
               </tr>
               @endif
