@@ -8,6 +8,7 @@ use App\Models\Settings;
 use App\Models\Category;
 use App\Models\HasCurrency;
 use App\Models\Merchant;
+use App\Models\User;
 use App\Models\MerchantOrder;
 use App\Models\Store;
 use App\Models\StoreTheme;
@@ -1114,10 +1115,27 @@ class HomeController extends Controller
     {
         $storename = strtolower(Input::get("storename"));
         $storedata = Store::where(strtolower("store_name"),$storename)->first();
-        if (empty($storedata)) {
+        if (empty($storedata) && $storename != '') {
             return $data = ["status" => "success", "msg" => "Correct Business Name"];
+        }
+        else if($storename == ''){
+            return $data = ["status" => "fail", "msg" => "Business name can not be blank"];
         } else {
             return $data = ["status" => "fail", "msg" => "Business Name Already Exists"];
+        }
+    }
+
+    public function checkPhone()
+    {
+        $mobile = Input::get("mobile");
+        $user = User::where("telephone",$mobile)->first();
+        if (empty($user) && $mobile != '') {
+            return $data = ["status" => "success", "msg" => "Correct"];
+        } 
+        else if($mobile == ''){
+            return $data = ["status" => "fail", "msg" => "Mobile No. can not be blank"];
+        } else {
+            return $data = ["status" => "fail", "msg" => "Mobile No. Already Exists"];
         }
     }
 }

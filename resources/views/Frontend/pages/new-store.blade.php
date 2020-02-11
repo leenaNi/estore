@@ -29,7 +29,7 @@
 								<div class="">
 									<div class="scroller-y">
 										<div class="form-group">
-											<label>Business Name <!--<span class="mand">*</span>--></label>
+											<label>Business Name </label>
 											<div class="input-group">
 												<input type="text" class="form-control" name="store_name" id="store_name" placeholder="Business Name" onBlur="checkStorename(this.value)">
 												<span>
@@ -51,16 +51,16 @@
 													</select>
 												</div>
 												<div class="input-group">
-													<input type="text" name="phone" class="form-control" id="mobNumber" placeholder="Mobile Number">
-
+													<input type="text" name="phone" class="form-control" id="mobNumber" placeholder="Mobile Number" onBlur="checkPhone(this.value)">
+													
 													<span>
 														<img id="mobsmsg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success" class="success-tick hidden">
 														<img id="mobemsg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success" class="error-mark hidden">
 													</span>
 												</div>
 											</div>
-
-											<span class="error" style="display:none" id="mobileno_err">Please enter valid mobile number</span>
+										
+											<span class="error" style="display:none" id="mobileno_err">Mobile No. can not be blank</span>
 										</div>
 										<div class="form-group">
 											<label for="">Who are you?</label>
@@ -155,13 +155,11 @@
 	</section>
 <script>
 function checkStorename(storename){
-	//alert(storename);
 	$.ajax({
             type: 'POST',
             url: "{{route('checkStorename')}}",
             data: {storename: storename},
             success: function (response) {
-                console.log('@@@@' + response['status']);
                 if (response['status'] == 'success') {
 					$("#business_name_err").hide();  $("#errorimg").hide();
 					$("#successimg").show();
@@ -175,12 +173,32 @@ function checkStorename(storename){
             }
         });
 }
+function checkPhone(mobile){
+	$.ajax({
+            type: 'POST',
+            url: "{{route('checkPhone')}}",
+            data: {mobile: mobile},
+            success: function (response) {
+                console.log('@@@@' + response['status']);
+                if (response['status'] == 'success') {
+					$("#mobileno_err").hide();  $("#mobemsg").hide();
+					$("#mobsmsg").show();
+                } else if (response['status'] == 'fail') {
+					$("#mobileno_err").show().html(response['msg']);
+					$("#mobemsg").show();$("#successimg").hide();
+                } 
+            },
+            error: function (e) {
+                console.log(e.responseText);
+            }
+        });
+}
 $("#nextstep").click(function(){
     if($("input[name=store_name]").val() == '' && $("input[name=phone]").val() == '')
     {
-        $("#business_name_err").show();
-        $("#mobileno_err").show();
-    }
+        $("#business_name_err").show();$("#errorimg").show();
+        $("#mobileno_err").show();$("#mobemsg").show();
+    }  
     else if($("input[name=store_name]").val() == ''){
         $("#business_name_err").show();
         $("#mobileno_err").hide();
