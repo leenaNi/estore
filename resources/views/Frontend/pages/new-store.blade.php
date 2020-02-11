@@ -59,13 +59,8 @@
 													</span>
 												</div>
 											</div>
-<<<<<<< HEAD
 										
 											<span class="error" style="display:none" id="mobileno_err">Mobile No. can not be blank</span>
-=======
-
-											<span class="error" style="display:none" id="mobileno_err">Please enter valid mobile number</span>
->>>>>>> ad4a16a285901979131d47360a1b6a296f8d7c27
 										</div>
 										<div class="form-group">
 											<label for="">Who are you?</label>
