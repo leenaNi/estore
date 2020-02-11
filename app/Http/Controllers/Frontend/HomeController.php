@@ -459,16 +459,9 @@ class HomeController extends Controller
                         $password = Hash::make($randno);
                         $insertArr["password"] = "$password";
                     }
-                    // if (Session::get("provider_id")) {
-                    //     $provider_id = Session::get("provider_id");
-                    //     $insertArr["provider_id"] = "$provider_id";
-                    // }
-
                     if ($country_code) {
                         $insertArr["country_code"] = "$country_code";
                     }
-                    //                    $randno = $merchantPassword;
-                    //                    $password = Hash::make($randno);
                     $newuserid = DB::table("users")->insertGetId($insertArr);
 
                     // This json(product_category_json) file contain category id wise product and category data(static)
@@ -526,6 +519,8 @@ class HomeController extends Controller
                     if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
+                        $idcodeMsg = "Your unique identification code is ".$identityCode;
+                        Helper::sendsms($phone, $idcodeMsg, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
