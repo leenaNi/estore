@@ -281,7 +281,7 @@ class ApiDistributorController extends Controller
                         //print_r($multipleDistributorIds);
                         //exit;
                         //Get distributor id wise data
-                        $companyWiseDistributorResult = DB::table('distributor d')
+                        $companyWiseDistributorResult = DB::table('distributor as d')
                         ->join('stores as s', 's.merchant_id', '=', 'd.id')
                         ->where('s.store_type', 'distributor')
                         ->whereIn('d.id', $multipleDistributorIds)
