@@ -349,12 +349,12 @@ class ApiMerchantController extends Controller
                 ->where("hd.merchant_id", $merchantId)
                 ->get(['d.id', 'd.register_details']);
             if (count($hasDistributorsResult) > 0) {
-                return response()->json(["status" => 1, 'result' => $hasDistributorsResult]);
+                return response()->json(["status" => 1, 'msg' => '', 'data' => $hasDistributorsResult]);
             } else {
                 return response()->json(["status" => 0, 'msg' => 'Record not found']);
             }
         } else {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
 
     } // End getDistributors()
