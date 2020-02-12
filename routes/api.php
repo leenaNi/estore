@@ -243,6 +243,9 @@ Route::group(['namespace' => 'Admin'], function () {
           Route::get('/search-distributor', ["as" => "admin.distributor.searchDistributor", "uses" => "ApiDistributorController@getDistributorByProduct"]);
           Route::get('/merchant-wise-search-distributor', ["as" => "admin.distributor.merchantwiseSearchDistributor", "uses" => "ApiDistributorController@getDistributorByMerchant"]);
           Route::get('/company-wise-distributor', ["as" => "admin.distributor.companywiseDistributor", "uses" => "ApiDistributorController@getDistributorByCompany"]);
+          Route::get('/distributor-offers-details', ["as" => "admin.distributor.distributorOffersDetails", "uses" => "ApiDistributorController@getDistributorOfferDetails"]);
+          Route::get('/distributor-brand-details', ["as" => "admin.distributor.distributorBrandDetails", "uses" => "ApiDistributorController@getDistributorBrandDetails"]);
+          Route::get('/distributor-category-details', ["as" => "admin.distributor.distributorCategoryDetails", "uses" => "ApiDistributorController@getDistributorCategoryDetails"]);
       });
         
    });

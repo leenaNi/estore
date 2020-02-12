@@ -72,7 +72,7 @@ class ApiCompanyController extends Controller
 
     public function getMerchantCompanyList()
     {
-        //DB::enableQueryLog();
+        DB::enableQueryLog();
         $isError = '';
         //dd(Input::all());
         if (!empty(Input::get("merchantId"))) {
@@ -91,16 +91,18 @@ class ApiCompanyController extends Controller
                 $brandIdsResult = DB::table('stores')
                     ->join('products', 'products.store_id', '=', 'stores.id')
                     ->whereIn('stores.merchant_id', $distributorIds)
-                    ->where('stores.store_type', 'distributor')->get(['products.brand_id']);
+                    ->where('stores.store_type', 'distributor')->get(['products.brand_id', 'products.store_id']);
 
                 if (count($brandIdsResult) > 0) {
                     $brandIds = [];
+                    $storeId = [];
                     foreach ($brandIdsResult as $brandIdsData) {
                         $brandIds[] = $brandIdsData->brand_id;
                     }
-
+                    
                     // Get company ids
-                    $companyResult = DB::table('company')->join('brand', 'company.id', '=', 'brand.company_id')
+                    $companyResult = DB::table('company')
+                        ->join('brand', 'company.id', '=', 'brand.company_id')
                         ->whereIn('brand.id', $brandIds)
                         ->get(['company.id as company_id', 'company.name as company_name', 'company.logo as company_logo', 'brand.id as brand_id', 'brand.name as brand_name', 'brand.logo as brand_logo']);
                     if (count($companyResult) > 0) {
@@ -110,6 +112,7 @@ class ApiCompanyController extends Controller
                         $companyArray = array();
                         $brandArray = array();
                         foreach ($companyResult as $companyData) {
+                            
                             $companyId = $companyData->company_id;
                             $companyName = $companyData->company_name;
                             $companyLogo = $companyData->company_logo;
@@ -136,6 +139,8 @@ class ApiCompanyController extends Controller
                             $brandArray[$j]['brand_id'] = $brandId;
                             $brandArray[$j]['brand_name'] = $brandName;
                             $brandArray[$j]['brand_logo'] = $brandLogo;
+
+                            
                             $j++;
                             $tempId = $companyId;
 
