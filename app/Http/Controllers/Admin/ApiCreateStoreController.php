@@ -201,20 +201,24 @@ class ApiCreateStoreController extends Controller
             if ($store->save()) {
                 $storeVersion = $store->store_version;
                 $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $getMerchat->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code']);
-                $regUser = DB::table('users')->where(['store_id', $store->id],['user_type', 1])->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
-                $token = JWTAuth::fromUser($regUser);
-                $user = JWTAuth::toUser($token);
-                $store = $getMerchat->getstores;
-                $data = ['storeCount' => count($store)];
-                return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'result' => $result, 'data' => ['user' => $user, 'store' => $store, 'setupStatus' => $data]])->header('token', $token);
+                if($result['status']){
+                    $regUser = DB::table('users')->where(['store_id', $store->id],['user_type', 1])->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
+                    $token = JWTAuth::fromUser($regUser);
+                    $user = JWTAuth::toUser($token);
+                    $store = $getMerchat->getstores;
+                    $data = ['storeCount' => count($store)];
+                    return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'result' => $result, 'data' => ['user' => $user, 'store' => $store, 'setupStatus' => $data]])->header('token', $token);
+                } else {
+                    return response()->json($result);
+                }
             } else {
-                return response()->json(["status" => 0, 'result' => 'Something went wrong!']);
+                return response()->json(["status" => 0, 'msg' => 'Something went wrong!']);
             }
             } else {
-                return response()->json(["status" => 0, 'result' => 'Invalid OTP/Mobile number']);
+                return response()->json(["status" => 0, 'msg' => 'Invalid OTP/Mobile number']);
             }
         } else {
-            return response()->json(["status" => 0, 'result' => 'Some data is missing!']);
+            return response()->json(["status" => 0, 'msg' => 'Some data is missing!']);
         }
 
     }
@@ -435,15 +439,15 @@ class ApiCreateStoreController extends Controller
                     $mailcontent .= "Online Store Link: http://" . $domainname . '.' . $domain . "\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n\n";
 
-                    return "Extracted Successfully to $path";
+                    return ['status' => 1, 'msg' => "Extracted Successfully to $path"];
                 } else {
-                    return "Error Encountered while extracting the Zip";
+                    return ['status' => 0, 'msg' => "Error Encountered while extracting the Zip"];
                 }
             } else {
-                return "Access Denied";
+                return ['status' => 0, 'msg' => "Access Denied"];
             }
         } else {
-            return "Error Encountered while processing the SQL";
+            return ['status' => 0, 'msg' => "Error Encountered while processing the SQL"];
         }
     }
 
