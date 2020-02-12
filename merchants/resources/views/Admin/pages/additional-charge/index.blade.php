@@ -12,13 +12,7 @@
     </ol>
 </section>
 <section class="main-content">
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1>Additional Charge</h1>
-        </div>
-        <div class="filter-section">
-            <div class="col-md-9 noAll-padding">
-                <div class="filter-left-section min-height100">
+    <div class="notification-column">
                     @if(!empty(Session::get('message')))
                     <div class="alert alert-danger" role="alert">
                         {{ Session::get('message') }}
@@ -29,6 +23,15 @@
                         {{Session::get('msg')}}
                     </div>
                     @endif
+    </div>
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Additional Charge</h1>
+        </div>
+        <div class="filter-section displayFlex">
+            <div class="col-md-9 noAll-padding displayFlex">
+                <div class="filter-left-section">
+                  
                     <form action="{{ route('admin.additional-charges.view') }}" method="get" >
                         <div class="form-group col-md-8 col-sm-12 col-xs-12">
                             <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Additional Charge Name"/>
@@ -42,10 +45,10 @@
                     </form> 
                 </div>
             </div>
-            <div class="col-md-3 noAll-padding ">
-                <div class="filter-right-section  min-height100">
+            <div class="col-md-3 noAll-padding displayFlex">
+                <div class="filter-right-section">
                     <div class="clearfix">
-                        <a href="{!! route('admin.additional-charges.add') !!}" class="btn btn-default pull-right form-control col-md-12 noMob-leftmargin mobAddnewflagBTN" type="button">Add New Additional Charge</a> 
+                        <a href="{!! route('admin.additional-charges.add') !!}" class="btn btn-default fullWidth noAll-margin" type="button">Add New Additional Charge</a> 
                     </div>
                 </div>
             </div>
@@ -53,7 +56,7 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Additional Charges   <span class="listing-counter">({{$additionalChargeCount }})</span> </h1>
+            <h1>Additional Charges <span class="listing-counter">{{$additionalChargeCount }}</span> </h1>
         </div>
         <div class="listing-section">
             <table class="table table-striped table-hover tableVaglignMiddle">
@@ -119,7 +122,7 @@
     </div>
 </section>
 
-
+<div class="clearfix"></div>
 
 @stop 
 @section('myscripts')

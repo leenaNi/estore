@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="{{ asset('public/Frontend/css/radio-checkbox.css')}}" type="text/css" />
 <link rel="stylesheet" href="{{ asset('public/Frontend/css/select-boxes.css')}}" type="text/css" />
 <link rel="stylesheet" href="{{ asset('public/Frontend/css/bs-select.css')}}" type="text/css" />
+
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <!-- Document Title

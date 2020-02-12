@@ -304,7 +304,7 @@
                 @endif
                 <td class="text-center">
                 <div class="actionCenter">
-                                <span><a class="btn-action-default" href="{!! route('admin.products.delete',['id'=>$product->id]) !!}">Edit</a></span> 
+                                <span><a class="btn-action-default" href="{!! route('admin.products.edit',['id'=>$product->id]) !!}">Edit</a></span> 
                                 <span class="dropdown">
                                     <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>
@@ -383,11 +383,11 @@
               <div class="row fileupload-buttonbar">
                 <div class="col-lg-12">
                   <!-- The fileinput-button span is used to style the file input field as button -->
-                  <span class="btn btn-primary fileinput-button col-lg-4">
-                    <i class="glyphicon glyphicon-plus">
+                  <span class="btn btn-primary fileinput-button col-lg-6">
+                    <!-- <i class="glyphicon glyphicon-plus">
                     </i>
                     <span>Add files...
-                    </span>
+                    </span> -->
                     <input type="file" name="files[]" multiple>
                     <input type="hidden" name="redirect" value="back">
                   </span>
