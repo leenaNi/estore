@@ -127,18 +127,18 @@ class ApiCompanyController extends Controller
                                 $j = 0;
                                 $companyArray[$i]['compnay_id'] = $companyId;
                                 $companyArray[$i]['company_name'] = $companyName;
-                                $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath') . "/".$companyLogo);
+                                $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath').$companyLogo);
                             } else {
                                 if ($tempId == 0) {
                                     $companyArray[$i]['compnay_id'] = $companyId;
                                     $companyArray[$i]['company_name'] = $companyName;
-                                    $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath') . "/".$companyLogo);
+                                    $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath').$companyLogo);
                                 }
                             }
 
                             // $brandArray[$j]['brand_id'] = $brandId;
                             // $brandArray[$j]['brand_name'] = $brandName;
-                            // $brandArray[$j]['brand_logo'] = asset(Config('constants.brandImgPath') . "/".$brandLogo);
+                            // $brandArray[$j]['brand_logo'] = asset(Config('constants.brandImgPath').$brandLogo);
 
                             
                             $j++;
