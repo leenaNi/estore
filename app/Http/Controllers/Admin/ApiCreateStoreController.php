@@ -103,117 +103,121 @@ class ApiCreateStoreController extends Controller
         if (!empty(Input::get('roleType')) && !empty(Input::get('store_name')) && !empty(Input::get('phone'))) {
             $verifyOTP = $this->verifyOTP();
             if($verifyOTP) {
-            $storeType = ($allinput['roleType'] == '1') ? 'merchant' : 'distributor';
-            $settings = Settings::where('bank_id', 0)->first();
-            $country = Country::where("id", $settings->country_id)->get()->first();
-            $currency = Currency::where("id", $settings->currency_id)->get()->first();
-            $settings['country_code'] = $country['country_code'];
-            $settings['country_name'] = $country['name'];
-            $settings['currency_code'] = $currency['id'];
-            $allinput['currency'] = $currency['id'];
-            $allinput['country_code'] = $country['country_code'];
-            $domainname = str_replace(" ", '-', trim(strtolower(Input::get("store_name")), " "));
-            $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
-            $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
-            $actualDomain = str_replace("..", ".", $actualDomain);
-            $allinput['domain_name'] = $domainname;
-            if ($storeType == 'merchant') {
-                // Validate Merchant Data
-                $validation = new Merchant();
-                $allinput['company_name'] = Input::get('store_name');
-                $validator = Validator::make($allinput, Merchant::rules(), $validation->messages);
-                if ($validator->fails()) {
-                    $errMsg = [];
-                    $err = $validator->messages()->toArray();
-                    foreach ($err as $ek => $ev) {
-                        $errMsg[$ek] = implode(",", $ev);
+                $checkStore = $this->checkStore();
+                if($checkStore['status']) {
+                    $storeType = ($allinput['roleType'] == '1') ? 'merchant' : 'distributor';
+                    $settings = Settings::where('bank_id', 0)->first();
+                    $country = Country::where("id", $settings->country_id)->get()->first();
+                    $currency = Currency::where("id", $settings->currency_id)->get()->first();
+                    $settings['country_code'] = $country['country_code'];
+                    $settings['country_name'] = $country['name'];
+                    $settings['currency_code'] = $currency['id'];
+                    $allinput['currency'] = $currency['id'];
+                    $allinput['country_code'] = $country['country_code'];
+                    $domainname = str_replace(" ", '-', trim(strtolower(Input::get("store_name")), " "));
+                    $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
+                    $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
+                    $actualDomain = str_replace("..", ".", $actualDomain);
+                    $allinput['domain_name'] = $domainname;
+                    if ($storeType == 'merchant') {
+                        // Validate Merchant Data
+                        $validation = new Merchant();
+                        $allinput['company_name'] = Input::get('store_name');
+                        $validator = Validator::make($allinput, Merchant::rules(), $validation->messages);
+                        if ($validator->fails()) {
+                            $errMsg = [];
+                            $err = $validator->messages()->toArray();
+                            foreach ($err as $ek => $ev) {
+                                $errMsg[$ek] = implode(",", $ev);
+                            }
+                            $data = ["status" => 0, "msg" => $errMsg];
+                            return $data;
+                        }
+                        $getMerchat = new Merchant;
+                        $getMerchat->phone = Input::get("phone");
+                        // $getMerchat->password = Hash::make(Input::get('password'));
+                        // $getMerchat->email = Input::get("email");
+                        // $getMerchat->firstname = Input::get("firstname");
+                        $getMerchat->company_name = Input::get("store_name");
+                        $getMerchat->country_code = $country['country_code'];
+                        $getMerchat->register_details = json_encode($allinput);
+                        $getMerchat->save();
+                        $lastInsteredId = $getMerchat->id;
+                        if ($lastInsteredId > 0) {
+                            $merchantObj1 = Merchant::find($lastInsteredId);
+                            $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
+                            $merchantObj1->identity_code = $identityCode;
+                            $merchantObj1->save();
+
+                        }
+                    } else if ($storeType == 'distributor') {
+                        // Validate Merchant Data
+                        $validation = new Vendor();
+                        $allinput['business_name'] = Input::get('store_name');
+                        $validator = Validator::make(Input::all(), Vendor::rules(), $validation->messages);
+                        if ($validator->fails()) {
+                            $errMsg = [];
+                            $err = $validator->messages()->toArray();
+                            foreach ($err as $ek => $ev) {
+                                $errMsg[$ek] = implode(",", $ev);
+                            }
+                            $data = ["status" => 0, "msg" => $errMsg];
+                            return $data;
+                        }
+                        $distributorObj = new Vendor();
+                        $distributorObj->business_name = $allinput['store_name'];
+                        $distributorObj->phone_no = $allinput['phone'];
+                        $distributorObj->country = $country['country_code'];
+                        $distributorObj->currency_code = $country['currency_code'];
+                        $distributorObj->register_details = json_encode($allinput);
+                        $distributorObj->save();
+                        $lastInsteredId = $distributorObj->id;
+
+                        if ($lastInsteredId > 0) {
+                            $distributorObj1 = Vendor::find($lastInsteredId);
+                            $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
+                            $distributorObj1->identity_code = $identityCode;
+                            $distributorObj1->save();
+                        }
+
+                        return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
                     }
-                    $data = ["status" => 0, "msg" => $errMsg];
-                    return $data;
-                }
-                $getMerchat = new Merchant;
-                $getMerchat->phone = Input::get("phone");
-                // $getMerchat->password = Hash::make(Input::get('password'));
-                // $getMerchat->email = Input::get("email");
-                // $getMerchat->firstname = Input::get("firstname");
-                $getMerchat->company_name = Input::get("store_name");
-                $getMerchat->country_code = $country['country_code'];
-                $getMerchat->register_details = json_encode($allinput);
-                $getMerchat->save();
-                $lastInsteredId = $getMerchat->id;
-                if ($lastInsteredId > 0) {
-                    $merchantObj1 = Merchant::find($lastInsteredId);
-                    $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
-                    $merchantObj1->identity_code = $identityCode;
-                    $merchantObj1->save();
 
-                }
-            } else if ($storeType == 'distributor') {
-                // Validate Merchant Data
-                $validation = new Vendor();
-                $allinput['business_name'] = Input::get('store_name');
-                $validator = Validator::make(Input::all(), Vendor::rules(), $validation->messages);
-                if ($validator->fails()) {
-                    $errMsg = [];
-                    $err = $validator->messages()->toArray();
-                    foreach ($err as $ek => $ev) {
-                        $errMsg[$ek] = implode(",", $ev);
+                    $store = new Store();
+                    $store->store_name = Input::get("store_name"); // $registerDetails->store_name;
+                    $store->url_key = $domainname;
+                    $store->store_type = $storeType; // merchant/distributor
+                    $store->merchant_id = $lastInsteredId;
+                    $store->store_domain = $actualDomain;
+                    $store->percent_to_charge = 1.00;
+                    $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
+                    $store->status = 1;
+                    $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
+                    if (isset($merchantPay) && count($merchantPay) > 0) {
+                        $store->store_version = 2;
+                    } else {
+                        $store->store_version = 1;
                     }
-                    $data = ["status" => 0, "msg" => $errMsg];
-                    return $data;
-                }
-                $distributorObj = new Vendor();
-                $distributorObj->business_name = $allinput['store_name'];
-                $distributorObj->phone_no = $allinput['phone'];
-                $distributorObj->country = $country['country_code'];
-                $distributorObj->currency_code = $country['currency_code'];
-                $distributorObj->register_details = json_encode($allinput);
-                $distributorObj->save();
-                $lastInsteredId = $distributorObj->id;
-
-                if ($lastInsteredId > 0) {
-                    $distributorObj1 = Vendor::find($lastInsteredId);
-                    $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
-                    $distributorObj1->identity_code = $identityCode;
-                    $distributorObj1->save();
-                }
-
-                return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
-            }
-
-            $store = new Store();
-            $store->store_name = Input::get("store_name"); // $registerDetails->store_name;
-            $store->url_key = $domainname;
-            $store->store_type = $storeType; // merchant/distributor
-            $store->merchant_id = $lastInsteredId;
-            $store->store_domain = $actualDomain;
-            $store->percent_to_charge = 1.00;
-            $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
-            $store->status = 1;
-            $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
-            if (isset($merchantPay) && count($merchantPay) > 0) {
-                $store->store_version = 2;
-            } else {
-                $store->store_version = 1;
-            }
-            $store->prefix = $this->getPrefix($domainname);
-
-            if ($store->save()) {
-                $storeVersion = $store->store_version;
-                $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $getMerchat->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code']);
-                if($result['status']){
-                    $regUser = DB::table('users')->where(['store_id', $store->id],['user_type', 1])->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
-                    $token = JWTAuth::fromUser($regUser);
-                    $user = JWTAuth::toUser($token);
-                    $store = $getMerchat->getstores;
-                    $data = ['storeCount' => count($store)];
-                    return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'result' => $result, 'data' => ['user' => $user, 'store' => $store, 'setupStatus' => $data]])->header('token', $token);
+                    $store->prefix = $this->getPrefix($domainname);
+                    if ($store->save()) {
+                        $storeVersion = $store->store_version;
+                        $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $getMerchat->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code']);
+                        if($result['status']){
+                            $regUser = DB::table('users')->where(['store_id', $store->id],['user_type', 1])->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
+                            $token = JWTAuth::fromUser($regUser);
+                            $user = JWTAuth::toUser($token);
+                            $store = $getMerchat->getstores;
+                            $data = ['storeCount' => count($store)];
+                            return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'result' => $result, 'data' => ['user' => $user, 'store' => $store, 'setupStatus' => $data]])->header('token', $token);
+                        } else {
+                            return response()->json($result);
+                        }
+                    } else {
+                        return response()->json(["status" => 0, 'msg' => 'Something went wrong!']);
+                    }
                 } else {
-                    return response()->json($result);
+                    return response()->json(["status" => 0, 'msg' => 'Store name is already taken!']);
                 }
-            } else {
-                return response()->json(["status" => 0, 'msg' => 'Something went wrong!']);
-            }
             } else {
                 return response()->json(["status" => 0, 'msg' => 'Invalid OTP/Mobile number']);
             }

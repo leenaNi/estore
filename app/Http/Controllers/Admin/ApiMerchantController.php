@@ -25,14 +25,14 @@ class ApiMerchantController extends Controller
         $phone = Input::get("phone");
         if (Input::get("phone") && !empty(Input::get("phone"))) {
             $otp = rand(1000, 9999);
-            $userdata = User::where('telephon', $phone)->where('user_type', 1)->first();
+            $userdata = User::where('telephone', $phone)->where('user_type', 1)->first();
             return ['user' => $userdata];
             if (!empty($userdata)) {
                 $userdata->otp = $otp;
                 $userdata->save();
                 $msgSucc = "[#] Your one time password is " . $otp . ". zBXm7tZdbSr";
                 Helper::sendsms($phone, $msgSucc, $country);
-                $data = ["status" => 1, "msg" => "OTP Successfully send on your mobileNumber", "otp" => $otp];
+                $data = ["status" => 1, "msg" => "OTP Successfully send on your mobile Number", "otp" => $otp];
             } else {
                 $data = ["status" => 0, "msg" => "Mobile Number is not Registered"];
             }
