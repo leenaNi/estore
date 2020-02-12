@@ -119,7 +119,6 @@ class ApiDistributorController extends Controller
             $storeResult = DB::table('stores')
                             ->where('merchant_id',$distributorId)->where('store_type','distributor')
                             ->get(['id']);
-            return ['store' => $storeResult];
             if(count($storeResult) > 0)
             {
                 $storeId = $storeResult[0]->id;
