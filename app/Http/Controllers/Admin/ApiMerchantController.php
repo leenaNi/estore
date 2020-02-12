@@ -256,7 +256,7 @@ class ApiMerchantController extends Controller
         $merchantsResult = DB::table('merchants')->where("id", $merchantId)->get(['register_details']);
 
         $decodedDistributorDetail = json_decode($merchantsResult[0]->register_details, true);
-        // $merchantbusinessId = $decodedDistributorDetail['business_type'][0];
+        $merchantbusinessId = $decodedDistributorDetail['business_type'][0];
 
         if (!empty($distributorIdentityCode)) {
             $distributorResult = DB::table('distributor')->where("identity_code", $distributorIdentityCode)->get(['id', 'business_name', 'email', 'firstname', 'lastname', 'country', 'phone_no', 'register_details']);
@@ -266,17 +266,16 @@ class ApiMerchantController extends Controller
                 $hasDistributor = DB::table('has_distributors')
                     ->where("distributor_id", $distributorResult[0]->id)
                     ->where('merchant_id', $merchantId)->get();
-                    return ['distributor' => $hasDistributor, 'cnt' => count($hasDistributor) ];
+
                 if (count($hasDistributor) > 0) {
                     $decodedDistributorDetail = json_decode($distributorResult[0]->register_details);
-                    // $distributorbussinessArray = $decodedDistributorDetail->business_type;  
-                    // if (in_array($merchantbusinessId, $distributorbussinessArray)) {
-                    //     $data = ['status' => 1, 'distributorData' => $distributorResult[0]];
-                    // } else {
-                    //     $data = ['status' => 0, 'error' => "Industry not matched"];
-                    // }
-                                      
-                    $data = ['status' => 1, 'distributorData' => $distributorResult[0]];
+                    $distributorbussinessArray = $decodedDistributorDetail->business_type;
+
+                    if (in_array($merchantbusinessId, $distributorbussinessArray)) {
+                        $data = ['status' => 1, 'distributorData' => $distributorResult[0]];
+                    } else {
+                        $data = ['status' => 0, 'error' => "Industry not matched"];
+                    }
                 } else {
                     $data = ['status' => 0, 'error' => "You are already connected with this distributor. You can place order for this distributor."];
                 }
