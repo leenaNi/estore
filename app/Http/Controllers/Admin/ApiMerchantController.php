@@ -269,13 +269,14 @@ class ApiMerchantController extends Controller
 
                 if (count($hasDistributor) > 0) {
                     $decodedDistributorDetail = json_decode($distributorResult[0]->register_details);
-                    $distributorbussinessArray = $decodedDistributorDetail->business_type;
-
-                    if (in_array($merchantbusinessId, $distributorbussinessArray)) {
-                        $data = ['status' => 1, 'distributorData' => $distributorResult[0]];
-                    } else {
-                        $data = ['status' => 0, 'error' => "Industry not matched"];
-                    }
+                    // $distributorbussinessArray = $decodedDistributorDetail->business_type;  
+                    // if (in_array($merchantbusinessId, $distributorbussinessArray)) {
+                    //     $data = ['status' => 1, 'distributorData' => $distributorResult[0]];
+                    // } else {
+                    //     $data = ['status' => 0, 'error' => "Industry not matched"];
+                    // }
+                                      
+                    $data = ['status' => 1, 'distributorData' => $distributorResult[0]];
                 } else {
                     $data = ['status' => 0, 'error' => "You are already connected with this distributor. You can place order for this distributor."];
                 }
