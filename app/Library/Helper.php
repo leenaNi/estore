@@ -56,7 +56,7 @@ class Helper
         }
     }
 
-    public static function sendsms($mobile = null, $msg = null, $country = null)
+    public static function sendsms($mobile = null, $msg = null, $country = null, $isOtp = 0)
     {
         $mobile = $mobile;
         if ($mobile) {
@@ -195,7 +195,7 @@ class Helper
                 $catsave[$ck]['rgt'] = $i;
                 $catsave[$ck]['depth'] = 0;
                 if($cv->parent_id !== NULL) {
-                    $parentID = DB::table('store_categories')->where('category_id', $cv->parent_id)->where('store_id', 11)->first()->id;
+                    $parentID = DB::table('store_categories')->where('category_id', $cv->parent_id)->where('store_id', $storeId)->first()->id;
                 } else {
                     $parentID = $cv->parent_id;
                 }

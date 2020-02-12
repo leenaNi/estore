@@ -8,6 +8,7 @@ use App\Models\Settings;
 use App\Models\Category;
 use App\Models\HasCurrency;
 use App\Models\Merchant;
+use App\Models\User;
 use App\Models\MerchantOrder;
 use App\Models\Store;
 use App\Models\StoreTheme;
@@ -375,6 +376,7 @@ class HomeController extends Controller
     {
         //echo "createInstance function storeid >> $storeId ";
         //echo "<br> Cat array >> <pre>";print_r($catid);
+        $catid = 17;
         ini_set('max_execution_time', 600);
         if ($storeType == 'merchant') {
             $merchantd = Merchant::find(Session::get('merchantid'));
@@ -458,16 +460,9 @@ class HomeController extends Controller
                         $password = Hash::make($randno);
                         $insertArr["password"] = "$password";
                     }
-                    // if (Session::get("provider_id")) {
-                    //     $provider_id = Session::get("provider_id");
-                    //     $insertArr["provider_id"] = "$provider_id";
-                    // }
-
                     if ($country_code) {
                         $insertArr["country_code"] = "$country_code";
                     }
-                    //                    $randno = $merchantPassword;
-                    //                    $password = Hash::make($randno);
                     $newuserid = DB::table("users")->insertGetId($insertArr);
 
                     // This json(product_category_json) file contain category id wise product and category data(static)
@@ -476,7 +471,7 @@ class HomeController extends Controller
                     $json_url = base_path() . "/merchants/" . $domainname . "/storeSetting.json";
                     $json = file_get_contents($json_url);
                     $decodeVal = json_decode($json, true);
-                    //$decodeVal['industry_id'] = $catid;
+                    $decodeVal['industry_id'] = $catid;
                     $decodeVal['storeName'] = $storeName;
                     $decodeVal['expiry_date'] = $expirydate;
                     $decodeVal['store_id'] = $storeId;
@@ -488,6 +483,11 @@ class HomeController extends Controller
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
+
+                    if (!empty($catid)) {
+                        Helper::saveDefaultSet($catid, $prefix, $storeId,$storeType);
+                    }
+
                     if (!empty($currency)) {
                         $decodeVal['currency'] = $currency;
                         $decodeVal['currency_code'] = HasCurrency::find($currency)->iso_code;
@@ -525,6 +525,8 @@ class HomeController extends Controller
                     if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
+                        $idcodeMsg = "Your unique identification code is ".$identityCode;
+                        Helper::sendsms($phone, $idcodeMsg, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
@@ -1114,10 +1116,27 @@ class HomeController extends Controller
     {
         $storename = strtolower(Input::get("storename"));
         $storedata = Store::where(strtolower("store_name"),$storename)->first();
-        if (empty($storedata)) {
+        if (empty($storedata) && $storename != '') {
             return $data = ["status" => "success", "msg" => "Correct Business Name"];
+        }
+        else if($storename == ''){
+            return $data = ["status" => "fail", "msg" => "Business name can not be blank"];
         } else {
             return $data = ["status" => "fail", "msg" => "Business Name Already Exists"];
+        }
+    }
+
+    public function checkPhone()
+    {
+        $mobile = Input::get("mobile");
+        $user = User::where("telephone",$mobile)->first();
+        if (empty($user) && $mobile != '') {
+            return $data = ["status" => "success", "msg" => "Correct"];
+        } 
+        else if($mobile == ''){
+            return $data = ["status" => "fail", "msg" => "Mobile No. can not be blank"];
+        } else {
+            return $data = ["status" => "fail", "msg" => "Mobile No. Already Exists"];
         }
     }
 }

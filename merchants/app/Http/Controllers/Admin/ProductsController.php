@@ -169,6 +169,13 @@ class ProductsController extends Controller
 
     public function applyTheme(){
         $catid = implode(',',Input::get('cat_id'));
+        //dd($catid);
+        for ($k = 0; $k < $totalCategory; $k++) {
+
+            if (!empty($catid[$k])) {
+                Helper::saveDefaultSet($catid[$k], $prefix,$storeId,$storeType);
+            }
+        }
         $storedata = Store::find(Session::get('store_id'));
         $storedata->category_id = $catid;
         $storedata->template_id = Input::get('theme_id');

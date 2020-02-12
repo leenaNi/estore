@@ -90,7 +90,7 @@
                     <tr>
                         <td>{{$i}}</td>
                         <td>{{$decodedMerchantDetail->store_name}}</td>
-                        <td>{{$decodedMerchantDetail->firstname}}</td>
+                        <td></td>
                         <td>{{$decodedMerchantDetail->phone}}</td>
                         <td>{{$connectionData}}</td>
                         <td><i class="fa fa-pencil-square-o fa-fw" title="Ledger"></i></td>
