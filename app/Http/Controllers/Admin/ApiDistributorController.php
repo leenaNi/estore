@@ -511,9 +511,9 @@ class ApiDistributorController extends Controller
                     //print_r($brandIds);
                     if(count($storeIds) > 0)
                     {
-                        $getcategoryResult = DB::table('store_categories')
-                        ->whereIn('store_id', $storeIds)
-                        ->get();
+                        $getcategoryResult = DB::table('store_categories as sc')->join('categories as c', 'c.id', '=', 'sc.category_id')
+                        ->whereIn('sc.store_id', $storeIds)
+                        ->get(['sc.id', 'sc.url_key', 'sc.store_id', 'sc.short_desc', 'c.category']);
                         //echo "<pre> brand result::";
                         //print_r($getcategoryResult);                        
                         $categoryArray = array();
