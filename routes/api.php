@@ -72,7 +72,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/get-courier', ["as" => "admin.merchants.getCourier", "uses" => "MerchantController@getCourier"]);
             Route::any('/search-distributor', ["as" => "admin.merchants.searchDistributor", "uses" => "ApiMerchantController@searchDistributor"]);
             Route::any('/add-distributor', ["as" => "admin.merchants.addDistributor", "uses" => "ApiMerchantController@addDistributor"]);
-            Route::get('/get-distributor', ["as" => "admin.merchants.getDistributor", "uses" => "ApiMerchantController@getDistributors"]);
+            Route::any('/get-distributor', ["as" => "admin.merchants.getDistributor", "uses" => "ApiMerchantController@getDistributors"]);
 
         });
         Route::group(['prefix' => 'stores'], function () {
