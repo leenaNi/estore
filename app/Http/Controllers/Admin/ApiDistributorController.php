@@ -50,7 +50,7 @@ class ApiDistributorController extends Controller
             } // End foreach
             if(count($productResult) > 0)
             {
-                return response()->json(["status" => 1, 'result' => $productResult]);
+                return response()->json(["status" => 1, 'data' => $productResult]);
             }
             else
             {
@@ -59,7 +59,7 @@ class ApiDistributorController extends Controller
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         } 
     } // End searchProductWithDistributor
 
@@ -87,7 +87,7 @@ class ApiDistributorController extends Controller
                             ->get(['s.id','p.store_id','s.store_name']);
             if(count($productResult) > 0)
             {
-                return response()->json(["status" => 1, 'result' => $productResult]);
+                return response()->json(["status" => 1, 'data' => $productResult]);
             }
             else
             {
@@ -96,7 +96,7 @@ class ApiDistributorController extends Controller
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         } 
     }
 
@@ -133,7 +133,7 @@ class ApiDistributorController extends Controller
                 if(count($storeResult) > 0)
                 {
                     //echo "<pre>";print_r($productResult);exit;
-                    return response()->json(["status" => 0, 'result' => $productResult]);
+                    return response()->json(["status" => 1, 'msg' => '', 'data' => $productResult]);
                 }
                 else
                 {
@@ -147,7 +147,7 @@ class ApiDistributorController extends Controller
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         } 
         
     } // End getProduct
@@ -184,7 +184,7 @@ class ApiDistributorController extends Controller
                  //dd(DB::getQueryLog()); // Show results of log
                  if(count($distributorResult) > 0)
                  {
-                     return response()->json(["status" => 1, 'result' => $distributorResult]);
+                     return response()->json(["status" => 1, 'data' => $distributorResult]);
                  }
                  else
                  {
@@ -199,7 +199,7 @@ class ApiDistributorController extends Controller
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }  
 
     }//function ends here
@@ -297,7 +297,7 @@ class ApiDistributorController extends Controller
 
                             }*/
 
-                            return response()->json(["status" => 1, 'result' => $companyWiseDistributorResult]);
+                            return response()->json(["status" => 1, 'data' => $companyWiseDistributorResult]);
                         }
                         else
                         {
@@ -326,7 +326,7 @@ class ApiDistributorController extends Controller
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
     }//function ends here
 
