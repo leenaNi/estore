@@ -454,7 +454,7 @@ class ApiDistributorController extends Controller
                         ->join('products', 'brand.id', '=', 'products.brand_id')
                         ->whereIn('brand.id', $brandIds)
                         ->where('is_delete', 0)
-                        ->get(['brand.id as brand_id', 'brand.name as brand_name', DB::raw('concat("$brandLogogPath", brand.logo) as brand_logo'), 'brand.company_id', 'brand.industry_id']);
+                        ->get(['brand.id as brand_id', 'brand.name as brand_name', DB::raw('concat($brandLogogPath, brand.logo) as brand_logo'), 'brand.company_id', 'brand.industry_id']);
                         
                         /*echo "<pre>";
                         print_r($getBrandResult);
