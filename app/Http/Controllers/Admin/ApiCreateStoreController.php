@@ -708,7 +708,7 @@ class ApiCreateStoreController extends Controller
         $mobile = Input::get("phone");
         $otp = rand(1000, 9999);
         if ($mobile) {
-            $msgOrderSucc = "[#] Your one time password is " . $otp . ". zBXm7tZdbSr"; // "Contact 1800 3000 2020 for real time support.! Team eStorifi";
+            $msgOrderSucc = "[#] Your one time password is " . $otp . ". lRaDZ0eOjMz"; // "Contact 1800 3000 2020 for real time support.! Team eStorifi";
             $smsOutput = Helper::sendsms($mobile, $msgOrderSucc, $country);
             $smsOutput = explode(' | ', $smsOutput);
             if ($smsOutput[0] === 'success') {
