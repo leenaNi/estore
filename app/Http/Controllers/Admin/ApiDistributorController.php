@@ -248,6 +248,7 @@ class ApiDistributorController extends Controller
                 $storeIdsResult = DB::table('products')
                  ->select(DB::raw('store_id'))
                  ->whereIn('brand_id', $multipleBrandIds)
+                //  ->whereIn('store_id', $multipleDistributorIds)
                  ->get();
                  if(count($storeIdsResult) > 0)
                  {
@@ -280,9 +281,11 @@ class ApiDistributorController extends Controller
                         //print_r($multipleDistributorIds);
                         //exit;
                         //Get distributor id wise data
-                        $companyWiseDistributorResult = DB::table('distributor')
-                        ->whereIn('id', $multipleDistributorIds)
-                        ->get();
+                        $companyWiseDistributorResult = DB::table('distributor d')
+                        ->join('stores as s', 's.merchant_id', '=', 'd.id')
+                        ->where('s.store_type', 'distributor')
+                        ->whereIn('d.id', $multipleDistributorIds)
+                        ->get(['d.id', 'd.phone_no', 's.id as storeId', 's.store_name']);
                         //dd(DB::getQueryLog()); // Show results of log
                         if(count($companyWiseDistributorResult) > 0)
                         {
@@ -294,7 +297,7 @@ class ApiDistributorController extends Controller
                             {
 
                                 $companyWiseDistributorIds = $getData->id;
-                                $distributorRegisterDetails = $getData->register_details;
+                                // $distributorRegisterDetails = $getData->register_details;
 
                                 if(in_array($companyWiseDistributorIds, $multipleDistributorIds))
                                 {
@@ -310,8 +313,10 @@ class ApiDistributorController extends Controller
                                     }
 
                                     $finalDistributorArray[$i]['distributor_id'] = $companyWiseDistributorIds;
-                                    $finalDistributorArray[$i]['register_details'] = $distributorRegisterDetails;
-                                    $finalDistributorArray[$i]['offer_count'] = $offerCount;
+                                    // $finalDistributorArray[$i]['register_details'] = $distributorRegisterDetails;
+                                    $finalDistributorArray[$i]['phone_no'] = $getData->phone_no;
+                                    $finalDistributorArray[$i]['store_id'] = $getData->storeId;
+                                    $finalDistributorArray[$i]['store_name'] = $getData->store_name;
                                     
                                     $i++;
                                 }
