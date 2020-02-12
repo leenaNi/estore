@@ -29,13 +29,12 @@ class ApiMerchantController extends Controller
             if (!empty($userdata)) {
                 $userdata->otp = $otp;
                 $userdata->save();
-                $msgSucc = "[#] Your one time password is " . $otp . ". zBXm7tZdbSr";
+                $msgSucc = "[#] Your one time password is " . $otp . ". lRaDZ0eOjMz";
                 Helper::sendsms($phone, $msgSucc, $country);
-                $data = ["status" => 1, "msg" => "OTP Successfully send on your mobile Number", "otp" => $otp];
+                $data = ["status" => 1, "msg" => "OTP Successfully send on your mobile number", "otp" => $otp];
             } else {
                 $data = ["status" => 0, "msg" => "Mobile Number is not Registered"];
             }
-
         } else {
             $data = ["status" => 0, "msg" => "Mobile Number is missing"];
         }
