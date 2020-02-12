@@ -116,9 +116,9 @@ class ApiCompanyController extends Controller
                             $companyId = $companyData->company_id;
                             $companyName = $companyData->company_name;
                             $companyLogo = $companyData->company_logo;
-                            $brandId = $companyData->brand_id;
-                            $brandName = $companyData->brand_name;
-                            $brandLogo = $companyData->brand_logo;
+                            // $brandId = $companyData->brand_id;
+                            // $brandName = $companyData->brand_name;
+                            // $brandLogo = $companyData->brand_logo;
 
                             if ($tempId > 0 && $companyId != $tempId) {
                                 $companyArray[$i]['brand'] = $brandArray;
@@ -136,9 +136,9 @@ class ApiCompanyController extends Controller
                                 }
                             }
 
-                            $brandArray[$j]['brand_id'] = $brandId;
-                            $brandArray[$j]['brand_name'] = $brandName;
-                            $brandArray[$j]['brand_logo'] = asset(Config('constants.brandImgPath') . "/".$brandLogo);
+                            // $brandArray[$j]['brand_id'] = $brandId;
+                            // $brandArray[$j]['brand_name'] = $brandName;
+                            // $brandArray[$j]['brand_logo'] = asset(Config('constants.brandImgPath') . "/".$brandLogo);
 
                             
                             $j++;
