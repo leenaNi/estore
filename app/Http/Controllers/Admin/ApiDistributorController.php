@@ -317,6 +317,7 @@ class ApiDistributorController extends Controller
                                     $finalDistributorArray[$i]['phone_no'] = $getData->phone_no;
                                     $finalDistributorArray[$i]['store_id'] = $getData->storeId;
                                     $finalDistributorArray[$i]['store_name'] = $getData->store_name;
+                                    $finalDistributorArray[$i]['offer_count'] = $offerCount;
                                     
                                     $i++;
                                 }
