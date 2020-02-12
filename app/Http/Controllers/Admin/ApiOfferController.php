@@ -32,7 +32,7 @@ class ApiOfferController extends Controller
             $offerResult = DB::table('offers as o')->whereIn('store_id',$storeIdArray)->where('status',1)->get(['id','store_id','offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date']);
             if(count($offerResult) > 0)
             {
-                return response()->json(["status" => 1, 'result' => $offerResult]);
+                return response()->json(["status" => 1, 'msg' => '', 'data' => $offerResult]);
             }
             else
             {

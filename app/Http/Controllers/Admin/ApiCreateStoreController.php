@@ -1,44 +1,35 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
-use App\Models\Merchant;
-use App\Models\Vendor;
-use App\Models\Category;
-use App\Models\Store;
-use App\Models\Bank;
-use App\Models\Country;
-use App\Models\Document;
-use App\Models\Language;
-use App\Models\StoreTheme;
-use App\Models\Templates;
-use App\Models\HasCurrency;
-use App\Models\MerchantOrder;
-use App\Models\Zone;
-use App\Models\Settings;
-use App\Models\Currency;
-use Illuminate\Support\Facades\Input;
-use Hash;
-use File;
-use DB;
-use JWTAuth;
-use ZipArchive;
 use App\Library\Helper;
-use Mail;
-use Validator;
-use Auth;
-use Crypt;
+use App\Models\Category;
+use App\Models\Country;
+use App\Models\Currency;
+use App\Models\HasCurrency;
+use App\Models\Merchant;
+use App\Models\MerchantOrder;
+use App\Models\Settings;
+use App\Models\Store;
+use App\Models\StoreTheme;
+use App\Models\Vendor;
+use DB;
+use File;
+use Hash;
+use Illuminate\Support\Facades\Input;
+use JWTAuth;
 use Session;
-use stdClass;
-use Illuminate\Http\Request;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use Validator;
+use ZipArchive;
 
-class ApiCreateStoreController extends Controller {
+class ApiCreateStoreController extends Controller
+{
 
-    public function fbSignUpCheck() {
+    public function fbSignUpCheck()
+    {
         $email = Input::get('email');
         $appId = Input::get('appId');
-
 
         $userDetails = Merchant::where("email", "=", $email)->first();
         if (empty($userDetails)) {
@@ -51,37 +42,39 @@ class ApiCreateStoreController extends Controller {
         }
 
 //        if (count($userDetails) <= 0) {
-//            $userData = new Merchant;
-//            $userData->email = $userDataInput->email;
-//            $userData->firstname = $userDataInput->first_name;
-//            $userData->lastname = $userDataInput->last_name;
-//            $userData->provider_id = $userDataInput->id;
-//            $userData->save();
-//            $getuser = $userData;
-//        } else {
-//            $getuser = $userDetails;
-//        }
-//
-//
-//        $token = JWTAuth::fromUser($getuser);
-//        $user = JWTAuth::toUser($token);
-//        return response()->json(['result' => $user])->header('token', $token);
+        //            $userData = new Merchant;
+        //            $userData->email = $userDataInput->email;
+        //            $userData->firstname = $userDataInput->first_name;
+        //            $userData->lastname = $userDataInput->last_name;
+        //            $userData->provider_id = $userDataInput->id;
+        //            $userData->save();
+        //            $getuser = $userData;
+        //        } else {
+        //            $getuser = $userDetails;
+        //        }
+        //
+        //
+        //        $token = JWTAuth::fromUser($getuser);
+        //        $user = JWTAuth::toUser($token);
+        //        return response()->json(['result' => $user])->header('token', $token);
     }
 
-    public function signUpDropDown() {
+    public function signUpDropDown()
+    {
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
-       
-        $curr = HasCurrency::where('status', 1)->orderBy("iso_code", "asc")->get(['status', 'id', 'name', 'iso_code','currency_code']);
+
+        $curr = HasCurrency::where('status', 1)->orderBy("iso_code", "asc")->get(['status', 'id', 'name', 'iso_code', 'currency_code']);
         // $themes = StoreTheme::where("cat_id", 1)->where("status", 1)->get(["id", "name", "image"]);
-//            foreach($themes as $them){
-//               $them->themImage=  asset('public/admin/themes/'.$them->image);
-//               $them->themLink=  asset('themes/'.strtolower($them->name).'_home.php?link=trsdadasd');
-//            }
+        //            foreach($themes as $them){
+        //               $them->themImage=  asset('public/admin/themes/'.$them->image);
+        //               $them->themLink=  asset('themes/'.strtolower($them->name).'_home.php?link=trsdadasd');
+        //            }
 
         return $data = ['category' => $cat, 'currency' => $curr];
     }
 
-    public function checkDomain() {
+    public function checkDomain()
+    {
         $getvalue = Input::get('domain_name');
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
         $checkdomain = $checkhttps . "://" . $getvalue . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
@@ -94,161 +87,174 @@ class ApiCreateStoreController extends Controller {
             return $data = ["status" => 1, "msg" => "Domain name available"];
         }
     }
-    public function checkMobile() {
+    public function checkMobile()
+    {
         $users = DB::table("users")->where('user_type', 1)->where('telephone', Input::get('phone'))->first();
         if ($users != null) {
             return ["status" => 1, "msg" => "Already registered!"];
-        }else{
-            return ["status" => 0, "msg" => "Available"];  
+        } else {
+            return ["status" => 0, "msg" => "Available"];
         }
     }
-    public function saveSignUp() {        
+    public function saveSignUp()
+    {
         $allinput = Input::all();
         // return response()->json(["status" => empty(Input::get('roleType')), 'data' => Input::all()]);
-        if(!empty(Input::get('roleType')) && !empty(Input::get('store_name')) && !empty(Input::get('phone'))){
+        if (!empty(Input::get('roleType')) && !empty(Input::get('store_name')) && !empty(Input::get('phone'))) {
             $verifyOTP = $this->verifyOTP();
             if($verifyOTP) {
-                $storeType = ($allinput['roleType']=='1')? 'merchant' : 'distributor';
-                $settings = Settings::where('bank_id', 0)->first();
-                $country = Country::where("id", $settings->country_id)->get()->first();
-                $currency = Currency::where("id", $settings->currency_id)->get()->first();
-                $settings['country_code'] = $country['country_code'];
-                $settings['country_name'] = $country['name'];
-                $settings['currency_code'] = $currency['id'];            
-                $allinput['currency'] = $currency['id'];
-                $allinput['country_code'] = $country['country_code'];
-                $domainname = str_replace(" ", '-', trim(strtolower(Input::get("company_name")), " "));
-                $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
-                $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
-                $actualDomain = str_replace("..", ".", $actualDomain);            
-                $allinput['domain_name'] = $domainname;
-                if($storeType == 'merchant') {
-                    // Validate Merchant Data
-                    $validation = new Merchant();
-                    $allinput['company_name'] = Input::get('store_name');
-                    $validator = Validator::make($allinput, Merchant::rules(), $validation->messages);
-                    if ($validator->fails()) {
-                        $errMsg = [];
-                        $err = $validator->messages()->toArray();
-                        foreach ($err as $ek => $ev) {
-                            $errMsg[$ek] = implode(",", $ev);
+                $checkStore = $this->checkStore();
+                if($checkStore['status']) {
+                    $storeType = ($allinput['roleType'] == '1') ? 'merchant' : 'distributor';
+                    $settings = Settings::where('bank_id', 0)->first();
+                    $country = Country::where("id", $settings->country_id)->get()->first();
+                    $currency = Currency::where("id", $settings->currency_id)->get()->first();
+                    $settings['country_code'] = $country['country_code'];
+                    $settings['country_name'] = $country['name'];
+                    $settings['currency_code'] = $currency['id'];
+                    $allinput['currency'] = $currency['id'];
+                    $allinput['country_code'] = $country['country_code'];
+                    $domainname = str_replace(" ", '-', trim(strtolower(Input::get("store_name")), " "));
+                    $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
+                    $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
+                    $actualDomain = str_replace("..", ".", $actualDomain);
+                    $allinput['domain_name'] = $domainname;
+                    if ($storeType == 'merchant') {
+                        // Validate Merchant Data
+                        $validation = new Merchant();
+                        $allinput['company_name'] = Input::get('store_name');
+                        $validator = Validator::make($allinput, Merchant::rules(), $validation->messages);
+                        if ($validator->fails()) {
+                            $errMsg = [];
+                            $err = $validator->messages()->toArray();
+                            foreach ($err as $ek => $ev) {
+                                $errMsg[$ek] = implode(",", $ev);
+                            }
+                            $data = ["status" => 0, "msg" => $errMsg];
+                            return $data;
                         }
-                            $data=["status"=>0, "msg"=>$errMsg];
-                        return $data;
-                    }
-                    $getMerchat = new Merchant;
-                    $getMerchat->phone = Input::get("phone");
-                    // $getMerchat->password = Hash::make(Input::get('password'));
-                    // $getMerchat->email = Input::get("email");
-                    // $getMerchat->firstname = Input::get("firstname");
-                    $getMerchat->company_name = Input::get("store_name");
-                    $getMerchat->country_code = $country['country_code'];
-                    $getMerchat->register_details = json_encode($allinput);
-                    $getMerchat->save();
-                    $lastInsteredId = $getMerchat->id;
-                    if ($lastInsteredId > 0) {
-                        $merchantObj1 = Merchant::find($lastInsteredId);
-                        $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
-                        $merchantObj1->identity_code = $identityCode;
-                        $merchantObj1->save();
-                        
-                    }
-                } else if($storeType == 'distributor') {
-                    // Validate Merchant Data
-                    $validation = new Vendor();                
-                    $allinput['business_name'] = Input::get('store_name');
-                    $validator = Validator::make(Input::all(), Vendor::rules(), $validation->messages);
-                    if ($validator->fails()) {
-                        $errMsg = [];
-                        $err = $validator->messages()->toArray();
-                        foreach ($err as $ek => $ev) {
-                            $errMsg[$ek] = implode(",", $ev);
-                        }
-                            $data=["status"=>0, "msg"=>$errMsg];
-                        return $data;
-                    }
-                    $distributorObj = new Vendor();
-                    $distributorObj->business_name = $allinput['store_name'];
-                    $distributorObj->phone_no = $allinput['phone'];
-                    $distributorObj->country = $country['country_code'];
-                    $distributorObj->currency_code = $country['currency_code'];
-                    $distributorObj->register_details = json_encode($allinput);
-                    $distributorObj->save();
-                    $lastInsteredId = $distributorObj->id;
+                        $getMerchat = new Merchant;
+                        $getMerchat->phone = Input::get("phone");
+                        // $getMerchat->password = Hash::make(Input::get('password'));
+                        // $getMerchat->email = Input::get("email");
+                        // $getMerchat->firstname = Input::get("firstname");
+                        $getMerchat->company_name = Input::get("store_name");
+                        $getMerchat->country_code = $country['country_code'];
+                        $getMerchat->register_details = json_encode($allinput);
+                        $getMerchat->save();
+                        $lastInsteredId = $getMerchat->id;
+                        if ($lastInsteredId > 0) {
+                            $merchantObj1 = Merchant::find($lastInsteredId);
+                            $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
+                            $merchantObj1->identity_code = $identityCode;
+                            $merchantObj1->save();
 
-                    if ($lastInsteredId > 0) {
-                        $distributorObj1 = Vendor::find($lastInsteredId);
-                        $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
-                        $distributorObj1->identity_code = $identityCode;
-                        $distributorObj1->save();
+                        }
+                    } else if ($storeType == 'distributor') {
+                        // Validate Merchant Data
+                        $validation = new Vendor();
+                        $allinput['business_name'] = Input::get('store_name');
+                        $validator = Validator::make(Input::all(), Vendor::rules(), $validation->messages);
+                        if ($validator->fails()) {
+                            $errMsg = [];
+                            $err = $validator->messages()->toArray();
+                            foreach ($err as $ek => $ev) {
+                                $errMsg[$ek] = implode(",", $ev);
+                            }
+                            $data = ["status" => 0, "msg" => $errMsg];
+                            return $data;
+                        }
+                        $distributorObj = new Vendor();
+                        $distributorObj->business_name = $allinput['store_name'];
+                        $distributorObj->phone_no = $allinput['phone'];
+                        $distributorObj->country = $country['country_code'];
+                        $distributorObj->currency_code = $country['currency_code'];
+                        $distributorObj->register_details = json_encode($allinput);
+                        $distributorObj->save();
+                        $lastInsteredId = $distributorObj->id;
+
+                        if ($lastInsteredId > 0) {
+                            $distributorObj1 = Vendor::find($lastInsteredId);
+                            $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
+                            $distributorObj1->identity_code = $identityCode;
+                            $distributorObj1->save();
+                        }
+
+                        return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
                     }
-                    
-                    return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
-                }
-                
-                $store = new Store();
-                $store->store_name = Input::get("store_name"); // $registerDetails->store_name;
-                $store->url_key = $domainname;
-                $store->store_type = $storeType; // merchant/distributor
-                $store->merchant_id = $lastInsteredId;
-                $store->store_domain = $actualDomain;
-                $store->percent_to_charge = 1.00;
-                $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
-                $store->status = 1;
-                $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
-                if (isset($merchantPay) && count($merchantPay) > 0) {
-                    $store->store_version = 2;
+
+                    $store = new Store();
+                    $store->store_name = Input::get("store_name"); // $registerDetails->store_name;
+                    $store->url_key = $domainname;
+                    $store->store_type = $storeType; // merchant/distributor
+                    $store->merchant_id = $lastInsteredId;
+                    $store->store_domain = $actualDomain;
+                    $store->percent_to_charge = 1.00;
+                    $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
+                    $store->status = 1;
+                    $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
+                    if (isset($merchantPay) && count($merchantPay) > 0) {
+                        $store->store_version = 2;
+                    } else {
+                        $store->store_version = 1;
+                    }
+                    $store->prefix = $this->getPrefix($domainname);
+                    if ($store->save()) {
+                        $storeVersion = $store->store_version;
+                        $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $getMerchat->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code']);
+                        if($result['status']){
+                            $regUser = DB::table('users')->where('store_id', $store->id)->where('user_type', 1)->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
+                            $token = JWTAuth::fromUser($regUser);
+                            $user = JWTAuth::toUser($token);
+                            $store = $getMerchat->getstores;
+                            $data = ['storeCount' => count($store)];
+                            return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'result' => $result, 'data' => ['user' => $user, 'store' => $store, 'setupStatus' => $data]])->header('token', $token);
+                        } else {
+                            return response()->json($result);
+                        }
+                    } else {
+                        return response()->json(["status" => 0, 'msg' => 'Something went wrong!']);
+                    }
                 } else {
-                    $store->store_version = 1;
-                }
-                $store->prefix = $this->getPrefix($domainname);
-                
-                if ($store->save()) {
-                    $storeVersion = $store->store_version;                
-                    $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $getMerchat->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode,$settings['country_code']);
-                    $token = JWTAuth::fromUser($getMerchat);
-                    $user = JWTAuth::toUser($token);
-                    $store = $getMerchat->getstores;
-                    $data = ['storeCount'=>count($store)]; 
-                    return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'data' => ['user' => $user,'store'=>$store, 'setupStatus' =>$data]])->header('token', $token);
-                } else {
-                    return response()->json(["status" => 0, 'result' => 'Something went wrong!']);
+                    return response()->json(["status" => 0, 'msg' => 'Store name is already taken!']);
                 }
             } else {
-                return response()->json(["status" => 0, 'result' => 'Invalid OTP/Mobile number']);
+                return response()->json(["status" => 0, 'msg' => 'Invalid OTP/Mobile number']);
             }
         } else {
-            return response()->json(["status" => 0, 'result' => 'Some data is missing!']);
+            return response()->json(["status" => 0, 'msg' => 'Some data is missing!']);
         }
-        
+
     }
 
-    public function getTheme() {
+    public function getTheme()
+    {
         $themId = Input::get('business_type');
         if (!empty($themId)) {
-            $themes = StoreTheme::where("cat_id", $themId)->where("status", 1)->orderBy('sort_orders','asc')->get(["id", "name", "image","theme_type"]);
+            $themes = StoreTheme::where("cat_id", $themId)->where("status", 1)->orderBy('sort_orders', 'asc')->get(["id", "name", "image", "theme_type"]);
             foreach ($themes as $them) {
                 $them->themImage = asset('public/admin/themes/' . $them->image);
                 $them->themLink = asset('themes/' . strtolower($them->name) . '_home.php?link=trsdadasd');
             }
-            $data=["status"=>1,"theme"=>$themes];
-        }else{
-           $data=["status"=>0,"msg"=>"Opps Somethings went wrong"];  
+            $data = ["status" => 1, "theme" => $themes];
+        } else {
+            $data = ["status" => 0, "msg" => "Opps Somethings went wrong"];
         }
         return $data;
     }
 
-    public function applyStoreTheme() {
+    public function applyStoreTheme()
+    {
         $merchantId = Input::get("merchantId");
         $getMerchat = Merchant::find($merchantId);
-         $merchantPay = MerchantOrder::where("merchant_id", $merchantId)->where("order_status", 1)->where("payment_status", 4)->first();
-        
-        $themeId=Input::get('theme_id');
+        $merchantPay = MerchantOrder::where("merchant_id", $merchantId)->where("order_status", 1)->where("payment_status", 4)->first();
+
+        $themeId = Input::get('theme_id');
         $registerDetails = json_decode($getMerchat->register_details);
         $domainname = str_replace(" ", '-', trim(strtolower($registerDetails->domain_name), " "));
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
         $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
-        $store =  Store::findOrNew(Session::get('stid'));
+        $store = Store::findOrNew(Session::get('stid'));
         $store->store_name = str_replace(" ", "-", (strtolower($registerDetails->storename)));
         $store->url_key = $domainname;
         $store->merchant_id = $getMerchat->id;
@@ -260,8 +266,10 @@ class ApiCreateStoreController extends Controller {
         if (empty(Input::get("id"))) {
             if (!empty(Input::get("url_key"))) {
                 $chkUrlKey = Store::where("url_key", Input::get("url_key"))->count();
-                if ($chkUrlKey == 0)
+                if ($chkUrlKey == 0) {
                     $store->url_key = Input::get("url_key");
+                }
+
             }
             $store->prefix = $this->getPrefix($domainname);
         }
@@ -274,40 +282,41 @@ class ApiCreateStoreController extends Controller {
             $registerDetails->store_version = 1;
         }
         if ($store->save()) {
-            Session::put('stid',$store->id);
-            
+            Session::put('stid', $store->id);
+
             if (empty($themeInput->id)) {
                 $password = @$registerDetails->password;
                 $appId = @$registerDetails->appId;
-                $this->createInstance($store->id,$store->prefix, $store->url_key,$registerDetails, $password,  $themeId, $firstname, $domainname, $store->expiry_date, $appId);
+                $this->createInstance($store->id, $store->prefix, $store->url_key, $registerDetails, $password, $themeId, $firstname, $domainname, $store->expiry_date, $appId);
             }
         }
-        $getMerchat->register_details=json_encode($registerDetails);
+        $getMerchat->register_details = json_encode($registerDetails);
         $getMerchat->save();
 
         Session::forget("stid");
-        $userData=app('App\Http\Controllers\Admin\ApiMerchantController')->fbMerchantLogin($getMerchat->email);
-       // App/Http/Controller/Admin/ApiMerchantController->fbMerchantLogin($getMerchat->email);
-      //  App\Http\Controllers\Admin\ApiMerchantController->fbMerchantLogin($getMerchat->email);
+        $userData = app('App\Http\Controllers\Admin\ApiMerchantController')->fbMerchantLogin($getMerchat->email);
+        // App/Http/Controller/Admin/ApiMerchantController->fbMerchantLogin($getMerchat->email);
+        //  App\Http\Controllers\Admin\ApiMerchantController->fbMerchantLogin($getMerchat->email);
         return $userData;
         // $data['userdata'] = $userData;
-      //  return $data;
+        //  return $data;
         return "Success";
-        
+
     }
 
-    public function createInstance($storeType, $storeId, $prefix, $urlKey, $storeName, $currency, $phone, $domainname, $storeVersion, $expirydate, $identityCode,$country_code) {
-        $appId=null;
+    public function createInstance($storeType, $storeId, $prefix, $urlKey, $storeName, $currency, $phone, $domainname, $storeVersion, $expirydate, $identityCode, $country_code)
+    {
+        $appId = null;
         ini_set('max_execution_time', 600);
 
         $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
         $fields = array(
-            'data' => $messagearray
+            'data' => $messagearray,
         );
         //building headers for the request
         $headers = array(
             'Authorization: sso-key dKYQNqECqY1B_KeALbMxBuuwsR54jgwibDA:KeANr8XdSMqcwF9y5CjCZe',
-            'Content-Type: application/json'
+            'Content-Type: application/json',
         );
 
         $ch = curl_init();
@@ -326,12 +335,11 @@ class ApiCreateStoreController extends Controller {
 
         //finally executing the curl request
         $result = curl_exec($ch);
-        if ($result === FALSE) {
+        if ($result === false) {
             die('Curl failed: ' . curl_error($ch));
         }
         curl_close($ch);
         //stop Curl
-
 
         $contents = File::get(public_path() . "/public/skeleton.sql");
         $sql = str_replace('tblprfx_', $storeId, $contents);
@@ -359,12 +367,12 @@ class ApiCreateStoreController extends Controller {
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
 
-                    $insertArr = [ "user_type" => 1, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
-                    
-                    if($appId){
-                         $insertArr["provider_id"] =$appId;
+                    $insertArr = ["user_type" => 1, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
+
+                    if ($appId) {
+                        $insertArr["provider_id"] = $appId;
                     }
-                     if ($country_code) {
+                    if ($country_code) {
                         $insertArr["country_code"] = "$country_code";
                     }
                     $newuserid = DB::table("users")->insertGetId($insertArr);
@@ -375,12 +383,12 @@ class ApiCreateStoreController extends Controller {
                     //$decodeVal['industry_id'] = $catid;
                     $decodeVal['storeName'] = $storeName;
                     $decodeVal['expiry_date'] = $expirydate;
-                    $decodeVal['store_id'] =$storeId;
+                    $decodeVal['store_id'] = $storeId;
                     $decodeVal['prefix'] = $prefix;
                     $decodeVal['country_code'] = $country_code;
 
                     $newJsonString = json_encode($decodeVal);
-                    $fp = fopen( base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
+                    $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
 
@@ -391,7 +399,7 @@ class ApiCreateStoreController extends Controller {
                         $currVal = @HasCurrency::find($currency);
                         if (!empty($currVal)) {
                             $currJson = json_encode(['name' => $currVal->name, 'iso_code' => $currVal->iso_code]);
-                            DB::table("general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0,'store_id' => $storeId]);
+                            DB::table("general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0, 'store_id' => $storeId]);
                         }
                     }
                     //Update Email Setting for mandrill and SMTP
@@ -402,7 +410,7 @@ class ApiCreateStoreController extends Controller {
                         DB::table("general_setting")->where('store_id', $storeId)->where('url_key', $email)->update(["details" => json_encode($emaildetails)]);
                     }
                     //End Email Setting Update
-                    
+
                     $adminRoleId = DB::table('roles')->where('store_id', $storeId)->where('name', 'LIKE', 'admin')->first(['id']);
                     DB::table("role_user")->insert(["user_id" => @$newuserid, "role_id" => $adminRoleId->id]);
                     //Check acl setting from general settings
@@ -418,53 +426,53 @@ class ApiCreateStoreController extends Controller {
                         $insertPermission = DB::table("permission_role")->insert($permissions);
                     }
 
-                  if ($phone) {
+                    if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
-                        $idcodeMsg = "Your unique identification code is ".$identityCode;
+                        $idcodeMsg = "Your unique identification code is " . $identityCode;
                         Helper::sendsms($phone, $idcodeMsg, $country_code);
                     }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
                     $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
                     $sub = "eStorifi Links for Online Store - " . $storeName;
-                    $mailcontent = "<b>Congratulations  " . $storeName ." has been created successfully!</b>" . "\n\n";
+                    $mailcontent = "<b>Congratulations  " . $storeName . " has been created successfully!</b>" . "\n\n";
                     $mailcontent .= "Kindly find the links to view your store:" . "\n";
-                    
+
                     $mailcontent .= "Store Admin Link: http://" . $domainname . '.' . $domain . "/admin" . "\n";
                     $mailcontent .= "Online Store Link: http://" . $domainname . '.' . $domain . "\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n\n";
-                   
-                    return "Extracted Successfully to $path";
+
+                    return ['status' => 1, 'msg' => "Extracted Successfully to $path"];
                 } else {
-                    return "Error Encountered while extracting the Zip";
+                    return ['status' => 0, 'msg' => "Error Encountered while extracting the Zip"];
                 }
             } else {
-                return "Access Denied";
+                return ['status' => 0, 'msg' => "Access Denied"];
             }
         } else {
-            return "Error Encountered while processing the SQL";
+            return ['status' => 0, 'msg' => "Error Encountered while processing the SQL"];
         }
     }
 
-    public function createInstanceOld($storeId,$prefix, $urlKey,$registerDetails,$merchantPassword,$themeid,  $firstname, $domainname,$expirydate,$appId=null) {
-        $merchantEamil=$registerDetails->email;
-        $storeName=$registerDetails->storename;
-       $catid= $registerDetails->business_type;
-        $currency=$registerDetails->currency;
-       $phone= $registerDetails->phone;
-       $storeVersion=$registerDetails->store_version;
+    public function createInstanceOld($storeId, $prefix, $urlKey, $registerDetails, $merchantPassword, $themeid, $firstname, $domainname, $expirydate, $appId = null)
+    {
+        $merchantEamil = $registerDetails->email;
+        $storeName = $registerDetails->storename;
+        $catid = $registerDetails->business_type;
+        $currency = $registerDetails->currency;
+        $phone = $registerDetails->phone;
+        $storeVersion = $registerDetails->store_version;
         ini_set('max_execution_time', 600);
-
 
         $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
         $fields = array(
-            'data' => $messagearray
+            'data' => $messagearray,
         );
         //building headers for the request
         $headers = array(
             'Authorization: sso-key dKYQNqECqY1B_KeALbMxBuuwsR54jgwibDA:KeANr8XdSMqcwF9y5CjCZe',
-            'Content-Type: application/json'
+            'Content-Type: application/json',
         );
 
         $ch = curl_init();
@@ -483,21 +491,20 @@ class ApiCreateStoreController extends Controller {
 
         //finally executing the curl request
         $result = curl_exec($ch);
-        if ($result === FALSE) {
+        if ($result === false) {
             die('Curl failed: ' . curl_error($ch));
         }
         curl_close($ch);
         //stop Curl
 
-
         $contents = File::get(public_path() . "/public/skeleton.sql");
         $sql = str_replace("tblprfx", $prefix, $contents);
         $test = DB::unprepared($sql);
         if (DB::unprepared($sql)) {
-            $path = base_path() . "/merchants/"."$domainname";
+            $path = base_path() . "/merchants/" . "$domainname";
 
             $mk = File::makeDirectory($path, 0777, true, true);
-            if(chmod($path, 0777)){
+            if (chmod($path, 0777)) {
                 chmod($path, 0777);
             }
             if ($mk) {
@@ -521,13 +528,13 @@ class ApiCreateStoreController extends Controller {
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
-                        $insertArr["password"] =$password;
+                        $insertArr["password"] = $password;
                     }
-                    if($appId){
-                         $insertArr["provider_id"] =$appId;
+                    if ($appId) {
+                        $insertArr["provider_id"] = $appId;
                     }
-                     $country_code=$registerDetails->country_code;
-                     if ($country_code) {
+                    $country_code = $registerDetails->country_code;
+                    if ($country_code) {
                         $insertArr["country_code"] = "$country_code";
                     }
                     $newuserid = DB::table("users")->insertGetId($insertArr);
@@ -538,20 +545,19 @@ class ApiCreateStoreController extends Controller {
                     $decodeVal['industry_id'] = $catid;
                     $decodeVal['storeName'] = $storeName;
                     $decodeVal['expiry_date'] = $expirydate;
-                    $decodeVal['store_id'] =$storeId;
+                    $decodeVal['store_id'] = $storeId;
                     $decodeVal['prefix'] = $prefix;
                     $decodeVal['country_code'] = $country_code;
 
                     if (!empty($themeid)) {
                         $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
                         $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
-                        $decodeVal['themeid'] =$themeid;
+                        $decodeVal['themeid'] = $themeid;
                         $decodeVal['themedata'] = $themedata;
                         $decodeVal['currencyId'] = @HasCurrency::find($currency)->iso_code;
-                        $decodeVal['store_version'] =@$storeVersion;
+                        $decodeVal['store_version'] = @$storeVersion;
                         $newJsonString = json_encode($decodeVal);
                     }
-
 
                     //Update Email Setting for mandrill and SMTP
                     $emailSett = array("mandrill", "smtp");
@@ -561,13 +567,12 @@ class ApiCreateStoreController extends Controller {
                         DB::table("general_setting")->where('url_key', $email)->update(["details" => json_encode($emaildetails)]);
                     }
                     //End Email Setting Update
-                    $fp = fopen( base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
+                    $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
 
-
                     DB::table("role_user")->insert([
-                        ["user_id" => @$newuserid, "role_id" => "1"]
+                        ["user_id" => @$newuserid, "role_id" => "1"],
                     ]);
                     //Check acl setting from general settings
                     $chkAcl = DB::table("general_setting")->where('url_key', 'acl')->select("status")->first();
@@ -585,42 +590,42 @@ class ApiCreateStoreController extends Controller {
                     if (!empty($catid)) {
                         Helper::saveDefaultSet($catid, $prefix);
                     }
-                   // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
-                     $banner = json_decode((StoreTheme::where("id", $themeid)->first()->banner_image), true);
+                    // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
+                    $banner = json_decode((StoreTheme::where("id", $themeid)->first()->banner_image), true);
                     if (!empty($banner)) {
-                     foreach ($banner as $image) {
-                        $homePageSlider=[];
-                        $file = $image['banner'];
-                        $homePageSlider['layout_id'] = 1;
-                        $homePageSlider['name'] = $image['banner_text'];
-                        $homePageSlider['is_active'] = $image['banner_status'];
-                        $homePageSlider['image'] = $image['banner'];
-                        $homePageSlider['sort_order'] = $image['sort_order'];
-                        $source = public_path() . '/public/admin/themes/';
-                        $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                        copy($source . $file, $destination . $file);
-                        DB::table("has_layouts")->insert($homePageSlider);
-                    }
+                        foreach ($banner as $image) {
+                            $homePageSlider = [];
+                            $file = $image['banner'];
+                            $homePageSlider['layout_id'] = 1;
+                            $homePageSlider['name'] = $image['banner_text'];
+                            $homePageSlider['is_active'] = $image['banner_status'];
+                            $homePageSlider['image'] = $image['banner'];
+                            $homePageSlider['sort_order'] = $image['sort_order'];
+                            $source = public_path() . '/public/admin/themes/';
+                            $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                            copy($source . $file, $destination . $file);
+                            DB::table("has_layouts")->insert($homePageSlider);
+                        }
                     }
                     $threeBoxes = json_decode((Category::where("id", $catid)->first()->threebox_image), true);
-                    
+
                     // $threeBoxes = json_decode((StoreTheme::where("id", $themeid)->first()->threebox_image), true);
                     if (!empty($threeBoxes)) {
-                    foreach ($threeBoxes as $image) {
-                        $homePageSlider=[];
-                        $file = $image['banner'];
-                        $homePageSlider['layout_id'] = 4;
-                        $homePageSlider['name'] = $image['banner_text'];
-                        $homePageSlider['is_active'] = $image['banner_status'];
-                        $homePageSlider['image'] = $image['banner'];
-                        $homePageSlider['sort_order'] = $image['sort_order'];
-                        $source = public_path() . '/public/admin/themes/';
-                        $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                        copy($source . $file, $destination . $file);
-                        DB::table("has_layouts")->insert($homePageSlider);
+                        foreach ($threeBoxes as $image) {
+                            $homePageSlider = [];
+                            $file = $image['banner'];
+                            $homePageSlider['layout_id'] = 4;
+                            $homePageSlider['name'] = $image['banner_text'];
+                            $homePageSlider['is_active'] = $image['banner_status'];
+                            $homePageSlider['image'] = $image['banner'];
+                            $homePageSlider['sort_order'] = $image['sort_order'];
+                            $source = public_path() . '/public/admin/themes/';
+                            $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                            copy($source . $file, $destination . $file);
+                            DB::table("has_layouts")->insert($homePageSlider);
+                        }
                     }
-                    }
-                  if ($phone) {
+                    if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
                     }
@@ -628,9 +633,9 @@ class ApiCreateStoreController extends Controller {
                     $baseurl = str_replace("\\", "/", base_path());
                     $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
                     $sub = "eStorifi Links for Online Store - " . $storeName;
-                    $mailcontent = "<b>Congratulations  " . $storeName ." has been created successfully!</b>" . "\n\n";
+                    $mailcontent = "<b>Congratulations  " . $storeName . " has been created successfully!</b>" . "\n\n";
                     $mailcontent .= "Kindly find the links to view your store:" . "\n";
-                    
+
                     $mailcontent .= "Store Admin Link: http://" . $domainname . '.' . $domain . "/admin" . "\n";
                     $mailcontent .= "Online Store Link: http://" . $domainname . '.' . $domain . "\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n\n";
@@ -649,16 +654,20 @@ class ApiCreateStoreController extends Controller {
         }
     }
 
-    public function getPrefix($storeName) {
+    public function getPrefix($storeName)
+    {
         $newPrefix = substr($storeName, 0, 4) . mt_rand(100000, 999999);
         $chkPrfix = Store::where("prefix", "=", $newPrefix)->count();
-        if ($chkPrfix > 0)
+        if ($chkPrfix > 0) {
             $this->getPrefix($storeName);
-        else
+        } else {
             return $newPrefix;
+        }
+
     }
 
-    public function checkStore() {
+    public function checkStore()
+    {
         $storename = Input::get('store_name');
         $storename = strtolower(str_replace(' ', '', $storename));
         $chekcStoreName = DB::select("SELECT lower(REPLACE(`store_name`,' ','')) FROM `stores` where `store_name` ='{$storename}'");
@@ -668,9 +677,10 @@ class ApiCreateStoreController extends Controller {
             return $data = ["status" => 1, "msg" => "Available"];
         }
     }
-   public function replaceFileString($FilePath, $OldText, $NewText) {
+    public function replaceFileString($FilePath, $OldText, $NewText)
+    {
         $Result = array('status' => 'error', 'message' => '');
-        if (file_exists($FilePath) === TRUE) {
+        if (file_exists($FilePath) === true) {
             if (is_writeable($FilePath)) {
                 try {
                     $FileContent = file_get_contents($FilePath);
@@ -691,16 +701,17 @@ class ApiCreateStoreController extends Controller {
         }
         return $Result;
     }
-    
-    public function sendOtp() {
+
+    public function sendOtp()
+    {
         $country = Input::get("country_code");
         $mobile = Input::get("phone");
-        $otp = rand(1000, 9999);        
+        $otp = rand(1000, 9999);
         if ($mobile) {
             $msgOrderSucc = "[#] Your one time password is " . $otp . ". zBXm7tZdbSr"; // "Contact 1800 3000 2020 for real time support.! Team eStorifi";
             $smsOutput = Helper::sendsms($mobile, $msgOrderSucc, $country);
             $smsOutput = explode(' | ', $smsOutput);
-            if($smsOutput[0] === 'success') {
+            if ($smsOutput[0] === 'success') {
                 DB::table('user_otp')->insert(['phone' => $mobile, 'otp' => $otp, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]);
                 $data = ["status" => 1, "msg" => "OTP Successfully send on your phone Number"]; //, "otp"=> $otp, 'smsOutput' => $smsOutput
                 return $data;
@@ -712,23 +723,23 @@ class ApiCreateStoreController extends Controller {
             $data = ["status" => 0, "msg" => "Enter phone number"];
             return $data;
         }
-        
+
     }
 
-    public function verifyOTP(){
+    public function verifyOTP()
+    {
         $phone = Input::get("phone");
         $otp = Input::get("otp");
-        $userdata = DB::table('user_otp')->where(['phone'=>$phone, 'otp'=>$otp])->first();
-        if (!empty($userdata)) {      
+        $userdata = DB::table('user_otp')->where(['phone' => $phone, 'otp' => $otp])->first();
+        if (!empty($userdata)) {
             if (!$token = JWTAuth::fromUser($userdata)) {
                 return response()->json(["status" => 0, 'msg' => "Invalid Mobile Number"]);
             }
             $result = response()->json(compact('token'));
             $getData = $result->getdata();
-            DB::table('user_otp')->where(['phone'=>$phone, 'otp'=>$otp])->delete();
+            DB::table('user_otp')->where(['phone' => $phone, 'otp' => $otp])->delete();
             return 1;
-        }
-        else{
+        } else {
             return 0;
         }
     }

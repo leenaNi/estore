@@ -31,7 +31,7 @@ class ApiMerchantController extends Controller
                 $userdata->save();
                 $msgSucc = "[#] Your one time password is " . $otp . ". zBXm7tZdbSr";
                 Helper::sendsms($phone, $msgSucc, $country);
-                $data = ["status" => 1, "msg" => "OTP Successfully send on your mobileNumber", "otp" => $otp];
+                $data = ["status" => 1, "msg" => "OTP Successfully send on your mobile Number", "otp" => $otp];
             } else {
                 $data = ["status" => 0, "msg" => "Mobile Number is not Registered"];
             }
@@ -345,16 +345,16 @@ class ApiMerchantController extends Controller
         if (!empty(Input::get("merchantId"))) {
             $merchantId = Input::get("merchantId");
             $hasDistributorsResult = DB::table('has_distributors as hd')
-                ->join("distributor as d", "d.id", "=", "hd.merchant_id")
+                ->join("distributor as d", "d.id", "=", "hd.distributor_id")
                 ->where("hd.merchant_id", $merchantId)
                 ->get(['d.id', 'd.register_details']);
             if (count($hasDistributorsResult) > 0) {
-                return response()->json(["status" => 1, 'result' => $hasDistributorsResult]);
+                return response()->json(["status" => 1, 'msg' => '', 'data' => $hasDistributorsResult]);
             } else {
                 return response()->json(["status" => 0, 'msg' => 'Record not found']);
             }
         } else {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
 
     } // End getDistributors()
