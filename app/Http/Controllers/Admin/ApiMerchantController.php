@@ -26,6 +26,7 @@ class ApiMerchantController extends Controller
         if (Input::get("phone") && !empty(Input::get("phone"))) {
             $otp = rand(1000, 9999);
             $userdata = User::where('telephone', $phone)->where('user_type', 1)->first();
+            return ['user' => $userdata];
             if (!empty($userdata)) {
                 $userdata->otp = $otp;
                 $userdata->save();
