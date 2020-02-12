@@ -376,6 +376,7 @@ class HomeController extends Controller
     {
         //echo "createInstance function storeid >> $storeId ";
         //echo "<br> Cat array >> <pre>";print_r($catid);
+        $catid = 17;
         ini_set('max_execution_time', 600);
         if ($storeType == 'merchant') {
             $merchantd = Merchant::find(Session::get('merchantid'));
@@ -470,7 +471,7 @@ class HomeController extends Controller
                     $json_url = base_path() . "/merchants/" . $domainname . "/storeSetting.json";
                     $json = file_get_contents($json_url);
                     $decodeVal = json_decode($json, true);
-                    //$decodeVal['industry_id'] = $catid;
+                    $decodeVal['industry_id'] = $catid;
                     $decodeVal['storeName'] = $storeName;
                     $decodeVal['expiry_date'] = $expirydate;
                     $decodeVal['store_id'] = $storeId;
@@ -482,6 +483,11 @@ class HomeController extends Controller
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
+
+                    if (!empty($catid)) {
+                        Helper::saveDefaultSet($catid, $prefix, $storeId,$storeType);
+                    }
+
                     if (!empty($currency)) {
                         $decodeVal['currency'] = $currency;
                         $decodeVal['currency_code'] = HasCurrency::find($currency)->iso_code;
