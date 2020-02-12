@@ -602,10 +602,9 @@ class ApiDistributorController extends Controller
                             //echo "<pre> Product array::";
                             //print_r($categoryArray);
                         }
-                        return response()->json(["status" => 1, 'msg' => "", 'result' => $categoryArray]);
+                        return response()->json(["status" => 1, 'msg' => "", 'data' => $categoryArray]);
                     }
                 }
-
             }
             else
             {
