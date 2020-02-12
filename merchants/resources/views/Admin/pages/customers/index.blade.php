@@ -65,10 +65,10 @@
                     </div> 
 
                     <div class="form-group col-md-2 noBottom-margin">
-                        <input type="submit" name="submit" class="fullWidth noAll-margin btn btn-primary" value="Search">
+                        <input type="submit" name="submit" class="fullWidth noAll-margin btn btn-primary form-control customer-search-btn" value="Search">
                     </div>
                     <div class="form-group col-md-2 noBottom-margin">
-                        <a  href="{{route('admin.customers.view')}}" class="fullWidth noAll-margin medium btn reset-btn">Reset</a>
+                        <a  href="{{route('admin.customers.view')}}" class="fullWidth noAll-margin medium btn reset-btn form-control">Reset</a>
                     </div>
                 </form> 
                 </div>

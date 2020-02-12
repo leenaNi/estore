@@ -30,7 +30,7 @@
                             <input type="submit" name="submit" vlaue='Submit' class='form-control btn btn-primary noMob-leftmargin'>
                         </div>
                         <div class="from-group noBottom-margin col-md-2 col-sm-3 col-xs-12">
-                            <a href="{{ route('admin.report.productIndex')}}" class="btn reset-btn fullWidth noAll-margin noMob-leftmargin">Reset </a>
+                            <a href="{{ route('admin.report.productIndex')}}" class="btn reset-btn fullWidth noAll-margin noMob-leftmargin form-control">Reset </a>
                         </div>
                     </form>
                 </div>

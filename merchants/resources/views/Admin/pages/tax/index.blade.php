@@ -48,7 +48,7 @@
             <div class="col-md-3 noAll-padding displayFlex">
                 <div class="filter-right-section">
                     <div class="clearfix">
-                        <a href="{!! route('admin.tax.add') !!}" class="btn btn-default pull-right form-control mobAddnewflagBTN" type="button">Add New Tax</a> 
+                        <a href="{!! route('admin.tax.add') !!}" class="btn btn-default fullWidth noAll-margin" type="button">Add New Tax</a> 
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Taxes   <span class="listing-counter">({{$taxCount }})</span> </h1>
+            <h1>Taxes   <span class="listing-counter">{{$taxCount }}</span> </h1>
         </div>
         <div class="listing-section">
             <table class="table table-striped table-hover tableVaglignMiddle">
