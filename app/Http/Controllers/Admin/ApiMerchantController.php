@@ -256,7 +256,7 @@ class ApiMerchantController extends Controller
         $merchantsResult = DB::table('merchants')->where("id", $merchantId)->get(['register_details']);
 
         $decodedDistributorDetail = json_decode($merchantsResult[0]->register_details, true);
-        $merchantbusinessId = $decodedDistributorDetail['business_type'][0];
+        // $merchantbusinessId = $decodedDistributorDetail['business_type'][0];
 
         if (!empty($distributorIdentityCode)) {
             $distributorResult = DB::table('distributor')->where("identity_code", $distributorIdentityCode)->get(['id', 'business_name', 'email', 'firstname', 'lastname', 'country', 'phone_no', 'register_details']);
