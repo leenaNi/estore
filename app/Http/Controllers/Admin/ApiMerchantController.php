@@ -260,7 +260,7 @@ class ApiMerchantController extends Controller
 
         if (!empty($distributorIdentityCode)) {
             $distributorResult = DB::table('distributor')->where("identity_code", $distributorIdentityCode)->get(['id', 'business_name', 'email', 'firstname', 'lastname', 'country', 'phone_no', 'register_details']);
-
+            return ['distributor' => $distributorResult];
             if (count($distributorResult) > 0) {
                 // Check already connected with distributor or not
                 $hasDistributor = DB::table('has_distributors')
