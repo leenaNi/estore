@@ -312,7 +312,7 @@ class HomeController extends Controller
             $storeName = $themeInput->store_name;
             $themeInput->theme_id = 0;
             $store->template_id = 0;
-            //$store->category_id = implode(',', $themeInput->cat_id);
+            $store->category_id = 17;
         }
         $store->store_domain = $actualDomain;
         $store->percent_to_charge = 1.00;
