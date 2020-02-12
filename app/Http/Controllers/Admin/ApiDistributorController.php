@@ -404,12 +404,12 @@ class ApiDistributorController extends Controller
             }
             else
             {
-                return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+                return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
             }
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
     }
 
@@ -471,7 +471,7 @@ class ApiDistributorController extends Controller
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
     }
 
@@ -613,7 +613,7 @@ class ApiDistributorController extends Controller
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
     }
 
