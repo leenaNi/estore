@@ -203,7 +203,7 @@ class ApiCreateStoreController extends Controller
                         $storeVersion = $store->store_version;
                         $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $getMerchat->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code']);
                         if($result['status']){
-                            $regUser = DB::table('users')->where(['store_id', $store->id],['user_type', 1])->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
+                            $regUser = DB::table('users')->where('store_id', $store->id)->where('user_type', 1)->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
                             $token = JWTAuth::fromUser($regUser);
                             $user = JWTAuth::toUser($token);
                             $store = $getMerchat->getstores;
