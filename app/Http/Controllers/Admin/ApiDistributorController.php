@@ -389,7 +389,7 @@ class ApiDistributorController extends Controller
                     {
                         //echo "<pre>";
                         //print_r($offersResult);
-                        return response()->json(["status" => 1, 'result' => $offersResult]);
+                        return response()->json(["status" => 1, 'msg' => "", 'data' => $offersResult]);
                     }
                     else
                     {
@@ -449,16 +449,17 @@ class ApiDistributorController extends Controller
                     //print_r($brandIds);
                     if(count($brandIds) > 0)
                     {
+                        $brandLogogPath = asset(Config('constants.brandImgPath') . "/");
                        $getBrandResult = DB::table('brand')
                         ->join('products', 'brand.id', '=', 'products.brand_id')
                         ->whereIn('brand.id', $brandIds)
                         ->where('is_delete', 0)
-                        ->get(['brand.id as brand_id', 'brand.name as brand_name', 'brand.logo as brand_logo', 'brand.company_id', 'brand.industry_id']);
+                        ->get(['brand.id as brand_id', 'brand.name as brand_name', 'concat("$brandLogogPath", brand.logo) as brand_logo', 'brand.company_id', 'brand.industry_id']);
                         
                         /*echo "<pre>";
                         print_r($getBrandResult);
                         exit;*/
-                        return response()->json(["status" => 1, 'result' => $getBrandResult]);
+                        return response()->json(["status" => 1, 'msg' => "", 'result' => $getBrandResult]);
                     }
                 }
 
@@ -601,7 +602,7 @@ class ApiDistributorController extends Controller
                             //echo "<pre> Product array::";
                             //print_r($categoryArray);
                         }
-                        return response()->json(["status" => 1, 'result' => $categoryArray]);
+                        return response()->json(["status" => 1, 'msg' => "", 'result' => $categoryArray]);
                     }
                 }
 
