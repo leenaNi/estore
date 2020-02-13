@@ -120,17 +120,17 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </ul>
             </li>
             
-            <li class="{{ preg_match('/admin.distributor/',Route::currentRouteName())? 'active' : ''}}">
+            <li class="{{ preg_match('/admin.distributor.orders.view/',Route::currentRouteName())? 'active' : ''}}">
                 <a href="{{ route('admin.distributor.orders.view') }}">
-                    <i class="fa fa-bar-chart"></i><span>Distributor Order</span> <i class=""></i>
+                <i class="fa fa-shopping-bag" aria-hidden="true"></i><span>Distributor Order</span> <i class=""></i>
                 </a>
             </li>
-            <li class="{{ preg_match('/admin.distributor/',Route::currentRouteName())? 'active' : ''}}">
+            <li class="{{ preg_match('/admin.distributor.orders.inwardList/',Route::currentRouteName())? 'active' : ''}}">
                 <a href="{{ route('admin.distributor.orders.inwardList') }}">
-                    <i class="fa fa-bar-chart"></i><span>Inward transaction</span> <i class=""></i>
+                <i class="fa fa-money" aria-hidden="true"></i></i><span>Inward transaction</span> <i class=""></i>
                 </a>
             </li>
-            <li class="{{ preg_match('/admin.distributor/',Route::currentRouteName())? 'active' : ''}}">
+            <li class="{{ preg_match('/admin.distributor.addDistributor/',Route::currentRouteName())? 'active' : ''}}">
                 <a href="{{ route('admin.distributor.addDistributor') }}">
                     <i class="fa fa-bar-chart"></i><span>Add Distributor</span> <i class=""></i>
                 </a>

@@ -1819,14 +1819,23 @@ class DistributorOrdersController extends Controller
         $searchStr = Input::get('term');
         // $products = DistributorProduct::where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product']);
         $products = DB::table('products')->where('store_id', Session::get('distributor_store_id'))->where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product', 'prod_type']);
-
+        
         $data = [];
         foreach ($products as $k => $prd) {
             if (!in_array($prd->id, $added_prod)) {
+                $offersProduct = DB::table("offers_products")->where('prod_id',$prd->id)->first();
+                
+                if(!empty($offersProduct)){
+                    $offerData = DB::table("offers")->where('id',$offersProduct->offer_id)->first();
+                    $offer = $offerData->offer_name;
+                }else{
+                    $offer = '';
+                }
+                //dd($offer);
                 $data[$k]['id'] = $prd->id;
                 $data[$k]['value'] = $prd->product;
                 $data[$k]['type'] = $prd->prod_type;
-                $data[$k]['label'] = "[" . $prd->id . "]" . $prd->product;
+                $data[$k]['label'] = $offer."[" . $prd->id . "]" . $prd->product;
             }
         }
 
