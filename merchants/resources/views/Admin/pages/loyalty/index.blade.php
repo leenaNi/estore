@@ -37,8 +37,8 @@
         <div class="section-main-heading">
             <h1>Filter</h1>
         </div>
-        <div class="filter-section">
-            <div class="col-md-9 noAll-padding">
+        <div class="filter-section displayFlex">
+            <div class="col-md-9 noAll-padding displayFlex">
                 <div class="filter-left-section"> 
                     <form method="get" action="{{ route('admin.loyalty.view')}}" >
                            <div class="form-group col-md-8 col-sm-6 col-xs-12 noBottom-margin">
@@ -53,7 +53,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-md-3 noAll-padding">
+            <div class="col-md-3 noAll-padding displayFlex">
                 <div class="filter-right-section">
                     <button id="editable-sample_new" class="btn btn-default pull-right fullWidth mobFloatLeft mobAddnewflagBTN" onclick="window.location.href ='{{ route('admin.loyalty.add')}}'">Add New Loyalty Group</button>
                 </div>

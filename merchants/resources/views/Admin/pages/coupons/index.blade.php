@@ -29,8 +29,8 @@
         <div class="section-main-heading">
             <h1>Filter</h1>
         </div>
-        <div class="filter-section">
-            <div class="col-md-9 noAll-padding">
+        <div class="filter-section displayFlex">
+            <div class="col-md-9 noAll-padding displayFlex">
                 <div class="filter-left-section"> 
                     <form action="{{ route('admin.coupons.view') }}" method="get" >
                         <div class="form-group col-md-8 col-sm-6 col-xs-12 noBottom-margin">
@@ -45,7 +45,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-md-3 noAll-padding">
+            <div class="col-md-3 noAll-padding displayFlex">
                 <div class="filter-right-section">
                     <a href="{!! route('admin.coupons.add') !!}" class="btn fullWidth btn-default pull-right mobFloatLeft mobAddnewflagBTN" type="button">Add New Coupon</a>
                 </div>
