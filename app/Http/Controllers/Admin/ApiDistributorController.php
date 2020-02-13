@@ -94,11 +94,11 @@ class ApiDistributorController extends Controller
                             //, DB::raw('count(o.id) as offers_count')
             if(count($productResult) > 0)
             {
-                // foreach($productResult as $productResultKey => $productResultValue)
-                // {
-                //     $storeOffers = DB::table('offers')->where('store_id', $productResultValue->store_id)->where('status', 1)->get();
-                //     $productResult->offer_count = count($storeOffers);
-                // }
+                foreach($productResult as $productResultKey => $productResultValue)
+                {
+                    $storeOffers = DB::table('offers')->where('store_id', $productResultValue->store_id)->where('status', 1)->get();
+                    $productResult->offer_count = count($storeOffers);
+                }
                 return response()->json(["status" => 1, 'data' => $productResult]);
             }
             else
