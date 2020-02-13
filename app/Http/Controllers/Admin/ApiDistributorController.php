@@ -82,11 +82,14 @@ class ApiDistributorController extends Controller
             //echo "<pre>";print_r($storeIdArray);exit;
             $productResult = DB::table('products as p')
                             ->join('stores as s', 'p.store_id', '=', 's.id')
+                            ->join('offers as o', 's.id', '=', 'o.store_id')
+                            ->join('brand b', 'b.id', '=', 'p.brand_id')
+                            ->join('company c', 'c.id', '=', 'b.id')
                             ->whereIn('p.store_id',$storeIdArray)
                             ->where(['p.status' => 1,'p.is_del' => 0])
                             ->where('p.product','LIKE', '%' . $searchKeyWord . '%')
                             ->groupBy('p.store_id')
-                            ->get(['s.id','p.store_id','s.store_name']);
+                            ->get(['s.id','p.store_id','s.store_name', DB::raw('count(o.id) as offers_count'), DB::raw('group_concat(c.name) as companies group by s.id')]);
             if(count($productResult) > 0)
             {
                 return response()->json(["status" => 1, 'data' => $productResult]);
