@@ -72,7 +72,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/get-courier', ["as" => "admin.merchants.getCourier", "uses" => "MerchantController@getCourier"]);
             Route::any('/search-distributor', ["as" => "admin.merchants.searchDistributor", "uses" => "ApiMerchantController@searchDistributor"]);
             Route::any('/add-distributor', ["as" => "admin.merchants.addDistributor", "uses" => "ApiMerchantController@addDistributor"]);
-            Route::get('/get-distributor', ["as" => "admin.merchants.getDistributor", "uses" => "ApiMerchantController@getDistributors"]);
+            Route::any('/get-distributor', ["as" => "admin.merchants.getDistributor", "uses" => "ApiMerchantController@getDistributors"]);
 
         });
         Route::group(['prefix' => 'stores'], function () {
@@ -225,11 +225,11 @@ Route::group(['namespace' => 'Admin'], function () {
         });
 
         Route::group(['prefix' => 'company'], function () {
-            Route::get('/merchant-company', ["as" => "admin.company.getMerchantCompany", "uses" => "ApiCompanyController@getMerchantCompanyList"]);
-            Route::get('/all-company', ["as" => "admin.company.getCompany", "uses" => "ApiCompanyController@getAllCompany"]);
-            Route::get('/all-brand', ["as" => "admin.company.getBrand", "uses" => "ApiCompanyController@getAllBrand"]);
-            Route::get('/company-detail', ["as" => "admin.company.companyDetail", "uses" => "ApiCompanyController@getCompanyDetail"]);
-            Route::get('/brand-detail', ["as" => "admin.company.brandDetail", "uses" => "ApiCompanyController@getBrandDetail"]);
+            Route::any('/merchant-company', ["as" => "admin.company.getMerchantCompany", "uses" => "ApiCompanyController@getMerchantCompanyList"]);
+            Route::any('/all-company', ["as" => "admin.company.getCompany", "uses" => "ApiCompanyController@getAllCompany"]);
+            Route::any('/all-brand', ["as" => "admin.company.getBrand", "uses" => "ApiCompanyController@getAllBrand"]);
+            Route::any('/company-detail', ["as" => "admin.company.companyDetail", "uses" => "ApiCompanyController@getCompanyDetail"]);
+            Route::any('/brand-detail', ["as" => "admin.company.brandDetail", "uses" => "ApiCompanyController@getBrandDetail"]);
         });
 
         Route::group(['prefix' => 'offer'], function () {

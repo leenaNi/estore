@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Library\CustomValidator;
 use App\Library\Helper;
 use App\Models\Merchant;
-use App\Models\User;
 use App\Models\Store;
+use App\Models\User;
 use Auth;
 use Crypt;
 use DB;
@@ -14,7 +15,6 @@ use Hash;
 use Illuminate\Http\Response;
 use Input;
 use JWTAuth;
-use Request;
 
 class ApiMerchantController extends Controller
 {
@@ -24,16 +24,20 @@ class ApiMerchantController extends Controller
         $country = Input::get("country_code");
         $phone = Input::get("phone");
         if (Input::get("phone") && !empty(Input::get("phone"))) {
-            $otp = rand(1000, 9999);
-            $userdata = User::where('telephone', $phone)->where('user_type', 1)->first();
-            if (!empty($userdata)) {
-                $userdata->otp = $otp;
-                $userdata->save();
-                $msgSucc = "[#] Your one time password is " . $otp . ". lRaDZ0eOjMz";
-                Helper::sendsms($phone, $msgSucc, $country);
-                $data = ["status" => 1, "msg" => "OTP Successfully send on your mobile number", "otp" => $otp];
+            if (CustomValidator::validatePhone($phone) && CustomValidator::validateNumber($country)) {
+                $otp = rand(1000, 9999);
+                $userdata = User::where('telephone', $phone)->where('user_type', 1)->first();
+                if (!empty($userdata)) {
+                    $userdata->otp = $otp;
+                    $userdata->save();
+                    $msgSucc = "[#] Your one time password is " . $otp . ". lRaDZ0eOjMz";
+                    Helper::sendsms($phone, $msgSucc, $country);
+                    $data = ["status" => 1, "msg" => "OTP Successfully send on your mobile number", "otp" => $otp];
+                } else {
+                    $data = ["status" => 0, "msg" => "Mobile Number is not Registered"];
+                }
             } else {
-                $data = ["status" => 0, "msg" => "Mobile Number is not Registered"];
+                $data = ["status" => 0, "msg" => "Invalid mobile number/country code"];
             }
         } else {
             $data = ["status" => 0, "msg" => "Mobile Number is missing"];
@@ -274,16 +278,16 @@ class ApiMerchantController extends Controller
                     if (in_array($merchantbusinessId, $distributorbussinessArray)) {
                         $data = ['status' => 1, 'distributorData' => $distributorResult[0]];
                     } else {
-                        $data = ['status' => 0, 'error' => "Industry not matched"];
+                        $data = ['status' => 0, 'msg' => "Industry not matched"];
                     }
                 } else {
-                    $data = ['status' => 0, 'error' => "You are already connected with this distributor. You can place order for this distributor."];
+                    $data = ['status' => 0, 'msg' => "You are already connected with this distributor. You can place order for this distributor."];
                 }
             } else {
-                $data = ['status' => 0, 'error' => "Invalid distributor code"];
+                $data = ['status' => 0, 'msg' => "Invalid distributor code"];
             }
         } else {
-            $data = ['status' => 0, 'error' => "Enter distributor code"];
+            $data = ['status' => 0, 'msg' => "Enter distributor code"];
         }
 
         return $data;
@@ -328,11 +332,11 @@ class ApiMerchantController extends Controller
             if (!empty($distributorEmail)) {
                 Helper::withoutViewSendMail($distributorEmail, $sub, $mailcontent);
             }
-            $data = ['status' => 1, 'error' => "Your request successfully sent to the distributor."];
+            $data = ['status' => 1, 'msg' => "Your request successfully sent to the distributor."];
 
         } // End if
         else {
-            $data = ['status' => 0, 'error' => "There is somthing wrong."];
+            $data = ['status' => 0, 'msg' => "There is somthing wrong."];
         }
 
         return $data;
@@ -345,8 +349,10 @@ class ApiMerchantController extends Controller
             $merchantId = Input::get("merchantId");
             $hasDistributorsResult = DB::table('has_distributors as hd')
                 ->join("distributor as d", "d.id", "=", "hd.distributor_id")
+                ->join('stores as s', 's.merchant_id', '=', 'd.id')
+                ->where('s.store_type', 'distributor')
                 ->where("hd.merchant_id", $merchantId)
-                ->get(['d.id', 'd.register_details']);
+                ->get(['d.id', 'd.phone_no', 's.id as storeId', 's.store_name']);
             if (count($hasDistributorsResult) > 0) {
                 return response()->json(["status" => 1, 'msg' => '', 'data' => $hasDistributorsResult]);
             } else {

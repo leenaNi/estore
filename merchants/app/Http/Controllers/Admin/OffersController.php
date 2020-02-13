@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Library\Helper;
 use App\Models\Offer;
 use App\Models\Order;
 use App\Models\Product;
@@ -123,7 +124,6 @@ class OffersController extends Controller
         if (Input::get('user_specific') == 0) {
             $offerNew->userspecific()->sync([]);
         }
-        
 
         return redirect()->route('admin.offers.view');
 
@@ -135,11 +135,11 @@ class OffersController extends Controller
         $offer = Offer::find(Input::get('id'));
         $getcount = Order::where("offer_used", "=", Input::get('id'))->count();
         //dd($getcount);
-        if ($getcount == 0) {
+        if ($getcount == 0 && $offer != null) {
             $offer->categories()->sync([]);
             $offer->products()->sync([]);
             $offer->delete();
-            DB::table("offer_users")->where("c_id", $offer->id)->delete();
+            DB::table("offers_users")->where("offer_id", $offer->id)->delete();
             //  $offer->userspecific()->sync([]);
             $offer->delete();
             Session::flash('message', 'Offer deleted successfully.');

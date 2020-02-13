@@ -13,7 +13,7 @@ class ApiCompanyController extends Controller
     {
         $companyResult = DB::table('company')->where('is_delete', 0)->get(['id', 'name', 'logo']);
         if (count($companyResult) > 0) {
-            return response()->json(["status" => 1, 'result' => $companyResult]);
+            return response()->json(["status" => 1, 'msg' => "", 'data' => $companyResult]);
         } else {
             return response()->json(["status" => 1, 'msg' => "Record not found."]);
         }
@@ -31,7 +31,7 @@ class ApiCompanyController extends Controller
                 if (count($companyResult) > 0) {
                     $companyResult['brand'] = $brandResult;
                 }
-                return response()->json(["status" => 1, 'result' => $companyResult]);
+                return response()->json(["status" => 1, 'data' => $companyResult]);
             } else {
                 return response()->json(["status" => 1, 'msg' => "Record not found."]);
             }
@@ -44,7 +44,7 @@ class ApiCompanyController extends Controller
     {
         $brandResult = DB::table('brand')->where('is_delete', 0)->get(['id', 'name', 'logo']);
         if (count($brandResult) > 0) {
-            return response()->json(["status" => 1, 'result' => $brandResult]);
+            return response()->json(["status" => 1, 'msg' => "", 'data' => $brandResult]);
         } else {
             return response()->json(["status" => 1, 'msg' => "Record not found."]);
         }
@@ -61,7 +61,7 @@ class ApiCompanyController extends Controller
                 ->where('brand.id', $brandId)
                 ->get(['brand.id', 'brand.name', 'brand.logo', 'company.name AS company_name', 'industries.category as industry_name']);
             if (count($brandResult) > 0) {
-                return response()->json(["status" => 1, 'result' => $brandResult]);
+                return response()->json(["status" => 1, 'msg' => "", 'data' => $brandResult]);
             } else {
                 return response()->json(["status" => 1, 'msg' => "Record not found."]);
             }
@@ -116,9 +116,9 @@ class ApiCompanyController extends Controller
                             $companyId = $companyData->company_id;
                             $companyName = $companyData->company_name;
                             $companyLogo = $companyData->company_logo;
-                            $brandId = $companyData->brand_id;
-                            $brandName = $companyData->brand_name;
-                            $brandLogo = $companyData->brand_logo;
+                            // $brandId = $companyData->brand_id;
+                            // $brandName = $companyData->brand_name;
+                            // $brandLogo = $companyData->brand_logo;
 
                             if ($tempId > 0 && $companyId != $tempId) {
                                 $companyArray[$i]['brand'] = $brandArray;
@@ -127,18 +127,18 @@ class ApiCompanyController extends Controller
                                 $j = 0;
                                 $companyArray[$i]['compnay_id'] = $companyId;
                                 $companyArray[$i]['company_name'] = $companyName;
-                                $companyArray[$i]['company_logo'] = $companyLogo;
+                                $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath').$companyLogo);
                             } else {
                                 if ($tempId == 0) {
                                     $companyArray[$i]['compnay_id'] = $companyId;
                                     $companyArray[$i]['company_name'] = $companyName;
-                                    $companyArray[$i]['company_logo'] = $companyLogo;
+                                    $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath').$companyLogo);
                                 }
                             }
 
-                            $brandArray[$j]['brand_id'] = $brandId;
-                            $brandArray[$j]['brand_name'] = $brandName;
-                            $brandArray[$j]['brand_logo'] = $brandLogo;
+                            // $brandArray[$j]['brand_id'] = $brandId;
+                            // $brandArray[$j]['brand_name'] = $brandName;
+                            // $brandArray[$j]['brand_logo'] = asset(Config('constants.brandImgPath').$brandLogo);
 
                             
                             $j++;
@@ -163,7 +163,7 @@ class ApiCompanyController extends Controller
             if ($isError == 1) {
                 return response()->json(["status" => 1, 'msg' => "Record not found."]);
             } else if ($isError == 0) {
-                return response()->json(["status" => 1, 'result' => $companyArray]);
+                return response()->json(["status" => 1, 'msg' => "", 'data' => $companyArray]);
             } else {
                 return response()->json(["status" => 1, 'msg' => "There is somthing wrong."]);
             }
