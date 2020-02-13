@@ -123,7 +123,6 @@ class OffersController extends Controller
         if (Input::get('user_specific') == 0) {
             $offerNew->userspecific()->sync([]);
         }
-        
 
         return redirect()->route('admin.offers.view');
 
@@ -139,7 +138,7 @@ class OffersController extends Controller
             $offer->categories()->sync([]);
             $offer->products()->sync([]);
             $offer->delete();
-            DB::table("offer_users")->where("c_id", $offer->id)->delete();
+            DB::table("offers_users")->where("c_id", $offer->id)->delete();
             //  $offer->userspecific()->sync([]);
             $offer->delete();
             Session::flash('message', 'Offer deleted successfully.');
