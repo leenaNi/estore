@@ -350,7 +350,7 @@ class ApiMerchantController extends Controller
             $hasDistributorsResult = DB::table('has_distributors as hd')
                 ->join("distributor as d", "d.id", "=", "hd.distributor_id")
                 ->join('stores as s', 's.merchant_id', '=', 'd.id')
-                ->join('offers as o', 's.store_id', '=', 'o.store_id')
+                ->join('offers as o', 's.id', '=', 'o.store_id')
                 ->where('s.store_type', 'distributor')
                 ->where("hd.merchant_id", $merchantId)
                 ->get(['d.id', 'd.phone_no', 's.id as storeId', 's.store_name', DB::raw('count(o.id) as offers_count')]);
