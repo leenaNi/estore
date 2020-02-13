@@ -455,7 +455,7 @@ class ApiDistributorController extends Controller
                         ->join('products', 'products.store_id', '=', 'stores.id')
                         ->whereIn('stores.merchant_id', $multipleDistributorIds)
                         ->whereIn('products.brand_id', $companyBrandIds)
-                        ->where('stores.store_type', 'distributor')->get(['products.brand_id', 'products.store_id']);
+                        ->where('stores.store_ype', 'distributor')->get(['products.brand_id', 'products.store_id']);
 
                     if (count($brandIdsResult) > 0) 
                     {
@@ -482,6 +482,9 @@ class ApiDistributorController extends Controller
                             exit;*/
                             return response()->json(["status" => 1, 'msg' => "", 'result' => $getBrandResult]);
                         }
+                    } else
+                    {
+                        return response()->json(["status" => 0, 'msg' => 'Records not found']);
                     }
                 }
                 else
