@@ -12,6 +12,7 @@ use Session;
 use App\Library\Helper;
 use App\Library\CustomValidator;
 use Config;
+use Carbon\Carbon;
 
 class ApiDistributorController extends Controller
 {
@@ -208,7 +209,7 @@ class ApiDistributorController extends Controller
             $companyId = Input::get("companyId");
 
             //get merchant wise distributor id
-            $merchantId = Input::get("merchantId");
+            /*$merchantId = Input::get("merchantId");
             $getDistributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
             if(count($getDistributorIdsResult) > 0)
             {
@@ -226,13 +227,14 @@ class ApiDistributorController extends Controller
                 //print_r($multipleDistributorIds);
                 //exit;
                
-            }
+            }*/
 
 
             //check company id is present in brand table
             $getBrandIdsResult = DB::table('brand')
             ->select(DB::raw('id'))
             ->where('company_id', $companyId)
+            ->where('is_delete', 0)
             ->get();
 
             if(count($getBrandIdsResult) > 0)
@@ -249,7 +251,8 @@ class ApiDistributorController extends Controller
                 $storeIdsResult = DB::table('products')
                  ->select(DB::raw('store_id'))
                  ->whereIn('brand_id', $multipleBrandIds)
-                //  ->whereIn('store_id', $multipleDistributorIds)
+                 ->where('status', 1)
+                 ->where('is_del', 0)
                  ->get();
                  if(count($storeIdsResult) > 0)
                  {
@@ -267,6 +270,7 @@ class ApiDistributorController extends Controller
                     ->select('id',DB::raw('merchant_id'))
                     ->whereIn('id', $multipleStoreIds)
                     ->where('store_type', 'distributor')
+                    ->where('expiry_date', '>=', date('Y-m-d'))
                     ->get();
                    
                     if(count($distributorIdsResult) > 0)
@@ -306,6 +310,7 @@ class ApiDistributorController extends Controller
                                     $offersIdCountResult = DB::table('offers')
                                     ->select(DB::raw('count(id) as offer_count'))     
                                     ->where('store_id', $storeId)
+                                    ->where('status', 1)
                                     ->get();
                                     $offerCount = 0;
                                     if(count($offersIdCountResult) > 0)
@@ -364,10 +369,21 @@ class ApiDistributorController extends Controller
         {
             $merchantId = Input::get("merchantId");
             $distributorId = Input::get("distributorId");
-            $companyId = Input::get("companyId");
-            if(CustomValidator::validateNumber($merchantId) && CustomValidator::validateNumber($distributorId) && CustomValidator::validateNumber($companyId)) {
-                $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
-                if(count($getDitributorIdsResult) > 0)
+            $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
+            if(count($getDitributorIdsResult) > 0)
+            {
+                $multipleDistributorIds = [];
+                foreach ($getDitributorIdsResult as $distributorIdsData) 
+                {
+                    $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                }
+
+                $storeIdResult = DB::table('stores')
+                ->whereIn('stores.merchant_id', $multipleDistributorIds)
+                ->where('stores.store_type', 'distributor')
+                ->where('stores.expiry_date', '>=', date('Y-m-d'))
+                ->get(['stores.id']);
+                if(count($storeIdResult) > 0)
                 {
                     // $multipleDistributorIds = [];
                     // foreach ($getDitributorIdsResult as $distributorIdsData) 
@@ -466,12 +482,13 @@ class ApiDistributorController extends Controller
                         $companyBrandIds[] = $companyBrand->id;
                     }
 
-                    // get brand id
-                    $brandIdsResult = DB::table('stores')
-                        ->join('products', 'products.store_id', '=', 'stores.id')
-                        ->whereIn('stores.merchant_id', $multipleDistributorIds)
-                        ->whereIn('products.brand_id', $companyBrandIds)
-                        ->where('stores.store_type', 'distributor')->get(['products.brand_id', 'products.store_id']);
+                // get brand id
+                $brandIdsResult = DB::table('stores')
+                    ->join('products', 'products.store_id', '=', 'stores.id')
+                    ->whereIn('stores.merchant_id', $multipleDistributorIds)
+                    ->where('stores.store_type', 'distributor')
+                    ->where('stores.expiry_date', '>=', date('Y-m-d'))
+                    ->get(['products.brand_id', 'products.store_id']);
 
                     if (count($brandIdsResult) > 0) 
                     {
@@ -522,14 +539,27 @@ class ApiDistributorController extends Controller
         if(!empty(Input::get("merchantId"))) 
         {
             $merchantId = Input::get("merchantId");
-            $distributorId = Input::get("distributorId");
-            $companyId = Input::get("companyId");
-            if(CustomValidator::validateNumber($merchantId) && CustomValidator::validateNumber($distributorId) && CustomValidator::validateNumber($companyId)) {
-                $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
-                //echo "<pre>";
-                //print_r($getDitributorIdsResult);
-                //exit;
-                if(count($getDitributorIdsResult) > 0)
+            $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
+            //echo "<pre>";
+            //print_r($getDitributorIdsResult);
+            //exit;
+            if(count($getDitributorIdsResult) > 0)
+            {
+                $multipleDistributorIds = [];
+                foreach ($getDitributorIdsResult as $distributorIdsData) 
+                {
+                    $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                }
+
+                // get brand id
+                $brandIdsResult = DB::table('stores')
+                    ->join('products', 'products.store_id', '=', 'stores.id')
+                    ->whereIn('stores.merchant_id', $multipleDistributorIds)
+                    ->where('stores.store_type', 'distributor')
+                    ->where('stores.expiry_date', '>=', date('Y-m-d'))
+                    ->get(['products.brand_id', 'products.store_id']);
+
+                if (count($brandIdsResult) > 0) 
                 {
                     // $multipleDistributorIds = [];
                     // foreach ($getDitributorIdsResult as $distributorIdsData) 
@@ -553,16 +583,13 @@ class ApiDistributorController extends Controller
 
                     if (count($brandIdsResult) > 0) 
                     {
-                        $brandIds = [];
-                        $storeId = [];
-                        foreach ($brandIdsResult as $brandIdsData) {
-                            $brandIds[] = $brandIdsData->brand_id;
-                            $storeIds[] = $brandIdsData->store_id;
-                        }
-
-                        //echo "<pre>";
-                        //print_r($brandIds);
-                        if(count($storeIds) > 0)
+                        $getcategoryResult = DB::table('categories')
+                        ->whereIn('store_id', $storeIds)
+                        ->where('status', 1)
+                        ->get();
+                        //echo "<pre> brand result::";
+                        //print_r($getcategoryResult);
+                        if(count($getcategoryResult) > 0)
                         {
                             $getcategoryResult = DB::table('store_categories as sc')->join('categories as c', 'c.id', '=', 'sc.category_id')
                             ->whereIn('sc.store_id', $storeIds)
@@ -673,6 +700,113 @@ class ApiDistributorController extends Controller
         }
     }
 
+    public function getPastOrderDetails()
+    {
+        //DB::enableQueryLog(); // Enable query log
+        if(!empty(Input::get("merchantId"))) 
+        {
+            $merchantId = Input::get("merchantId");
+            $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
+            //echo "<pre>";
+            //print_r($getDitributorIdsResult);
+            //exit;
+            if(count($getDitributorIdsResult) > 0)
+            {
+                $multipleDistributorIds = [];
+                foreach ($getDitributorIdsResult as $distributorIdsData) 
+                {
+                    $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                }
+
+                 // get brand id
+                 $brandIdsResult = DB::table('stores')
+                 ->join('products', 'products.store_id', '=', 'stores.id')
+                 ->whereIn('stores.merchant_id', $multipleDistributorIds)
+                 ->where('stores.store_type', 'distributor')
+                 ->where('stores.expiry_date', '>=', date('Y-m-d'))
+                 ->get(['products.brand_id', 'products.store_id']);
+
+                    if (count($brandIdsResult) > 0) 
+                    {
+                        $brandIds = [];
+                        $storeId = [];
+                        foreach ($brandIdsResult as $brandIdsData) {
+                            $brandIds[] = $brandIdsData->brand_id;
+                            $storeIds[] = $brandIdsData->store_id;
+                        }
+                        if(count($storeIds) > 0)
+                        {
+                            //echo "<pre>";
+                            //print_r($storeIds);
+                            //Get Users Id
+                            $storeUsers = DB::table('users')
+                                ->where('user_type', 1)
+                                ->where('status', 1)
+                                ->whereIn('store_id', $storeIds)
+                                ->get(['id']);
+                            $storeUserIds = [];
+                            foreach ($storeUsers as $storeUserData) {
+                                array_push($storeUserIds, $storeUserData->id);
+                            }
+
+                            //echo "<pre> user id::";
+                            //print_r($storeUserIds);
+                            //exit;
+                            if(count($storeUserIds) > 0)
+                            {
+                                //echo "inside if";
+                                 //Get Orders details
+                                $orders = DB::table('orders')
+                                ->where("orders.order_status", "!=", 0)
+                                ->whereIn('user_id', $storeUserIds)
+                                ->where('order_type', 1)
+                                ->join("has_products", "has_products.order_id", '=', 'orders.id')
+                                ->whereIn("has_products.store_id", $storeIds)
+                                //->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))
+                                //->select('orders.*')
+                                ->groupBy('has_products.order_id')->orderBy('orders.id', 'desc')
+                                ->get(['orders.*', 'has_products.order_source']);
+                                //echo "<pre>";print_r($orders);exit;
+                                //dd(DB::getQueryLog()); // Show results of log
+                                if(count($orders) > 0)
+                                {
+                                    return response()->json(["status" => 1, 'msg' => '', 'data' => $orders]);
+                                }
+                                else
+                                {
+                                    return response()->json(["status" => 0, 'msg' => 'Records not found']);    
+                                }
+                                
+                            }
+                            else
+                            {
+                                return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                            }
+                           
+                        }
+                        else
+                        {
+                            return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                    }
+
+            }
+            else
+            {
+                return response()->json(["status" => 0, 'msg' => 'Records not found']);
+            }
+        }
+        else
+        {
+            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+        }
+
+
+    }
 
     public function getMerchantWiseDistributorId($merchantId)
     {
@@ -680,6 +814,7 @@ class ApiDistributorController extends Controller
          $getDitributorIdsResult = DB::table('has_distributors')
          ->select(DB::raw('distributor_id'))
          ->where('merchant_id', $merchantId)
+         ->where('is_deleted', 0)
          ->get();
 
          return $getDitributorIdsResult;
