@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Library\CustomValidator;
 use App\Library\Helper;
 use App\Models\Merchant;
 use App\Models\Store;
@@ -23,16 +24,20 @@ class ApiMerchantController extends Controller
         $country = Input::get("country_code");
         $phone = Input::get("phone");
         if (Input::get("phone") && !empty(Input::get("phone"))) {
-            $otp = rand(1000, 9999);
-            $userdata = User::where('telephone', $phone)->where('user_type', 1)->first();
-            if (!empty($userdata)) {
-                $userdata->otp = $otp;
-                $userdata->save();
-                $msgSucc = "[#] Your one time password is " . $otp . ". lRaDZ0eOjMz";
-                Helper::sendsms($phone, $msgSucc, $country);
-                $data = ["status" => 1, "msg" => "OTP Successfully send on your mobile number", "otp" => $otp];
+            if (CustomValidator::validatePhone($phone) && CustomValidator::validateNumber($country)) {
+                $otp = rand(1000, 9999);
+                $userdata = User::where('telephone', $phone)->where('user_type', 1)->first();
+                if (!empty($userdata)) {
+                    $userdata->otp = $otp;
+                    $userdata->save();
+                    $msgSucc = "[#] Your one time password is " . $otp . ". lRaDZ0eOjMz";
+                    Helper::sendsms($phone, $msgSucc, $country);
+                    $data = ["status" => 1, "msg" => "OTP Successfully send on your mobile number", "otp" => $otp];
+                } else {
+                    $data = ["status" => 0, "msg" => "Mobile Number is not Registered"];
+                }
             } else {
-                $data = ["status" => 0, "msg" => "Mobile Number is not Registered"];
+                $data = ["status" => 0, "msg" => "Invalid mobile number/country code"];
             }
         } else {
             $data = ["status" => 0, "msg" => "Mobile Number is missing"];
