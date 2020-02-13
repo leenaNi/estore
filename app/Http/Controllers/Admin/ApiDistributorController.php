@@ -89,7 +89,7 @@ class ApiDistributorController extends Controller
                             ->where(['p.status' => 1,'p.is_del' => 0])
                             ->where('p.product','LIKE', '%' . $searchKeyWord . '%')
                             ->groupBy('p.store_id')
-                            ->get(['s.id','p.store_id','s.store_name', DB::raw('count(o.id) as offers_count'), DB::raw('group_concat(c.name) as companies group by s.id')]);
+                            ->get(['s.id','p.store_id','s.store_name', DB::raw('count(o.id) as offers_count'), DB::raw('group_concat(c.name) as companies')]);
             if(count($productResult) > 0)
             {
                 return response()->json(["status" => 1, 'data' => $productResult]);
