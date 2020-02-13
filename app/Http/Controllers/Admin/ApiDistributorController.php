@@ -388,7 +388,7 @@ class ApiDistributorController extends Controller
                     ->whereIn('stores.merchant_id', $multipleDistributorIds)
                     ->whereIn('products.brand_id', $companyBrandIds)
                     ->where('stores.store_type', 'distributor')
-                    ->get(['stores.id']);
+                    ->get(['stores.id', 'stores.url_key']);
                     if(count($storeIdResult) > 0)
                     {
                         //echo "<pre>";
@@ -398,7 +398,8 @@ class ApiDistributorController extends Controller
                         {
                             $multipleStoreIds[] = $storeIdsData->id;
                         }
-                        $offerImagePath = asset(Config('constants.offerImgUploadPath') . "/");
+                        $urlKey = $storeIdResult[0]->url_key;
+                        $offerImagePath = "http://" . $urlKey . '.' . $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/' ;
 
                         $offersResult = DB::table('offers')
                             ->whereIn('store_id', $multipleStoreIds)
