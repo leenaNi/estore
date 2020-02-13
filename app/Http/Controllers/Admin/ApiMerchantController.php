@@ -345,8 +345,10 @@ class ApiMerchantController extends Controller
             $merchantId = Input::get("merchantId");
             $hasDistributorsResult = DB::table('has_distributors as hd')
                 ->join("distributor as d", "d.id", "=", "hd.distributor_id")
+                ->join('stores as s', 's.merchant_id', '=', 'd.id')
+                ->where('s.store_type', 'distributor')
                 ->where("hd.merchant_id", $merchantId)
-                ->get(['d.id', 'd.register_details']);
+                ->get(['d.id', 'd.phone_no', 's.id as storeId', 's.store_name']);
             if (count($hasDistributorsResult) > 0) {
                 return response()->json(["status" => 1, 'msg' => '', 'data' => $hasDistributorsResult]);
             } else {

@@ -70,7 +70,7 @@ class ApiOfferController extends Controller
                 //dd(DB::getQueryLog()); // Show results of log
                 if(count($productWiseOffersResult) > 0)
                 {
-                    return response()->json(["status" => 1, 'result' => $productWiseOffersResult]);
+                    return response()->json(["status" => 1, 'data' => $productWiseOffersResult]);
                 }
                 else
                 {
