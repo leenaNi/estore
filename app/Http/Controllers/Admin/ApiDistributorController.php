@@ -398,11 +398,12 @@ class ApiDistributorController extends Controller
                         {
                             $multipleStoreIds[] = $storeIdsData->id;
                         }
+                        $offerImagePath = asset(Config('constants.offerImgUploadPath') . "/");
 
                         $offersResult = DB::table('offers')
                             ->whereIn('store_id', $multipleStoreIds)
                             ->where('status', 1)
-                            ->get();
+                            ->get(['id', 'offer_name', 'preference', 'start_date', 'end_date', DB::raw('concat("'.$offerImagePath.'", offer_image) as offer_image')]);
 
                         if(count($offersResult) > 0)
                         {
