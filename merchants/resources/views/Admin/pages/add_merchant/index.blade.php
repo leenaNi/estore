@@ -37,7 +37,7 @@
                             <label class="error" id="errorLbl"></label>
                             </div>
                             <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                                <button id="searchMerchant" class="btn btn-primary form-control" style="margin-left: 0px;">Search</button>
+                                <button id="searchMerchant" class="btn btn-primary fullWidth noAll-margin" style="margin-left: 0px;">Search</button>
                             </div>
                             <input type="hidden" id="hdnStoreId" name="hdnStoreId" value="{{$storeId}}">
                         </form>

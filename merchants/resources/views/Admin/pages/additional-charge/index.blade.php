@@ -37,10 +37,10 @@
                             <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Additional Charge Name"/>
                         </div> 
                         <div class="form-group col-md-2 col-sm-12 col-xs-12">
-                            <input type="submit" name="submit" value="Search" class="form-control btn btn-primary noMob-leftmargin"> 
+                            <input type="submit" name="submit" value="Search" class="btn btn-primary noMob-leftmargin"> 
                         </div>
                         <div class="from-group col-md-2 col-sm-12 col-xs-12">
-                            <a href="{{ route('admin.additional-charges.view')}}" class="form-control medium btn reset-btn noMob-leftmargin"> Reset </a>
+                            <a href="{{ route('admin.additional-charges.view')}}" class="medium btn reset-btn noMob-leftmargin"> Reset </a>
                         </div>
                     </form> 
                 </div>

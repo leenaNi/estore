@@ -37,10 +37,10 @@
                                 <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Search Tax"/>
                             </div> 
                             <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Search</button>
+                            <button type="submit" class="btn btn-primary" style="margin-left: 0px;"> Search</button>
                             </div>
                             <div class="from-group col-md-2 col-sm-3 col-xs-12">
-                                <a href="{{ route('admin.tax.view')}}" class="form-control medium btn reset-btn noMob-leftmargin"> Reset </a>
+                                <a href="{{ route('admin.tax.view')}}" class="medium btn reset-btn noMob-leftmargin"> Reset </a>
                             </div>
                     </form> 
                 </div>

@@ -38,10 +38,10 @@
                             <input type="text" value="{{ !empty(Input::get('attr_set_name'))?Input::get('attr_set_name'):'' }}" name="attr_set_name" aria-controls="editable-sample" class="form-control medium" placeholder="Variant Set Name">
                         </div>
                         <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                            <input type="submit" name="submit" vlaue='Submit' class='form-control btn btn-primary noMob-leftmargin'>
+                            <input type="submit" name="submit" vlaue='Submit' class='btn btn-primary noMob-leftmargin'>
                         </div>
                         <div class="from-group col-md-2 col-sm-3 col-xs-12">
-                            <a href="{{ route('admin.attribute.set.view')}}" class="form-control btn reset-btn noMob-leftmargin">Reset </a>
+                            <a href="{{ route('admin.attribute.set.view')}}" class="btn reset-btn noMob-leftmargin">Reset </a>
                         </div>
                     </form>
                 </div>

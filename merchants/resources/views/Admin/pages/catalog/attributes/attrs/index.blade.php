@@ -40,10 +40,10 @@
                             <input type="text" value="{{ !empty(Input::get('attr_name'))?Input::get('attr_name'):'' }}" name="attr_name" aria-controls="editable-sample" class="form-control medium" placeholder="Attribute Name">
                         </div>
                         <div class="form-group col-md-2  col-sm-3 col-xs-12">
-                            <input type="submit" name="submit" vlaue='Submit' class='form-control btn btn-primary  noMob-leftmargin'>
+                            <input type="submit" name="submit" vlaue='Submit' class='btn btn-primary  noMob-leftmargin'>
                         </div>
                         <div class="from-group col-md-2  col-sm-3 col-xs-12">
-                            <a href="{{ route('admin.attributes.view')}}" class="form-control btn reset-btn noMob-leftmargin">Reset </a>
+                            <a href="{{ route('admin.attributes.view')}}" class="btn reset-btn noMob-leftmargin">Reset </a>
                         </div>
 
                     </form>

@@ -114,7 +114,7 @@
                     </div> 
                     <form action="{{route('admin.traits.orders')}}"  method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <input type="file" class="form-control validate[required] fileUploder fullWidth" name="order_file" placeholder="Browse CSV file"  required onChange="validateFile(this.value)"/>
+                            <input type="file" class="validate[required] fileUploder fullWidth" name="order_file" placeholder="Browse CSV file"  required onChange="validateFile(this.value)"/>
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btn sbtn btn-primary submitBulkUpload fullWidth noAll-margin" value="Bulk Order Upload"/>
