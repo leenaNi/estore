@@ -134,7 +134,7 @@ class OffersController extends Controller
         $offer = Offer::find(Input::get('id'));
         $getcount = Order::where("offer_used", "=", Input::get('id'))->count();
         //dd($getcount);
-        if ($getcount == 0) {
+        if ($getcount == 0 && $offer != null) {
             $offer->categories()->sync([]);
             $offer->products()->sync([]);
             $offer->delete();
