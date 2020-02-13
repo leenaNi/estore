@@ -369,6 +369,7 @@ class ApiDistributorController extends Controller
         {
             $merchantId = Input::get("merchantId");
             $distributorId = Input::get("distributorId");
+            $companyId = Input::get("companyId");
             $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
             if(count($getDitributorIdsResult) > 0)
             {
