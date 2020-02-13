@@ -88,4 +88,294 @@ class ApiOfferController extends Controller
             return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
         }  
     }//getProductWiseOffer function ends here
+
+    public function getAllOffer()
+    {
+        //DB::enableQueryLog(); // Enable query log
+        if(!empty(Input::get("merchantId"))) 
+        {
+            $merchantId = Input::get("merchantId");
+            $pageNumber = Input::get("pageNumber");
+            $limit = Input::get("limit");
+           
+            $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
+            if(count($getDitributorIdsResult) > 0)
+            {
+                $multipleDistributorIds = [];
+                foreach ($getDitributorIdsResult as $distributorIdsData) 
+                {
+                    $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                }
+
+                 // get brand id
+                 $brandIdsResult = DB::table('stores')
+                 ->join('products', 'products.store_id', '=', 'stores.id')
+                 ->whereIn('stores.merchant_id', $multipleDistributorIds)
+                 ->where('stores.store_type', 'distributor')
+                 ->where('stores.expiry_date', '>=', date('Y-m-d'))
+                 ->where('products.status', 1)
+                 ->get(['products.brand_id', 'products.store_id']);
+
+                if (count($brandIdsResult) > 0) 
+                {
+                    $brandIds = [];
+                    $storeId = [];
+                    foreach ($brandIdsResult as $brandIdsData) {
+                        $brandIds[] = $brandIdsData->brand_id;
+                        $storeIds[] = $brandIdsData->store_id;
+                    }
+
+                    if(count($storeIds) > 0)
+                    {
+                        //get product id
+                        //echo "<pre>multiple stores id::";
+                        //print_r($storeIds);
+
+                        $getProductsResult = DB::table('products')
+                            ->join('offers_products', 'products.id', '=', 'offers_products.prod_id')
+                            ->select(DB::raw('offer_id'))
+                            ->whereIn('products.store_id', $storeIds)
+                            ->where('products.status', 1)
+                            ->where('offers_products.type', 1) //type = 1 (1 means main_prod type in offers_products tbl)
+                            ->groupBy('offers_products.offer_id')
+                            ->get();
+
+                            //dd(DB::getQueryLog()); // Show results of log
+                            if(count($getProductsResult) > 0)
+                            {
+                                //echo "<pre>";
+                                //print_r($getProductsResult);
+                                $multipleOfferId = [];
+                                foreach($getProductsResult as $getOfferData)
+                                {
+                                    $multipleOfferId[] = $getOfferData->offer_id;
+                                }
+                                //echo "<pre> multiple offers id::";
+                                //print_r($multipleOfferId);
+                                //get All offers
+                                
+                                if(!empty($pageNumber) && (!empty($limit)))
+                                {
+                                     //echo "inside if";
+                                    if($pageNumber == 1)
+                                    {
+                                        $limit = $pageNumber;
+                                        $startIndex = 0;
+                                    }
+                                    else
+                                    {
+                                        $limit = $limit;
+                                        $startIndex = ( (($pageNumber * $limit) - $limit) ); // -1
+                                    }
+                                    //echo "start index".$startIndex;
+                                    //echo "page limit::".$limit;
+                                    $getAllOffersResult = DB::table('offers')
+                                    ->whereIn('id', $multipleOfferId)
+                                    ->where('status', 1)
+                                    ->orderBy('id','DESC')
+                                    ->skip($startIndex)->take($limit)->get();
+                                     
+                                }
+                                else
+                                {
+                                   //echo "else";
+                                    $getAllOffersResult = DB::table('offers')
+                                    ->whereIn('id', $multipleOfferId)
+                                    ->where('status', 1)
+                                    ->orderBy('id','DESC')
+                                    ->get(); 
+                                }
+                                
+
+                                if(count($getAllOffersResult) > 0)
+                                {
+                                    return response()->json(["status" => 1, 'msg' => '', 'data' => $getAllOffersResult]);
+                                }
+                                else
+                                {
+                                    return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                                }
+                                
+
+                            }
+                            /*else
+                            {
+                                return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                            }*/
+
+                    }
+                    else
+                    {
+                        return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                    }
+
+                }
+                else
+                 {
+                     return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                 }
+            }
+            else
+            {
+                return response()->json(["status" => 0, 'msg' => 'Records not found']);
+            }
+        }
+        else
+        {
+            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+        }
+    }
+
+    public function getCategoryWiseOffer()
+    {
+        //DB::enableQueryLog(); // Enable query log
+        if(!empty(Input::get("merchantId"))) 
+        {
+            $merchantId = Input::get("merchantId");
+            $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
+            if(count($getDitributorIdsResult) > 0)
+            {
+                $multipleDistributorIds = [];
+                foreach ($getDitributorIdsResult as $distributorIdsData) 
+                {
+                    $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                }
+                // get brand id
+                $brandIdsResult = DB::table('stores')
+                ->join('products', 'products.store_id', '=', 'stores.id')
+                ->whereIn('stores.merchant_id', $multipleDistributorIds)
+                ->where('stores.store_type', 'distributor')
+                ->where('stores.expiry_date', '>=', date('Y-m-d'))
+                ->where('products.status', 1)
+                ->get(['products.brand_id', 'products.store_id']);
+
+               if (count($brandIdsResult) > 0) 
+               {
+
+
+                   $brandIds = [];
+                   $storeId = [];
+                   foreach ($brandIdsResult as $brandIdsData) {
+                       $brandIds[] = $brandIdsData->brand_id;
+                       $storeIds[] = $brandIdsData->store_id;
+                   }
+
+                    //echo "<pre>";
+                    //print_r($storeIds);
+                    //exit;
+                   $getCategoriesResult = DB::table('store_categories')
+                    ->join('categories', 'store_categories.category_id', '=', 'categories.id')
+                    ->whereIn('store_categories.store_id', $storeIds)
+                    ->where('store_categories.status', 1)
+                    ->get(['categories.id', 'categories.category', 'categories.short_desc','categories.long_desc','categories.images','categories.is_home','categories.is_nav','categories.url_key']);
+                    //dd(DB::getQueryLog()); // Show results of log
+                    //echo "<pre>";
+                    //print_r($getCategoriesResult);
+                    //exit;
+                    if(count($getCategoriesResult) > 0)
+                    {
+                        $categoryArray = array();
+                        $i=0;
+                        foreach($getCategoriesResult as $getCategoryData)
+                        {
+                            $categoryId = $getCategoryData->id;
+                            $categoryName = $getCategoryData->category;
+                            $categoryShortDesc = $getCategoryData->short_desc;
+                            $categoryLongDesc = $getCategoryData->long_desc;
+                            $categoryImages = $getCategoryData->images;
+                            $categoryIsHome = $getCategoryData->is_home;
+                            $categoryIsNav = $getCategoryData->is_nav;
+                            $categoryUrlKey = $getCategoryData->url_key;
+
+                            $categoryArray[$i]['category_id'] = $categoryId;
+                            $categoryArray[$i]['category_name'] = $categoryName;
+                            $categoryArray[$i]['short_desc'] = $categoryShortDesc;
+                            $categoryArray[$i]['long_desc'] = $categoryLongDesc;
+                            $categoryArray[$i]['image'] = $categoryImages;
+                            $categoryArray[$i]['is_home'] = $categoryIsHome;
+                            $categoryArray[$i]['is_nav'] = $categoryIsNav;
+                            $categoryArray[$i]['url_key'] = $categoryUrlKey;
+
+                            //check category id present in has_categories table
+                            $getHasCategoryResult = DB::table('has_categories')
+                            ->select(DB::raw('prod_id'))
+                            ->where('cat_id', $categoryId)
+                            ->get();
+                            //echo "<pre> product id::";
+                            //print_r($getHasCategoryResult);
+                            if(count($getHasCategoryResult) > 0)
+                            {   //get product id
+                                
+                                foreach($getHasCategoryResult as $getProdData)
+                                {
+                                    $productId = $getProdData->prod_id;
+                                    //echo "<br> prod id::".$productId;
+                                    //get category product wise offers
+                                    $getoffersResult = DB::table('offers_products')
+                                    ->join('offers', 'offers_products.offer_id', '=', 'offers.id')
+                                    ->where('offers_products.prod_id',$productId)
+                                    ->where('offers_products.type', 1)
+                                    ->where('offers.status', 1)
+                                    ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value','offers.min_order_qty','offers.min_order_amt','offers.max_discount_amt','offers.offer_image']);
+                                    //echo "<pre> offers data::";
+                                    //print_r($getoffersResult);
+                                    $j=0;
+                                    foreach($getoffersResult as $getOfferData)
+                                    {
+                                        $categoryArray[$i]['offers'][$j]['offer_id'] = $getOfferData->id;
+                                        $categoryArray[$i]['offers'][$j]['offer_name'] = $getOfferData->offer_name;
+                                        $categoryArray[$i]['offers'][$j]['offer_image'] = $getOfferData->offer_image;
+                                        $categoryArray[$i]['offers'][$j]['type'] = $getOfferData->type;
+                                        $categoryArray[$i]['offers'][$j]['offer_discount_type'] = $getOfferData->offer_discount_type;
+                                        $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
+                                        $categoryArray[$i]['offers'][$j]['offer_discount_value'] = $getOfferData->offer_discount_value;
+                                        $categoryArray[$i]['offers'][$j]['min_order_qty'] = $getOfferData->min_order_qty;
+                                        $categoryArray[$i]['offers'][$j]['min_order_amt'] = $getOfferData->min_order_amt;
+                                        $categoryArray[$i]['offers'][$j]['max_discount_amt'] = $getOfferData->max_discount_amt;
+                                        
+
+                                        $j++;
+                                    }
+                                    
+                                }//foreach ends here
+                                
+                            }
+                           
+                            $i++;
+                        }//category foreach ends here
+                        
+                        //echo "<pre>category wise offers::";
+                       //print_r($categoryArray);
+                        return response()->json(["status" => 1, 'msg' => '', 'data' => $categoryArray]);
+                    }
+                }
+                else
+                {
+                    return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+                }
+
+            }
+            else
+            {
+                return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            }
+        }
+        else
+        {
+            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+        }
+
+    }
+
+    public function getMerchantWiseDistributorId($merchantId)
+    {
+         //check merchant id is present in has_distributors table
+         $getDitributorIdsResult = DB::table('has_distributors')
+         ->select(DB::raw('distributor_id'))
+         ->where('merchant_id', $merchantId)
+         ->where('is_deleted', 0)
+         ->get();
+
+         return $getDitributorIdsResult;
+    }
 }

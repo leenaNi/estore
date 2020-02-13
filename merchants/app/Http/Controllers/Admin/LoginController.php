@@ -37,7 +37,8 @@ class LoginController extends Controller
 
     public function checkExistingphone() {
         $chkEmail = User::where("telephone", Input::get('phone_no'))->first();
-        if (count($chkEmail) > 0){
+        //if (count($chkEmail) > 0){
+            if (!empty($chkEmail)){
             $country = '+'.$chkEmail->country_code;
             $mobile = Input::get("phone_no");
             $otp = rand(1000, 9999);

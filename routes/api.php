@@ -235,6 +235,8 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::group(['prefix' => 'offer'], function () {
             Route::get('/distributor-offer', ["as" => "admin.offer.getOffer", "uses" => "ApiOfferController@getDistributorOffer"]);
             Route::get('/product-wise-offer', ["as" => "admin.offer.getProductWiseOffer", "uses" => "ApiOfferController@getProductWiseOffer"]);
+            Route::post('/all-offers', ["as" => "admin.offer.getAllOffers", "uses" => "ApiOfferController@getAllOffer"]);
+            Route::post('/category-wise-offers', ["as" => "admin.offer.getCategoryWiseOffers", "uses" => "ApiOfferController@getCategoryWiseOffer"]);
         });
 
         Route::group(['prefix' => 'distributor'], function() {
@@ -246,6 +248,8 @@ Route::group(['namespace' => 'Admin'], function () {
           Route::get('/distributor-offers-details', ["as" => "admin.distributor.distributorOffersDetails", "uses" => "ApiDistributorController@getDistributorOfferDetails"]);
           Route::get('/distributor-brand-details', ["as" => "admin.distributor.distributorBrandDetails", "uses" => "ApiDistributorController@getDistributorBrandDetails"]);
           Route::get('/distributor-category-details', ["as" => "admin.distributor.distributorCategoryDetails", "uses" => "ApiDistributorController@getDistributorCategoryDetails"]);
+          Route::post('/past-orders-details', ["as" => "admin.distributor.pastOrderDetails", "uses" => "ApiDistributorController@getPastOrderDetails"]);
+
       });
         
    });
