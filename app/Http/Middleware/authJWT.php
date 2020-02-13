@@ -47,7 +47,7 @@ class authJWT
             } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
                 return response()->json(['error' => 'Token is Expired'])->setStatusCode(401);
             } else {
-                return response()->json(['error' => 'Something is wrong'])->setStatusCode(403);
+                return response()->json(['error' => 'Something is wrong', 'data' => $e])->setStatusCode(403);
             }
         }
         // dd('fkjgdkjh');
