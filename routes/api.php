@@ -233,21 +233,21 @@ Route::group(['namespace' => 'Admin'], function () {
         });
 
         Route::group(['prefix' => 'offer'], function () {
-            Route::get('/distributor-offer', ["as" => "admin.offer.getOffer", "uses" => "ApiOfferController@getDistributorOffer"]);
-            Route::get('/product-wise-offer', ["as" => "admin.offer.getProductWiseOffer", "uses" => "ApiOfferController@getProductWiseOffer"]);
+            Route::any('/distributor-offer', ["as" => "admin.offer.getOffer", "uses" => "ApiOfferController@getDistributorOffer"]);
+            Route::any('/product-wise-offer', ["as" => "admin.offer.getProductWiseOffer", "uses" => "ApiOfferController@getProductWiseOffer"]);
             Route::post('/all-offers', ["as" => "admin.offer.getAllOffers", "uses" => "ApiOfferController@getAllOffer"]);
             Route::post('/category-wise-offers', ["as" => "admin.offer.getCategoryWiseOffers", "uses" => "ApiOfferController@getCategoryWiseOffer"]);
         });
 
         Route::group(['prefix' => 'distributor'], function() {
-          Route::get('/product', ["as" => "admin.distributor.getProduct", "uses" => "ApiDistributorController@getProduct"]);
-          Route::get('/search-product', ["as" => "admin.distributor.searchProduct", "uses" => "ApiDistributorController@searchProductWithDistributor"]);
-          Route::get('/search-distributor', ["as" => "admin.distributor.searchDistributor", "uses" => "ApiDistributorController@getDistributorByProduct"]);
-          Route::get('/merchant-wise-search-distributor', ["as" => "admin.distributor.merchantwiseSearchDistributor", "uses" => "ApiDistributorController@getDistributorByMerchant"]);
-          Route::get('/company-wise-distributor', ["as" => "admin.distributor.companywiseDistributor", "uses" => "ApiDistributorController@getDistributorByCompany"]);
-          Route::get('/distributor-offers-details', ["as" => "admin.distributor.distributorOffersDetails", "uses" => "ApiDistributorController@getDistributorOfferDetails"]);
-          Route::get('/distributor-brand-details', ["as" => "admin.distributor.distributorBrandDetails", "uses" => "ApiDistributorController@getDistributorBrandDetails"]);
-          Route::get('/distributor-category-details', ["as" => "admin.distributor.distributorCategoryDetails", "uses" => "ApiDistributorController@getDistributorCategoryDetails"]);
+          Route::any('/product', ["as" => "admin.distributor.getProduct", "uses" => "ApiDistributorController@getProduct"]);
+          Route::any('/search-product', ["as" => "admin.distributor.searchProduct", "uses" => "ApiDistributorController@searchProductWithDistributor"]);
+          Route::any('/search-distributor', ["as" => "admin.distributor.searchDistributor", "uses" => "ApiDistributorController@getDistributorByProduct"]);
+          Route::any('/merchant-wise-search-distributor', ["as" => "admin.distributor.merchantwiseSearchDistributor", "uses" => "ApiDistributorController@getDistributorByMerchant"]);
+          Route::any('/company-wise-distributor', ["as" => "admin.distributor.companywiseDistributor", "uses" => "ApiDistributorController@getDistributorByCompany"]);
+          Route::any('/distributor-offers-details', ["as" => "admin.distributor.distributorOffersDetails", "uses" => "ApiDistributorController@getDistributorOfferDetails"]);
+          Route::any('/distributor-brand-details', ["as" => "admin.distributor.distributorBrandDetails", "uses" => "ApiDistributorController@getDistributorBrandDetails"]);
+          Route::any('/distributor-category-details', ["as" => "admin.distributor.distributorCategoryDetails", "uses" => "ApiDistributorController@getDistributorCategoryDetails"]);
           Route::post('/past-orders-details', ["as" => "admin.distributor.pastOrderDetails", "uses" => "ApiDistributorController@getPastOrderDetails"]);
 
       });
