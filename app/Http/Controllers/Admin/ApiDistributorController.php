@@ -443,7 +443,7 @@ class ApiDistributorController extends Controller
                     $multipleDistributorIds[] = $distributorId;
 
                     //Comapnywise Brands
-                    $companyBrands = DB::table('brands')->where('company_id', $companyId)->get(['id']);
+                    $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
                     $companyBrandIds = [];
                     foreach ($companyBrands as $companyBrand) 
                     {
