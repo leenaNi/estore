@@ -192,6 +192,7 @@ class ApiCreateStoreController extends Controller
                     $store->percent_to_charge = 1.00;
                     $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
                     $store->status = 1;
+                    $store->category_id = 17;
                     $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
                     if (isset($merchantPay) && count($merchantPay) > 0) {
                         $store->store_version = 2;
@@ -261,6 +262,7 @@ class ApiCreateStoreController extends Controller
         $store->category_id = Input::get('business_type');
         $store->template_id = $themeId;
         $store->store_domain = $actualDomain;
+        $store->category_id = 17;
         $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
         $store->status = 1;
         if (empty(Input::get("id"))) {
@@ -306,7 +308,7 @@ class ApiCreateStoreController extends Controller
 
     public function createInstance($storeType, $storeId, $prefix, $urlKey, $storeName, $currency, $phone, $domainname, $storeVersion, $expirydate, $identityCode, $country_code)
     {
-        $appId = null;
+        $appId = null;$catid=17;
         ini_set('max_execution_time', 600);
 
         $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
@@ -380,7 +382,7 @@ class ApiCreateStoreController extends Controller
                     $json_url = base_path() . "/merchants/" . $domainname . "/storeSetting.json";
                     $json = file_get_contents($json_url);
                     $decodeVal = json_decode($json, true);
-                    //$decodeVal['industry_id'] = $catid;
+                    $decodeVal['industry_id'] = $catid;
                     $decodeVal['storeName'] = $storeName;
                     $decodeVal['expiry_date'] = $expirydate;
                     $decodeVal['store_id'] = $storeId;
@@ -391,7 +393,9 @@ class ApiCreateStoreController extends Controller
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
-
+                    if (!empty($catid)) {
+                        Helper::saveDefaultSet($catid, $prefix, $storeId,'merchant');
+                    }
                     if (!empty($currency)) {
 
                         $decodeVal['currency'] = $currency;

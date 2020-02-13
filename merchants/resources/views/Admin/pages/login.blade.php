@@ -11,7 +11,7 @@
                     <h3>Powered By <br>                    
                     <img src="{{ Config('constants.adminImgPath').'/veestore.png' }}" alt="Logo" style="width:200px;"></h3>
                 </div>
-                <p style="color: red;text-align: center;" class="errorMessage">{{ Session::get('invalidUser') }}</p>
+                <!-- <p style="color: red;text-align: center;" class="errorMessage">{{ Session::get('invalidUser') }}</p> -->
                 <!-- <p class="login-box-msg">Sign in to start your session</p> -->
                 <div class="clearfix"></div>
                 <form action="{{ route('check_admin_user') }}" method="post" id="adminLogin">
