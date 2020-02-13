@@ -449,7 +449,6 @@ class ApiDistributorController extends Controller
                     {
                         $companyBrandIds[] = $companyBrand->id;
                     }
-                    return ['brands' => $companyBrandIds];
 
                     // get brand id
                     $brandIdsResult = DB::table('stores')
