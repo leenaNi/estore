@@ -364,59 +364,72 @@ class ApiDistributorController extends Controller
         {
             $merchantId = Input::get("merchantId");
             $distributorId = Input::get("distributorId");
-            $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
-            if(count($getDitributorIdsResult) > 0)
-            {
-                $multipleDistributorIds = [];
-                foreach ($getDitributorIdsResult as $distributorIdsData) 
+            $companyId = Input::get("companyId");
+            if(CustomValidator::validateNumber($merchantId) && CustomValidator::validateNumber($distributorId) && CustomValidator::validateNumber($companyId)) {
+                $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
+                if(count($getDitributorIdsResult) > 0)
                 {
-                    $multipleDistributorIds[] = $distributorIdsData->distributor_id;
-                }
+                    // $multipleDistributorIds = [];
+                    // foreach ($getDitributorIdsResult as $distributorIdsData) 
+                    // {
+                    //     $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                    // }
+                    $multipleDistributorIds[] = $distributorId;
 
-                $storeIdResult = DB::table('stores')
-                ->whereIn('stores.merchant_id', $multipleDistributorIds)
-                ->where('stores.store_type', 'distributor')
-                ->get(['stores.id']);
-                if(count($storeIdResult) > 0)
-                {
-                    //echo "<pre>";
-                    //print_r($storeIdResult);
-                    $multipleStoreIds = [];
-                    foreach ($storeIdResult as $storeIdsData) 
+                    //Comapnywise Brands
+                    $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
+                    $companyBrandIds = [];
+                    foreach ($companyBrands as $companyBrand) 
                     {
-                        $multipleStoreIds[] = $storeIdsData->id;
+                        $companyBrandIds[] = $companyBrand->id;
                     }
-
-                    $offersResult = DB::table('offers')
-                        ->whereIn('store_id', $multipleStoreIds)
-                        ->where('status', 1)
-                        ->get();
-
-                    if(count($offersResult) > 0)
+                    $storeIdResult = DB::table('stores')
+                    ->whereIn('stores.merchant_id', $multipleDistributorIds)
+                    ->whereIn('products.brand_id', $companyBrandIds)
+                    ->where('stores.store_type', 'distributor')
+                    ->get(['stores.id']);
+                    if(count($storeIdResult) > 0)
                     {
                         //echo "<pre>";
-                        //print_r($offersResult);
-                        return response()->json(["status" => 1, 'msg' => "", 'data' => $offersResult]);
+                        //print_r($storeIdResult);
+                        $multipleStoreIds = [];
+                        foreach ($storeIdResult as $storeIdsData) 
+                        {
+                            $multipleStoreIds[] = $storeIdsData->id;
+                        }
+
+                        $offersResult = DB::table('offers')
+                            ->whereIn('store_id', $multipleStoreIds)
+                            ->where('status', 1)
+                            ->get();
+
+                        if(count($offersResult) > 0)
+                        {
+                            //echo "<pre>";
+                            //print_r($offersResult);
+                            return response()->json(["status" => 1, 'msg' => "", 'data' => $offersResult]);
+                        }
+                        else
+                        {
+                            return response()->json(["status" => 1, 'msg' => 'Records not found']);
+                        }
                     }
                     else
                     {
-                        return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                        return response()->json(["status" => 1, 'msg' => 'Records not found']);
                     }
-
                 }
                 else
                 {
-                    return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                    return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
                 }
-            }
-            else
-            {
-                return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+            } else {
+                return response()->json(["status" => 0, 'msg' => 'Invalid data']);
             }
         }
         else
         {
-            return response()->json(["status" => 00, 'msg' => 'Mandatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
     }
 
@@ -484,14 +497,14 @@ class ApiDistributorController extends Controller
                         }
                     } else
                     {
-                        return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                        return response()->json(["status" => 1, 'msg' => 'Records not found']);
                     }
                 }
                 else
                 {
-                    return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                    return response()->json(["status" => 1, 'msg' => 'Records not found']);
                 }
-            }else {
+            } else {
                 return response()->json(["status" => 0, 'msg' => 'Invalid data']);
             }
         }
@@ -645,7 +658,7 @@ class ApiDistributorController extends Controller
                 }
                 else
                 {
-                    return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                    return response()->json(["status" => 1, 'msg' => 'Records not found']);
                 }
             }else {
                 return response()->json(["status" => 0, 'msg' => 'Invalid data']);
