@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
 use App\Models\Merchant;
-use App\Models\User;
 use App\Models\Store;
+use App\Models\User;
 use Auth;
 use Crypt;
 use DB;
@@ -14,7 +14,6 @@ use Hash;
 use Illuminate\Http\Response;
 use Input;
 use JWTAuth;
-use Request;
 
 class ApiMerchantController extends Controller
 {
@@ -274,16 +273,16 @@ class ApiMerchantController extends Controller
                     if (in_array($merchantbusinessId, $distributorbussinessArray)) {
                         $data = ['status' => 1, 'distributorData' => $distributorResult[0]];
                     } else {
-                        $data = ['status' => 0, 'error' => "Industry not matched"];
+                        $data = ['status' => 0, 'msg' => "Industry not matched"];
                     }
                 } else {
-                    $data = ['status' => 0, 'error' => "You are already connected with this distributor. You can place order for this distributor."];
+                    $data = ['status' => 0, 'msg' => "You are already connected with this distributor. You can place order for this distributor."];
                 }
             } else {
-                $data = ['status' => 0, 'error' => "Invalid distributor code"];
+                $data = ['status' => 0, 'msg' => "Invalid distributor code"];
             }
         } else {
-            $data = ['status' => 0, 'error' => "Enter distributor code"];
+            $data = ['status' => 0, 'msg' => "Enter distributor code"];
         }
 
         return $data;
@@ -328,11 +327,11 @@ class ApiMerchantController extends Controller
             if (!empty($distributorEmail)) {
                 Helper::withoutViewSendMail($distributorEmail, $sub, $mailcontent);
             }
-            $data = ['status' => 1, 'error' => "Your request successfully sent to the distributor."];
+            $data = ['status' => 1, 'msg' => "Your request successfully sent to the distributor."];
 
         } // End if
         else {
-            $data = ['status' => 0, 'error' => "There is somthing wrong."];
+            $data = ['status' => 0, 'msg' => "There is somthing wrong."];
         }
 
         return $data;
