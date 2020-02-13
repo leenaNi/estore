@@ -384,6 +384,7 @@ class ApiDistributorController extends Controller
                         $companyBrandIds[] = $companyBrand->id;
                     }
                     $storeIdResult = DB::table('stores')
+                    ->join('products', 'products.store_id', '=', 'stores.id')
                     ->whereIn('stores.merchant_id', $multipleDistributorIds)
                     ->whereIn('products.brand_id', $companyBrandIds)
                     ->where('stores.store_type', 'distributor')
