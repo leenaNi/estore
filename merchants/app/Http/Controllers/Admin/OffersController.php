@@ -139,7 +139,7 @@ class OffersController extends Controller
             $offer->categories()->sync([]);
             $offer->products()->sync([]);
             $offer->delete();
-            DB::table("offers_users")->where("c_id", $offer->id)->delete();
+            DB::table("offers_users")->where("offer_id", $offer->id)->delete();
             //  $offer->userspecific()->sync([]);
             $offer->delete();
             Session::flash('message', 'Offer deleted successfully.');
