@@ -493,6 +493,30 @@ class ApiDistributorController extends Controller
                         if (count($offersResult) > 0) {
                             //echo "<pre>";
                             //print_r($offersResult);
+                            foreach($offersResult as $offerKey => $offerValue) {
+                                $offerPrice = 0;
+                                $actualPrice = 0;
+                                $offPrice = 0;
+                                $offerProducts = DB::table('offers_products')->where('offer_id', $offerValue->id)->where('type', 1)->get();
+                                foreach($offerProducts as $offerProductKey => $offerProduct){
+                                    $offPrice = 0;
+                                    $product = DB::table('products')->where('id', $offerProduct->prod_id)->first(['price']);
+                                    $offPrice = ($offerProduct->qty * $product->price);
+                                    $actualPrice+=$offPrice;
+                                    $offerPrice+=$offPrice;
+                                }
+                                if($offerValue->type == 1) {
+                                    if($offerValue->offer_discount_type==1) { //For percent off
+                                        $offerPrice = $offPrice - ($offPrice * ($offerValue->offer_discount_value/100));
+                                    } else { //For fixed off
+                                        $offerPrice = $offPrice - $offerValue->offer_discount_value;
+                                    }
+                                } else {
+
+                                }
+                                $offerValue->offerPrice = $offerPrice;
+                                $offerValue->actualPrice = $actualPrice;
+                            }
                             return response()->json(["status" => 1, 'msg' => "", 'data' => $offersResult]);
                         } else {
                             return response()->json(["status" => 1, 'msg' => 'Records not found']);
@@ -618,19 +642,6 @@ class ApiDistributorController extends Controller
 
                     if (count($brandIdsResult) > 0) 
                     {
-                        // $multipleDistributorIds = [];
-                        // foreach ($getDitributorIdsResult as $distributorIdsData) 
-                        // {
-                        //     $multipleDistributorIds[] = $distributorIdsData->distributor_id;
-                        // }
-                        $multipleDistributorIds[] = $distributorId;
-                        //Comapnywise Brands
-                        $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
-                        $companyBrandIds = [];
-                        foreach ($companyBrands as $companyBrand) 
-                        {
-                            $companyBrandIds[] = $companyBrand->id;
-                        }
                         // get brand id
                         $brandIdsResult = DB::table('stores')
                             ->join('products', 'products.store_id', '=', 'stores.id')
@@ -640,6 +651,12 @@ class ApiDistributorController extends Controller
 
                         if (count($brandIdsResult) > 0) 
                         {
+                            $brandIds = [];
+                            $storeId = [];
+                            foreach ($brandIdsResult as $brandIdsData) {
+                                $brandIds[] = $brandIdsData->brand_id;
+                                $storeIds[] = $brandIdsData->store_id;
+                            }
                             $getcategoryResult = DB::table('categories')
                             ->whereIn('store_id', $storeIds)
                             ->where('status', 1)
