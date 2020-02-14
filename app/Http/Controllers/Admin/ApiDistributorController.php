@@ -550,6 +550,8 @@ class ApiDistributorController extends Controller
         if(!empty(Input::get("merchantId"))) 
         {
             $merchantId = Input::get("merchantId");
+            $distributorId = Input::get("distributorId");
+            $companyId = Input::get("companyId");
             $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
             //echo "<pre>";
             //print_r($getDitributorIdsResult);
