@@ -318,24 +318,21 @@ class ApiDistributorController extends Controller
             $distributorId = Input::get("distributorId");
             $companyId = Input::get("companyId");
             $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
+            // dd($getDitributorIdsResult);
             if (count($getDitributorIdsResult) > 0) {
-                $multipleDistributorIds = [];
-                foreach ($getDitributorIdsResult as $distributorIdsData) {
-                    $multipleDistributorIds[] = $distributorIdsData->distributor_id;
-                }
-
+                // $multipleDistributorIds = [];
+                // foreach ($getDitributorIdsResult as $distributorIdsData)
+                // {
+                //     $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                // }
+                $multipleDistributorIds[] = $distributorId;
                 $storeIdResult = DB::table('stores')
                     ->whereIn('stores.merchant_id', $multipleDistributorIds)
                     ->where('stores.store_type', 'distributor')
                     ->where('stores.expiry_date', '>=', date('Y-m-d'))
                     ->get(['stores.id']);
                 if (count($storeIdResult) > 0) {
-                    // $multipleDistributorIds = [];
-                    // foreach ($getDitributorIdsResult as $distributorIdsData)
-                    // {
-                    //     $multipleDistributorIds[] = $distributorIdsData->distributor_id;
-                    // }
-                    $multipleDistributorIds[] = $distributorId;
+                    
 
                     //Comapnywise Brands
                     $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
@@ -362,7 +359,8 @@ class ApiDistributorController extends Controller
                         $offersResult = DB::table('offers')
                             ->whereIn('store_id', $multipleStoreIds)
                             ->where('status', 1)
-                            ->get(['id', 'offer_name', 'preference', 'start_date', 'end_date', DB::raw('concat("' . $offerImagePath . '", offer_image) as offer_image')]);
+                            // ->where('id', 38)
+                            ->get(['id', 'offer_name', 'type', 'offer_type', 'offer_discount_type', 'offer_discount_value', 'preference', 'start_date', 'end_date', DB::raw('concat("' . $offerImagePath . '", offer_image) as offer_image')]);
 
                         if (count($offersResult) > 0) {
                             //echo "<pre>";
