@@ -99,7 +99,8 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'adminStorePath' => storage_path() . '/json',
         'adminMarketingEmailsView' => 'Admin.pages.marketing-emails',
         'adminDistributorOrderView' => 'Admin.pages.orders.distributors',
-        'adminDistCssTempPath' => asset('css')
+        'adminDistCssTempPath' => asset('css'),
+        'adminDistributorView' => 'Admin.pages.add_distributor',
     ];
 
 } else {
@@ -204,7 +205,8 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'adminReports' => 'Admin.pages.reports',
         'adminPaymentsView' => 'Admin.pages.payments',
         'adminDistributorOrderView' => 'Admin.pages.orders.distributors',
-        'adminDistCssTempPath' => asset('css')
+        'adminDistCssTempPath' => "https://d2102t1lty3x1n.cloudfront.net/Admin/css",
+        'adminDistributorView' => 'Admin.pages.add_distributor',
     ];
 }
 
