@@ -523,8 +523,9 @@ class VendorsController extends Controller
         // Get distributor industry id
         $distributorResult = DB::table('distributor')->where("id", $distributorId)->first();
         $decodedDistributorDetail = json_decode($distributorResult->register_details, true);
-        $distributorbusinessIdArray = $decodedDistributorDetail['business_type'];
-
+        if(!empty($decodedDistributorDetail['business_type'])){
+            $distributorbusinessIdArray = $decodedDistributorDetail['business_type'];
+        }
         if (!empty($merchantIdentityCode)) {
             $merchantResult = DB::table('merchants')->where("identity_code", $merchantIdentityCode)->first();
 
@@ -562,7 +563,7 @@ class VendorsController extends Controller
         $distributorId = $storeResult->merchant_id;
         $distributorStoreName = $storeResult->store_name;
 
-        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId];
+        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId,'raised_by'=>'distributor'];
         $isInserted = DB::table('has_distributors')->insert($insertData);
 
         if ($isInserted) {

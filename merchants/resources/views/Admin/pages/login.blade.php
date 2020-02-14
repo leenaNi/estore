@@ -13,22 +13,22 @@
                         <img src="{{ Config('constants.adminImgPath').'/login-logo.svg' }}" alt="eStorifi logo"></h3>
                     </span>
                 </div>
-                <p style="color: red;text-align: center;" class="errorMessage">{{ Session::get('invalidUser') }}</p>
+                <!-- <p style="color: red;text-align: center;" class="errorMessage">{{ Session::get('invalidUser') }}</p> -->
                 <!-- <p class="login-box-msg">Sign in to start your session</p> -->
                 <div class="clearfix"></div>
                 <form action="{{ route('check_admin_user') }}" method="post" id="adminLogin">
                     <div class="form-group has-feedback">
-                        <input type="text" class="form-control" name="email" placeholder="Mobile / Email" id="email">
-                        <!-- <span class="glyphicon glyphicon-envelope form-control-feedback"></span> -->
-                        <p id="email_re_validate"></p>
+                        <input type="text" class="form-control" name="phone" placeholder="Mobile" id="phone">
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span><p id="phone_re_validate"></p>
                     </div>
-                    <div class="form-group has-feedback">
-                        <input type="password" class="form-control" name="password" placeholder="Password" required="true">
-                        <!-- <span class="glyphicon glyphicon-lock form-control-feedback"></span> -->
+                    <div class="form-group has-feedback" style="display:none" id="otpdiv">
+                        <input type="number" class="form-control" name="otp" placeholder="Enter OTP" required="true">
+                        <span class="glyphicon glyphicon-lock form-control-feedback" id="otperr"></span>
                     </div>
-                    <div class="row marginBottom-sm">
-                        <div class="col-xs-12 text-center bottommargin-xs">
-                            <button type="submit" class="btn btn-primary bottommargin-xs fullWidthBtn">Sign In</button>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <button type="button" class="btn btn-primary bottommargin-xs fullWidthBtn" id="sendotp">Send OTP</button>
+                            <button type="button" class="btn btn-primary bottommargin-xs fullWidthBtn" style="display:none" id="loginbtn">Sign In</button>
                         </div><!-- /.col -->
                     </div>
                 </form>
@@ -62,83 +62,51 @@
         <script src="{{  Config('constants.adminDistJsPath').'/jquery.validate.min.js' }}"></script>
 
         <script>
-         $(document).ready(function () {    
-                jQuery.validator.addMethod("emailPhonevalidate", function (telephone, element) {
-            telephone = telephone.replace(/\s+/g, "");
- // var telephone1=this.optional(element) || telephone.length > 9 &&  telephone.match(/^[\d\-\+\s/\,]+$/);
-  if(this.optional(element) || telephone.length > 9 &&  telephone.match(/^[\d\-\+\s/\,]+$/)){
-       return this.optional(element) || telephone.length > 9 &&  telephone.match(/^[\d\-\+\s/\,]+$/);
-  }else{
-     return this.optional(element) || telephone.length > 9 &&
-                 telephone.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/);  
-  }
-                 });
-            
-        }, "Please specify a valid Email/Mobile");
-$(function () {
-    $('input').iCheck({
-        checkboxClass: 'icheckbox_square-blue',
-        radioClass: 'iradio_square-blue',
-        increaseArea: '20%' // optional
-    });
+
+$("#sendotp").click(function(){
+    var phone = $("#phone").val();
+    console.log(phone);
+    $.ajax({
+            type: 'POST',
+            url: "{{route('checkExistingphone')}}",
+            data: {phone_no: phone},
+            success: function (response) {
+                console.log('@@@@' + response);
+                if (response['status'] == 'success') {
+                    $("#otpdiv").show();    
+                    $("#loginbtn").show();    
+                    $("#sendotp").hide(); 
+                    $("#phone").hide();
+                    $("#phone_re_validate").html(''); 
+                } else if (response['status'] == 'fail') {
+                    $("#phone_re_validate").css("color", "red").html('Mobile number is not registered')
+                }
+            },
+            error: function (e) {
+                console.log(e.responseText);
+            }
+        });
 });
 
-  $("#adminLogin").validate({
-        // Specify the validation rules
-     
-        rules: {
-            email: {
-                required: true,
-              
-                 emailPhonevalidate: true
-//            
-            }, password: {
-                required: true
+$("#loginbtn").click(function(){
+    var otp = $("input[name=otp]").val();
+    console.log(otp);
+    $.ajax({
+            type: 'POST',
+            url: "{{route('checkOtp')}}",
+            data: {otp: otp},
+            success: function (response) {
+                if (response == '1') {
+                    $("#adminLogin").submit();
+                } else if (response == '2') {
+                    $("#otperr").html('Incorrect OTP'); 
+                }
+            },
+            error: function (e) {
+                console.log(e.responseText);
             }
-        },
-        // Specify the validation error messages
-        messages: {
-            email: {
-                required: "Please enter Mobile/Email",
-                email: "Please enter valid Mobile/Email",
-//                remote: "This email is not registerd with us!"
-            }, password: {
-                required: "Please provide a password"
-
-            }
-             
-        },
-        errorPlacement: function (error, element) {
-            var name = $(element).attr("name");
-            error.appendTo($("#" + name+"_re_validate"));
-        }
-       
-    });
-
-//$('#email').blur(function(){
-//    
-//var ep_emailval = $('#email').val();
-//console.log(ep_emailval);
-//    var intRegex = /[0-9 -()+]+$/;
-//
-//if(intRegex.test(ep_emailval)) {
-//   console.log("is phone");
-//   if((ep_emailval.length < 10) || (!intRegex.test(ep_emailval)))
-//{
-//     alert('Invalid Email/Phone.');
-//     //return false;
-//}
-//
-//} else{
-// var eml = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;       
-//        console.log("is email");
-//        if (eml.test(ep_emailval) == false) {
-//    alert("Invalid Email/Phone.");
-//   // $("#<%=txtEmail.ClientID %>").focus();
-//    //return false;
-// }
-//    }
-//});
+        });
+});
         </script>
   <script>
 window.fbAsyncInit = function() {
@@ -149,17 +117,7 @@ window.fbAsyncInit = function() {
       xfbml      : true,  // parse social plugins on this page
       version    : 'v3.0' // use graph api version 2.8
     });
-    
-    // Check whether the user already logged in
-//    FB.getLoginStatus(function(response) {
-//        if (response.status === 'connected') {
-//            //display user data
-//          
-//            getFbUserData();
-//            fbLogout();
-//        }
-//    });
-    
+
 };
 function fbLogout() {
     FB.logout(function() {

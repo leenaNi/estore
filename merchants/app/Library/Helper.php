@@ -4,6 +4,7 @@ namespace App\Library;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\DistributorProduct;
 use App\Models\Loyalty;
 use App\Models\AttributeValue;
 use App\Models\AttributeSet;
@@ -164,8 +165,10 @@ class Helper {
     }
 
     public static function checkStock($prodid, $qtty = null, $subprodId = null) {
-        $getprod = Product::find($prodid);
-        
+       
+        $getprod = DB::table('products')->where('id',$prodid)->first();
+        //$getprod = Product::find($prodid);
+        //dd($getprod);
         if ($getprod->prod_type == 1) {
             $searchCart = Cart::instance("shopping")->search(array('id' => $prodid));
             $cartDataS = Cart::get($searchCart[0]);
@@ -179,7 +182,11 @@ class Helper {
             $searchCartCf = Cart::instance("shopping")->search(array('id' => $prodid, 'options' => array('sub_prod' => (int) $subprodId)));
             $cartDataCf = Cart::get($searchCartCf[0]);
             $subProdid = $subprodId;
-            $getstockConfig = Product::find($subProdid)->stock;
+            if(Session::get('distributor_store_id')){
+                $getstockConfig = DistributorProduct::find($subProdid)->stock;
+            } else {
+                $getstockConfig = Product::find($subProdid)->stock;
+            }
             $totQtyCf = @$cartDataCf->qty + $qtty;
 
             if ($totQtyCf <= $getstockConfig)
@@ -196,7 +203,11 @@ class Helper {
             }
             $chkArr = [];
             foreach ($prodIds as $idsV) {
-                $getprodC = Product::find($idsV);
+                if(Session::get('distributor_store_id')){
+                    $getprodC = DistributorProduct::find($idsV);
+                }else{
+                    $getprodC = Product::find($idsV);
+                }
                 if ($getprodC->prod_type == 1) {
                     $getstockSimp1 = $getprodC->stock;
                     $totQtyS1 = @$cartDataCmbo->qty + $qtty;
@@ -208,8 +219,11 @@ class Helper {
                 } else if ($getprodC->prod_type == 3) {
 
                     $subProdid1 = $subprodId[$idsV];
-
-                    $getstockConf1 = Product::find($subProdid1)->stock;
+                    if(Session::get('distributor_store_id')){
+                        $getstockConf1 = DistributorProduct::find($subProdid1)->stock;
+                    } else {
+                        $getstockConf1 = Product::find($subProdid1)->stock;
+                    }
                     $totQtyCf2 = @$cartDataCmbo->qty + $qtty;
                     if ($totQtyCf2 <= $getstockConf1) {
                         array_push($chkArr, 1);
@@ -520,6 +534,121 @@ class Helper {
         $settings = json_decode($str, true);
         //Session::put('cur', Currency::find($settings->currency_id)->unicode);
         return $settings;
+    }
+
+    public static function saveDefaultSet($catid, $prefix, $storeId,$storeType)
+    {
+        
+        $cat = DB::table("industries")->where('id',$catid)->first();
+        //dd($cat);
+        $assignedCategories = json_decode($cat->assigned_categories);
+        
+        $categories = DB::table("categories")->where('status', 1)->whereIn('id', $assignedCategories)->get();
+        $catsave = [];
+        $i = 0;
+        if($categories){
+            foreach ($categories as $ck => $cv) {
+                $catsave[$ck]['category_id'] = $cv->id;
+                $catsave[$ck]['is_nav'] = 1;
+                $catsave[$ck]['url_key'] = strtolower(str_replace(" ", "-", $cv->category));
+                $i++;
+                $catsave[$ck]['lft'] = $i;
+                $i++;
+                $catsave[$ck]['rgt'] = $i;
+                $catsave[$ck]['depth'] = 0;
+                $catsave[$ck]['parent_id'] = $cv->parent_id;
+                $catsave[$ck]['store_id'] = $storeId;
+                $catsave[$ck]['created_at'] = date('Y-m-d H:i:s');
+            }
+            $addedcats = DB::table('store_categories')->insert($catsave);
+        }
+        //save attr set
+        $attrset = json_decode($cat->attribute_sets, true);
+        $saveAttrSet = [];
+        foreach ($attrset as $attk => $attS) {
+            $saveAttrSet[$attk]['attr_set'] = $attS;
+            $saveAttrSet[$attk]['status'] = 1;
+            $saveAttrSet[$attk]['store_id'] = $storeId;
+            $saveAttrSet[$attk]['created_at'] = date('Y-m-d H:i:s');
+        }
+        $attrSets = DB::table('attribute_sets')->insert($saveAttrSet);
+        //save attributes
+        $attributesData = json_decode($cat->attributes);
+        $hasAttrubutes = [];
+        foreach ($attributesData as $attk => $attrdata) {
+            $sluG = strtolower(str_replace(" ", "-", $attrdata->attr));
+            $latestAtrr = DB::table('attributes')->where('slug', $sluG)->select('id', 'slug')->first();
+            if (!empty($latestAtrr)) {
+                $sluG = $sluG . "_" . mt_rand(1000, 9999);
+            }
+            $saveArrtt = ['attr' => $attrdata->attr, 'attr_type' => 1, 'is_filterable' => 1, 'placeholder' => $attrdata->placeholder, 'slug' => $sluG, 'att_sort_order' => $attk + 1, 'status' => 1, 'store_id' => $storeId];
+            $idAttr = DB::table('attributes')->insert($saveArrtt);
+            $latestAtrr = DB::table('attributes')->select('id')->orderBy('id', 'DESC')->first();
+            $attributSetId = DB::table('attribute_sets')->where('store_id', $storeId)->select('id')->limit(1)->offset(($attrdata->attrset_id - 1))->first();
+            $hasAttrubutes[$attk]['attr_id'] = $latestAtrr->id;
+            $hasAttrubutes[$attk]['attr_set'] = $attributSetId->id;
+        }
+        DB::table('has_attributes')->insert($hasAttrubutes);
+        //save attribute values
+        $attrvalues = json_decode($cat->attribute_values);
+        $saveAttV = [];
+        foreach ($attrvalues as $attvk => $attrv) {
+            $attributId = DB::table('attributes')->where('store_id', $storeId)->select('id')->limit(1)->offset(($attrv->attr_id - 1))->first();
+            $saveAttV[$attvk]['attr_id'] = $attributId->id;
+            $saveAttV[$attvk]['option_name'] = $attrv->option_name;
+            $saveAttV[$attvk]['option_value'] = $attrv->option_value;
+            $saveAttV[$attvk]['is_active'] = 1;
+            $saveAttV[$attvk]['sort_order'] = $attvk + 1;
+            $saveAttV[$attvk]['created_at'] = date('Y-m-d H:i:s');
+        }
+        DB::table('attribute_values')->insert($saveAttV);
+        //Update Attribute Set
+        $attrSetId = DB::table('attribute_sets')->where('attr_set', 'Default')->where('store_id', $storeId)->first(['id']);
+        DB::table('products')
+            ->where('store_id', $storeId)
+            ->update(['attr_set' => $attrSetId->id]);
+        //Catalouge images
+        $productId = DB::table('products')->where('store_id', $storeId)->first(['id']);
+        $catalogImages = [
+            ['filename' => 'prod-20180623103707.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 1, 'image_path' => null],
+            ['filename' => 'prod-120180623103750.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 2, 'image_path' => null],
+            ['filename' => 'prod-420180623103751.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 3, 'image_path' => null],
+            ['filename' => 'prod-320180623103752.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 4, 'image_path' => null],
+            ['filename' => 'prod-220180623103753.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 5, 'image_path' => null],
+        ];
+
+        DB::table('catalog_images')->insert($catalogImages);
+
+        //Add General Settings Industriwise
+        $industriQuestions = DB::table('has_industries')->JOIN('general_setting', 'general_setting.id', 'has_industries.general_setting_id')
+            ->where('industry_id', $catid)->where('general_setting.store_id', 0)
+            ->select('general_setting_id', 'url_key')
+            ->get();
+        $saveIndustryQuestion = [];
+        $updateGeneralSetting = [];
+        
+        foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
+            $generalSettingId = DB::table('general_setting')->where('url_key', $hasIndVal->url_key)->where('store_id', $storeId)->first();
+            if ($generalSettingId && $generalSettingId != null) {
+                $saveIndustryQuestion[$hasIndKey]['general_setting_id'] = $generalSettingId->id;
+                $saveIndustryQuestion[$hasIndKey]['industry_id'] = $catid;
+                //$saveIndustryQuestion[$hasIndKey]['store_id'] = $storeId;
+            }
+        }
+        DB::table('has_industries')->insert($saveIndustryQuestion);
+
+        if($storeType == 'distributor')
+        {
+            $distributorDefaultSettingUrlKey = array("email-facility"=>1,"acl"=>1,"invoice"=>1,"additional-charge"=>1,"default-courier"=>0,"cod"=>0,"stock"=>1,"related-products"=>0);
+            foreach ($industriQuestions as $hasIndKey => $hasIndVal)
+            {
+                if(array_key_exists($hasIndVal->url_key,$distributorDefaultSettingUrlKey))
+                {
+                    $value = $distributorDefaultSettingUrlKey[$hasIndVal->url_key];
+                    DB::table('general_setting')->where(['url_key'=>$hasIndVal->url_key,'store_id'=> $storeId])->update(array('is_question'=>$value));
+                }
+            } // End foreach
+        }
     }
 
        public static function saveSettings($productconfig) {

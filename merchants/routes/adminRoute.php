@@ -3,6 +3,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
     Route::get('/', ["as" => "adminLogin", "uses" => "LoginController@index"]);
     Route::get('/unauthorized', ["as" => "unauthorized", "uses" => "LoginController@unauthorized"]);
     Route::post('/check-user', ["as" => "check_admin_user", "uses" => "LoginController@chk_admin_user"]);
+    Route::post('/check-existing-phone', ['as' => 'checkExistingphone', 'uses' => 'LoginController@checkExistingphone']);
+    Route::any('/check-otp', ['as' => 'checkOtp', 'uses' => 'LoginController@checkOtp']);
     Route::post('/check-fb-user', ["as" => "check_fb_admin_user", "uses" => "LoginController@chk_fb_admin_user"]);
     Route::get('/admin-logout', ["as" => "adminLogout", "uses" => "LoginController@admin_logout"]);
     Route::any('/forgot-password', ["as" => "adminForgotPassword", "uses" => "LoginController@forgotPassword"]);
@@ -75,6 +77,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
 
             Route::group(['prefix' => 'products', 'middlewareGroups' => ['web']], function () {
                 Route::get('/', ['as' => 'admin.products.view', 'uses' => 'ProductsController@index']);
+                Route::any('/select-themes', ['as' => 'selectThemes', 'uses' => 'ProductsController@selectThemes']);
+                Route::any('/apply-themes', ['as' => 'applyTheme', 'uses' => 'ProductsController@applyTheme']);
                 Route::get('/add', ['as' => 'admin.products.add', 'uses' => 'ProductsController@add']);
                 Route::get('/delete', ['as' => 'admin.products.delete', 'uses' => 'ProductsController@delete']);
                 Route::get('/delete-varient', ['as' => 'admin.products.deleteVarient', 'uses' => 'ProductsController@deleteVarient']);
@@ -325,6 +329,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::get('/edit', ['as' => 'admin.offers.edit', 'uses' => 'OffersController@edit']);
             Route::get('/delete', ['as' => 'admin.offers.delete', 'uses' => 'OffersController@delete']);
             Route::get('/search-user', ['as' => 'admin.offers.searchUser', 'uses' => 'OffersController@searchUser']);
+            Route::any('/search-product', ['as' => 'admin.offers.searchProduct', 'uses' => 'OffersController@searchProduct']);
+            Route::any('/search-offer-product', ['as' => 'admin.offers.searchOfferProduct', 'uses' => 'OffersController@searchOfferProduct']);
+            Route::get('/change-status', ['as' => 'admin.offers.changeStatus', 'uses' => 'OffersController@changeStatus']);
+            Route::get('/delete-product', ['as' => 'admin.offers.deleteProduct', 'uses' => 'OffersController@deleteProduct']);
         });
 
         Route::group(['prefix' => 'apicat'], function () {
@@ -380,6 +388,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::get('/edit', array('as' => 'admin.customers.edit', 'uses' => 'CustomersController@edit'));
                 Route::post('/update', array('as' => 'admin.customers.update', 'uses' => 'CustomersController@update'));
                 Route::get('/delete', array('as' => 'admin.customers.delete', 'uses' => 'CustomersController@delete'));
+                Route::get('/ledger', array('as' => 'admin.customers.ledger', 'uses' => 'CustomersController@customerLedger'));
                 Route::get('/change-status', array('as' => 'admin.customers.changeStatus', 'uses' => 'CustomersController@changeStatus'));
                 Route::get('/export', ['as' => 'admin.customers.export', 'uses' => 'CustomersController@export']);
                 Route::post('/chk-existing-useremail', ['as' => 'admin.customers.chkExistingUseremail', 'uses' => 'CustomersController@chkExistingUseremail']);
@@ -793,6 +802,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::get('/discrepancy', ['as' => 'admin.distributor.orders.discrepancy', 'uses' => 'DistributorOrdersController@getProductDiscrepancy']);
         Route::any('/save-discrepancy', ['as' => 'admin.distributor.orders.saveDiscrepancyData', 'uses' => 'DistributorOrdersController@saveDiscrepancyData']);
         
+        // add distributor
+        Route::any('/add-distributor', array('as' => 'admin.distributor.addDistributor', 'uses' => 'DistributorController@index'));
+        Route::any('/verify-code', array('as' => 'admin.distributor.verifyCode', 'uses' => 'DistributorController@verifyDistributorCode'));
+        Route::post('/send-notification', array('as' => 'admin.distributor.send-notification', 'uses' => 'DistributorController@sendNotificationToDistributor'));
     });
     
 });

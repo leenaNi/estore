@@ -184,7 +184,7 @@
             {
                 $("#qtyErorr_"+productId).val(0);
                 var totalPrice = unitPrice*receivedQty;
-                $("#totalPrice_"+productId).html(totalPrice);
+                $("#totalPrice_"+productId).html(totalPrice.toFixed(2));
             }
         } // End else if
 
@@ -206,8 +206,8 @@
             totalReceivedProductPrice = parseFloat(totalReceivedProductPrice)+parseFloat(value);
         });
         
-        // alert(totalReceivedProductPrice);
-        $("#totalReceivedProductPrice").html(totalReceivedProductPrice);
+         alert(totalReceivedProductPrice.toFixed(2));
+        $("#totalReceivedProductPrice").html(totalReceivedProductPrice.toFixed(2));
     }
 
     function searchProduct(distributorProductId)

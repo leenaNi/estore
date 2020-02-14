@@ -17,12 +17,12 @@ use App\Models\Flags;
 use App\Models\GeneralSetting;
 use App\Models\HasCourier;
 use App\Models\HasProducts;
+use App\Models\InwardTransaction;
 use App\Models\Order;
 use App\Models\OrderFlagHistory;
 use App\Models\OrderReturnCashbackHistory;
 use App\Models\OrderReturnStatus;
 use App\Models\OrderStatus;
-use App\Models\DistributorOrderStatus;
 use App\Models\OrderStatusHistory;
 use App\Models\PaymentHistory;
 use App\Models\PaymentMethod;
@@ -32,9 +32,6 @@ use App\Models\ReturnOrder;
 use App\Models\StaticPage;
 use App\Models\User;
 use App\Models\Zone;
-use App\Models\ProductMapping;
-use App\Models\InwardTransaction;
-use App\Models\ProductWiseInwardTransaction;
 use App\Traits\Admin\OrdersTrait;
 use Cart;
 use Config;
@@ -53,7 +50,7 @@ class DistributorOrdersController extends Controller
         Session::forget('distributor_store_id');
         Session::forget('distributor_store_prefix');
         $jsonString = Helper::getSettings();
-        
+
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
@@ -62,33 +59,33 @@ class DistributorOrdersController extends Controller
 
         $merchant = DB::table('stores')->where('id', Session::get('store_id'))->first();
         $allDistributors = DB::table('has_distributors')
-        ->where(['has_distributors.merchant_id' => $merchant->merchant_id])->get(['has_distributors.distributor_id']);
+            ->where(['has_distributors.merchant_id' => $merchant->merchant_id])->get(['has_distributors.distributor_id']);
         $distributorsIds = [];
-        foreach($allDistributors as $allDistributor) {
+        foreach ($allDistributors as $allDistributor) {
             array_push($distributorsIds, $allDistributor->distributor_id);
         }
         $distributorStores = DB::table('stores')->where('store_type', 'LIKE', 'distributor')->whereIn('merchant_id', $distributorsIds)->get(['id']);
-       
+
         $distributorsStoreIds = [];
-        foreach($distributorStores as $distributorStore) {
+        foreach ($distributorStores as $distributorStore) {
             array_push($distributorsStoreIds, $distributorStore->id);
         }
         $storeAdminUsers = DB::table('users')
-        ->where('user_type', 1)
-        ->where('store_id', Session::get('store_id'))
-        ->get(['id']);
+            ->where('user_type', 1)
+            ->where('store_id', Session::get('store_id'))
+            ->get(['id']);
         $storeAdminUserIds = [];
-        foreach($storeAdminUsers as $storeAdminUser) {
+        foreach ($storeAdminUsers as $storeAdminUser) {
             array_push($storeAdminUserIds, $storeAdminUser->id);
         }
-        
+
         $orders = Order::where("orders.order_status", "!=", 0)
-        ->whereIn('user_id', $storeAdminUserIds)
-        ->where('order_type', 1)
-        ->join("has_products", "has_products.order_id", '=', 'orders.id')
-        ->whereIn("has_products.store_id", $distributorsStoreIds)
-        ->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))
-        ->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+            ->whereIn('user_id', $storeAdminUserIds)
+            ->where('order_type', 1)
+            ->join("has_products", "has_products.order_id", '=', 'orders.id')
+            ->whereIn("has_products.store_id", $distributorsStoreIds)
+            ->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))
+            ->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
         //echo "<pre>";print_r($orders);exit;
         //   dd($orders);
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
@@ -153,22 +150,22 @@ class DistributorOrdersController extends Controller
 
         $orders = $orders->paginate(Config('constants.paginateNo'));
         $ordersCount = $orders->total();
-        foreach($orders as $orderKey => $order) {
+        foreach ($orders as $orderKey => $order) {
             $hasProds = HasProducts::where('order_id', $order->id)->get();
             $categories = [];
-            foreach($hasProds as $hasProdKey => $hasProd) {
+            foreach ($hasProds as $hasProdKey => $hasProd) {
                 $prodCategories = DB::table('has_categories')->where('prod_id', $hasProd->prod_id)->first(['cat_id']);
-                if($prodCategories){
+                if ($prodCategories) {
                     array_push($categories, $prodCategories->cat_id);
                 }
             }
             $categories = array_unique($categories);
             $order->categories = DB::table('store_categories')->join('categories', 'categories.id', '=', 'store_categories.category_id')
-                                        ->whereIn('store_categories.id', $categories)->get(['categories.category'])->toArray();
+                ->whereIn('store_categories.id', $categories)->get(['categories.category'])->toArray();
         }
         $flags = Flags::all();
         $viewname = Config('constants.adminDistributorOrderView') . '.index';
-        
+
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
         return Helper::returnView($viewname, $data);
     }
@@ -404,7 +401,6 @@ class DistributorOrdersController extends Controller
 
             $newcart = $newCartData;
             HasProducts::where("order_id", Input::get('id'))->delete();
-            // dd($newcart);
             foreach ($newcart as $cart) {
                 $checkPrd = DistributorProduct::find($cart->id);
                 $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $cart->subtotal, "created_at" => date('Y-m-d H:i:s'), "disc" => @$cart->options->disc];
@@ -1714,9 +1710,9 @@ class DistributorOrdersController extends Controller
     {
         $term = Input::get('term');
         if (!empty($term)) {
-            
+
             $merchant = DB::table('stores')->where('id', Session::get('store_id'))->first();
-            
+
             $result = DB::table('has_distributors')
                 ->join("distributor", "distributor.id", "=", "has_distributors.distributor_id")
                 ->join("stores", "stores.merchant_id", "=", "has_distributors.distributor_id")
@@ -1811,23 +1807,48 @@ class DistributorOrdersController extends Controller
         // hidding product which is already added
         $cart_products = Cart::instance('shopping')->content()->toArray();
         $added_prod = [];
+        // if (count($cart_products) > 0) {
+        //     foreach ($cart_products as $key => $product) {
+        //         if ($product['id'] == $product['options']['sub_prod']) {
+        //             $added_prod[] = $product['id'];
+        //         }
+        //     }
+        // }
         if (count($cart_products) > 0) {
             foreach ($cart_products as $key => $product) {
-                if ($product['id'] == $product['options']['sub_prod']) {
+                dd($product);
+                if (array_key_exists('sub_prod', $product['options']['sub_prod'])) {
+                    if($product['options']['sub_prod'] != null && $product['id'] == $product['options']['sub_prod']){
+                        $added_prod[] = $product['id'];
+                    }
+                   
+                } else {
                     $added_prod[] = $product['id'];
                 }
             }
         }
         $searchStr = Input::get('term');
         // $products = DistributorProduct::where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product']);
-        $products = DB::table('products')->where('store_id', Session::get('distributor_store_id'))->where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product']);
-
+        $products = DB::table('products')->where('store_id', Session::get('distributor_store_id'))->where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product', 'prod_type']);
+        
         $data = [];
         foreach ($products as $k => $prd) {
             if (!in_array($prd->id, $added_prod)) {
+                $offersProduct = DB::table("offers_products")->where('prod_id',$prd->id)->first();
+                if(!empty($offersProduct)){
+                    $offerData = DB::table("offers")->where('id',$offersProduct->offer_id)->first();
+                    $offer_name = $offerData->offer_name;
+                    $offer_id = $offerData->id;
+                }else{
+                    $offer_name = '';
+                    $offer_id = 0;
+                }
+                //dd($offer);
                 $data[$k]['id'] = $prd->id;
                 $data[$k]['value'] = $prd->product;
-                $data[$k]['label'] = "[" . $prd->id . "]" . $prd->product;
+                $data[$k]['type'] = $prd->prod_type;
+                $data[$k]['label'] = $offer_name." [" . $prd->id . "]" . $prd->product;
+                $data[$k]['offer'] = $offer_id;
             }
         }
 
@@ -1836,18 +1857,32 @@ class DistributorOrdersController extends Controller
 
     public function getSubProds()
     {
-        return $subprods = DistributorProduct::find(Input::get('prodid'))->subproducts()->get();
+        $prod = DistributorProduct::find(Input::get('prodid'));
+        if ($prod->prod_type != 2) {
+            return $subprods[] = DistributorProduct::find(Input::get('prodid'))->subproducts()->get();
+        } else {
+            $comboSub = [];
+            $comboProds = $prod->comboproducts()->get();
+            foreach ($comboProds as $comboProdKey => $comboProd) {
+                if($comboProd->prod_type == 3 && $comboProd->pivot->sub_prod_id == null){
+                    $comboSub[] = DistributorProduct::find($comboProd->id)->subproducts()->get();
+                }
+            }
+            return $comboSub;
+        }
     }
 
     public function saveCartData()
     {
-        //dd(Session::get('usedCouponId'));
+        // dd(Input::all());
+        //\dd(Session::get('usedCouponId'));
         if (!Session::get('usedCouponId')) {
             Cart::instance("shopping")->destroy();
             $mycarts = Input::get('mycart');
             foreach ($mycarts as $key => $mycart) {
                 $getProd = DistributorProduct::find($mycart['prod_id']);
-                $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $mycart['subprodid'], $mycart['qty']);
+                $subProdId = (isset($mycart['subprodid']))? $mycart['subprodid']: null;
+                $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $subProdId, $mycart['qty']);
             }
         }
         $cartInfo = Cart::instance("shopping")->total();
@@ -1925,7 +1960,7 @@ class DistributorOrdersController extends Controller
     public function getProdPrice()
     {
         $qty = Input::get('qty');
-
+        $offerid = Input::get('offerid');
         if (Input::get('pprd') == 1) {
             $pprod = DistributorProduct::find(Input::get('parentprdid'));
             $price = $pprod->selling_price;
@@ -1949,15 +1984,22 @@ class DistributorOrdersController extends Controller
         } else {
             $total['tax'] = 0;
         }
-        $total['price'] = $sub_total * Session::get('currency_val');
+        $discount = 0;
+        if($offerid != 0){
+            $offerDetails = DB::table("offers")->find($offerid);
+            if($offerDetails->offer_discount_type == 1){
+                $discount = $sub_total * ($offerDetails->offer_discount_value/100);
+            }
+            $total['offer'] = number_format((float)$discount, 2, '.', '').' ('.$offerDetails->offer_name.')';
+        }
+        $total['price'] = number_format((float)$sub_total-$discount* Session::get('currency_val'), 2, '.', '');
 
         $cart_amt = Helper::calAmtWithTax();
 
         $total['cart'] = Cart::instance('shopping')->content()->toArray();
-        //  $newAmnt = $cart_amt['total'] * Session::get('currency_val');
         $total['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
         $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
-        $total['unitPrice'] = $price * Session::get('currency_val');
+        $total['unitPrice'] = number_format((float)$price* Session::get('currency_val'), 2, '.', '') ;
         return $total;
     }
 
@@ -1980,6 +2022,7 @@ class DistributorOrdersController extends Controller
 
     public function checkOrderCoupon()
     {
+
         Session::put('currency_val', 1);
         Cart::instance('shopping')->destroy();
         // Remove all discount session before adding new discount
@@ -1995,10 +2038,12 @@ class DistributorOrdersController extends Controller
         Session::forget("codCharges");
         Session::forget('shippingCost');
         $mycarts = Input::get('mycart');
+
         if (!empty($mycarts)) {
             foreach ($mycarts as $key => $mycart) {
                 $getProd = DistributorProduct::find($mycart['prod_id']);
-                $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $mycart['subprodid'], $mycart['qty']);
+                $subProdId = (isset($mycart['subprodid']))? $mycart['subprodid']: null;
+                $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $subProdId, $mycart['qty']);
             }
         } else {
             $cartContent = Cart::instance('shopping')->destroy();
@@ -2953,7 +2998,7 @@ class DistributorOrdersController extends Controller
         $order->voucher_amt_used = is_null(Session::get('voucherAmount')) ? 0 : Session::get('voucherAmount');
         $order->voucher_used = is_null(Session::get('voucherUsedAmt')) ? 0 : Session::get('voucherUsedAmt');
         $jsonString = Helper::getSettings();
-        $order->prefix = Session::get('distributor_store_prefix');;
+        $order->prefix = Session::get('distributor_store_prefix');
         $order->store_id = Session::get('distributor_store_id');
         $coupon_id = Session::get('voucherUsedAmt');
         if (isset($coupon_id)) {
@@ -3033,7 +3078,7 @@ class DistributorOrdersController extends Controller
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-        
+
         HasProducts::where("order_id", $orderId)->delete();
         foreach ($cartContent as $cart) {
             $product = DistributorProduct::find($cart->id);
@@ -3071,7 +3116,7 @@ class DistributorOrdersController extends Controller
             //                $cart_ids[$cart->rowid] = array_merge($cart_ids[$cart->rowid], $vendor);
             //            }
             // print_r($cart->options->has('sub_prod'));
-            if ($cart->options->has('sub_prod')) {
+            if ($cart->options->has('sub_prod') && $cart->options->sub_prod != null) {
                 $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = DistributorProduct::find($cart->options->sub_prod);
@@ -3129,7 +3174,7 @@ class DistributorOrdersController extends Controller
                 $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
-                $prddataSp = DistributorProduct::find($cart->rowid);
+                $prddataSp = DistributorProduct::find($cart->id);
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
@@ -3143,7 +3188,7 @@ class DistributorOrdersController extends Controller
                 $date = $cart->options->eNoOfDaysAllowed;
                 $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
-                $prd = DistributorProduct::find($cart->rowid);
+                $prd = DistributorProduct::find($cart->id);
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
                     $prd->update();
@@ -3164,7 +3209,7 @@ class DistributorOrdersController extends Controller
             //  $order->products()->attach($cart->rowid, $cart_ids[$cart->rowid]);
         }
         HasProducts::insert($cart_ids);
-        // print_r($cart_ids);  
+        // print_r($cart_ids);
         // dd(Cart::instance('shopping')->content());
         // dd($cart_ids);
         //  $this->orderSuccess();
@@ -3184,23 +3229,21 @@ class DistributorOrdersController extends Controller
     public function getTotalQtyProductWise($orderId) // for validation of received qty total
     {
         $inwardTransactionResult = DB::table('inward_transaction')
-        ->join('productwise_inward_transaction', 'inward_transaction.id', '=', 'productwise_inward_transaction.inward_transaction_id')
-        ->where('inward_transaction.order_id', $orderId)
-        ->orderBy('productwise_inward_transaction.has_product_id', 'asc')
-        ->get();
+            ->join('productwise_inward_transaction', 'inward_transaction.id', '=', 'productwise_inward_transaction.inward_transaction_id')
+            ->where('inward_transaction.order_id', $orderId)
+            ->orderBy('productwise_inward_transaction.has_product_id', 'asc')
+            ->get();
         $totalQtyAndPriceArray = array();
         $tempProductId = 0;
         $totalQty = 0;
-        
-        foreach($inwardTransactionResult as $inwardTransactionData)
-        {
+
+        foreach ($inwardTransactionResult as $inwardTransactionData) {
             $hasProductId = $inwardTransactionData->has_product_id;
-            if($tempProductId > 0 && $hasProductId != $tempProductId)
-            {
+            if ($tempProductId > 0 && $hasProductId != $tempProductId) {
                 $totalQtyAndPriceArray[$tempProductId] = $totalQty;
                 $totalQty = 0;
             }
-            $totalQty = $totalQty+$inwardTransactionData->qty;
+            $totalQty = $totalQty + $inwardTransactionData->qty;
             $tempProductId = $hasProductId;
         }
         $totalQtyAndPriceArray[$tempProductId] = $totalQty;
@@ -3209,11 +3252,10 @@ class DistributorOrdersController extends Controller
 
     public function getProductMappingData($loggedinMerchantId)
     {
-        $productMappingResult = DB::table('product_mapping')->where('merchant_id',$loggedinMerchantId)->get();
-        
+        $productMappingResult = DB::table('product_mapping')->where('merchant_id', $loggedinMerchantId)->get();
+
         $productMappingArray = [];
-        foreach($productMappingResult as $productMappingData)
-        {
+        foreach ($productMappingResult as $productMappingData) {
             $distributorProdId = $productMappingData->distributor_product_id;
             $productMappingArray[$distributorProdId]['m_product_id'] = $productMappingData->merchant_product_id;
             $productMappingArray[$distributorProdId]['m_id'] = $productMappingData->merchant_id;
@@ -3226,43 +3268,41 @@ class DistributorOrdersController extends Controller
     {
         $orderId = Input::get('id');
         $totalQtyAndPriceArray = $this->getTotalQtyProductWise($orderId);
-       
+
         // get merchant id
-        $storeMerchantId = DB::table('stores')->where('id',Session::get('store_id'))->first();
+        $storeMerchantId = DB::table('stores')->where('id', Session::get('store_id'))->first();
         $loggedinMerchantId = $storeMerchantId->merchant_id;
 
         // Data from product_mapping table
         $productMappingArray = $this->getProductMappingData($loggedinMerchantId);
-       
+
         // get ordered product
         $orders = DB::table('has_products')
             ->where('has_products.order_id', $orderId)
             ->join("stores", "stores.id", "=", "has_products.store_id") // For get distributor id
-            ->get(['has_products.id','has_products.prod_id','has_products.sub_prod_id','has_products.order_id','has_products.product_details','stores.merchant_id AS distributor_id','has_products.prod_type']);
-        
+            ->get(['has_products.id', 'has_products.prod_id', 'has_products.sub_prod_id', 'has_products.order_id', 'has_products.product_details', 'stores.merchant_id AS distributor_id', 'has_products.prod_type']);
+
         //echo "<pre>";print_r($orders);exit;
         $viewname = Config('constants.adminDistributorOrderView') . '.inward-order';
-        $data = ['orders' => $orders,'totalQtyProductwise'=>$totalQtyAndPriceArray,'productMappingData'=>$productMappingArray];
+        $data = ['orders' => $orders, 'totalQtyProductwise' => $totalQtyAndPriceArray, 'productMappingData' => $productMappingArray];
         //echo "<pre>";print_r($data);exit;
         return Helper::returnView($viewname, $data);
     } // End getOrderDataForInward()
 
     public function getProductForMapping() // from search product
     {
-        if (!empty(Input::get('term'))) 
-        {
+        if (!empty(Input::get('term'))) {
             $term = Input::get('term');
             //echo "insdei if".Session::get('store_id');
             $productResult = DB::table('products')
-            ->join("stores", "stores.id", "=", "products.store_id")
-            ->where('store_id', Session::get('store_id'))
-            ->where('product', 'LIKE',"%$term%")
-            ->get(['products.id', 'products.product as product_name','stores.merchant_id']);
+                ->join("stores", "stores.id", "=", "products.store_id")
+                ->where('store_id', Session::get('store_id'))
+                ->where('product', 'LIKE', "%$term%")
+                ->get(['products.id', 'products.product as product_name', 'stores.merchant_id']);
             //echo "<pre>";print_r($productResult);
             $data = [];
             $k = 0;
-            foreach ($productResult as $productData) 
-            {
+            foreach ($productResult as $productData) {
                 $data[$k]['id'] = $productData->id;
                 $data[$k]['label'] = $productData->product_name;
                 $data[$k]['name'] = $productData->product_name;
@@ -3271,7 +3311,7 @@ class DistributorOrdersController extends Controller
             }
             echo json_encode($data);
         }
-      
+
     } // Edn getProductForMapping()
 
     public function saveInwardData() // save inward data
@@ -3279,8 +3319,7 @@ class DistributorOrdersController extends Controller
         $allinput = Input::all();
         $orderId = $allinput['order_id'];
         $totalData = 0;
-        if(isset($allinput['data']) && !empty($allinput['data']))
-        {
+        if (isset($allinput['data']) && !empty($allinput['data'])) {
             $totalData = count($allinput['data']);
         }
         $insertData = array();
@@ -3288,8 +3327,7 @@ class DistributorOrdersController extends Controller
         $totalReceivedQty = 0;
         $productStockArray = array();
 
-        for($i = 0; $i < $totalData; $i++)
-        {
+        for ($i = 0; $i < $totalData; $i++) {
             $productData = $allinput['data'][$i];
             $orderProductId = $productData['order_product_id'];
             $merchantId = $productData['m_id'];
@@ -3303,13 +3341,12 @@ class DistributorOrdersController extends Controller
             $totalReceivedQty = $totalReceivedQty + $receivedQty;
             $totalReceivedProductPrice = $totalReceivedProductPrice + $totalPrice;
 
-            if($isMapped == 0)
-            {
+            if ($isMapped == 0) {
                 $insertData[] = [
-                    'distributor_id'=> $distributorId,
-                    'merchant_id'=> $merchantId,
-                    'distributor_product_id'=> $distributorProductId,
-                    'merchant_product_id'=> $merchantProductId,
+                    'distributor_id' => $distributorId,
+                    'merchant_id' => $merchantId,
+                    'distributor_product_id' => $distributorProductId,
+                    'merchant_product_id' => $merchantProductId,
                 ];
             }
 
@@ -3317,22 +3354,21 @@ class DistributorOrdersController extends Controller
                 'inward_transaction_id' => 0,
                 'has_product_id' => $orderProductId,
                 'order_type' => 'receive',
-                'qty'=> $receivedQty,
-                'total_price' => $totalPrice
+                'qty' => $receivedQty,
+                'total_price' => $totalPrice,
             ];
 
             $productStockArray[$merchantProductId] = $receivedQty;
         } // End for loop
         //echo "<pre>";print_r($productStockArray);exit;
         $isSuccess = 1;
-        if(count($insertData) > 0)
+        if (count($insertData) > 0) {
             $isSuccess = DB::table('product_mapping')->insert($insertData);
+        }
 
-        if($isSuccess)
-        {
+        if ($isSuccess) {
             $lastInsertId = 1;
-            if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
-            {
+            if (isset($productWiseInwardInsert) && !empty($productWiseInwardInsert)) {
                 $inwardTransactionObj = new InwardTransaction();
                 $inwardTransactionObj->order_id = $orderId;
                 $inwardTransactionObj->order_type = 'receive';
@@ -3343,65 +3379,89 @@ class DistributorOrdersController extends Controller
                 $lastInsertId = $inwardTransactionObj->id;
             }
 
-            if($lastInsertId > 0)
-            {
+            if ($lastInsertId > 0) {
                 $finalInsertData = [];
                 $isSuccess = 1;
-                if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
-                {
+                if (isset($productWiseInwardInsert) && !empty($productWiseInwardInsert)) {
                     $inwardTransactionObj1 = InwardTransaction::find($lastInsertId);
                     $inwardTransactionObj1->grn_number = $lastInsertId;
                     $inwardTransactionObj1->save();
 
-                    foreach($productWiseInwardInsert as $productWiseInwardInsertData)
-                    {
+                    foreach ($productWiseInwardInsert as $productWiseInwardInsertData) {
                         $productWiseInwardInsertData['inward_transaction_id'] = $lastInsertId;
                         $finalInsertData[] = $productWiseInwardInsertData;
                     }
                     $isSuccess = DB::table('productwise_inward_transaction')->insert($finalInsertData);
                 }
-                if($isSuccess)
-                {
+                if ($isSuccess) {
                     // update product stock
-                    if(isset($productStockArray) && !empty($productStockArray))
-                    {
-                        foreach($productStockArray as $merchantProductId => $receivedQty)
-                        {
+                    if (isset($productStockArray) && !empty($productStockArray)) {
+                        foreach ($productStockArray as $merchantProductId => $receivedQty) {
                             $productObj = Product::find($merchantProductId);
                             $productObj->stock = ($productObj->stock + $receivedQty);
                             $productObj->update();
                         }
                     }
-                    
-                    echo true;  
-                }
-                else
-                {
+
+                    echo true;
+                } else {
                     echo false;
                 }
             } // End lastInsertId check if
-            else
-            {
+            else {
+                    echo false;
+                }
+            } // End isSuccess check if
+        else {
                 echo false;
             }
-        } // End isSuccess check if
-        else
-        {
-            echo false;
-        }
-        
-    } // End saveInwardData()
 
-    public function getInwardTransaction() // inwward transaction list 
-    {
-        $orderId = Input::get('id');
-        $inwardTransactionResult = DB::table('inward_transaction')
-            ->join("orders", "inward_transaction.order_id", "=", "orders.id")
-            ->where('orders.id', $orderId)
-            ->get(['orders.id','inward_transaction.grn_number','inward_transaction.grn_date','inward_transaction.received_qty','inward_transaction.total_price','orders.created_at']);
+        } // End saveInwardData()
+
+        public function getInwardTransaction() // inwward transaction list
+
+        {
+            //dd(Input::all());
+            $sign = '=';
+            if (!empty(Input::get('id'))) {
+                $orderId = Input::get('id');
+
+            } else if (!empty(Input::get('hdnOrderId'))) {
+            $orderId = Input::get('hdnOrderId');
+        } else {
+            $orderId = 0;
+            $sign = '>';
+        }
+        if (!empty(Input::get('order_ids'))) {
+            $orderId = Input::get('order_ids');
+
+        }
+
+        $inwardTransactionResult = InwardTransaction::
+            join("orders", "inward_transaction.order_id", "=", "orders.id")
+            ->where("inward_transaction.order_id", $sign, $orderId)
+            ->get(['orders.id', 'inward_transaction.grn_number', 'inward_transaction.grn_date', 'inward_transaction.received_qty', 'inward_transaction.total_price', 'orders.created_at']);
+
+        if (!empty(Input::get('order_number_from'))) {
+            $inwardTransactionResult = $inwardTransactionResult->where('inward_transaction.order_id', '>=', Input::get('order_number_from'));
+        }
+        if (!empty(Input::get('order_number_to'))) {
+            $inwardTransactionResult = $inwardTransactionResult->where('inward_transaction.order_id', '<=', Input::get('order_number_to'));
+        }
+        /*if (!empty(Input::get('date'))) {
+        $dates = explode(' - ', Input::get('date'));
+        $dates[0] = date("Y-m-d", strtotime($dates[0]));
+        $dates[1] = date("Y-m-d", strtotime($dates[1]));
+        // dd($dates[0]);
+        $inwardTransactionResult = $inwardTransactionResult->where('inward_transaction.grn_date', '>=', $dates[0])->where('inward_transaction.grn_date', '<=', $dates[1]);
+        }*/
+
+        //dd($inwardTransactionResult);
+
+        //print_r($inwardTransactionResult);
         $viewname = Config('constants.adminDistributorOrderView') . '.inward-list';
-        $data = ['inwardTransaction' => $inwardTransactionResult];
-        
+        $data = ['inwardTransaction' => $inwardTransactionResult, 'hdnOrderId' => $orderId];
+
         return Helper::returnView($viewname, $data);
 
     } // End getInwardTransaction()
@@ -3410,21 +3470,21 @@ class DistributorOrdersController extends Controller
     {
         $orderId = Input::get('id');
         $totalQtyAndPriceArray = $this->getTotalQtyProductWise($orderId);
-       
+
         // get merchant id
-        $storeMerchantId = DB::table('stores')->where('id',Session::get('store_id'))->first();
+        $storeMerchantId = DB::table('stores')->where('id', Session::get('store_id'))->first();
         $loggedinMerchantId = $storeMerchantId->merchant_id;
 
         // Data from product_mapping table
         $productMappingArray = $this->getProductMappingData($loggedinMerchantId);
-       
+
         // get ordered product
         $orders = DB::table('has_products')
             ->where('has_products.order_id', $orderId)
             ->join("stores", "stores.id", "=", "has_products.store_id") // For get distributor id
-            ->get(['has_products.id','has_products.prod_id','has_products.sub_prod_id','has_products.order_id','has_products.product_details','stores.merchant_id AS distributor_id','has_products.prod_type']);
-        
-        $data = ['orders' => $orders,'totalQtyProductwise'=>$totalQtyAndPriceArray,'productMappingData'=>$productMappingArray];
+            ->get(['has_products.id', 'has_products.prod_id', 'has_products.sub_prod_id', 'has_products.order_id', 'has_products.product_details', 'stores.merchant_id AS distributor_id', 'has_products.prod_type']);
+
+        $data = ['orders' => $orders, 'totalQtyProductwise' => $totalQtyAndPriceArray, 'productMappingData' => $productMappingArray];
         //echo "<pre>";print_r($data);exit;
         $viewname = Config('constants.adminDistributorOrderView') . '.product-discrepancy';
         return Helper::returnView($viewname, $data);
@@ -3435,15 +3495,13 @@ class DistributorOrdersController extends Controller
         $allinput = Input::all();
         $orderId = $allinput['order_id'];
         $totalData = 0;
-        if(isset($allinput['data']) && !empty($allinput['data']))
-        {
+        if (isset($allinput['data']) && !empty($allinput['data'])) {
             $totalData = count($allinput['data']);
         }
         $insertData = array();
         $totalReceivedProductPrice = 0;
         $totalScrapQty = 0;
-        for($i = 0; $i < $totalData; $i++)
-        {
+        for ($i = 0; $i < $totalData; $i++) {
             $productData = $allinput['data'][$i];
             $orderProductId = $productData['order_product_id'];
             $merchantId = $productData['m_id'];
@@ -3454,13 +3512,12 @@ class DistributorOrdersController extends Controller
             $isMapped = $productData['is_mapped'];
             $totalScrapQty = $totalScrapQty + $scrapQty;
 
-            if($isMapped == 0)
-            {
+            if ($isMapped == 0) {
                 $insertData[] = [
-                    'distributor_id'=> $distributorId,
-                    'merchant_id'=> $merchantId,
-                    'distributor_product_id'=> $distributorProductId,
-                    'merchant_product_id'=> $merchantProductId,
+                    'distributor_id' => $distributorId,
+                    'merchant_id' => $merchantId,
+                    'distributor_product_id' => $distributorProductId,
+                    'merchant_product_id' => $merchantProductId,
                 ];
             }
 
@@ -3468,29 +3525,28 @@ class DistributorOrdersController extends Controller
                 'inward_transaction_id' => 0,
                 'has_product_id' => $orderProductId,
                 'order_type' => 'scrap',
-                'qty'=> $scrapQty,
+                'qty' => $scrapQty,
             ];
 
             // return order insert json
             $insertOrderReturnData[] = [
-                'order_id'=> $orderId,
-                'product_id'=> $distributorProductId,
-                'quantity'=> $scrapQty,
-                'reason_id'=> 1,
+                'order_id' => $orderId,
+                'product_id' => $distributorProductId,
+                'quantity' => $scrapQty,
+                'reason_id' => 1,
                 'order_status' => 2, // returned
-                'store_id'=> Session::get('store_id')
+                'store_id' => Session::get('store_id'),
             ];
         } // End for loop
 
         $isSuccess = 1;
-        if(count($insertData) > 0)
+        if (count($insertData) > 0) {
             $isSuccess = DB::table('product_mapping')->insert($insertData);
+        }
 
-        if($isSuccess)
-        {
+        if ($isSuccess) {
             $lastInsertId = 1;
-            if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
-            {
+            if (isset($productWiseInwardInsert) && !empty($productWiseInwardInsert)) {
                 $inwardTransactionObj = new InwardTransaction();
                 $inwardTransactionObj->order_id = $orderId;
                 $inwardTransactionObj->order_type = 'return';
@@ -3498,22 +3554,17 @@ class DistributorOrdersController extends Controller
                 $inwardTransactionObj->save();
                 $lastInsertId = $inwardTransactionObj->id;
             }
-            
-            
-            if($lastInsertId > 0)
-            {
-                if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
-                {
+
+            if ($lastInsertId > 0) {
+                if (isset($productWiseInwardInsert) && !empty($productWiseInwardInsert)) {
                     $inwardTransactionObj1 = InwardTransaction::find($lastInsertId);
                     $inwardTransactionObj1->grn_number = $lastInsertId;
                     $inwardTransactionObj1->save();
                 }
                 $finalInsertData = [];
                 $isSuccess = 1;
-                if(isset($productWiseInwardInsert) && !empty($productWiseInwardInsert))
-                {
-                    foreach($productWiseInwardInsert as $productWiseInwardInsertData)
-                    {
+                if (isset($productWiseInwardInsert) && !empty($productWiseInwardInsert)) {
+                    foreach ($productWiseInwardInsert as $productWiseInwardInsertData) {
                         $productWiseInwardInsertData['inward_transaction_id'] = $lastInsertId;
                         $finalInsertData[] = $productWiseInwardInsertData;
                     }
@@ -3522,37 +3573,28 @@ class DistributorOrdersController extends Controller
                     //echo "is succes >> ".$isSuccess;exit;
                 }
 
-                if($isSuccess)
-                {
+                if ($isSuccess) {
                     $isSuccess = 1;
-                    if(isset($insertOrderReturnData) && !empty($insertOrderReturnData))
-                    {
-                        //return order 
+                    if (isset($insertOrderReturnData) && !empty($insertOrderReturnData)) {
+                        //return order
                         $isSuccess = DB::table('return_order')->insert($insertOrderReturnData);
                     }
-                    if($isSuccess)
-                    {
+                    if ($isSuccess) {
                         echo true;
-                    }
-                    else
-                    {
+                    } else {
                         echo false;
                     }
-                }
-                else
-                {
+                } else {
                     echo false;
                 }
             } // End lastInsertId check if
-            else
-            {
+            else {
+                    echo false;
+                }
+            } // End isSuccess check if
+        else {
                 echo false;
             }
-        } // End isSuccess check if
-        else
-        {
-            echo false;
-        }
 
-    } // Edn saveDiscrepancyData()
-}
+        } // Edn saveDiscrepancyData()
+    }

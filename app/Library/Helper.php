@@ -56,7 +56,7 @@ class Helper
         }
     }
 
-    public static function sendsms($mobile = null, $msg = null, $country = null)
+    public static function sendsms($mobile = null, $msg = null, $country = null, $isOtp = 0)
     {
         $mobile = $mobile;
         if ($mobile) {
@@ -69,18 +69,16 @@ class Helper
                 $urlto = "http://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage&send_to=$mobile&msg=$msg&msg_type=TEXT&userid=2000164017&auth_scheme=plain&password=GClWepNxL&v=1.1&format=text";
             }
             $ch = curl_init();
-// set URL and other appropriate options
+            // set URL and other appropriate options
             curl_setopt($ch, CURLOPT_URL, $urlto);
             //curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-// grab URL and pass it to the browser
+            // grab URL and pass it to the browser
             $output = curl_exec($ch);
-
             // print_r($output);
-
-// close cURL resource, and free up system resources
+            // close cURL resource, and free up system resources
             curl_close($ch);
-            //return $output;
+            return $output;
         }
     }
 
@@ -196,11 +194,17 @@ class Helper
                 $i++;
                 $catsave[$ck]['rgt'] = $i;
                 $catsave[$ck]['depth'] = 0;
-                $catsave[$ck]['parent_id'] = $cv->parent_id;
+                if($cv->parent_id !== NULL) {
+                    $parentID = DB::table('store_categories')->where('category_id', $cv->parent_id)->where('store_id', $storeId)->first()->id;
+                } else {
+                    $parentID = $cv->parent_id;
+                }
+                $catsave[$ck]['parent_id'] = $parentID;
                 $catsave[$ck]['store_id'] = $storeId;
                 $catsave[$ck]['created_at'] = date('Y-m-d H:i:s');
+                $addedcats = DB::table('store_categories')->insert($catsave);
             }
-            $addedcats = DB::table('store_categories')->insert($catsave);
+            // $addedcats = DB::table('store_categories')->insert($catsave);
         }
         //save attr set
         $attrset = json_decode($cat->attribute_sets, true);
@@ -584,4 +588,16 @@ class Helper
         fclose($jsonfile);
         return 1;
     }
+
+    public static function createUniqueIdentityCode($allinput, $lastInsteredId) // for merchnat and distributor
+    {
+        $storeName = $allinput['store_name'];
+        $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
+        $phoneNo = $allinput['phone'];
+        $randomFourDigit = rand(1000, 9999);
+        $indentityCode = substr($storeName, 0, 3) . substr($phoneNo, -3) . $lastInsteredId . $randomFourDigit;
+        //dd($indentityCode);
+        return $indentityCode;
+
+    } // End createUniqueIdentityCode
 }

@@ -126,7 +126,7 @@ use App\Models\CustomerReview;
                     <span class="currency-sym"></span><ins class="mrp_price">[[product.spl_price  * currencyVal |number :2]]</ins>
                 </div> 
                   <div class="product-price  prodDetailPrice" ng-show="product.spl_price == 0">
-                    <span class="currency-sym"></span>
+                   
                     <ins class=""><span class="currency-sym"></span> [[product.price]]</ins>
                     <!-- <ins class="mrp_price">[[product.price * currencyVal |number :2]] </ins> -->
                 </div> 

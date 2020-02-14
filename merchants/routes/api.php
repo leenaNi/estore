@@ -144,6 +144,7 @@ Route::group(['namespace' => 'Admin'], function() {
             Route::post('/by-order', array('as' => 'admin.sales.byorder', 'uses' => 'ApiSalesController@order'));
             Route::post('/by-customer', array('as' => 'admin.sales.bycustomer', 'uses' => 'ApiSalesController@bycustomer'));
         });
+
     });
 });
 

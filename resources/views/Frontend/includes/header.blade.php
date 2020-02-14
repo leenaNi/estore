@@ -1,71 +1,73 @@
-<!-- Header
-                ============================================= -->
-<header id="header" class="transparent-header">
 
-    <div id="header-wrap">
+<header id="header">
 
-        <div class="container clearfix">
+    <div class="container clearfix header-container">
 
-            <div id="primary-menu-trigger"><i class="icon-reorder"></i></div>
+    	<div class="logo float-left">
+        <!-- Uncomment below if you prefer to use an image logo -->
+	        <!-- <h1 class="text-light"><a href="#intro" class="scrollto"><span>eStorifi</span></a></h1> -->
+	        <a href="#header" class="scrollto"><img src="{{ asset('public/Frontend/images/logo.svg')}}" alt="eStorifi" class="img-fluid"></a>
+	     </div>
 
-            <!-- Logo
-            ============================================= -->
-            <div id="logo">
-                <a href="/" class="standard-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}" alt="eStorifi"></a>
-                <a href="/" class="retina-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}" alt="eStorifi"></a>
-            </div><!-- #logo end -->
-
-            <!-- Primary Navigation
-            ============================================= -->
-            <nav id="primary-menu">
-
-                <ul>
-                    <li><a href="/"><div>Home</div></a></li>
-                    <li><a href="{{ route('about') }}" class="smooth-me"><div>About</div></a></li>
-                    <li><a href="/features" class="smooth-me"><div>Features</div></a></li>
-                    <li><a href="/pricing" class="smooth-me"><div>Pricing</div></a></li>
-                    
-                    <!-- <li><a href="{{ route('pricing') }}" class="smooth-me"><div>Pricing</div></a></li> -->
-                    <!-- <li><a href="http://www.veestores.com/#howitwork" class="smooth-me"><div>How It Works </div></a></li> -->
-                    <li><a href="{{ route('selectThemes') }}"><div>Themes</div></a></li>
-                   <!-- <li><a href="{{ route('video-tutorials') }}"><div>Tutorial</div></a></li> -->
-                      
-                    @if(Session::get('merchantid'))
-                     <li><a href="{{ route('veestoreMyaccount') }}" ><div>My Account</div></a></li>
+      	<nav class="main-nav float-right d-none d-lg-block">
+        <ul>
+         	<li class="active"><a href="#intro">Home</a></li>
+          	<li><a href="#about">About</a></li>
+          	<li class="drop-down"><a href="#">Merchants</a>
+		        <ul>
+		           	<li><a href="#">Drop Down 1</a></li>
+		            <li class="drop-down"><a href="#">Drop Down 2</a>
+		            	<ul>
+		                	<li class="drop-down"><a href="#">Deep Drop Down 1</a></li>
+		                		<ul>
+		                		   	<li><a href="#">Drop Down in1</a></li>
+		                		   	<li><a href="#">Drop Down in2</a></li>
+		                		   	<li><a href="#">Drop Down in3</a></li>
+		                		</ul>
+		                	<li><a href="#">Deep Drop Down 2</a></li>
+		                  	<li><a href="#">Deep Drop Down 3</a></li>
+		                  	<li><a href="#">Deep Drop Down 4</a></li>
+		                 	<li><a href="#">Deep Drop Down 5</a></li>
+		                </ul>
+              		</li>
+              		<li><a href="#">Drop Down 3</a></li>
+              		<li><a href="#">Drop Down 4</a></li>
+              		<li><a href="#">Drop Down 5</a></li>
+            	</ul>
+          	</li>
+          	<li class="drop-down"><a href="#">Distributors</a>
+		        <ul>
+		           	<li><a href="#">Drop Down 1</a></li>
+		            <li class="drop-down"><a href="#">Drop Down 2</a>
+		            	<ul>
+		                	<li class="drop-down"><a href="#">Deep Drop Down 1</a></li>
+		                		<ul>
+		                		   	<li><a href="#">Drop Down in1</a></li>
+		                		   	<li><a href="#">Drop Down in2</a></li>
+		                		   	<li><a href="#">Drop Down in3</a></li>
+		                		</ul>
+		                	<li><a href="#">Deep Drop Down 2</a></li>
+		                  	<li><a href="#">Deep Drop Down 3</a></li>
+		                  	<li><a href="#">Deep Drop Down 4</a></li>
+		                 	<li><a href="#">Deep Drop Down 5</a></li>
+		                </ul>
+              		</li>
+              		<li><a href="#">Drop Down 3</a></li>
+              		<li><a href="#">Drop Down 4</a></li>
+              		<li><a href="#">Drop Down 5</a></li>
+            	</ul>
+          	</li>
+			  @if(Session::get('merchantid'))
+                     <!-- <li><a href="{{ route('veestoreMyaccount') }}" ><div>My Account</div></a></li> -->
                         @if(Session::get('merchantstorecount') <=0)
                     <li><a href="{{ route('veestoresLogout') }}" ><div>Logout</div></a></li>
                         @endif
                     @else 
                     <li class="loginLink"><a href="#" data-toggle="modal" data-target=".loginpop" data-backdrop="static" data-keyboard="false"><div>Login</div></a></li>
                     @endif
-                </ul>
-
-
-                <!-- Top Search
-                ============================================= -->
-                <!-- <div id="top-search">
-                    <select class="sel-lang">
-                        <option>English</option>
-                        <option>Bengali</option>
-                    </select>
-                </div> -->
-                <!-- <div class="accountBoxLinks">
-                    <ul>
-                        <li>
-                            <a href="#"><i class="icon-user"></i></a>
-                            <ul>
-                                <li><a href="#">Login</a></li>
-                                <li><a href="#">My Account</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div> -->
-                <!-- #top-search end -->
-
-            </nav><!-- #primary-menu end -->
-
-        </div>
-
+        </ul>
+	  </nav><!-- .main-nav -->
+	  <div class="clearfix"></div>
+      <!-- <hr class="header-divider"> -->
     </div>
-
-</header><!-- #header end -->
+  </header><!-- #header -->

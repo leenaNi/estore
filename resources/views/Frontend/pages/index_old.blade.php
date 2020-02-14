@@ -1,0 +1,304 @@
+@extends('Frontend.layouts.default')
+@section('content')
+<section id="slider" class="full-screen force-full-screen ohidden" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'slider/4.jpg') }}') center center no-repeat; background-size: cover">
+
+    <div class="">
+
+        <div class="full-screen force-full-screen nopadding nomargin noborder ohidden">
+            <div class="container mob-container clearfix">
+                <div class="landing-wide-form landing-form-overlay dark nobottommargin clearfix"><!-- contact-widget-->
+
+                    <!--<form action="#" id="getStartedForm" method="post" class="col-md-6 landing-wide-form landing-form-overlay dark nobottommargin clearfix">-->
+                        <div class="heading-block nobottommargin nobottomborder">
+                               @if(Session::get('storeadded'))
+                        <div class="alert alert-danger"> {{ Session::get('storeadded') }}</div>
+                        @endif
+                            <h3>Create your online store in just 5 mins</h3>
+                            <span>No technical skills required. All-in-one E-commerce platform.</span>
+                        </div>
+                        <div class="line" style="margin: 20px 0 20px;"></div>
+<!--                        <div class="col_half bottommargin-xs">
+                            <input type="text" class="form-control stName required not-dark"   name="store_name" placeholder="Enter Your Store Name">
+                            <p class="error storeErr" style="color:red;"> </p>
+                        </div>-->
+                        @if(Session::get('merchantstorecount') <= 0  && !empty(Session::get('merchantid')))
+                        <div class="col_full text-center bottommargin-xs noMobBottomMargin">
+                            <a href="{{route('selectThemes')}}" class="btn theme-btn nomargin getVeestore"  value="Get Started" style="">Select Themes</a>
+                        </div>
+                        @else
+                        <div class="col_full text-center bottommargin-xs noMobBottomMargin">
+                            {{-- <input class="btn theme-btn nomargin getVeestore"  value="Get Started" type="submit" style="" data-toggle="modal" data-target="#getstartModal"> --}}
+                            <a href="{{route('newstore')}}" class="btn theme-btn nomargin getVeestore" >Get Started</a>
+                        </div>
+                        @endif
+                        <div class="clearfix"></div>
+                        
+                        <!--  <div class="col_full topmargin-sm nobottommargin">
+                             <button class="btn btn-default btn-block nomargin "  type="button">Get VeeStores free trial for a year today!</button>
+                         </div> -->
+                    <!--</form>-->
+                </div>
+
+            </div>
+
+            <!--   <div class="image-wrap">
+                  <img src="{{ asset(Config('constants.frontendPublicImgPath').'/slider/4.jpg') }}" alt="Image">
+             </div> -->
+        </div>
+    </div>
+</section>
+<!-- Content
+            ============================================= -->
+<section id="content">
+
+    <div class="content-wrap nobottompadding">
+
+        <div id="features-list"></div>
+        <div class="container clearfix nobottommargin">
+            <div class="row clearfix">
+
+                <div class="col-lg-5 col-md-5 col-sm-6">
+                    <h2 class="marginBottom10">Features</h2>
+                    <!-- <form action="{{route('newstore')}}" id="getStartedForm" method="post">
+                                <input type="text" class="form-control required not-dark" required="true"  name="store_name" placeholder="Store Name">
+                            <input class="btn theme-btn btn-block nomargin" id="create_store" value="Get Started" type="submit" style="" >
+                            
+                        </form>-->
+                    <ul class="iconlist iconlist-large iconlist-color">
+                        <li><i class="icon-ok-sign"></i> Beautiful Themes</li>
+                        <li><i class="icon-ok-sign"></i> Payment Ready Shop</li>
+                        <li><i class="icon-ok-sign"></i> Free Hosting</li>
+                        <li><i class="icon-ok-sign"></i> In-Built SEO</li>
+                        <li><i class="icon-ok-sign"></i> Customer Management</li>
+                        <li><i class="icon-ok-sign"></i> Coupons/Discount Management</li>
+                        <li><i class="icon-ok-sign"></i> Mobile Responsive</li>
+                        <li><i class="icon-ok-sign"></i> Inventory Management</li>
+                        <li><i class="icon-ok-sign"></i> Reports</li>
+                        <li><i class="icon-ok-sign"></i> One Page Checkout</li>
+                    </ul>
+                    <div class="featuresListButton"><a href="/features" class="btn theme-btn nomargin">View Complete Features List</a></div>
+                </div>
+
+                <div class="col-lg-7  col-md-7 col-sm-6">
+
+                    <div style="position: relative;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
+                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
+                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fmobile.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="400" alt="iPad">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div id="howitwork"></div>
+        <div class="section notopmargin pd100topbottom">
+            <div class="container clearfix">
+
+                <div class="col_one_third nobottommargin">
+                    <div class="feature-box fbox-center fbox-light fbox-effect nobottomborder">
+                        <div class="fbox-icon">
+                            <a href="#"><i class="i-alt noborder icon-shopping-cart"></i></a>
+                        </div>
+                     
+                        <h3>Create<span class="subtitle">Create your online<br>store in just few minutes</span></h3>
+                    </div>
+                </div>
+ 
+                <div class="col_one_third nobottommargin">
+                    <div class="feature-box fbox-center fbox-light fbox-effect nobottomborder">
+                        <div class="fbox-icon">
+                            <a href="#"><i class="i-alt noborder icon-cloud-upload"></i></a>
+                        </div>
+                        <h3>Upload<span class="subtitle">Upload your <br/>store &amp; products information</span></h3>
+                    </div>
+                </div>
+
+                <div class="col_one_third nobottommargin col_last">
+                    <div class="feature-box fbox-center fbox-light fbox-effect nobottomborder">
+                        <div class="fbox-icon">
+                            <a href="#"><i class="i-alt noborder icon-thumbs-up2"></i></a>
+                        </div>
+                        <h3>Sell<span class="subtitle">Sit back and<br>start selling online</span></h3>
+                    </div>
+                </div>
+
+                <div class="clear"></div>
+
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="container clearfix ">
+            <div class="row notopmargin nobottommargin">
+                <div class="heading-block center nobottommargin">
+                    <h2 class="">Beautiful and professional themes for your online store</h2>
+                </div>
+                <div class="fslider testimonial testimonial-full nobottommargin" data-animation="slide" data-arrows="false" style="border:0px; box-shadow: none;">
+                    <div class="flexslider">
+                        <div class="slider-wrap">
+                            <div class="slide">
+
+                                <div class="col-lg-6 col-xs-12 sameheight">
+                                    <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="370" data-height-xxs="370">
+                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme1.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-xs-12 sameheight">
+                                    <div class="heading-block content-vertica-middle">
+                                        <h3>Wide varaities of custom themes to choose from</h3>
+                                        <a href="{{route('selectThemes')}}" class="button button-border button-rounded topmargin-sm">View Samples</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slide">
+                                <div class="col-lg-6 col-xs-12 sameheight">
+                                    <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="370" data-height-xxs="370">
+                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme2.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-xs-12 sameheight">
+                                    <div class="heading-block content-vertica-middle">
+                                        <h3>Create an online store that matches your brand</h3>
+                                        <a href="{{route('selectThemes')}}" class="button button-border button-rounded topmargin-sm">View Samples</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section parallax dark topmargin-sm nobottommargin" style="background-image: url('{{ asset(Config('constants.frontendPublicImgPath').'/home-testi-bg.jpg') }}'); padding: 100px 0;" data-stellar-background-ratio="0.4">
+
+            <div class="heading-block center">
+                <h2>What Merchants Say?</h2>
+            </div>
+
+            <div class="fslider testimonial testimonial-full" data-animation="fade" data-arrows="false">
+                <div class="flexslider">
+                    <div class="slider-wrap">
+                        <div class="slide">
+                            <div class="testi-content">
+                                <p>I am seriously happy about running my store on eStorifi. Powerful features and easy to set up, running an online store shouldn’t be this much fun!</p>
+                                <div class="testi-meta">
+                                    Naresh Guntuka
+                                    <span>Radian Stores</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <div class="testi-content">
+                                <p>eStorifi has helped me grow my business amazingly. It’s been a pleasure because everything has been easier than I ever imagined.</p>
+                                <div class="testi-meta">
+                                    Deepak Hase
+                                    <span>Interlink Electronic</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <div class="testi-content">
+                                <p>The best thing about eStorifi is that it’s made me not have to worry about anything that has to do with ecommerce.</p>
+                                <div class="testi-meta">
+                                    Avinash Sharma
+                                    <span>Kirti Stores</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--   <div class="container clearfix">
+  
+              <div class="row topmargin-sm nobottommargin">
+                  <div id="oc-clients" class="owl-carousel image-carousel carousel-widget" data-margin="60" data-loop="true" data-nav="false" data-autoplay="5000" data-pagi="false" data-items-xxs="2" data-items-xs="3" data-items-sm="4" data-items-md="5" data-items-lg="6">
+  
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/1.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/2.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/3.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/4.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/5.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/6.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/7.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/8.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/9.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/10.png') }}" alt="Clients"></a></div>
+  
+                  </div>
+              </div>
+          </div> -->
+    </div>
+</section>
+<!-- #content end -->
+@stop
+@section("myscripts")
+<script>
+
+//function toTitleCase(str) {
+//    return str.replace(/(?:^|\s)\w/g, function(match) {
+//        return match.toUpperCase();
+//    });
+//}
+//
+//    $(".stName").on("keyup",function(){
+//       $(this).val(toTitleCase($(this).val())); 
+//    });    
+//
+//        
+//    $(".checkStore").on("keyup", function () {
+//        storename = $("input[name='store_name']").val();
+//
+//        if (storename.length < 4) {
+//            $(".storeErr").text("Store name should be more than 4 letters");
+//            $(".getVeestore").prop('disabled', true);
+//            return false;
+//        } else {
+//            $(".storeErr").text("");
+//            $(".getVeestore").removeAttr('disabled');
+//
+//        }
+//
+//        $.ajax({
+//            type: "POST",
+//            url: "{{route('checkStore')}}",
+//            data: {storename: storename},
+//            cache: false,
+//            success: function (resp) {
+//                if (resp == 1) {
+//                    $(".storeErr").text("Sorry, this Store name is taken. Try another.");
+//                    $(".getVeestore").prop('disabled', true);
+//
+//                } else {
+//                    $(".storeErr").text("");
+//                    $(".getVeestore").removeAttr('disabled');
+//                }
+//
+//            }
+//
+//
+//        });
+//    });
+//
+//
+//
+//    $("#getStartedForm").validate({
+//        // Specify the validation rules
+//        rules: {
+//            store_name: {
+//                required: true
+//            }
+//        },
+//        messages: {
+//            store_name: {
+//                required: "Please enter your Store name"
+//            }
+//        },
+//        errorPlacement: function (error, element) {
+//            $(element).append(error);
+//        }
+//    });
+//
+
+
+
+</script>
+@stop
