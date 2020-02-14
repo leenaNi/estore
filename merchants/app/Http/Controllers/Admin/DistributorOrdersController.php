@@ -1807,13 +1807,6 @@ class DistributorOrdersController extends Controller
         // hidding product which is already added
         $cart_products = Cart::instance('shopping')->content()->toArray();
         $added_prod = [];
-        // if (count($cart_products) > 0) {
-        //     foreach ($cart_products as $key => $product) {
-        //         if ($product['id'] == $product['options']['sub_prod']) {
-        //             $added_prod[] = $product['id'];
-        //         }
-        //     }
-        // }
         if (count($cart_products) > 0) {
             foreach ($cart_products as $key => $product) {
                 dd($product);
@@ -1843,7 +1836,6 @@ class DistributorOrdersController extends Controller
                     $offer_name = '';
                     $offer_id = 0;
                 }
-                //dd($offer);
                 $data[$k]['id'] = $prd->id;
                 $data[$k]['value'] = $prd->product;
                 $data[$k]['type'] = $prd->prod_type;
@@ -1992,7 +1984,8 @@ class DistributorOrdersController extends Controller
             }
             $total['offer'] = number_format((float)$discount, 2, '.', '').' ('.$offerDetails->offer_name.')';
         }
-        $total['price'] = number_format((float)$sub_total-$discount* Session::get('currency_val'), 2, '.', '');
+        // $total['price'] = number_format((float)$sub_total-$discount* Session::get('currency_val'), 2, '.', '');
+        $total['price'] = number_format((float)$sub_total* Session::get('currency_val'), 2, '.', '');
 
         $cart_amt = Helper::calAmtWithTax();
 

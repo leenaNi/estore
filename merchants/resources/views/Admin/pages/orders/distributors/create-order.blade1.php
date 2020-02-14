@@ -192,8 +192,6 @@
                                 <th width="30%">Product</th>
                                 <th width="20%">Variant</th>
                                 <th width="20%">Quantity </th>
-                                <th width="20%">Unit Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
-                                <th width="20%">Discount </th>
                                 <th width="20%">Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
                                 @if($feature['tax']==1)
                                 <th width="20%">Tax ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
@@ -211,12 +209,6 @@
                                         </td>
                                         <td width="20%">
                                             <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span>
-                                        </td>
-                                        <td width="20%">
-                                            <span class='prodUnitPrice'>0</span>
-                                        </td>
-                                        <td width="20%">
-                                            <span class='prodDiscount'>0</span>
                                         </td>
                                         <td width="20%">
                                             <span class='prodPrice'>0</span>
@@ -380,9 +372,6 @@
                                         <span class='prodQty' style="display:none"><input type="number" min="1" value="1" name='cartData[prod_id][qty]' class='qty form-control'></span>
                                     </td>
                                     <td width="20%">
-                                        <span class='prodDiscount'>0</span>
-                                    </td>
-                                    <td width="20%">
                                         <span class='prodPrice'>0</span>
                                     </td>
                                     @if($feature['tax']==1)
@@ -409,7 +398,6 @@
 @section('myscripts')
 
 <script>
-var prodoffer = 0;
     jQuery.validator.addMethod("phonevalidate", function (telephone, element) {
         telephone = telephone.replace(/\s+/g, "");
         return this.optional(element) || telephone.length > 9 &&
@@ -429,11 +417,12 @@ var prodoffer = 0;
         $.each($(".prodPrice"), function (prodpv) {
             prodPrice += parseInt($(this).text());
         });
+        //console.log( prodPrice);exite;
         $(".subtotal").text(prodPrice);
     }
 
     function setValuesToInpt(distributor_id, storename, code, firstname, phone_no, email, user_id) {
-        //console.log(distributor_id, storename, code, firstname, phone_no, email, user_id);
+        console.log(distributor_id, storename, code, firstname, phone_no, email, user_id);
         $("input[name='s_phone']").val(storename);
         $("input[name='distributor_id']").val(distributor_id);
         $("input[name='name']").val(firstname);
@@ -464,8 +453,8 @@ var prodoffer = 0;
     }
 
     function getSubprods(prodid, ele) {
-        console.log('offer_id '+prodoffer);
         var rows = $(".newRow").find('tr');
+        //console.log($(".newRow").find('tr'));
         var selected_prod = [];
         jQuery.each(rows, function (i, item) {
             var subprodid = parseInt($(this).find('.subprodid').val());
@@ -485,7 +474,8 @@ var prodoffer = 0;
                 prodSel.parent().parent().find('.subprod').show();
                 subProdOpt = '<select name="cartData[prod_id][sub_prod_id]" class="form-control subprodid validate[required]" >'
                 subprodsData.forEach((subprods, subprodKey) => {
-                //console.log(subprods, subprodKey);
+                console.log(subprods, subprodKey);
+                    // attr('data-subpr', ui.item.id);
                     subProdOpt += "<option value=''>Please select</option>";
                     $.each(subprods, function (subprdk, subprdv) {
                         subprodname = subprdv.product.split("Variant (");
@@ -495,17 +485,17 @@ var prodoffer = 0;
                     });
                 });
                 subProdOpt += '</select>';
-                //console.log(prodSel.parent().parent().find('.subprod'));
+                console.log(subProdOpt);
+                console.log(prodSel.parent().parent().find('.subprod'));
                 prodSel.parent().parent().find('.subprod').html(subProdOpt);
             } else {
                 qty = prodSel.parent().parent().find('.qty').val();
                 parentprdid = prodid;
-                $.post("{{route('admin.distributor.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1, offerid:prodoffer}, function (price) {
+                console.log(parentprdid);
+                // exite;
+                $.post("{{route('admin.distributor.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1}, function (price) {
                     //console.log(JSON.stringify(price));
-                    prodSel.parent().parent().find('.prodUnitPrice').text(price.unitPrice);
-                    prodSel.parent().parent().find('.prodDiscount').text(price.offer);
-                    prodSel.parent().parent().find('.prodPrice').text(price.price);
-                    
+                    prodSel.parent().parent().find('.prodPrice').text((price.price).toFixed(2));
                     <?php if ($feature['tax'] == 1) {?>
                     prodSel.parent().parent().find('.taxAmt').text((price.tax).toFixed(2));
                     <?php }?>
@@ -524,7 +514,7 @@ var prodoffer = 0;
         source: "{{ route('admin.distributor.orders.getDistributor') }}",
         minLength: 1,
         select: function (event, ui) {
-            //console.log('event', event, ui);
+            console.log('event', event, ui);
             ele = event.target;
             setValuesToInpt(ui.item.id, ui.item.store_name, ui.item.identity_code, ui.item.firstname, ui.item.phone_no, ui.item.email, ui.item.user_id);
             $(".custdata").show();
@@ -658,32 +648,47 @@ var prodoffer = 0;
 
     $(".prodSearch").autocomplete({
         source: "{{route('admin.distributor.orders.getSearchProds')}}",
+        /* source: function(req, response){
+         var rows = $(".newRow").find('tr');
+         var selected_prod = [];
+         jQuery.each(rows, function(i, item) {
+         var prod_id = $(this).find('.prodSearch').attr('data-prdid');
+         var subprodid = $(this).find('.subprodid').val();
+         selected_prod.push({prod_id:prod_id,subprodid:subprodid});
+         });
+         console.log(selected_prod);
+         $.ajax({
+         type: "get",
+         url:"{{route('admin.distributor.orders.getSearchProds')}}",
+         data: {data:selected_prod,req:req},
+         dataType:"json",
+         success:response,
+         })
+         }, */
         minLength: 1,
         select: function (event, ui) {
-            prodoffer = ui.item.offer;
             getSubprods(ui.item.id, $(this));
             $(this).attr('data-prdid', ui.item.id);
             $(this).attr('data-prdtype', ui.item.type);
-            $(this).attr('data-prdoffer', ui.item.offer);
+
         }
     });
 
     $("table").delegate(".subprodid", "change", function () {
         subp = $(this);
         parentprodid = subp.parent().parent().find('.prodSearch').attr('data-prdid');
-        parentprodtype = subp.parent().parent().find('.prodSearch').attr('data-prdtype');    prodoffer = subp.parent().parent().find('.prodSearch').attr('data-prdoffer'); 
+        parentprodtype = subp.parent().parent().find('.prodSearch').attr('data-prdtype');        
         subprdid = (parentprodtype != 2)? $(this).val(): null;
         removeError(subp);
         $(this).attr("name", "cartData[" + parentprodid + "][subprodid]");
         qty = subp.parent().parent().find('.qty').val();
         subp.parent().parent().find('.qty').attr('subprod-id', subprdid);
         if(parentprodtype != 2)
-            var params = {subprdid: subprdid, qty: qty, pprd: 0,offerid:prodoffer};
+            var params = {subprdid: subprdid, qty: qty, pprd: 0};
         else 
-            var params = {qty: qty, parentprdid: parentprodid, pprd: 1, offerid:prodoffer};
+            var params = {qty: qty, parentprdid: parentprodid, pprd: 1};
         $.post("{{route('admin.distributor.orders.getProdPrice')}}", params, function (data) {
-            subp.parent().parent().find('.prodPrice').text(data.price);
-            subp.parent().parent().find('.prodDiscount').text(data.offer);
+            subp.parent().parent().find('.prodPrice').text((data.price).toFixed(2));
             <?php if ($feature['tax'] == 1) {?>
                 subp.parent().parent().find('.taxAmt').text((data.tax).toFixed(2));
             <?php }?>
@@ -803,15 +808,16 @@ var prodoffer = 0;
     });
 
     $("table").delegate(".qty", "change", function () {
+        console.log("inside qty");
         var qty = $(this).val();
         var subprdid = $(this).parents("td").prev().find(".subprodid").val();
         var parentprdid = $(this).parents("td").siblings().find(".prodSearch").attr('data-prdid');
         if (subprdid == null || subprdid == "") {
             var pprd = 1;
-            var data = {qty: qty, parentprdid: parentprdid, pprd: pprd, offerid:prodoffer};
+            var data = {qty: qty, parentprdid: parentprdid, pprd: pprd};
         } else {
             var pprd = 0;
-            var data = {qty: qty, subprdid: subprdid, pprd: pprd, offerid:prodoffer};
+            var data = {qty: qty, subprdid: subprdid, pprd: pprd};
         }
         var qtty = $(this)
         $.ajax({
@@ -820,7 +826,7 @@ var prodoffer = 0;
             data: data,
             cache: false,
             success: function (price) {
-                qtty.parents("td").next().find('.prodPrice').text(price.price);
+                qtty.parents("td").next().find('.prodPrice').text((price.price).toFixed(2));
                 <?php if ($feature['tax'] == 1) {?>
                 qtty.parents("td").next().next().find('.taxAmt').text((price.tax).toFixed(2));
                 <?php }?>
@@ -928,6 +934,7 @@ var prodoffer = 0;
 
     $(".requireCashback").click(function () {
         var user_id = $("input[name='user_id']").val();
+        console.log(user_id);
         var checkbox = $("#checkbox1");
         var isChecked = checkbox.is(':checked');
         if (isChecked) {
@@ -1174,6 +1181,7 @@ var prodoffer = 0;
 
     $('select[name=payment_mode]').change(function(){
         var payMode = $('select[name=payment_mode]').val();
+        console.log(payMode);
         if(payMode == 10) {
             // $(this).parent().attr('colspan', '');
             $('.store-credit').removeClass('hide');
@@ -1193,6 +1201,7 @@ var prodoffer = 0;
         
         var currentPayingAmt = parseInt($('input[name="pay_amt"]').val());
         var remainingPayAmt = totalPayAmt - currentPayingAmt;
+        console.log("Remaining Amt", remainingPayAmt, totalPayAmt, currentPayingAmt);
         if(currentPayingAmt > totalPayAmt) {
             //alert("This amount can not be greater than total payable amount!");
             $("#validate_credit_amt").show();

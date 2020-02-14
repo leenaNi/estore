@@ -13,12 +13,12 @@
             </li> -->
             <li class="{{ Route::currentRouteName() == 'admin.dashboard' ? 'active' : '' }}">
                 <a href="{{ route('admin.dashboard') }}">
-                    <i class="fa fa-bar-chart"></i><span>Dashboard</span> <i class=""></i>
+                    <i class="fa fa-bar-chart"></i><span>Home</span> <i class=""></i>
                 </a>
             </li>
             <li class="treeview {{ preg_match("/admin.orders|admin.orders.OrderReturn|admin.miscellaneous.flags|admin.order_status|additional-charges/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
-                    <i class="fa fa-shopping-cart"></i><span>Orders</span>
+                    <i class="fa fa-money"></i><span>Sales</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
@@ -45,7 +45,7 @@
             </li>
             <li class="treeview {{ preg_match("/admin.category|admin.reviews.view|admin.products|admin.attribute.set|admin.tax|admin.attributes|admin.sizechart|admin.raw-material|admin.stock/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="#">
-                    <i class="fa fa-product-hunt"></i><span>Products</span>
+                    <i class="fa fa-database"></i><span>Catalog</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
@@ -87,7 +87,13 @@
 
                 </ul>
             </li>
-            <li class="treeview {{ preg_match("/admin.vendors.saleByOrder|admin.vendors.saleByProduct/",Route::currentRouteName()) ? 'active' : '' }}">
+            <li class="treeview {{ preg_match("/admin.report.productIndex|admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}">
+                <a href="">
+                    <i class="fa fa-file"></i><span>Reports</span>
+                    <i class="fa fa-angle-down pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                <li class="treeview {{ preg_match("/admin.vendors.saleByOrder|admin.vendors.saleByProduct/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
                     <i class="fa fa-line-chart"></i><span>Analytics</span>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -99,6 +105,17 @@
                     <li class="{{ preg_match("/admin.vendors.saleByProduct/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.saleByProduct') }}"><i class="fa fa-angle-right"></i>By Products</a></li>
                 </ul>
             </li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li class="{{ preg_match("/admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.report.ordersIndex') }}"><i class="fa fa-angle-right"></i>Orders Report</a></li> 
+                </ul>
+
+                <ul class="treeview-menu">
+                    <li class="{{ preg_match("/admin.report.productIndex/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.report.productIndex') }}"><i class="fa fa-angle-right"></i>Top Selling Products</a></li>
+                </ul>
+                
+            </li>
+            
             @if($feature['tax']==1)  
                 <li class="{{ preg_match("/admin.tax/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.tax.view') }}"><i class="fa fa-angle-right"></i>Taxes</a></li>
             @endif
@@ -134,19 +151,7 @@
                     @endif  
                 </ul>
             </li>
-            <li class="treeview {{ preg_match("/admin.report.productIndex|admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}">
-                <a href="">
-                    <i class="fa fa-file"></i><span>Reports</span>
-                    <i class="fa fa-angle-down pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="{{ preg_match("/admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.report.ordersIndex') }}"><i class="fa fa-angle-right"></i>Orders Report</a></li> 
-                </ul>
-
-                <ul class="treeview-menu">
-                    <li class="{{ preg_match("/admin.report.productIndex/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.report.productIndex') }}"><i class="fa fa-angle-right"></i>Top Selling Products</a></li>
-                </ul>
-            </li>
+            
             <li class="treeview {{ preg_match("/admin.customers|admin.storecontacts/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-users"></i><span>Customers</span>
