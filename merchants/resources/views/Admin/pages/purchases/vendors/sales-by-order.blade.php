@@ -2,89 +2,88 @@
 @section('content')
 <section class="content-header">
     <h1>
-        By Orders
-        <small></small>
+        By Orders 
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">By Orders</li>
     </ol>
 </section>
-<section class="content">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="box">
-                <div class="box-header box-tools filter-box col-md-9 noBorder">
+
+<section class="main-content">     
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Filter</h1>
+        </div>
+        <div class="filter-section">
+            <div class="col-md-12 no-padding">
+                <div class="filter-full-section">
                     <form method="get" action="{{URL::route('admin.vendors.saleByOrder')}}">
                         <input type="hidden" value="dateSearch" name="dateSearch">
                         <div class="form-group col-md-4 noBottomMargin">
-                            <input type="text" name="from_date" value="{{ @Input::get('from_date') }}" required="true"  class="form-control fromDate " placeholder="From Date" autocomplete="off" id="">
+                            <div class="input-group">
+                                <input type="text" name="from_date" value="{{ @Input::get('from_date') }}" required="true"  class="form-control fromDate " placeholder="From Date" autocomplete="off" id="">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-4 noBottomMargin">
-                            <input type="text" name="to_date" value="{{ @Input::get('to_date') }}"   required="true"  class="form-control toDate col-md-3" placeholder="To Date" autocomplete="off" id="">
+                            <div class="input-group">
+                                <input type="text" name="to_date" value="{{ @Input::get('to_date') }}"   required="true"  class="form-control toDate col-md-3" placeholder="To Date" autocomplete="off" id="">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-2 noBottomMargin">
-                            <input type="submit" name="submit" class="form-control btn btn-primary" value="Submit">
+                            <input type="submit" name="submit" class="btn btn-primary fullWidth" value="Submit">
                         </div>
                          <div class="form-group col-md-2 noBottomMargin">
-                         <a  href="{{route('admin.vendors.saleByOrder')}}" class="medium btn btn-block reset-btn" style="margin-left:0px">Reset</a>
+                         <a  href="{{route('admin.vendors.saleByOrder')}}" class="medium btn btn-block reset-btn">Reset</a>
                         </div>
                     </form>
-                </div>
-                <!-- </div> -->
-               <!--  <div class="box-header col-md-3 noBottomMargin">
-                    <form method="post" id="ByOrderExport" action="{{ URL::route('admin.vendor.export.order') }}">
-                        <input type="hidden" value="dateSearch" name="dateSearch">
-                        <input type="hidden" value="excelExport" name="excelExport">
-                        <input type="hidden" name="from_date" id="from_date" value="{{ @Input::get('from_date') }}" required="true"  class="form-control fromDate " placeholder="From Date" autocomplete="off" id="">
-                        <input type="hidden" name="to_date" id="to_date" value="{{ @Input::get('to_date') }}"   required="true"  class="form-control toDate col-md-3" placeholder="To Date" autocomplete="off" id="">
-                        <input type="button" class="byorderExport btn btn-default pull-right col-md-12" value="Export">
-                    </form>
-                </div>  -->
-               <div class="clearfix"></div>
-                <!-- <div class="dividerhr"></div> -->
-            <div class="form-group col-md-4 ">
-                        <div class="button-filter-search pl0">
-                    {{$orderCount }} Order{{$orderCount > 1 ?'s':'' }}
-                </div>
-              </div> 
-                <div style="clear: both"></div>
-
-                <div class="box-body table-responsive no-padding">
-                    <table class="table ByOrderSalesTable orderTable table-hover general-table tableVaglignMiddle">
-                        <thead>
-                            <tr>                                
-<!--                                <th>Id</th>-->
-                                <th>Date</th>
-                                <th>Order Count</th>
-                                <th>Sales</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($order as $od)
-                            <tr>                                
-<!--                                <td>{{ $od->id }}</td>-->
-                                <td>{{date("d-M-Y",strtotime($od->created_at)) }}</td>
-                                <td>{{ $od->order_count }}</td>
-                                <td><i class='fa fa-rupee'></i> {{ number_format($od->sales) }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="box-footer clearfix">
-                    <?php if (empty(Input::get('dateSearch'))) {
-                       echo $order->links();
-                    } ?> 
-
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Order{{$orderCount > 1 ?'s':'' }} <span class="listing-counter"> {{$orderCount }} </span> </h1> 
+        </div>
+        <div class="listing-section">
+            <div class="table-responsive overflowVisible no-padding"> 
+                <table class="table ByOrderSalesTable orderTable table-hover general-table tableVaglignMiddle">
+                    <thead>
+                        <tr>                    
+                            <th class="text-left">Date</th>
+                            <th class="text-center">Order Count</th>
+                            <th class="text-right">Sales</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($order as $od)
+                        <tr>                                
+                            <td class="text-left">{{date("d-M-Y",strtotime($od->created_at)) }}</td>
+                            <td class="text-center">{{ $od->order_count }}</td>
+                            <td class="text-right"><i class='fa fa-rupee'></i> {{ number_format($od->sales) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <?php if (empty(Input::get('dateSearch'))) {
+               echo $order->links();
+            } ?>
+        </div>
+    </div>
+
+
+
 </section>
-</div>
-</div>
+
+<div class="clearfix"></div>
 
 @stop
 @section('myscripts')

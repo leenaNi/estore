@@ -82,11 +82,9 @@ use App\Models\Order;
     </ol>
 </section>
 
-<section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box">
-                @if(!empty(Session::get('message')))
+<section class="main-content">
+    <div class="notification-column">
+               @if(!empty(Session::get('message')))
                 <div class="alert alert-danger" role="alert">
                     {{ Session::get('message') }}
                 </div>
@@ -96,46 +94,52 @@ use App\Models\Order;
                     {{Session::get('msg')}}
                 </div>
                 @endif
-                
+    </div>
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Customer Reviews</h1>
+        </div>
+      <div class="filter-section displayFlex">
+         <div class="col-md-12 noAll-padding displayFlex">
+           <div class="filter-full-section">
+            
 
-                <div class="box-header box-tools filter-box col-md-6 noBorder rightBorder">
-                    {!! Form::open(['method' => 'get', 'route' => 'admin.reviews.view' , 'id' => 'searchForm' ]) !!}
-                    <div class="form-group col-md-6">
+                {!! Form::open(['method' => 'get', 'route' => 'admin.reviews.view' , 'id' => 'searchForm' ]) !!}
+                    <div class="form-group col-md-4">
                         {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"Order Id"]) !!}
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control ', "placeholder"=>"Order No. From"]) !!}
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control ', "placeholder"=>"Order No. To"]) !!}
                     </div>
                     <div class="clearfix"></div>
                     <div class="form-group col-md-4 noBottomMargin">
-                        <div class=" button-filter-search col-md-6 col-xs-12 no-padding mob-marBottom15">
-                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Filter</button>
+                      <div class=" button-filter-search col-md-4 col-xs-12 no-padding mob-marBottom15">
+                            <button type="submit" class="btn btn-primary fullWidth noAll-margin" style="margin-left: 0px;"> Filter</button>
                         </div>
-                        <div class=" button-filter col-md-5 col-xs-12 no-padding noBottomMargin">
-                            <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn form-control noMob-leftmargin">Reset</button></a>
+                        <div class=" button-filter col-md-4 col-xs-12 no-padding noBottomMargin">
+                            <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn fullWidth noMob-leftmargin">Reset</button></a>
                         </div>
                     </div>
                     {!! Form::close() !!}
-                </div>
-
-
-                <div class="clearfix"></div>
-                <div class="dividerhr"></div>             
-                <div class="clearfix"></div>
-                <div class="box-body table-responsive">
-                    <table class="table table-striped table-hover tableVaglignMiddle">
+</div>
+         </div>
+      </div>
+    </div>
+    <div class="grid-content">
+      <div class="listing-section">
+      <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
-                                <th>Customer</th>
-                                <th>Product</th>
-                                <th>OrderID</th>
-                                <th>Order Date</th>
-                                <th>Review Date</th>
-                                <th>Status</th>
-                                <th>Action </th>
+                                <th class="text-left">Customer</th>
+                                <th class="text-left">Product</th>
+                                <th class="text-center">OrderID</th>
+                                <th class="text-right">Order Date</th>
+                                <th class="text-right">Review Date</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -160,27 +164,28 @@ use App\Models\Order;
                                 <td>{{date("d-M-Y",strtotime($review->created_at))}}</td>
                                 <td><span>{{$status}}</span></td>
                                 <td>
-                                    <button  class="btn sbtn btn-primary" data-toggle="tooltip" onclick="getReviewData('{{$review->id}}');" 
-                                     title="View Review" data-original-title="Edit"><i class="fa fa-eye"></i></button>
+                                  <div class="">
+                                    <span><a class="btn-action-default" href="getReviewData('{{$review->id}}">View</a></span>
+                                  </div>
+                                  <!-- <button  class="btn sbtn btn-primary" data-toggle="tooltip" onclick="getReviewData('{{$review->id}}');" 
+                                      title="View Review" data-original-title="Edit"><i class="fa fa-eye"></i></button> -->
                                 </td>
                                 </tr>
                                 @endforeach
                             <?php } else { ?>
                                 <tr>
-                                    <td colspan="5">No Record Found.</td>
+                                    <td colspan="5" class="text-center">No Record Found.</td>
                                 </tr>
                             <?php } ?>      
                         </tbody>
                     </table>
-                </div><!-- /.box-body -->
-
-                <div class="box-footer clearfix">
+                    <div class="box-footer clearfix">
                    
 
                 </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 </section>
 <div class="modal fade" id="reviewModal" role="dialog">
     <div class="modal-dialog">

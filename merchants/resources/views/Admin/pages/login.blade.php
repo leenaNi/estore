@@ -8,8 +8,10 @@
         <div class="login-box">
             <div class="login-box-body">
                 <div class="col-md-12 col-lg-12">
-                    <h3>Powered By <br>                    
-                    <img src="{{ Config('constants.adminImgPath').'/veestore.png' }}" alt="Logo" style="width:200px;"></h3>
+                    <h3>Powered By <br>            
+                    <span class="logo-holder">       
+                        <img src="{{ Config('constants.adminImgPath').'/login-logo.svg' }}" alt="eStorifi logo"></h3>
+                    </span>
                 </div>
                 <!-- <p style="color: red;text-align: center;" class="errorMessage">{{ Session::get('invalidUser') }}</p> -->
                 <!-- <p class="login-box-msg">Sign in to start your session</p> -->
@@ -30,7 +32,7 @@
                         </div><!-- /.col -->
                     </div>
                 </form>
-                <div class="col-md-12 orDivider-box">
+                <!-- <div class="col-md-12 orDivider-box">
                     <div class="orDivider">
                         OR
                     </div>
@@ -39,7 +41,7 @@
          <div class="col-md-12 fbBTN" >
              <div class="fbBtnfull">
             <img src="{{ Config('constants.frontendPublicImgPath').'/fb_login.jpg'}}" onclick="fbLogin()" id="fbLink" class="fb_login_btn"></div>
-        </div>
+        </div> -->
          <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('adminForgotPassword') }}" class="">Forgot Password?</a> </div>
                 <!--        <div class="social-auth-links text-center">
                           <p>- OR -</p>

@@ -10,73 +10,65 @@
     </ol>
 </section>
 
-
-<section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box">
-                @if(!empty(Session::get('msg')))
-                <div  class="alert alert-danger" role="alert">
-                    {{ Session::get('msg') }}
-                </div>
-                @endif
-                @if(!empty(Session::get('message')))
-                <div  class="alert alert-success" role="alert">
-                    {{ Session::get('message') }}
-                </div>
-                @endif
-                <div class="box-header box-tools filter-box col-md-9 noBorder noMobileDisplay">
-                    <div class="form-group col-md-4">
-
-                    </div>  
-                </div>
-                <div class="box-header col-md-3">
-                    <a href="{!! route('admin.roles.add') !!}" class="btn btn-default pull-right col-md-12" target="_" type="button">Add New Role</a>
-                </div> 
-                <div class="clearfix"></div>
-                <div class="dividerhr"></div>        
-
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-striped table-hover tableVaglignMiddle">
+<section class="main-content">
+    <div class="notification-column">
+        @if(!empty(Session::get('msg')))
+        <div  class="alert alert-danger" role="alert">
+            {{ Session::get('msg') }}
+        </div>
+        @endif
+        @if(!empty(Session::get('message')))
+        <div  class="alert alert-success" role="alert">
+            {{ Session::get('message') }}
+        </div>
+        @endif
+    </div> 
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1 class="lineHeight-30">Roles
+            <span>
+            <a href="{!! route('admin.roles.add') !!}" class="btn btn-default pull-right col-md-3" target="_" type="button">Add New Role</a></span></h1>
+        </div>
+        <div class="listing-section">
+            <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
-                                <th>Role</th>
-                                <th>Slug</th>
-                                <th>Description</th>
-                                <th>Created On</th>
-                                <th>Action</th>
+                                <th class="text-left">Role</th>
+                                <th class="text-left">Slug</th>
+                                <th class="text-left">Description</th>
+                                <th class="text-right">Created On</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($roles as $role)
                             <tr>
-                                <td>{{ $role->display_name }}</td>
-                                <td>{{ $role->name }}</td>
-                                <td>{{ $role->description }}</td>
-                                <td>{{ date('d-M-Y',strtotime($role->created_at)) }}</td>
-                                <td>
-                                    <a href="{{ route('admin.roles.edit',['id' => $role->id ])  }}" target="_" class="" data-toggle="tooltip" title="Edit" ui-toggle-class=""><i class="fa fa-pencil-square-o btn-plen btn"></i></a>
-                                    <a href="{{ route('admin.roles.delete',['id' => $role->id ])  }}" target="_" class="" onclick="return confirm('Are you sure you want to delete this role?')" ui-toggle-class="" data-toggle="tooltip" title="Delete"><i class="fa fa-trash btn-plen btn"></i></a>
+                                <td class="text-left">{{ $role->display_name }}</td>
+                                <td class="text-left">{{ $role->name }}</td>
+                                <td class="text-left" style="width: 300px">{{ $role->description }}</td>
+                                <td class="text-right">{{ date('d-M-Y',strtotime($role->created_at)) }}</td>
+                                <td class="text-center">
+                                    <div class="actionCenter">
+                                        <span><a class="btn-action-default" href="{{ route('admin.roles.edit',['id' => $role->id ])  }}">Edit</a></span> 
+                                        <span class="dropdown">
+                                            <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+                                                <li><a href="{{ route('admin.roles.delete',['id' => $role->id ])  }}"><i class="fa fa-trash "></i> Delete</a></li>
+                                            </div>
+                                        </span>  
+                                    </div> 
                                 </td>
 
                             </tr>
                             @endforeach
-                        </tbody>
-                    </table>
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
-                    <?= $roles->render() ?> 
-
-                </div>
-            </div><!-- /.box -->
-        </div><!-- /.col -->
-
-    </div> 
+                    </tbody>
+            </table> 
+            <?= $roles->render() ?>  
+        </div>
+    </div>
 </section>
-
-
-
-
-
+<div class="clearfix"></div>
 
 @stop 
