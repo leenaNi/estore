@@ -1807,10 +1807,21 @@ class DistributorOrdersController extends Controller
         // hidding product which is already added
         $cart_products = Cart::instance('shopping')->content()->toArray();
         $added_prod = [];
+        // if (count($cart_products) > 0) {
+        //     foreach ($cart_products as $key => $product) {
+        //         if ($product['id'] == $product['options']['sub_prod']) {
+        //             $added_prod[] = $product['id'];
+        //         }
+        //     }
+        // }
         if (count($cart_products) > 0) {
             foreach ($cart_products as $key => $product) {
-                if (array_key_exists('sub_prod', $product['options']['sub_prod']) && $product['options']['sub_prod'] != null && $product['id'] == $product['options']['sub_prod']) {
-                    $added_prod[] = $product['id'];
+                dd($product);
+                if (array_key_exists('sub_prod', $product['options']['sub_prod'])) {
+                    if($product['options']['sub_prod'] != null && $product['id'] == $product['options']['sub_prod']){
+                        $added_prod[] = $product['id'];
+                    }
+                   
                 } else {
                     $added_prod[] = $product['id'];
                 }
@@ -1824,18 +1835,20 @@ class DistributorOrdersController extends Controller
         foreach ($products as $k => $prd) {
             if (!in_array($prd->id, $added_prod)) {
                 $offersProduct = DB::table("offers_products")->where('prod_id',$prd->id)->first();
-                
                 if(!empty($offersProduct)){
                     $offerData = DB::table("offers")->where('id',$offersProduct->offer_id)->first();
-                    $offer = $offerData->offer_name;
+                    $offer_name = $offerData->offer_name;
+                    $offer_id = $offerData->id;
                 }else{
-                    $offer = '';
+                    $offer_name = '';
+                    $offer_id = 0;
                 }
                 //dd($offer);
                 $data[$k]['id'] = $prd->id;
                 $data[$k]['value'] = $prd->product;
                 $data[$k]['type'] = $prd->prod_type;
-                $data[$k]['label'] = $offer."[" . $prd->id . "]" . $prd->product;
+                $data[$k]['label'] = $offer_name." [" . $prd->id . "]" . $prd->product;
+                $data[$k]['offer'] = $offer_id;
             }
         }
 
@@ -1947,7 +1960,7 @@ class DistributorOrdersController extends Controller
     public function getProdPrice()
     {
         $qty = Input::get('qty');
-
+        $offerid = Input::get('offerid');
         if (Input::get('pprd') == 1) {
             $pprod = DistributorProduct::find(Input::get('parentprdid'));
             $price = $pprod->selling_price;
@@ -1971,15 +1984,22 @@ class DistributorOrdersController extends Controller
         } else {
             $total['tax'] = 0;
         }
-        $total['price'] = $sub_total * Session::get('currency_val');
+        $discount = 0;
+        if($offerid != 0){
+            $offerDetails = DB::table("offers")->find($offerid);
+            if($offerDetails->offer_discount_type == 1){
+                $discount = $sub_total * ($offerDetails->offer_discount_value/100);
+            }
+            $total['offer'] = number_format((float)$discount, 2, '.', '').' ('.$offerDetails->offer_name.')';
+        }
+        $total['price'] = number_format((float)$sub_total-$discount* Session::get('currency_val'), 2, '.', '');
 
         $cart_amt = Helper::calAmtWithTax();
 
         $total['cart'] = Cart::instance('shopping')->content()->toArray();
-        //  $newAmnt = $cart_amt['total'] * Session::get('currency_val');
         $total['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
         $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
-        $total['unitPrice'] = $price * Session::get('currency_val');
+        $total['unitPrice'] = number_format((float)$price* Session::get('currency_val'), 2, '.', '') ;
         return $total;
     }
 
