@@ -57,7 +57,7 @@ class ApiDistributorController extends Controller
                     //exit;
                     if(count($productResult) > 0)
                     {
-                        $productImage = "http://".$_SERVER['HTTP_HOST']."/uploads/catalog/products/".$productResult[0]->filename;
+                        $productImage = "http://".$storeIdsData->url_key.".".$_SERVER['HTTP_HOST']."/uploads/catalog/products/".$productResult[0]->filename;
                     }
                     //echo "product image::http://" .$_SERVER['HTTP_HOST'].'/uploads/catalog/products/'.$productImage;
 
@@ -224,7 +224,7 @@ class ApiDistributorController extends Controller
         $storeIdsResult = DB::table('has_distributors as hd')
             ->join('stores as s', 's.merchant_id', '=', 'hd.distributor_id')
             ->where('hd.merchant_id', $merchantId)
-            ->where('s.store_type', 'distributor')->get(['s.id', 's.merchant_id', 's.store_name']);
+            ->where('s.store_type', 'distributor')->get(['s.id', 's.merchant_id', 's.store_name', 's.url_key']);
         return $storeIdsResult;
     }
 
@@ -649,9 +649,11 @@ class ApiDistributorController extends Controller
                             $brandIds[] = $brandIdsData->brand_id;
                             $storeIds[] = $brandIdsData->store_id;
                         }
-                        $getcategoryResult = DB::table('store_categories as sc')->join('categories as c', 'c.id', '=', 'sc.category_id')
-                        ->whereIn('sc.store_id', $storeIds)
-                        ->get(['sc.id', 'sc.url_key', 'sc.store_id', 'sc.short_desc', 'c.category']);
+                        $getcategoryResult = DB::table('store_categories as sc')
+                        ->join('categories as c', 'c.id', '=', 'sc.category_id')
+                        ->join('stores as s', 's.id', '=', 'sc.store_id')
+                        ->whereIn('sc.store_id', $storeIds)->where('s.store_type', 'distributor')
+                        ->get(['sc.id', 'sc.url_key', 'sc.store_id', 'sc.short_desc', 'c.category', 's.url_key as storeUrl']);
                         //echo "<pre> brand result::";
                         //print_r($getcategoryResult);                        
                         $categoryArray = array();
@@ -672,7 +674,6 @@ class ApiDistributorController extends Controller
                                 $categoryArray[$i]['category_short_desc'] = $categoryShortDesc;
                                 $categoryArray[$i]['category_url_key'] = $categoryUrlKey;
                                 
-
                                 $getCategoryWiseProductsResult = DB::table('products')
                                 ->where('store_id', $cateGoryStoreId)
                                 ->where('status', 1)
@@ -701,6 +702,20 @@ class ApiDistributorController extends Controller
                                         $productPurchasePrice = $getProductData->purchase_price;
                                         $productPrice = $getProductData->price;
 
+                                        $productResult = DB::table('catalog_images')
+                                        ->select(DB::raw('filename'))     
+                                        ->where(['catalog_id' => $productId])
+                                        ->where('image_type', 1)
+                                        ->get();
+                                        $productImage = '';
+                                        //echo "<pre>";
+                                        //print_r($productResult);
+                                        //exit;
+                                        if(count($productResult) > 0)
+                                        {
+                                            $productImage = "http://".$getCategoryData->storeUrl.".".$_SERVER['HTTP_HOST']."/uploads/catalog/products/".$productResult[0]->filename;
+                                        }
+
                                         $categoryArray[$i]['product'][$j]['product_id'] = $productId;
                                         $categoryArray[$i]['product'][$j]['product_brand_id'] = $productBrandId;
                                         $categoryArray[$i]['product'][$j]['product_name'] = $productName;
@@ -709,7 +724,7 @@ class ApiDistributorController extends Controller
                                         $categoryArray[$i]['product'][$j]['long_desc'] = $productLongDesc;
                                         $categoryArray[$i]['product'][$j]['add_desc'] = $productAddDesc;
                                         $categoryArray[$i]['product'][$j]['is_featured'] = $productIsFeatured;
-                                        $categoryArray[$i]['product'][$j]['product_image'] = $productImages;
+                                        $categoryArray[$i]['product'][$j]['product_image'] = $productImage;
                                         $categoryArray[$i]['product'][$j]['product_type'] = $productType;
                                         $categoryArray[$i]['product'][$j]['is_stock'] = $productIsStock;
 
@@ -721,22 +736,18 @@ class ApiDistributorController extends Controller
                                             $offerCount = 0;
                                         if(count($getOffersProductResult) > 0)
                                         {
-
                                             foreach($getOffersProductResult as $getCount)
                                             {
                                                 $offerCount = $getCount->offer_count;
                                             }
-
                                         }
                                         $categoryArray[$i]['product'][$j]['offers_count'] = $offerCount;
                                         $j++;
                                     }
                                 //$categoryArray[$i]['product'] = $getCategoryWiseProductsResult;
-                                }
-                            
+                                }                            
                                 $i++;
                             }   
-
                             //echo "<pre> Product array::";
                             //print_r($categoryArray);
                         }
