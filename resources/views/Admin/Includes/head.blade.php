@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="{{ asset(Config('constants.AdminDistCssPath').'font-awesome.min.css') }}">
 <!-- Ionicons -->
 <link rel="stylesheet" href="{{ asset(Config('constants.AdminDistCssPath').'ionicons.min.css') }}">
+<!-- Livvic Fonts -->
+<link rel="stylesheet" href="{{ asset(Config('constants.AdminDistCssPath').'livvic-fonts.css') }}">
 <!-- Theme style -->
 <link rel="stylesheet" href="{{ asset(Config('constants.AdminDistCssPath').'AdminLTE.min.css') }}">
 

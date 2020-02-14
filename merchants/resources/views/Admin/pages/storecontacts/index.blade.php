@@ -1,10 +1,8 @@
 @extends('Admin.layouts.default')
 @section('mystyles')
-<link rel="stylesheet" href="{{ Config('constants.adminPlugins').'/daterangepicker/daterangepicker-bs3.css' }}">
-<style type="text/css">.capitalizeText select {
-        text-transform: capitalize;
-    } 
-    select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transform: capitalize !important;}</style>
+<link rel="stylesheet" href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+<style type="text/css">.capitalizeText select {text-transform: capitalize;} 
+select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transform: capitalize !important;}</style>
 @stop
 
 @section('content')
@@ -18,34 +16,41 @@
         <li class="active">All Contacts</li>
     </ol>
 </section>
-<section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box">
-                @if(!empty(Session::get('message')))
-                <div  class="alert alert-danger" role="alert">
-                    {{ Session::get('message') }}
-                </div>
-                @endif
-                @if(!empty(Session::get('msg')))
-                <div  class="alert alert-success" role="alert">
-                    {{ Session::get('msg') }}
-                </div>
-                @endif
-                @if(!empty(Session::get('updatesuccess')))
-                <div  class="alert alert-success" role="alert">
-                    {{ Session::get('updatesuccess') }}
-                </div>
-                @endif
-                @if (Session::has('uplaodMessage'))
-                   <div class="alert alert-info">{{ Session::get('uplaodMessage') }} 
-                    @if(Session::has('filename'))
-                      <a href="{{ Config('constants.contactInvalidFilePath') . Session::get('filename') }}" download>Click Here</a> To Download Errors File
-                    @endif
-                   </div>
-                @endif
-                <div class="box-header noBorder box-tools filter-box col-md-9">
 
+<section class="main-content">
+
+    <div class="notification-column">           
+        @if(!empty(Session::get('message')))
+        <div  class="alert alert-danger" role="alert">
+            {{ Session::get('message') }}
+        </div>
+        @endif
+        @if(!empty(Session::get('msg')))
+        <div  class="alert alert-success" role="alert">
+            {{ Session::get('msg') }}
+        </div>
+        @endif
+        @if(!empty(Session::get('updatesuccess')))
+        <div  class="alert alert-success" role="alert">
+            {{ Session::get('updatesuccess') }}
+        </div>
+        @endif
+        @if (Session::has('uplaodMessage'))
+           <div class="alert alert-info">{{ Session::get('uplaodMessage') }} 
+            @if(Session::has('filename'))
+              <a href="{{ Config('constants.contactInvalidFilePath') . Session::get('filename') }}" download>Click Here</a> To Download Errors File
+            @endif
+           </div>
+        @endif
+    </div>
+
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>Filter</h1>
+        </div>
+        <div class="filter-section displayFlex">
+            <div class="col-md-9 noAll-padding displayFlex">
+                <div class="filter-left-section">
                     <form action="{{ route('admin.storecontacts.view') }}" method="get" >
                         <div class="form-group col-md-4">
                             <input type="text" name="contSearch" value="{{ !empty(Input::get('contSearch')) ? Input::get('contSearch') : '' }}" class="form-control input-sm pull-right fnt14" placeholder="Name/Email/MobileNo">
@@ -69,112 +74,125 @@
                             </div>
                         </div>
                         <div class="clearfix"></div>
-                        <div class="form-group col-md-2">
-                            <input type="submit" name="submit" class="form-control btn btn-primary" value="Search" style="margin-left:0px">
+                        <div class="form-group col-md-2 noBottom-margin">
+                            <input type="submit" name="submit" class="fullWidth noAll-margin btn btn-primary" value="Search">
                         </div>
-                        <div class="form-group col-md-2">
-                            <a  href="{{route('admin.storecontacts.view')}}" class="form-control medium btn reset-btn" style="margin-left:0px">Reset</a>
+                        <div class="form-group col-md-2 noBottom-margin">
+                            <a  href="{{route('admin.storecontacts.view')}}" class="fullWidth noAll-margin medium btn reset-btn">Reset</a>
                         </div>
                     </form>
-
-
-                </div>
-                <div class="box-header col-md-3">
-                    <a href="{!! route('admin.storecontacts.add') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN"  type="button">Add New Contact</a>
-                </div> 
-                <div class="box-header col-md-3">
-                    <button type="button" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" data-toggle="modal" data-target="#upload_contacts">Import</button> 
-                    
-                </div> 
-                <div class="box-header col-md-3">
-                    <button type="button" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" onclick="assignGroup();">Assign Group</button> 
-                </div>
-                <div class="clearfix"></div>
-                <div class="dividerhr"></div>
-                <div class="row">
-            <div class="col-md-12 marginBottom20">
-                <div class="box box-info" >
-                    <div class="box-header dashbox-header with-border bg-aqua">
-                        <h3 class="box-title dashbox-title">Groups</h3>
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                        </div>
-                    </div>
-                    <div class="box-body">
-                       @if($contacts_group && count($contacts_group)>0) 
-                       @foreach($contacts_group as $group)
-                        <div class="dropdown col-sm-2" style="margin-bottom: 20px;">
-                        <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" style="width: 100%">{{$group->group_name}}<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                          <li><a onclick="renameGroup('{{$group->group_name}}','{{$group->id}}')" class="" ui-toggle-class="">Rename</a></li>
-                          <li><a href="{{route('admin.storecontacts.exportgroupcontacts',['id'=>$group->id]) }}" class="" ui-toggle-class="">Download</a></li>
-                        </ul>
-                        </div>
-                       @endforeach
-                       @else
-                       No Group Found
-                       @endif
-                    </div>
-            
                 </div>
             </div>
-        </div><br><br>
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-striped table-hover tableVaglignMiddle">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Name</th>
-                                <th>Email Id</th>
-                                <th>Mobile</th>
-                                <th>Contact Type</th>
-                                <th>Anniversary Date</th>
-                                <th>Birth Date</th>
-                                <th>Date Created</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(count($storecontacts) >0 )
-                            @foreach($storecontacts as $stcon)
-                            <tr> 
-                                <td><input type="checkbox" name="stId[]" class="checkContId" value="{{ $stcon->id }}" /></td>
-                                <td>{{$stcon->name }}</td>
-                                <td>{{ $stcon->email }}</td>
-                                <td>{{ $stcon->mobileNo }}</td>
-                                <td>{{ $stcon->contact_type==1?'Master':'Customer' }}</td>
-                                <td>{{ $stcon->birthDate=='0000-00-00 00:00:00'? '':date("d-M-Y",strtotime($stcon->anniversary)) }}</td>
-                                <td>{{ $stcon->birthDate=='0000-00-00 00:00:00'? '':date("d-M-Y",strtotime($stcon->birthDate)) }}</td>
-                                <td>{{ date("d-M-Y",strtotime($stcon->created_at)) }}</td>
-                                <td>
-                                    <a href="{!! route('admin.storecontacts.edit',['id'=>$stcon->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o" ></i></a>
-                                    <a href="{!! route('admin.storecontacts.view',['contSearch'=> $stcon->name]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="View Order"> <i class="fa fa-eye"></i></a>
-
-                                </td>
-                            </tr>
-                            @endforeach
-                            @else
-                            <tr><td colspan=8> No Record Found.</td></tr>
-                            @endif
-                            
-                        </tbody>
-                    </table>
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
-                    <?php
-                    if (empty(Input::get('contSearch'))) {
-                        echo $storecontacts->render();
-                    }
-                    ?> 
-
+            <div class="col-md-3 noAll-padding displayFlex">
+                <div class="filter-right-section">
+                    <a href="{!! route('admin.storecontacts.add') !!}" class="btn btn-default pull-right fullWidth mobAddnewflagBTN marginBottom-md"  type="button">Add New Contact</a> 
+                    <button type="button" class="btn btn-default pull-right fullWidth mobAddnewflagBTN marginBottom-md" data-toggle="modal" data-target="#upload_contacts">Import</button>                      
+                    <button type="button" class="btn btn-default pull-right fullWidth mobAddnewflagBTN" onclick="assignGroup();">Assign Group</button> 
                 </div>
-            </div><!-- /.box -->
-        </div><!-- /.col -->
+            </div>
+        </div>
+    </div>
 
-    </div> 
+    <div class="grid-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="groupsColunmn">
+                    <div class="box">
+                        <div class="box-header dashbox-header">
+                            <h3 class="box-title dashbox-title">Groups</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="box-body">
+                           @if($contacts_group && count($contacts_group)>0) 
+                           @foreach($contacts_group as $group)
+                           <div class="col-md-2">
+                                <div class="dropdown">
+                                    <button class="btn noAll-margin btn-default dropdown-toggle fullWidth" type="button" data-toggle="dropdown">{{$group->group_name}} <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                      <li><a onclick="renameGroup('{{$group->group_name}}','{{$group->id}}')" class="" ui-toggle-class="">Rename</a></li>
+                                      <li><a href="{{route('admin.storecontacts.exportgroupcontacts',['id'=>$group->id]) }}" class="" ui-toggle-class="">Download</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                           @endforeach
+                           @else
+                           No Group Found
+                           @endif
+                        </div>            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1>All Contacts <span class="listing-counter">{{$contactsCount }}</span> </h1>
+        </div>
+        <div class="listing-section">
+            <div class="table-responsive overflowVisible no-padding">
+                <table class="table table-striped table-hover tableVaglignMiddle">
+                    <thead>
+                        <tr>
+                            <th class="text-center"></th>
+                            <th class="text-left">Name</th>
+                            <th class="text-left">Email Id</th> 
+                            <th class="text-left">Contact Type</th>
+                            <th class="text-right">Anniversary Date</th>
+                            <th class="text-right">Birth Date</th>
+                            <th class="text-right">Date Created</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(count($storecontacts) >0 )
+                        @foreach($storecontacts as $stcon)
+                        <tr> 
+                            <td class="text-center"><input type="checkbox" name="stId[]" class="checkContId" value="{{ $stcon->id }}" /></td>
+                            <td class="text-left"><span class="list-dark-color">{{$stcon->name }}</span><div class="clearfix"></div>
+                                <span class="list-light-color list-small-font">{{ $stcon->mobileNo }}</span>
+                            </td>
+                            <td class="text-left">{{ $stcon->email }}</td> 
+                            <td class="text-left">{{ $stcon->contact_type==1?'Master':'Customer' }}</td>
+                            <td class="text-right">{{ $stcon->birthDate=='0000-00-00 00:00:00'? '':date("d-M-Y",strtotime($stcon->anniversary)) }}</td>
+                            <td class="text-right">{{ $stcon->birthDate=='0000-00-00 00:00:00'? '':date("d-M-Y",strtotime($stcon->birthDate)) }}</td>
+                            <td class="text-right">{{ date("d-M-Y",strtotime($stcon->created_at)) }}</td>
+                            <td class="text-center">
+                                <div class="actionCenter">
+                                    <span><a class="btn-action-default" href="{!! route('admin.storecontacts.edit',['id'=>$stcon->id]) !!}">Edit</a></span> 
+                                    <span class="dropdown">
+                                        <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">  
+                                            <li><a href="{!! route('admin.storecontacts.view',['contSearch'=> $stcon->name]) !!}"><i class="fa fa-eye "></i> View Order</a></li>
+                                        </ul>
+                                    </span>  
+                                </div> 
+                            </td>
+                        </tr>
+                        @endforeach
+                        @else
+                        <tr><td colspan=8> No Record Found.</td></tr>
+                        @endif
+                        
+                    </tbody>
+                </table>
+            </div>
+            <?php
+            if (empty(Input::get('contSearch'))) {
+                echo $storecontacts->render();
+            }
+            ?> 
+        </div>
+    </div>
+
 </section>
+ 
 
 <!-- Upload Contacts Modal Start -->
   <div id="upload_contacts" class="modal fade" role="dialog">
@@ -297,10 +315,11 @@
 
     </div>
   </div>
+  <div class="clearfix"></div>
 @stop
 
 @section('myscripts')
-<script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
+<script src="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 function renameGroup(name,id){
     $("#groupRenameModal").modal('show');

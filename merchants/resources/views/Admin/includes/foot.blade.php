@@ -5,7 +5,9 @@
 <script src="{{ Config('constants.adminDistJsPath').'/jquery-ui.multidatespicker.js'}}"></script>
 <script src="{{ Config('constants.adminDistJsPath').'/moment.js' }}"></script>
 <script src="{{ Config('constants.adminDistJsPath').'/chosen.jquery.js' }}"></script>
-<!-- Bootstrap 3.3.5 -->
+<!-- Bootstrap 3.3.5 --><!-- 
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>  -->
 <script src="{{  Config('constants.adminBootstrapJsPath').'/bootstrap.min.js' }}"></script>
 <!-- ColorPicker --> 
 <script src="{{ Config('constants.adminDistJsPath').'/jscolor.js' }}"></script>
@@ -359,5 +361,23 @@ $(document).keypress(function (e) {
             }
         });
         getCur();
+    });
+
+// Dropdown auto Position
+    $(document).on("shown.bs.dropdown", ".dropdown", function () {
+        // calculate the required sizes, spaces
+        var $ul = $(this).children(".dropdown-menu");
+        var $button = $(this).children(".dropdown-toggle");
+        var ulOffset = $ul.offset();
+        // how much space would be left on the top if the dropdown opened that direction
+        var spaceUp = (ulOffset.top - $button.height() - $ul.height()) - $(window).scrollTop();
+        // how much space is left at the bottom
+        var spaceDown = $(window).scrollTop() + $(window).height() - (ulOffset.top + $ul.height());
+        // switch to dropup only if there is no space at the bottom AND there is space at the top, or there isn't either but it would be still better fit
+        if (spaceDown < 0 && (spaceUp >= 0 || spaceUp > spaceDown))
+          $(this).addClass("dropup");
+    }).on("hidden.bs.dropdown", ".dropdown", function() {
+        // always reset after close
+        $(this).removeClass("dropup");
     });
 </script>
