@@ -18,12 +18,12 @@
                 <div class="clearfix"></div>
                 <form action="{{ route('check_admin_user') }}" method="post" id="adminLogin">
                     <div class="form-group has-feedback">
-                        <input type="text" class="form-control" name="phone" placeholder="Mobile" id="phone">
+                        <input type="number" class="form-control" name="phone" placeholder="Mobile" id="phone">
                         <span class="glyphicon glyphicon-envelope form-control-feedback"></span><p id="phone_re_validate"></p>
                     </div>
                     <div class="form-group has-feedback" style="display:none" id="otpdiv">
-                        <input type="number" class="form-control" name="otp" placeholder="Enter OTP" required="true">
-                        <span class="glyphicon glyphicon-lock form-control-feedback" id="otperr"></span>
+                        <input type="number" class="form-control" name="otp" id="otp" placeholder="Enter OTP" required="true">
+                        <span class="glyphicon glyphicon-lock form-control-feedback" id="otper"></span><p id="otperr"></p>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 text-center">
@@ -62,6 +62,11 @@
         <script src="{{  Config('constants.adminDistJsPath').'/jquery.validate.min.js' }}"></script>
 
         <script>
+$("#phone").keyup(function(event) {
+    if (event.keyCode === 13) {
+        $("#sendotp").click();
+    }
+});
 
 $("#sendotp").click(function(){
     var phone = $("#phone").val();
@@ -88,6 +93,12 @@ $("#sendotp").click(function(){
         });
 });
 
+$("#otp").keyup(function(event) {
+    if (event.keyCode === 13) {
+        $("#loginbtn").click();
+    }
+});
+
 $("#loginbtn").click(function(){
     var otp = $("input[name=otp]").val();
     console.log(otp);
@@ -99,7 +110,7 @@ $("#loginbtn").click(function(){
                 if (response == '1') {
                     $("#adminLogin").submit();
                 } else if (response == '2') {
-                    $("#otperr").html('Incorrect OTP'); 
+                    $("#otperr").css("color", "red").html('Incorrect OTP'); 
                 }
             },
             error: function (e) {
