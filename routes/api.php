@@ -253,8 +253,8 @@ Route::group(['namespace' => 'Admin'], function () {
         });
         
         Route::group(['prefix' => 'cart'], function () {
-            Route::any('', ["as" => "admin.cart.view", "uses" => "ApiCartController@index"]);
-            Route::any('/add', ["as" => "admin.cart.add", "uses" => "ApiCartController@add"]);
+            Route::post('', ["as" => "admin.cart.view", "uses" => "ApiCartController@index"]);
+            Route::post('/add', ["as" => "admin.cart.add", "uses" => "ApiCartController@add"]);
         });
     });
 });
