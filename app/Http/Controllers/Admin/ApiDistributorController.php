@@ -198,7 +198,7 @@ class ApiDistributorController extends Controller
 
                     $storeArray[$i]['store_id'] = $getData->store_id;
                     $storeArray[$i]['store_name'] = $getData->store_name;
-                    $storeArray[$i]['companies'] = $companyArr;    
+                    $storeArray[$i]['companies'] = array_unique($companyArr);    
                     //get offress count
                     $storeId = $getData->store_id;
                     $offersIdCountResult = DB::table('offers')

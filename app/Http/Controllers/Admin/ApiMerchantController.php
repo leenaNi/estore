@@ -363,7 +363,7 @@ class ApiMerchantController extends Controller
                     foreach($companies as $company){
                         $companyArr[] = $company->name;
                     }
-                    $distributor->companies = $companyArr;
+                    $distributor->companies = array_unique($companyArr);
                 }
                 return response()->json(["status" => 1, 'msg' => '', 'data' => $hasDistributorsResult]);
             } else {
