@@ -361,9 +361,10 @@ class ApiMerchantController extends Controller
                     $companies = DB::table("products as p")->join("brand as b","b.id","=","p.brand_id")->join("company as c", "c.id","=", "b.company_id")->select("b.id","b.company_id","c.name")->where("p.store_id",$distributor->storeId)->where("p.brand_id","<>",0)->get();
                     $companyArr = [];
                     foreach($companies as $company){
-                        $companyArr[] = $company->name;
+                        if(!in_array($company->name, $companyArr))
+                            array_push($companyArr, $company->name);
                     }
-                    $distributor->companies = array_unique($companyArr);
+                    $distributor->companies = $companyArr;
                 }
                 return response()->json(["status" => 1, 'msg' => '', 'data' => $hasDistributorsResult]);
             } else {
