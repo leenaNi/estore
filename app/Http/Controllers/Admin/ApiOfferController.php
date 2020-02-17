@@ -453,47 +453,51 @@ class ApiOfferController extends Controller
                                         ->where('offers.status', 1)
                                         ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value','offers.min_order_qty','offers.min_order_amt','offers.max_discount_amt',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
                                         //echo "<pre> offers data::";
-                                        // print_r($getoffersResult);                                    
-                                        $j=0;
-                                        foreach($getoffersResult as $getOfferData)
-                                        {
-                                            $categoryArray[$i]['offers'][$j]['offer_id'] = $getOfferData->id;
-                                            $categoryArray[$i]['offers'][$j]['offer_name'] = $getOfferData->offer_name;
-                                            $categoryArray[$i]['offers'][$j]['offer_image'] = 'http://'.$getOfferData->offer_image;
-                                            $categoryArray[$i]['offers'][$j]['type'] = $getOfferData->type;
-                                            $categoryArray[$i]['offers'][$j]['offer_discount_type'] = $getOfferData->offer_discount_type;
-                                            $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
-                                            $categoryArray[$i]['offers'][$j]['offer_discount_value'] = $getOfferData->offer_discount_value;
-                                            $categoryArray[$i]['offers'][$j]['min_order_qty'] = $getOfferData->min_order_qty;
-                                            $categoryArray[$i]['offers'][$j]['min_order_amt'] = $getOfferData->min_order_amt;
-                                            $categoryArray[$i]['offers'][$j]['max_discount_amt'] = $getOfferData->max_discount_amt;
-                                            $offerPrice = 0;
-                                            $actualPrice = 0;
-                                            $offPrice = 0;
-                                            $offerProducts = DB::table('offers_products')->where('offer_id', $getOfferData->id)->where('type', 1)->get();
-                                            foreach($offerProducts as $offerProductKey => $offerProduct){
+                                        // print_r($getoffersResult);
+                                        if(count($getoffersResult) > 0) {                              
+                                            $j=0;
+                                            foreach($getoffersResult as $getOfferData)
+                                            {
+                                                $categoryArray[$i]['offers'][$j]['offer_id'] = $getOfferData->id;
+                                                $categoryArray[$i]['offers'][$j]['offer_name'] = $getOfferData->offer_name;
+                                                $categoryArray[$i]['offers'][$j]['offer_image'] = 'http://'.$getOfferData->offer_image;
+                                                $categoryArray[$i]['offers'][$j]['type'] = $getOfferData->type;
+                                                $categoryArray[$i]['offers'][$j]['offer_discount_type'] = $getOfferData->offer_discount_type;
+                                                $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
+                                                $categoryArray[$i]['offers'][$j]['offer_discount_value'] = $getOfferData->offer_discount_value;
+                                                $categoryArray[$i]['offers'][$j]['min_order_qty'] = $getOfferData->min_order_qty;
+                                                $categoryArray[$i]['offers'][$j]['min_order_amt'] = $getOfferData->min_order_amt;
+                                                $categoryArray[$i]['offers'][$j]['max_discount_amt'] = $getOfferData->max_discount_amt;
+                                                $offerPrice = 0;
+                                                $actualPrice = 0;
                                                 $offPrice = 0;
-                                                $product = DB::table('products')->where('id', $offerProduct->prod_id)->first(['price']);
-                                                if($product != null){
-                                                $offPrice = ($offerProduct->qty * $product->price);
-                                                $actualPrice+=$offPrice;
-                                                $offerPrice+=$offPrice;
+                                                $offerProducts = DB::table('offers_products')->where('offer_id', $getOfferData->id)->where('type', 1)->get();
+                                                foreach($offerProducts as $offerProductKey => $offerProduct){
+                                                    $offPrice = 0;
+                                                    $product = DB::table('products')->where('id', $offerProduct->prod_id)->first(['price']);
+                                                    if($product != null){
+                                                    $offPrice = ($offerProduct->qty * $product->price);
+                                                    $actualPrice+=$offPrice;
+                                                    $offerPrice+=$offPrice;
+                                                    }
                                                 }
-                                            }
-                                            if($getOfferData->type == 1) {
-                                                if($getOfferData->offer_discount_type==1) { //For percent off
-                                                    $offerPrice = $offPrice - ($offPrice * ($getOfferData->offer_discount_value/100));
-                                                } else { //For fixed off
-                                                    $offerPrice = $offPrice - $getOfferData->offer_discount_value;
-                                                }
-                                            } else {
+                                                if($getOfferData->type == 1) {
+                                                    if($getOfferData->offer_discount_type==1) { //For percent off
+                                                        $offerPrice = $offPrice - ($offPrice * ($getOfferData->offer_discount_value/100));
+                                                    } else { //For fixed off
+                                                        $offerPrice = $offPrice - $getOfferData->offer_discount_value;
+                                                    }
+                                                } else {
 
+                                                }
+                                                $getOfferData->offerPrice = $offerPrice;
+                                                $getOfferData->actualPrice = $actualPrice;                                        
+                                                $categoryArray[$i]['offers'][$j]['offerPrice'] = $offerPrice;                                        
+                                                $categoryArray[$i]['offers'][$j]['actualPrice'] = $actualPrice;
+                                                $j++;
                                             }
-                                            $getOfferData->offerPrice = $offerPrice;
-                                            $getOfferData->actualPrice = $actualPrice;                                        
-                                            $categoryArray[$i]['offers'][$j]['offerPrice'] = $offerPrice;                                        
-                                            $categoryArray[$i]['offers'][$j]['actualPrice'] = $actualPrice;
-                                            $j++;
+                                        } else {
+                                            $categoryArray[$i]['offers'] = [];
                                         }
                                         
                                     }//foreach ends here                                
