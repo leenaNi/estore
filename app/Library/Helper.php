@@ -15,6 +15,7 @@ use Mail;
 use Session;
 use Validator;
 use View;
+use Cart;
 
 class Helper
 {
@@ -477,57 +478,91 @@ class Helper
         return $cart;
     }
 
-    public static function calAmtWithTax($cart, $taxStatus)
-    {
+    // public static function calAmtWithTax($cart, $taxStatus)
+    // {
+    //     $calTax = 0;
+    //     $tax_amt = 0;
+    //     $orderAmt = 0;
+    //     $all_coupon_amount = 0;
+    //     $total = 0;
+
+    //     foreach ($cart as $k => $c) {
+    //         $getdisc = ($c->options->disc + $c->options->wallet_disc + $c->options->voucher_disc + $c->options->referral_disc + $c->options->user_disc);
+
+    //         $taxeble_amt = $c->subtotal - $getdisc;
+    //         $qty = $c->qty;
+    //         $total += round(($c->subtotal), 2);
+    //         $orderAmt += round(($c->subtotal), 2);
+    //         //            if($c->options->tax_type == 2){
+    //         //                if($c->subtotal > ($c->options->tax_amt+$getdisc)){
+    //         //                  $taxeble_amt=$c->price+$c->options->tax_amt-$getdisc;
+    //         //                  $orderAmt += ($c->subtotal-$c->options->tax_amt);
+    //         //                }
+    //         //            }else{
+    //         //             $orderAmt += $c->subtotal;
+    //         //            }
+    //         $rate = $c->options->taxes / 100;
+    //         if ($taxStatus == 1) {
+
+    //             $tax_amt = round(($taxeble_amt / ($rate + 1)) * $rate, 2);
+    //             // $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
+
+    //             if ($c->options->tax_type == 2) {
+    //                 //$taxeble1 = $taxeble - $getdisc;
+    //                 $taxeble = ($taxeble_amt / ($rate + 1));
+
+    //                 $tax_amt = round($taxeble * $rate * $qty, 2);
+    //                 $calTax = $calTax + $tax_amt;
+    //             }
+    //         }
+
+    //         $all_coupon_amount += $getdisc;
+    //         $c->options->tax_amt = $tax_amt;
+    //     }
+
+    //     $subtotal = $orderAmt;
+    //     $data = [];
+
+    //     // $all_coupon_amount = Session::get('couponUsedAmt') + Session::get('checkbackUsedAmt') + Session::get('voucherAmount') + Session::get('referalCodeAmt') + Session::get('lolyatyDis') + Session::get('discAmt');
+    //     $data['cart'] = $cart;
+    //     $data['sub_total'] = round($subtotal, 2);
+
+    //     $data['total'] = round($total - $all_coupon_amount, 2);
+
+    //     return $data;
+    // }
+
+    public static function calAmtWithTax() {
+        $taxStatus = GeneralSetting::where('url_key', 'tax')->first()->status;
+        $cart = Cart::instance('shopping')->content();
         $calTax = 0;
         $tax_amt = 0;
         $orderAmt = 0;
-        $all_coupon_amount = 0;
-        $total = 0;
 
         foreach ($cart as $k => $c) {
             $getdisc = ($c->options->disc + $c->options->wallet_disc + $c->options->voucher_disc + $c->options->referral_disc + $c->options->user_disc);
-
             $taxeble_amt = $c->subtotal - $getdisc;
-            $qty = $c->qty;
-            $total += round(($c->subtotal), 2);
-            $orderAmt += round(($c->subtotal), 2);
-//            if($c->options->tax_type == 2){
-            //                if($c->subtotal > ($c->options->tax_amt+$getdisc)){
-            //                  $taxeble_amt=$c->price+$c->options->tax_amt-$getdisc;
-            //                  $orderAmt += ($c->subtotal-$c->options->tax_amt);
-            //                }
-            //            }else{
-            //             $orderAmt += $c->subtotal;
-            //            }
-            $rate = $c->options->taxes / 100;
+            $orderAmt += $c->subtotal;
             if ($taxStatus == 1) {
-
-                $tax_amt = round(($taxeble_amt / ($rate + 1)) * $rate, 2);
-                // $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
+                $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
 
                 if ($c->options->tax_type == 2) {
-                    //$taxeble1 = $taxeble - $getdisc;
-                    $taxeble = ($taxeble_amt / ($rate + 1));
-
-                    $tax_amt = round($taxeble * $rate * $qty, 2);
                     $calTax = $calTax + $tax_amt;
                 }
             }
 
-            $all_coupon_amount += $getdisc;
-            $c->options->tax_amt = $tax_amt;
+            Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);
         }
 
-        $subtotal = $orderAmt;
+        $cart_total = $orderAmt;
         $data = [];
 
-        // $all_coupon_amount = Session::get('couponUsedAmt') + Session::get('checkbackUsedAmt') + Session::get('voucherAmount') + Session::get('referalCodeAmt') + Session::get('lolyatyDis') + Session::get('discAmt');
+        $all_coupon_amount = Session::get('couponUsedAmt') + Session::get('checkbackUsedAmt') + Session::get('voucherAmount') + Session::get('referalCodeAmt') + Session::get('lolyatyDis') + Session::get('discAmt');
+
+        $subtotal = $calTax + $cart_total;
         $data['cart'] = $cart;
-        $data['sub_total'] = round($subtotal, 2);
-
-        $data['total'] = round($total - $all_coupon_amount, 2);
-
+        $data['sub_total'] = $subtotal;
+        $data['total'] = $subtotal - $all_coupon_amount;
         return $data;
     }
 
@@ -600,4 +635,25 @@ class Helper
         return $indentityCode;
 
     } // End createUniqueIdentityCode
+
+    public static function searchExistingCart($prod_id) {
+        $cartContent = Cart::instance("shopping")->content()->toArray();
+        $isExist = 0;
+        foreach ($cartContent as $key => $cartItem) {
+            // return($cartItem);
+            if (array_key_exists("sub_prod", $cartItem['options'])) {
+                $isExist = ($cartItem['options']['sub_prod'] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                }
+            } else {
+                $isExist = ($cartItem["id"] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                }
+            }
+        }
+        return ["isExist" => $isExist];
+    }
+
 }

@@ -1,22 +1,41 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Library\Helper;
+use App\Models\Product;
+use Cart;
+use DB;
+use Input;
+use Session;
+use App\Models\User;
 
 class ApiCartController extends Controller
 {
     //
+    public function index()
+    {
+        $data['cart']['data'] = Cart::instance("shopping")->content();
+        $data["ccnt"] = Cart::instance("shopping")->count();
+        $data['status'] = "success";
+        return $data;
+    }
     public function add()
     {
         $data = [];
         $msg = '';
         $prod_id = filter_var(Input::get('prod_id'), FILTER_SANITIZE_STRING); //Input::get("prod_id");
-        $prod_type = filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_id");
-        // $product = DB::table("products")->where("id", $prod_id)->select("id", "prod_type")->first();
-        // $prod_type = $product->prod_type; //filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_type");
+        // $prod_type = filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_id");
+        $product = DB::table("products")->where("id", $prod_id)->select("id", "prod_type")->first();
+        $prod_type = $product->prod_type; //filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_type");
         $sub_prod = filter_var(Input::get('sub_prod'), FILTER_SANITIZE_STRING);
         $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
+        $user = User::where('id', Session::get('authUserId'))->first();
+        if($user->cart != ''){
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->add($cartData);
+        }
         switch ($prod_type) {
             case 1:
                 $msg = $this->simpleProduct($prod_id, $quantity);
@@ -32,33 +51,32 @@ class ApiCartController extends Controller
                 break;
             default:
         }
-        Helper::calAmtWithTax();
+        // Helper::calAmtWithTax();
         //if (preg_match("/Specified/", $msg)) {
+        // return ['msg' => $msg];
         if ($msg == 1) {
-            $data['cart']['data'] = null;
+            $data['data']['cart'] = null;
             $data['status'] = "error";
             $data['msg'] = $msg;
         } else {
             //return $msg;
-            $data['cart']['data'] = Cart::instance("shopping")->content();
-            $data["ccnt"] = Cart::instance("shopping")->count();
+            $cartData = Cart::instance("shopping")->content();            
+            $user->cart = json_encode($cartData);
+            $user->update();
+            $data['data']['cart'] = $cartData;
+            $data["data"]['cartCount'] = Cart::instance("shopping")->count();
             $data['status'] = "success";
             $data['msg'] = "";
         }
+        return $data;
     }
 
     public function simpleProduct($prod_id, $quantity)
     {
-        $jsonString = Helper::getSettings();
-        if (Session::get('distributor_store_id')) {
-            $product = DistributorProduct::find($prod_id);
-            $store_id = Session::get('distributor_store_id');
-            $prefix = Session::get('distributor_store_prefix');
-        } else {
-            $product = Product::find($prod_id);
-            $store_id = $jsonString['store_id'];
-            $prefix = $jsonString['prefix'];
-        }
+        $product = Product::find($prod_id);
+        $store = DB::table('stores')->where('id', $product->store_id)->first();
+        $store_id = $store->id;
+        $prefix = $store->prefix;
         $quantity = (Input::get('quantity')) ? Input::get('quantity') : $quantity;
 
         $cats = [];
@@ -74,7 +92,7 @@ class ApiCartController extends Controller
         $pname = $product->product;
         $prod_type = $product->prod_type;
         $images = @$product->catalogimgs()->where("image_type", "=", 1)->first()->filename;
-        $imagPath = Config("constants.productImgPath") . '/' . $images;
+        $imagPath = 'http://' . $store->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/products/' . $images;
         $type = $product->is_tax;
         $sum = 0;
 
@@ -86,42 +104,43 @@ class ApiCartController extends Controller
             $tax = $product->selling_price * $quantity * $sum / 100;
             $tax_amt = round($tax, 2);
         }
-        if (Session::get('distributor_store_id')) {
-            $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
-        } else {
-            $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        }
+        $is_stockable = DB::table('general_setting')->where('store_id', $product->store_id)->where('url_key', 'stock')->first();
+
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
-                Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
+                $searchExist = Helper::searchExistingCart($prod_id);
+                if (!$searchExist["isExist"]) {
+                    Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                     "options" => ["image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
                         'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                         "prod_type" => $prod_type,
                         "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
+                } else {
+                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity)]);
+                }
             } else {
                 return 1;
             }
         } else {
+            $searchExist = Helper::searchExistingCart($prod_id);
+            if (!$searchExist["isExist"]) {
             Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                 "options" => ["image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
                     'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                     "prod_type" => $prod_type,
                     "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
+            } else {
+                Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity)]);
+            }
         }
     }
 
     public function downloadProduct($prod_id, $quantity)
     {
-        $jsonString = Helper::getSettings();
-        if (Session::get('distributor_store_id')) {
-            $product = DistributorProduct::find($prod_id);
-            $store_id = Session::get('distributor_store_id');
-            $prefix = Session::get('distributor_store_prefix');
-        } else {
-            $product = Product::find($prod_id);
-            $store_id = $jsonString['store_id'];
-            $prefix = $jsonString['prefix'];
-        }
+        $product = Product::find($prod_id);
+        $store = DB::table('stores')->where('id', $product->store_id)->first();
+        $store_id = $store->id;
+        $prefix = $store->prefix;
         $quantity = (Input::get('quantity')) ? Input::get('quantity') : $quantity;
         $cats = [];
         foreach ($product->categories as $cat) {
@@ -143,11 +162,7 @@ class ApiCartController extends Controller
             $tax = $product->selling_price * $quantity * $sum / 100;
             $tax_amt = round($tax, 2);
         }
-        if (Session::get('distributor_store_id')) {
-            $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
-        } else {
-            $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        }
+        $is_stockable = DB::table('general_setting')->where('store_id', $product->store_id)->where('url_key', 'stock')->first();
         if ($is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                 Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price, "options" => ["image" => $images, "sub_prod" => $prod_id, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix, "is_cod" => $product->is_cod, 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock, "eNoOfDaysAllowed" => $eNoOfDaysAllowed, "prod_type" => $prod_type, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
@@ -161,17 +176,10 @@ class ApiCartController extends Controller
 
     public function comboProduct($prod_id, $quantity, $sub_prod)
     {
-        $jsonString = Helper::getSettings();
-        // echo $prod_id.'======='.Session::get('distributor_store_id');
-        if (Session::get('distributor_store_id')) {
-            $product = DistributorProduct::find($prod_id);
-            $store_id = Session::get('distributor_store_id');
-            $prefix = Session::get('distributor_store_prefix');
-        } else {
-            $product = Product::find($prod_id);
-            $store_id = $jsonString['store_id'];
-            $prefix = $jsonString['prefix'];
-        }
+        $product = Product::find($prod_id);
+        $store = DB::table('stores')->where('id', $product->store_id)->first();
+        $store_id = $store->id;
+        $prefix = $store->prefix;
         $cats = [];
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
@@ -199,11 +207,7 @@ class ApiCartController extends Controller
         foreach ($product->comboproducts as $cmb) {
             //print_r($cmb);
             $prod["name"] = $cmb->product;
-            if (Session::get('distributor_store_id')) {
-                $prod["img"] = DistributorProduct::find($cmb->id)->catalogimgs()->first()->filename;
-            } else {
-                $prod["img"] = Product::find($cmb->id)->catalogimgs()->first()->filename;
-            }
+            $prod["img"] = ''; //Product::find($cmb->id)->catalogimgs()->first()->filename;
             //$combos[] = $prod;
             $combos[$cmb->id]["name"] = $cmb->product;
             $combos[$cmb->id]["img"] = @$cmb->catalogimgs()->first()->filename;
@@ -222,11 +226,7 @@ class ApiCartController extends Controller
             // }
             $combos[$cmb->id]["sub_prod"] = $sub_prod;
         }
-        if (Session::get('distributor_store_id')) {
-            $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
-        } else {
-            $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        }
+        $is_stockable = DB::table('general_setting')->where('store_id', $product->store_id)->where('url_key', 'stock')->first();
         $image = (!empty($images)) ? $images : "default.jpg";
         if ($is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock" || $product->is_crowd_funded != 0) {
@@ -241,19 +241,11 @@ class ApiCartController extends Controller
 
     public function configProduct($prod_id, $quantity, $sub_prod)
     {
-        $jsonString = Helper::getSettings();
-        // $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        if (Session::get('distributor_store_id')) {
-            $product = DistributorProduct::find($prod_id);
-            $store_id = Session::get('distributor_store_id');
-            $prefix = Session::get('distributor_store_prefix');
-            $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
-        } else {
-            $product = Product::find($prod_id);
-            $store_id = $jsonString['store_id'];
-            $prefix = $jsonString['prefix'];
-            $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        }
+        $product = Product::find($prod_id);
+        $store = DB::table('stores')->where('id', $product->store_id)->first();
+        $store_id = $store->id;
+        $prefix = $store->prefix;
+        $is_stockable = GeneralSetting::where('url_key', 'stock')->where('store_id', $product->store_id)->first();
         $cats = [];
 
         foreach ($product->categories as $cat) {
@@ -262,12 +254,8 @@ class ApiCartController extends Controller
         $pname = $product->product;
         $prod_type = $product->prod_type;
         $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
-        $imagPath = Config("constants.productImgPath") . '/' . $images;
-        if (Session::get('distributor_store_id')) {
-            $subProd = DistributorProduct::where("id", "=", $sub_prod)->first();
-        } else {
-            $subProd = Product::where("id", "=", $sub_prod)->first();
-        }
+        $imagPath = 'http://' . $store->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/products/' . $images;
+        $subProd = DB::table('product')->where("id", "=", $sub_prod)->first();
         if (($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)) {
             $price = $product->price;
         } else {
