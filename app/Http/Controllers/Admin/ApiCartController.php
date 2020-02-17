@@ -16,9 +16,16 @@ class ApiCartController extends Controller
     //
     public function index()
     {
-        $data['cart']['data'] = Cart::instance("shopping")->content();
+        $user = User::where('id', Session::get('authUserId'))->first();
+        if($user->cart != ''){
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->add($cartData);
+        }
+        $cartData = Cart::instance("shopping")->content(); 
+        $data['cart']['data'] = $cartData;
         $data["ccnt"] = Cart::instance("shopping")->count();
         $data['status'] = "success";
+        $data['msg'] = "";
         return $data;
     }
     public function add()
