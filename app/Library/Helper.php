@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\CategoryMaster;
 use App\Models\Currency;
 use App\Models\Settings;
+use App\Models\Store;
 use DB;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
