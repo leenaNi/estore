@@ -656,4 +656,15 @@ class Helper
         return ["isExist" => $isExist];
     }
 
+    public static function checkStoreExists($storeId) {
+        $cartContent = Cart::instance("shopping")->content()->toArray();
+        $isExist = 0;
+        foreach ($cartContent as $key => $cartItem) {
+            if(!$cartItem['options']['store_id'] == $storeId){
+                return $isExist = 1;
+            }
+        }
+        return $isExist;
+    }
+
 }
