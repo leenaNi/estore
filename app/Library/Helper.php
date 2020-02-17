@@ -662,7 +662,7 @@ class Helper
         $isExist = 0;
         foreach ($cartContent as $key => $cartItem) {
             if($cartItem['options']['store_id'] != $storeId) {
-                $existingStore = Store::where('id', $storeId)->first(['id', 'store_name']);
+                $existingStore = Store::where('id', $cartItem['options']['store_id'])->first(['id', 'store_name']);
                 return ['isExist' => 1, 'existingStore' => $existingStore];
             }
         }
