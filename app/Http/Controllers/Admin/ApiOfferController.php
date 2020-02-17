@@ -510,7 +510,7 @@ class ApiOfferController extends Controller
                     }
                     else
                     {
-                        return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+                        return response()->json(["status" => 1, 'msg' => 'Records not found']);
                     }
                 }
                 else
@@ -520,7 +520,7 @@ class ApiOfferController extends Controller
             }
             else
             {
-                return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+                return response()->json(["status" => 1, 'msg' => 'Records not found']);
             }
         }
         else
