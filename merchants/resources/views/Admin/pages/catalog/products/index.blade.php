@@ -304,7 +304,7 @@
                 @endif
                 <td class="text-center">
                 <div class="actionCenter">
-                                <span><a class="btn-action-default" href="{!! route('admin.products.edit',['id'=>$product->id]) !!}">Edit</a></span> 
+                                <span><a class="btn-action-default" href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}">Edit</a></span> 
                                 <span class="dropdown">
                                     <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>

@@ -9,6 +9,7 @@ use Cart;
 use DB;
 use Input;
 use Session;
+use App\Models\User;
 
 class ApiCartController extends Controller
 {
@@ -30,6 +31,11 @@ class ApiCartController extends Controller
         $prod_type = $product->prod_type; //filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_type");
         $sub_prod = filter_var(Input::get('sub_prod'), FILTER_SANITIZE_STRING);
         $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
+        $user = User::where('id', Session::get('authUserId'))->first();
+        if($user->cart != ''){
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->add($cartData);
+        }
         switch ($prod_type) {
             case 1:
                 $msg = $this->simpleProduct($prod_id, $quantity);
@@ -54,7 +60,10 @@ class ApiCartController extends Controller
             $data['msg'] = $msg;
         } else {
             //return $msg;
-            $data['data']['cart'] = Cart::instance("shopping")->content();
+            $cartData = Cart::instance("shopping")->content();            
+            $user->cart = json_encode($cartData);
+            $user->update();
+            $data['data']['cart'] = $cartData;
             $data["data"]['cartCount'] = Cart::instance("shopping")->count();
             $data['status'] = "success";
             $data['msg'] = "";
@@ -99,20 +108,30 @@ class ApiCartController extends Controller
 
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
-                Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
+                $searchExist = Helper::searchExistingCart($prod_id);
+                if (!$searchExist["isExist"]) {
+                    Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                     "options" => ["image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
                         'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                         "prod_type" => $prod_type,
                         "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
+                } else {
+                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity)]);
+                }
             } else {
                 return 1;
             }
         } else {
+            $searchExist = Helper::searchExistingCart($prod_id);
+            if (!$searchExist["isExist"]) {
             Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                 "options" => ["image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
                     'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                     "prod_type" => $prod_type,
                     "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
+            } else {
+                Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity)]);
+            }
         }
     }
 
