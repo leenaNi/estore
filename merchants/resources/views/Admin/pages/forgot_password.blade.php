@@ -37,7 +37,7 @@
               <br>
               <form class="nobottommargin forgot-password" action="#" method="post" id="forgot-pwd-admin">
                 <div class="form-group has-feedback">
-                  <input type="text"  id="useremail" name="useremail" placeholder="Enter your registered Mobile/Email" class="form-control"> 
+                  <input type="text"  id="useremail" name="useremail" placeholder="Enter your Registered Mobile/Email" class="form-control"> 
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span><p id="useremail_login_validate" style="color:red;"></p>
                 </div>
                 <div class="col_full nobottommargin text-center">

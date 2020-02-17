@@ -116,7 +116,7 @@
     </div>
 </section>
 
-
+<div class="clearfix"></div>
 @stop
 @section('myscripts')
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
