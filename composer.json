@@ -12,7 +12,9 @@
         "cviebrock/eloquent-sluggable": "4.1",
         "guzzlehttp/guzzle": "^6.2",
         "zizaco/entrust": "5.2.x-dev",
-        "tymon/jwt-auth": "0.5.*"
+        "tymon/jwt-auth": "0.5.*",
+        "gloudemans/shoppingcart": "^2.6",
+        "rtconner/laravel-tagging": "~3.2"
      
     },
     "require-dev": {

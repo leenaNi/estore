@@ -251,10 +251,10 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/past-orders-details', ["as" => "admin.distributor.pastOrderDetails", "uses" => "ApiDistributorController@getPastOrderDetails"]);
 
         });
-
+        
         Route::group(['prefix' => 'cart'], function () {
+            Route::any('', ["as" => "admin.cart.view", "uses" => "ApiCartController@index"]);
             Route::any('/add', ["as" => "admin.cart.add", "uses" => "ApiCartController@add"]);
         });
-
     });
 });
