@@ -433,7 +433,6 @@ var prodoffer = 0;
     }
 
     function setValuesToInpt(distributor_id, storename, code, firstname, phone_no, email, user_id) {
-        //console.log(distributor_id, storename, code, firstname, phone_no, email, user_id);
         $("input[name='s_phone']").val(storename);
         $("input[name='distributor_id']").val(distributor_id);
         $("input[name='name']").val(firstname);
@@ -464,7 +463,6 @@ var prodoffer = 0;
     }
 
     function getSubprods(prodid, ele) {
-        console.log('offer_id '+prodoffer);
         var rows = $(".newRow").find('tr');
         var selected_prod = [];
         jQuery.each(rows, function (i, item) {
@@ -495,7 +493,7 @@ var prodoffer = 0;
                     });
                 });
                 subProdOpt += '</select>';
-                //console.log(prodSel.parent().parent().find('.subprod'));
+               
                 prodSel.parent().parent().find('.subprod').html(subProdOpt);
             } else {
                 qty = prodSel.parent().parent().find('.qty').val();
@@ -744,9 +742,9 @@ var prodoffer = 0;
                 var prod_id = $(this).find('.prodSearch').attr('data-prdid');
                 var subprodid = $(this).find('.subprodid').val(); //  []; //
                 // var subProdEle = $(this).find('.subprodid');
-                // console.log(subProdEle);
+               
                 // $.each(subProdEle, (key, ele) => {
-                //     console.log(ele, key);
+               
                 //     subprodid.push(ele.val());
                 // });
                 var qty = $(this).find('.qty').val();
@@ -821,6 +819,7 @@ var prodoffer = 0;
             cache: false,
             success: function (price) {
                 qtty.parents("td").next().find('.prodPrice').text(price.price);
+                qtty.parents("td").next().find('.prodDiscount').text(price.offer);
                 <?php if ($feature['tax'] == 1) {?>
                 qtty.parents("td").next().next().find('.taxAmt').text((price.tax).toFixed(2));
                 <?php }?>
@@ -1018,6 +1017,7 @@ var prodoffer = 0;
 
     function priceTaxUpdate(cart) {
         $.each(cart, function (key, value) {
+            
             var id = value.id;
             var price = value.subtotal;
             if (value.options.tax_type == 2) {

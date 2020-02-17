@@ -190,9 +190,15 @@ class ApiDistributorController extends Controller
                 $i=0;
                 foreach($productResult as $getData)
                 {
+                    $companies = DB::table("products as p")->join("brand as b","b.id","=","p.brand_id")->join("company as c", "c.id","=", "b.company_id")->select("b.id","b.company_id","c.name")->where("p.store_id",$getData->store_id)->where("p.brand_id","<>",0)->get();
+                    $companyArr = [];
+                    foreach($companies as $company){
+                        $companyArr[] = $company->name;
+                    }
+
                     $storeArray[$i]['store_id'] = $getData->store_id;
                     $storeArray[$i]['store_name'] = $getData->store_name;
-
+                    $storeArray[$i]['companies'] = $companyArr;    
                     //get offress count
                     $storeId = $getData->store_id;
                     $offersIdCountResult = DB::table('offers')

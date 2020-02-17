@@ -1984,8 +1984,8 @@ class DistributorOrdersController extends Controller
             }
             $total['offer'] = number_format((float)$discount, 2, '.', '').' ('.$offerDetails->offer_name.')';
         }
-        // $total['price'] = number_format((float)$sub_total-$discount* Session::get('currency_val'), 2, '.', '');
-        $total['price'] = number_format((float)$sub_total* Session::get('currency_val'), 2, '.', '');
+        $totprice = $sub_total - $discount;
+        $total['price'] = number_format((float)$totprice * Session::get('currency_val'), 2, '.', '');
 
         $cart_amt = Helper::calAmtWithTax();
 
