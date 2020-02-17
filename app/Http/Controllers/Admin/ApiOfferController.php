@@ -67,10 +67,12 @@ class ApiOfferController extends Controller
                 {
                     $offerIds[] = $offerIdsData->offer_id;
                 }
+                $offerImagePath = $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/';
                 //Get offer id wise Offers Data
-                $productWiseOffersResult = DB::table('offers')
+                $productWiseOffersResult = DB::table('offers as o')
+                    ->join('stores as s', 's.id', '=', 'o.store_id')
                     ->whereIn('id', $offerIds)
-                    ->get();
+                    ->get(['o.id','store_id','offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]);
                 //dd(DB::getQueryLog()); // Show results of log
                 if(count($productWiseOffersResult) > 0)
                 {
@@ -314,17 +316,19 @@ class ApiOfferController extends Controller
                                 
                                 foreach($getHasCategoryResult as $getProdData)
                                 {
+                                    $offerImagePath = $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/';
                                     $productId = $getProdData->prod_id;
                                     //echo "<br> prod id::".$productId;
                                     //get category product wise offers
                                     $getoffersResult = DB::table('offers_products')
                                     ->join('offers', 'offers_products.offer_id', '=', 'offers.id')
+                                    ->join('stores', 'stores.id', '=', 'offers.store_id')
                                     ->where('offers_products.prod_id',$productId)
                                     ->where('offers_products.type', 1)
                                     ->where('offers.status', 1)
-                                    ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value','offers.min_order_qty','offers.min_order_amt','offers.max_discount_amt','offers.offer_image']);
+                                    ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value','offers.min_order_qty','offers.min_order_amt','offers.max_discount_amt',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
                                     //echo "<pre> offers data::";
-                                    //print_r($getoffersResult);
+                                    print_r($getoffersResult);                                    
                                     $j=0;
                                     foreach($getoffersResult as $getOfferData)
                                     {
