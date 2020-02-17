@@ -225,10 +225,11 @@ class ApiOfferController extends Controller
                         //echo "<pre>";
                         //print_r($getCategoriesResult);
                         //exit;
-                        $categoryArray = array();
+                        $categoryArray = [];
+                        array_push($categoryArray, ['category_id' => 0, 'category_name' => 'All', 'offers' => $getAllOffersResult]);
                         if(count($getCategoriesResult) > 0)
                         {
-                            $i=0;
+                            $i=1;
                             foreach($getCategoriesResult as $getCategoryData)
                             {
                                 $categoryId = $getCategoryData->id;
@@ -322,10 +323,12 @@ class ApiOfferController extends Controller
                             }//category foreach ends here
                             
                             //echo "<pre>category wise offers::";
-                        //print_r($categoryArray);
-                            return response()->json(["status" => 1, 'msg' => '', 'data' => ['all_offers' => $getAllOffersResult, 'categorywise_offers' =>$categoryArray]]);
+                            //print_r($categoryArray);
+                            // return response()->json(["status" => 1, 'msg' => '', 'data' => ['all_offers' => $getAllOffersResult, 'categorywise_offers' =>$categoryArray]]);
+                            return response()->json(["status" => 1, 'msg' => '', 'data' => $categoryArray]);
                         } else {
-                            return response()->json(["status" => 1, 'msg' => '', 'data' => ['all_offers' => $getAllOffersResult, 'categorywise_offers' => $categoryArray]]);
+                            // return response()->json(["status" => 1, 'msg' => '', 'data' => ['all_offers' => $getAllOffersResult, 'categorywise_offers' => $categoryArray]]);
+                            return response()->json(["status" => 1, 'msg' => '', 'data' => $categoryArray]);
                         }
                     }
                     else
