@@ -51,7 +51,7 @@ class ApiCartController extends Controller
                     Cart::instance('shopping')->add($cartData);
                 }
             }
-            $checkStoreExists = Helper::checkStore($product->store_id);
+            $checkStoreExists = Helper::checkStoreExists($product->store_id);
             if ($checkStoreExists['isExist'] ) {
                 $existingStore = $checkStoreExists['existingStore'];
                 $newStore = Store::where('id', $storeId)->first(['id', 'store_name']);
