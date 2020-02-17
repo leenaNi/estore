@@ -53,9 +53,9 @@ class ApiCartController extends Controller
                 }
             }
             $checkStoreExists = Helper::checkStoreExists($product->store_id);
-            if ($checkStoreExists['isExist'] ) {
+            if ($checkStoreExists['isExist']) {
                 $existingStore = $checkStoreExists['existingStore'];
-                $newStore = Store::where('id', $storeId)->first(['id', 'store_name']);
+                $newStore = Store::where('id', $product->store_id)->first(['id', 'store_name']);
                 $data['status'] = "1";
                 $data['msg'] = 'Your cart contains items from '.$existingStore->store_name.'. Do you want to discard the selection and add items from '.$newStore->store_name.'?';
                 return $data;
