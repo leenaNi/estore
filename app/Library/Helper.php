@@ -660,11 +660,12 @@ class Helper
         $cartContent = Cart::instance("shopping")->content()->toArray();
         $isExist = 0;
         foreach ($cartContent as $key => $cartItem) {
-            if(!$cartItem['options']['store_id'] == $storeId){
-                return $isExist = 1;
+            if($cartItem['options']['store_id'] != $storeId) {
+                $existingStore = Store::where('id', $storeId)->first(['id', 'store_name']);
+                return ['isExist' => 1, 'existingStore' => $existingStore];
             }
         }
-        return $isExist;
+        return ['isExist' => $isExist];
     }
 
 }

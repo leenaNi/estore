@@ -29,7 +29,11 @@ class ApiOfferController extends Controller
             {
                 $storeIdArray[] = $storeIdsData->id;
             }
-            $offerResult = DB::table('offers as o')->whereIn('store_id',$storeIdArray)->where('status',1)->get(['id','store_id','offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date']);
+            $offerImagePath = $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/';
+            $offerResult = DB::table('offers as o')
+            ->join('stores as s', 's.id', '=', 'o.store_id')
+            ->whereIn('store_id',$storeIdArray)
+            ->where('o.status',1)->get(['o.id','store_id','offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]);
             if(count($offerResult) > 0)
             {
                 return response()->json(["status" => 1, 'msg' => '', 'data' => $offerResult]);
@@ -41,7 +45,7 @@ class ApiOfferController extends Controller
         }   
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }  
     } // End getDistributorOffer
     
@@ -85,7 +89,7 @@ class ApiOfferController extends Controller
         }   
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }  
     }//getProductWiseOffer function ends here
 
@@ -222,7 +226,7 @@ class ApiOfferController extends Controller
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
     }
 
@@ -324,7 +328,7 @@ class ApiOfferController extends Controller
                                     {
                                         $categoryArray[$i]['offers'][$j]['offer_id'] = $getOfferData->id;
                                         $categoryArray[$i]['offers'][$j]['offer_name'] = $getOfferData->offer_name;
-                                        $categoryArray[$i]['offers'][$j]['offer_image'] = $getOfferData->offer_image;
+                                        $categoryArray[$i]['offers'][$j]['offer_image'] = 'http://'.$getOfferData->offer_image;
                                         $categoryArray[$i]['offers'][$j]['type'] = $getOfferData->type;
                                         $categoryArray[$i]['offers'][$j]['offer_discount_type'] = $getOfferData->offer_discount_type;
                                         $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
@@ -351,18 +355,18 @@ class ApiOfferController extends Controller
                 }
                 else
                 {
-                    return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+                    return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
                 }
 
             }
             else
             {
-                return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+                return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
             }
         }
         else
         {
-            return response()->json(["status" => 0, 'msg' => 'Mendatory fields are missing.']);
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
 
     }
