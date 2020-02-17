@@ -41,25 +41,26 @@ class ApiCartController extends Controller
             $prod_type = $product->prod_type; //filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_type");
             $sub_prod = filter_var(Input::get('sub_prod'), FILTER_SANITIZE_STRING);
             $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
-            $forceAdd = Input::get('force_add');
+            $forceAdd = Input::get('force_add');            
+            $user = User::where('id', Session::get('authUserId'))->first();
             //Check if forcefully add item from other distributor
-            if(Input::get('force_add') && Input::get('force_add') == 1){
+            if(Input::get('force_add') && Input::get('force_add') == 1) {
                 Cart::instance('shopping')->destroy();
             } else {
-                $user = User::where('id', Session::get('authUserId'))->first();
                 if ($user->cart != '') {
                     $cartData = json_decode($user->cart, true);
                     Cart::instance('shopping')->add($cartData);
                 }
+                $checkStoreExists = Helper::checkStoreExists($product->store_id);
+                if ($checkStoreExists['isExist']) {
+                    $existingStore = $checkStoreExists['existingStore'];
+                    $newStore = Store::where('id', $product->store_id)->first(['id', 'store_name']);
+                    $data['status'] = "1";
+                    $data['msg'] = 'Your cart contains items from '.$existingStore->store_name.'. Do you want to discard the selection and add items from '.$newStore->store_name.'?';
+                    return $data;
+                }
             }
-            $checkStoreExists = Helper::checkStoreExists($product->store_id);
-            if ($checkStoreExists['isExist']) {
-                $existingStore = $checkStoreExists['existingStore'];
-                $newStore = Store::where('id', $product->store_id)->first(['id', 'store_name']);
-                $data['status'] = "1";
-                $data['msg'] = 'Your cart contains items from '.$existingStore->store_name.'. Do you want to discard the selection and add items from '.$newStore->store_name.'?';
-                return $data;
-            }
+            
             switch ($prod_type) {
                 case 1:
                     $msg = $this->simpleProduct($prod_id, $quantity);
