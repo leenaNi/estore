@@ -35,7 +35,7 @@ class ApiCartController extends Controller
         $msg = '';
         $prod_id = filter_var(Input::get('prod_id'), FILTER_SANITIZE_STRING); //Input::get("prod_id");
         // $prod_type = filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_id");
-        $product = DB::table("products")->where("id", $prod_id)->select("id", "prod_type")->first();
+        $product = DB::table("products")->where("id", $prod_id)->select("id", "prod_type", "store_id")->first();
         if($product != null){
             $prod_type = $product->prod_type; //filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_type");
             $sub_prod = filter_var(Input::get('sub_prod'), FILTER_SANITIZE_STRING);
