@@ -123,7 +123,7 @@ class ApiOfferController extends Controller
                 if (count($brandIdsResult) > 0) 
                 {
                     $brandIds = [];
-                    $storeId = [];
+                    $storeIds = [];
                     foreach ($brandIdsResult as $brandIdsData) {
                         $brandIds[] = $brandIdsData->brand_id;
                         $storeIds[] = $brandIdsData->store_id;
@@ -134,7 +134,6 @@ class ApiOfferController extends Controller
                         //get product id
                         //echo "<pre>multiple stores id::";
                         //print_r($storeIds);
-
                         $getProductsResult = DB::table('products')
                             ->join('offers_products', 'products.id', '=', 'offers_products.prod_id')
                             ->select(DB::raw('offer_id'))
@@ -158,6 +157,7 @@ class ApiOfferController extends Controller
                                 //print_r($multipleOfferId);
                                 //get All offers
                                 
+                                $offerImagePath = $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/';
                                 if(!empty($pageNumber) && (!empty($limit)))
                                 {
                                      //echo "inside if";
@@ -173,21 +173,23 @@ class ApiOfferController extends Controller
                                     }
                                     //echo "start index".$startIndex;
                                     //echo "page limit::".$limit;
-                                    $getAllOffersResult = DB::table('offers')
-                                    ->whereIn('id', $multipleOfferId)
-                                    ->where('status', 1)
-                                    ->orderBy('id','DESC')
-                                    ->skip($startIndex)->take($limit)->get();
+                                    $getAllOffersResult = DB::table('offers as o')
+                                    ->join('stores as s', 's.id', '=', 'o.store_id')
+                                    ->whereIn('o.id', $multipleOfferId)
+                                    ->where('o.status', 1)
+                                    ->orderBy('o.id','DESC')
+                                    ->skip($startIndex)->take($limit)->get(['o.id','store_id','offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]);
                                      
                                 }
                                 else
                                 {
                                    //echo "else";
-                                    $getAllOffersResult = DB::table('offers')
-                                    ->whereIn('id', $multipleOfferId)
-                                    ->where('status', 1)
-                                    ->orderBy('id','DESC')
-                                    ->get(); 
+                                    $getAllOffersResult = DB::table('offers as o')
+                                    ->join('stores as s', 's.id', '=', 'o.store_id')
+                                    ->whereIn('o.id', $multipleOfferId)
+                                    ->where('o.status', 1)
+                                    ->orderBy('o.id','DESC')
+                                    ->get(['o.id','store_id','offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]); 
                                 }
                                 
 
@@ -202,10 +204,10 @@ class ApiOfferController extends Controller
                                 
 
                             }
-                            /*else
+                            else
                             {
                                 return response()->json(["status" => 0, 'msg' => 'Records not found']);
-                            }*/
+                            }
 
                     }
                     else
