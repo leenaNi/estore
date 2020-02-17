@@ -4,21 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
-use App\Models\Product;
 use Cart;
 use DB;
 use Input;
 use Session;
+use App\Models\Product;
 use App\Models\User;
+use App\Models\AttributeValue;
 
 class ApiCartController extends Controller
 {
     //
     public function index()
     {
-        $data['cart']['data'] = Cart::instance("shopping")->content();
+        $user = User::where('id', Session::get('authUserId'))->first();
+        if($user->cart != ''){
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->add($cartData);
+        }
+        $cartData = Cart::instance("shopping")->content(); 
+        $data['cart']['data'] = $cartData;
         $data["ccnt"] = Cart::instance("shopping")->count();
         $data['status'] = "success";
+        $data['msg'] = "";
         return $data;
     }
     public function add()
@@ -245,7 +253,7 @@ class ApiCartController extends Controller
         $store = DB::table('stores')->where('id', $product->store_id)->first();
         $store_id = $store->id;
         $prefix = $store->prefix;
-        $is_stockable = GeneralSetting::where('url_key', 'stock')->where('store_id', $product->store_id)->first();
+        $is_stockable = DB::table('general_setting')->where('url_key', 'stock')->where('store_id', $product->store_id)->first();
         $cats = [];
 
         foreach ($product->categories as $cat) {
@@ -255,7 +263,7 @@ class ApiCartController extends Controller
         $prod_type = $product->prod_type;
         $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
         $imagPath = 'http://' . $store->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/products/' . $images;
-        $subProd = DB::table('product')->where("id", "=", $sub_prod)->first();
+        $subProd = Product::where("id", "=", $sub_prod)->first();
         if (($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)) {
             $price = $product->price;
         } else {
@@ -285,23 +293,32 @@ class ApiCartController extends Controller
             $tax_amt = round($tax, 2);
         }
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
-
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock") {
                 // $product = Product::find($sub_prod);
+                $searchExist = Helper::searchExistingCart($prod_id);
+                if (!$searchExist["isExist"]) {
                 Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                     "qty" => $quantity, "price" => $price,
                     "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
                         "options" => $options, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
                         'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
+                } else {
+                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity)]);
+                }
             } else {
                 return 1;
             }
         } else {
-            Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
+            $searchExist = Helper::searchExistingCart($prod_id);
+                if (!$searchExist["isExist"]) {
+                Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                 "qty" => $quantity, "price" => $price,
                 "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
                     "options" => $options, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
                     'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
+                } else {
+                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity)]);    
+                }
         }
     }
 
