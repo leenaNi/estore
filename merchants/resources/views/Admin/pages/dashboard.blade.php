@@ -277,6 +277,7 @@
                                         <div class="table-responsive">
                                             <table class="table no-margin">
                                                 <tbody>
+                                                {{dd($products)}}
                                                     @foreach($products as $product)
                                                     <tr>
                                                         <td>
