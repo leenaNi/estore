@@ -380,6 +380,9 @@
                                         <span class='prodQty' style="display:none"><input type="number" min="1" value="1" name='cartData[prod_id][qty]' class='qty form-control'></span>
                                     </td>
                                     <td width="20%">
+                                            <span class='prodUnitPrice'>0</span>
+                                        </td>
+                                    <td width="20%">
                                         <span class='prodDiscount'>0</span>
                                     </td>
                                     <td width="20%">
@@ -504,6 +507,14 @@ var prodoffer = 0;
                     prodSel.parent().parent().find('.prodDiscount').text(price.offer);
                     prodSel.parent().parent().find('.prodPrice').text(price.price);
                     
+                    if(price.offertype==2){
+                        var countprod = price.offerProdCount;
+                        $(".newRow").append(price.offerProd);
+                        // while(countprod > 0){
+                        //     $(".newRow").append($(".toClonetr").html());
+                        //     countprod --;
+                        // }
+                    }
                     <?php if ($feature['tax'] == 1) {?>
                     prodSel.parent().parent().find('.taxAmt').text((price.tax).toFixed(2));
                     <?php }?>
@@ -706,6 +717,7 @@ var prodoffer = 0;
 
     $("table").delegate(".delRow", "click", function () {
         $(this).parent().parent().remove();
+        $(".delOfferRow").remove();
         clearAllDiscount();
     });
 
@@ -721,14 +733,14 @@ var prodoffer = 0;
             $(".prodTable tbody.newRow").append('<tr class="product-empty" style="color:red"><th colspan="4">Please select at least one product </th></tr>');
             return false;
         }
-        $.each($(".prodTable .prodPrice"), function () {
-            if ($(this).text() == 0) {
-                $(this).parent().parent().addClass("trError");
-                $(".finalAmt").text('0.00');
-            } else {
-                $(this).parent().parent().removeClass("trError");
-            }
-        });
+        // $.each($(".prodTable .prodPrice"), function () {
+        //     if ($(this).text() == 0) {
+        //         $(this).parent().parent().addClass("trError");
+        //         $(".finalAmt").text('0.00');
+        //     } else {
+        //         $(this).parent().parent().removeClass("trError");
+        //     }
+        // });
         chk = 0;
         $.each($(".prodTable tr"), function () {
             if ($(this).hasClass('trError')) {
@@ -741,12 +753,7 @@ var prodoffer = 0;
             if ($(item).attr('data-ppid') != "") {
                 var prod_id = $(this).find('.prodSearch').attr('data-prdid');
                 var subprodid = $(this).find('.subprodid').val(); //  []; //
-                // var subProdEle = $(this).find('.subprodid');
-               
-                // $.each(subProdEle, (key, ele) => {
-               
-                //     subprodid.push(ele.val());
-                // });
+              
                 var qty = $(this).find('.qty').val();
                 var prodPrice = $(this).find('.prodPrice').text();
                 var data = {prod_id: prod_id, subprodid: subprodid, qty: qty, prodPrice: prodPrice};
@@ -820,6 +827,11 @@ var prodoffer = 0;
             success: function (price) {
                 qtty.parents("td").next().find('.prodPrice').text(price.price);
                 qtty.parents("td").next().find('.prodDiscount').text(price.offer);
+                if(price.offertype==2){
+                        var countprod = price.offerProdCount;
+                        $(".delOfferRow").remove();
+                        $(".newRow").append(price.offerProd);
+                    }
                 <?php if ($feature['tax'] == 1) {?>
                 qtty.parents("td").next().next().find('.taxAmt').text((price.tax).toFixed(2));
                 <?php }?>
@@ -848,7 +860,7 @@ var prodoffer = 0;
                 var subprodid = $(this).find('.subprodid').val();
                 var qty = $(this).find('.qty').val();
                 var prodPrice = $(this).find('.prodPrice').text();
-                var data = {prod_id: prod_id, subprodid: subprodid, qty: qty, prodPrice: prodPrice};
+                var data = {prod_id: prod_id, subprodid: subprodid, qty: qty, prodPrice: prodPrice, offerid:prodoffer};
                 prod.push(data);
             }
         });
@@ -1017,7 +1029,7 @@ var prodoffer = 0;
 
     function priceTaxUpdate(cart) {
         $.each(cart, function (key, value) {
-            
+            //console.log(value);
             var id = value.id;
             var price = value.subtotal;
             if (value.options.tax_type == 2) {
@@ -1029,7 +1041,7 @@ var prodoffer = 0;
             } else {
                 var prod = $("[data-prdid=" + id + "]");
             }
-            prod.parent().parent().find('.prodPrice').text((price * <?php echo Session::get('currency_val'); ?>).toFixed(2));
+            prod.parent().parent().find('.prodPrice').text(price);
             prod.parent().parent().find('.taxAmt').text((value.options.tax_amt * <?php echo Session::get('currency_val'); ?>).toFixed(2));
         });
     }

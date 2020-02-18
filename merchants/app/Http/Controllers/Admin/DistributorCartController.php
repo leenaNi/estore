@@ -38,6 +38,7 @@ class DistributorCartController extends Controller
                 Session::forget("referalCodeAmt");
                 Session::forget("codCharges");
                 Session::forget('shippingCost');
+                Session::forget('offerid');
                 $cart = Cart::instance('shopping')->content();
                 foreach ($cart as $k => $c) {
                     Cart::instance('shopping')->update($k, ["options" => ['wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0]]);
@@ -106,11 +107,11 @@ class DistributorCartController extends Controller
                 }
             }
         
-            public function addCartData($prod_type, $prod_id, $sub_prod, $quantity) {
-        
+            public function addCartData($prod_type, $prod_id, $sub_prod, $quantity,$offerid) {
+                //dd($prod_type);
                 switch ($prod_type) {
                     case ($prod_type == 1 || $prod_type == 7):
-                        $msg = $this->simpleProduct($prod_id, $quantity);
+                        $msg = $this->simpleProduct($prod_id, $quantity,$offerid);
                         break;
                     case 2:
                         $msg = $this->comboProduct($prod_id, $quantity, $sub_prod);
@@ -181,7 +182,9 @@ class DistributorCartController extends Controller
                 return $data;
             }
         
-            public function simpleProduct($prod_id, $quantity) {
+            public function simpleProduct($prod_id, $quantity,$offerid) {
+                $offerProduct = DB::table("offers_products")->where(["prod_id"=>$prod_id,"offer_id"=>$offerid,"type"=>2])->first();
+                $isOfferProd = 0;
                 $jsonString = Helper::getSettings();
                 if(Session::get('distributor_store_id')){
                     $product = DistributorProduct::find($prod_id);
@@ -203,6 +206,25 @@ class DistributorCartController extends Controller
                 }else{
                     $price = $product->price; //$product->price;
                 }
+               
+                if(!empty($offerProduct)){
+                    if($offerProduct->type == 2){
+                    $isOfferProd = 1;
+                    $price = 0;
+                    }
+                    else if($offerProduct->type == 1){
+                    $offerDetails = DB::table("offers")->find($offerid);
+                        if(!empty($offerDetails)){
+                        $discType = $offerDetails->offer_discount_type;
+                            if($discType == 1){
+                            $discount = $price * ($offerDetails->offer_discount_value/100);
+                            $price = $price - $discount;
+                            $price = number_format((float)$price * Session::get('currency_val'), 2, '.', '');
+                            }
+                        }
+                    }
+                }
+                
                 //$price = $product->selling_price; //$product->price;
                 $pname = $product->product;
                 $prod_type = $product->prod_type;
@@ -227,7 +249,7 @@ class DistributorCartController extends Controller
                 if ($product->is_stock == 1 && $is_stockable->status == 1) {
                     if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                         Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
-                            "options" => ["image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
+                            "options" => ["isOfferProd"=> $isOfferProd,"image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
                                 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                                 "prod_type" => $prod_type,
                                 "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
@@ -236,7 +258,7 @@ class DistributorCartController extends Controller
                     }
                 } else {
                     Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
-                        "options" => ["image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
+                        "options" => ["isOfferProd"=> $isOfferProd, "image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
                             'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                             "prod_type" => $prod_type,
                             "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt]]);
