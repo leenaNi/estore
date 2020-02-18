@@ -159,7 +159,9 @@ class PagesController extends Controller
         foreach ($topProducts as $key => $product) {
             if ($product->prod_id == $product->sub_prod_id || $prd->sub_prod_id == '') {
                 $parentprod = Product::find($product->prod_id);
-                $product->product->price += @$parentprod->selling_price;
+                if($parentprod != null){
+                    $product->product->price += $parentprod->selling_price;
+                }
             }
             $products[$key]["product_name"] = $product->product;
             $products[$key]["quantity"] = $product->quantity;
