@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Library\Helper;
 use App\Models\AttributeValue;
 use App\Models\Product;
-use App\Models\User;
 use App\Models\Store;
+use App\Models\User;
 use Cart;
 use DB;
 use Input;
@@ -37,14 +37,13 @@ class ApiCartController extends Controller
         $prod_id = filter_var(Input::get('prod_id'), FILTER_SANITIZE_STRING); //Input::get("prod_id");
         // $prod_type = filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_id");
         $product = DB::table("products")->where("id", $prod_id)->select("id", "prod_type", "store_id")->first();
-        if($product != null){
+        if ($product != null) {
             $prod_type = $product->prod_type; //filter_var(Input::get('prod_type'), FILTER_SANITIZE_STRING); //Input::get("prod_type");
             $sub_prod = filter_var(Input::get('sub_prod'), FILTER_SANITIZE_STRING);
             $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
-            $forceAdd = Input::get('force_add');            
             $user = User::where('id', Session::get('authUserId'))->first();
             //Check if forcefully add item from other distributor
-            if(Input::get('force_add') && Input::get('force_add') == 1) {
+            if (Input::get('force_add') && Input::get('force_add') == 1) {
                 Cart::instance('shopping')->destroy();
             } else {
                 if ($user->cart != '') {
@@ -56,11 +55,11 @@ class ApiCartController extends Controller
                     $existingStore = $checkStoreExists['existingStore'];
                     $newStore = Store::where('id', $product->store_id)->first(['id', 'store_name']);
                     $data['status'] = "1";
-                    $data['msg'] = 'Your cart contains items from '.$existingStore->store_name.'. Do you want to discard the selection and add items from '.$newStore->store_name.'?';
+                    $data['msg'] = 'Your cart contains items from ' . $existingStore->store_name . '. Do you want to discard the selection and add items from ' . $newStore->store_name . '?';
                     return $data;
                 }
             }
-            
+
             switch ($prod_type) {
                 case 1:
                     $msg = $this->simpleProduct($prod_id, $quantity);
@@ -96,7 +95,7 @@ class ApiCartController extends Controller
         } else {
             $data['status'] = "0";
             $data['msg'] = "Invalid product";
-        }    
+        }
         return $data;
     }
 
@@ -343,53 +342,61 @@ class ApiCartController extends Controller
         }
     }
 
-    public function cart()
+    public function edit()
     {
-        Session::put("pay_amt", Cart::instance("shopping")->total());
-        $cart = '';
-        $cart .= '<div class="shop-cart">';
-        $cart .= '<a href="#" class="cart-control"><img src="' . asset(Config("constants.frontendPublicImgPath") . "assets/icons/cart-black.png") . '" alt="">';
-        $cart .= '<span class="cart-number number">' . Cart::instance("shopping")->count() . '</span>';
-        $cart .= '</a>';
-        if (Cart::instance("shopping")->count() != 0) {
-            $cart .= '<div class="shop-item">';
-            $cart .= '<div class="widget_shopping_cart_content">';
-            $cart .= '<ul class="cart_list">';
-            foreach (Cart::instance("shopping")->content() as $c) {
-                $cart .= '<li class="clearfix">';
-                $cart .= '<a class="p-thumb" href="#" style="height: 50px;width: 50px;">';
-                $cart .= '<img src="' . asset(Config("constants.productImgPath") . $c->options->image) . '" alt="" >';
-                $cart .= '</a>';
-                $cart .= '<div class="p-info">';
-                $cart .= '<a class="p-title" href="#">' . $c->name . ' </a>';
-                $cart .= '<span class="price">';
-                if ($c->options->tax_type == 2) {
-                    $taxeble_amt = $c->subtotal - $c->options->disc;
-                    $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
-                    $selling_price = $c->subtotal * Session::get('currency_val') + $tax_amt;
-                } else {
-                    $selling_price = $c->subtotal * Session::get('currency_val');
-                }
-                $cart .= '<ins><span class="amount"><i class="fa fa-' . strtolower(Session::get('currency_code')) . '"></i> ' . number_format($selling_price, 2) . ' </span></ins>';
-                $cart .= '</span>';
-                $cart .= '<span class="p-qty">QTY: ' . $c->qty . ' </span>';
-                $cart .= '<a data-rowid="' . $c->rowid . '" class="removeShoppingCartProd remove" href="#"><i class="fa fa-times-circle"></i></a>';
-                $cart .= '</div>';
-                $cart .= '</li>';
+        $rowId = filter_var(Input::get('rowid'), FILTER_SANITIZE_STRING);
+        $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
+        if(!empty($rowId) && !empty($quantity)) {
+            $user = User::where('id', Session::get('authUserId'))->first();
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->add($cartData);
+            $cart = Cart::instance('shopping')->update($rowId, ['qty' => $quantity]);
+            $amt = Helper::calAmtWithTax();
+            $cartInstance = Cart::instance('shopping')->get($rowId);
+            $tax = $cartInstance->options->tax_amt;
+            $sub_total = $cartInstance->subtotal;
+            $total = Cart::total();
+            if ($cartInstance->options->tax_type == 2) {
+                $sub_total = $cartInstance->subtotal + $tax;
+                $total = Cart::total() + $tax;
             }
-            $cart_data = Helper::calAmtWithTax();
-            $cart_total = $cart_data['total'] * Session::get("currency_val");
-            //  $cart_total = Cart::instance("shopping")->total() * Session::get('currency_val');
-            $cart .= '</ul>';
-            $cart .= '<p class="total"><strong>Subtotal:</strong> <span class="amount"><i class="fa fa-' . strtolower(Session::get('currency_code')) . '"></i> ' . number_format($cart_total, 2) . ' </span></p>';
-            $cart .= '<p class="buttons">';
-            $cart .= '<a class="button cart-button" href="' . route("cart") . ' ">View Cart</a>';
-            $cart .= '<a class="button yellow wc-forward" href="' . route("checkout") . '">Checkout</a>';
-            $cart .= '</p></div> </div></div>';
+            // $cart = Helper::getnewCart();
+            $cartData = Cart::instance("shopping")->content();
+            $user->cart = json_encode($cartData);
+            $user->update();
+            $data['data']['cart'] = $cartData;
+            $data['data']['subtotal'] = $sub_total;
+            $data['data']['finaltotal'] = $amt['total'];
+            $data['data']['total'] = $amt['total'];
+            $data['data']['tax'] = $cartInstance->options->tax_amt;
+            $data['data']['cart_count'] = Cart::instance("shopping")->count();
+            $data['msg'] = '';
+            $data['status'] = 1;
+            Session::put("pay_amt", $amt['total']);
         } else {
-            $cart .= '<li><h6>Cart is Empty</h6>  </li>';
+            $data['msg'] = 'Mandatory fields are missing.';
+            $data['status'] = 0;
         }
-        $cart .= '</ul></li></ul></div>';
-        return ($cart . "||||||" . Cart::instance("shopping")->count() . "|||||| <i class='fa fa-" . strtolower(Session::get('currency_code')) . " '></i> " . ($cart_total));
+        return $data;
     }
+
+    public function delete()
+    {
+        Cart::instance('shopping')->remove(Input::get("rowid"));
+        $cart = Helper::getnewCart();
+        // $cart_amt = Helper::calAmtWithTax();
+        $cartCnt = Cart::instance('shopping')->count();
+        //echo "||||||||||" . Helper::getAmt() . "||||||||||" . $cart . "||||||||||" . $cartCnt . "||||||||||" . Cart::instance('shopping')->total();
+        $data = [];
+        array_push($data, $cart_amt['total'], $cart, $cartCnt, $cart_amt['total'], (Session::get('couponUsedAmt')));
+        //array_push($data, Helper::getAmt(), $cart, $cartCnt, Cart::instance('shopping')->total(), (Session::get('couponUsedAmt')));
+        Session::put("pay_amt", $cart_amt['total']);
+        // Session::put("pay_amt", Cart::instance('shopping')->total());
+        return $data;
+    }
+
+    public function checkIfOfferExists() {
+        
+    }
+
 }

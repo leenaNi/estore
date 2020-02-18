@@ -630,21 +630,24 @@ class ApiDistributorController extends Controller
                 //     $multipleDistributorIds[] = $distributorIdsData->distributor_id;
                 // }
                 $multipleDistributorIds[] = $distributorId;
+                if($companyId){
                 //Comapnywise Brands
                 $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
                 $companyBrandIds = [];
                 foreach ($companyBrands as $companyBrand) {
                     $companyBrandIds[] = $companyBrand->id;
                 }
-
+                }
                 if(count($multipleDistributorIds) > 0)
                 { 
                     // get brand id
                     $brandIdsResult = DB::table('stores')
                         ->join('products', 'products.store_id', '=', 'stores.id')
-                        ->whereIn('stores.merchant_id', $multipleDistributorIds)
-                        ->whereIn('products.brand_id', $companyBrandIds)
-                        ->where('stores.store_type', 'distributor')
+                        ->whereIn('stores.merchant_id', $multipleDistributorIds);
+                        if($companyId){
+                            $brandIdsResult = $brandIdsResult->whereIn('products.brand_id', $companyBrandIds);
+                        }
+                        $brandIdsResult = $brandIdsResult->where('stores.store_type', 'distributor')
                         ->where('stores.expiry_date', '>=', date('Y-m-d'))
                         ->get(['products.brand_id', 'products.store_id']);
 

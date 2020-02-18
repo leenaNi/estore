@@ -7,6 +7,8 @@ use App\Models\CategoryMaster;
 use App\Models\Currency;
 use App\Models\Settings;
 use App\Models\Store;
+use App\Models\User;
+use App\Models\GeneralSetting;
 use DB;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
@@ -534,7 +536,8 @@ class Helper
     // }
 
     public static function calAmtWithTax() {
-        $taxStatus = GeneralSetting::where('url_key', 'tax')->first()->status;
+        $user = User::where('id', Session::get('authUserId'))->first();
+        $taxStatus = GeneralSetting::where('url_key', 'tax')->where('store_id', $user->store_id)->first()->status;
         $cart = Cart::instance('shopping')->content();
         $calTax = 0;
         $tax_amt = 0;
@@ -546,13 +549,11 @@ class Helper
             $orderAmt += $c->subtotal;
             if ($taxStatus == 1) {
                 $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
-
                 if ($c->options->tax_type == 2) {
                     $calTax = $calTax + $tax_amt;
                 }
+                Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);            
             }
-
-            Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);
         }
 
         $cart_total = $orderAmt;
