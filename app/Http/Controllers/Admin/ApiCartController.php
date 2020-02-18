@@ -352,7 +352,7 @@ class ApiCartController extends Controller
             Cart::instance('shopping')->add($cartData);
             $cart = Cart::instance('shopping')->update($rowId, ['qty' => $quantity]);
             $amt = Helper::calAmtWithTax();
-            $cartInstance = Cart::instance('shopping')->get($rowId);
+            $cartInstance = Cart::instance('shopping')->get("$rowId");
             $tax = $cartInstance->options->tax_amt;
             $sub_total = $cartInstance->subtotal;
             $total = Cart::total();
@@ -396,7 +396,7 @@ class ApiCartController extends Controller
     }
 
     public function checkIfOfferExists() {
-        
+
     }
 
 }
