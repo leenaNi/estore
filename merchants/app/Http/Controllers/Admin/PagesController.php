@@ -164,7 +164,7 @@ class PagesController extends Controller
                     $parentprod = Product::find($prd->sub_prod_id);
                 }
                 $parentprod = Product::find($product->prod_id);
-                dd($product->product);
+                // dd($product->product);
                 if ($parentprod != null) {
                     $product->product->price = $product->product->price + @$parentprod->selling_price;
                     $product->product->actualPrice = $product->product->price + $parentprod->selling_price;
