@@ -5,7 +5,7 @@
 	    step1 Section starts
 	  ============================ style="display:none;"-->
 	<section class="steps-section">
-		<div class="vert-middle-container" id="step1" >
+		<div class="vert-middle-container" id="step1" style="display:none;">
 			<div class="container">
 				<div class="log-reg-form-container">
 					<div class="row">
@@ -31,7 +31,7 @@
 										<div class="form-group">
 											<label>Business Name </label>
 											<div class="input-group">
-												<input type="text" class="form-control" name="store_name" id="store_name" placeholder="Business Name" onBlur="checkStorename(this.value)">
+												<input tabindex="1" type="text" class="form-control" name="store_name" id="store_name" placeholder="Business Name" onBlur="checkStorename(this.value)">
 												<span>
 													<img id="successimg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success"/ class="success-tick hidden">
 													<img id="errorimg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success"/ class="error-mark hidden">
@@ -40,26 +40,22 @@
 											</div>
 											<span class="error" style="display:none" id="business_name_err">Business name can not be blank</span>
 										</div>
-
 										<div class="form-group">
 											<label for="">Mobile Number</label>
 											<div class="mob-num-ctcode">
 												<div class="ct-select">
 													<select name="country_code" id="country_code">
-                                                    <option value="{{$settings->country_code}}" selected data-image="{{ asset('public/Frontend/images/india.png')}}">{{$settings->country_code}}</option>
-
+                                                    	<option value="{{$settings->country_code}}" selected data-image="{{ asset('public/Frontend/images/india.png')}}">{{$settings->country_code}}</option>
 													</select>
 												</div>
 												<div class="input-group">
-													<input type="text" name="phone" class="form-control" id="mobNumber" placeholder="Mobile Number" onBlur="checkPhone(this.value)">
-													
+													<input tabindex="2" type="text" name="phone" class="form-control" id="mobNumber" placeholder="Mobile Number" onBlur="checkPhone(this.value)">
 													<span>
 														<img id="mobsmsg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success" class="success-tick hidden">
 														<img id="mobemsg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success" class="error-mark hidden">
 													</span>
 												</div>
-											</div>
-										
+											</div>										
 											<span class="error" style="display:none" id="mobileno_err">Mobile No. can not be blank</span>
 										</div>
 										<div class="form-group">
@@ -67,7 +63,7 @@
 											<div class="role-radio-group">
 												<ul>
 													<li>
-														<input type="radio" name="roleType"  id="merchant" value="merchant" class="input-hidden" checked />
+														<input tabindex="3" type="radio" name="roleType"  id="merchant" value="merchant" class="input-hidden" checked />
 														<label for="merchant">
 															<img src="{{ asset('public/Frontend/images/merchant-grey.svg')}}" alt="merchant" class="dective-merchant" />
 															<img src="{{ asset('public/Frontend/images/merchant.svg')}}" alt="merchant" class="active-merchant" />
@@ -75,7 +71,7 @@
 														</label>
 													</li>
 													<li>
-														<input type="radio" name="roleType" id="distributor" value="distributor" class="input-hidden" />
+														<input tabindex="3" type="radio" name="roleType" id="distributor" value="distributor" class="input-hidden" />
 														<label for="distributor">
 															<img src="{{ asset('public/Frontend/images/distributor-grey.svg')}}" alt="distributor" class="dective-distributor" />
 															<img src="{{ asset('public/Frontend/images/distributor.svg')}}" alt="distributor" class="active-distributor" />
@@ -90,9 +86,8 @@
 										<div class="form-group text-center">
 											<p>By registering with us, you accept our <a href="#">Terms & Conditions.</a></p>
 										</div>
-
 										<div class="form-group text-center mb-0">
-											<button type="button" class="theme-btn dark-theme-btn full-width-btn" id="nextstep">Next</button>
+											<button tabindex="4" type="button" class="theme-btn dark-theme-btn full-width-btn" id="nextstep">Next</button>
 										</div>
 								</form>
 							</div>
@@ -102,7 +97,7 @@
 			</div>
 		</div>
          <!-- otp verify -->
-        <div class="vert-middle-container" id="step2" style="display:none;">
+        <div class="vert-middle-container" id="step2" style="display:block;">
 			<div class="container">
 				<div class="log-reg-form-container">
 					<div class="row">
@@ -131,20 +126,18 @@
 										<div class="form-group">
 											<label for="">Type in your OTP</label>
 											<div class="input-group input-otp-group">
-												<input type="tel" max="1" class="form-control col" id="otp1" data-next="otp2" placeholder="">
-												<input type="tel" max="1" class="form-control col" id="otp2" data-next="otp3" data-previous="otp1" placeholder="">
-												<input type="tel" class="form-control col" id="otp3" data-next="otp4" data-previous="otp2" placeholder="">
-												<input type="tel" class="form-control col" id="otp4" data-previous="otp3" placeholder="">
-
+												<input tabindex="6" type="tel" class="form-control col" id="otp1" data-next="otp2" placeholder="">
+												<input tabindex="7" type="tel" class="form-control col" id="otp2" data-next="otp3" data-previous="otp1" placeholder="">
+												<input tabindex="8" type="tel" class="form-control col" id="otp3" data-next="otp4" data-previous="otp2" placeholder="">
+												<input tabindex="9" type="tel" class="form-control col" id="otp4" data-previous="otp3" placeholder="">
 											</div>
 											<span class="error otperr" style="display:none">Please enter valid OTP</span>
 										</div>
-
 									</div>
-</div>
-										<div class="form-group text-center">
-											<button type="button" id="registerAndSubmit" class="theme-btn dark-theme-btn full-width-btn">Submit</button>
-										</div>
+								</div>
+								<div class="form-group text-center">
+									<button tabindex="10" type="button" id="registerAndSubmit" class="theme-btn dark-theme-btn full-width-btn">Submit</button>
+								</div>
 								</form>
 							</div>
 						</div>
@@ -197,21 +190,22 @@ function checkPhone(mobile){
 $('.digit-group').find('input').each(function() {
 	$(this).attr('maxlength', 1);
 	$(this).on('keyup', function(e) {
-		var parent = $($(this).parent());		
+		var parent = $($(this).parent().parent().parent().parent().parent());		
 		if(e.keyCode === 8 || e.keyCode === 37) {
-			var prev = parent.find('input#' + $(this).data('previous'));
-			
+			var prev = parent.find('input#' + $(this).data('previous'));			
 			if(prev.length) {
 				$(prev).select();
 			}
 		} else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
-			var next = parent.find('input#' + $(this).data('next'));
-			
+			var next = parent.find('input#' + $(this).data('next'));			
 			if(next.length) {
 				$(next).select();
 			} else {
 				if(parent.data('autosubmit')) {
 					parent.submit();
+				} else {
+					// console.log(parent.find('button#registerAndSubmit'))
+					parent.find('button#registerAndSubmit').focus();
 				}
 			}
 		}

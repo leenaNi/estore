@@ -414,7 +414,6 @@ class ApiCartController extends Controller
                 }        
                 foreach ($subprods as $subP) {
                     $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
-                    print_r($hasOpt);
                     foreach ($hasOpt as $prdOpt) {
                         $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
                         $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
