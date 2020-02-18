@@ -159,9 +159,9 @@ class PagesController extends Controller
         foreach ($topProducts as $key => $product) {
             if ($product->prod_id == $product->sub_prod_id || $prd->sub_prod_id == '') {
                 $parentprod = Product::find($product->prod_id);
-                dd($parentprod);
+                dd($product->product);
                 if ($parentprod != null) {
-                    $product->product->price = $product->product->price + $parentprod->selling_price;
+                    $product->product->price = $product->product->price + @$parentprod->selling_price;
                     $product->product->actualPrice = $product->product->price + $parentprod->selling_price;
                 }
             }
