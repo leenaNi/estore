@@ -369,7 +369,7 @@ class HomeController extends Controller
     public function getcongrats()
     {
         // echo "getcongrats  call function";
-        if(isset(Input::get('id'))){
+        if(Input::get('id')){
             $dataS = [];
             $dataS['id'] = Input::get('id');
             $dataS['storedata'] = Store::find(Input::get('id'));
