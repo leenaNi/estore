@@ -277,14 +277,13 @@
                                         <div class="table-responsive">
                                             <table class="table no-margin">
                                                 <tbody>
-                                                {{dd($products)}}
                                                     @foreach($products as $product)
                                                     <tr>
                                                         <td>
                                                             <div style="width: 20px; height: 20px; background-color: {{$product["color"]}}"></div>
                                                         </td>
                                                         <td>
-                                                            {{$product["product_name"]->product}}
+                                                            {{@$product["product_name"]->product}}
                                                         </td>
                                                         <td>
                                                          Rs. {{ number_format((@$product["product_name"]->price* Session::get('currency_val')), 2, '.', '')}} 
