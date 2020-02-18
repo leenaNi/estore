@@ -302,16 +302,16 @@ class DistributorOrdersController extends Controller
                         foreach ($cartdataInfo as $cartk => $cartv) {
                             $chkprd = DistributorProduct::find($cartk);
                             if ($chkprd->prod_type == 1) {
-                                app('App\Http\Controllers\Frontend\CartController')->simpleProduct($chkprd->id, $cartv['qty']);
+                                app('App\Http\Controllers\Admin\DistributorCartController')->simpleProduct($chkprd->id, $cartv['qty']);
                             } else if ($chkprd->prod_type == 3) {
-                                app('App\Http\Controllers\Frontend\CartController')->configProduct($chkprd->id, $cartv['qty'], $cartv['subprd']);
+                                app('App\Http\Controllers\Admin\DistributorCartController')->configProduct($chkprd->id, $cartv['qty'], $cartv['subprd']);
                             } else if ($chkprd->prod_type == 2) {
                                 $cmb = $cartv['subprd'];
                                 $comboSub = [];
                                 foreach ($cmb as $combos) {
                                     $comboSub[DistributorProduct::find($combos)->parent_prod_id] = $combos;
                                 }
-                                app('App\Http\Controllers\Frontend\CartController')->comboProduct($chkprd->id, $cartv['qty'], $comboSub);
+                                app('App\Http\Controllers\Admin\DistributorCartController')->comboProduct($chkprd->id, $cartv['qty'], $comboSub);
                             }
                         }
                     }
@@ -1809,7 +1809,7 @@ class DistributorOrdersController extends Controller
         $added_prod = [];
         if (count($cart_products) > 0) {
             foreach ($cart_products as $key => $product) {
-                dd($product);
+                //dd($product);
                 if (array_key_exists('sub_prod', $product['options']['sub_prod'])) {
                     if($product['options']['sub_prod'] != null && $product['id'] == $product['options']['sub_prod']){
                         $added_prod[] = $product['id'];
@@ -1821,13 +1821,12 @@ class DistributorOrdersController extends Controller
             }
         }
         $searchStr = Input::get('term');
-        // $products = DistributorProduct::where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product']);
         $products = DB::table('products')->where('store_id', Session::get('distributor_store_id'))->where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product', 'prod_type']);
         
         $data = [];
         foreach ($products as $k => $prd) {
             if (!in_array($prd->id, $added_prod)) {
-                $offersProduct = DB::table("offers_products")->where('prod_id',$prd->id)->first();
+                $offersProduct = DB::table("offers_products")->where(['prod_id'=>$prd->id,'type'=>1])->first();
                 if(!empty($offersProduct)){
                     $offerData = DB::table("offers")->where('id',$offersProduct->offer_id)->first();
                     $offer_name = $offerData->offer_name;
@@ -1873,8 +1872,9 @@ class DistributorOrdersController extends Controller
             $mycarts = Input::get('mycart');
             foreach ($mycarts as $key => $mycart) {
                 $getProd = DistributorProduct::find($mycart['prod_id']);
+                //dd($getProd);
                 $subProdId = (isset($mycart['subprodid']))? $mycart['subprodid']: null;
-                $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $subProdId, $mycart['qty']);
+                $addCart = app('App\Http\Controllers\Admin\DistributorCartController')->addCartData($getProd->prod_type, $getProd->id, $subProdId, $mycart['qty'],Session::get('offerid'));
             }
         }
         $cartInfo = Cart::instance("shopping")->total();
@@ -1978,11 +1978,56 @@ class DistributorOrdersController extends Controller
         }
         $discount = 0;
         if($offerid != 0){
-            $offerDetails = DB::table("offers")->find($offerid);
-            if($offerDetails->offer_discount_type == 1){
-                $discount = $sub_total * ($offerDetails->offer_discount_value/100);
+            Session::put("offerid",$offerid);
+            $offerDetails = DB::table("offers")->where(['id'=>$offerid])->first();
+            if(!empty($offerDetails)){
+                $total['offertype'] = $offerDetails->offer_discount_type;
+                if($offerDetails->offer_discount_type == 1){
+                    $discount = $sub_total * ($offerDetails->offer_discount_value/100);
+                    $total['offer'] = number_format((float)$discount, 2, '.', '').' ('.$offerDetails->offer_name.')';
+                }else if($offerDetails->offer_discount_type == 2){
+                    $prodQty = DB::table("offers_products")->where(['offer_id'=>$offerid,'prod_id'=>$pprod->id])->first();
+                    $total['offer'] = '('.$offerDetails->offer_name.')';
+                    if($qty >= $prodQty->qty){
+                       // dd($qty);
+                        $offer_product = DB::table("offers_products as op")->join('products as p','op.prod_id','=','p.id')->select('op.qty','p.product','op.prod_id')->where(['op.type'=>2,'op.offer_id'=>$offerid])->get();
+                        if(count($offer_product)>0){
+                            $total['offerProdCount'] = count($offer_product);
+                            $prod = [];
+                            foreach($offer_product as $offerprod){
+                                $prod[] = '
+                            <tr class="delOfferRow">
+                                <td width="30%">
+                                    <input type="text" class="form-control prodSearch" placeholder="Search Product" value="'.addslashes($offerprod->product).'" name="prod_search" data-prdid="'.$offerprod->prod_id.'" data-prdtype="1">
+                                </td>
+                                <td width="20%">
+                                </td>
+                                <td width="20%" >
+                                    <span class="prodQty"><input type="number" min="1" value="'.$offerprod->qty.'" class="qty form-control" name="" disabled></span>
+                                </td>
+                                <td width="20%">
+                                        <span class="prodUnitPrice">0</span>
+                                    </td>
+                                <td width="20%">
+                                    <span class="prodDiscount">0</span>
+                                </td>
+                                <td width="20%">
+                                    <span class="prodPrice">0</span>
+                                </td>
+                                <td width="5%" class="text-center">
+                                
+                                </td>
+                            </tr>
+                    ';
+                        }
+                        $total['offerProd'] = $prod;
+                    }
+                    }
+                    
+                }
             }
-            $total['offer'] = number_format((float)$discount, 2, '.', '').' ('.$offerDetails->offer_name.')';
+            
+            
         }
         $totprice = $sub_total - $discount;
         $total['price'] = number_format((float)$totprice * Session::get('currency_val'), 2, '.', '');
@@ -2015,7 +2060,6 @@ class DistributorOrdersController extends Controller
 
     public function checkOrderCoupon()
     {
-
         Session::put('currency_val', 1);
         Cart::instance('shopping')->destroy();
         // Remove all discount session before adding new discount
@@ -2030,13 +2074,15 @@ class DistributorOrdersController extends Controller
         Session::forget("referalCodeAmt");
         Session::forget("codCharges");
         Session::forget('shippingCost');
+        //Session::forget("offerid");
         $mycarts = Input::get('mycart');
 
         if (!empty($mycarts)) {
             foreach ($mycarts as $key => $mycart) {
+                $offerid = $mycart['offerid'];
                 $getProd = DistributorProduct::find($mycart['prod_id']);
                 $subProdId = (isset($mycart['subprodid']))? $mycart['subprodid']: null;
-                $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $subProdId, $mycart['qty']);
+                $addCart = app('App\Http\Controllers\Admin\DistributorCartController')->addCartData($getProd->prod_type, $getProd->id, $subProdId, $mycart['qty'],$offerid);
             }
         } else {
             $cartContent = Cart::instance('shopping')->destroy();
