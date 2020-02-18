@@ -6,6 +6,9 @@ use App\Models\Category;
 use App\Models\CategoryMaster;
 use App\Models\Currency;
 use App\Models\Settings;
+use App\Models\Store;
+use App\Models\User;
+use App\Models\GeneralSetting;
 use DB;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +18,7 @@ use Mail;
 use Session;
 use Validator;
 use View;
+use Cart;
 
 class Helper
 {
@@ -532,7 +536,8 @@ class Helper
     // }
 
     public static function calAmtWithTax() {
-        $taxStatus = GeneralSetting::where('url_key', 'tax')->first()->status;
+        $user = User::where('id', Session::get('authUserId'))->first();
+        $taxStatus = GeneralSetting::where('url_key', 'tax')->where('store_id', $user->store_id)->first()->status;
         $cart = Cart::instance('shopping')->content();
         $calTax = 0;
         $tax_amt = 0;
@@ -544,13 +549,11 @@ class Helper
             $orderAmt += $c->subtotal;
             if ($taxStatus == 1) {
                 $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
-
                 if ($c->options->tax_type == 2) {
                     $calTax = $calTax + $tax_amt;
                 }
+                Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);            
             }
-
-            Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);
         }
 
         $cart_total = $orderAmt;
@@ -634,4 +637,37 @@ class Helper
         return $indentityCode;
 
     } // End createUniqueIdentityCode
+
+    public static function searchExistingCart($prod_id) {
+        $cartContent = Cart::instance("shopping")->content()->toArray();
+        $isExist = 0;
+        foreach ($cartContent as $key => $cartItem) {
+            // return($cartItem);
+            if (array_key_exists("sub_prod", $cartItem['options'])) {
+                $isExist = ($cartItem['options']['sub_prod'] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                }
+            } else {
+                $isExist = ($cartItem["id"] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                }
+            }
+        }
+        return ["isExist" => $isExist];
+    }
+
+    public static function checkStoreExists($storeId) {
+        $cartContent = Cart::instance("shopping")->content()->toArray();
+        $isExist = 0;
+        foreach ($cartContent as $key => $cartItem) {
+            if($cartItem['options']['store_id'] != $storeId) {
+                $existingStore = Store::where('id', $cartItem['options']['store_id'])->first(['id', 'store_name']);
+                return ['isExist' => 1, 'existingStore' => $existingStore];
+            }
+        }
+        return ['isExist' => $isExist];
+    }
+
 }

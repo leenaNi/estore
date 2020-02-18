@@ -190,9 +190,16 @@ class ApiDistributorController extends Controller
                 $i=0;
                 foreach($productResult as $getData)
                 {
+                    $companies = DB::table("products as p")->join("brand as b","b.id","=","p.brand_id")->join("company as c", "c.id","=", "b.company_id")->select("b.id","b.company_id","c.name")->where("p.store_id",$getData->store_id)->where("p.brand_id","<>",0)->get();
+                    $companyArr = [];
+                    foreach($companies as $company){
+                        if(!in_array($company->name, $companyArr))
+                            array_push($companyArr, $company->name);
+                    }
+
                     $storeArray[$i]['store_id'] = $getData->store_id;
                     $storeArray[$i]['store_name'] = $getData->store_name;
-
+                    $storeArray[$i]['companies'] = $companyArr;    
                     //get offress count
                     $storeId = $getData->store_id;
                     $offersIdCountResult = DB::table('offers')
@@ -623,21 +630,24 @@ class ApiDistributorController extends Controller
                 //     $multipleDistributorIds[] = $distributorIdsData->distributor_id;
                 // }
                 $multipleDistributorIds[] = $distributorId;
+                if($companyId){
                 //Comapnywise Brands
                 $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
                 $companyBrandIds = [];
                 foreach ($companyBrands as $companyBrand) {
                     $companyBrandIds[] = $companyBrand->id;
                 }
-
+                }
                 if(count($multipleDistributorIds) > 0)
                 { 
                     // get brand id
                     $brandIdsResult = DB::table('stores')
                         ->join('products', 'products.store_id', '=', 'stores.id')
-                        ->whereIn('stores.merchant_id', $multipleDistributorIds)
-                        ->whereIn('products.brand_id', $companyBrandIds)
-                        ->where('stores.store_type', 'distributor')
+                        ->whereIn('stores.merchant_id', $multipleDistributorIds);
+                        if($companyId){
+                            $brandIdsResult = $brandIdsResult->whereIn('products.brand_id', $companyBrandIds);
+                        }
+                        $brandIdsResult = $brandIdsResult->where('stores.store_type', 'distributor')
                         ->where('stores.expiry_date', '>=', date('Y-m-d'))
                         ->get(['products.brand_id', 'products.store_id']);
 
