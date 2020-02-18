@@ -3,9 +3,9 @@
 
 	<!--==========================
 	    step1 Section starts
-	  ============================-->
+	  ============================ style="display:none;"-->
 	<section class="steps-section">
-		<div class="vert-middle-container" id="step1">
+		<div class="vert-middle-container" id="step1" >
 			<div class="container">
 				<div class="log-reg-form-container">
 					<div class="row">
@@ -86,7 +86,7 @@
 											</div>
 										</div>
 									</div>
-</div>
+									</div>
 										<div class="form-group text-center">
 											<p>By registering with us, you accept our <a href="#">Terms & Conditions.</a></p>
 										</div>
@@ -102,7 +102,7 @@
 			</div>
 		</div>
          <!-- otp verify -->
-        <div class="vert-middle-container" id="step2" style="display:none">
+        <div class="vert-middle-container" id="step2" style="display:none;">
 			<div class="container">
 				<div class="log-reg-form-container">
 					<div class="row">
@@ -125,16 +125,16 @@
 						</div>
 						<div class="col-md-7 form-fields sh h-100">
 							<div class="form-holder">
-								<form action="" >
+								<form action="" class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
 									<div class="">
 									<div class="scroller-y">
 										<div class="form-group">
 											<label for="">Type in your OTP</label>
 											<div class="input-group input-otp-group">
-												<input type="tel" max="1" class="form-control col" id="otp1" placeholder="">
-												<input type="tel" max="1" class="form-control col" id="otp2" placeholder="">
-												<input type="tel" class="form-control col" id="otp3" placeholder="">
-												<input type="tel" class="form-control col" id="otp4" placeholder="">
+												<input type="tel" max="1" class="form-control col" id="otp1" data-next="otp2" placeholder="">
+												<input type="tel" max="1" class="form-control col" id="otp2" data-next="otp3" data-previous="otp1" placeholder="">
+												<input type="tel" class="form-control col" id="otp3" data-next="otp4" data-previous="otp2" placeholder="">
+												<input type="tel" class="form-control col" id="otp4" data-previous="otp3" placeholder="">
 
 											</div>
 											<span class="error otperr" style="display:none">Please enter valid OTP</span>
@@ -193,6 +193,31 @@ function checkPhone(mobile){
             }
         });
 }
+
+$('.digit-group').find('input').each(function() {
+	$(this).attr('maxlength', 1);
+	$(this).on('keyup', function(e) {
+		var parent = $($(this).parent());		
+		if(e.keyCode === 8 || e.keyCode === 37) {
+			var prev = parent.find('input#' + $(this).data('previous'));
+			
+			if(prev.length) {
+				$(prev).select();
+			}
+		} else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+			var next = parent.find('input#' + $(this).data('next'));
+			
+			if(next.length) {
+				$(next).select();
+			} else {
+				if(parent.data('autosubmit')) {
+					parent.submit();
+				}
+			}
+		}
+	});
+});
+
 $("#nextstep").click(function(){
     if($("input[name=store_name]").val() == '' && $("input[name=phone]").val() == '')
     {
