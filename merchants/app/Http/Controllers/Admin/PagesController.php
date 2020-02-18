@@ -157,14 +157,19 @@ class PagesController extends Controller
         }
         $chart_prodname = array();
         foreach ($topProducts as $key => $product) {
-            if ($product->prod_id == $product->sub_prod_id || $prd->sub_prod_id == '') {
+            // if ($product->prod_id == $product->sub_prod_id || $prd->sub_prod_id == '') {
+                if ($product->prod_id == $product->sub_prod_id || $product->sub_prod_id == '') {
+                    $parentprod = Product::find($prd->prod_id);
+                } else {
+                    $parentprod = Product::find($prd->sub_prod_id);
+                }
                 $parentprod = Product::find($product->prod_id);
                 dd($product->product);
                 if ($parentprod != null) {
                     $product->product->price = $product->product->price + @$parentprod->selling_price;
                     $product->product->actualPrice = $product->product->price + $parentprod->selling_price;
                 }
-            }
+            // }
             $products[$key]["product_name"] = $product->product;
             $products[$key]["quantity"] = $product->quantity;
             $products[$key]['color'] = '#' . $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
