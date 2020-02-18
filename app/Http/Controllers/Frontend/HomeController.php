@@ -376,9 +376,7 @@ class HomeController extends Controller
             $viewname = Config('constants.frontendView') . ".success";
             return Helper::returnView($viewname, $dataS);
         } else {
-            $data = [];
-            $viewname = Config('constants.frontendView') . ".index";
-            return Helper::returnView($viewname, $data);
+            return redirect()->route('home');
         }
     }
 
