@@ -283,7 +283,7 @@
                                                             <div style="width: 20px; height: 20px; background-color: {{$product["color"]}}"></div>
                                                         </td>
                                                         <td>
-                                                            {{$product["product_name"]->product}}
+                                                            {{@$product["product_name"]->product}}
                                                         </td>
                                                         <td>
                                                          Rs. {{ number_format((@$product["product_name"]->price* Session::get('currency_val')), 2, '.', '')}} 
@@ -674,7 +674,7 @@
                     value: {{$product['quantity']}},
                     color: "{{$product['color']}}",
 
-                    label: "{{$product["product_name"]->product}}",
+                    label: "{{@$product["product_name"]->product}}",
                 },  
                 <?php 
             }

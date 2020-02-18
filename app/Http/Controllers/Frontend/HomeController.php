@@ -267,7 +267,7 @@ class HomeController extends Controller
         $email = $data->email;
         $firstname = $data->firstname;
 
-//        Mail::send('Frontend.pages.emails.storeConfirmation', ['firstname' => $firstname], function ($m) use ($email, $firstname) {
+        //        Mail::send('Frontend.pages.emails.storeConfirmation', ['firstname' => $firstname], function ($m) use ($email, $firstname) {
         //            $m->to($email, $firstname)->subject('Thank you for registering with VeeStores');
         //            //$m->cc('madhuri@infiniteit.biz');
         //        });
@@ -369,11 +369,15 @@ class HomeController extends Controller
     public function getcongrats()
     {
         // echo "getcongrats  call function";
-        $dataS = [];
-        $dataS['id'] = Input::get('id');
-        $dataS['storedata'] = Store::find(Input::get('id'));
-        $viewname = Config('constants.frontendView') . ".success";
-        return Helper::returnView($viewname, $dataS);
+        if(Input::get('id')){
+            $dataS = [];
+            $dataS['id'] = Input::get('id');
+            $dataS['storedata'] = Store::find(Input::get('id'));
+            $viewname = Config('constants.frontendView') . ".success";
+            return Helper::returnView($viewname, $dataS);
+        } else {
+            return redirect()->route('home');
+        }
     }
 
     public function createInstance($storeType, $storeId, $prefix, $urlKey, $merchantPassword, $storeName, $currency, $phone, $domainname, $storeVersion, $expirydate, $identityCode)
