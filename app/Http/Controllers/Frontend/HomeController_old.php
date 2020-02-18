@@ -34,7 +34,7 @@ use Session;
 use Validator;
 use ZipArchive;
 
-class HomeController extends Controller
+class HomeOLDController extends Controller
 {
 
     public function isJson($string)

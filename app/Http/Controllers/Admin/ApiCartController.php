@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
+use App\Models\Attribute;
 use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\Store;
@@ -395,8 +396,46 @@ class ApiCartController extends Controller
         return $data;
     }
 
-    public function checkIfOfferExists() {
+    public function checkIfOfferExists()
+    {
 
+    }
+
+    public function getSubProducts()
+    {
+        $prod_id = filter_var(Input::get('prod_id'), FILTER_SANITIZE_STRING);
+        if($prod_id){
+            $prod = Product::find($prod_id);
+            if($prod != null && $prod->prod_type == 3){
+                if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                    $subprods = $prod->getsubproducts()->get();
+                } else {
+                    $subprods = $prod->subproducts()->get();
+                }        
+                foreach ($subprods as $subP) {
+                    $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                    print_r($hasOpt);
+                    foreach ($hasOpt as $prdOpt) {
+                        $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                        $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                        $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                        $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                        $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                        $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                    }
+                }
+                $data['variants'] = $selAttrs;
+                $data['status'] = "1";
+                $data['msg'] = "";
+            }else {
+                $data['status'] = "0";
+                $data['msg'] = "Invalid product";
+            }
+        } else {
+            $data['status'] = "0";
+            $data['msg'] = "Mandatory field is missing.";
+        }
+        return $data;
     }
 
 }

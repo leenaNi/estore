@@ -256,6 +256,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('', ["as" => "admin.cart.view", "uses" => "ApiCartController@index"]);
             Route::post('/add', ["as" => "admin.cart.add", "uses" => "ApiCartController@add"]);
             Route::post('/edit', ["as" => "admin.cart.edit", "uses" => "ApiCartController@edit"]);
+            Route::post('/get-sub-products', ["as" => "admin.cart.getSubProducts", "uses" => "ApiCartController@getSubProducts"]);
         });
     });
 });
