@@ -674,7 +674,7 @@
                     value: {{$product['quantity']}},
                     color: "{{$product['color']}}",
 
-                    label: "{{$product["product_name"]->product}}",
+                    label: "{{@$product["product_name"]->product}}",
                 },  
                 <?php 
             }
