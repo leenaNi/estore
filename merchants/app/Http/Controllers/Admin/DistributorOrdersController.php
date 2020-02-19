@@ -1940,6 +1940,7 @@ class DistributorOrdersController extends Controller
             Session::forget('login_user_first_name');
             Session::forget('login_user_last_name');
             Session::forget('login_user_telephone');
+            Session::forget('offerid');
         }
 
         if ($succ['orderId']) {
@@ -1968,7 +1969,6 @@ class DistributorOrdersController extends Controller
         $sub_total = $qty * $price;
         if ($this->feature['tax'] == 1) {
             $tax_amt = round($sub_total * $tax_rate / 100, 2);
-            // if tax type is exclusive tax added to price
             if ($tax_type == 2) {
                 $sub_total = $sub_total + $tax_amt;
             }
@@ -1984,7 +1984,7 @@ class DistributorOrdersController extends Controller
                 $total['offertype'] = $offerDetails->offer_discount_type;
                 if($offerDetails->offer_discount_type == 1){
                     $discount = $sub_total * ($offerDetails->offer_discount_value/100);
-                    $total['offer'] = number_format((float)$discount, 2, '.', '').' ('.$offerDetails->offer_name.')';
+                    $total['offer'] = number_format((float)$discount * Session::get('currency_val'), 2, '.', '').' ('.$offerDetails->offer_name.')';
                 }else if($offerDetails->offer_discount_type == 2){
                     $prodQty = DB::table("offers_products")->where(['offer_id'=>$offerid,'prod_id'=>$pprod->id])->first();
                     $total['offer'] = '('.$offerDetails->offer_name.')';
@@ -2035,7 +2035,7 @@ class DistributorOrdersController extends Controller
         $cart_amt = Helper::calAmtWithTax();
 
         $total['cart'] = Cart::instance('shopping')->content()->toArray();
-        $total['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
+        $total['subtotal'] = $cart_amt['sub_total'];
         $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
         $total['unitPrice'] = number_format((float)$price* Session::get('currency_val'), 2, '.', '') ;
         return $total;
@@ -2233,7 +2233,7 @@ class DistributorOrdersController extends Controller
             $cart_amt = Helper::calAmtWithTax();
             $data['cart'] = Cart::instance('shopping')->content()->toArray();
             $newAmnt = $cart_amt['total'] * Session::get('currency_val');
-            $data['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
+            $data['subtotal'] = $cart_amt['sub_total']* Session::get('currency_val');
             $data['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
             return $data;
         } else {
@@ -2247,8 +2247,8 @@ class DistributorOrdersController extends Controller
             }
             $cart_amt = Helper::calAmtWithTax();
             $data['cart'] = Cart::instance('shopping')->content()->toArray();
-            $data['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
-            $data['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
+            $data['subtotal'] = $cart_amt['sub_total'];
+            $data['orderAmount'] = $cart_amt['total'];
             $data['cartCnt'] = Cart::instance('shopping')->count();
             return $data;
         }

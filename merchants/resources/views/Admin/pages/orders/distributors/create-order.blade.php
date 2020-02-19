@@ -1042,6 +1042,7 @@ var prodoffer = 0;
                 var prod = $("[data-prdid=" + id + "]");
             }
             prod.parent().parent().find('.prodPrice').text(price);
+            //prod.parent().parent().find('.prodDiscount').text(price.offer);
             prod.parent().parent().find('.taxAmt').text((value.options.tax_amt * <?php echo Session::get('currency_val'); ?>).toFixed(2));
         });
     }
