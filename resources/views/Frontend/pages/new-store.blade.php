@@ -5,7 +5,7 @@
 	    step1 Section starts
 	  ============================ style="display:none;"-->
 	<section class="steps-section">
-		<div class="vert-middle-container" id="step1" style="display:none;">
+		<div class="vert-middle-container" id="step1" >
 			<div class="container">
 				<div class="log-reg-form-container">
 					<div class="row">
@@ -97,7 +97,7 @@
 			</div>
 		</div>
          <!-- otp verify -->
-        <div class="vert-middle-container" id="step2" style="display:block;">
+        <div class="vert-middle-container" id="step2" style="display:none;">
 			<div class="container">
 				<div class="log-reg-form-container">
 					<div class="row">

@@ -1,7 +1,7 @@
 @extends('Admin.layouts.default')
 
 @section('mystyles')
-<link rel="stylesheet" href="{{ asset('public/Admin/dist/css/tabs-css.css') }}">
+<!--<link rel="stylesheet" href="{{ asset('public/Admin/dist/css/tabs-css.css') }}">
 <style>
     .target3 {border: 2px dotted; text-align: center; padding-top: 10px; min-width: 100px; min-height: 100px; cursor: pointer; color : #fff;}
     .draggable3{margin: 5px;}
@@ -13,8 +13,56 @@
     .yellow{background-color: #f1c40f;}
 
 
+</style>-->
+
+<style>
+    .box-body{ width: 100%;}
+    #box{ width: 100%; min-height: 450px;}
+    .ui-rotatable-handle {
+        height: 16px;
+        width: 16px;
+        cursor: pointer;
+        background-image: url(https://d2102t1lty3x1n.cloudfront.net/Admin/dist/img/rotate.png);
+        background-size: 100%;
+        left: 5px;
+        bottom: 5px;
+        position: absolute;
+    }
+    .target3.ui-resizable {
+        border: 2px dotted;
+        text-align: center;
+        padding-top: 10px;
+        margin-bottom: 20px;
+        min-width: 100px;
+        min-height: 100px;
+    }
+/*    .draggable3{
+        margin: 5px;
+    }*/
+
+    .size1 > .target3 {
+        width: 150px;
+        height: 150px;
+        max-width: 100%;
+        max-height: auto !important;
+    }
+
+    .size2 .target3{
+        width: 200px;
+        height: 150px;
+        max-width: 100%;
+        max-height: auto !important;
+    }
+    .size3  .target3{
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        max-width: 100%;
+        max-height: auto !important;
+    }
 </style>
 @stop 
+
 @section('content') 
 <section class="content-header">   
     <h1>
@@ -97,17 +145,20 @@
                                 </ul>
                                 <div class="tab-content pull-left" style="width:100%;">
                                     <div class="tab-pane active" id="tab-linearrow-one">
-                                        <div  id='box' class="pull-left">
-                                        <?php//  dd($tables); ?>
-                                            @foreach($tables as $table)
-                                            <div class="draggable3 size{{$table->table_type }} col-md-3 ">
-                                                <div data-tableid="{{ $table->id }}" class="target3 {{@$table->tablestatus->color}} context-menu-one">
-                                                    {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
-                                                    <br>({{$table->chairs}})
+                                        <div class="box-body pull-left">
+                                            <div id='box'  class="pull-left">
+                                                @foreach($tables as $table)
+                                                <div class="draggable3 size{{$table->table_type }} col-md-3 col-sm-6 col-xs-12">
+                                                    <div class="target3" id="target_{{$table->id }}" data-myval="{{$table->id }}">
+                                                        {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
+                                                        <br>({{$table->chairs}})
+                                                        <div class="clearfix"></div>    
+                                                    </div>
                                                 </div>
+                                                @endforeach
                                             </div>
-                                            @endforeach
-                                        </div>
+                    
+                                        </div><!-- /.box-body -->
                                     </div>
                                     <div class="tab-pane" id="tab-linearrow-two">
 
@@ -236,13 +287,14 @@
 @stop
 
 @section('myscripts')
+
 <link href="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
 <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.js" type="text/javascript"></script>
 
 <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.ui.position.min.js" type="text/javascript"></script>
 
 <script src="https://swisnl.github.io/jQuery-contextMenu/js/main.js" type="text/javascript"></script>
-
+<script src='https://d2102t1lty3x1n.cloudfront.net/Admin/dist/js/jquery.ui.rotatable.min.js'></script>
 <script>
 var itemsNew = {
     "edit": {name: "Add Order", icon: "edit"},
@@ -261,6 +313,43 @@ var billNew = {
     "paste": {name: "Free Up Table", icon: "delete"},
 }
 $(document).ready(function () {
+
+    var tableLayoutDbArray = <?php echo $tables;?>;
+    //console.log("db array::"+JSON.stringify(tableLayoutDbArray));
+    for(var j=0;j<tableLayoutDbArray.length;j++)
+    {
+        var tableId = tableLayoutDbArray[j]['id'];
+        var tableAngle = tableLayoutDbArray[j]['angle'];
+        var tablePosition = tableLayoutDbArray[j]['position'];
+        var tableSize = tableLayoutDbArray[j]['size'];
+        if(tablePosition != '')
+        {
+            var splitPosition = tablePosition.split(",");
+            var topPosition = splitPosition[0]+"px";
+            var leftPosition = splitPosition[1]+"px";
+            $('#target_'+tableId).css({top: topPosition, left: leftPosition});
+        }
+
+        if(tableSize != '')
+        {
+            var splitSize = tableSize.split(",");
+            var tblWidth = splitSize[0]+"px";
+            var tblHeight = splitSize[1]+"px";
+            $('#target_'+tableId).css({width: tblWidth, height: tblHeight});
+        }
+
+        //console.log("table id::"+tableId+"::angle::"+tableAngle);
+        $('#target_'+tableId).rotatable( {degrees: tableAngle} )
+        
+        // $('#target_1').rotatable( {degrees: -2.54856555} )
+        //alert("angle::"+tableAngle);
+        $('#target_'+tableId).resizable().rotatable();
+        
+        //$("#target_1").css("transform", "rotate(-1.69872rad)");
+        var rotateAngle = tableAngle+'rad';
+        $("#target_"+tableId).css("transform", "rotate("+rotateAngle+")");
+    }
+
 
     $(".sidebar-toggle").click();
     $.contextMenu({
