@@ -1983,10 +1983,9 @@ class DistributorOrdersController extends Controller
             $offerDetails = DB::table("offers")->where(['id' => $offerid])->first();
             if (!empty($offerDetails)) {
                 $total['offertype'] = $offerDetails->offer_discount_type;
-<<<<<<< HEAD
                 if ($offerDetails->offer_discount_type == 1) {
                     $discount = $sub_total * ($offerDetails->offer_discount_value / 100);
-                    $total['offer'] = number_format((float) $discount, 2, '.', '') . ' (' . $offerDetails->offer_name . ')';
+                    $total['offer'] = number_format((float) $discount * Session::get('currency_val'), 2, '.', '') . ' (' . $offerDetails->offer_name . ')';
                 } else if ($offerDetails->offer_discount_type == 2) {
                     $prodQty = DB::table("offers_products")->where(['offer_id' => $offerid, 'prod_id' => $pprod->id])->first();
                     $total['offer'] = '(' . $offerDetails->offer_name . ')';
@@ -1994,18 +1993,6 @@ class DistributorOrdersController extends Controller
                         // dd($qty);
                         $offer_product = DB::table("offers_products as op")->join('products as p', 'op.prod_id', '=', 'p.id')->select('op.qty', 'p.product', 'op.prod_id')->where(['op.type' => 2, 'op.offer_id' => $offerid])->get();
                         if (count($offer_product) > 0) {
-=======
-                if($offerDetails->offer_discount_type == 1){
-                    $discount = $sub_total * ($offerDetails->offer_discount_value/100);
-                    $total['offer'] = number_format((float)$discount * Session::get('currency_val'), 2, '.', '').' ('.$offerDetails->offer_name.')';
-                }else if($offerDetails->offer_discount_type == 2){
-                    $prodQty = DB::table("offers_products")->where(['offer_id'=>$offerid,'prod_id'=>$pprod->id])->first();
-                    $total['offer'] = '('.$offerDetails->offer_name.')';
-                    if($qty >= $prodQty->qty){
-                       // dd($qty);
-                        $offer_product = DB::table("offers_products as op")->join('products as p','op.prod_id','=','p.id')->select('op.qty','p.product','op.prod_id')->where(['op.type'=>2,'op.offer_id'=>$offerid])->get();
-                        if(count($offer_product)>0){
->>>>>>> b60b71a8fab7353dafe97ab06a16a465aa512962
                             $total['offerProdCount'] = count($offer_product);
                             $prod = [];
                             foreach ($offer_product as $offerprod) {
@@ -2246,7 +2233,7 @@ class DistributorOrdersController extends Controller
             $cart_amt = Helper::calAmtWithTax();
             $data['cart'] = Cart::instance('shopping')->content()->toArray();
             $newAmnt = $cart_amt['total'] * Session::get('currency_val');
-            $data['subtotal'] = $cart_amt['sub_total']* Session::get('currency_val');
+            $data['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
             $data['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
             return $data;
         } else {
