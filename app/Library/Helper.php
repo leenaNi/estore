@@ -5,10 +5,11 @@ namespace App\Library;
 use App\Models\Category;
 use App\Models\CategoryMaster;
 use App\Models\Currency;
+use App\Models\GeneralSetting;
 use App\Models\Settings;
 use App\Models\Store;
 use App\Models\User;
-use App\Models\GeneralSetting;
+use Cart;
 use DB;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,6 @@ use Mail;
 use Session;
 use Validator;
 use View;
-use Cart;
 
 class Helper
 {
@@ -179,17 +179,18 @@ class Helper
         fclose($fp);
     }
 
-    public static function saveDefaultSet($catid, $prefix, $storeId,$storeType)
+    public static function saveDefaultSet($catid, $prefix, $storeId, $storeType)
     {
         $cat = Category::find($catid);
-       
+
         $assignedCategories = json_decode($cat->assigned_categories);
-        
+
         $categories = CategoryMaster::where('status', 1)->whereIn('id', $assignedCategories)->get();
-        $catsave = [];
+        // $catsave = [];
         $i = 0;
-        if($categories){
+        if ($categories) {
             foreach ($categories as $ck => $cv) {
+                $catsave = [];
                 $catsave[$ck]['category_id'] = $cv->id;
                 $catsave[$ck]['is_nav'] = 1;
                 $catsave[$ck]['url_key'] = strtolower(str_replace(" ", "-", $cv->category));
@@ -198,7 +199,7 @@ class Helper
                 $i++;
                 $catsave[$ck]['rgt'] = $i;
                 $catsave[$ck]['depth'] = 0;
-                if($cv->parent_id !== NULL) {
+                if ($cv->parent_id !== null) {
                     $parentID = DB::table('store_categories')->where('category_id', $cv->parent_id)->where('store_id', $storeId)->first()->id;
                 } else {
                     $parentID = $cv->parent_id;
@@ -274,7 +275,7 @@ class Helper
             ->get();
         $saveIndustryQuestion = [];
         $updateGeneralSetting = [];
-        
+
         foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
             $generalSettingId = DB::table('general_setting')->where('url_key', $hasIndVal->url_key)->where('store_id', $storeId)->first();
             if ($generalSettingId && $generalSettingId != null) {
@@ -285,15 +286,12 @@ class Helper
         }
         DB::table('has_industries')->insert($saveIndustryQuestion);
 
-        if($storeType == 'distributor')
-        {
-            $distributorDefaultSettingUrlKey = array("email-facility"=>1,"acl"=>1,"invoice"=>1,"additional-charge"=>1,"default-courier"=>0,"cod"=>0,"stock"=>1,"related-products"=>0);
-            foreach ($industriQuestions as $hasIndKey => $hasIndVal)
-            {
-                if(array_key_exists($hasIndVal->url_key,$distributorDefaultSettingUrlKey))
-                {
+        if ($storeType == 'distributor') {
+            $distributorDefaultSettingUrlKey = array("email-facility" => 1, "acl" => 1, "invoice" => 1, "additional-charge" => 1, "default-courier" => 0, "cod" => 0, "stock" => 1, "related-products" => 0);
+            foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
+                if (array_key_exists($hasIndVal->url_key, $distributorDefaultSettingUrlKey)) {
                     $value = $distributorDefaultSettingUrlKey[$hasIndVal->url_key];
-                    DB::table('general_setting')->where(['url_key'=>$hasIndVal->url_key,'store_id'=> $storeId])->update(array('is_question'=>$value));
+                    DB::table('general_setting')->where(['url_key' => $hasIndVal->url_key, 'store_id' => $storeId])->update(array('is_question' => $value));
                 }
             } // End foreach
         }
@@ -371,17 +369,17 @@ class Helper
                 $option = '';
                 // dd($cart['price']);
                 $tableContant = $tableContant . '   <tr class="cart_item">
-																			        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
+																						        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
                 if ($cart['options']['image'] != '') {
                     $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . $cart["options"]["image"]) . '" alt="">
-																			          </a>';
+																						          </a>';
                 } else {
                     $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
                 }
                 $tableContant = $tableContant . '</td>
-																			        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
-																			            <br>
-																			          <small><a href="#"> ';
+																						        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
+																						            <br>
+																						          <small><a href="#"> ';
                 if (!empty($cart['options']['options'])) {
 
                     foreach ($cart['options']['options'] as $key => $value) {
@@ -389,19 +387,19 @@ class Helper
                     }
                 }
                 $tableContant = $tableContant . @$option . ' </a></small></td>
-																			        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
-																			        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-																			          <div class=""> ' . $cart["qty"] . '</div>
-																			        </td>';
+																						        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
+																						        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
+																						          <div class=""> ' . $cart["qty"] . '</div>
+																						        </td>';
                 $tax_amt = 0;
                 if ($tax == 1) {
                     $tableContant = $tableContant . '   <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-																			         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
-																			        </td>';
+																						         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
+																						        </td>';
                     $tax_amt = $cart['options']["tax_amt"];
                 }
                 $tableContant = $tableContant . '<td class="cart-product-subtotal" align="center" style="border: 1px solid #ddd;border-left: 0;border-right:0px;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format((@$cart["subtotal"] * Session::get('currency_val')), 2, '.', '') . '</span> </td>
-																			      </tr>';
+																						      </tr>';
                 $gettotal += $cart["subtotal"] + $tax_amt;
             endforeach;
             $tableContant = $tableContant . '  </tbody>
@@ -535,7 +533,8 @@ class Helper
     //     return $data;
     // }
 
-    public static function calAmtWithTax() {
+    public static function calAmtWithTax()
+    {
         $user = User::where('id', Session::get('authUserId'))->first();
         $taxStatus = GeneralSetting::where('url_key', 'tax')->where('store_id', $user->store_id)->first()->status;
         $cart = Cart::instance('shopping')->content();
@@ -552,7 +551,7 @@ class Helper
                 if ($c->options->tax_type == 2) {
                     $calTax = $calTax + $tax_amt;
                 }
-                Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);            
+                Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);
             }
         }
 
@@ -627,6 +626,7 @@ class Helper
     }
 
     public static function createUniqueIdentityCode($allinput, $lastInsteredId) // for merchnat and distributor
+
     {
         $storeName = $allinput['store_name'];
         $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
@@ -638,7 +638,8 @@ class Helper
 
     } // End createUniqueIdentityCode
 
-    public static function searchExistingCart($prod_id) {
+    public static function searchExistingCart($prod_id)
+    {
         $cartContent = Cart::instance("shopping")->content()->toArray();
         $isExist = 0;
         foreach ($cartContent as $key => $cartItem) {
@@ -658,11 +659,12 @@ class Helper
         return ["isExist" => $isExist];
     }
 
-    public static function checkStoreExists($storeId) {
+    public static function checkStoreExists($storeId)
+    {
         $cartContent = Cart::instance("shopping")->content()->toArray();
         $isExist = 0;
         foreach ($cartContent as $key => $cartItem) {
-            if($cartItem['options']['store_id'] != $storeId) {
+            if ($cartItem['options']['store_id'] != $storeId) {
                 $existingStore = Store::where('id', $cartItem['options']['store_id'])->first(['id', 'store_name']);
                 return ['isExist' => 1, 'existingStore' => $existingStore];
             }

@@ -1035,7 +1035,7 @@ class HomeController extends Controller
 
             $emailData = ['name' => $firstname, 'email' => $useremail, 'telephone' => $telephone, 'messages' => $message];
             Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
-                $m->to("pravin@infiniteit.biz", $firstname)->subject('eStorifi Contact form!');
+                $m->to("leena@infiniteit.biz", $firstname)->subject('eStorifi Contact form!');
             });
             return 1;
         } else {
