@@ -491,9 +491,10 @@ class VendorsController extends Controller
         $viewname = Config('constants.adminAddMerchantView') . '.index';
 
         $merchantListingResult = DB::table('has_distributors as hd')
-        ->select(['hd.merchant_id', 'm.register_details','hd.updated_at'])
+        ->select(['hd.merchant_id', 'hd.is_approved','m.register_details','hd.updated_at'])
         ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
-        ->where([["hd.distributor_id", $distributorId],['is_approved', '1']])
+        //->where([["hd.distributor_id", $distributorId],['is_approved', '1']])
+        ->where([["hd.distributor_id", $distributorId]])
         ->orderBy('hd.id','desc')->get();
         
         if (isset($merchantListingResult) && !empty($merchantListingResult)) 
@@ -571,19 +572,19 @@ class VendorsController extends Controller
             $baseurl = str_replace("\\", "/", base_path());
             $linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
             //SMS
-            $msgOrderSucc = $storeName . " is trying to connect with you for business Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            $msgOrderSucc = $storeName . " is trying to connect with you for business.";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
             Helper::sendsms($hdnMerchantPhone, $msgOrderSucc, $countryCode);
 
             //Email
             $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
             $sub = "Distributor request";
         
-            $mailcontent = $storeName." is trying to connect with you for business. ";
-            $mailcontent .= "Click on below link, if you want to connect with distributor ".$linkToConnect;
+            //$mailcontent = $storeName." is trying to connect with you for business. ";
+            //$mailcontent .= "Click on below link, if you want to connect with distributor ".$linkToConnect;
         
-            if (!empty($hdnMerchantEmail)) {
+            /*if (!empty($hdnMerchantEmail)) {
                 Helper::withoutViewSendMail($hdnMerchantEmail, $sub, $mailcontent);
-            }
+            }*/
             Session::flash('sendRequestMsg', 'Your request successfully sent to the merchant.');
             
         } // End if
@@ -597,6 +598,33 @@ class VendorsController extends Controller
        
     } // End sendNotificationToMerchant();
 
+    public function isApprovedMerchant()
+    {
+        $allinput = Input::all();
+        $distributorId = $allinput['distributorId'];
+        //echo "distributor id::".$distributorId;
+        //exit;
+        //update is_approved=1 in has_distributor table
+        $hasDistributorRs = DB::table('has_distributors')
+        ->where('merchant_id', $distributorId)
+        ->update(['is_approved' => 1]);
+        /*$hasDistributorRs = hasDistributor::find($merchantId);
+                $hasDistributorRs->is_approved = 1;
+                $hasDistributorRs->update();*/
+
+        if(!empty($hasDistributorRs))
+        {
+            $data = ['status' => 1, 'error' => "Records updated Successfully"];
+        }
+        else
+        {
+            $data = ['status' => 0, 'error' => "Not updated"];
+        }
+        return $data;
+    }
+
+
+    //for mail purpose
     public function approveRequest($id)
     {
         if(isset($id) && !empty($id))
