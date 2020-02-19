@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Library\Helper;
 use App\Library\CustomValidator;
+use App\Library\Helper;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Currency;
@@ -42,7 +42,7 @@ class ApiCreateStoreController extends Controller
             return response()->json(['status' => '0', 'msg' => 'User already register with us', 'result' => $user])->header('token', $token);
         }
 
-//        if (count($userDetails) <= 0) {
+        //        if (count($userDetails) <= 0) {
         //            $userData = new Merchant;
         //            $userData->email = $userDataInput->email;
         //            $userData->firstname = $userDataInput->first_name;
@@ -109,7 +109,7 @@ class ApiCreateStoreController extends Controller
         $phone = Input::get('phone');
         $roleType = Input::get('roleType');
         if (!empty($roleType) && !empty($storeName) && !empty($phone)) {
-            if (CustomValidator::validatePhone($phone)){
+            if (CustomValidator::validatePhone($phone)) {
                 $verifyOTP = $this->verifyOTP();
                 if ($verifyOTP) {
                     $checkStore = $this->checkStore();
@@ -156,7 +156,7 @@ class ApiCreateStoreController extends Controller
                                 $merchantObj1 = Merchant::find($lastInsteredId);
                                 $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
                                 $merchantObj1->identity_code = $identityCode;
-                                $decoded = json_decode($merchantObj1->register_details,TRUE);
+                                $decoded = json_decode($merchantObj1->register_details, true);
                                 $decoded['business_type'] = ["17"];
                                 $json = json_encode($decoded);
                                 $merchantObj1->register_details = $json;
@@ -190,7 +190,7 @@ class ApiCreateStoreController extends Controller
                                 $distributorObj1 = Vendor::find($lastInsteredId);
                                 $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
                                 $distributorObj1->identity_code = $identityCode;
-                                $decoded = json_decode($distributorObj1->register_details,TRUE);
+                                $decoded = json_decode($distributorObj1->register_details, true);
                                 $decoded['business_type'] = ["17"];
                                 $json = json_encode($decoded);
                                 $distributorObj1->register_details = $json;
@@ -239,7 +239,7 @@ class ApiCreateStoreController extends Controller
                 } else {
                     return response()->json(["status" => 0, 'msg' => 'Invalid OTP/Mobile number']);
                 }
-            }  else {
+            } else {
                 $data = ["status" => 0, "msg" => "Invalid mobile number"];
             }
         } else {
@@ -774,7 +774,7 @@ class ApiCreateStoreController extends Controller
         $country = Input::get("country_code");
         $mobile = Input::get("phone");
         if (Input::get("phone") && !empty(Input::get("phone"))) {
-            if (CustomValidator::validatePhone($mobile) && CustomValidator::validateNumber($country)) {                
+            if (CustomValidator::validatePhone($mobile) && CustomValidator::validateNumber($country)) {
                 $otp = rand(1000, 9999);
                 $msgOrderSucc = "[#] Your one time password is " . $otp . ". lRaDZ0eOjMz"; // "Contact 1800 3000 2020 for real time support.! Team eStorifi";
                 $smsOutput = Helper::sendsms($mobile, $msgOrderSucc, $country);

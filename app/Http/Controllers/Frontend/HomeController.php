@@ -570,12 +570,6 @@ class HomeController extends Controller
                         $insertPermission = DB::table("permission_role")->insert($permissions);
                     }
 
-                    if ($phone) {
-                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
-                        Helper::sendsms($phone, $msgOrderSucc, $country_code);
-                        $idcodeMsg = "Your unique identification code is ".$identityCode;
-                        Helper::sendsms($phone, $idcodeMsg, $country_code);
-                    }
                     // permission_role
                     $baseurl = str_replace("\\", "/", base_path());
                     $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
@@ -589,6 +583,13 @@ class HomeController extends Controller
                     }
                     $mailcontent .= "Unique Code is: " . $identityCode . " " . "\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
+
+                    if ($phone) {
+                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Store Admin Link: https://" . $domainname . "." . $domain . "/admin Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
+                        Helper::sendsms($phone, $msgOrderSucc, $country_code);
+                        $idcodeMsg = "Your unique identification code is ".$identityCode;
+                        Helper::sendsms($phone, $idcodeMsg, $country_code);
+                    }
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
@@ -1035,7 +1036,7 @@ class HomeController extends Controller
 
             $emailData = ['name' => $firstname, 'email' => $useremail, 'telephone' => $telephone, 'messages' => $message];
             Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
-                $m->to("pravin@infiniteit.biz", $firstname)->subject('eStorifi Contact form!');
+                $m->to("leena@infiniteit.biz", $firstname)->subject('eStorifi Contact form!');
             });
             return 1;
         } else {
