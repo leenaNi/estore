@@ -226,7 +226,7 @@ class ApiCreateStoreController extends Controller
                                 $user = JWTAuth::toUser($token);
                                 $store = $getMerchat->getstores;
                                 $data = ['storeCount' => count($store)]; //'result' => $result,
-                                return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'data' => ['user' => $user, 'store' => $store, 'setupStatus' => $data]])->header('token', $token);
+                                return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'data' => ['user' => $user, 'store' => $store, 'merchant' => $getMerchat, 'setupStatus' => $data]])->header('token', $token);
                             } else {
                                 return response()->json($result);
                             }
