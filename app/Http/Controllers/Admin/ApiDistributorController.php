@@ -826,7 +826,7 @@ class ApiDistributorController extends Controller
                                 // ->groupBy('has_products.order_id')
                                 ->orderBy('orders.id', 'desc')
                                 // ->get(['orders.*', 'has_products.order_source']);
-                                ->get(['has_products.id', 'has_products.order_id', 'has_products.prod_id', 'has_products.sub_prod_id', 'has_products.qty', 'has_products.price', 'product.product', DB::raw('concat("' . $productImgPath. '", catalog_images.filename) as productImg')]);
+                                ->get(['has_products.id', 'has_products.order_id', 'has_products.prod_id', 'has_products.sub_prod_id', 'has_products.qty', 'has_products.price', 'products.product', DB::raw('concat("' . $productImgPath. '", catalog_images.filename) as productImg')]);
                             //echo "<pre>";print_r($orders);exit;
                             //dd(DB::getQueryLog()); // Show results of log
                             if (count($orders) > 0) {
