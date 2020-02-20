@@ -781,7 +781,7 @@ class ApiCreateStoreController extends Controller
                 $smsOutput = explode(' | ', $smsOutput);
                 if ($smsOutput[0] === 'success') {
                     DB::table('user_otp')->insert(['phone' => $mobile, 'otp' => $otp, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]);
-                    $data = ["status" => 1, "msg" => "OTP Successfully send on your phone Number"]; //, "otp"=> $otp, 'smsOutput' => $smsOutput
+                    $data = ["status" => 1, "msg" => "OTP Successfully send on your phone Number", "otp" => $otp]; //, "otp"=> $otp, 'smsOutput' => $smsOutput
                     return $data;
                 } else {
                     $data = ["status" => 0, "msg" => "Invalid phone number"];
