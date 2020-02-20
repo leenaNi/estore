@@ -197,7 +197,7 @@ class ApiCreateStoreController extends Controller
                                 $distributorObj1->save();
                             }
 
-                            return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
+                            // return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
                         }
 
                         $store = new Store();
