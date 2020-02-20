@@ -108,13 +108,13 @@ class ApiCreateStoreController extends Controller
         $storeName = Input::get('store_name');
         $phone = Input::get('phone');
         $roleType = Input::get('roleType');
-        if (!empty($roleType) && !empty($storeName) && !empty($phone)) {
+        if ((!empty($roleType) && in_array($roleType, ['1', '2'])) && !empty($storeName) && !empty($phone)) {
             if (CustomValidator::validatePhone($phone)) {
                 $verifyOTP = $this->verifyOTP();
                 if ($verifyOTP) {
                     $checkStore = $this->checkStore();
                     if ($checkStore['status']) {
-                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : 'distributor';
+                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : ($allinput['roleType'] == '2')? 'distributor': '';
                         $settings = Settings::where('bank_id', 0)->first();
                         $country = Country::where("id", $settings->country_id)->get()->first();
                         $currency = Currency::where("id", $settings->currency_id)->get()->first();
@@ -167,7 +167,7 @@ class ApiCreateStoreController extends Controller
                             // Validate Merchant Data
                             $validation = new Vendor();
                             $allinput['business_name'] = $storeName;
-                            $validator = Validator::make(Input::all(), Vendor::rules(), $validation->messages);
+                            $validator = Validator::make($allinput, Vendor::rules(), $validation->messages);
                             if ($validator->fails()) {
                                 $errMsg = [];
                                 $err = $validator->messages()->toArray();
