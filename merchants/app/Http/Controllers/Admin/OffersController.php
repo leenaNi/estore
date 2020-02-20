@@ -41,7 +41,7 @@ class OffersController extends Controller
     }
 
     public function save()
-    {
+    {  
         $categoryIds = explode(",", Input::get('CategoryIds'));
         $productIds = explode(",", Input::get('ProductIds'));
         // print_r(Input::all());
@@ -86,6 +86,7 @@ class OffersController extends Controller
         //     $offerNew->products()->detach();
 
         if (!empty(Input::get('prod_id'))) {
+            
             $prod_ids = Input::get('prod_id');
             $prod_qtys = Input::get('prod_qty');
             $products = [];
@@ -100,8 +101,8 @@ class OffersController extends Controller
             DB::table('offers_products')->insert($products);
         }
 
-        if (!empty(Input::get('offer_prod'))) {
-            $prod_ids = Input::get('offer_prod');
+        if (!empty(Input::get('offer_prod_id'))) {
+            $prod_ids = Input::get('offer_prod_id');
             $prod_qtys = Input::get('offer_prod_qty');
             $products = [];
             foreach ($prod_ids as $prodIdKey => $prodId) {

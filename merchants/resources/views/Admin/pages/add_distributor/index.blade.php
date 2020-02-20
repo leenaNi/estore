@@ -70,10 +70,11 @@
                     <tr>
                         <th>#</th>
                         <th>Business Name</th>
-                        <th>Concern Person Name</th>
+                        <!--<th>Concern Person Name</th>-->
                         <th>Mobile Number</th>
                         <th>Connection Date</th>
                         <th>Ledger</th>
+                        <th>Action</th>
                     </tr>
                 </thead>	
                 <tbody>
@@ -86,14 +87,39 @@
                         $i++;
                         $decodedDistributorDetail = json_decode($data->register_details);
                         $connectionData = date("d-m-Y", strtotime($data->updated_at));;
+                        /*$firstName = $data->firstname;
+                        if($firstName != '')
+                        {
+                            $firstName = $firstName;
+                        }
+                        else {
+                            $firstName = '-';
+                        }*/
+                        $merchantId = $data->merchant_id;
+                        $isApprovedVal = $data->is_approved;
+                        //echo "is approve val::".$isApprovedVal;
                     ?>
                     <tr>
                         <td>{{$i}}</td>
                         <td>{{$decodedDistributorDetail->store_name}}</td>
-                        <td>{{$decodedDistributorDetail->firstname}}</td>
+                        <!--<td>-</td>-->
                         <td>{{$decodedDistributorDetail->phone}}</td>
                         <td>{{$connectionData}}</td>
                         <td><i class="fa fa-pencil-square-o fa-fw" title="Ledger"></i></td>
+                        <?php 
+                        if($isApprovedVal > 0)
+                        {
+                        ?>
+                          <td id="approved_merchant_{{$merchantId}}">Approved</td>
+                        <?php 
+                        }
+                        else
+                        {
+                        ?>
+                            <td><a id="not_approve_merchant_{{$merchantId}}" href="javascript:;" onClick="approveDistributor({{$merchantId}})">Approve</a></td>
+                        <?php
+                        }
+                        ?>
                     </tr> 
                     @endforeach
                 @else
@@ -167,6 +193,31 @@
     function hideErrorMsg(id)
     {
         $("#"+id).hide();
+    }
+
+    function approveDistributor(merchantId)
+    {
+        $.ajax({
+                    method: "POST",
+                    data: {'merchantId': merchantId},
+                    url: "{{route('admin.distributor.isApproveDistributor')}}",
+                    dataType: "json",
+                    success: function (data) {
+                       // alert(data['status']);
+                        if(data['status'] == 1)
+                        {
+                           // alert("if");
+                            $("#not_approve_merchant_"+merchantId).html('Approved');
+                        }
+                        else
+                        {
+                            alert("Something went wrong!");
+                        }
+                        return false;
+                        // location.reload();courier-services
+                    }
+            });
+            return false;
     }
 </script>
 @stop

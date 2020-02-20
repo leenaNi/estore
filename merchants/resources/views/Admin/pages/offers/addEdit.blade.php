@@ -67,49 +67,7 @@
                         </div>
                     </div>
                     <div class="line line-dashed b-b line-lg pull-in"></div>
-                    <!-- <div class="form-group">
-                        {!!Form::label('min_order_qty','Enter Minimum Order Quantity',['class'=>'col-sm-2 control-label']) !!}
-                        <div class="col-sm-10">
-                            {!! Form::text('min_order_qty',null,["class"=>'form-control',"placeholder"=>"Enter Minimum Order Quantity"]) !!}
-                        </div>
-                    </div>
-
-                    <div class="line line-dashed b-b line-lg pull-in"></div> -->
-
-                    <!-- <div class="form-group">
-                        {!!Form::label('min_free_qty','Enter Offered Quantity',['class'=>'col-sm-2 control-label']) !!}
-                        <div class="col-sm-10">
-                            {!! Form::text('min_free_qty',null,["class"=>'form-control',"placeholder"=>"Enter Minimum Free Quantity"]) !!}
-                        </div>
-                    </div> -->
-<!--
-                    <div class="line line-dashed b-b line-lg pull-in"></div>
-
-                    <div class="form-group discount_type">
-                        {!!Form::label('min_order_amt','Enter Minimum Order Amount',['class'=>'col-sm-2 control-label']) !!}
-                        <div class="col-sm-10">
-                            {!! Form::text('min_order_amt',null,["class"=>'form-control',"placeholder"=>"Enter Minimum Order Amount"]) !!}
-                        </div>
-                    </div>
-
-                    <div class="line line-dashed b-b line-lg pull-in"></div>
-
-                    <div class="form-group discount_type">
-                        {!!Form::label('max_discount_amt','Enter Maximum Discount Amount',['class'=>'col-sm-2 control-label']) !!}
-                        <div class="col-sm-10">
-                            {!! Form::text('max_discount_amt',null,["class"=>'form-control',"placeholder"=>"Enter Maximum Discount Amount"]) !!}
-                        </div>
-                    </div> -->
-
-                    <!-- <div class="line line-dashed b-b line-lg pull-in"></div>
-
-                    <div class="form-group">
-                        {!!Form::label('full_incremental_order','Full Incremental Order ?',['class'=>'col-sm-2 control-label']) !!}
-                        <div class="col-sm-10">
-                            {!! Form::select('full_incremental_order',["0" => "No", "1" => "Yes"],null,["class"=>'form-control']) !!}
-                        </div>
-                    </div> -->
-
+                 
                     <div class="line line-dashed b-b line-lg pull-in"></div>
 
                     <?php
@@ -426,15 +384,14 @@ $offerProducts1 = $offer->products()->where('type', 2)->get();
     });
 
     $('#add-product').click(function () {
-        // var newProduct = $('#sample-product').html();
         var newProduct = '<tr><td><input type="text" class="col-md-12 form-control prod-search validate[required]" placeholder="Search Product" name="prod[]"><input type="hidden" class="col-md-12 form-control prod" name="prod_id[]"></td><td><input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="prod_qty[]"></td><td><a class="del-product"><i class="fa fa-trash"></i></a></td></tr>';
-        console.log(newProduct);
         $('#product-list').append(newProduct);
         $(".prod-search").autocomplete({
         source: "{{route('admin.offers.searchProduct')}}",
         minLength: 1,
         select: function (event, ui) {
             // getSubprods(ui.item.id, $(this));
+            console.log($(this).parent().find('input.prod'));
             $(this).attr('data-prdid', ui.item.id);
             $(this).parent().find('input.prod').val(ui.item.id);
             $(this).parent().parent().attr('data-prod-id', ui.item.id);
@@ -442,9 +399,8 @@ $offerProducts1 = $offer->products()->where('type', 2)->get();
     });
     });
     $('#add-offer-product').click(function () {
-        // var newProduct = $('#sample-product').html();
         var newProduct = '<tr><td><input type="text" class="col-md-12 form-control offer-prod-search validate[required]" placeholder="Search Product" name="offer_prod[]"><input type="hidden" class="col-md-12 form-control offer-prod" name="offer_prod_id[]"></td><td><input type="tel" class="col-md-12 form-control validate[required]" placeholder="Enter Order Quantity" name="offer_prod_qty[]"></td><td><a class="del-product"><i class="fa fa-trash"></i></a></td></tr>';
-        console.log(newProduct);
+        //console.log(newProduct);
         $('#offer-product-list').append(newProduct);
         $(".offer-prod-search").autocomplete({
         source: "{{route('admin.offers.searchOfferProduct')}}",
