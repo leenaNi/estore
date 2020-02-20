@@ -764,7 +764,6 @@ class ApiDistributorController extends Controller
             $merchantId = Input::get("merchantId");
             $distributorId = Input::get("distributorId");
             $user = User::where('id', Session::get('authUserId'))->first();
-            dd($user);
             $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
             //echo "<pre>";
             //print_r($getDitributorIdsResult);
