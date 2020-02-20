@@ -50,7 +50,6 @@ class ApiMerchantController extends Controller
         $phone = Input::get("phone");
         $otp = Input::get("otp");
         $userdata = User::where(['telephone' => $phone, 'otp' => $otp])->first();
-        dd($userdata);
         if (!empty($userdata)) {
             if (!$token = JWTAuth::fromUser($userdata)) {
                 return response()->json(["status" => 0, 'msg' => "Invalid Mobile Number"]);
