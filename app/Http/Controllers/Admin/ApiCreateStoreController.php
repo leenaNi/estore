@@ -128,6 +128,7 @@ class ApiCreateStoreController extends Controller
                         $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
                         $actualDomain = str_replace("..", ".", $actualDomain);
                         $allinput['domain_name'] = $domainname;
+                        $newMerchant = '';
                         if ($storeType == 'merchant') {
                             // Validate Merchant Data
                             $validation = new Merchant();
@@ -163,6 +164,7 @@ class ApiCreateStoreController extends Controller
                                 $merchantObj1->save();
 
                             }
+                            $newMerchant = $getMerchat;
                         } else if ($storeType == 'distributor') {
                             // Validate Merchant Data
                             $validation = new Vendor();
@@ -185,7 +187,6 @@ class ApiCreateStoreController extends Controller
                             $distributorObj->register_details = json_encode($allinput);
                             $distributorObj->save();
                             $lastInsteredId = $distributorObj->id;
-
                             if ($lastInsteredId > 0) {
                                 $distributorObj1 = Vendor::find($lastInsteredId);
                                 $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
@@ -195,8 +196,8 @@ class ApiCreateStoreController extends Controller
                                 $json = json_encode($decoded);
                                 $distributorObj1->register_details = $json;
                                 $distributorObj1->save();
-                            }
-
+                            }                            
+                            $newMerchant = $distributorObj;
                             // return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
                         }
 
@@ -224,9 +225,9 @@ class ApiCreateStoreController extends Controller
                                 $regUser = DB::table('users')->where('store_id', $store->id)->where('user_type', 1)->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
                                 $token = JWTAuth::fromUser($regUser);
                                 $user = JWTAuth::toUser($token);
-                                $store = $getMerchat->getstores;
+                                $store = $store; // $getMerchat->getstores;
                                 $data = ['storeCount' => count($store)]; //'result' => $result,
-                                return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'data' => ['user' => $user, 'store' => $store, 'merchant' => $getMerchat, 'setupStatus' => $data]])->header('token', $token);
+                                return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'data' => ['user' => $user, 'store' => $store, 'merchant' => $newMerchant, 'setupStatus' => $data]])->header('token', $token);
                             } else {
                                 return response()->json($result);
                             }
