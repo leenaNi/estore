@@ -29,6 +29,7 @@ class OrderStatusController extends Controller {
             $orderstatusInfo = OrderStatus::paginate(Config('constants.paginateNo'));
               $orderstatusCount=$orderstatusInfo->total();
         }
+        //echo "<pre>";print_r($orderstatusInfo);exit;
         $data = ['orderstatusInfo' => $orderstatusInfo,'orderstatusCount' =>$orderstatusCount];
         $viewname = Config('constants.adminOrderStatusView') . '.index';
         return Helper::returnView($viewname, $data);
@@ -92,21 +93,30 @@ class OrderStatusController extends Controller {
     }
 
     public function changeStatus(Request $request) {
-        $status = OrderStatus::find($request->id);
-        if($status->status == 1) {
-            $status->status = 0;
-            $msg = "Order status disabled successfully.";
-            Session::flash("message", $msg);
-        }else{
-            $status->status = 1;
-            $msg = "Order status enabled successfully.";
-              Session::flash("msg", $msg);
+        
+        if(!empty($request->id))
+        {
+            $status = OrderStatus::find($request->id);
+            if($status->status == 1) {
+                $status->status = 0;
+                $msg = "Order status disabled successfully.";
+                //Session::flash("message", $msg);
+            }else{
+                $status->status = 1;
+                $msg = "Order status enabled successfully.";
+               // Session::flash("msg", $msg);
+            }
+            $status->update();
+        
+            $data = ['status' => '1', 'msg' => $msg];    
+            //$viewname = Config('constants.adminOrderStatusView') . '.index';
+            //return Helper::returnView($viewname, $data, $url = 'admin.order_status.view');
         }
-        $status->update();
-       
-        $data = ['status' => '1', 'msg' => $msg];
-        $viewname = Config('constants.adminOrderStatusView') . '.index';
-        return Helper::returnView($viewname, $data, $url = 'admin.order_status.view');
+        else
+        {
+            $data = ['status' => '0', 'msg' => 'There is somthing wrong.'];
+        }
+        return $data;
     }
 
     public function getDescription(Request $request){

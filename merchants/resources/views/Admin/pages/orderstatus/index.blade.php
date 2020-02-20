@@ -12,17 +12,20 @@
 
 <section class="main-content">
     
-<div class="notification-column">                       
-    @if(!empty(Session::get('message')))
-    <div class="alert alert-danger" role="alert">
+<div class="notification-column">      
+    <div class="alert alert-danger" role="alert" id="errorMsgDiv" style="display: none;"></div>
+    <div class="alert alert-success" role="alert" id="successMsgDiv" style="display: none;"></div>           
+   
+    {{-- @if(!empty(Session::get('message')))
+    <div class="alert alert-danger" role="alert" id="errorMsgDiv">
         {{ Session::get('message') }}
     </div>
     @endif
     @if(!empty(Session::get('msg')))
-    <div class="alert alert-success" role="alert">
+    <div class="alert alert-success" role="alert" id="successMsgDiv">
         {{Session::get('msg')}}
-    </div>
-    @endif
+    </div> 
+    @endif --}}
 </div>
 
 <div class="grid-content">
@@ -71,20 +74,28 @@
             <tbody>
                 @if(count($orderstatusInfo) >0)
                 @foreach ($orderstatusInfo as $status)
+                <?php
+                if($status->status==1)
+                {
+                    $statusLabel = 'Active';
+                    $linkLabel = 'Mark as Inactive';
+                }
+                else
+                {
+                    $statusLabel = 'Inactive';
+                    $linkLabel = 'Mark as Active';
+                }
+                ?>
                 <tr>
                     <td class="text-center"><span class="alertSuccess">{{$status->order_status}}</span></td>
                     <td class="text-center">{{$status->sort_order}}</td>
-                    <td class="text-center">
-                        <?php $route=  ($status->id!=1)?route('admin.order_status.changeStatus',['id'=>$status->id]):'#';?>
-                        @if($status->status==1)
-                        <a href="{!! $route!!}" class="" ui-toggle-class="" onclick="return confirm(($status->id !=1 )?'Are you sure you want to disable this status?':'you can not disabled this')" data-toggle="tooltip" title="Enabled" disabled><i class="fa fa-check btn-plen btn"></i></a>
-                        @elseif($status->status==0)
-                        <a href="{!!$route !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this status?')" data-toggle="tooltip" title="Disabled" disabled><i class="fa fa-times btn-plen btn"></i></a>
-                        @endif
-                    </td>
+                    <td class="text-center" id="orderStatus_{{$status->id}}">{{$statusLabel}}</td>
                     <td class="text-center">
                          @if($status->id !=1) 
                          <div class="actionCenter">
+                            {{-- <span>
+                                <a href="javascript:;" id="changeStatusLink_{{$status->id}}" class="btn-action-default" onclick="changeStatus({{$status->id}},{{$status->status}})" >{{$linkLabel}}</a>
+                            </span>  --}}
                             <span><a class="btn-action-default" href="{!! route('admin.order_status.edit',['id'=>$status->id]) !!}">Edit</a></span> 
                             <span class="dropdown">
                                 <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -92,6 +103,7 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">  
                                     <li><a href="{!! route('admin.order_status.delete',['id'=>$status->id]) !!}" onclick="return confirm('Are you sure you want to delete this status?')"><i class="fa fa-trash "></i> Delete</a></li>
+                                    <li><a href="javascript:;" id="changeStatusLink_{{$status->id}}" onclick="changeStatus({{$status->id}},{{$status->status}})" >{{$linkLabel}}</a></li>
                                 </ul>
                             </span>  
                         </div> 
@@ -104,9 +116,11 @@
                     @endif
                 </tbody>
             </table>
+            
             <div class="pull-right">
+               
                 @if(empty(Input::get("order_status")))
-                {!! $orderstatusInfo->links() !!}
+                    {!! $orderstatusInfo->links() !!}
                 @endif
             </div>
         </div>
@@ -119,6 +133,49 @@
 @stop 
 @section('myscripts')
 <script>
+
+    function changeStatus(orderStatusId,status)
+    {
+        if(status == 1)
+            var msg = 'Are you sure you want to inactive this order status?';
+        else
+            var msg = 'Are you sure you want to active this order status?';
+
+        if (confirm(msg)) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('admin.order_status.changeStatus') }}",
+                data: {id: orderStatusId},
+                cache: false,
+                success: function(response) {
+                    console.log("done");
+                    if(response['status'] == 1)
+                    {
+                        if(status == 1)
+                        {
+                            $("#changeStatusLink_"+orderStatusId).html('Mark as Active');
+                            $("#orderStatus_"+orderStatusId).html("Inactive");
+                            $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                            $("#changeStatusLink_"+orderStatusId).attr("onclick","changeStatus("+orderStatusId+",0)");
+                        }
+                        else
+                        {
+                            $("#orderStatus_"+orderStatusId).html("Active");
+                            $("#changeStatusLink_"+orderStatusId).html('Mark as Inactive');
+                            $("#successMsgDiv").html(response['msg']).show().fadeOut(4000);
+                            $("#changeStatusLink_"+orderStatusId).attr("onclick","changeStatus("+orderStatusId+",1)");
+                        }
+                    }
+                    else
+                    {
+                        $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                    }
+                    //$(window).scrollTop(0);
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                }
+            });
+        }
+    } // ENd  changeStatus()
     
 </script>
 @stop
