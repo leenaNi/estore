@@ -114,7 +114,7 @@ class ApiCreateStoreController extends Controller
                 if ($verifyOTP) {
                     $checkStore = $this->checkStore();
                     if ($checkStore['status']) {
-                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : ($allinput['roleType'] == '2')? 'distributor': '';
+                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : ($allinput['roleType'] == '2') ? 'distributor' : '';
                         $settings = Settings::where('bank_id', 0)->first();
                         $country = Country::where("id", $settings->country_id)->get()->first();
                         $currency = Currency::where("id", $settings->currency_id)->get()->first();
@@ -196,7 +196,7 @@ class ApiCreateStoreController extends Controller
                                 $json = json_encode($decoded);
                                 $distributorObj1->register_details = $json;
                                 $distributorObj1->save();
-                            }                            
+                            }
                             $newMerchant = $distributorObj;
                             // return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
                         }
@@ -220,7 +220,7 @@ class ApiCreateStoreController extends Controller
                         $store->prefix = $this->getPrefix($domainname);
                         if ($store->save()) {
                             $storeVersion = $store->store_version;
-                            $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $getMerchat->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code']);
+                            $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $newMerchant->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code']);
                             if ($result['status']) {
                                 $regUser = DB::table('users')->where('store_id', $store->id)->where('user_type', 1)->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
                                 $token = JWTAuth::fromUser($regUser);
