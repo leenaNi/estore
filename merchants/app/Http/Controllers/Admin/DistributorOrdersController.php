@@ -1984,14 +1984,20 @@ class DistributorOrdersController extends Controller
         }
         $discount = 0;
         if ($offerid != 0) {
-            Session::put("offerid", $offerid);
+            //Session::put("offerid", $offerid);
             $offerDetails = DB::table("offers")->where(['id' => $offerid])->first();
             if (!empty($offerDetails)) {
-                $total['offertype'] = $offerDetails->offer_discount_type;
-                if ($offerDetails->offer_discount_type == 1) {
-                    $discount = $sub_total * ($offerDetails->offer_discount_value / 100);
-                    $total['offer'] = number_format((float) $discount * Session::get('currency_val'), 2, '.', '') . ' (' . $offerDetails->offer_name . ')';
-                } else if ($offerDetails->offer_discount_type == 2) {
+                $total['offertype'] = $offerDetails->type;
+                if ($offerDetails->type == 1) {
+                    if($offerDetails->offer_discount_type==1){
+                        $discount = $sub_total * ($offerDetails->offer_discount_value / 100);
+                        $total['offer'] = number_format((float) $discount * Session::get('currency_val'), 2, '.', '') . ' (' . $offerDetails->offer_name . ')';
+                    }else if($offerDetails->offer_discount_type==2){
+                        $discount = $offerDetails->offer_discount_value;
+                        $total['offer'] = number_format((float) $discount * Session::get('currency_val'), 2, '.', '') . ' (' . $offerDetails->offer_name . ')';
+                    }
+                    
+                } else if ($offerDetails->type == 2) {
                     $prodQty = DB::table("offers_products")->where(['offer_id' => $offerid, 'prod_id' => $pprod->id])->first();
                     $total['offer'] = '(' . $offerDetails->offer_name . ')';
                     if ($qty >= $prodQty->qty) {
@@ -2038,7 +2044,6 @@ class DistributorOrdersController extends Controller
         $total['price'] = number_format((float) $totprice * Session::get('currency_val'), 2, '.', '');
 
         $cart_amt = Helper::calAmtWithTax();
-
         $total['cart'] = Cart::instance('shopping')->content()->toArray();
         $total['subtotal'] = $cart_amt['sub_total'];
         $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');

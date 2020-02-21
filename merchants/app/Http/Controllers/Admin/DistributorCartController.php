@@ -216,11 +216,13 @@ class DistributorCartController extends Controller
                         if(!empty($offerDetails)){
                         $discType = $offerDetails->offer_discount_type;
                             if($discType == 1){
-                            $discount = $price * ($offerDetails->offer_discount_value/100);
-                            $price = $price - $discount;
-                            //dd($price);
-                            $price = number_format((float)$price * Session::get('currency_val'), 2, '.', '');
+                                $discount = $price * ($offerDetails->offer_discount_value/100);
+                            }else{
+                                $discount = $offerDetails->offer_discount_value;
                             }
+                            $price = $price - $discount;
+                            $price = number_format((float)$price * Session::get('currency_val'), 2, '.', '');
+                            
                         }
                     }
                 }
