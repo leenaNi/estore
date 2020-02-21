@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Library\CustomValidator;
+use App\Models\User;
 use Config;
 use DB;
 use Input;
-use Response;
+use Session;
 
 class ApiDistributorController extends Controller
 {
@@ -21,9 +22,8 @@ class ApiDistributorController extends Controller
 
             $storeIdArray = [];
             $storeIdWithDistributorId = array();
-            $i=0;
-            foreach($storeIdsResult as $storeIdsData)
-            {
+            $i = 0;
+            foreach ($storeIdsResult as $storeIdsData) {
                 $storeIdArray[] = $storeIdsData->id;
                 //$storeIdWithDistributorId[$storeIdsData->id]['merchant_id'] = $storeIdsData->merchant_id;
                 //$storeIdWithDistributorId[$storeIdsData->id]['store_name'] = $storeIdsData->store_name;
@@ -33,31 +33,29 @@ class ApiDistributorController extends Controller
 
                 //get store wise products
                 $productResult = DB::table('products as p')
-                ->join('brand as b', 'p.brand_id', '=', 'b.id')
-                ->whereIn('p.store_id',$storeIdArray)
-                ->where(['p.status' => 1,'p.is_del' => 0])
-                ->where('p.product','LIKE', '%' . $searchKeyWord . '%')
-                ->orderBy('p.store_id', 'ASC')
-                ->get(['p.id','p.store_id','b.id as brand_id','b.name as brand_name','p.product','p.images','p.product_code','p.is_featured','p.prod_type','p.is_stock','p.is_avail','p.is_listing','p.status','p.stock','p.max_price','p.min_price','p.purchase_price','p.price','p.spl_price','p.selling_price','p.is_cod','p.is_tax','p.is_trending','p.min_order_quantity','p.is_share_on_mall','p.store_id']);
-                //echo "<pre>";print_r($productResult);exit;    
-                $j=0;
-                foreach($productResult as $getProductData)
-                {
+                    ->join('brand as b', 'p.brand_id', '=', 'b.id')
+                    ->whereIn('p.store_id', $storeIdArray)
+                    ->where(['p.status' => 1, 'p.is_del' => 0])
+                    ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
+                    ->orderBy('p.store_id', 'ASC')
+                    ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
+                //echo "<pre>";print_r($productResult);exit;
+                $j = 0;
+                foreach ($productResult as $getProductData) {
                     $storeId = $getProductData->store_id;
                     $productId = $getProductData->id;
-                    
+
                     //Get Product image
                     $productResult = DB::table('catalog_images')
-                    ->select(DB::raw('filename'))     
-                    ->where(['catalog_id' => $productId])
-                    ->get();
+                        ->select(DB::raw('filename'))
+                        ->where(['catalog_id' => $productId])
+                        ->get();
                     $productImage = '';
                     //echo "<pre>";
                     //print_r($productResult);
                     //exit;
-                    if(count($productResult) > 0)
-                    {
-                        $productImage = "http://".$storeIdsData->url_key.".".$_SERVER['HTTP_HOST']."/uploads/catalog/products/".$productResult[0]->filename;
+                    if (count($productResult) > 0) {
+                        $productImage = "http://" . $storeIdsData->url_key . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
                     }
                     //echo "product image::http://" .$_SERVER['HTTP_HOST'].'/uploads/catalog/products/'.$productImage;
 
@@ -85,75 +83,68 @@ class ApiDistributorController extends Controller
                     $storeIdWithDistributorId[$i]['products'][$j]['is_trending'] = $getProductData->is_trending;
                     $storeIdWithDistributorId[$i]['products'][$j]['min_order_quantity'] = $getProductData->min_order_quantity;
                     $storeIdWithDistributorId[$i]['products'][$j]['is_share_on_mall'] = $getProductData->is_share_on_mall;
-                    
-                        //get offers count
-                        $offersIdCountResult = DB::table('offers')
+
+                    //get offers count
+                    $offersIdCountResult = DB::table('offers')
                         ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
-                        ->select(DB::raw('count(offers.id) as offer_count'))     
-                        //->where('offers.store_id',$storeId)
-                        //->where('offers.status',1)
-                        ->where('offers_products.prod_id',$productId)
-                        ->where('offers_products.type',1)
+                        ->select(DB::raw('count(offers.id) as offer_count'))
+                    //->where('offers.store_id',$storeId)
+                    //->where('offers.status',1)
+                        ->where('offers_products.prod_id', $productId)
+                        ->where('offers_products.type', 1)
                         ->groupBy('offers_products.offer_id')
                         ->get();
 
-                        $offerCount = 0;
-                        if(count($offersIdCountResult) > 0)
-                        {
-                            $offerCount = $offersIdCountResult[0]->offer_count;
-                        }
-                        $storeIdWithDistributorId[$i]['products'][$j]['offers_count'] = $offerCount;
+                    $offerCount = 0;
+                    if (count($offersIdCountResult) > 0) {
+                        $offerCount = $offersIdCountResult[0]->offer_count;
+                    }
+                    $storeIdWithDistributorId[$i]['products'][$j]['offers_count'] = $offerCount;
                     $j++;
-                }//product foreach ends here
+                } //product foreach ends here
                 $i++;
-            }//store foreach ends here
+            } //store foreach ends here
 
             //echo "<pre>";print_r($storeIdArray);exit;
             /*$productResult = DB::table('products as p')
-                            ->join('brand as b', 'p.brand_id', '=', 'b.id')
-                            ->whereIn('p.store_id',$storeIdArray)
-                            ->where(['p.status' => 1,'p.is_del' => 0])
-                            ->where('p.product','LIKE', '%' . $searchKeyWord . '%')
-                            ->orderBy('p.store_id', 'ASC')
-                            ->get(['p.id','b.id as brand_id','b.name as brand_name','p.product','p.images','p.product_code','p.is_featured','p.prod_type','p.is_stock','p.is_avail','p.is_listing','p.status','p.stock','p.max_price','p.min_price','p.purchase_price','p.price','p.spl_price','p.selling_price','p.is_cod','p.is_tax','p.is_trending','p.min_order_quantity','p.is_share_on_mall','p.store_id']);
+            ->join('brand as b', 'p.brand_id', '=', 'b.id')
+            ->whereIn('p.store_id',$storeIdArray)
+            ->where(['p.status' => 1,'p.is_del' => 0])
+            ->where('p.product','LIKE', '%' . $searchKeyWord . '%')
+            ->orderBy('p.store_id', 'ASC')
+            ->get(['p.id','b.id as brand_id','b.name as brand_name','p.product','p.images','p.product_code','p.is_featured','p.prod_type','p.is_stock','p.is_avail','p.is_listing','p.status','p.stock','p.max_price','p.min_price','p.purchase_price','p.price','p.spl_price','p.selling_price','p.is_cod','p.is_tax','p.is_trending','p.min_order_quantity','p.is_share_on_mall','p.store_id']);
             //echo "<pre>";print_r($productResult);exit;
             $tempId = 0;
             $storeWithProductArry = [];
             for($i = 0; $i < count($productResult); $i++)
             {
-                $merchantId = $storeIdWithDistributorId[$storeId]['merchant_id'];
-                $storeId = $productResult[$i]->store_id;
-                $storeName = $storeIdWithDistributorId[$storeId]['store_name'];
+            $merchantId = $storeIdWithDistributorId[$storeId]['merchant_id'];
+            $storeId = $productResult[$i]->store_id;
+            $storeName = $storeIdWithDistributorId[$storeId]['store_name'];
 
-                $tempId = $storeId;
-                $storeWithProductArry[$i]['store_id'] = $storeId;
-                $storeWithProductArry[$i]['store_name'] = $storeName;
+            $tempId = $storeId;
+            $storeWithProductArry[$i]['store_id'] = $storeId;
+            $storeWithProductArry[$i]['store_name'] = $storeName;
 
-                
-                
-                
-                $productResult[$i]->store_name = $storeName;
+            $productResult[$i]->store_name = $storeName;
 
-                //get offers count
-                $offersIdCountResult = DB::table('offers')
-                        ->select(DB::raw('count(id) as offer_count'))     
-                        ->where('store_id',$storeId)
-                        ->where('status',1)
-                        ->get();
+            //get offers count
+            $offersIdCountResult = DB::table('offers')
+            ->select(DB::raw('count(id) as offer_count'))
+            ->where('store_id',$storeId)
+            ->where('status',1)
+            ->get();
 
-                    $offerCount = 0;
-                    if(count($offersIdCountResult) > 0)
-                    {
-                        $offerCount = $offersIdCountResult[0]->offer_count;
-                    }
-                    $productResult[$i]->offer_count = $offerCount;
-            } // End foreach*/
-            if(count($storeIdWithDistributorId) > 0)
+            $offerCount = 0;
+            if(count($offersIdCountResult) > 0)
             {
-                return response()->json(["status" => 1, 'data' => $storeIdWithDistributorId]);
+            $offerCount = $offersIdCountResult[0]->offer_count;
             }
-            else
-            {
+            $productResult[$i]->offer_count = $offerCount;
+            } // End foreach*/
+            if (count($storeIdWithDistributorId) > 0) {
+                return response()->json(["status" => 1, 'data' => $storeIdWithDistributorId]);
+            } else {
                 return response()->json(["status" => 1, 'msg' => 'Product not found']);
             }
         } else {
@@ -175,50 +166,47 @@ class ApiDistributorController extends Controller
             }
             //echo "<pre>";print_r($storeIdArray);exit;
             $productResult = DB::table('products as p')
-                            ->join('stores as s', 'p.store_id', '=', 's.id')
-                            ->whereIn('p.store_id',$storeIdArray)
-                            ->where(['p.status' => 1,'p.is_del' => 0])
-                            ->where('p.product','LIKE', '%' . $searchKeyWord . '%')
-                            ->groupBy('p.store_id')
-                            ->get(['s.id','p.store_id','s.store_name']);
+                ->join('stores as s', 'p.store_id', '=', 's.id')
+                ->whereIn('p.store_id', $storeIdArray)
+                ->where(['p.status' => 1, 'p.is_del' => 0])
+                ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
+                ->groupBy('p.store_id')
+                ->get(['s.id', 'p.store_id', 's.store_name']);
 
             //echo "<pre>";
-            //print_r($productResult);   
-            if(count($productResult) > 0)
-            {
-                $storeArray = [];            
-                $i=0;
-                foreach($productResult as $getData)
-                {
-                    $companies = DB::table("products as p")->join("brand as b","b.id","=","p.brand_id")->join("company as c", "c.id","=", "b.company_id")->select("b.id","b.company_id","c.name")->where("p.store_id",$getData->store_id)->where("p.brand_id","<>",0)->get();
+            //print_r($productResult);
+            if (count($productResult) > 0) {
+                $storeArray = [];
+                $i = 0;
+                foreach ($productResult as $getData) {
+                    $companies = DB::table("products as p")->join("brand as b", "b.id", "=", "p.brand_id")->join("company as c", "c.id", "=", "b.company_id")->select("b.id", "b.company_id", "c.name")->where("p.store_id", $getData->store_id)->where("p.brand_id", "<>", 0)->get();
                     $companyArr = [];
-                    foreach($companies as $company){
-                        if(!in_array($company->name, $companyArr))
+                    foreach ($companies as $company) {
+                        if (!in_array($company->name, $companyArr)) {
                             array_push($companyArr, $company->name);
+                        }
+
                     }
 
                     $storeArray[$i]['store_id'] = $getData->store_id;
                     $storeArray[$i]['store_name'] = $getData->store_name;
-                    $storeArray[$i]['companies'] = $companyArr;    
+                    $storeArray[$i]['companies'] = $companyArr;
                     //get offress count
                     $storeId = $getData->store_id;
                     $offersIdCountResult = DB::table('offers')
-                        ->select(DB::raw('count(id) as offer_count'))     
-                        ->where('store_id',$storeId)
-                        ->where('status',1)
+                        ->select(DB::raw('count(id) as offer_count'))
+                        ->where('store_id', $storeId)
+                        ->where('status', 1)
                         ->get();
-                        $offerCount = 0;
-                    if(count($offersIdCountResult) > 0)
-                    {
+                    $offerCount = 0;
+                    if (count($offersIdCountResult) > 0) {
                         $offerCount = $offersIdCountResult[0]->offer_count;
                     }
-                    $storeArray[$i]['offers_count'] = $offerCount; 
+                    $storeArray[$i]['offers_count'] = $offerCount;
                     $i++;
                 }
                 return response()->json(["status" => 1, 'data' => $storeArray]);
-            }
-            else
-            {
+            } else {
                 return response()->json(["status" => 1, 'msg' => 'Product not found']);
             }
         } else {
@@ -467,7 +455,6 @@ class ApiDistributorController extends Controller
                     ->where('stores.expiry_date', '>=', date('Y-m-d'))
                     ->get(['stores.id']);
                 if (count($storeIdResult) > 0) {
-                    
 
                     //Comapnywise Brands
                     $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
@@ -494,27 +481,27 @@ class ApiDistributorController extends Controller
                         $offersResult = DB::table('offers')
                             ->whereIn('store_id', $multipleStoreIds)
                             ->where('status', 1)
-                            // ->where('id', 38)
+                        // ->where('id', 38)
                             ->get(['id', 'offer_name', 'type', 'offer_type', 'offer_discount_type', 'offer_discount_value', 'preference', 'start_date', 'end_date', DB::raw('concat("' . $offerImagePath . '", offer_image) as offer_image')]);
 
                         if (count($offersResult) > 0) {
                             //echo "<pre>";
                             //print_r($offersResult);
-                            foreach($offersResult as $offerKey => $offerValue) {
+                            foreach ($offersResult as $offerKey => $offerValue) {
                                 $offerPrice = 0;
                                 $actualPrice = 0;
                                 $offPrice = 0;
                                 $offerProducts = DB::table('offers_products')->where('offer_id', $offerValue->id)->where('type', 1)->get();
-                                foreach($offerProducts as $offerProductKey => $offerProduct){
+                                foreach ($offerProducts as $offerProductKey => $offerProduct) {
                                     $offPrice = 0;
                                     $product = DB::table('products')->where('id', $offerProduct->prod_id)->first(['price']);
                                     $offPrice = ($offerProduct->qty * $product->price);
-                                    $actualPrice+=$offPrice;
-                                    $offerPrice+=$offPrice;
+                                    $actualPrice += $offPrice;
+                                    $offerPrice += $offPrice;
                                 }
-                                if($offerValue->type == 1) {
-                                    if($offerValue->offer_discount_type==1) { //For percent off
-                                        $offerPrice = $offPrice - ($offPrice * ($offerValue->offer_discount_value/100));
+                                if ($offerValue->type == 1) {
+                                    if ($offerValue->offer_discount_type == 1) { //For percent off
+                                        $offerPrice = $offPrice - ($offPrice * ($offerValue->offer_discount_value / 100));
                                     } else { //For fixed off
                                         $offerPrice = $offPrice - $offerValue->offer_discount_value;
                                     }
@@ -630,29 +617,27 @@ class ApiDistributorController extends Controller
                 //     $multipleDistributorIds[] = $distributorIdsData->distributor_id;
                 // }
                 $multipleDistributorIds[] = $distributorId;
-                if($companyId){
-                //Comapnywise Brands
-                $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
-                $companyBrandIds = [];
-                foreach ($companyBrands as $companyBrand) {
-                    $companyBrandIds[] = $companyBrand->id;
+                if ($companyId) {
+                    //Comapnywise Brands
+                    $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
+                    $companyBrandIds = [];
+                    foreach ($companyBrands as $companyBrand) {
+                        $companyBrandIds[] = $companyBrand->id;
+                    }
                 }
-                }
-                if(count($multipleDistributorIds) > 0)
-                { 
+                if (count($multipleDistributorIds) > 0) {
                     // get brand id
                     $brandIdsResult = DB::table('stores')
                         ->join('products', 'products.store_id', '=', 'stores.id')
                         ->whereIn('stores.merchant_id', $multipleDistributorIds);
-                        if($companyId){
-                            $brandIdsResult = $brandIdsResult->whereIn('products.brand_id', $companyBrandIds);
-                        }
-                        $brandIdsResult = $brandIdsResult->where('stores.store_type', 'distributor')
+                    if ($companyId) {
+                        $brandIdsResult = $brandIdsResult->whereIn('products.brand_id', $companyBrandIds);
+                    }
+                    $brandIdsResult = $brandIdsResult->where('stores.store_type', 'distributor')
                         ->where('stores.expiry_date', '>=', date('Y-m-d'))
                         ->get(['products.brand_id', 'products.store_id']);
 
-                    if (count($brandIdsResult) > 0) 
-                    {
+                    if (count($brandIdsResult) > 0) {
                         $brandIds = [];
                         $storeId = [];
                         foreach ($brandIdsResult as $brandIdsData) {
@@ -660,19 +645,17 @@ class ApiDistributorController extends Controller
                             $storeIds[] = $brandIdsData->store_id;
                         }
                         $getcategoryResult = DB::table('store_categories as sc')
-                        ->join('categories as c', 'c.id', '=', 'sc.category_id')
-                        ->join('stores as s', 's.id', '=', 'sc.store_id')
-                        ->whereIn('sc.store_id', $storeIds)->where('s.store_type', 'distributor')
-                        ->get(['sc.id', 'sc.url_key', 'sc.store_id', 'sc.short_desc', 'c.category', 's.url_key as storeUrl']);
+                            ->join('categories as c', 'c.id', '=', 'sc.category_id')
+                            ->join('stores as s', 's.id', '=', 'sc.store_id')
+                            ->whereIn('sc.store_id', $storeIds)->where('s.store_type', 'distributor')
+                            ->get(['sc.id', 'sc.url_key', 'sc.store_id', 'sc.short_desc', 'c.category', 's.url_key as storeUrl']);
                         //echo "<pre> brand result::";
-                        //print_r($getcategoryResult);                        
+                        //print_r($getcategoryResult);
                         $categoryArray = array();
-                        if(count($getcategoryResult) > 0)
-                        {
+                        if (count($getcategoryResult) > 0) {
                             $i = 0;
                             $categoryProductArray = array();
-                            foreach($getcategoryResult as $getCategoryData)
-                            {
+                            foreach ($getcategoryResult as $getCategoryData) {
                                 $categoryId = $getCategoryData->id;
                                 $categoryName = $getCategoryData->category;
                                 $categoryShortDesc = $getCategoryData->short_desc;
@@ -683,16 +666,14 @@ class ApiDistributorController extends Controller
                                 $categoryArray[$i]['category_name'] = $categoryName;
                                 $categoryArray[$i]['category_short_desc'] = $categoryShortDesc;
                                 $categoryArray[$i]['category_url_key'] = $categoryUrlKey;
-                                
+
                                 $getCategoryWiseProductsResult = DB::table('products')
-                                ->where('store_id', $cateGoryStoreId)
-                                ->where('status', 1)
-                                ->get();
-                                if(count($getCategoryWiseProductsResult) > 0)
-                                {
-                                    $j=0;
-                                    foreach($getCategoryWiseProductsResult as $getProductData)
-                                    {
+                                    ->where('store_id', $cateGoryStoreId)
+                                    ->where('status', 1)
+                                    ->get();
+                                if (count($getCategoryWiseProductsResult) > 0) {
+                                    $j = 0;
+                                    foreach ($getCategoryWiseProductsResult as $getProductData) {
                                         $productId = $getProductData->id;
                                         $productBrandId = $getProductData->brand_id;
                                         $productName = $getProductData->product;
@@ -713,17 +694,16 @@ class ApiDistributorController extends Controller
                                         $productPrice = $getProductData->price;
 
                                         $productResult = DB::table('catalog_images')
-                                        ->select(DB::raw('filename'))     
-                                        ->where(['catalog_id' => $productId])
-                                        ->where('image_type', 1)
-                                        ->get();
+                                            ->select(DB::raw('filename'))
+                                            ->where(['catalog_id' => $productId])
+                                            ->where('image_type', 1)
+                                            ->get();
                                         $productImage = '';
                                         //echo "<pre>";
                                         //print_r($productResult);
                                         //exit;
-                                        if(count($productResult) > 0)
-                                        {
-                                            $productImage = "http://".$getCategoryData->storeUrl.".".$_SERVER['HTTP_HOST']."/uploads/catalog/products/".$productResult[0]->filename;
+                                        if (count($productResult) > 0) {
+                                            $productImage = "http://" . $getCategoryData->storeUrl . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
                                         }
 
                                         $categoryArray[$i]['product'][$j]['product_id'] = $productId;
@@ -740,42 +720,36 @@ class ApiDistributorController extends Controller
 
                                         //get offers count
                                         $getOffersProductResult = DB::table('offers_products')
-                                            ->select(DB::raw('count(offer_id) as offer_count'))         
+                                            ->select(DB::raw('count(offer_id) as offer_count'))
                                             ->where('prod_id', $productId)
                                             ->get();
-                                            $offerCount = 0;
-                                        if(count($getOffersProductResult) > 0)
-                                        {
-                                            foreach($getOffersProductResult as $getCount)
-                                            {
+                                        $offerCount = 0;
+                                        if (count($getOffersProductResult) > 0) {
+                                            foreach ($getOffersProductResult as $getCount) {
                                                 $offerCount = $getCount->offer_count;
                                             }
                                         }
                                         $categoryArray[$i]['product'][$j]['offers_count'] = $offerCount;
                                         $j++;
                                     }
-                                //$categoryArray[$i]['product'] = $getCategoryWiseProductsResult;
-                                }                            
+                                    //$categoryArray[$i]['product'] = $getCategoryWiseProductsResult;
+                                }
                                 $i++;
-                            }   
+                            }
                             //echo "<pre> Product array::";
                             //print_r($categoryArray);
                         }
                         return response()->json(["status" => 1, 'msg' => "", 'data' => $categoryArray]);
                         //echo "<pre> Product array::";
                         //print_r($categoryArray);
-                    }
-                    else
-                    {
+                    } else {
                         return response()->json(["status" => 1, 'msg' => 'Records not found']);
                     }
-                }
-                else
-                {
+                } else {
                     return response()->json(["status" => 1, 'msg' => 'Records not found']);
                 }
 
-            }else {
+            } else {
                 return response()->json(["status" => 0, 'msg' => 'Invalid data']);
             }
         } else {
@@ -788,24 +762,29 @@ class ApiDistributorController extends Controller
         //DB::enableQueryLog(); // Enable query log
         if (!empty(Input::get("merchantId"))) {
             $merchantId = Input::get("merchantId");
+            $distributorId = Input::get("distributorId");
+            $user = User::where('id', Session::get('authUserId'))->first();
             $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
             //echo "<pre>";
             //print_r($getDitributorIdsResult);
             //exit;
             if (count($getDitributorIdsResult) > 0) {
-                $multipleDistributorIds = [];
-                foreach ($getDitributorIdsResult as $distributorIdsData) {
-                    $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                if (Input::get("distributorId")) {
+                    $multipleDistributorIds = [];
+                    foreach ($getDitributorIdsResult as $distributorIdsData) {
+                        $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                    }
+                } else {
+                    $multipleDistributorIds[] = $distributorId;
                 }
-
                 // get brand id
                 $brandIdsResult = DB::table('stores')
                     ->join('products', 'products.store_id', '=', 'stores.id')
                     ->whereIn('stores.merchant_id', $multipleDistributorIds)
                     ->where('stores.store_type', 'distributor')
                     ->where('stores.expiry_date', '>=', date('Y-m-d'))
-                    ->get(['products.brand_id', 'products.store_id']);
-
+                    ->get(['products.brand_id', 'products.store_id', 'stores.url_key']);
+                $productImgPath = "http://". $brandIdsResult[0]->url_key . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/";
                 if (count($brandIdsResult) > 0) {
                     $brandIds = [];
                     $storeId = [];
@@ -820,7 +799,7 @@ class ApiDistributorController extends Controller
                         $storeUsers = DB::table('users')
                             ->where('user_type', 1)
                             ->where('status', 1)
-                            ->whereIn('store_id', $storeIds)
+                            ->whereIn('store_id', [$user->store_id])
                             ->get(['id']);
                         $storeUserIds = [];
                         foreach ($storeUsers as $storeUserData) {
@@ -838,15 +817,20 @@ class ApiDistributorController extends Controller
                                 ->whereIn('user_id', $storeUserIds)
                                 ->where('order_type', 1)
                                 ->join("has_products", "has_products.order_id", '=', 'orders.id')
+                                ->join("products", "has_products.prod_id", '=', 'products.id')
+                                ->join("catalog_images", "catalog_images.catalog_id", '=', 'products.id')
+                                ->where("catalog_images.image_type", 1)
                                 ->whereIn("has_products.store_id", $storeIds)
                             //->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))
                             //->select('orders.*')
-                                ->groupBy('has_products.order_id')->orderBy('orders.id', 'desc')
-                                ->get(['orders.*', 'has_products.order_source']);
+                                // ->groupBy('has_products.order_id')
+                                ->orderBy('orders.id', 'desc')
+                                // ->get(['orders.*', 'has_products.order_source']);
+                                ->get(['has_products.id', 'has_products.order_id', 'has_products.prod_id', 'has_products.sub_prod_id', 'has_products.qty', 'has_products.price', 'products.product', DB::raw('concat("' . $productImgPath. '", catalog_images.filename) as productImg')]);
                             //echo "<pre>";print_r($orders);exit;
                             //dd(DB::getQueryLog()); // Show results of log
                             if (count($orders) > 0) {
-                                return response()->json(["status" => 1, 'msg' => '', 'data' => $orders]);
+                                return response()->json(["status" => 1, 'msg' => '', 'data' => ['totalOrders' => count($orders),'orders' => $orders]]);
                             } else {
                                 return response()->json(["status" => 0, 'msg' => 'Records not found']);
                             }

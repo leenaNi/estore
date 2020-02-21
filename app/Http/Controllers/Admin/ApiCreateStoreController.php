@@ -108,13 +108,13 @@ class ApiCreateStoreController extends Controller
         $storeName = Input::get('store_name');
         $phone = Input::get('phone');
         $roleType = Input::get('roleType');
-        if (!empty($roleType) && !empty($storeName) && !empty($phone)) {
+        if ((!empty($roleType) && in_array($roleType, ['1', '2'])) && !empty($storeName) && !empty($phone)) {
             if (CustomValidator::validatePhone($phone)) {
                 $verifyOTP = $this->verifyOTP();
                 if ($verifyOTP) {
                     $checkStore = $this->checkStore();
                     if ($checkStore['status']) {
-                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : 'distributor';
+                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : ($allinput['roleType'] == '2') ? 'distributor' : '';
                         $settings = Settings::where('bank_id', 0)->first();
                         $country = Country::where("id", $settings->country_id)->get()->first();
                         $currency = Currency::where("id", $settings->currency_id)->get()->first();
@@ -128,6 +128,7 @@ class ApiCreateStoreController extends Controller
                         $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
                         $actualDomain = str_replace("..", ".", $actualDomain);
                         $allinput['domain_name'] = $domainname;
+                        $newMerchant = '';
                         if ($storeType == 'merchant') {
                             // Validate Merchant Data
                             $validation = new Merchant();
@@ -163,11 +164,12 @@ class ApiCreateStoreController extends Controller
                                 $merchantObj1->save();
 
                             }
+                            $newMerchant = $getMerchat;
                         } else if ($storeType == 'distributor') {
                             // Validate Merchant Data
                             $validation = new Vendor();
                             $allinput['business_name'] = $storeName;
-                            $validator = Validator::make(Input::all(), Vendor::rules(), $validation->messages);
+                            $validator = Validator::make($allinput, Vendor::rules(), $validation->messages);
                             if ($validator->fails()) {
                                 $errMsg = [];
                                 $err = $validator->messages()->toArray();
@@ -185,7 +187,6 @@ class ApiCreateStoreController extends Controller
                             $distributorObj->register_details = json_encode($allinput);
                             $distributorObj->save();
                             $lastInsteredId = $distributorObj->id;
-
                             if ($lastInsteredId > 0) {
                                 $distributorObj1 = Vendor::find($lastInsteredId);
                                 $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
@@ -196,8 +197,8 @@ class ApiCreateStoreController extends Controller
                                 $distributorObj1->register_details = $json;
                                 $distributorObj1->save();
                             }
-
-                            return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
+                            $newMerchant = $distributorObj;
+                            // return response()->json(["status" => $lastInsteredId, 'data' => Input::all()]);
                         }
 
                         $store = new Store();
@@ -219,14 +220,14 @@ class ApiCreateStoreController extends Controller
                         $store->prefix = $this->getPrefix($domainname);
                         if ($store->save()) {
                             $storeVersion = $store->store_version;
-                            $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $getMerchat->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code']);
+                            $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $newMerchant->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code']);
                             if ($result['status']) {
                                 $regUser = DB::table('users')->where('store_id', $store->id)->where('user_type', 1)->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
                                 $token = JWTAuth::fromUser($regUser);
                                 $user = JWTAuth::toUser($token);
-                                $store = $getMerchat->getstores;
+                                $store = $store; // $getMerchat->getstores;
                                 $data = ['storeCount' => count($store)]; //'result' => $result,
-                                return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'data' => ['user' => $user, 'store' => $store, 'setupStatus' => $data]])->header('token', $token);
+                                return response()->json(["status" => 1, 'msg' => 'Store created successfully!', 'data' => ['user' => $user, 'store' => $store, 'merchant' => $newMerchant, 'setupStatus' => $data]])->header('token', $token);
                             } else {
                                 return response()->json($result);
                             }
@@ -781,7 +782,7 @@ class ApiCreateStoreController extends Controller
                 $smsOutput = explode(' | ', $smsOutput);
                 if ($smsOutput[0] === 'success') {
                     DB::table('user_otp')->insert(['phone' => $mobile, 'otp' => $otp, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]);
-                    $data = ["status" => 1, "msg" => "OTP Successfully send on your phone Number"]; //, "otp"=> $otp, 'smsOutput' => $smsOutput
+                    $data = ["status" => 1, "msg" => "OTP Successfully send on your phone Number", "otp" => $otp]; //, "otp"=> $otp, 'smsOutput' => $smsOutput
                     return $data;
                 } else {
                     $data = ["status" => 0, "msg" => "Invalid phone number"];

@@ -68,6 +68,7 @@ class LoginController extends Controller
 
     public function chk_admin_user()
     {
+       // DB::enableQueryLog(); // Enable query log
         $input = Input::get("phone");
         $login_type = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
         $userDetails = User::where('telephone',Input::get("phone"))->whereIn('user_type', [1, 3])->where('store_id', Helper::getSettings()['store_id'])->where("status", 1)->first();
@@ -75,7 +76,12 @@ class LoginController extends Controller
         // $userData = [$login_type => Input::get('phone'),
         //     'password' => Input::get('password'), 'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
 
-       
+        //dd(DB::getQueryLog()); // Show results of log
+        //echo "store id::".Helper::getSettings()['store_id'];
+        //echo "<pre> user details::";
+        //print_r($userDetails);
+        //exit;
+
         if (!empty($userDetails)) {
                 //if (Auth::login($userData, true)) {
                 // dd($userData);

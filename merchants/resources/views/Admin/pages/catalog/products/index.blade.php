@@ -39,16 +39,18 @@
 </section>
 <section class="main-content">
   <div class="notification-column">
-                @if(!empty(Session::get('message')))
-                  <div class="alert alert-danger" role="alert">
-                  {{ Session::get('message') }}
-                  </div>
-                  @endif
-                  @if(!empty(Session::get('msg')))
-                  <div class="alert alert-success" role="alert">
-                  {{Session::get('msg')}}
-                  </div>
-                  @endif
+    <div class="alert alert-danger" role="alert" id="errorMsgDiv" style="display: none;"></div>
+    <div class="alert alert-success" role="alert" id="successMsgDiv" style="display: none;"></div> 
+      {{-- @if(!empty(Session::get('message')))
+        <div class="alert alert-danger" role="alert">
+        {{ Session::get('message') }}
+        </div>
+        @endif
+        @if(!empty(Session::get('msg')))
+        <div class="alert alert-success" role="alert">
+        {{Session::get('msg')}}
+        </div>
+        @endif --}}
   </div>
   <div class="grid-content">
         <div class="section-main-heading">
@@ -190,35 +192,39 @@
             <thead>
               <tr>
                 @if($barcode == 1)   
-                <th class="text-center">
-                  <input type="checkbox" id="masterCheck" value="00"/>
-                </th>  @endif
-                <th class="text-left">@sortablelink ('product', 'Product')
-                </th>
-                <th class="text-left">Categories
-                </th>
-                <th class="text-right">@sortablelink ('price', 'Price') 
-                </th>
-                <th class="text-center">Product Type
-                </th>
+                  <th class="text-center">
+                    <input type="checkbox" id="masterCheck" value="00"/>
+                  </th>  
+                @endif
+                <th class="text-left">@sortablelink ('product', 'Product')</th>
+                <th class="text-left">Categories</th>
+                <th class="text-right">@sortablelink ('price', 'Price') </th>
+                <th class="text-center">Product Type</th>
                 @if($settingStatus['stock'] == 1)
-                <th class="text-center">Stock
-                </th>
+                  <th class="text-center">Stock</th>
                 @endif
-                <th class="text-center">Status
-                </th>
+                  <th class="text-center">Status</th>
                 @if(Session::get('login_user_type') != 3)
-                <th class="text-center">Sell On Estorifi Mall
-                </th>
+                  <th class="text-center">Sell On Estorifi Mall</th>
                 @endif
-                <th class="text-center">Action
-                </th>
+                  <th class="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               @if(count($products) >0 )
               @foreach($products as $product)
-              <?php //dd($product->price); ?>
+              <?php 
+                if($product->status==1)
+                  {
+                      $statusLabel = 'Active';
+                      $linkLabel = 'Mark as Inactive';
+                  }
+                  else
+                  {
+                      $statusLabel = 'Inactive';
+                      $linkLabel = 'Mark as Active';
+                  }
+              ?>
               <tr> @if($barcode == 1)  
                 <td class="text-center">
                   <input type="checkbox" class="singleCheck" name="singleCheck[]" value="{{ $product->id }}-{{ $product->prod_type }}"/>
@@ -234,86 +240,72 @@
                       <br>
                       <span class="breakLine">
                         @if($product->product_code)
-                        ({{ $product->product_code }})
+                          ({{ $product->product_code }})
                         @endif
                       </span>
                     </span>
                   </div>
                 </td>
-                <td class="text-left">
-                  <?php
-                    $prodCategories = $product->categories()->get();
-                    if ($prodCategories->count() > 0) {
-                    echo $prodCategories[0]->categoryName->category;
-                    } else {
-                    echo '-';
-                    }
+                  <td class="text-left">
+                    <?php
+                      $prodCategories = $product->categories()->get();
+                      if ($prodCategories->count() > 0) 
+                      {
+                          echo $prodCategories[0]->categoryName->category;
+                      } 
+                      else 
+                      {
+                          echo '-';
+                      }
                     ?>
-                </td>
-                <td class="text-right">
-                  @if( $product->spl_price 
-                  <= 0.00 )
-                        <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> 
-                  <span class=""> {{ $product->price }} 
-                  </span>
-                  @else
-                  <strike>
+                  </td>
+                  <td class="text-right">
+                    @if( $product->spl_price <= 0.00 )
+                      <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> 
+                      <span class=""> {{ $product->price }} </span>
+                    @else
+                    <strike>
+                        <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
+                        <span class="priceConvert">{{$product->price }}
+                      </span> 
+                    </strike>
+                    <br>
                     <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
-                    <span class="priceConvert">{{$product->price }}
-                    </span> 
-                  </strike>
-                  <br>
-                  <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?>
-                  <span class="priceConvert"> {{ $product->spl_price }} 
-                  </span>
-                  @endif
-                </td>
-                <td class="text-center"> {{ $product->producttype->type }}
-                </td>
+                    <span class="priceConvert"> {{ $product->spl_price }} 
+                    </span>
+                    @endif
+                  </td>
+                <td class="text-center"> {{ $product->producttype->type }}</td>
                 @if($settingStatus['stock'] == 1)
-                <td class="text-center">{{ $product->stock }}
-                </td>
+                <td class="text-center">{{ $product->stock }}</td>
                 @endif
-                <td class="text-center">
-                  @if($product->status==1)
-                  <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this product?')" data-toggle="tooltip" title="Enabled">
-                    <i class="fa fa-check btn-plen btn">
-                    </i>
-                  </a>
-                  @elseif($product->status==0)
-                  <a href="{!! route('admin.products.changeStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this product?')" data-toggle="tooltip" title="Disabled">
-                    <i class="fa fa-times btn-plen btn">
-                    </i>
-                  </a>
-                  @endif
-                </td>
+                <td class="text-center" id="productStatus_{{$product->id}}"> {{$statusLabel}}</td>
                 @if(Session::get('login_user_type') != 3)
                 <td class="text-center">
                   @if($product->is_share_on_mall==0)
                   <a prod-id="{{$product->id}}" class="   shareProductToMall" ui-toggle-class="" title="Publish To Mall"> 
-                    <i class="fa fa-check btn-plen btn">
-                    </i>
+                    <i class="fa fa-check btn-plen btn"></i>
                   </a>
                   @else
                   <a prod-id="{{$product->id}}" class="  unpublishToMall" ui-toggle-class=""  title="Unpublish" >
-                    <i class="fa fa-times  btn-plen btn">
-                    </i>
+                    <i class="fa fa-times  btn-plen btn"></i>
                   </a>
                   @endif
                 </td>
                 @endif
                 <td class="text-center">
                 <div class="actionCenter">
-                                <span><a class="btn-action-default" href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}">Edit</a></span> 
-                                <span class="dropdown">
-                                    <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
-                                        <li><a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
-                                    </ul>
-                                </span>  
-                            </div>
+                      <span><a class="btn-action-default" href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}">Edit</a></span> 
+                      <span class="dropdown">
+                          <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+                              <li><a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
+                              <li><a href="javascript:;" id="changeStatusLink_{{$product->id}}" onclick="changeStatus({{$product->id}},{{$product->status}})" >{{$linkLabel}}</a></li>
+                          </ul>
+                      </span>  
+                  </div>
                  
                   <!--                            @if($barcode == 1)  <a class="" data-id="{{ $product->id }}-{{ $product->prod_type }}" data-toggle="tooltip" title="Print"><i class="fa fa-print fa-fw"></i></a>
                     <span id="barerr{{ $product->id }}"></span> @endif-->
@@ -687,6 +679,50 @@
     {% } %}
 </script>
 <script>
+
+  function changeStatus(productId,status)
+  {
+      if(status == 1)
+          var msg = 'Are you sure you want to inactive this product?';
+      else
+          var msg = 'Are you sure you want to active this product?';
+
+      if (confirm(msg)) {
+          $.ajax({
+              type: "POST",
+              url: "{{ route('admin.products.changeStatus') }}",
+              data: {id: productId},
+              cache: false,
+              success: function(response) {
+                  console.log("done");
+                  
+                  if(response['status'] == 1)
+                  {
+                      if(status == 1)
+                      {
+                          $("#changeStatusLink_"+productId).html('Mark as Active');
+                          $("#productStatus_"+productId).html("Inactive");
+                          $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                          $("#changeStatusLink_"+productId).attr("onclick","changeStatus("+productId+",0)");
+                      }
+                      else
+                      {
+                          $("#productStatus_"+productId).html("Active");
+                          $("#changeStatusLink_"+productId).html('Mark as Inactive');
+                          $("#successMsgDiv").html(response['msg']).show().fadeOut(4000);
+                          $("#changeStatusLink_"+productId).attr("onclick","changeStatus("+productId+",1)");
+                      }
+                  }
+                  else
+                  {
+                      $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                  }
+                  //$(window).scrollTop(0);
+                  $("html, body").animate({ scrollTop: 0 }, "slow");
+              }
+          });
+      }
+  } // End function
   // $('#uploadBulkImages').click(function(){
   //     var form = $("form#fileupload");
   //     $.ajax({
