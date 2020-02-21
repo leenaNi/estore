@@ -607,6 +607,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                     Route::post('/update', array('as' => 'admin.order_status.update', 'uses' => 'OrderStatusController@update'));
                     Route::get('/delete', array('as' => 'admin.order_status.delete', 'uses' => 'OrderStatusController@delete'));
                     Route::post('/changeStatus', ['as' => 'admin.order_status.changeStatus', 'uses' => 'OrderStatusController@changeStatus']);
+                    Route::post('/changeIsDefault', ['as' => 'admin.order_status.changeIsDefault', 'uses' => 'OrderStatusController@changeIsDefaultValue']);
                 });
             });
 

@@ -68,6 +68,7 @@
                     <th class="text-center">Order Status</th>
                     <th class="text-center">Sort Order</th>
                     <th class="text-center">Status</th>
+                    <th class="text-center">Is Default</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
@@ -85,11 +86,29 @@
                     $statusLabel = 'Inactive';
                     $linkLabel = 'Mark as Active';
                 }
+
+                if($status->is_default == 1)
+                {
+                    $isDefaultVal = 'Yes';
+                }
+                else {
+                    
+                    $isDefaultVal = 'No';
+                }
+
+                if(($status->color != null) || $status->color != NULL)
+                {
+                    $colorVal = "background-color:".$status->color;
+                }
+                else {
+                    $colorVal = "background-color:#9bca6e";
+                }
                 ?>
                 <tr>
-                    <td class="text-center"><span class="alertSuccess">{{$status->order_status}}</span></td>
+                <td class="text-center"><span class="alertSuccess" style="{{$colorVal}}">{{$status->order_status}}</span></td>
                     <td class="text-center">{{$status->sort_order}}</td>
                     <td class="text-center" id="orderStatus_{{$status->id}}">{{$statusLabel}}</td>
+                    <td class="text-center isDefaultCls" id="orderStatusIsDefault_{{$status->id}}">{{$isDefaultVal}}</td>
                     <td class="text-center">
                          @if($status->id !=1) 
                          <div class="actionCenter">
@@ -104,6 +123,19 @@
                                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">  
                                     <li><a href="{!! route('admin.order_status.delete',['id'=>$status->id]) !!}" onclick="return confirm('Are you sure you want to delete this status?')"><i class="fa fa-trash "></i> Delete</a></li>
                                     <li><a href="javascript:;" id="changeStatusLink_{{$status->id}}" onclick="changeStatus({{$status->id}},{{$status->status}})" >{{$linkLabel}}</a></li>
+                                    <?php
+                                    if($status->is_default == 0)
+                                    {
+                                     ?>
+                                    <li class="changeIsDefaultCls" id="changeIsDefaultLink_{{$status->id}}" ><a href="javascript:;" onclick="changeDefaultValue({{$status->id}},{{$storeId}},{{$status->is_default}})" >Mark as a Default</a></li>
+                                    <?php 
+                                    }
+                                    else 
+                                    {?>
+                                    <li class="changeIsDefaultCls" id="changeIsDefaultLink_{{$status->id}}" style="display:none;"><a href="javascript:;" onclick="changeDefaultValue({{$status->id}},{{$storeId}},{{$status->is_default}})" >Mark as a Default</a></li>    
+                                    <?php
+                                    }
+                                    ?>
                                 </ul>
                             </span>  
                         </div> 
@@ -177,5 +209,45 @@
         }
     } // ENd  changeStatus()
     
+
+        //Change Id Dafault Value
+    function changeDefaultValue(orderStatusId,storeId,isDefaultVal)
+    {
+      
+        var msg = 'Are you sure you want to make as a default?';
+       
+
+        if (confirm(msg)) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('admin.order_status.changeIsDefault') }}",
+                data: {
+                        id: orderStatusId,
+                        storeId: storeId,
+                        isDefaultValue: isDefaultVal
+                    },
+                cache: false,
+                success: function(response) {
+                   //alert(response['msg']);
+                    if(response['status'] == 1)
+                    {
+                        //alert(1);
+                        $(".isDefaultCls").html('No');
+                        $(".changeIsDefaultCls").show();
+                        $("#changeIsDefaultLink_"+orderStatusId).hide();
+                        $("#orderStatusIsDefault_"+orderStatusId).html("Yes");
+                        $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                    }
+                    else
+                    {
+                        $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                    }
+                    //$(window).scrollTop(0);
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                }
+            });
+        }//ajax call ends here
+
+    }//function ends here
 </script>
 @stop

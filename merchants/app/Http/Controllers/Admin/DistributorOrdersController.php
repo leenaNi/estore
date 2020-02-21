@@ -87,7 +87,7 @@ class DistributorOrdersController extends Controller
             ->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))
             ->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
         //echo "<pre>";print_r($orders);exit;
-        //   dd($orders);
+          //dd($orders);
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
@@ -164,6 +164,11 @@ class DistributorOrdersController extends Controller
                 ->whereIn('store_categories.id', $categories)->get(['categories.category'])->toArray();
         }
         $flags = Flags::all();
+
+        /*echo "<pre>";
+        print_r($orders);
+        exit;*/
+
         $viewname = Config('constants.adminDistributorOrderView') . '.index';
 
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
@@ -2982,6 +2987,7 @@ class DistributorOrdersController extends Controller
         //         Cart::instance('shopping')->update($discK, ["options" => ['disc' => @$discV]]);
         //     }
         // }
+        //DB::enableQueryLog(); // Enable query log
 
         $chkReferal = GeneralSetting::where('url_key', 'referral')->first();
         $chkLoyalty = GeneralSetting::where('url_key', 'loyalty')->first();
@@ -3008,13 +3014,21 @@ class DistributorOrdersController extends Controller
         $cart_data = Helper::calAmtWithTax();
         $order->user_id = $user->id;
         $order->pay_amt = $payAmt;
-
+       
+        //echo "session id::".Session::get('distributor_store_id');
         $cartAmount = $cart_data['total'];
         $order->order_amt = $cartAmount;
         // apply additional charge to payAmount
         $additional_charge_json = AdditionalCharge::ApplyAdditionalCharge($cartAmount);
         $order->additional_charge = $additional_charge_json;
-        $orderstatus = DB::table('order_status')->where(['sort_order' => 1, 'store_id' => Session::get('distributor_store_id')])->first();
+        //$orderstatus = DB::table('order_status')->where(['sort_order' => 1, 'store_id' => Session::get('distributor_store_id')])->first();
+        $orderstatus = DB::table('order_status')->where(['is_default' => 1, 'store_id' => Session::get('distributor_store_id')])->first();
+       
+     //print_r($orderstatus);
+       //exit;
+       //dd($orderstatus);
+        //dd(DB::getQueryLog()); // Show results of log
+
         // $order->order_amt = Cart::instance('shopping')->total() * Session::get("currency_val");
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
@@ -3023,7 +3037,7 @@ class DistributorOrdersController extends Controller
         if ($des) {
             $order->description = $des;
         }
-
+       
         $order->currency_id = Session::get("currency_id");
         $order->currency_value = Session::get("currency_val");
         $order->cart = json_encode(Cart::instance('shopping')->content());

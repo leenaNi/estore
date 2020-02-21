@@ -180,7 +180,16 @@
                         <tbody>
                             @if(count($orders) >0 )
                             @foreach($orders as $order)
-                         
+                            <?php
+                                $orderStatusColor = $order->distributorOrderstatus['color'];
+                                //echo "order status color:".$orderStatusColor;
+                                $colorVal = '';
+                                if(($orderStatusColor != null) || $orderStatusColor != NULL)
+                                {
+                                    $colorVal = "background-color:".$orderStatusColor;
+                                }
+                                
+                            ?>    
                             <tr>
                                 <td><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /></td>
                                 <td><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
@@ -190,7 +199,7 @@
                                     @foreach($order->categories as $orderCategory)
                                     {{$orderCategory->category}} @if(!$loop->last) <br/> @endif                                    @endforeach
                                 </td>
-                                <td>{{ @$order->distributorOrderstatus['order_status'] }}</td>
+                                <td style="{{$colorVal}}">{{ @$order->distributorOrderstatus['order_status'] }}</td>
                                 <td>{{ @$order->paymentstatus['payment_status'] }}</td>
                                 <td>@if(@$order->prefix)
                                     <span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}

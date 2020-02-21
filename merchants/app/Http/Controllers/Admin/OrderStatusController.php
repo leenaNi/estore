@@ -15,6 +15,14 @@ use Validator;
 class OrderStatusController extends Controller {
 
     public function index() {
+        $loggedInUserId = Session::get('loggedin_user_id');
+        $loginUserType = Session::get('login_user_type');
+        //echo "login user id::".$loggedInUserId;
+        //echo "<br>login user type::".$loginUserType;
+        //get Store id from user table
+        $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
+        $storeId = $userResult->store_id;
+        //echo "store id::".$storeId;
         $search = !empty(Input::get("order_status")) ? Input::get("order_status") : '';
         $search_fields = ['order_status'];
         
@@ -30,7 +38,7 @@ class OrderStatusController extends Controller {
               $orderstatusCount=$orderstatusInfo->total();
         }
         //echo "<pre>";print_r($orderstatusInfo);exit;
-        $data = ['orderstatusInfo' => $orderstatusInfo,'orderstatusCount' =>$orderstatusCount];
+        $data = ['orderstatusInfo' => $orderstatusInfo,'orderstatusCount' =>$orderstatusCount, 'storeId' => $storeId];
         $viewname = Config('constants.adminOrderStatusView') . '.index';
         return Helper::returnView($viewname, $data);
     }
@@ -59,7 +67,6 @@ class OrderStatusController extends Controller {
         ])->validate();
 
         $formData = $request->all();
-        
         OrderStatus::create($formData);
         Session::flash("msg", "Order status added successfully.");
         $viewname = Config('constants.adminOrderStatusView') . '.index';
@@ -68,7 +75,7 @@ class OrderStatusController extends Controller {
     }
 
     public function update(Request $request){
-        Validator::make($request->all(), [
+         Validator::make($request->all(), [
             'order_status' => 'required',
             ],[
             'order_status.required' => 'The order status field is required.',
@@ -119,6 +126,35 @@ class OrderStatusController extends Controller {
         return $data;
     }
 
+    public function changeIsDefaultValue(Request $request)
+    {
+       
+        if(!empty($request->id))
+        {
+            $orderStatusId = $request->id;
+            $storeId = $request->storeId;
+            //echo "order status id::".$orderStatusId."::store id::".$storeId;
+            //exit;
+            $orderStatusRs = DB::table('order_status')
+            ->where('store_id', $storeId)
+            ->update(['is_default' => 0]);
+
+            $orderStatusResultSet = DB::table('order_status')
+            ->where('id', $orderStatusId)
+            ->where('store_id', $storeId)
+            ->update(['is_default' => 1]);
+            $msg = "Order status mark as a default is successfully.";
+                
+            $data = ['status' => '1', 'msg' => $msg];    
+            //$viewname = Config('constants.adminOrderStatusView') . '.index';
+            //return Helper::returnView($viewname, $data, $url = 'admin.order_status.view');
+        }
+        else
+        {
+            $data = ['status' => '0', 'msg' => 'There is somthing wrong.'];
+        }
+        return $data;
+    }
     public function getDescription(Request $request){
         $page = StaticPage::find($request->page_id);
         return response()->json(['description' => $page->description]);
