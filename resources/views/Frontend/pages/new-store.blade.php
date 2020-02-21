@@ -9,29 +9,29 @@
 			<div class="container">
 				<div class="log-reg-form-container">
 					<div class="row">
-						<div class="col-md-5 description sh h-100">
+						<div class="col-md-12 description">
 							<div class="description-content">
 								<div class="logo">
 									<img src="{{ asset('public/Frontend/images/logo.svg')}}">
 								</div>
 								<div class="title">
-									<h3>Let’s create your account</h3>
+									<h3>Create Account</h3>
 								</div>
-								<div class="desc-box">
+								<!-- <div class="desc-box">
 									<p>Just a few things to get you going</p>
-								</div>
+								</div> -->
 							</div>
 						</div>
-						<div class="col-md-7 form-fields sh h-100">
+						<div class="col-md-12 form-fields">
 							<div class="form-holder">
 								<form method="post" action="{{route('selectThemes')}}" id="createStore">
 								<input type="hidden" name="currency_code" value="{{$settings->currency_id}}" />
 								<div class="">
 									<div class="scroller-y">
-										<div class="form-group">
+										<div class="form-group clearfix">
 											<label>Business Name </label>
 											<div class="input-group">
-												<input tabindex="1" type="text" class="form-control" name="store_name" id="store_name" placeholder="Business Name" onBlur="checkStorename(this.value)">
+												<input tabindex="1" type="text" class="form-control" name="store_name" id="store_name" placeholder="" onBlur="checkStorename(this.value)">
 												<span>
 													<img id="successimg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success"/ class="success-tick hidden">
 													<img id="errorimg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success"/ class="error-mark hidden">
@@ -40,7 +40,7 @@
 											</div>
 											<span class="error" style="display:none" id="business_name_err">Business name can not be blank</span>
 										</div>
-										<div class="form-group">
+										<div class="form-group clearfix">
 											<label for="">Mobile Number</label>
 											<div class="mob-num-ctcode">
 												<div class="ct-select">
@@ -49,7 +49,7 @@
 													</select>
 												</div>
 												<div class="input-group">
-													<input tabindex="2" type="text" name="phone" class="form-control" id="mobNumber" placeholder="Mobile Number" onBlur="checkPhone(this.value)">
+													<input tabindex="2" type="text" name="phone" class="form-control" id="mobNumber" placeholder="" onBlur="checkPhone(this.value)">
 													<span>
 														<img id="mobsmsg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success" class="success-tick hidden">
 														<img id="mobemsg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success" class="error-mark hidden">
@@ -58,7 +58,7 @@
 											</div>										
 											<span class="error" style="display:none" id="mobileno_err">Mobile No. can not be blank</span>
 										</div>
-										<div class="form-group">
+										<div class="form-group clearfix">
 											<label for="">Who are you?</label>
 											<div class="role-radio-group">
 												<ul>
@@ -101,29 +101,29 @@
 			<div class="container">
 				<div class="log-reg-form-container">
 					<div class="row">
-						<div class="col-md-5 description sh h-100">
+						<div class="col-md-12 description otp-description">
 							<div class="description-content">
 								<div class="logo">
 									<img src="{{ asset('public/Frontend/images/logo.svg')}}">
 								</div>
 								<div class="title">
-									<h3>OTP Verification</h3>
+									<h3>Verify OTP</h3>
 								</div>
 								<div class="desc-box">
-									<p>Enter the 4-digit code sent to</p>
-									<p id="mobno">+91 8923412310</p>
+									<p>Enter the 4-digit code sent to<br/>
+									<span id="mobno">+91 8923412310</span></p>
 								</div>
-								<div class="link">
+								<!-- <div class="link">
 									<a href="#" id="backbtn"><img src="{{ asset('public/Frontend/images/left-arrow-preview.svg')}}" class="changeno-arrow"/> Change Number</a>
-								</div>
+								</div> -->
 							</div>
 						</div>
-						<div class="col-md-7 form-fields sh h-100">
+						<div class="col-md-12 form-fields otp-form-fields">
 							<div class="form-holder">
 								<form action="" class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
 									<div class="">
 									<div class="scroller-y">
-										<div class="form-group">
+										<div class="form-group text-center">
 											<label for="">Type in your OTP</label>
 											<div class="input-group input-otp-group">
 												<input tabindex="6" type="tel" class="form-control col" id="otp1" data-next="otp2" placeholder="">
@@ -135,8 +135,11 @@
 										</div>
 									</div>
 								</div>
-								<div class="form-group text-center">
+								<div class="form-group text-center mt-mb-30">
 									<button tabindex="10" type="button" id="registerAndSubmit" class="theme-btn dark-theme-btn full-width-btn">Submit</button>
+								</div>
+								<div class="form-group text-center">
+									<p>Wrong Number? <a href="#" id="backbtn">Click here to change</a></p>
 								</div>
 								</form>
 							</div>
@@ -233,7 +236,7 @@ $("#nextstep").click(function(){
         $("#step1").hide();
         var country=$('#country_code').val();
         var mobile= $("input[name=phone]").val();
-		$("#mobno").html(mobile);
+		$("#mobno").html('+91 '+mobile);
         $.ajax({
             type: 'POST',
             url: "{{route('sendOpt')}}",
