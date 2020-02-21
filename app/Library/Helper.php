@@ -641,9 +641,8 @@ class Helper
     public static function searchExistingCart($prod_id)
     {
         $cartContent = Cart::instance("shopping")->content()->toArray();
-        $isExist = 0;
+        $isExist = 0; 
         foreach ($cartContent as $key => $cartItem) {
-            // return($cartItem);
             if (array_key_exists("sub_prod", $cartItem['options'])) {
                 $isExist = ($cartItem['options']['sub_prod'] == $prod_id);
                 if ($isExist) {
@@ -652,7 +651,7 @@ class Helper
             } else {
                 $isExist = ($cartItem["id"] == $prod_id);
                 if ($isExist) {
-                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"],"offer_qty"=>$cartItem['options']['offer_qty']];
                 }
             }
         }
