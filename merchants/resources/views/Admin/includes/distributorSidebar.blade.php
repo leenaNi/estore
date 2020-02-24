@@ -13,12 +13,12 @@
             </li> -->
             <li class="{{ Route::currentRouteName() == 'admin.dashboard' ? 'active' : '' }}">
                 <a href="{{ route('admin.dashboard') }}">
-                    <i class="fa fa-bar-chart"></i><span>Dashboard</span> <i class=""></i>
+                    <img class="left-menu-img" src="{{ Config('constants.adminImgangePath') }}/icons/{{'home.svg'}}"> <span>Home</span> 
                 </a>
             </li>
             <li class="treeview {{ preg_match("/admin.orders|admin.orders.OrderReturn|admin.miscellaneous.flags|admin.order_status|additional-charges/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
-                    <i class="fa fa-shopping-cart"></i><span>Orders</span>
+                    <img class="left-menu-img" src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_invoice.svg'}}"> <span>Orders</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">

@@ -130,7 +130,7 @@ Session::put('storelogo', $data->logo);
 </div>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js'></script>
 <style>
-    .skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side,.skin-blue .main-header .logo,.skin-blue .main-header li.user-header{
+    /*.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side,.skin-blue .main-header .logo,.skin-blue .main-header li.user-header{
         background-color: <?php echo "#" . $data->secondary_color . " !important"; ?>;
     }
     .skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a{
@@ -142,7 +142,7 @@ Session::put('storelogo', $data->logo);
     .skin-blue .treeview-menu>li>a:hover{ color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
     .sidebar-menu .treeview-menu, .sidebar-mini.sidebar-collapse .sidebar-menu>li>a>span{
         background-color: <?php echo "#" . $data->secondary_color . " !important"; ?>;
-    }
+    }*/
     /*.main-header, .navbar .navbar-static-top{
         background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;} 
 
