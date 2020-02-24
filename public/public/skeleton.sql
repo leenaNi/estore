@@ -90,8 +90,8 @@ INSERT INTO `loyalty` (`id`, `group`, `min_order_amt`, `max_order_amt`, `percent
 (NULL, 'Silver', 2000, 5000, 2, '2000 - 5,000', 1, tblprfx_),
 (NULL, 'Gold', 5001, 10000, 5, '5,001 - 10,000', 1, tblprfx_),
 (NULL, 'Platinum', 10001, 100000, 10, 'Above 10,001', 1, tblprfx_);
-INSERT INTO `offers` (`id`, `offer_name`, `offer_discount_type`, `offer_type`, `offer_discount_value`, `min_order_qty`, `min_free_qty`, `min_order_amt`, `max_discount_amt`, `max_usage`, `actual_usage`, `full_incremental_order`, `start_date`, `end_date`, `user_specific`, `status`, `store_id`) VALUES
-(NULL, 'Buy 2 get 20%off on 3rd product onwards', 1, 1, 20, 2, 0, 5000, 500, 0, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0, tblprfx_);
+INSERT INTO `offers` (`id`, `offer_name`, `offer_discount_type`, `offer_type`, `offer_discount_value`, `start_date`, `end_date`, `user_specific`, `status`, `store_id`) VALUES
+(NULL, 'Buy 2 get 20%off on 3rd product onwards', 1, 1, 20,'0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0, tblprfx_);
 INSERT INTO `order_return_action` (`id`, `action`, `store_id`) VALUES
 (NULL, 'Credit Issued', tblprfx_),
 (NULL, 'Refunded', tblprfx_),
