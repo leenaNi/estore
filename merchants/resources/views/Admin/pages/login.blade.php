@@ -26,8 +26,8 @@
                         <span class="glyphicon glyphicon-lock form-control-feedback" id="otper"></span><p id="otperr"></p>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 text-center">
-                            <button type="button" class="btn btn-primary bottommargin-xs fullWidthBtn" id="sendotp">Send OTP</button>
+                        <div class="col-xs-12 text-center marginBottom-lg">
+                            <button type="button" class="btn btn-primary fullWidthBtn" id="sendotp">Send OTP</button>
                             <button type="button" class="btn btn-primary bottommargin-xs fullWidthBtn" style="display:none" id="loginbtn">Sign In</button>
                         </div><!-- /.col -->
                     </div>

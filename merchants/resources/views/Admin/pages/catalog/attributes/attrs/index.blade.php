@@ -138,7 +138,7 @@
         </div>
     </div>
 </section>
-
+<div class="clearfix"></div>
 @stop
 
 @section('myscripts')

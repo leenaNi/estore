@@ -26,8 +26,10 @@
             <div class="login-box">
             <div class="login-box-body">
                <div class="col-md-12 col-lg-12">
-                    <h3>Powered By <br>                    
-                    <img src="{{ Config('constants.adminImgPath').'/veestore.png' }}" alt="Logo" style="width:200px;"></h3>
+                    <h3>Powered By
+                    <span class="logo-holder">              
+                      <img src="{{ Config('constants.adminImgPath').'/login-logo.svg' }}" alt="Logo"></h3>
+                    </span>
                 </div>
                 <p class="login-box-msg">Forgot Password</p>
               <div id="resMsg" class="text-center"></div>
@@ -35,11 +37,11 @@
               <br>
               <form class="nobottommargin forgot-password" action="#" method="post" id="forgot-pwd-admin">
                 <div class="form-group has-feedback">
-                  <input type="text"  id="useremail" name="useremail" placeholder="Enter your registered Mobile/Email" class="form-control"> 
+                  <input type="text"  id="useremail" name="useremail" placeholder="Enter your Registered Mobile/Email" class="form-control"> 
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span><p id="useremail_login_validate" style="color:red;"></p>
                 </div>
                 <div class="col_full nobottommargin text-center">
-                  <button class="button nomargin forPassbtn" id="login-form-submit" name="login-form-submit" value="login">Submit</button>
+                  <button class="btn btn-primary fullWidthBtn forPassbtn" id="login-form-submit" name="login-form-submit" value="login">Submit</button>
                 </div>
               </form>
             </div>
