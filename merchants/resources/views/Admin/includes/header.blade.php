@@ -1,11 +1,13 @@
 <header class="main-header">
     <!-- Logo -->
-    <a href="{{route('admin.dashboard')}}" class="logo" style="background: rgba(0,0,0,0.2)!important;">
+    <!-- <a href="{{route('admin.dashboard')}}" class="logo" style="background: rgba(0,0,0,0.2)!important;"> -->
+    <a href="{{route('admin.dashboard')}}" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini"><b><img src="{{ Config('constants.adminImgPath').'/logo-mini.png' }}" class="user-image" alt="User"></b></span>
         <!-- logo for regular state and mobile devices -->
         <span class="logo-lg">
             <img src="{{ Session::get('storelogo') }}" height="55">
+            <!-- <img src="{{ Config('constants.adminImgangePath') }}/{{'logo.png'}}"> -->
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
                 <!-- Sidebar toggle button-->
@@ -16,6 +18,11 @@
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">   
                         <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
+                                <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'gear.svg'}}" alt="Setting"> 
+                            </a>
+                        </li>
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <?php
@@ -35,7 +42,7 @@
                                     $dayremain = 30 - $dayused;
                                 }
                                 ?>
-                                <img src="{{ Config('constants.adminImgangePath') }}/{{($profileimg)?$profileimg:'default-profile-picture.png'}}" class="user-image" alt="User">
+                                <img src="{{ Config('constants.adminImgangePath') }}/{{($profileimg)?$profileimg:'/icons/user.svg'}}" class="user-image" alt="User">
                                 <span class="hidden-xs">{{ @App\Models\User::find(Session::get('loggedinAdminId'))->first_name }}</span>
                             </a>
                             <ul class="dropdown-menu">
@@ -64,28 +71,44 @@
                         </li>
                     </ul>
                 </div>
+<<<<<<< HEAD
                 <!-- <div class="pull-right storeBtn">
                     <a href="{{ route('home') }}" target="_balak" class="btn btn-block btn-sm view-storeBtn"> View Store </a>
                 </div> -->
 <!--                @if($dayused < 30)
+=======
+<!--                 <div class="pull-right storeBtn">
+                    <a href="{{ route('home') }}" target="_balak" class="btn btn-block btn-sm view-storeBtn"> View Store </a>
+                </div>
+               @if($dayused < 30)
+>>>>>>> 96f619b655da9955be39733b06f95a23119a8da4
                 <div class="pull-right storeBtn">
                     <p class="btn btn-block btn-sm view-storeBtn"> Your free trial version of store will be expire after {{30 - $dayused}} days.</p>
                 </div>
                 @endif-->
+<<<<<<< HEAD
                 <!-- @if($expirydate)
+=======
+               <!-- @if($expirydate)
+>>>>>>> 96f619b655da9955be39733b06f95a23119a8da4
                        <div class="pull-right storeBtn">
                      <a href="#" class="btn btn-block renewStore"  style="cursor:pointor;"> Renew Now </a>
                 </div> -->
                 <div class="pull-right storeBtn">
+<<<<<<< HEAD
                     <!-- <p class="btn btn-block btn-sm view-storeBtn"> Your  store will be expire after {{$expirydate}} days.If you want to continue please renew it. -->
                   <!--  <form method="post" action="#"  target="_parent" onsubmit="window.open('https://veestores.com/get-city-pay', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
+=======
+                    <p class="btn btn-block btn-sm view-storeBtn"> Your  store will be expire after {{$expirydate}} days.If you want to continue please renew it.
+                    <form method="post" action="#"  target="_parent" onsubmit="window.open('https://veestores.com/get-city-pay', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
+>>>>>>> 96f619b655da9955be39733b06f95a23119a8da4
                             return true;"> -->
                    
 <!--                        <input type="hidden" name="store_id" value="{{Session::get('store_id')}}" >
                         <input type="button" id="renewStore" value="submit" class="btn btn-primary renewStore">-->
-                    <!--</form>-->
+                    <!--</form>
                     </p>
-                </div>
+                </div>-->
                
                 @endif
             </nav>

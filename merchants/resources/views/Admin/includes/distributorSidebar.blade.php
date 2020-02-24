@@ -13,12 +13,20 @@
             </li> -->
             <li class="{{ Route::currentRouteName() == 'admin.dashboard' ? 'active' : '' }}">
                 <a href="{{ route('admin.dashboard') }}">
+<<<<<<< HEAD
                     <i class="fa fa-bar-chart"></i><span>Home</span> <i class=""></i>
+=======
+                    <img class="left-menu-img" src="{{ Config('constants.adminImgangePath') }}/icons/{{'home.svg'}}"> <span>Home</span> 
+>>>>>>> 96f619b655da9955be39733b06f95a23119a8da4
                 </a>
             </li>
             <li class="treeview {{ preg_match("/admin.orders|admin.orders.OrderReturn|admin.miscellaneous.flags|admin.order_status|additional-charges/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
+<<<<<<< HEAD
                     <i class="fa fa-money"></i><span>Sales</span>
+=======
+                    <img class="left-menu-img" src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_invoice.svg'}}"> <span>Orders</span>
+>>>>>>> 96f619b655da9955be39733b06f95a23119a8da4
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">

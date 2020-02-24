@@ -85,36 +85,24 @@
                         </div> 
                     </div>
                     <span id="advanced-filter"> 
-                        <div class="form-group col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
-                            {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control form-control-right-border-radius', "placeholder"=>"Order No. From"]) !!}
-                            </div>
+                        <div class="form-group col-md-3"> 
+                            {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control form-control-border-radius', "placeholder"=>"Order No. From"]) !!} 
                         </div>
-                        <div class="form-group col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
-                            {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control form-control-right-border-radius', "placeholder"=>"Order No. To"]) !!}
-                            </div>
+                        <div class="form-group col-md-3"> 
+                            {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control form-control-border-radius', "placeholder"=>"Order No. To"]) !!} 
                         </div> 
-                        <div class="form-group col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
-                            {!! Form::text('pricemin',Input::get('pricemin'), ["class"=>'form-control form-control-right-border-radius', "placeholder"=>"Minimum Amount"]) !!}
-                            </div>
+                        <div class="form-group col-md-3"> 
+                            {!! Form::text('pricemin',Input::get('pricemin'), ["class"=>'form-control form-control-border-radius', "placeholder"=>"Minimum Amount"]) !!} 
                         </div>
-                        <div class="form-group col-md-6">                            
-                            <div class="input-group">
-                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
-                            {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control form-control-right-border-radius', "placeholder"=>"Maximum Amount"]) !!}
-                            </div>
+                        <div class="form-group col-md-3"> 
+                            {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control form-control-border-radius', "placeholder"=>"Maximum Amount"]) !!} 
                         </div>  
                     </span>
                     <span id="dots"></span><div class="clearfix"></div> 
-                    <div class="form-group col-md-8 noBottomMargin">
+                    <div class="form-group col-md-6 noBottomMargin">
                         <span onclick="myFunction()" id="advanced-filter-Btn"><i class="fa fa-caret-down" aria-hidden="true"></i> Advanced Filters</span>
                     </div>
-                    <div class="form-group col-md-4 noBottomMargin"> 
+                    <div class="form-group col-md-6 noBottomMargin"> 
                         <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right">Reset</button></a> 
                         <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg"> Filter</button> 
                     </div>
@@ -193,23 +181,103 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>All Orders  <span class="listing-counter">{{$ordersCount }}</span> </h1>
+            <h1>
+            <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Orders  <span class="listing-counter"> 1-6 of  {{$ordersCount }}</span>
+            </h1>
+            <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-listing-heading pull-right noAll-margin"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create </a>   
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">
                 <table class="table orderTable table-striped table-hover tableVaglignMiddle">
                     <thead>
                         <tr>
-                            <th class="text-center"><input type="checkbox" id="checkAll" /></th>
-                            <th class="text-center">@sortablelink ('id', 'Order Id')</th>
-                            <th class="text-left">Customer</th>
+                            <th class="text-center">
+                                <label class="custom-checkbox">
+                                   <input type="checkbox" id="checkAll" />
+                                  <span class="checkmark"></span>
+                                </label>
+
+                              <form action="" class="formMul" method="post" >
+                                <input type="hidden" value="" name="OrderIds" />
+                                <span class="dropdown">
+                                  <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+                                    <span class="caret"></span>
+                                  </button>
+                                  <ul name="orderAction" id="orderAction" class="dropdown-menu bulk-action-dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <li role="presentation" class="dropdown-header">Select Bulk Action</li>
+                                    <li><input type="radio" id="1" name="Bulk Action" value="1">
+                                        <label for="1">Print Invoice</label> 
+                                    </li>
+                                    <li><input type="radio" id="3" name="Bulk Action" value="3">
+                                        <label for="3">Export</label> 
+                                    </li> 
+                                    @if($feature['flag'] == 1) 
+                                    <li><input type="radio" id="30" name="Bulk Action" value="30">
+                                        <label for="30">Flag</label> 
+                                    </li> 
+                                     @endif
+                                    <li role="presentation" class="dropdown-header"> Courier Services </li>
+                                    <li><input type="radio" id="31" name="Bulk Action" value="31">
+                                        <label for="31">E-courier</label> 
+                                    </li>  
+                                    <li role="presentation" class="dropdown-header"> Update Order Status </li>
+                                     <li><input type="radio" id="8" name="Bulk Action" value="8">
+                                        <label for="8">Cancelled</label> 
+                                    </li>
+                                     <li><input type="radio" id="12" name="Bulk Action" value="12">
+                                        <label for="12">Delayed</label> 
+                                    </li>
+                                     <li><input type="radio" id="6" name="Bulk Action" value="6">
+                                        <label for="6">Delivered</label> 
+                                    </li>
+                                     <li><input type="radio" id="9" name="Bulk Action" value="9">
+                                        <label for="9">Exchanged</label> 
+                                    </li>
+                                     <li><input type="radio" id="10" name="Bulk Action" value="10">
+                                        <label for="10">Returned</label> 
+                                    </li> 
+                                     <li><input type="radio" id="20" name="Bulk Action" value="20">
+                                        <label for="20">Partially Shipped</label> 
+                                    </li> 
+                                     <li><input type="radio" id="4" name="Bulk Action" value="4">
+                                        <label for="4">Processing</label> 
+                                    </li> 
+                                     <li><input type="radio" id="21" name="Bulk Action" value="21">
+                                        <label for="21">Refunded</label> 
+                                    </li> 
+                                     <li><input type="radio" id="5" name="Bulk Action" value="5">
+                                        <label for="5">Shipped</label> 
+                                    </li> 
+                                     <li><input type="radio" id="11" name="Bulk Action" value="11">
+                                        <label for="11">Undelivered</label> 
+                                    </li>   
+                                    <li role="presentation" class="dropdown-header"> Update Payment Status </li>
+                                    <li><input type="radio" id="13" name="Bulk Action" value="13">
+                                        <label for="13">Pending</label> 
+                                    </li>
+                                     <li><input type="radio" id="14" name="Bulk Action" value="14">
+                                        <label for="14">Cancelled</label> 
+                                    </li>
+                                     <li><input type="radio" id="15" name="Bulk Action" value="15">
+                                        <label for="15">Partially Paid</label> 
+                                    </li>
+                                     <li><input type="radio" id="16" name="Bulk Action" value="16">
+                                        <label for="16">Paid</label> 
+                                    </li> 
+                                  </ul>
+                                </span>  
+                            </form>
+
+                            </th>
+                            <th class="text-right">@sortablelink ('id', 'Order Id')</th>
                             <th class="text-right">Order Date</th> 
+                            <th class="text-left">Customer Name</th>
                             <th class="text-center">Order Status</th>
                             <th class="text-center">Payment Status</th>
-                            <th class="text-right">@sortablelink ('pay_amt', 'Amount')</th>
+                            <th class="text-right">@sortablelink ('pay_amt', 'Amount (INR)')</th>
                             <!-- <th class="text-right">Paid Amount</th>  -->
                             @if($feature['courier-services'] == 1)
-<!--                                <th>Courier Service</th>-->
+                            <!-- <th>Courier Service</th>-->
                             @endif
                             <th class="text-center">Action</th>
                         </tr>
@@ -219,21 +287,29 @@
                         @foreach($orders as $order)
                      
                         <tr>
-                            <td class="text-center"><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /></td>
-                            <td class="text-center"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
-                            <td class="text-left"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"><span class="list-dark-color">{{ @$order->users->firstname }} {{ @$order->users->lastname }} </span></a><div class="clearfix"></div>
-                                <span class="list-light-color list-small-font">{{ @$order->users->telephone }}</span>
+                            <td class="text-center">
+                                <!-- <input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /> -->
+
+                                <label class="custom-checkbox">
+                                  <input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" />
+                                  <span class="checkmark"></span>
+                                </label>
+
                             </td>
+                            <td class="text-right"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
                             <td class="text-right">{{ date('d-M-Y',strtotime($order->created_at)) }}
                                 <div class="clearfix"></div>
-                                <span class="list-light-color list-small-font">8:30 PM</span>
+                                <span class="list-light-color list-small-font">10:53:12 AM</span>
+                            </td>
+                            <td class="text-left"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{ @$order->users->firstname }} {{ @$order->users->lastname }} </a><div class="clearfix"></div>
+                                <span class="list-light-color list-small-font">{{ @$order->users->telephone }}</span>
                             </td> 
                             <td class="text-center"><span class="alertWarning">{{ @$order->orderstatus['order_status']  }}</span></td>
                             <td class="text-center"><span class="alertWarning">{{ @$order->paymentstatus['payment_status'] }}</span></td>
                             <td class="text-right">@if(@$order->prefix)
-                                <span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
+                                <!-- <span class="currency-sym"></span> --> <span class="list-dark-color">{{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}</span>
                                 @else
-                                <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
+                                <!-- <span class="currency-sym"></span> --> <span class="list-dark-color">{{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}</span>
                                 @endif
                             </td>
                             <!-- <td class="text-right">
@@ -264,10 +340,10 @@
                             @endif
                             <td class="text-center">  
                             <div class="actionCenter">
-                                <span><a class="btn-action-default" href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">Edit</a></span> 
+                                <span><a class="btn-action-default" href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                 <span class="dropdown">
                                     <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="caret"></span>
+                                    <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
                                         <li><a href="#" data-ordId ="{{$order->id}}"  class="flage"><i class="fa fa-flag-o btn-plen"></i> Flag</a></li>
