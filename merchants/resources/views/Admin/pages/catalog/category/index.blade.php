@@ -191,7 +191,7 @@
     <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
     {% } %}
     </span>
-    </td>
+    </td> 
     <td>
     <p class="name">
     {% if (file.url) { %}
