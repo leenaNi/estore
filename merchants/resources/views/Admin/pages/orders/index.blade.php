@@ -14,10 +14,10 @@
 @section('content')
 <section class="content-header">
     <h1>
-        All Orders ({{$ordersCount }}) 
+        All Orders <!-- ({{$ordersCount }})  -->
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
+        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Sales</a></li>
         <li class="active">All Orders</li>
     </ol>
 </section>
@@ -37,46 +37,31 @@
         @endif
     </div>
 
+    <div class="col-md-9 noLeft-padding">
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filter</h1>
         </div>
-        <div class="filter-section displayFlex">
-            <div class="col-md-9 noAll-padding displayFlex">
+        <div class="filter-section">
                 <div class="filter-left-section">
                     {!! Form::open(['method' => 'get', 'route' => 'admin.orders.view' , 'id' => 'searchForm' ]) !!}
                     <div class="form-group col-md-4">
-                        {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"Order Id"]) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
+                            {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control  form-control-right-border-radius', "placeholder"=>"Search for Order Id"]) !!}
+                        </div>                        
                     </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control ', "placeholder"=>"Order No. From"]) !!}
+                    <div class="form-group col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>                        
+                        {!! Form::text('search',Input::get('search'), ["class"=>'form-control  form-control-right-border-radius', "placeholder"=>"Search for Name, Email or Mobile Number"]) !!}
+                        </div>
                     </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control ', "placeholder"=>"Order No. To"]) !!}
-                    </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('search',Input::get('search'), ["class"=>'form-control ', "placeholder"=>"Name/Email/Mobile"]) !!}
-                    </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('pricemin',Input::get('pricemin'), ["class"=>'form-control ', "placeholder"=>"Minimum Amount"]) !!}
-                    </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control ', "placeholder"=>"Maximum Amount"]) !!}
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <div class="input-group date">
-                            {!! Form::text('date',Input::get('date'), ["class"=>'form-control date', "placeholder"=>"Order Date"]) !!}
-                            <div class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </div>
-                        </div> 
-                    </div>  
 
                     @if($order_status->count())
                     @php echo Input::get('searchStatus[]'); @endphp
                     <div class="btn-group form-group col-md-4 col-xs-12">
-                        <select name='searchStatus[]' class="multiselect form-control" multiple="multiple" style="background-color: none!important;">
+                        <select name='searchStatus[]' class="multiselect form-control" multiple="multiple">
                             @php echo $order_options @endphp
                         </select>
                     </div>
@@ -91,53 +76,93 @@
                         </select>
                     </div>
                     @endif
-                    <div class="clearfix"></div>
-                    <div class="form-group col-md-4 noBottomMargin">
-                        <div class="button-filter-search col-md-4 col-xs-12 no-padding mob-marBottom15">
-                            <button type="submit" class="btn btn-primary fullWidth noAll-margin"> Filter</button>
+                    <div class="form-group col-md-4">
+
+                        <div class="input-group">
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'calendar.svg'}}"></span>
+                             {!! Form::text('date',Input::get('date'), ["class"=>'form-control darkPlaceholder', "placeholder"=>"Order Date"]) !!}
+                            <span class="input-group-addon date"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'arrow_drop_down.png'}}" class="autoWidth"></span>
+                        </div> 
+                    </div>
+                    <span id="advanced-filter"> 
+                        <div class="form-group col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
+                            {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control form-control-right-border-radius', "placeholder"=>"Order No. From"]) !!}
+                            </div>
                         </div>
-                        <div class="button-filter col-md-4 col-xs-12 no-padding noBottomMargin">
-                            <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn fullWidth noMob-leftmargin">Reset</button></a>
+                        <div class="form-group col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
+                            {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control form-control-right-border-radius', "placeholder"=>"Order No. To"]) !!}
+                            </div>
+                        </div> 
+                        <div class="form-group col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
+                            {!! Form::text('pricemin',Input::get('pricemin'), ["class"=>'form-control form-control-right-border-radius', "placeholder"=>"Minimum Amount"]) !!}
+                            </div>
                         </div>
+                        <div class="form-group col-md-6">                            
+                            <div class="input-group">
+                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
+                            {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control form-control-right-border-radius', "placeholder"=>"Maximum Amount"]) !!}
+                            </div>
+                        </div>  
+                    </span>
+                    <span id="dots"></span><div class="clearfix"></div> 
+                    <div class="form-group col-md-8 noBottomMargin">
+                        <span onclick="myFunction()" id="advanced-filter-Btn"><i class="fa fa-caret-down" aria-hidden="true"></i> Advanced Filters</span>
+                    </div>
+                    <div class="form-group col-md-4 noBottomMargin"> 
+                        <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right">Reset</button></a> 
+                        <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg"> Filter</button> 
                     </div>
                     {!! Form::close() !!}
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="col-md-3 noAll-padding displayFlex">
+    <div class="col-md-3 noRight-padding">
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
+        </div>
+        <div class="filter-section">
                 <div class="filter-right-section">
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default fullWidth noAll-margin">Create New Order</a>  
-                    </div>
+                    </div> -->
                     <div class="form-group">
                     <a class="btn btn-default fullWidth noAll-margin" href="{{route('admin.orders.sampleexport')}}">Download Sample</a>
+                    </div>
+                    <div class="form-group">
+                     <a href="{{route('admin.orders.export')}}"  class="btn btn-default noAll-margin fullWidth">Export All Order</a>
                     </div> 
                     <form action="{{route('admin.traits.orders')}}"  method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <input type="file" class="validate[required] fileUploder fullWidth" name="order_file" placeholder="Browse CSV file"  required onChange="validateFile(this.value)"/>
+                            <div class="input-group">
+                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'up-arrow.svg'}}"></span>
+                                <input type="file" class="validate[required] fileUploder fullWidth form-control form-control-right-border-radius" name="order_file" placeholder="Upload Import File"  required onChange="validateFile(this.value)"/>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <input type="submit" class="btn sbtn btn-primary submitBulkUpload fullWidth noAll-margin" value="Bulk Order Upload"/>
+                        <div class="form-group noAll-margin">
+                            <input type="submit" class="btn sbtn btn-secondary submitBulkUpload fullWidth noAll-margin" value="Import from File"/>
                         </div>
                     </form> 
-                    <div class="form-group">
-                     <a href="{{route('admin.orders.export')}}"  class="btn btn-default noAll-margin fullWidth">Export All Order</a>
-                    </div>
-                    <form action="" class="formMul" method="post" >
+                    <!-- <form action="" class="formMul" method="post" >
                         <input type="hidden" value="" name="OrderIds" />
                         <select name="orderAction" id="orderAction" class="form-control">
-                            <option value="">Select Bulk Action</option>
-                            <!--                            <option value="">Generate Waybill</option>-->
-                            <option value="1">Print Invoice</option>
-                            <!--<option value="17">Send to Shiprocket</option>-->
+                            <option value="">Select Bulk Action</option> 
+                            <option value="1">Print Invoice</option> 
                             <option value="3" >Export</option>
                             @if($feature['flag'] == 1)
                             <option value="30" >Flag</option>
                             @endif
                             <optgroup label="Courier Services">
                                 <option value="31">E-courier</option>
-                            </optgroup>
-                            <!--<option value="25" >Warehouse Order Export</option>-->
+                            </optgroup> 
                             <optgroup label="Update Order Status">
                                 <option value="8">Cancelled</option>
                                 <option value="12" >Delayed</option>
@@ -158,7 +183,7 @@
                             </optgroup>
 
                         </select>
-                    </form>
+                    </form> -->
                 </div>
             </div>
 
@@ -821,6 +846,21 @@ $(window).load(function() {
     }, 1000);
 });
 
+function myFunction() {
+  var dots = document.getElementById("dots");
+  var moreText = document.getElementById("advanced-filter");
+  var btnText = document.getElementById("advanced-filter-Btn");
+
+  if (dots.style.display === "none") {
+    dots.style.display = "inline";
+    btnText.innerHTML = "<i class='fa fa-caret-down'></i> Advanced Filters"; 
+    moreText.style.display = "none";
+  } else {
+    dots.style.display = "none";
+    btnText.innerHTML = "<i class='fa fa-caret-up'></i> Advanced Filters"; 
+    moreText.style.display = "inline";
+  }
+}
 
 </script>
 
