@@ -249,7 +249,7 @@ class ApiCartController extends Controller
                 "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt];
 
                 if (!$searchExist["isExist"]) {
-                    Cart::instance('shopping')->add(["id" => $prod->prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
+                    Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                         "options" => $optionsData]);
                 } else {
                     $newOfferedQty = ($searchExist['offer_qty']+$offer_qty);

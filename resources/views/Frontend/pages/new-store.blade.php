@@ -31,7 +31,7 @@
 										<div class="form-group">
 											<label>Business Name </label>
 											<div class="input-group">
-												<input tabindex="1" type="text" class="form-control" name="store_name" id="store_name" placeholder="Business Name" onBlur="checkStorename(this.value)">
+												<input tabindex="1" type="text" class="form-control" name="store_name" id="store_name" placeholder="Business Name">
 												<span>
 													<img id="successimg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success"/ class="success-tick hidden">
 													<img id="errorimg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success"/ class="error-mark hidden">
