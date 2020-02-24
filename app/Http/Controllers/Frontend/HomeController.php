@@ -68,17 +68,9 @@ class HomeController extends Controller
            
         //     return redirect()->to("/select-themes");
         // }
-
-        $domainname = str_replace(" ", '-', trim(strtolower(Session::get('storename')), " "));
-
-        $availability = $this->availDomain(Session::get('storename'));
-        //  dd($availability);
-        //  dd($checkdomain);
+        
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
-        //$cat = Category::where("status", 1)->pluck('category', 'id');
-        //$country = Country::where("status", 1)->get()->first();
-        //$currency = Currency::where("status", 1)->get()->first();
-
+        
         $settings = Settings::where('bank_id', 0)->first();
         $country = Country::where("id", $settings->country_id)->get()->first();
         $currency = Currency::where("id", $settings->currency_id)->get()->first();
@@ -110,23 +102,27 @@ class HomeController extends Controller
         }
     }
 
-    public function availDomain($availdomain = null)
+    public function availDomain($availdomain)
     {
-        if (!empty(Input::get('availdomain'))) {
-            $availdomain = Input::get('availdomain');
-        }
-
+        // if (!empty(Input::get('availdomain'))) {
+        //     $availdomain = Input::get('availdomain');
+        // }
+           
         $domainname = str_replace(" ", '-', trim(strtolower($availdomain), " "));
-
+        
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
 
         $checkdomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
         $storedomain = Store::pluck('store_domain')->toArray();
-
+        
         if (in_array($checkdomain, $storedomain)) {
-            return $availability = "icon-remove red-close";
-        } else {
-            return $availability = "icon-ok green-ok";
+            $domainname = $domainname.rand(100, 999);
+            $this->availDomain($domainname);
+            return $domainname;
+            //print_r('name '.$domainname);
+            //return $availability = "icon-remove red-close";
+        } else { 
+            return 1;
         }
     }
 
@@ -277,10 +273,12 @@ class HomeController extends Controller
     {
         //dd((object) Input::get('themeInput'));
         $themeInput = (object) Input::get('themeInput');
-        $domainname = str_replace(" ", '-', trim(strtolower($themeInput->domain_name), " "));
+        $storename = str_replace(" ", '-', trim(strtolower($themeInput->domain_name), " "));
+        $domainname = $this->availDomain($storename);
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
         $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
         $actualDomain = str_replace("..", ".", $actualDomain);
+       
         // if (!empty($themeInput->email)) {
         //     // $this->confirmMail($themeInput);
         // }
