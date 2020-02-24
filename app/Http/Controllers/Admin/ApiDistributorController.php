@@ -41,6 +41,8 @@ class ApiDistributorController extends Controller
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
                 //echo "<pre>";print_r($productResult);exit;
                 $j = 0;
+                $totalOfferOfAllProduct = 0;
+
                 foreach ($productResult as $getProductData) {
                     $storeId = $getProductData->store_id;
                     $productId = $getProductData->id;
@@ -98,10 +100,13 @@ class ApiDistributorController extends Controller
                     $offerCount = 0;
                     if (count($offersIdCountResult) > 0) {
                         $offerCount = $offersIdCountResult[0]->offer_count;
+                        $totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
                     }
+                    
                     $storeIdWithDistributorId[$i]['products'][$j]['offers_count'] = $offerCount;
                     $j++;
                 } //product foreach ends here
+                $storeIdWithDistributorId[$i]['offer_count'] = $totalOfferOfAllProduct;
                 $i++;
             } //store foreach ends here
 
