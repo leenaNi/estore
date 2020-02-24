@@ -258,15 +258,6 @@ class Helper
             ->update(['attr_set' => $attrSetId->id]);
         //Catalouge images
         $productId = DB::table('products')->where('store_id', $storeId)->first(['id']);
-        $catalogImages = [
-            ['filename' => 'prod-20180623103707.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 1, 'image_path' => null],
-            ['filename' => 'prod-120180623103750.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 2, 'image_path' => null],
-            ['filename' => 'prod-420180623103751.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 3, 'image_path' => null],
-            ['filename' => 'prod-320180623103752.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 4, 'image_path' => null],
-            ['filename' => 'prod-220180623103753.jpg', 'alt_text' => 'Product Image', 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $productId->id, 'sort_order' => 5, 'image_path' => null],
-        ];
-
-        DB::table('catalog_images')->insert($catalogImages);
 
         //Add General Settings Industriwise
         $industriQuestions = DB::table('has_industries')->JOIN('general_setting', 'general_setting.id', 'has_industries.general_setting_id')
