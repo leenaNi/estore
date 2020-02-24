@@ -545,9 +545,53 @@ class CategoryController extends Controller
             "parent_id" => $parentId, 
             "user_id" => Session::get('loggedinAdminId'), 
         ]);
+
+        //insert category with parent category id into store_category table
+        /*$storeCategoryRs = DB::table('store_categories')->insert([
+            "parent_id" => $parentId, 
+            //"category_id" => Session::get('loggedinAdminId'), 
+        ]);*/
+
+        // Send mail to admin with hierarchy from parent to child according to the selected category
+        $superAdminEmail = DB::table('vswipe_users')->get(['email']);
+
+        if($parentId > 0)
+        {
+            $categoryArray = array();
+            $categoryData = DB::table('categories')->where('id', $parentId)->get(['id','category','parent_id']);
+            $parentCategoryId = $categoryData[0]->parent_id;
+            $categoryName = $categoryData[0]->category;
+            
+            do 
+            {
+                if($parentCategoryId != 0)
+                    array_push($categoryArray, $categoryName);
+                    
+                $categoryData = DB::table('categories')->where('id', $parentCategoryId)->get(['id','category','parent_id']);
+                $parentCategoryId = $categoryData[0]->parent_id;
+                $categoryName = $categoryData[0]->category;
+                if($parentCategoryId == 0)
+                    array_push($categoryArray, $categoryName);
+                
+            }
+            while($parentCategoryId > 0);
+            $parentToChild = $implode(' -> ',array_reverse($categoryArray));
+            $mailcontent = 'Please add new "$newCatName" Category. Below is the hierarchy of new category.<br> $parentToChild';
+        }
+        else
+        {
+            $mailcontent = 'Please add new "$newCatName" parent Category.';
+        }
+        
+        $sub = "New Category Request";
+
         if($newCategory){
+            if (!empty($superAdminEmail)) {
+                Helper::withoutViewSendMail($superAdminEmail, $sub, $mailcontent);
+            }
             Session::flash("msg", "New category request sent successfully.");
         } else {
+            
             Session::flash("message", "Oops, Something went wrong.");
         }
         return redirect()->route('admin.category.view');

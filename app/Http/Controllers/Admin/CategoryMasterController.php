@@ -26,6 +26,7 @@ class CategoryMasterController extends Controller {
         $categories = CategoryMaster::whereIn("status", [1, 0])->orderBy("id", "asc");
         $categories = $categories->paginate(Config('constants.paginateNo'));
         $roots = CategoryMaster::roots()->get();
+        
         // dd($roots);
         //return view(Config('constants.adminCategoryMasterView') . '.index', compact('categories', 'roots'));
 
@@ -527,6 +528,7 @@ class CategoryMasterController extends Controller {
 
     public function categoriesRequested() {
         $categories = CategoryRequested::with(['requestedBy.store'])->orderBy("id", "desc");
+       
         $search = Input::get('search');
         if (!empty($search)) {
             if (!empty(Input::get('s_category'))) {
@@ -540,6 +542,7 @@ class CategoryMasterController extends Controller {
                 $categories = $categories->where("created_at", ">=", "$fromdate")->where('created_at', "<", "$todate");
             }
         }
+
         $categories = $categories->paginate(Config('constants.AdminPaginateNo'));
         $data = [];
         $viewname = Config('constants.adminCategoryMasterView') . ".new-category";
