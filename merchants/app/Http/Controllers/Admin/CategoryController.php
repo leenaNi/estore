@@ -534,6 +534,7 @@ class CategoryController extends Controller
     }
 
     public function newCategory(){
+        
         if(Input::get('parent_id') && Input::get('parent_id') !='') {
             $parentId = DB::table('store_categories')->where('id', Input::get('parent_id'))->first(['category_id'])->category_id;
         } else {
@@ -575,16 +576,16 @@ class CategoryController extends Controller
                 
             }
             while($parentCategoryId > 0);
-            $parentToChild = $implode(' -> ',array_reverse($categoryArray));
-            $mailcontent = 'Please add new "$newCatName" Category. Below is the hierarchy of new category.<br> $parentToChild';
+            $parentToChild = implode(' -> ',array_reverse($categoryArray));
+            
+            $mailcontent = "Please add new category '$newCatName' inside the parent category of $parentToChild";
         }
         else
         {
-            $mailcontent = 'Please add new "$newCatName" parent Category.';
+            $mailcontent = "Please add new parent category '$newCatName'.";
         }
         
         $sub = "New Category Request";
-
         if($newCategory){
             if (!empty($superAdminEmail)) {
                 Helper::withoutViewSendMail($superAdminEmail, $sub, $mailcontent);
