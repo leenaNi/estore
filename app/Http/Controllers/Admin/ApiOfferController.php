@@ -286,8 +286,6 @@ class ApiOfferController extends Controller
                                             $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
                                             $categoryArray[$i]['offers'][$j]['offer_discount_value'] = $getOfferData->offer_discount_value;
                                             
-                                            // $categoryArray[$i]['offers'][$j]['min_order_amt'] = $getOfferData->min_order_amt;
-                                            // $categoryArray[$i]['offers'][$j]['max_discount_amt'] = $getOfferData->max_discount_amt;
                                             $offerPrice = 0;
                                             $actualPrice = 0;
                                             $offPrice = 0;
