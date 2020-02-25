@@ -120,6 +120,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/update-order-status', ['as' => 'admin.apiorder.updateOrderStatus', 'uses' => 'ApiOrderController@updateOrderStatus']);
             Route::any('/cal-aditional-charge', ['as' => 'admin.apiorder.calAditionalCharge', 'uses' => 'ApiOrderController@calAditionalCharge']);
 
+            Route::post('/place-distributor-order', ["as" => "admin.apiDistOrder", "uses" => "ApiDistributorOrderController@placeOrder"]);
+
         });
 
         Route::group(['prefix' => 'systemUser'], function () {
