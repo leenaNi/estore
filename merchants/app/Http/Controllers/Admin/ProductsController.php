@@ -1349,30 +1349,32 @@ class ProductsController extends Controller
 
     public function changeStatus()
     {
-        $prod = Product::find(Input::get('id'));
-        if ($prod->status == 1) {
-            $prodStatus = 0;
-            $msg = "Product disabled successfully.";
-            $prod->status = $prodStatus;
-            $prod->update();
-            Session::flash("message", $msg);
+        if(!empty(Input::get('id')))
+        {
+            $prod = Product::find(Input::get('id'));
+            if ($prod->status == 1) {
+                $prodStatus = 0;
+                $msg = "Product disabled successfully.";
+                $prod->status = $prodStatus;
+                $prod->update();
+                Session::flash("message", $msg);
 
-            return redirect()->back()->with('message', $msg);
-            // $data = ['status' => '1', 'msg' => $msg];
-            // $viewname = Config('constants.adminProductView') . '.index';
-            // return Helper::returnView($viewname, $data, $url = 'admin.products.view');
-        } else if ($prod->status == 0) {
-            $prodStatus = 1;
-            $msg = "Product  enabled successfully.";
-            $prod->status = $prodStatus;
-            $prod->update();
-            Session::flash("msg", $msg);
-            return redirect()->back()->with('msg', $msg);
-            // Session::flash("msg", $msg);
-            // $data = ['status' => '1', 'msg' => $msg];
-            // $viewname = Config('constants.adminProductView') . '.index';
-            // return Helper::returnView($viewname, $data, $url = 'admin.products.view');
+                //return redirect()->back()->with('message', $msg);
+            } else if ($prod->status == 0) {
+                $prodStatus = 1;
+                $msg = "Product  enabled successfully.";
+                $prod->status = $prodStatus;
+                $prod->update();
+                Session::flash("msg", $msg);
+                //return redirect()->back()->with('msg', $msg);
+            }
+            $data = ['status' => '1', 'msg' => $msg];    
         }
+        else
+        {
+            $data = ['status' => '0', 'msg' => 'There is somthing wrong.'];
+        }
+        return $data;
     }
 
     public function deleteVarient()

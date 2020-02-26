@@ -233,10 +233,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </ul>
             </li>-->
                 </ul>
-                
-                
             </li>
-       
 
             <li class="treeview {{ preg_match("/admin.customers|admin.storecontacts/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
@@ -252,16 +249,17 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <a href="{{ route('admin.customers.ledger') }}">
                         <i class="fa fa-user"></i><span>Customer Ledger</span> <i class=""></i>
                     </a>
-            </li>
+                    </li>
                 </ul>
             </li> 
+
             <li class="{{ Route::currentRouteName() == 'admin.payments.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.payments.view') }}">
                     <i class="fa fa-money"></i><span>Settlements</span> <i class=""></i>
                 </a>
             </li>
             
-            <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
+            {{-- <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-user-plus"></i><span>ACL</span>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -279,7 +277,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     @endif
 
                 </ul>
-            </li>      
+            </li>       --}}
 
             <li class="treeview {{ preg_match("/admin.staticpages|admin.testimonial|admin.contact|admin.sliders|admin.dynamic-layout|admin.masterList|admin.socialmedialink|admin.templateSetting/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
@@ -303,13 +301,8 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     @if($feature['email-facility'] == 1) 
                     <li class="{{ preg_match("/admin.templateSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.templateSetting.view') }}"><i class="fa fa-angle-right"></i>Email Templates</a></li> 
                     @endif 
-                  
-                 
                 </ul>
             </li>    
-
-       
-
             <!--            <li class="treeview {{ preg_match("/admin.apicat/",Route::currentRouteName()) ? 'active' : '' }}">
                             <a href="{{ route('admin.apicat.view') }}">
                                 <i class="fa fa-th-list"></i>
@@ -329,12 +322,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                             </ul>
                         </li>-->
 
-
-
-
-         
-
-            <li class="treeview {{ preg_match("/admin.storeSetting|admin.currency|admin.state|admin.language|admin.translation|admin.cities|admin.country|admin.generalSetting|admin.pincodes|admin.domains|admin.emailSetting|admin.paymentSetting|admin.returnPolicy|admin.courier/",Route::currentRouteName()) ? 'active' : '' }}">
+            {{-- <li class="treeview {{ preg_match("/admin.storeSetting|admin.currency|admin.state|admin.language|admin.translation|admin.cities|admin.country|admin.generalSetting|admin.pincodes|admin.domains|admin.emailSetting|admin.paymentSetting|admin.returnPolicy|admin.courier/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-cogs"></i><span>Settings</span>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -344,9 +332,6 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                                         
                     <li class="{{ preg_match("/admin.domains/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.domains.view') }}"><i class="fa fa-angle-right"></i>Domain</a></li>
                     
-
-
-
                     <li class="{{ preg_match("/admin.generalSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.generalSetting.view') }}"><i class="fa fa-angle-right"></i>Feature Activation</a></li>
                                         <li class="{{ preg_match("/admin.paymentSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.paymentSetting.view') }}"><i class="fa fa-angle-right"></i>Payment Gateway</a></li>                     
 <!--                @if($feature['courier-services'] == 1) 
@@ -374,10 +359,6 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 <!--                    <li class="{{ preg_match("/admin.state/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.state.view') }}"><i class="fa fa-angle-right"></i>States</a></li>-->
                     <!-- <li class="{{ preg_match("/admin.cities/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.cities.view') }}"><i class="fa fa-angle-right"></i>Cities</a></li> -->
 
-                  
-
-
-
                     @if($feature['pincode']==1)
                     <li class="{{ preg_match("/admin.pincodes/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.pincodes.view') }}"><i class="fa fa-angle-right"></i>Pincodes</a></li>
                     @endif
@@ -389,8 +370,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
                   
             </li>
-            
-        </ul>
+         </ul> --}}
         </li>
            <li class="{{ Route::currentRouteName() == 'admin.home.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.home.view') }}">

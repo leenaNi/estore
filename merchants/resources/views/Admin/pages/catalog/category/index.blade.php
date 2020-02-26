@@ -35,88 +35,217 @@
 
 <section class="main-content">
     <div class="notification-column">
-                    @if(!empty(Session::get('message')))
-                    <div  class="alert alert-danger" role="alert">
-                        {{ Session::get('message') }}
-                    </div>
-                    @endif
-                    @if(!empty(Session::get('msg')))
-                    <div  class="alert alert-success" role="alert">
-                        {{ Session::get('msg') }}
-                    </div>
-                    @endif
-    </div>
-    <div class="grid-content">
+       
+                @if(!empty(Session::get('message')))
+                <div  class="alert alert-danger" role="alert">
+                    {{ Session::get('message') }}
+                </div>
+                @endif
+                @if(!empty(Session::get('msg')))
+                <div  class="alert alert-success" role="alert">
+                    {{ Session::get('msg') }}
+                </div>
+                @endif
+                </div>   
+
+                <div class="grid-content">
         <div class="section-main-heading">
             <h1>Categories</h1>
         </div>
       <div class="filter-section">
             <div class="col-md-12 noAll-padding">
                 <div class="filter-full-section">
-                   
                     <div class="form-group col-md-6 noBottomMargin">
-                        <div class="input-group-btn">
-                            <input type="text" name="catSearch" class="form-control medium pull-right catSearcH" placeholder="Search Category">
-                        </div>
+                    <div class="input-group-btn">
+                        <input type="text" name="catSearch" class="form-control medium pull-right catSearcH" placeholder="Search Category">
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="grid-content">
+                </div>
+                </div>
+                <div>
+                </div>
+                <div class="grid-content">
         <div class="section-main-heading">
             <h1>All Categories</h1>
         </div>
       <div class="listing-section">
             <div class="col-md-12 noAll-padding">
-                <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover">
                         <?php
-                            echo "<ul  id='catTree' class='tree icheck catTrEE'>";
-                            foreach ($roots as $root) {
-                                renderNode($root);
-                            }
+echo "<ul  id='catTree' class='tree icheck catTrEE'>";
+foreach ($roots as $root) {
+    renderNode($root);
+}
 
-                            echo "</ul>";
+echo "</ul>";
 
-                            function renderNode($node)
-                            {
-                                echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
-                                echo '' . $node->categoryName->category . '';
-                                echo '<a class="add-new-category" data-catId="' . $node->id . '" data-parentcatId="' . $node->parent_id . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
-                                echo '' . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
-                                                        <!-- <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a> -->
+function renderNode($node)
+{
+    echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
+    echo '' . $node->categoryName->category . '';
+    echo '<a class="add-new-category" data-catId="' . $node->id . '" data-parentcatId="' . $node->parent_id . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+    echo '' . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
+                            <!-- <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a> -->
 
 
-                                                        @if ($node->status == '0')
-                                                            <a href="{{route('admin.category.changeStatus',['id'=> $node->id])}}" class="changCatStatus" onclick="return confirm('Are you sure you  want to enable this category?')" data-toggle="tooltip" title="Disabled"><b><i class="fa fa-times fa-fw"></i></b></a>
-                                                        @endif
-                                                        @if($node->status == '1')
-                                                        <a href="{{route('admin.category.changeStatus',['id' => $node->id]) }}"  class="changCatStatus" onclick="return confirm('Are you sure you want to disable this category?')" data-toggle="tooltip" title="Enabled"><b><i class="fa fa-check fa-fw"></i></b></a>
-                                                        @endif
-                                                <?php if ($node->adminChildren()->count() > 0) {
-                                    echo "<ul class='treemap fl_left'>";
-                                    foreach ($node->adminChildren as $child) {
-                                        renderNode($child);
-                                    }
+                            @if ($node->status == '0')
+                                <a href="{{route('admin.category.changeStatus',['id'=> $node->id])}}" class="changCatStatus" onclick="return confirm('Are you sure you  want to enable this category?')" data-toggle="tooltip" title="Disabled"><b><i class="fa fa-times fa-fw"></i></b></a>
+                            @endif
+                            @if($node->status == '1')
+                              <a href="{{route('admin.category.changeStatus',['id' => $node->id]) }}"  class="changCatStatus" onclick="return confirm('Are you sure you want to disable this category?')" data-toggle="tooltip" title="Enabled"><b><i class="fa fa-check fa-fw"></i></b></a>
+                            @endif
+                      <?php if ($node->adminChildren()->count() > 0) {
+        echo "<ul class='treemap fl_left'>";
+        foreach ($node->adminChildren as $child) {
+            renderNode($child);
+        }
 
-                                    // echo $child;
-                                    echo "</ul>";
-                                }
+        // echo $child;
+        echo "</ul>";
+    }
 
-                                echo "</li>";
-                            }
-                        ?>
-                </table>
+    echo "</li>";
+}
+?>
+                    </table>
+                </div><!-- /.box-body -->
                 <div class="box-footer clearfix">
 
+                </div>
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+    </div>
+    <div class="modal fade" id="new-category" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Request for new category</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('admin.category.newCategory')}}" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input class="form-control" name="category" required />
+                                    <input type="hidden" class="form-control" name="parent_id" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-primary" type="submit" >Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class='clearfix'></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="bulkCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Bulk Upload/Download</h4>
+                </div>
+                <div class="modal-body">
+                    <!--                    <div  class="bxmodal">
+                        <div class='col-md-6'>
+                            <label>Category Sample Download</label>
+                        </div>
+                        <div class='col-md-6'>
+                            <a href="{{ route('admin.category.sampleCategoryDownload')}}" class="btn btn-primary sampleDownload">Download</a>
+                        </div>
+                    </div>-->
+                    <div  class="bxmodal">
+                        <div class='col-md-6'>
+                            <label>Category Download</label>
+                        </div>
+                        <div class='col-md-6'>
+                            <a href="{{ route('admin.category.sampleBulkDownload')}}" class="btn btn-primary sampleDownload">Download</a>
+                        </div>
+                    </div>
+                    <div  class="bxmodal">
+                        <form action="{{ route('admin.category.categoryBulkUpload') }}" method="post" enctype="multipart/form-data">
+                            <div class='col-md-6'>
+                                <label>Category Upload</label>
+                                <input type="file" name="file" class="fileUploder" onChange="validateFile(this.value)"/>
+                            </div>
+                            <div class='col-md-6'>
+                                <input type="submit" class="btn btn-primary" value="Upload" >
+                            </div>
+                        </form>
+                    </div>
+                    <div  class="bxmodal">
+
+                        <form id="fileupload" action="{{ asset(route('admin.category.catBulkImgUpload')) }}" method="POST" enctype="multipart/form-data">
+                            <!-- Redirect browsers with JavaScript disabled to the origin page -->
+                            <!--        <noscript><input type="hidden" name="redirect" value="https://blueimp.github.io/jQuery-File-Upload/"></noscript>-->
+                            <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                            <div class="row fileupload-buttonbar">
+                                <div class="col-lg-12">
+                                    <!-- The fileinput-button span is used to style the file input field as button -->
+                                    <span class="btn btn-primary fileinput-button col-lg-4">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                        <span>Add files...</span>
+                                        <input type="file" name="files[]" multiple>
+                                    </span>
+                                    <button type="submit" class="btn btn-primary start  col-lg-4 ">
+                                        <i class="glyphicon glyphicon-upload"></i>
+                                        <span>Start upload</span>
+                                    </button>
+                                    <!--                                    <button type="reset" class="btn btn-warning cancel">
+                                                                            <i class="glyphicon glyphicon-ban-circle"></i>
+                                                                            <span>Cancel upload</span>
+                                                                        </button>-->
+                                    <!--                                    <button type="button" class="btn btn-danger delete">
+                                                                            <i class="glyphicon glyphicon-trash"></i>
+                                                                            <span>Delete</span>
+                                                                        </button>-->
+                                    <!--                                    <input type="checkbox" class="toggle">-->
+                                    <!-- The global file processing state -->
+                                    <span class="fileupload-process"></span>
+                                </div>
+                                <!-- The global progress state -->
+                                <div class="col-lg-5 fileupload-progress fade">
+                                    <!-- The global progress bar -->
+                                    <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                                    </div>
+                                    <!-- The extended global progress state -->
+                                    <div class="progress-extended">&nbsp;</div>
+                                </div>
+                            </div>
+                            <!-- The table listing the files available for upload/download -->
+                            <table role="presentation" class="table table-striped">
+                                <tbody class="files"></tbody>
+                            </table>
+                            <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
+                                <div class="slides"></div>
+                                <h3 class="title"></h3>
+                                <a class="prev">‹</a>
+                                <a class="next">›</a>
+                                <a class="close">×</a>
+                                <a class="play-pause"></a>
+                                <ol class="indicator"></ol>
+                            </div>
+                        </form>
+                        <br>
+                    </div>
+                </div>
+                <div class='clearfix'></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<div class="clearfix"></div>
 @stop
 @section('myscripts')
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
@@ -191,7 +320,7 @@
     <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
     {% } %}
     </span>
-    </td>
+    </td> 
     <td>
     <p class="name">
     {% if (file.url) { %}

@@ -55,9 +55,38 @@
                             <th>Action</th>
                         </tr>
                         @foreach($categories as $category)
+                        <?php
+                        $parentToChild = '-';
+                        $parentId = @$category->parent_id;
+                        if($parentId > 0)
+                        {
+                            $categoryArray = array();
+                            $categoryData = DB::table('categories')->where('id', $parentId)->get(['id','category','parent_id']);
+                            $parentCategoryId = $categoryData[0]->parent_id;
+                            $categoryName = $categoryData[0]->category;
+                            $i = 0;
+                            do 
+                            {
+                                if($parentCategoryId != 0 && $i > 0)
+                                    array_push($categoryArray, $categoryName);
+                                    
+                                $categoryData = DB::table('categories')->where('id', $parentCategoryId)->get(['id','category','parent_id']);
+                                $parentCategoryId = $categoryData[0]->parent_id;
+                                $categoryName = $categoryData[0]->category;
+                                if($parentCategoryId == 0)
+                                    array_push($categoryArray, $categoryName);
+                                $i++;
+                            }
+                            while($parentCategoryId > 0);
+                            if(count($categoryArray) > 1) 
+                                $parentToChild = implode(' -> ',array_reverse($categoryArray));
+                            else
+                                $parentToChild = $categoryArray[0];
+                        }
+                        ?>
                         <tr>
                             <td>{{ $category->name }}</td>
-                            <td>{{ @$category->parent->category }}</td>
+                            <td>{{ $parentToChild }}</td>
                             <td>{{ @$category->requestedBy->store->store_name }}</td>
                             <td>{{ date('d-M-Y',strtotime($category->created_at)) }}</td>
                             <td>

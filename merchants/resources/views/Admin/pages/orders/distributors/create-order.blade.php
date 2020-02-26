@@ -692,7 +692,7 @@ var prodoffer = 0;
             var params = {qty: qty, parentprdid: parentprodid, pprd: 1, offerid:prodoffer};
         $.post("{{route('admin.distributor.orders.getProdPrice')}}", params, function (data) {
             subp.parent().parent().find('.prodPrice').text(data.price);
-            subp.parent().parent().find('.prodDiscount').text(data.offer);
+            subp.parent().parent().find('.prodDiscount').text(5000);
             <?php if ($feature['tax'] == 1) {?>
                 subp.parent().parent().find('.taxAmt').text((data.tax).toFixed(2));
             <?php }?>
@@ -812,9 +812,11 @@ var prodoffer = 0;
         var subprdid = $(this).parents("td").prev().find(".subprodid").val();
         var parentprdid = $(this).parents("td").siblings().find(".prodSearch").attr('data-prdid');
         if (subprdid == null || subprdid == "") {
+            var prod = $("[data-prdid=" + parentprdid + "]");
             var pprd = 1;
             var data = {qty: qty, parentprdid: parentprdid, pprd: pprd, offerid:prodoffer};
         } else {
+            var prod = $("[data-prdid=" + subprdid + "]");
             var pprd = 0;
             var data = {qty: qty, subprdid: subprdid, pprd: pprd, offerid:prodoffer};
         }
@@ -825,8 +827,9 @@ var prodoffer = 0;
             data: data,
             cache: false,
             success: function (price) {
+                //console.log(price);
                 qtty.parents("td").next().find('.prodPrice').text(price.price);
-                qtty.parents("td").next().find('.prodDiscount').text(price.offer);
+                prod.parent().parent().find('.prodDiscount').text(price.offer);
                 if(price.offertype==2){
                         var countprod = price.offerProdCount;
                         $(".delOfferRow").remove();
@@ -1042,6 +1045,7 @@ var prodoffer = 0;
                 var prod = $("[data-prdid=" + id + "]");
             }
             prod.parent().parent().find('.prodPrice').text(price);
+            //prod.parent().parent().find('.prodDiscount').text(6000);
             prod.parent().parent().find('.taxAmt').text((value.options.tax_amt * <?php echo Session::get('currency_val'); ?>).toFixed(2));
         });
     }

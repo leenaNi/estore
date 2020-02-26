@@ -162,17 +162,23 @@
             
             <li class="treeview {{ preg_match("/admin.customers|admin.storecontacts/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
-                    <i class="fa fa-users"></i><span>Customers</span>
+                    <!--<i class="fa fa-users"></i><span>Customers</span>-->
+                    <i class="fa fa-users"></i><span>Merchants</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     @if($feature['acl'] == 1)
-                    <li class="{{ preg_match("/admin.customers/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"><i class="fa fa-angle-right"></i>All Customers</a></li> 
-                    <li class="{{ preg_match("/admin.storecontacts/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.storecontacts.view') }}"><i class="fa fa-angle-right"></i>All Contacts</a></li> 
+                    <!--<li class="{{ preg_match("/admin.customers/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"><i class="fa fa-angle-right"></i>All Customers</a></li> -->
+                    <li class="{{ preg_match("/admin.customers/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"><i class="fa fa-angle-right"></i>All Merchants</a></li>
+                    <!--<li class="{{ preg_match("/admin.storecontacts/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.storecontacts.view') }}"><i class="fa fa-angle-right"></i>All Contacts</a></li> -->
+                    <li  class="{{ Route::currentRouteName() == 'admin.vendors.addMerchant' ? 'active' : '' }}">
+                        <a href="{{ route('admin.vendors.addMerchant') }}">
+                            <i class="fa fa-angle-right"></i>Add Merchant</a>
+                    </li>
                     @endif
                 </ul>
             </li>
-            <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
+            <!--<li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-user-plus"></i><span>ACL</span>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -190,8 +196,8 @@
                     @endif
 
                 </ul>
-            </li>
-            <li class="treeview {{ preg_match("/admin.storeSetting|admin.currency|admin.state|admin.language|admin.translation|admin.cities|admin.country|admin.generalSetting|admin.pincodes|admin.domains|admin.emailSetting|admin.paymentSetting|admin.returnPolicy|admin.courier/",Route::currentRouteName()) ? 'active' : '' }}">
+            </li>-->
+            <!--<li class="treeview {{ preg_match("/admin.storeSetting|admin.currency|admin.state|admin.language|admin.translation|admin.cities|admin.country|admin.generalSetting|admin.pincodes|admin.domains|admin.emailSetting|admin.paymentSetting|admin.returnPolicy|admin.courier/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-cogs"></i><span>Settings</span>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -200,14 +206,33 @@
                     <li class="{{ preg_match("/admin.storeSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.storeSetting.view') }}"><i class="fa fa-angle-right"></i>Store Setting</a></li>
                     <li class="{{ preg_match("/admin.domains/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.domains.view') }}"><i class="fa fa-angle-right"></i>Domain</a></li>
                     <li class="{{ preg_match("/admin.bankDetails/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.bankDetails.view') }}"><i class="fa fa-angle-right"></i>Bank Details </a></li>
+                    <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
+                        <a href="#">
+                            <i class="fa fa-user-plus"></i><span>ACL</span>
+                            <i class="fa fa-angle-down pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                           
+                            <li class="{{ preg_match("/admin.systemusers/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.systemusers.view') }}"><i class="fa fa-angle-right"></i>System Users</a></li>
+        
+                            @if($feature['acl'] == 1)
+                            <li class="{{ preg_match("/admin.roles/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.roles.view') }}"><i class="fa fa-angle-right"></i>Roles</a></li>
+        
+                            @endif
+                            @if($settingStatus['purchase'] == 1)   
+                            <li class="{{ preg_match("/admin.vendors/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.view') }}"><i class="fa fa-angle-right"></i>Vendors</a></li>
+                            @endif
+        
+                        </ul>
+                    </li>
                 </ul>                                                  
-            </li>
-            <li  class="{{ Route::currentRouteName() == 'admin.vendors.addMerchant' ? 'active' : '' }}">
+            </li>-->
+            <!--<li  class="{{ Route::currentRouteName() == 'admin.vendors.addMerchant' ? 'active' : '' }}">
                 <a href="{{ route('admin.vendors.addMerchant') }}">
                     <i class="fa fa-user-plus"></i><span>Add Merchant</span>
                     <i></i>
                 </a>
-            </li>
+            </li>-->
             
         </ul>
     

@@ -1,4 +1,8 @@
 <header class="main-header">
+    <?php
+$productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
+?> 
+
     <!-- Logo -->
     <!-- <a href="{{route('admin.dashboard')}}" class="logo" style="background: rgba(0,0,0,0.2)!important;"> -->
     <a href="{{route('admin.dashboard')}}" class="logo">
@@ -13,7 +17,10 @@
                 <!-- Sidebar toggle button-->
                 <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
-                </a>              
+                </a>
+                
+                
+                
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">   
@@ -71,45 +78,81 @@
                         </li>
                     </ul>
                 </div>
-<<<<<<< HEAD
-                <!-- <div class="pull-right storeBtn">
-                    <a href="{{ route('home') }}" target="_balak" class="btn btn-block btn-sm view-storeBtn"> View Store </a>
-                </div> -->
-<!--                @if($dayused < 30)
-=======
-<!--                 <div class="pull-right storeBtn">
+
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">   
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-cog" aria-hidden="true"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="{{ preg_match("/admin.storeSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.storeSetting.view') }}"><i class="fa fa-angle-right"></i>Store Setting</a></li>
+                                <li class="{{ preg_match("/admin.domains/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.domains.view') }}"><i class="fa fa-angle-right"></i>Domain</a></li>
+                                <li class="{{ preg_match("/admin.bankDetails/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.bankDetails.view') }}"><i class="fa fa-angle-right"></i>Bank Details </a></li>
+                                @if(Session::get('loggedinAdminId') && Session::get('login_user_type') != 3)
+                                    <li class="{{ preg_match("/admin.generalSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.generalSetting.view') }}"><i class="fa fa-angle-right"></i>Feature Activation</a></li>
+                                    <li class="{{ preg_match("/admin.paymentSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.paymentSetting.view') }}"><i class="fa fa-angle-right"></i>Payment Gateway</a></li>
+                                    <li class="{{ preg_match("/admin.country/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.country.view') }}"><i class="fa fa-angle-right"></i>Countries</a></li>
+                                @endif
+                                @if($feature['email-facility'] == 1 && Session::get('loggedinAdminId') && Session::get('login_user_type') != 3) 
+                                    <li class="{{ preg_match("/admin.emailSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.emailSetting.view') }}"><i class="fa fa-angle-right"></i>Email Gateway</a></li>
+                                @endif
+                                @if(count($productReturnStatus)>0)
+                                    <li class="{{ preg_match("/admin.returnPolicy/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.returnPolicy.view') }}"><i class="fa fa-angle-right"></i>Return Policy</a></li>
+                                @endif
+                                @if($feature['pincode']==1)
+                                    <li class="{{ preg_match("/admin.pincodes/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.pincodes.view') }}"><i class="fa fa-angle-right"></i>Pincodes</a></li>
+                                @endif
+                                <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
+                                    <a href="#">
+                                        <i class="fa fa-user-plus"></i><span>ACL</span>
+                                        <i class="fa fa-angle-down pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                       
+                                        <li class="{{ preg_match("/admin.systemusers/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.systemusers.view') }}"><i class="fa fa-angle-right"></i>System Users</a></li>
+                    
+                                        @if($feature['acl'] == 1)
+                                        <li class="{{ preg_match("/admin.roles/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.roles.view') }}"><i class="fa fa-angle-right"></i>Roles</a></li>
+                    
+                                        @endif
+                                        @if($settingStatus['purchase'] == 1)   
+                                        <li class="{{ preg_match("/admin.vendors/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.view') }}"><i class="fa fa-angle-right"></i>Vendors</a></li>
+                                        @endif
+                    
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+ <!--               @if($dayused < 30)
+                <div class="pull-right storeBtn">
                     <a href="{{ route('home') }}" target="_balak" class="btn btn-block btn-sm view-storeBtn"> View Store </a>
                 </div>
                @if($dayused < 30)
->>>>>>> 96f619b655da9955be39733b06f95a23119a8da4
                 <div class="pull-right storeBtn">
                     <p class="btn btn-block btn-sm view-storeBtn"> Your free trial version of store will be expire after {{30 - $dayused}} days.</p>
                 </div>
                 @endif-->
-<<<<<<< HEAD
-                <!-- @if($expirydate)
-=======
                <!-- @if($expirydate)
->>>>>>> 96f619b655da9955be39733b06f95a23119a8da4
                        <div class="pull-right storeBtn">
                      <a href="#" class="btn btn-block renewStore"  style="cursor:pointor;"> Renew Now </a>
-                </div> -->
-                <div class="pull-right storeBtn">
-<<<<<<< HEAD
-                    <!-- <p class="btn btn-block btn-sm view-storeBtn"> Your  store will be expire after {{$expirydate}} days.If you want to continue please renew it. -->
+                </div> 
+                @endif-->
+              <!--  <div class="pull-right storeBtn">
+                     <p class="btn btn-block btn-sm view-storeBtn"> Your  store will be expire after {{$expirydate}} days.If you want to continue please renew it. -->
                   <!--  <form method="post" action="#"  target="_parent" onsubmit="window.open('https://veestores.com/get-city-pay', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
-=======
-                    <p class="btn btn-block btn-sm view-storeBtn"> Your  store will be expire after {{$expirydate}} days.If you want to continue please renew it.
-                    <form method="post" action="#"  target="_parent" onsubmit="window.open('https://veestores.com/get-city-pay', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
->>>>>>> 96f619b655da9955be39733b06f95a23119a8da4
                             return true;"> -->
                    
 <!--                        <input type="hidden" name="store_id" value="{{Session::get('store_id')}}" >
                         <input type="button" id="renewStore" value="submit" class="btn btn-primary renewStore">-->
                     <!--</form>
                     </p>
-                </div>-->
+                </div>
                
-                @endif
+                @endif-->
             </nav>
             </header>

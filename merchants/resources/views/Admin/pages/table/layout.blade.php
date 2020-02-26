@@ -112,7 +112,7 @@ $(document).ready(function() {
         var tableAngle = tableLayoutDbArray[j]['angle'];
         var tablePosition = tableLayoutDbArray[j]['position'];
         var tableSize = tableLayoutDbArray[j]['size'];
-        if(tablePosition != '')
+        if(tablePosition && tablePosition != '')
         {
             var splitPosition = tablePosition.split(",");
             var topPosition = splitPosition[0]+"px";
@@ -120,7 +120,7 @@ $(document).ready(function() {
             $('#target_'+tableId).css({top: topPosition, left: leftPosition});
         }
 
-        if(tableSize != '')
+        if(tableSize && tableSize != '')
         {
             var splitSize = tableSize.split(",");
             var tblWidth = splitSize[0]+"px";
