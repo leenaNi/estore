@@ -122,7 +122,7 @@ class HomeController extends Controller
             //print_r('name '.$domainname);
             //return $availability = "icon-remove red-close";
         } else { 
-            return 1;
+            return $domainname;
         }
     }
 

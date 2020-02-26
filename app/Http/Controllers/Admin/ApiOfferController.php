@@ -33,7 +33,7 @@ class ApiOfferController extends Controller
             $offerResult = DB::table('offers as o')
             ->join('stores as s', 's.id', '=', 'o.store_id')
             ->whereIn('store_id',$storeIdArray)
-            ->where('o.status',1)->get(['o.id','store_id','offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]);
+            ->where('o.status',1)->get(['o.id','store_id','offer_name','offer_discount_value','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]);
             if(count($offerResult) > 0)
             {
                 return response()->json(["status" => 1, 'msg' => '', 'data' => $offerResult]);
@@ -72,7 +72,7 @@ class ApiOfferController extends Controller
                 $productWiseOffersResult = DB::table('offers as o')
                     ->join('stores as s', 's.id', '=', 'o.store_id')
                     ->whereIn('id', $offerIds)
-                    ->get(['o.id','store_id','offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]);
+                    ->get(['o.id','store_id','offer_name','offer_discount_value','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]);
                 //dd(DB::getQueryLog()); // Show results of log
                 if(count($productWiseOffersResult) > 0)
                 {
@@ -170,7 +170,7 @@ class ApiOfferController extends Controller
                             ->whereIn('o.id', $multipleOfferId)
                             ->where('o.status', 1)
                             ->orderBy('o.id','DESC')
-                            ->skip($startIndex)->take($limit)->get(['o.id','store_id','offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]);
+                            ->skip($startIndex)->take($limit)->get(['o.id','store_id','offer_name','offer_discount_value','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]);
                                 
                         }
                         else
@@ -181,7 +181,7 @@ class ApiOfferController extends Controller
                             ->whereIn('o.id', $multipleOfferId)
                             ->where('o.status', 1)
                             ->orderBy('o.id','DESC')
-                            ->get(['o.id','store_id', 'type', 'offer_discount_type', 'offer_name','offer_discount_value','min_order_qty','min_free_qty','min_order_amt','max_discount_amt','max_usage','actual_usage','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]); 
+                            ->get(['o.id','store_id', 'type', 'offer_discount_type', 'offer_name','offer_discount_value','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]); 
                         }    
 
                         if(count($getAllOffersResult) > 0)
@@ -272,7 +272,7 @@ class ApiOfferController extends Controller
                                         ->where('offers_products.prod_id',$productId)
                                         ->where('offers_products.type', 1)
                                         ->where('offers.status', 1)
-                                        ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value','offers.min_order_qty','offers.min_order_amt','offers.max_discount_amt',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
+                                        ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
                                         //echo "<pre> offers data::";
                                         // print_r($getoffersResult);                                    
                                         $j=0;
@@ -285,9 +285,7 @@ class ApiOfferController extends Controller
                                             $categoryArray[$i]['offers'][$j]['offer_discount_type'] = $getOfferData->offer_discount_type;
                                             $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
                                             $categoryArray[$i]['offers'][$j]['offer_discount_value'] = $getOfferData->offer_discount_value;
-                                            $categoryArray[$i]['offers'][$j]['min_order_qty'] = $getOfferData->min_order_qty;
-                                            $categoryArray[$i]['offers'][$j]['min_order_amt'] = $getOfferData->min_order_amt;
-                                            $categoryArray[$i]['offers'][$j]['max_discount_amt'] = $getOfferData->max_discount_amt;
+                                            
                                             $offerPrice = 0;
                                             $actualPrice = 0;
                                             $offPrice = 0;
@@ -454,7 +452,7 @@ class ApiOfferController extends Controller
                                         ->where('offers_products.prod_id',$productId)
                                         ->where('offers_products.type', 1)
                                         ->where('offers.status', 1)
-                                        ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value','offers.min_order_qty','offers.min_order_amt','offers.max_discount_amt',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
+                                        ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
                                         //echo "<pre> offers data::";
                                         // print_r($getoffersResult);
                                         if(count($getoffersResult) > 0) {                              
@@ -468,9 +466,9 @@ class ApiOfferController extends Controller
                                                 $categoryArray[$i]['offers'][$j]['offer_discount_type'] = $getOfferData->offer_discount_type;
                                                 $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
                                                 $categoryArray[$i]['offers'][$j]['offer_discount_value'] = $getOfferData->offer_discount_value;
-                                                $categoryArray[$i]['offers'][$j]['min_order_qty'] = $getOfferData->min_order_qty;
-                                                $categoryArray[$i]['offers'][$j]['min_order_amt'] = $getOfferData->min_order_amt;
-                                                $categoryArray[$i]['offers'][$j]['max_discount_amt'] = $getOfferData->max_discount_amt;
+                                                
+                                                // $categoryArray[$i]['offers'][$j]['min_order_amt'] = $getOfferData->min_order_amt;
+                                                // $categoryArray[$i]['offers'][$j]['max_discount_amt'] = $getOfferData->max_discount_amt;
                                                 $offerPrice = 0;
                                                 $actualPrice = 0;
                                                 $offPrice = 0;
