@@ -22,6 +22,14 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
                                 <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'gear.svg'}}" alt="Setting"> 
                             </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ route('admin.storeSetting.view') }}"> 
+                                    <i class="fa fa-shopping-bag" aria-hidden="true"></i> Store Setting</a></li>
+                                <li><a href="{{ route('admin.domains.view') }}">
+                                    <i class="fa fa-server" aria-hidden="true"></i> Domain</a></li>
+                                <li><a href="{{ route('admin.bankDetails.view') }}"> 
+                                    <i class="fa fa-university" aria-hidden="true"></i> Bank Details</a></li> 
+                            </ul>
                         </li>
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">

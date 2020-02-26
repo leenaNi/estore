@@ -130,15 +130,18 @@
                     </div> 
                     <form action="{{route('admin.traits.orders')}}"  method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group file-upload-column">
                                 <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'up-arrow.svg'}}"></span>
-                                <input type="file" class="validate[required] fileUploder fullWidth form-control form-control-right-border-radius" name="order_file" placeholder="Upload Import File"  required onChange="validateFile(this.value)"/>
+                                <div class="file-upload-wrapper" data-text="Upload Import File">
+                                    <input type="file" class="validate[required] fileUploder fullWidth form-control form-control-right-border-radius file-upload-field" name="order_file" placeholder="Upload Import File"  required onChange="validateFile(this.value)"/>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group noAll-margin">
                             <input type="submit" class="btn sbtn btn-secondary submitBulkUpload fullWidth noAll-margin" value="Import from File"/>
                         </div>
-                    </form> 
+                    </form>  
+
                     <!-- <form action="" class="formMul" method="post" >
                         <input type="hidden" value="" name="OrderIds" />
                         <select name="orderAction" id="orderAction" class="form-control">
@@ -937,7 +940,16 @@ function myFunction() {
     moreText.style.display = "inline";
   }
 }
-
+$(".file-upload-column").on("change", ".file-upload-field", function() {
+  $(this)
+    .parent(".file-upload-wrapper")
+    .attr(
+      "data-text",
+      $(this)
+        .val()
+        .replace(/.*(\/|\\)/, "")
+    );
+});
 </script>
 
 @stop
