@@ -31,7 +31,7 @@
                                 <div class="digit-group">
                                 <div class="scroller-y">
                                     <div class="form-group">
-                                        <label for="">Type in your OTP</label>
+                                        <label for="">Type in your OTP</label> 
                                         <div class="input-group input-otp-group">
                                             <input tabindex="6" type="tel" class="form-control col" id="otp1" data-next="otp2" placeholder="">
                                             <input tabindex="7" type="tel" class="form-control col" id="otp2" data-next="otp3" data-previous="otp1" placeholder="">

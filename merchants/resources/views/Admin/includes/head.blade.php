@@ -32,7 +32,7 @@
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/livvic.css' }}">
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin-vikram.css' }}">
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/livvic-fonts/livvic-fonts.css' }}">
-
+ 
 <?php
 $jsonString = App\Library\Helper::getSettings();
 
