@@ -29,7 +29,6 @@
 <link rel="icon" type="image/png" href="{{ Config('constants.frontendThemeImagePath').'/favicon.png' }}">
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin.css' }}">
-<link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin.css' }}">
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/livvic.css' }}">
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin-vikram.css' }}">
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/livvic-fonts/livvic-fonts.css' }}">
