@@ -104,7 +104,7 @@
                 <tr>
                 <td class="text-center"><span class="alertSuccess" style="{{$colorVal}}">{{$status->order_status}}</span></td>
                     <td class="text-center">{{$status->sort_order}}</td>
-                    <td class="text-center" id="orderStatus_{{$status->id}}">{{$statusLabel}}</td>
+                    <td class="text-center" id="orderStatus_{{$status->id}}"><span class="alertSuccess">{{$statusLabel}}</span></td>
                     <td class="text-center isDefaultCls" id="orderStatusIsDefault_{{$status->id}}">{{$isDefaultVal}}</td>
                     <td class="text-center">
                          @if($status->id !=1) 
@@ -116,12 +116,12 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">  
                                     <li><a href="{!! route('admin.order_status.delete',['id'=>$status->id]) !!}" onclick="return confirm('Are you sure you want to delete this status?')"><i class="fa fa-trash "></i> Delete</a></li>
-                                    <li><a href="javascript:;" id="changeStatusLink_{{$status->id}}" onclick="changeStatus({{$status->id}},{{$status->status}})" >{{$linkLabel}}</a></li>
+                                    <li><a href="javascript:;" id="changeStatusLink_{{$status->id}}" onclick="changeStatus({{$status->id}},{{$status->status}})" > <i class="fa fa-thumbs-o-up"></i> {{$linkLabel}}</a></li>
                                     <?php
                                     if($status->is_default == 0)
                                     {
                                      ?>
-                                    <li class="changeIsDefaultCls" id="changeIsDefaultLink_{{$status->id}}" ><a href="javascript:;" onclick="changeDefaultValue({{$status->id}},{{$storeId}},{{$status->is_default}})" >Mark as a Default</a></li>
+                                    <li class="changeIsDefaultCls" id="changeIsDefaultLink_{{$status->id}}" ><a href="javascript:;" onclick="changeDefaultValue({{$status->id}},{{$storeId}},{{$status->is_default}})" ><i class="fa fa-check"></i> Mark as a Default</a></li>
                                     <?php 
                                     }
                                     else 
