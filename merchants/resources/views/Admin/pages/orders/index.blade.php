@@ -17,7 +17,7 @@
         All Orders <!-- ({{$ordersCount }})  -->
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Sales</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i>Sales</a></li>
         <li class="active">All Orders</li>
     </ol>
 </section>
@@ -184,8 +184,7 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>
-            <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Orders  <span class="listing-counter"> 1-6 of  {{$ordersCount }}</span>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Orders  <span class="listing-counter"> 1-6 of  {{$ordersCount }}</span>
             </h1>
             <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-listing-heading pull-right noAll-margin"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create </a>   
         </div>
@@ -363,7 +362,7 @@
                         @endif
                     </tbody>
                 </table>
-                <div class="box-footer clearfix">
+                <div class="clearfix">
                     <?php
 echo $orders->appends(Input::except('page'))->render();
 ?>
