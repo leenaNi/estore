@@ -679,6 +679,7 @@ class ApiDistributorController extends Controller
                                 if (count($getCategoryWiseProductsResult) > 0) {
                                     $j = 0;
                                     foreach ($getCategoryWiseProductsResult as $getProductData) {
+                                
                                         $productId = $getProductData->id;
                                         $productBrandId = $getProductData->brand_id;
                                         $productName = $getProductData->product;
@@ -697,6 +698,7 @@ class ApiDistributorController extends Controller
                                         $productMinPrice = $getProductData->min_price;
                                         $productPurchasePrice = $getProductData->purchase_price;
                                         $productPrice = $getProductData->price;
+                                        $productSellingPrice = $getProductData->selling_price;
 
                                         $productResult = DB::table('catalog_images')
                                             ->select(DB::raw('filename'))
@@ -722,6 +724,8 @@ class ApiDistributorController extends Controller
                                         $categoryArray[$i]['product'][$j]['product_image'] = $productImage;
                                         $categoryArray[$i]['product'][$j]['product_type'] = $productType;
                                         $categoryArray[$i]['product'][$j]['is_stock'] = $productIsStock;
+                                        $categoryArray[$i]['product'][$j]['price'] = $productPrice;
+                                        $categoryArray[$i]['product'][$j]['selling_price'] = $productSellingPrice;
 
                                         //get offers count
                                         $getOffersProductResult = DB::table('offers_products')
@@ -789,7 +793,7 @@ class ApiDistributorController extends Controller
                     ->where('stores.store_type', 'distributor')
                     ->where('stores.expiry_date', '>=', date('Y-m-d'))
                     ->get(['products.brand_id', 'products.store_id', 'stores.url_key']);
-                $productImgPath = "http://". $brandIdsResult[0]->url_key . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/";
+                $productImgPath = "http://". $brandIdsResult[0]->url_key .'.'. $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/";
                 if (count($brandIdsResult) > 0) {
                     $brandIds = [];
                     $storeId = [];
