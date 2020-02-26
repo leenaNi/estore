@@ -2066,7 +2066,8 @@ foreach ($_POST as $a => $b) {
         // apply additional charge to payAmount
         $additional_charge_json = AdditionalCharge::ApplyAdditionalCharge($cartAmount);
         $order->additional_charge = $additional_charge_json;
-        $orderstatus = OrderStatus::where(['sort_order'=>1,'store_id'=>Session::get('store_id')])->first();
+        //$orderstatus = OrderStatus::where(['sort_order'=>1,'store_id'=>Session::get('store_id')])->first();
+        $orderstatus = OrderStatus::where(['is_default'=>1,'store_id'=>Session::get('store_id')])->first();
         // $order->order_amt = Cart::instance('shopping')->total() * Session::get("currency_val");
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;

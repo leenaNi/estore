@@ -90,8 +90,8 @@ INSERT INTO `loyalty` (`id`, `group`, `min_order_amt`, `max_order_amt`, `percent
 (NULL, 'Silver', 2000, 5000, 2, '2000 - 5,000', 1, tblprfx_),
 (NULL, 'Gold', 5001, 10000, 5, '5,001 - 10,000', 1, tblprfx_),
 (NULL, 'Platinum', 10001, 100000, 10, 'Above 10,001', 1, tblprfx_);
-INSERT INTO `offers` (`id`, `offer_name`, `offer_discount_type`, `offer_type`, `offer_discount_value`, `min_order_qty`, `min_free_qty`, `min_order_amt`, `max_discount_amt`, `max_usage`, `actual_usage`, `full_incremental_order`, `start_date`, `end_date`, `user_specific`, `status`, `store_id`) VALUES
-(NULL, 'Buy 2 get 20%off on 3rd product onwards', 1, 1, 20, 2, 0, 5000, 500, 0, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0, tblprfx_);
+INSERT INTO `offers` (`id`, `offer_name`, `offer_discount_type`, `offer_type`, `offer_discount_value`, `start_date`, `end_date`, `user_specific`, `status`, `store_id`) VALUES
+(NULL, 'Buy 2 get 20%off on 3rd product onwards', 1, 1, 20,'0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0, tblprfx_);
 INSERT INTO `order_return_action` (`id`, `action`, `store_id`) VALUES
 (NULL, 'Credit Issued', tblprfx_),
 (NULL, 'Refunded', tblprfx_),
@@ -99,17 +99,17 @@ INSERT INTO `order_return_action` (`id`, `action`, `store_id`) VALUES
 INSERT INTO `order_return_open_unopen` (`id`, `status`, `store_id`) VALUES
 (NULL, 'Opened', tblprfx_),
 (NULL, 'Unopened', tblprfx_);
-INSERT INTO `order_status` (`id`, `order_status`, `status`,`sort_order`, `store_id`) VALUES
-(NULL, 'Processing', 1,1, tblprfx_),
-(NULL, 'Shipped', 1,2, tblprfx_),
-(NULL, 'Delivered', 1,3, tblprfx_),
-(NULL, 'Cancelled', 1,4, tblprfx_),
-(NULL, 'Exchanged', 1,5, tblprfx_),
-(NULL, 'Returned', 1,6, tblprfx_),
-(NULL, 'Undelivered', 1,7, tblprfx_),
-(NULL, 'Delayed', 1,8, tblprfx_),
-(NULL, 'Partially Shipped', 1,9, tblprfx_),
-(NULL, 'Refunded', 1,10, tblprfx_);
+INSERT INTO `order_status` (`id`, `order_status`, `status`,`sort_order`, `is_default`, `store_id`) VALUES
+(NULL, 'Processing', 1,1, 1, tblprfx_),
+(NULL, 'Shipped', 1,2, 0, tblprfx_),
+(NULL, 'Delivered', 1,3, 0, tblprfx_),
+(NULL, 'Cancelled', 1,4, 0, tblprfx_),
+(NULL, 'Exchanged', 1,5, 0, tblprfx_),
+(NULL, 'Returned', 1,6, 0, tblprfx_),
+(NULL, 'Undelivered', 1,7, 0, tblprfx_),
+(NULL, 'Delayed', 1,8, 0, tblprfx_),
+(NULL, 'Partially Shipped', 1,9, 0, tblprfx_),
+(NULL, 'Refunded', 1,10, 0, tblprfx_);
 INSERT INTO `pincodes` (`id`, `pincode`, `cod_status`, `service_provider`, `pref`, `status`, `store_id`) VALUES
 (NULL, '400022', 0, 1, 1, 1, tblprfx_),
 (NULL, '400021', 1, 1, 1, 1, tblprfx_),

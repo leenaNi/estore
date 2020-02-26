@@ -78,10 +78,11 @@
                         <tr>
                             <th class="text-left">#</th>
                             <th class="text-left">Business Name</th>
-                            <th class="text-center">Concern Person Name</th>
+                            <!--<th class="text-center">Concern Person Name</th>-->
                             <th class="text-center">Mobile Number</th>
-                            <th class="text-right">Connection Date</th>
+                            <th class="text-center">Connection Date</th>
                             <th class="text-center">Ledger</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>	
                     <tbody>
@@ -93,19 +94,37 @@
                         <?php
                             $i++;
                             $decodedMerchantDetail = json_decode($data->register_details);
-                            $connectionData = date("d-m-Y", strtotime($data->updated_at));;
+                            $connectionData = date("d-m-Y", strtotime($data->updated_at));
+                            $distributorId = $data->merchant_id;
+                            $isApprovedVal = $data->is_approved;
                         ?>
                         <tr>
                             <td  class="text-left">{{$i}}</td>
                             <td  class="text-left">{{$decodedMerchantDetail->store_name}}</td>
-                            <td  class="text-center">{{$decodedMerchantDetail->firstname}}</td>
+                            <!--<td  class="text-center"></td>-->
                             <td  class="text-center">{{$decodedMerchantDetail->phone}}</td>
-                            <td  class="text-Right">{{$connectionData}}</td>
+                            <td  class="text-center">{{$connectionData}}</td>
                             <td  class="text-center">
                                 <div class="actionCenter">
                                         <span><a class="btn-action-default" href=""><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> Ledger</a></span> 
                                     
                                 </div>
+                            </td>
+                            <?php 
+                            if($isApprovedVal > 0)
+                            {
+                            ?>
+                            <td class="text-center">Approved</td>
+                            <?php 
+                            }
+                            else
+                            {
+                            ?>
+                                <td class="text-center"><a id="not_approve_distributor_{{$distributorId}}" href="javascript:;" onClick="approveMerchant({{$distributorId}})">Approve</a></td>
+                            <?php
+                            }
+                            ?>
+                           
                             <!-- <i class="fa fa-pencil-square-o fa-fw" title="Ledger"></i></td> -->
                         </tr> 
                         @endforeach
@@ -270,6 +289,30 @@
     function hideErrorMsg(id)
     {
         $("#"+id).hide();
+    }
+    function approveMerchant(distributorId)
+    {
+        $.ajax({
+                    method: "POST",
+                    data: {'distributorId': distributorId},
+                    url: "{{route('admin.vendors.isApproveMerchant')}}",
+                    dataType: "json",
+                    success: function (data) {
+                       // alert(data['status']);
+                        if(data['status'] == 1)
+                        {
+                           // alert("if");
+                            $("#not_approve_distributor_"+distributorId).html('Approved');
+                        }
+                        else
+                        {
+                            alert("Something went wrong!");
+                        }
+                        return false;
+                        // location.reload();courier-services
+                    }
+            });
+            return false;
     }
 </script>
 @stop

@@ -1,4 +1,8 @@
 <header class="main-header">
+    <?php
+$productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
+?> 
+
     <!-- Logo -->
     <!-- <a href="{{route('admin.dashboard')}}" class="logo" style="background: rgba(0,0,0,0.2)!important;"> -->
     <a href="{{route('admin.dashboard')}}" class="logo">
@@ -13,7 +17,10 @@
                 <!-- Sidebar toggle button-->
                 <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
-                </a>              
+                </a>
+                
+                
+                
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">   
@@ -100,8 +107,8 @@
                         <input type="button" id="renewStore" value="submit" class="btn btn-primary renewStore">-->
                     <!--</form>
                     </p>
-                </div>-->
+                </div>
                
-                @endif
+                @endif-->
             </nav>
             </header>

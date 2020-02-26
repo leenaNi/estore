@@ -705,6 +705,8 @@ class Helper {
             $getdisc = ($c->options->disc + $c->options->wallet_disc + $c->options->voucher_disc + $c->options->referral_disc + $c->options->user_disc);
             $taxeble_amt = $c->subtotal - $getdisc;
             $orderAmt += $c->subtotal;
+            $offerDetails = DB::table("offers")->where(['id'=>$c->options->offerid])->first();
+            
             if ($taxStatus == 1) {
                 $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
 
@@ -720,7 +722,6 @@ class Helper {
         $data = [];
 
         $all_coupon_amount = Session::get('couponUsedAmt') + Session::get('checkbackUsedAmt') + Session::get('voucherAmount') + Session::get('referalCodeAmt') + Session::get('lolyatyDis') + Session::get('discAmt');
-
         $subtotal = $calTax + $cart_total;
         $data['cart'] = $cart;
         $data['sub_total'] = $subtotal;

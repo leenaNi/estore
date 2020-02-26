@@ -58,6 +58,24 @@
                         </div>
                     </div>
 
+                    <div class="form-group{{ $errors->has('color') ? ' has-error' : '' }}">
+                        <div class="col-md-2 col-sm-3 col-xs-12 text-right mobTextLeft">
+                        {!! Form::label('color', 'color ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+</div>
+                        {!! Form::hidden('id',null) !!}
+                        {!! Form::hidden('store_id', Session::get('store_id')) !!}
+                        <div class="col-md-10 col-sm-9 col-xs-12">
+                            {!! Form::text('color',null, ["class"=>'form-control validate[required]',"id"=>'color' ,"placeholder"=>'Color']) !!}
+                            <span id='error_msg'></span>
+
+                            @if ($errors->has('color'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('color') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="line line-dashed b-b line-lg pull-in"></div>
 
                     @if($new)

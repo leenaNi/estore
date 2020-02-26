@@ -82,7 +82,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::get('/add', ['as' => 'admin.products.add', 'uses' => 'ProductsController@add']);
                 Route::get('/delete', ['as' => 'admin.products.delete', 'uses' => 'ProductsController@delete']);
                 Route::get('/delete-varient', ['as' => 'admin.products.deleteVarient', 'uses' => 'ProductsController@deleteVarient']);
-                Route::get('/change-status', ['as' => 'admin.products.changeStatus', 'uses' => 'ProductsController@changeStatus']);
+                Route::post('/change-status', ['as' => 'admin.products.changeStatus', 'uses' => 'ProductsController@changeStatus']);
                 Route::post('/save', ['as' => 'admin.products.save', 'uses' => 'ProductsController@save']);
                 Route::get('/edit-Info', ['as' => 'admin.products.general.info', 'uses' => 'ProductsController@edit']);
                 Route::post('/update', array('as' => 'admin.products.update', 'uses' => 'ProductsController@update'));
@@ -177,7 +177,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::get('/delete', ['as' => 'admin.coupons.delete', 'uses' => 'CouponsController@delete']);
             Route::get('/search-user', ['as' => 'admin.coupons.searchUser', 'uses' => 'CouponsController@searchUser']);
             Route::post('/check', ['as' => 'admin.coupons.checkcoupon', 'uses' => 'CouponsController@checkExistingCode']);
-            Route::get('/change-status', ['as' => 'admin.coupons.changeStatus', 'uses' => 'CouponsController@changeStatus']);
+            Route::post('/change-status', ['as' => 'admin.coupons.changeStatus', 'uses' => 'CouponsController@changeStatus']);
         });
 
         Route::group(['prefix' => 'stock', 'middlewareGroups' => ['CheckUser', 'web']], function () {
@@ -606,7 +606,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                     Route::post('/save', array('as' => 'admin.order_status.save', 'uses' => 'OrderStatusController@save'));
                     Route::post('/update', array('as' => 'admin.order_status.update', 'uses' => 'OrderStatusController@update'));
                     Route::get('/delete', array('as' => 'admin.order_status.delete', 'uses' => 'OrderStatusController@delete'));
-                    Route::get('/changeStatus', ['as' => 'admin.order_status.changeStatus', 'uses' => 'OrderStatusController@changeStatus']);
+                    Route::post('/changeStatus', ['as' => 'admin.order_status.changeStatus', 'uses' => 'OrderStatusController@changeStatus']);
+                    Route::post('/changeIsDefault', ['as' => 'admin.order_status.changeIsDefault', 'uses' => 'OrderStatusController@changeIsDefaultValue']);
                 });
             });
 
@@ -691,6 +692,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::any('/verify-code', array('as' => 'admin.vendors.verifyCode', 'uses' => 'VendorsController@verifyMerchantCode'));
                 Route::post('/send-notification', array('as' => 'admin.vendors.send-notification', 'uses' => 'VendorsController@sendNotificationToMerchant'));
                 Route::get('/accept/{id}', array('as' => 'admin.vendors.accept', 'uses' => 'VendorsController@approveRequest'));
+                Route::any('/is-approve-merchant', array('as' => 'admin.vendors.isApproveMerchant', 'uses' => 'VendorsController@isApprovedMerchant'));
                 
             });
 
@@ -806,6 +808,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::any('/add-distributor', array('as' => 'admin.distributor.addDistributor', 'uses' => 'DistributorController@index'));
         Route::any('/verify-code', array('as' => 'admin.distributor.verifyCode', 'uses' => 'DistributorController@verifyDistributorCode'));
         Route::post('/send-notification', array('as' => 'admin.distributor.send-notification', 'uses' => 'DistributorController@sendNotificationToDistributor'));
+        Route::any('/is-approved-distributor', array('as' => 'admin.distributor.isApproveDistributor', 'uses' => 'DistributorController@isApprovedDistributor'));
     });
     
 });

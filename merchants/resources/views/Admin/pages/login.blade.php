@@ -18,12 +18,32 @@
                 <div class="clearfix"></div>
                 <form action="{{ route('check_admin_user') }}" method="post" id="adminLogin">
                     <div class="form-group has-feedback">
-                        <input type="number" class="form-control" name="phone" placeholder="Mobile" id="phone">
-                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span><p id="phone_re_validate"></p>
+                        <input type="text" class="form-control" name="phone" placeholder="Mobile" id="phone">
+                        <span class="glyphicon glyphicon-earphone form-control-feedback"></span><p id="phone_re_validate"></p>
                     </div>
-                    <div class="form-group has-feedback" style="display:none" id="otpdiv">
+                    {{-- <div class="form-group has-feedback" style="display:block" id="otpdiv">
                         <input type="number" class="form-control" name="otp" id="otp" placeholder="Enter OTP" required="true">
                         <span class="glyphicon glyphicon-lock form-control-feedback" id="otper"></span><p id="otperr"></p>
+                    </div> --}}
+                    <div class="form-group has-feedback" style="display:none" id="otpdiv">
+                        <div class="form-holder">
+                            {{-- <form action="" class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off"> --}}
+                                <div class="digit-group">
+                                <div class="scroller-y">
+                                    <div class="form-group">
+                                        <label for="">Type in your OTP</label> 
+                                        <div class="input-group input-otp-group">
+                                            <input tabindex="6" type="tel" class="form-control col" id="otp1" data-next="otp2" placeholder="">
+                                            <input tabindex="7" type="tel" class="form-control col" id="otp2" data-next="otp3" data-previous="otp1" placeholder="">
+                                            <input tabindex="8" type="tel" class="form-control col" id="otp3" data-next="otp4" data-previous="otp2" placeholder="">
+                                            <input tabindex="9" type="tel" class="form-control col" id="otp4" data-previous="otp3" placeholder="">
+                                        </div>
+                                        <span class="error otperr" id="otperr"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- </form> --}}
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 text-center marginBottom-lg">
@@ -42,7 +62,7 @@
              <div class="fbBtnfull">
             <img src="{{ Config('constants.frontendPublicImgPath').'/fb_login.jpg'}}" onclick="fbLogin()" id="fbLink" class="fb_login_btn"></div>
         </div> -->
-         <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('adminForgotPassword') }}" class="">Forgot Password?</a> </div>
+         {{-- <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('adminForgotPassword') }}" class="">Forgot Password?</a> </div> --}}
                 <!--        <div class="social-auth-links text-center">
                           <p>- OR -</p>
                           <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using Facebook</a>
@@ -68,30 +88,72 @@ $("#phone").keyup(function(event) {
     }
 });
 
-$("#sendotp").click(function(){
-    var phone = $("#phone").val();
-    console.log(phone);
-    $.ajax({
-            type: 'POST',
-            url: "{{route('checkExistingphone')}}",
-            data: {phone_no: phone},
-            success: function (response) {
-                console.log('@@@@' + response);
-                if (response['status'] == 'success') {
-                    $("#otpdiv").show();    
-                    $("#loginbtn").show();    
-                    $("#sendotp").hide(); 
-                    $("#phone").hide();
-                    $("#phone_re_validate").html(''); 
-                } else if (response['status'] == 'fail') {
-                    $("#phone_re_validate").css("color", "red").html('Mobile number is not registered')
-                }
-            },
-            error: function (e) {
-                console.log(e.responseText);
-            }
-        });
+$('.digit-group').find('input').each(function() {
+    $("#otperr").hide();
+	$(this).attr('maxlength', 1);
+	$(this).on('keyup', function(e) {
+		var parent = $($(this).parent().parent().parent().parent().parent());		
+		if(e.keyCode === 8 || e.keyCode === 37) {
+			var prev = parent.find('input#' + $(this).data('previous'));			
+			if(prev.length) {
+				$(prev).select();
+			}
+		} else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+			var next = parent.find('input#' + $(this).data('next'));			
+			if(next.length) {
+				$(next).select();
+			} else {
+				if(parent.data('autosubmit')) {
+					parent.submit();
+				} else {
+					// console.log(parent.find('button#registerAndSubmit'))
+					parent.find('button#registerAndSubmit').focus();
+				}
+			}
+		}
+	});
 });
+
+$("#sendotp").click(function()
+{
+    var phone = $("#phone").val();
+    var regex = /^[ 0-9]*$/;
+    if(phone !== '')
+    {
+        if (!regex.test(phone))         
+        {
+            $("#phone_re_validate").css("color", "red").html('Only allow numeric value');
+        }   //else close here
+        else
+        {
+            $.ajax({
+                    type: 'POST',
+                    url: "{{route('checkExistingphone')}}",
+                    data: {phone_no: phone},
+                    success: function (response) {
+                        console.log('@@@@' + response);
+                        if (response['status'] == 'success') {
+                            $("#otpdiv").show();    
+                            $("#loginbtn").show();    
+                            $("#sendotp").hide(); 
+                            $("#phone").hide();
+                            $("#phone_re_validate").html(''); 
+                        } else if (response['status'] == 'fail') {
+                            $("#phone_re_validate").css("color", "red").html('Mobile number is not registered')
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e.responseText);
+                    }
+                }); // end ajax
+        } // ENd else
+    } // End if
+    else
+    {
+        $("#phone_re_validate").css("color", "red").html('Enter mobile number.');
+    }
+}); // end click event
+    
 
 $("#otp").keyup(function(event) {
     if (event.keyCode === 13) {
@@ -100,7 +162,8 @@ $("#otp").keyup(function(event) {
 });
 
 $("#loginbtn").click(function(){
-    var otp = $("input[name=otp]").val();
+    //var otp = $("input[name=otp]").val();
+    var otp = $("#otp1").val()+$("#otp2").val()+$("#otp3").val()+$("#otp4").val();
     console.log(otp);
     $.ajax({
             type: 'POST',
@@ -110,7 +173,7 @@ $("#loginbtn").click(function(){
                 if (response == '1') {
                     $("#adminLogin").submit();
                 } else if (response == '2') {
-                    $("#otperr").css("color", "red").html('Incorrect OTP'); 
+                    $("#otperr").css("color", "red").html('Please enter valid OTP'); 
                 }
             },
             error: function (e) {
