@@ -50,6 +50,7 @@
                                             @if(Session::get('requested_cat'))
                                             <?php
                                             $reqCat = App\Models\CategoryRequested::find(Session::get('requested_cat'));
+                                           
                                             ?>
                                             {!! Form::text('category', @$reqCat->name, ["id"=>"category","class"=>'form-control validate[required]' ,"placeholder"=>'Enter Category Name', "required"]) !!}
                                             @else
@@ -182,22 +183,33 @@
                             <div class="box-body text-center">
                                 <div class="row">
                                     <div class="col-md-12 form-group">
-
                                         <?php
                                         $roots = App\Models\CategoryMaster::roots()->get();
                                         echo "<ul id='catTree' class='tree icheck'>";
                                         foreach ($roots as $root)
-                        //echo $root."||||||".$category;
+                                        //echo $root."||||||".$category;
                                             renderNode($root, $category);
                                         echo "</ul>";
 
                                         function renderNode($node, $category) { 
+                                            $parentClassStyle = '';
+                                            if($category->parent_id > 0)
+                                            {
+                                                $reqSubCatParent = App\Models\CategoryMaster::find($category->parent_id);
+                                                $reqSubCatParentId = $reqSubCatParent->parent_id;
+                                                //echo "sub parent id::".$reqSubCatParentId;
+                                                if($reqSubCatParentId > 0)
+                                                {
+                                                    $parentClassStyle=($reqSubCatParentId == $node->id? 'checkbox-highlight':'');         
+                                                }
+                                            }
                                            $classStyle=($category->parent_id == $node->id? 'checkbox-highlight':'');
-                            //  echo $classStyle;
+                                           
+                                           //  echo $classStyle;
                                            // $style=(Input::get("parent_id")  == $node->id? 'checkbox-highligh':'');                    
                                            echo "<li class='tree-item fl_left ps_relative_li'>";
                                            echo '<div class="checkbox">
-                                           <label   class="i-checks checks-sm text-left '.$classStyle.'"><input type="checkbox"  name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "" ) . '' . (Input::get("parent_id") == $node->id ? "checked" : "" ) . '/><i></i>' . $node->category . '</label>
+                                           <label   class="i-checks checks-sm text-left '.$classStyle.' '.$parentClassStyle.'" id="li_' . $node->id . '"><input type="checkbox"  name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "" ) . '' . (Input::get("parent_id") == $node->id ? "checked" : "" ) . '/><i></i>' . $node->category . '</label>
                                        </div>';
                                        if ($node->children()->count() > 0) {
                                         echo "<ul class='treemap fl_left'>";
@@ -208,6 +220,7 @@
                                     echo "</li>";
                                 }
                                 ?>
+                               
                             </div>
                                 </div>
                             </div>
@@ -246,6 +259,7 @@
                                 {!! Form::button('Save & Exit',["class" => "btn btn-primary pull-right saveCatExit mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
                                 {!! Form::button('Save & Continue',["class" => "btn btn-primary pull-right saveCatContine mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
                                 {!! Form::button('Save & Next',["class" => "btn btn-primary pull-right saveCatNext mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
+                            
                             </div>
                         </div>
                     </div>
@@ -289,6 +303,7 @@
 @section('myscripts')
 <script>
    $(document).ready(function () {
+
         $('.checkbox').on('click', 'input:checkbox', function () {
             if ($(this).is(':checked')) {
                 $(this).parent().addClass('checkbox-highlight');

@@ -58,26 +58,43 @@
                         <?php
                         $parentToChild = '-';
                         $parentId = @$category->parent_id;
+                        
                         if($parentId > 0)
                         {
                             $categoryArray = array();
                             $categoryData = DB::table('categories')->where('id', $parentId)->get(['id','category','parent_id']);
                             $parentCategoryId = $categoryData[0]->parent_id;
                             $categoryName = $categoryData[0]->category;
-                            $i = 0;
-                            do 
+                            
+                            if($parentCategoryId != 0 || $parentCategoryId != NULL)
                             {
-                                if($parentCategoryId != 0 && $i > 0)
-                                    array_push($categoryArray, $categoryName);
-                                    
-                                $categoryData = DB::table('categories')->where('id', $parentCategoryId)->get(['id','category','parent_id']);
-                                $parentCategoryId = $categoryData[0]->parent_id;
-                                $categoryName = $categoryData[0]->category;
-                                if($parentCategoryId == 0)
-                                    array_push($categoryArray, $categoryName);
-                                $i++;
+                                    do 
+                                    {
+
+                                        if(($parentCategoryId > 0))
+                                        {
+                                              array_push($categoryArray, $categoryName);
+                                        }
+                                            
+                                            
+                                        $categoryData = DB::table('categories')->where('id', $parentCategoryId)->get(['id','category','parent_id']);
+                                        $parentCategoryId = $categoryData[0]->parent_id;
+                                        $categoryName = $categoryData[0]->category;
+                                        if($parentCategoryId == 0)
+                                            array_push($categoryArray, $categoryName);
+                                       
+                                    }
+                                    while($parentCategoryId > 0);
                             }
-                            while($parentCategoryId > 0);
+                            
+                            else
+                            {
+                                //echo "else";
+                                array_push($categoryArray, $categoryName);
+                                $parentCategoryId = $parentId;
+                            }
+
+
                             if(count($categoryArray) > 1) 
                                 $parentToChild = implode(' -> ',array_reverse($categoryArray));
                             else

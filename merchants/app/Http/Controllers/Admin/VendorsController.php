@@ -564,7 +564,7 @@ class VendorsController extends Controller
         $distributorId = $storeResult->merchant_id;
         $distributorStoreName = $storeResult->store_name;
 
-        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId,'raised_by'=>'distributor'];
+        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId,'is_approved'=>1,'raised_by'=>'distributor'];
         $isInserted = DB::table('has_distributors')->insert($insertData);
 
         if ($isInserted) {
@@ -625,7 +625,7 @@ class VendorsController extends Controller
 
 
     //for mail purpose
-    public function approveRequest($id)
+    /*public function approveRequest($id)
     {
         if(isset($id) && !empty($id))
         {
@@ -670,6 +670,6 @@ class VendorsController extends Controller
             return Helper::returnView($viewname, '');
             //return view($viewname);
         } // End if here
-    } // ENd approveRequest() 
+    } // ENd approveRequest() */
     
 }

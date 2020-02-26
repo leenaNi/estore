@@ -23,11 +23,12 @@ use Validator;
 class CategoryMasterController extends Controller {
 
     public function index() {
+       
         $categories = CategoryMaster::whereIn("status", [1, 0])->orderBy("id", "asc");
         $categories = $categories->paginate(Config('constants.paginateNo'));
         $roots = CategoryMaster::roots()->get();
         
-        // dd($roots);
+         
         //return view(Config('constants.adminCategoryMasterView') . '.index', compact('categories', 'roots'));
 
         $viewname = Config('constants.adminCategoryMasterView') . '.index';
@@ -40,7 +41,7 @@ class CategoryMasterController extends Controller {
         $action = route("admin.category.save");
         // return view(Config('constants.adminCategoryMasterView') . '.addEdit', compact('category', 'allTaxes', 'action'));
         $viewname = Config('constants.adminCategoryMasterView') . '.addEdit';
-        $data = ['category' => $category, 'action' => $action, 'status' => 'success']; //, 'msg' => 'Sorry, Can not delete this root category.'
+        $data = ['category' => $category, 'action' => $action, 'status' => 'success']; 
         // Session::flash("message", "Sorry, Can not delete this root category.");
         return Helper::returnView($viewname, $data);
     }
@@ -103,8 +104,9 @@ class CategoryMasterController extends Controller {
     }
 
     public function save() {
-        // dd(Input::all());
+       
         $category = CategoryMaster::findOrNew(Input::get('id'));
+        //dd($category);
         $category->category = Input::get('category');
         $category->is_home = 0; //Input::get('is_home');
         $category->is_nav = Input::get('is_nav');
@@ -113,12 +115,15 @@ class CategoryMasterController extends Controller {
         $category->status = Input::get('status');
         $category->short_desc = Input::get('short_desc');
         $category->store_id = 0;
+        //$category->store_id = $getStoreId;
+        $category->parent_id = Input::get('parent_id');
         //$category->long_desc = Input::get('long_desc');
 
         $catImgs = [];
         $category->images = json_encode($catImgs);
         //Session::flash('msg',"category added succesfully ");
         $category->save();
+       
         //dd(count(Input::file('images')));
         if (Input::hasFile('images')) {
             foreach (Input::file('images') as $imgK => $imgV) {
@@ -161,21 +166,39 @@ class CategoryMasterController extends Controller {
             }
         }
         if(Session::get('requested_cat')){
-            $this->updateNewCategoryRequest($category->id);
+            $returnValue = $this->updateNewCategoryRequest($category->id);
         }
+        
         if (!empty(Input::get("parent_id")))
             $category->makeChildOf(Input::get("parent_id"));
         Session::flash("msg", "CategoryMaster updated successfully.");
 
-        if (is_null(Input::get('id')) || empty(Input::get('id'))) {
-            Session::flash("msg", "CategoryMaster added successfully.");
 
-            return redirect()->to(Input::get('return_url') . "?id=" . $category->id);
+         if (is_null(Input::get('id')) || empty(Input::get('id'))) {
+            Session::flash("msg", "CategoryMaster added successfully.");
+            //echo "return url::".Input::get('return_url');
+            $reqCatModeValue = Session::get('mode');        
+            //echo "<br>requested mode val::".$reqCatModeValue;
+            $url = Input::get('return_url');
+            $explodedReturnUrl = substr($url, strrpos($url, '/') + 1);
+            
+            if(($explodedReturnUrl == 'edit') && ($reqCatModeValue == 'requested_category_approve'))
+            {
+                //destroy session here before redirect
+                Session::forget('mode'); // Removes a specific session variable
+                return redirect()->to("/admin/category?id=" . $category->id);
+            }
+            else
+            {
+                return redirect()->to(Input::get('return_url') . "?id=" . $category->id);
+            }
+            
         } else {
-            // Session::flash("msg", "CategoryMaster added successfully.");
-            // dd($category);  
+           
             return redirect()->to(Input::get('return_url'));
+           
         }
+       
     }
 
     public function delete() {
@@ -255,7 +278,6 @@ class CategoryMasterController extends Controller {
     }
 
     public function saveCatSeo() {
-        //  dd(Input::all());
         $saveS = CategoryMaster::findOrNew(Input::get('id'));
         $saveS->meta_title = Input::get("meta_title");
         $saveS->meta_keys = Input::get("meta_keys");
@@ -527,9 +549,11 @@ class CategoryMasterController extends Controller {
         }
 
     public function categoriesRequested() {
+        
         $categories = CategoryRequested::with(['requestedBy.store'])->orderBy("id", "desc");
        
         $search = Input::get('search');
+        
         if (!empty($search)) {
             if (!empty(Input::get('s_category'))) {
                 $categories = $categories->where("name", "like", "%" . Input::get('s_category') . "%");
@@ -542,8 +566,9 @@ class CategoryMasterController extends Controller {
                 $categories = $categories->where("created_at", ">=", "$fromdate")->where('created_at', "<", "$todate");
             }
         }
-
+        //echo "outside if";
         $categories = $categories->paginate(Config('constants.AdminPaginateNo'));
+        //dd($categories);
         $data = [];
         $viewname = Config('constants.adminCategoryMasterView') . ".new-category";
         $data['categories'] = $categories;
@@ -554,45 +579,77 @@ class CategoryMasterController extends Controller {
         $id = Input::get('id');
         if($id && $id != ''){
             Session::put('requested_cat', $id);
+            Session::put('mode', 'requested_category_approve');
             return redirect()->route('admin.category.add');
         }
     }
 
     public function updateNewCategoryRequest($newCatId) {
+        
         $reqCat = Session::get('requested_cat');        
+        //echo "req cat id::".$reqCat;
+        
         $catsave = [];
         $reqCategory = CategoryRequested::find($reqCat);
-        //Add New category to store_categories
-        $newCat = CategoryMaster::find($newCatId);
-        //check if parent category present
-        $checkParentCat = DB::table('store_categories')->where('category_id', $newCat->parent_id)->where('store_id', $reqCategory->requestedBy->store_id)->first(['id']);
-        if($checkParentCat == null) {
+        if(!empty($reqCategory))
+        {
+            $userId = $reqCategory->user_id;
+
+            //Get store id from user table
+            $userResultSet = DB::table('users')
+                            ->where('id', $userId)->first(['store_id']);
+            
+            $getStoreId = $userResultSet->store_id;
+            //Add New category to store_categories
+            $newCat = CategoryMaster::find($newCatId);
+            
+            //check if parent category present
+            //$checkParentCat = DB::table('store_categories')->where('category_id', $newCat->parent_id)->where('store_id', $reqCategory->requestedBy->store_id)->first(['id']);
+            $checkParentCat = DB::table('store_categories')->where('category_id', $newCat->parent_id)->where('store_id', $getStoreId)->first(['id']);
+
+            //echo "check parent db::".$checkParentCat;
+            //exit;
+            if($checkParentCat == null) {
             //Add Parent Category
             //Add New category to store_categories
             $newParentCat = CategoryMaster::find($newCat->parent_id);
+            //echo "<pre>";
+            //print_r($newParentCat);
+            //exit;    
             DB::table('store_categories')->insert([
-                "category_id" => $newParentCat->id,
-                "is_nav" => $newParentCat->is_nav,
-                "url_key" => strtolower(str_replace(" ", "-", $newParentCat->category)),
-                "lft" => $newParentCat->lft,
-                "rgt" => $newParentCat->rgt,
-                "depth" => 0,
-                "store_id" => $reqCategory->requestedBy->store_id,
-                "created_at" => date('Y-m-d H:i:s')
+            "category_id" => $newParentCat->id,
+            "is_nav" => $newParentCat->is_nav,
+            "url_key" => strtolower(str_replace(" ", "-", $newParentCat->category)),
+            "lft" => $newParentCat->lft,
+            "rgt" => $newParentCat->rgt,
+            "depth" => 0,
+            //"store_id" => $reqCategory->requestedBy->store_id,
+            "store_id" => $getStoreId,
+            "created_at" => date('Y-m-d H:i:s')
             ]); 
+            }
+            $catsave['category_id'] = $newCat->id;
+            $catsave['is_nav'] = 1;
+            $catsave['url_key'] = strtolower(str_replace(" ", "-", $newCat->category));
+            $catsave['lft'] = $newCat->lft;
+            $catsave['rgt'] = $newCat->rgt;
+            $catsave['depth'] = 0;           
+            $catsave['parent_id'] = $newCat->parent_id;
+            //$catsave['store_id'] = $reqCategory->requestedBy->store_id;
+            $catsave['store_id'] = $getStoreId;
+            $catsave['created_at'] = date('Y-m-d H:i:s');
+            $addedcats = DB::table('store_categories')->insert($catsave); 
+            //Send mail to store admin who requested the category
+            //Delete record from table 
+            CategoryRequested::find($reqCat)->delete();
+            return 1;
         }
-        $catsave['category_id'] = $newCat->id;
-        $catsave['is_nav'] = 1;
-        $catsave['url_key'] = strtolower(str_replace(" ", "-", $newCat->category));
-        $catsave['lft'] = $newCat->lft;
-        $catsave['rgt'] = $newCat->rgt;
-        $catsave['depth'] = 0;           
-        $catsave['parent_id'] = $newCat->parent_id;
-        $catsave['store_id'] = $reqCategory->requestedBy->store_id;
-        $catsave['created_at'] = date('Y-m-d H:i:s');
-        $addedcats = DB::table('store_categories')->insert($catsave); 
-        //Send mail to store admin who requested the category
-        //Delete record from table 
-        CategoryRequested::find($reqCat)->delete();
+        else
+        {
+            return 0;
+            //return redirect()->to(Input::get('return_url'));
+        }
+        
+        
     }
 }
