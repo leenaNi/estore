@@ -51,11 +51,7 @@ class OffersController extends Controller
         $offerNew->offer_type = Input::get('offer_type');
         $offerNew->type = Input::get('type');
         $offerNew->offer_discount_value = Input::get('offer_discount_value');
-        $offerNew->min_order_qty = (Input::get('min_order_qty')) ? Input::get('min_order_qty') : 0;
-        $offerNew->min_free_qty = (Input::get('min_free_qty')) ? Input::get('min_free_qty') : 0;
-        $offerNew->min_order_amt = (Input::get('min_order_amt')) ? Input::get('min_order_amt') : 0;
-        $offerNew->max_discount_amt = (Input::get('max_discount_amt')) ? Input::get('max_discount_amt') : 0;
-        $offerNew->full_incremental_order = (Input::get('full_incremental_order')) ? Input::get('full_incremental_order') : 0;
+       
         $offerNew->start_date = Input::get('start_date');
         $offerNew->end_date = Input::get('end_date');
         $offerNew->user_specific = Input::get('user_specific');
