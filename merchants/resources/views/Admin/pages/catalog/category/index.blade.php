@@ -127,7 +127,7 @@ function renderNode($node)
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input class="form-control" name="category" required />
+                                    <input class="form-control" name="category" style="border:1px solid #ddd !important" required />
                                     <input type="hidden" class="form-control" name="parent_id" required />
                                 </div>
                             </div>
