@@ -251,7 +251,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/distributor-brand-details', ["as" => "admin.distributor.distributorBrandDetails", "uses" => "ApiDistributorController@getDistributorBrandDetails"]);
             Route::any('/distributor-category-details', ["as" => "admin.distributor.distributorCategoryDetails", "uses" => "ApiDistributorController@getDistributorCategoryDetails"]);
             Route::post('/past-orders-details', ["as" => "admin.distributor.pastOrderDetails", "uses" => "ApiDistributorController@getPastOrderDetails"]);
-
+            Route::any('/distributor-brand-products', ["as" => "admin.distributor.brandProducts", "uses" => "ApiDistributorController@getBrandProducts"]);
         });
         
         Route::group(['prefix' => 'cart'], function () {

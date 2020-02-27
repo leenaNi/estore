@@ -554,7 +554,7 @@ class CategoryController extends Controller
         ]);*/
 
         // Send mail to admin with hierarchy from parent to child according to the selected category
-        $superAdminEmail = DB::table('vswipe_users')->get(['email']);
+        $superAdminEmail = 'anita@infiniteit.biz';  //DB::table('vswipe_users')->get(['email']);
 
         if($parentId > 0)
         {
@@ -562,20 +562,21 @@ class CategoryController extends Controller
             $categoryData = DB::table('categories')->where('id', $parentId)->get(['id','category','parent_id']);
             $parentCategoryId = $categoryData[0]->parent_id;
             $categoryName = $categoryData[0]->category;
-            
             do 
             {
-                if($parentCategoryId != 0)
+                if($parentCategoryId != 0 && $parentCategoryId != null)
                     array_push($categoryArray, $categoryName);
-                    
-                $categoryData = DB::table('categories')->where('id', $parentCategoryId)->get(['id','category','parent_id']);
-                $parentCategoryId = $categoryData[0]->parent_id;
-                $categoryName = $categoryData[0]->category;
-                if($parentCategoryId == 0)
+                $categoryData = DB::table('categories')->where('id', $parentCategoryId)->first(['id','category','parent_id']);
+                if(!empty($categoryData)){
+                    $parentCategoryId = $categoryData->parent_id;
+                    $categoryName = $categoryData->category;
+                    if($parentCategoryId == 0)
                     array_push($categoryArray, $categoryName);
+                }
+                
                 
             }
-            while($parentCategoryId > 0);
+            while($parentCategoryId > 0 && $parentCategoryId != null);
             $parentToChild = implode(' -> ',array_reverse($categoryArray));
             
             $mailcontent = "Please add new category '$newCatName' inside the parent category of $parentToChild";
