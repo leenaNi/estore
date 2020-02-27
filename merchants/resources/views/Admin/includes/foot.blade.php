@@ -380,4 +380,30 @@ $(document).keypress(function (e) {
         // always reset after close
         $(this).removeClass("dropup");
     });
+
+    function myFunction() {
+  var dots = document.getElementById("dots");
+  var moreText = document.getElementById("advanced-filter");
+  var btnText = document.getElementById("advanced-filter-Btn");
+
+  if (dots.style.display === "none") {
+    dots.style.display = "inline";
+    btnText.innerHTML = "<i class='fa fa-caret-down'></i> Advanced Filters"; 
+    moreText.style.display = "none";
+  } else {
+    dots.style.display = "none";
+    btnText.innerHTML = "<i class='fa fa-caret-up'></i> Advanced Filters"; 
+    moreText.style.display = "inline";
+  }
+}
+$(".file-upload-column").on("change", ".file-upload-field", function() {
+  $(this)
+    .parent(".file-upload-wrapper")
+    .attr(
+      "data-text",
+      $(this)
+        .val()
+        .replace(/.*(\/|\\)/, "")
+    );
+});
 </script>

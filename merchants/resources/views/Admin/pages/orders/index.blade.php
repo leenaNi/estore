@@ -14,7 +14,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        All Orders <!-- ({{$ordersCount }})  -->
+        All Orders 
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i>Sales</a></li>
@@ -118,10 +118,7 @@
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
         </div>
         <div class="filter-section">
-                <div class="filter-right-section">
-                    <!-- <div class="form-group">
-                        <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default fullWidth noAll-margin">Create New Order</a>  
-                    </div> -->
+                <div class="filter-right-section"> 
                     <div class="form-group">
                     <a class="btn btn-default fullWidth noAll-margin" href="{{route('admin.orders.sampleexport')}}">Download Sample</a>
                     </div>
@@ -924,31 +921,7 @@ $(window).load(function() {
     }, 1000);
 });
 
-function myFunction() {
-  var dots = document.getElementById("dots");
-  var moreText = document.getElementById("advanced-filter");
-  var btnText = document.getElementById("advanced-filter-Btn");
 
-  if (dots.style.display === "none") {
-    dots.style.display = "inline";
-    btnText.innerHTML = "<i class='fa fa-caret-down'></i> Advanced Filters"; 
-    moreText.style.display = "none";
-  } else {
-    dots.style.display = "none";
-    btnText.innerHTML = "<i class='fa fa-caret-up'></i> Advanced Filters"; 
-    moreText.style.display = "inline";
-  }
-}
-$(".file-upload-column").on("change", ".file-upload-field", function() {
-  $(this)
-    .parent(".file-upload-wrapper")
-    .attr(
-      "data-text",
-      $(this)
-        .val()
-        .replace(/.*(\/|\\)/, "")
-    );
-});
 </script>
 
 @stop
