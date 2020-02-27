@@ -7,11 +7,11 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Customers ({{$customerCount }})
+        All Merchants 
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">Customers</li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Merchants</a></li>
+        <li class="active">All Merchants</li>
     </ol>
 </section>
 <section class="main-content"> 
@@ -34,22 +34,24 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
+            <a href="{!! route('admin.customers.export') !!}" class="btn btn-listing-heading pull-right noAll-margin" target="_" type="button">Export</a> 
         </div>
-        <div class="filter-section displayFlex">
-            <div class="col-md-9 noAll-padding displayFlex">
+        <div class="filter-section">
+            <div class="col-md-12 noAll-padding">
                 <div class="filter-left-section">
                 <form action="{{ route('admin.customers.view') }}" method="get" >
-                    <div class="form-group col-md-4">
-                        <input type="text" name="custSearch" value="{{ !empty(Input::get('custSearch')) ? Input::get('custSearch') : '' }}" class="form-control input-sm pull-right fnt14" placeholder="Customer / Email / Contact">
+                    <div class="form-group col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
+                            <input type="text" name="custSearch" value="{{ !empty(Input::get('custSearch')) ? Input::get('custSearch') : '' }}" class="form-control input-sm pull-right fnt14" placeholder="Search for Name, Email or Mobile Number">
+                        </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <div class="input-group date Nform_date" id="datepickerDemo">
+                        <div class="input-group date Nform_date" id="datepickerDemo">                            
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'calendar.svg'}}"></span>
                             <input placeholder="Created Date" type="text" id="" name="daterangepicker" value="{{ !empty(Input::get('daterangepicker')) ? Input::get('daterangepicker') : '' }}" class="form-control datefromto textInput">
-
-                            <span class="input-group-addon">
-                                <i class=" ion ion-calendar"></i>
-                            </span>
+                            <span class="input-group-addon date"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'arrow_drop_down.png'}}" class="autoWidth"></span>
                         </div>
                     </div>
 
@@ -58,32 +60,24 @@
 
                         {{ Form::select('loyalty', array_map('ucfirst', $loyalty), @Input::get('loyalty'), ['class' => 'form-control input sm']) }}
                     </div>
-                    @endif 
-                    <div class="clearfix"></div>
+                    @endif  
                     <div class="form-group col-md-4 noBottom-margin">
                         {{ Form::select('status', ['' => 'Select Status','1' => 'Enabled', '0'=>'Disabled'], Input::get('status'), ['class' => 'form-control input sm']) }}
                     </div> 
 
-                    <div class="form-group col-md-2 noBottom-margin">
-                        <input type="submit" name="submit" class="fullWidth noAll-margin btn btn-primary customer-search-btn" value="Search">
-                    </div>
-                    <div class="form-group col-md-2 noBottom-margin">
-                        <a  href="{{route('admin.customers.view')}}" class="fullWidth noAll-margin medium btn reset-btn">Reset</a>
+                    <div class="form-group col-md-4 noBottom-margin">
+                        <a  href="{{route('admin.customers.view')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset</a>
+                        <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Filter"> 
                     </div>
                 </form> 
                 </div>
-            </div>            
-            <div class="col-md-3 noAll-padding displayFlex">
-                <div class="filter-right-section">  
-                    <a href="{!! route('admin.customers.add') !!}" class="btn btn-default pull-right fullWidth mobAddnewflagBTN marginBottom-lg"  type="button">Add New User</a> 
-                    <a href="{!! route('admin.customers.export') !!}" class="btn btn-default pull-right fullWidth mobAddnewflagBTN" target="_" type="button">Export</a> 
-                </div>
-            </div>
+            </div>          
         </div>
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Customers <span class="listing-counter">{{$customerCount }}</span></h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Merchants <span class="listing-counter">{{$customerCount }}</span></h1>
+            <a href="{!! route('admin.customers.add') !!}" class="btn btn-listing-heading pull-right noAll-margin"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create</a>
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">
@@ -134,10 +128,10 @@
                             <td class="text-center">
 
                                 <div class="actionCenter">
-                                    <span><a class="btn-action-default" href="{!! route('admin.customers.edit',['id'=>$customer->id]) !!}">Edit</a></span> 
+                                    <span><a class="btn-action-default" href="{!! route('admin.customers.edit',['id'=>$customer->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                     <span class="dropdown">
                                         <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span class="caret"></span>
+                                        <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">  
                                             @if($customer->status==1)

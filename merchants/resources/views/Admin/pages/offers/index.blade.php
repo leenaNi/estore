@@ -6,7 +6,7 @@
         Offers 
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Marketing</a></li>
         <li class="active">Offers</li>
     </ol>
 </section> 
@@ -17,9 +17,8 @@
     </div> 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1 class="lineHeight-30">Offer
-            <span>
-            <a href="{!! route('admin.offers.add') !!}" class="btn btn-default pull-right col-md-3" target="_" type="button">Add New Offer</a></span></h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Offer</h1> 
+            <a href="{!! route('admin.offers.add') !!}" class="btn btn-listing-heading pull-right noAll-margin" target="_"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create</a> 
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">
@@ -62,10 +61,10 @@
                             <td class="text-right">{{date('d-M-Y', strtotime($offer->end_date))}}</td>
                             <td class="text-center"> 
                                 <div class="actionCenter">
-                                    <span><a class="btn-action-default" href="{{route('admin.offers.edit',['id'=>$offer->id])}}">Edit</a></span> 
+                                    <span><a class="btn-action-default" href="{{route('admin.offers.edit',['id'=>$offer->id])}}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                     <span class="dropdown">
                                         <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span class="caret"></span>
+                                        <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
                                             <?php if ($offer->status == 1) { ?>
