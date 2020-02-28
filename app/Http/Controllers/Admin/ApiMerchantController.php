@@ -353,6 +353,7 @@ class ApiMerchantController extends Controller
                 ->join('offers as o', 's.id', '=', 'o.store_id')
                 ->where('s.store_type', 'distributor')
                 ->where("hd.merchant_id", $merchantId)
+                ->where("o.status", 1)
                 ->groupBy('o.store_id')
                 ->get(['d.id', 'd.phone_no', 's.id as storeId', 's.store_name', DB::raw('count(o.id) as offers_count')]);
             if (count($hasDistributorsResult) > 0) {
