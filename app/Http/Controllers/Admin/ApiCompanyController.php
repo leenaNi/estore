@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use DB;
 use Input;
-use Session;
 
 class ApiCompanyController extends Controller
 {
@@ -75,7 +74,6 @@ class ApiCompanyController extends Controller
         DB::enableQueryLog();
         $isError = '';
         //dd(Input::all());
-        dd(Session::get('merchantId'));
         if (!empty(Input::get("merchantId"))) {
             $merchantId = Input::get("merchantId");
 
