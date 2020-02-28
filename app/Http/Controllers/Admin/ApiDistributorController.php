@@ -19,7 +19,7 @@ class ApiDistributorController extends Controller
             $merchantId = Input::get("merchantId");
 
             $storeIdsResult = $this->getStoreId($merchantId);
-
+            
             $storeIdArray = [];
             $storeIdWithDistributorId = array();
             $i = 0;
@@ -110,43 +110,7 @@ class ApiDistributorController extends Controller
                 $i++;
             } //store foreach ends here
 
-            //echo "<pre>";print_r($storeIdArray);exit;
-            /*$productResult = DB::table('products as p')
-            ->join('brand as b', 'p.brand_id', '=', 'b.id')
-            ->whereIn('p.store_id',$storeIdArray)
-            ->where(['p.status' => 1,'p.is_del' => 0])
-            ->where('p.product','LIKE', '%' . $searchKeyWord . '%')
-            ->orderBy('p.store_id', 'ASC')
-            ->get(['p.id','b.id as brand_id','b.name as brand_name','p.product','p.images','p.product_code','p.is_featured','p.prod_type','p.is_stock','p.is_avail','p.is_listing','p.status','p.stock','p.max_price','p.min_price','p.purchase_price','p.price','p.spl_price','p.selling_price','p.is_cod','p.is_tax','p.is_trending','p.min_order_quantity','p.is_share_on_mall','p.store_id']);
-            //echo "<pre>";print_r($productResult);exit;
-            $tempId = 0;
-            $storeWithProductArry = [];
-            for($i = 0; $i < count($productResult); $i++)
-            {
-            $merchantId = $storeIdWithDistributorId[$storeId]['merchant_id'];
-            $storeId = $productResult[$i]->store_id;
-            $storeName = $storeIdWithDistributorId[$storeId]['store_name'];
-
-            $tempId = $storeId;
-            $storeWithProductArry[$i]['store_id'] = $storeId;
-            $storeWithProductArry[$i]['store_name'] = $storeName;
-
-            $productResult[$i]->store_name = $storeName;
-
-            //get offers count
-            $offersIdCountResult = DB::table('offers')
-            ->select(DB::raw('count(id) as offer_count'))
-            ->where('store_id',$storeId)
-            ->where('status',1)
-            ->get();
-
-            $offerCount = 0;
-            if(count($offersIdCountResult) > 0)
-            {
-            $offerCount = $offersIdCountResult[0]->offer_count;
-            }
-            $productResult[$i]->offer_count = $offerCount;
-            } // End foreach*/
+          
             if (count($storeIdWithDistributorId) > 0) {
                 return response()->json(["status" => 1, 'data' => $storeIdWithDistributorId]);
             } else {
@@ -885,5 +849,126 @@ class ApiDistributorController extends Controller
 
         return $getDitributorIdsResult;
     }
+
+    public function getMyOrderDetails()
+    {
+        //DB::enableQueryLog(); // Enable query log
+        if(!empty(Input::get("merchantId"))) 
+        {
+            $merchantId = Input::get("merchantId");
+            //echo "merchant id::".$merchantId;
+
+            //get merchant store id
+            //DB::enableQueryLog(); // Enable query log
+            $getStoreResult = DB::table('stores')
+                    ->select(DB::raw('id'))
+                    ->where('merchant_id', $merchantId)
+                    ->where('store_type', 'merchant')
+                    ->get();
+                  //  dd(DB::getQueryLog()); // Show results of log
+            if(count($getStoreResult) > 0)
+            {
+                $multipleMerchantStoreIds = [];
+                foreach($getStoreResult as $getData)
+                {
+                    $multipleMerchantStoreIds[] = $getData->id;
+                }
+                //echo "<pre>";
+                //print_r($multipleMerchantStoreIds);
+                $myOrdersArray = array();
+                if(count($multipleMerchantStoreIds) > 0)
+                {
+                    //check merchant store id in users table and get usersid
+                    $getUsersResult = DB::table('users')
+                    ->whereIn('store_id', $multipleMerchantStoreIds)
+                    ->get(['id']);
+                   // echo "<pre>";
+                    //print_r($getUsersResult);
+                    if(!empty($getUsersResult))
+                    {
+                        $i=0;
+                        foreach($getUsersResult as $getUserData)
+                        {
+                            $userId = $getUserData->id;
+                            //echo "user id::".$userId;
+                            //get store_id from order table with the use of user_id
+                            $getOrderResult = DB::table('orders')
+                                        ->join('stores', 'orders.store_id', '=', 'stores.id')
+                                        ->join('order_status', 'orders.order_status', '=', 'order_status.id')
+                                        ->join('payment_status', 'orders.payment_status', '=', 'payment_status.id')
+                                        ->where('orders.user_id', $userId)
+                                        ->get(['orders.id', 'orders.user_id', 'orders.pay_amt','orders.store_id','orders.created_at','stores.store_name','order_status.order_status','payment_status.payment_status']);
+                            //echo "<pre> orders data::";
+                            //print_r($getOrderResult);
+
+                           
+                            foreach($getOrderResult as $getOrdersData)
+                            {
+                                $orderId = $getOrdersData->id;
+                                $storeId = $getOrdersData->store_id;
+                                $orderPaymentAmt = $getOrdersData->pay_amt;
+                                $orderCreatedDate = $getOrdersData->created_at;
+                                $orderStoreName = $getOrdersData->store_name;
+                                $orderStatus = $getOrdersData->order_status;
+                                $paymentStatus = $getOrdersData->payment_status;
+                                
+                                $myOrdersArray[$i]['store_name'] = $orderStoreName;
+                                $myOrdersArray[$i]['order_id'] = $orderId;
+                                $myOrdersArray[$i]['payment_status'] = $paymentStatus;
+                                $myOrdersArray[$i]['order_status'] = $orderStatus;
+                                $myOrdersArray[$i]['total_price'] = $orderPaymentAmt;
+
+                                $date = date_create($orderCreatedDate);
+                                $orderCreatedDate = date_format($date, 'd M, Y g:i A');
+                                $myOrdersArray[$i]['order_created_date'] = $orderCreatedDate;
+
+                                //getProduct_count
+                                $getHasProductsResult = DB::table('has_products')
+                                    ->select(DB::raw('count(id) as total_product_count'))
+                                    ->where('order_id', $orderId)
+                                    ->where('store_id', $storeId)
+                                    ->get();
+                                
+                                if(count($getHasProductsResult) > 0)
+                                {
+                                    $myOrdersArray[$i]['total_item'] = $getHasProductsResult[0]->total_product_count;    
+                                }
+                                else
+                                {
+                                    $myOrdersArray[$i]['total_item'] = 0;    
+                                }
+                                
+                               
+                            }
+                            $i++;
+                           
+                        }//foreach ends here
+                        
+                        if (count($myOrdersArray) > 0) {
+                            return response()->json(["status" => 1, 'msg' => '', 'data' => $myOrdersArray]);
+                        } else {
+                            return response()->json(["status" => 0, 'msg' => 'Records not found']);
+                        }
+                    }//if ends here
+                
+                }   
+                else
+                {
+                    return response()->json(["status" => 1, 'msg' => 'Records not found']); 
+                } 
+            }
+            else
+            {
+                return response()->json(["status" => 1, 'msg' => 'Records not found']);
+            }
+
+        }
+        else
+        {
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+
+    }//myorderdetails fun ends here
+
 
 }

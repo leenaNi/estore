@@ -26,19 +26,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ Form::label('Address *', 'Address *', ['class' => 'col-sm-3 control-label']) }}
+                        {{ Form::label('Address', 'Address', ['class' => 'col-sm-3 control-label']) }}
                         <div class="col-sm-6 col-xs-12">
                             {{Form::text('address',  null, ['class'=>'form-control']) }}
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ Form::label('Contact Person Name *', 'Contact Person Name *', ['class' => 'col-sm-3 control-label']) }}
+                        {{ Form::label('Contact Person Name', 'Contact Person Name', ['class' => 'col-sm-3 control-label']) }}
                         <div class="col-sm-6 col-xs-12">
                             {{Form::text('contact_person_name',  null, ['class'=>'form-control']) }}
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ Form::label('Contact Person Number *', 'Contact Person Number *', ['class' => 'col-sm-3 control-label']) }}
+                        {{ Form::label('Contact Person Number', 'Contact Person Number', ['class' => 'col-sm-3 control-label']) }}
                         <div class="col-sm-6 col-xs-12">
                             {{Form::text('contact_person_number',  null, ['class'=>'form-control']) }}
                         </div>
@@ -51,7 +51,7 @@
                             <input type="hidden" name="hdnLogo" value="{{@$companyResult->logo}}" class="form-control">
                             <div id="imgError" style="color:red;"></div>
                                 @if(!empty($companyResult->logo))
-                                    <img height="100px" width="100px" src="{{ asset(Config('constants.companyImgPath').''.$companyResult->logo) }}" class="img-responsive compnayLogo" />                               
+                                    <img height="100px" width="100px" src="{{ asset(Config('constants.companyImgPath').''.$companyResult->logo) }}" class="img-responsive compnayLogo" />
                                 @else
                                     <img height="100px" width="100px" class="img-responsive compnayLogo" />
                                 @endif

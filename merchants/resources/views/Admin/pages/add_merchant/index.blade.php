@@ -19,6 +19,7 @@
 </section>
 <section class="main-content">
     <div class="notification-column">
+        <div class="alert alert-success" role="alert" id="successMsgDiv" style="display: none;"></div> 
         <label class="error" id="sendRequestErorr">{{$sendRequestError}}</label>
     </div>
     <div id="addMerchantDiv">
@@ -114,13 +115,22 @@
                             if($isApprovedVal > 0)
                             {
                             ?>
-                            <td class="text-center">Approved</td>
+                            <td class="text-center">
+                                <div class="actionCenter">
+                                    <span><a class="btn-action-default" href="javascript:;">Approved</a></span>
+                                </div>
+                            </td>
+                        
                             <?php 
                             }
                             else
                             {
                             ?>
-                                <td class="text-center"><a id="not_approve_distributor_{{$distributorId}}" href="javascript:;" onClick="approveMerchant({{$distributorId}})">Approve</a></td>
+                            <td class="text-center">
+                                <div class="actionCenter">
+                                    <span><a class="btn-action-default"  id="not_approve_distributor_{{$distributorId}}" href="javascript:;" onClick="approveMerchant({{$distributorId}})">Approve</a></span>
+                                </siv>
+                            </td>
                             <?php
                             }
                             ?>
@@ -292,7 +302,10 @@
     }
     function approveMerchant(distributorId)
     {
-        $.ajax({
+        if (confirm('Are you sure you want to approve this merchant?'))
+        {
+           
+            $.ajax({
                     method: "POST",
                     data: {'distributorId': distributorId},
                     url: "{{route('admin.vendors.isApproveMerchant')}}",
@@ -303,6 +316,9 @@
                         {
                            // alert("if");
                             $("#not_approve_distributor_"+distributorId).html('Approved');
+                            $("#not_approve_distributor_"+distributorId).removeAttr("onclick");
+                            $("#successMsgDiv").html('Merchant Approved Successfully').show().fadeOut(4000);
+                            
                         }
                         else
                         {
@@ -313,6 +329,8 @@
                     }
             });
             return false;
+             
+        }
     }
 </script>
 @stop
