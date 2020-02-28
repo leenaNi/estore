@@ -467,7 +467,7 @@ class ApiDistributorController extends Controller
                                 foreach ($offerProducts as $offerProductKey => $offerProduct) {
                                     $offPrice = 0;
                                     $product = DB::table('products')->where('id', $offerProduct->prod_id)->first(['price']);
-                                    $offPrice = ($offerProduct->qty * $product->price);
+                                    $offPrice = ($offerProduct->qty * @$product->price);
                                     $actualPrice += $offPrice;
                                     $offerPrice += $offPrice;
                                 }

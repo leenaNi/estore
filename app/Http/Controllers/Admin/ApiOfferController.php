@@ -181,7 +181,7 @@ class ApiOfferController extends Controller
                             ->whereIn('o.id', $multipleOfferId)
                             ->where('o.status', 1)
                             ->orderBy('o.id','DESC')
-                            ->get(['o.id','store_id', 'type', 'offer_discount_type', 'offer_name','offer_discount_value','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]); 
+                            ->get(['o.id','store_id', 'type', 'offer_discount_type', 'offer_name','offer_discount_value','start_date','end_date', 'offer_image as offer_img', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]); 
                         }    
 
                         if(count($getAllOffersResult) > 0)
@@ -210,6 +210,7 @@ class ApiOfferController extends Controller
                                 } else {}
                                 $getOfferData->offerPrice = $offerPrice;
                                 $getOfferData->actualPrice = $actualPrice;
+                                $getOfferData->offer_image = ($getOfferData->offer_img != '')? 'http://'.$getOfferData->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
                             }
                         }
 
