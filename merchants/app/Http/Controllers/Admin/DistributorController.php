@@ -31,6 +31,9 @@ class DistributorController extends Controller
         //echo "login user id::".$loggedInUserId."user type::". $loginUserType;
         // get store id
         $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
+        //echo "<pre>";
+        //print_r($userResult);
+        //exit;
         $storeId = $userResult->store_id;
         //echo "store id::".$storeId;
         // Get merchant id from store table
@@ -147,14 +150,22 @@ class DistributorController extends Controller
     public function sendNotificationToDistributor()
     {
         $allinput = Input::all();
-
+       
         $hdnDistributorEmail = $allinput['hdnDistributorEmail'];
         $hdnDistributorPhone = $allinput['hdnDistributorPhone'];
         $hdnDistributorId = $allinput['hdnDistributorId'];
         $storeId = $allinput['hdnStoreIdForNotification'];
         $countryCode = $allinput['hdnCountryCode'];
+        
+        //Get distributor store url key
+        $storeUrlKeyResult = DB::table('stores')
+                            ->where("store_type", 'distributor')
+                            ->where("merchant_id", $hdnDistributorId)->first();
+        $distributorStoreUrlKey = $storeUrlKeyResult->url_key;
+        //echo "store url key::".$distributorStoreUrlKey;
+        //exit;
 
-        // Get distributor id from store table
+        // Get merchant id from store table
         $storeResult = DB::table('stores')->where("id", $storeId)->first();
         $merchantId = $storeResult->merchant_id;
         $merchantStoreName = $storeResult->store_name;
@@ -165,13 +176,21 @@ class DistributorController extends Controller
         //echo "last inserted id::".$isInserted;
         if ($isInserted) {
             $storeName = $merchantStoreName;
-            $baseurl = str_replace("\\", "/", base_path());
-            $linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
+
+            //$linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
+            //echo "link connect ::".$linkToConnect;
+            //exit;
+            //$ApprovalUrl = "http://" . $distributorStoreUrlKey . '.' . $_SERVER['HTTP_HOST'] .'/admin/purchases/vendors/accept/'.Crypt::encrypt($isInserted); 
+            $ApprovalUrl = "http://" . $distributorStoreUrlKey . '.' . $_SERVER['HTTP_HOST'] .'/admin/purchases/vendors/accept/'.Crypt::encrypt($isInserted); 
+            //echo "url::".$ApprovalUrl;
+            //exit;
+            //$baseurl = str_replace("\\", "/", base_path());
+            //$linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
             //echo "link connect::".$linkToConnect;
             //exit;
             //SMS
             //$msgOrderSucc = $storeName . " is connected with you for business";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
-            $msgOrderSucc = $storeName . ' is connected with you for business Click on below link, <a href="'.$linkToConnect .'">'.$linkToConnect.'</a>';
+            $msgOrderSucc = $storeName . ' is connected with you for business Click on below link, <a href="'.$ApprovalUrl .'">'.$ApprovalUrl.'</a>';
             //echo "succ msg::".$msgOrderSucc;
             Helper::sendsms($hdnDistributorPhone, $msgOrderSucc, $countryCode);
 

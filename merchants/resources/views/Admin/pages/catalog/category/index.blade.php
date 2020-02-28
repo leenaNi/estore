@@ -73,6 +73,7 @@
                     <table class="table table-striped table-hover">
                         <?php
 echo "<ul  id='catTree' class='tree icheck catTrEE'>";
+  
 foreach ($roots as $root) {
     renderNode($root);
 }

@@ -691,8 +691,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::any('/add-merchant', array('as' => 'admin.vendors.addMerchant', 'uses' => 'VendorsController@addMerchant'));
                 Route::any('/verify-code', array('as' => 'admin.vendors.verifyCode', 'uses' => 'VendorsController@verifyMerchantCode'));
                 Route::post('/send-notification', array('as' => 'admin.vendors.send-notification', 'uses' => 'VendorsController@sendNotificationToMerchant'));
-                //Route::get('/accept/{id}', array('as' => 'admin.vendors.accept', 'uses' => 'VendorsController@approveRequest'));
-                Route::any('/is-approve-merchant', array('as' => 'admin.vendors.isApproveMerchant', 'uses' => 'VendorsController@isApprovedMerchant'));
+                Route::get('/accept/{id?}', array('as' => 'admin.vendors.accept', 'uses' => 'VendorsController@approveRequest'));
+                Route::get('/is-approve-merchant', array('as' => 'admin.vendors.isApproveMerchant', 'uses' => 'VendorsController@isApprovedMerchant'));
                 
             });
 
@@ -809,7 +809,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::any('/verify-code', array('as' => 'admin.distributor.verifyCode', 'uses' => 'DistributorController@verifyDistributorCode'));
         Route::post('/send-notification', array('as' => 'admin.distributor.send-notification', 'uses' => 'DistributorController@sendNotificationToDistributor'));
         Route::any('/is-approved-distributor', array('as' => 'admin.distributor.isApproveDistributor', 'uses' => 'DistributorController@isApprovedDistributor'));
-        Route::get('/accept/{id}', array('as' => 'admin.vendors.accept', 'uses' => 'DistributorController@approveRequest'));
+        //Route::get('/accept/{id}', array('as' => 'admin.vendors.accept', 'uses' => 'DistributorController@approveRequest'));
     });
     
 });

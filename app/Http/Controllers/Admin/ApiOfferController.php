@@ -534,7 +534,6 @@ class ApiOfferController extends Controller
         }
 
     }
-
     public function getMerchantWiseDistributorId($merchantId)
     {
          //check merchant id is present in has_distributors table
@@ -546,4 +545,6 @@ class ApiOfferController extends Controller
 
          return $getDitributorIdsResult;
     }
+
+    
 }
