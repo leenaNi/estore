@@ -75,7 +75,6 @@ class ApiCompanyController extends Controller
         DB::enableQueryLog();
         $isError = '';
         //dd(Input::all());
-        dd(Session::get('merchantId'));
         if (!empty(Input::get("merchantId"))) {
             $merchantId = Input::get("merchantId");
 
