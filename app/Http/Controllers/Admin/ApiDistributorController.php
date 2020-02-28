@@ -454,7 +454,7 @@ class ApiDistributorController extends Controller
                             ->whereIn('store_id', $multipleStoreIds)
                             ->where('status', 1)
                         // ->where('id', 38)
-                            ->get(['id', 'offer_name', 'type', 'offer_type', 'offer_discount_type', 'offer_discount_value', 'preference', 'start_date', 'end_date', DB::raw('concat("' . $offerImagePath . '", offer_image) as offer_image')]);
+                            ->get(['id', 'offer_name', 'type', 'offer_type', 'offer_discount_type', 'offer_discount_value', 'preference', 'start_date', 'end_date', 'offer_image as offer_img', DB::raw('concat("' . $offerImagePath . '", offer_image) as offer_image')]);
 
                         if (count($offersResult) > 0) {
                             //echo "<pre>";
@@ -482,6 +482,7 @@ class ApiDistributorController extends Controller
                                 }
                                 $offerValue->offerPrice = $offerPrice;
                                 $offerValue->actualPrice = $actualPrice;
+                                $offerValue->offer_image = ($offerValue->offer_img != '')? 'http://'.$offerValue->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
                             }
                             return response()->json(["status" => 1, 'msg' => "", 'data' => $offersResult]);
                         } else {
