@@ -434,17 +434,17 @@ class ApiOfferController extends Controller
 
                                 //check category id present in has_categories table
                                 $getHasCategoryResult = DB::table('has_categories')
-                                ->join('store_categories', 'store_categories.category_id', '=', 'has_categories.id')
+                                ->join('store_categories', 'store_categories.category_id', '=', 'has_categories.cat_id')
                                 ->select(DB::raw('prod_id'))
                                 ->where('cat_id', $categoryId)
                                 ->whereIn('store_id', $storeIds)
                                 ->get();
                                 //echo "<pre> product id::";
-                                print_r($getHasCategoryResult);
+                                // dd($getHasCategoryResult);
                                 if(count($getHasCategoryResult) > 0)
                                 {   
                                     //All Product ids of this Category
-
+                                    
                                     //get product id                                    
                                     foreach($getHasCategoryResult as $getProdData)
                                     {                                        
