@@ -8,15 +8,16 @@ class Company extends Model
 {
     protected $table = "company";
 
-    public static function rules($id = null, $merge = []) {
+    public static function rules($id = null, $merge = [])
+    {
 
         return array_merge(
-                [
-                    'name' => 'required',
-                    // 'address' => 'required',
-                    // 'contact_person_name' => 'required',
-                    // 'contact_person_number' => 'required|numeric'
-                ], $merge);
+            [
+                'name' => 'required',
+                // 'address' => 'required',
+                // 'contact_person_name' => 'required',
+                // 'contact_person_number' => 'required|numeric'
+            ], $merge);
     }
     public $messages = [
         'name.required' => 'Name is required.',
@@ -26,6 +27,6 @@ class Company extends Model
         // 'contact_person_number.numeric' => 'Phone number should be valid'
     ];
     protected $fillable = [
-        'name', 'address', 'contact_person_name', 'contact_person_number'
+        'name', 'address', 'contact_person_name', 'contact_person_number',
     ];
 }
