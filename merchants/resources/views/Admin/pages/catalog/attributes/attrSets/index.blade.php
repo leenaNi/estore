@@ -26,7 +26,7 @@
  </div>
   <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
         <div class="filter-section">
             <div class="col-md-12 noAll-padding">
@@ -41,7 +41,7 @@
                         </div>
                        <div class="form-group col-md-4 noBottomMargin">
                             <a href="{{ route('admin.attribute.set.view')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset </a> 
-                            <input type="submit" name="submit" vlaue='Filter' class='btn btn-primary noAll-margin pull-right marginRight-lg'> 
+                            <button type="submit" name="submit" vlaue="Filter" class='btn btn-primary noAll-margin pull-right marginRight-lg'>Filter</button> 
                         </div>
                     </form>
                 </div>

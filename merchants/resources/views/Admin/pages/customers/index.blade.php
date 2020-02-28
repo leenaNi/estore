@@ -1,7 +1,6 @@
 @extends('Admin.layouts.default')
 @section('mystyles')
-<link rel="stylesheet" href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css">
-<style type="text/css">.capitalizeText select {text-transform: capitalize;} select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transform: capitalize !important;}</style>
+<link rel="stylesheet" href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css"> 
 @stop
 
 @section('content')
@@ -17,7 +16,7 @@
 <section class="main-content"> 
     <div class="notification-column">
         @if(!empty(Session::get('message')))
-        <div  class="alert alert-danger" role="alert">
+        <div class="alert alert-danger" role="alert">
             {{ Session::get('message') }}
         </div>
         @endif
@@ -44,13 +43,13 @@
                     <div class="form-group col-md-8">
                         <div class="input-group">
                             <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
-                            <input type="text" name="custSearch" value="{{ !empty(Input::get('custSearch')) ? Input::get('custSearch') : '' }}" class="form-control input-sm pull-right fnt14" placeholder="Search for Name, Email or Mobile Number">
+                            <input type="text" name="custSearch" value="{{ !empty(Input::get('custSearch')) ? Input::get('custSearch') : '' }}" class="form-control form-control-right-border-radius" placeholder="Search for Name, Email or Mobile Number">
                         </div>
                     </div>
                     <div class="form-group col-md-4">
                         <div class="input-group date Nform_date" id="datepickerDemo">                            
                             <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'calendar.svg'}}"></span>
-                            <input placeholder="Created Date" type="text" id="" name="daterangepicker" value="{{ !empty(Input::get('daterangepicker')) ? Input::get('daterangepicker') : '' }}" class="form-control datefromto textInput">
+                            <input placeholder="Created Date" type="text" id="" name="daterangepicker" value="{{ !empty(Input::get('daterangepicker')) ? Input::get('daterangepicker') : '' }}" class="form-control-no-border-radius datefromto textInput">
                             <span class="input-group-addon date"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'arrow_drop_down.png'}}" class="autoWidth"></span>
                         </div>
                     </div>

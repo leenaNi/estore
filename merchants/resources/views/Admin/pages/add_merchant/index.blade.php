@@ -1,10 +1,6 @@
 @extends('Admin.layouts.default')
 @section('mystyles')
-<link rel="stylesheet" href="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker-bs3.css') }}">
-<style type="text/css">.capitalizeText select {
-        text-transform: capitalize;
-    } 
-    select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transform: capitalize !important;}</style>
+<link rel="stylesheet" href="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker-bs3.css') }}"> 
 @stop
 
 @section('content')
@@ -13,39 +9,43 @@
         Add Merchant
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+       <li><a href="#"><i class="fa fa-dashboard"></i> Merchants</a></li>
         <li class="active">Add merchant</li>
     </ol>
 </section>
-<section class="main-content">
-    <div class="notification-column">
+<section class="main-content"> 
+    <div class="notification-column noliheight">
         <label class="error" id="sendRequestErorr">{{$sendRequestError}}</label>
     </div>
     <div id="addMerchantDiv">
         <div class="grid-content">
             <div class="section-main-heading">
-                <h1>Add merchant</h1>
+                <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
             </div>
-            <div class="filter-section displayFlex">
+            <div class="filter-section">
 
-                <div class="col-md-9 noAll-padding displayFlex">
+                <div class="col-md-12 noAll-padding">
                     <div class="filter-left-section">
                        
                         <form  method="get" id="merchantCodeForm">
-                            <div class="form-group col-md-8 col-sm-6 col-xs-12" id="inputDiv">
-                                <input type="text" name="merchantIdentityCode" id="merchantIdentityCode" value="{{isset($identityCode)?$identityCode:''}}" onkeypress="hideErrorMsg('errorLbl')" class="form-control medium pull-right " placeholder="Enter Merchant Code">
-                            <label class="error" id="errorLbl"></label>
+                            <div class="form-group col-md-8 col-sm-8 col-xs-12 noBottom-margin" id="inputDiv">
+                                <div class="input-group">
+                                 <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>
+                                <input type="text" name="merchantIdentityCode" id="merchantIdentityCode" value="{{isset($identityCode)?$identityCode:''}}" onkeypress="hideErrorMsg('errorLbl')" class="form-control form-control-right-border-radius" placeholder="Enter Merchant Code">
                             </div>
-                            <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                                <button id="searchMerchant" class="btn btn-primary fullWidth noAll-margin" style="margin-left: 0px;">Search</button>
+                            <label class="error pull-left" id="errorLbl"></label>
+                            </div>
+                            <div class="form-group noBottom-margin col-md-4 col-sm-4 col-xs-12">
+                                <a  href="{{route('admin.customers.view')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset</a>
+                                <button id="searchMerchant" class="btn btn-primary noAll-margin pull-right marginRight-lg">Filter</button>
                             </div>
                             <input type="hidden" id="hdnStoreId" name="hdnStoreId" value="{{$storeId}}">
                         </form>
                     </div>
                 </div>
-                <div class="col-md-3 noAll-padding displayFlex" style="background:#fff;">
+                <div class="col-md-3 hide noAll-padding">
                     <div class="filter-right-section">
-                        <div class="clearfix" id="merchantDetailDiv" style="display:none;" >
+                        <div class="clearfix" id="merchantDetailDiv">
                             <div class="info-box">
                                 <form action="{{ route('admin.vendors.send-notification') }}" method="post">
                                 
@@ -72,13 +72,15 @@
             </div>
         </div>
         <div class="grid-content">
+            <div class="section-main-heading">
+                <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Add Merchant</h1>
+            </div>
             <div class="listing-section">
                 <table class="table table-striped table-hover tableVaglignMiddle">
                     <thead>
                         <tr>
                             <th class="text-left">#</th>
-                            <th class="text-left">Business Name</th>
-                            <!--<th class="text-center">Concern Person Name</th>-->
+                            <th class="text-left">Business Name</th> 
                             <th class="text-center">Mobile Number</th>
                             <th class="text-center">Connection Date</th>
                             <th class="text-center">Ledger</th>
@@ -100,36 +102,34 @@
                         ?>
                         <tr>
                             <td  class="text-left">{{$i}}</td>
-                            <td  class="text-left">{{$decodedMerchantDetail->store_name}}</td>
-                            <!--<td  class="text-center"></td>-->
-                            <td  class="text-center">{{$decodedMerchantDetail->phone}}</td>
-                            <td  class="text-center">{{$connectionData}}</td>
+                            <td  class="text-left">{{$decodedMerchantDetail->store_name}}</td> 
+                            <td  class="text-left">{{$decodedMerchantDetail->phone}}</td>
+                            <td  class="text-right">{{$connectionData}}</td>
                             <td  class="text-center">
                                 <div class="actionCenter">
-                                        <span><a class="btn-action-default" href=""><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> Ledger</a></span> 
-                                    
+                                <span><a class="btn-action-default" href=""><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> Ledger</a></span> 
                                 </div>
                             </td>
                             <?php 
                             if($isApprovedVal > 0)
                             {
                             ?>
-                            <td class="text-center">Approved</td>
+                            <td class="text-center"><span class="alertSuccess">Approved</span></td>
                             <?php 
                             }
                             else
                             {
                             ?>
-                                <td class="text-center"><a id="not_approve_distributor_{{$distributorId}}" href="javascript:;" onClick="approveMerchant({{$distributorId}})">Approve</a></td>
+                                <td class="text-center"><a id="not_approve_distributor_{{$distributorId}}" href="javascript:;" onClick="approveMerchant({{$distributorId}})"><span class="alertWarning">Approve</span></a></td>
                             <?php
                             }
-                            ?>
-                           
-                            <!-- <i class="fa fa-pencil-square-o fa-fw" title="Ledger"></i></td> -->
+                            ?> 
                         </tr> 
                         @endforeach
                     @else
-                        <label class="text-center"> No records found.</label>
+                        <tr colspan="6">
+                            <td> No records found.</td>
+                        </tr>
                     @endif 
                     
                     </tbody>

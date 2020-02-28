@@ -13,7 +13,7 @@
 
 <section class="main-content">
     <div class="notification-column">
-       <p style="color: red;text-align: center;">{{ Session::get('messege') }}</p>
+       <p class="text-center redColor noAll-margin">{{ Session::get('messege') }}</p>
     </div> 
     <div class="grid-content">
         <div class="section-main-heading">

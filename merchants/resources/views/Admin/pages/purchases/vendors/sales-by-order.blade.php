@@ -5,7 +5,8 @@
         By Orders 
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Reports</a></li>
+        <li class="active">Analytics</li>
         <li class="active">By Orders</li>
     </ol>
 </section>
@@ -13,7 +14,7 @@
 <section class="main-content">     
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
         <div class="filter-section">
             <div class="col-md-12 no-padding">
@@ -22,7 +23,7 @@
                         <input type="hidden" value="dateSearch" name="dateSearch">
                         <div class="form-group col-md-4 noBottomMargin">
                             <div class="input-group">
-                                <input type="text" name="from_date" value="{{ @Input::get('from_date') }}" required="true"  class="form-control fromDate " placeholder="From Date" autocomplete="off" id="">
+                                <input type="text" name="from_date" value="{{ @Input::get('from_date') }}" required="true"  class="form-control form-control-left-border-radius fromDate" placeholder="From Date" autocomplete="off" id="">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
@@ -30,17 +31,15 @@
                         </div>
                         <div class="form-group col-md-4 noBottomMargin">
                             <div class="input-group">
-                                <input type="text" name="to_date" value="{{ @Input::get('to_date') }}"   required="true"  class="form-control toDate col-md-3" placeholder="To Date" autocomplete="off" id="">
+                                <input type="text" name="to_date" value="{{ @Input::get('to_date') }}"   required="true"  class="form-control form-control-left-border-radius toDate" placeholder="To Date" autocomplete="off" id="">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group col-md-2 noBottomMargin">
-                            <input type="submit" name="submit" class="btn btn-primary fullWidth" value="Submit">
-                        </div>
-                         <div class="form-group col-md-2 noBottomMargin">
-                         <a  href="{{route('admin.vendors.saleByOrder')}}" class="medium btn btn-block reset-btn">Reset</a>
+                        <div class="form-group col-md-4 noBottomMargin">
+                         <a  href="{{route('admin.vendors.saleByOrder')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset</a>
+                            <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Filter"> 
                         </div>
                     </form>
                 </div>
@@ -50,24 +49,24 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Order{{$orderCount > 1 ?'s':'' }} <span class="listing-counter"> {{$orderCount }} </span> </h1> 
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Order{{$orderCount > 1 ?'s':'' }} <span class="listing-counter"> {{$orderCount }} </span> </h1> 
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding"> 
                 <table class="table ByOrderSalesTable orderTable table-hover general-table tableVaglignMiddle">
                     <thead>
                         <tr>                    
-                            <th class="text-left">Date</th>
+                            <th class="text-right">Date</th>
                             <th class="text-center">Order Count</th>
-                            <th class="text-right">Sales</th>
+                            <th class="text-left">Sales</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($order as $od)
                         <tr>                                
-                            <td class="text-left">{{date("d-M-Y",strtotime($od->created_at)) }}</td>
+                            <td class="text-right">{{date("d-M-Y",strtotime($od->created_at)) }}</td>
                             <td class="text-center">{{ $od->order_count }}</td>
-                            <td class="text-right"><i class='fa fa-rupee'></i> {{ number_format($od->sales) }}</td>
+                            <td class="text-left"><i class='fa fa-rupee'></i> {{ number_format($od->sales) }}</td>
                         </tr>
                         @endforeach
                     </tbody>

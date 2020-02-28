@@ -63,7 +63,7 @@
                     <li class="{{ preg_match("/admin.stock/",Route::currentRouteName()) ? 'active' : '' }}"">
                         <a href="#"> 
                             Inventory
-                            <i class="fa fa-angle-down pull-right"></i>
+                            <i class="fa fa-angle-down pull-right subMenuArrow"></i>
                         </a>
                         <ul class="treeview-menu">
                             <li class="treeview {{ preg_match("/admin.stock.view/",Route::currentRouteName()) ? 'active' : '' }}">
@@ -116,10 +116,9 @@
                 </a>
                 <ul class="treeview-menu">
                     @if($feature['acl'] == 1) 
-                    <li class="{{ preg_match('/admin.customers/',Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"><i class="fa fa-angle-right"></i>All Merchants</a></li> 
+                    <li class="{{ preg_match('/admin.customers/',Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"> All Merchants</a></li> 
                     <li  class="{{ Route::currentRouteName() == 'admin.vendors.addMerchant' ? 'active' : '' }}">
-                        <a href="{{ route('admin.vendors.addMerchant') }}">
-                            <i class="fa fa-angle-right"></i>Add Merchant</a>
+                        <a href="{{ route('admin.vendors.addMerchant') }}"> Add Merchant</a>
                     </li>
                     @endif
                 </ul>
@@ -134,7 +133,7 @@
                 <li class="treeview {{ preg_match("/admin.vendors.saleByOrder|admin.vendors.saleByProduct/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
                     Analytics</span>
-                    <i class="fa fa-angle-down pull-right"></i>
+                    <i class="fa fa-angle-down pull-right subMenuArrow"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li class="{{ preg_match("/admin.vendors.saleByOrder/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.saleByOrder') }}"> By Orders</a></li>
@@ -177,7 +176,7 @@
                     </ul>
                 </li>
             @endif -->
-            <!--<li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
+            <!-- <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-user-plus"></i><span>ACL</span>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -195,7 +194,7 @@
                     @endif
 
                 </ul>
-            </li>-->
+            </li> -->
             <!--<li class="treeview {{ preg_match("/admin.storeSetting|admin.currency|admin.state|admin.language|admin.translation|admin.cities|admin.country|admin.generalSetting|admin.pincodes|admin.domains|admin.emailSetting|admin.paymentSetting|admin.returnPolicy|admin.courier/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-cogs"></i><span>Settings</span>

@@ -2,13 +2,7 @@
 
 @section('mystyles')
 <link rel="stylesheet" href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css">
-<link rel="stylesheet" href="{{  Config('constants.adminPlugins').'/bootstrap-multiselect/bootstrap-multiselect.css' }}">
-<style type="text/css">
-.multiselect-container {width: 100% !important;}
-.brbottom1{margin-bottom: 10px; padding: 10px;}
-.success{color: #3c763d;}
-.error{color: #d73925;}
-</style>
+<link rel="stylesheet" href="{{  Config('constants.adminPlugins').'/bootstrap-multiselect/bootstrap-multiselect.css' }}"> 
 @stop
 
 @section('content')
@@ -40,7 +34,7 @@
     <div class="col-md-9 noLeft-padding">
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
         <div class="filter-section">
                 <div class="filter-left-section">
@@ -80,7 +74,7 @@
 
                         <div class="input-group">
                             <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'calendar.svg'}}"></span>
-                             {!! Form::text('date',Input::get('date'), ["class"=>'form-control darkPlaceholder', "placeholder"=>"Order Date"]) !!}
+                             {!! Form::text('date',Input::get('date'), ["class"=>'form-control-no-border-radius darkPlaceholder', "placeholder"=>"Order Date"]) !!}
                             <span class="input-group-addon date"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'arrow_drop_down.png'}}" class="autoWidth"></span>
                         </div> 
                     </div>
