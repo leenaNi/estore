@@ -505,67 +505,77 @@ class ApiDistributorController extends Controller
             $distributorId = Input::get("distributorId");
             $companyId = Input::get("companyId");
             if (CustomValidator::validateNumber($merchantId) && CustomValidator::validateNumber($distributorId) && CustomValidator::validateNumber($companyId)) {
-                $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
-                //echo "<pre>";
-                //print_r($getDitributorIdsResult);
-                //exit;
-                if (count($getDitributorIdsResult) > 0) {
-                    // $multipleDistributorIds = [];
-                    // foreach ($getDitributorIdsResult as $distributorIdsData)
-                    // {
-                    //     $multipleDistributorIds[] = $distributorIdsData->distributor_id;
-                    // }
-
+                $multipleDistributorIds = [];
+                if($distributorId){
                     $multipleDistributorIds[] = $distributorId;
-
+                }else{
+                    $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
+                    if (count($getDitributorIdsResult) > 0) {
+                        foreach ($getDitributorIdsResult as $distributorIdsData)
+                        {
+                            $multipleDistributorIds[] = $distributorIdsData->distributor_id;
+                        }
+                    }
+                }
+                    // get brand id
+                $brandIds = [];
+                if($companyId && !$distributorId){
                     //Comapnywise Brands
                     $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
                     $companyBrandIds = [];
                     foreach ($companyBrands as $companyBrand) {
-                        $companyBrandIds[] = $companyBrand->id;
+                        $brandIds[] = $companyBrand->id;
                     }
-
-                    // get brand id
+                }else{
                     $brandIdsResult = DB::table('stores')
                         ->join('products', 'products.store_id', '=', 'stores.id')
                         ->whereIn('stores.merchant_id', $multipleDistributorIds)
                         ->where('stores.store_type', 'distributor')
                         ->where('stores.expiry_date', '>=', date('Y-m-d'))
                         ->get(['products.brand_id', 'products.store_id']);
-
+                    
                     if (count($brandIdsResult) > 0) {
-                        $brandIds = [];
                         $storeId = [];
                         foreach ($brandIdsResult as $brandIdsData) {
                             $brandIds[] = $brandIdsData->brand_id;
                             $storeIds[] = $brandIdsData->store_id;
                         }
-
-                        //echo "<pre>";
-                        //print_r($brandIds);
-                        if (count($brandIds) > 0) {
-                            $brandLogogPath = asset(Config('constants.brandImgPath') . "/");
-                            $getBrandResult = DB::table('brand')
-                                ->join('products', 'brand.id', '=', 'products.brand_id')
-                                ->whereIn('brand.id', $brandIds)
-                                ->where('is_delete', 0)
-                                ->get(['brand.id as brand_id', 'brand.name as brand_name', DB::raw('concat("' . $brandLogogPath . '", brand.logo) as brand_logo'), 'brand.company_id', 'brand.industry_id']);
-
-                            /*echo "<pre>";
-                            print_r($getBrandResult);
-                            exit;*/
-                            return response()->json(["status" => 1, 'msg' => "", 'result' => $getBrandResult]);
-                        }
-                    } else {
-                        return response()->json(["status" => 1, 'msg' => 'Records not found']);
                     }
-                } else {
+                }
+                if (count($brandIds) > 0) {
+                    $brandLogogPath = asset(Config('constants.brandImgPath')). "/";
+                    $getBrandResult = DB::table('brand')
+                        ->join('products', 'brand.id', '=', 'products.brand_id')
+                        ->whereIn('brand.id', $brandIds)->groupBy('brand.id')
+                        ->where('is_delete', 0)
+                        ->get(['brand.id as brand_id', 'brand.name as brand_name', DB::raw('concat("' . $brandLogogPath . '", brand.logo) as brand_logo'), 'brand.company_id', 'brand.industry_id']);
+
+                    return response()->json(["status" => 1, 'msg' => "", 'result' => $getBrandResult]);
+                }else {
                     return response()->json(["status" => 1, 'msg' => 'Records not found']);
                 }
             } else {
                 return response()->json(["status" => 0, 'msg' => 'Invalid data']);
             }
         } else {
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+    }
+
+    public function getBrandProducts(){
+        $brandId = Input::get('brandId');
+        if($brandId){
+            if (CustomValidator::validateNumber($brandId)){
+                $products = DB::table('products')->where('brand_id',$brandId)->get();
+                if(count($products) > 0){
+                    return response()->json(['status'=>1,'msg'=>'Product List','data'=>$products]);
+                }else{
+                    return response()->json(["status" => 1, 'msg' => 'Records not found']);
+                }
+            }else {
+                return response()->json(["status" => 0, 'msg' => 'Invalid data']);
+            }
+        }else{
             return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
     }
