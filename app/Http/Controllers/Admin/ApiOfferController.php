@@ -272,7 +272,7 @@ class ApiOfferController extends Controller
                                         ->where('offers_products.prod_id',$productId)
                                         ->where('offers_products.type', 1)
                                         ->where('offers.status', 1)
-                                        ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
+                                        ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value', 'offers.offer_image as offer_img', DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
                                         //echo "<pre> offers data::";
                                         // print_r($getoffersResult);                                    
                                         $j=0;
@@ -280,7 +280,7 @@ class ApiOfferController extends Controller
                                         {
                                             $categoryArray[$i]['offers'][$j]['offer_id'] = $getOfferData->id;
                                             $categoryArray[$i]['offers'][$j]['offer_name'] = $getOfferData->offer_name;
-                                            $categoryArray[$i]['offers'][$j]['offer_image'] = 'http://'.$getOfferData->offer_image;
+                                            $categoryArray[$i]['offers'][$j]['offer_image'] = ($getOfferData->offer_img != '')? 'http://'.$getOfferData->offer_image: $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
                                             $categoryArray[$i]['offers'][$j]['type'] = $getOfferData->type;
                                             $categoryArray[$i]['offers'][$j]['offer_discount_type'] = $getOfferData->offer_discount_type;
                                             $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
