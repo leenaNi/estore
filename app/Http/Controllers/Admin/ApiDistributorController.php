@@ -424,7 +424,6 @@ class ApiDistributorController extends Controller
                     ->where('stores.expiry_date', '>=', date('Y-m-d'))
                     ->get(['stores.id']);
                 if (count($storeIdResult) > 0) {
-
                     //Comapnywise Brands
                     $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
                     $companyBrandIds = [];
@@ -436,7 +435,7 @@ class ApiDistributorController extends Controller
                         ->whereIn('stores.merchant_id', $multipleDistributorIds)
                         ->whereIn('products.brand_id', $companyBrandIds)
                         ->where('stores.store_type', 'distributor')
-                        ->get(['stores.id', 'stores.url_key']);
+                        ->get(['stores.id', 'stoes.url_key']);
                     if (count($storeIdResult) > 0) {
                         //echo "<pre>";
                         //print_r($storeIdResult);
