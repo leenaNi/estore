@@ -624,52 +624,41 @@ class VendorsController extends Controller
     }
 
 
-    //for mail purpose
-    /*public function approveRequest($id)
+    //for SMS/mail purpose
+    public function approveRequest()
     {
-        if(isset($id) && !empty($id))
+        $approvalId = Session::get('approval_id');
+        //echo "approval id::".$approvalId;
+        if(isset($approvalId) && ($approvalId > 0))
         {
-            $decryptedId = Crypt::decrypt($id);
+            Session::forget('approval_id'); // Removes a specific session variable
             
             $isUpdated = DB::table('has_distributors')
-            ->where('id', $decryptedId)
+            ->where('id', $approvalId)
             ->update(array('is_approved' => 1));  // update the record in the DB. 
             
             if($isUpdated)
             {
                 // Get distributor id from has_distributor
-                $hasDistributorResult = DB::table('has_distributors')->where("id", $decryptedId)->first();
-                $distributorId = $hasDistributorResult->distributor_id;
+                $hasDistributorResult = DB::table('has_distributors')->where("id", $approvalId)->first();
+                $merchantId = $hasDistributorResult->merchant_id;
 
                 // Distributor data
-                $distributorResult = DB::table('distributor')->where("id", $distributorId)->first();
-                $distributorEmail = $distributorResult->email;
-                $distributorPhoneNo = $distributorResult->phone_no;
-                $countryCode = $distributorResult->country;
+                $merchantResult = DB::table('merchants')->where("id", $merchantId)->first();
+                //$distributorEmail = $distributorResult->email;
+                $merchantPhoneNo = $merchantResult->phone;
+                $countryCode = $merchantResult->country_code;
 
                 //SMS
-                if(!empty($distributorPhoneNo))
+                if(!empty($merchantPhoneNo))
                 {
-                    $massage = "Request accepted by merchant";
-                    Helper::sendsms($distributorPhoneNo, $massage, $countryCode);
-                }
-
-                //Email        
-                //$domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
-                $sub = "Request  accepted by merchant";
-            
-                $mailcontent = "Request accepted by merchant";
-            
-                if (!empty($distributorEmail)) {
-                    Helper::withoutViewSendMail($distributorEmail, $sub, $mailcontent);
+                    $massage = "Request accepted by distributor";
+                    Helper::sendsms($merchantPhoneNo, $massage, $countryCode);
                 }
                 
             } // End isUpdated if
-           $viewname = Config('constants.adminAddMerchantView') . '.thank_you';
-           //$viewname = "Frontend.pages.thank_you";
-            return Helper::returnView($viewname, '');
-            //return view($viewname);
+            return redirect()->route('admin.vendors.addMerchant');
         } // End if here
-    } // ENd approveRequest() */
+    } // ENd approveRequest() 
     
 }

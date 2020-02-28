@@ -11,7 +11,12 @@ use App\Models\GeneralSetting;
 use Illuminate\Http\Response;
 use App\Library\Helper;
 use Config;
-
+use Crypt;
+use Hash;
+use Input;
+use Route;
+use DB;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Session;
 
 class CheckUser {
@@ -34,9 +39,23 @@ class CheckUser {
 //    }
 
     public function handle($request, Closure $next) {
+
+        $url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        //echo "url::".$url;
+        $text = substr($url, strrpos($url, '/') + 1);
+        //echo "<br>text val::".$text;
+        try {
+            $decryptedId = Crypt::decrypt($text);
+            if($decryptedId > 0)
+            {
+                Session::put('approval_id', $decryptedId);
+            }
+            
+        } catch (DecryptException $e) {
+        
+        }
    $industry= array_key_exists('industry_id',Helper::getSettings())?Helper::getSettings()['industry_id']:1;
         Config::set('app.industry', $industry);
-        //dd("sdf");
         
      //  $curRoute = $request->route()->getName();
         //        dd($curRoute);

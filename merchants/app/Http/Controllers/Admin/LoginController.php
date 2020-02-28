@@ -17,6 +17,8 @@ use Hash;
 use Input;
 use Route;
 use Session;
+use DB;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class LoginController extends Controller
 {
@@ -28,6 +30,7 @@ class LoginController extends Controller
         } else {
             return view(Config('constants.adminView') . '.login');
         }
+        
     }
 
     public function unauthorized()
@@ -36,7 +39,10 @@ class LoginController extends Controller
     }
 
     public function checkExistingphone() {
+
+      
         $chkEmail = User::where("telephone", Input::get('phone_no'))->first();
+        
         //if (count($chkEmail) > 0){
             if (!empty($chkEmail)){
             $country = '+'.$chkEmail->country_code;
@@ -68,6 +74,7 @@ class LoginController extends Controller
 
     public function chk_admin_user()
     {
+       echo "inside fun";
        // DB::enableQueryLog(); // Enable query log
         $input = Input::get("phone");
         $login_type = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
@@ -84,7 +91,7 @@ class LoginController extends Controller
 
         if (!empty($userDetails)) {
                 //if (Auth::login($userData, true)) {
-                // dd($userData);
+                 //dd($userData);
                 $user = User::with('roles')->find($userDetails->id);
                 $store = Store::find($user->store_id);
                 Session::put('loggedinAdminId', $userDetails->id);
@@ -95,10 +102,24 @@ class LoginController extends Controller
                 $roles = $user->roles()->first();
                 $r = Role::find($roles->id);
                 $per = $r->perms()->get()->toArray();
-                //if (Auth::user()->user_type == 3) {
+
+                $approvalId = Session::get('approval_id');
+                //echo "approval id::".$approvalId;
+                if($approvalId > 0)
+                {
+                    return redirect()->route('admin.vendors.accept');                         
+                }
+                else
+                {
                     return redirect()->route('admin.home.view');
+                }
+
+
+
+                //if (Auth::user()->user_type == 3) {
+                    //return redirect()->route('admin.home.view');
                 //}
-                return redirect()->route('admin.home.view');
+                //return redirect()->route('admin.home.view');
             // } else {
             //     Session::flash('invalidUser', 'Invalid Username or Password');
             //     return redirect()->route('adminLogin');

@@ -74,7 +74,7 @@
                         <th>Mobile Number</th>
                         <th>Connection Date</th>
                         <th>Ledger</th>
-                        <th>Action</th>
+                        <th>Status</th>
                     </tr>
                 </thead>	
                 <tbody>
@@ -116,7 +116,9 @@
                         else
                         {
                         ?>
-                            <td><a id="not_approve_merchant_{{$merchantId}}" href="javascript:;" onClick="approveDistributor({{$merchantId}})">Approve</a></td>
+                            <!--<td><a id="not_approve_merchant_{{$merchantId}}" href="javascript:;" onClick="approveDistributor({{$merchantId}})">Approve</a></td>-->
+							<td id="approved_merchant_{{$merchantId}}">Approval Pending</td>
+							
                         <?php
                         }
                         ?>
