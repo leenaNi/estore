@@ -491,7 +491,7 @@ class ApiDistributorController extends Controller
                         return response()->json(["status" => 1, 'msg' => 'Records not found']);
                     }
                 } else {
-                    return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+                    return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing..']);
                 }
             } else {
                 return response()->json(["status" => 0, 'msg' => 'Invalid data']);
