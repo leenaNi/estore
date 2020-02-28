@@ -13,9 +13,7 @@
 @section('content')
 <section class="content-header">
   <h1>
-    All Products 
-    <small>
-    </small>
+    All Products
   </h1>
   <ol class="breadcrumb">
     <li>
@@ -43,8 +41,10 @@
         </div>
         @endif --}}
   </div>
-<div class="col-md-9 displayFlex noLeft-padding">
-  <div class="grid-content">
+  <div class="twoDivEqualMain">
+  <div class="twoDivEqualInner">
+  <div class="col-md-9 noLeft-padding">
+    <div class="grid-content">
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
@@ -130,8 +130,10 @@
       </div>
     </div>
   </div>
+</div>
 
-    <div class="col-md-3 displayFlex noRight-padding">
+  <div class="twoDivEqualInner">
+    <div class="col-md-3 noRight-padding">
     <div class="grid-content">
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
@@ -164,7 +166,7 @@
                 </div>
             </form>   
           </div>          
-            <div class="form-group">
+            <div class="form-group noAll-margin">
              <form id="fileupload" action="{{ asset(route('admin.products.prdBulkImgUpload')) }}" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <div class="input-group file-upload-column">
@@ -187,6 +189,8 @@
       </div>
     </div>
     </div> 
+  </div>
+</div>
 
   <div class="grid-content">
   <div class="section-main-heading">

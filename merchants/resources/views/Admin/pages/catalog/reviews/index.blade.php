@@ -54,7 +54,7 @@ use App\Models\Order;
                       </div>
                     </div>
                     <div class="clearfix"></div>
-                    <div class="form-group col-md-12 noBottomMargin"> 
+                    <div class="form-group col-md-12 noBottom-margin"> 
                           <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right">Reset</button></a> 
                           <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" style="margin-left: 0px;"> Filter</button> 
                     </div>
