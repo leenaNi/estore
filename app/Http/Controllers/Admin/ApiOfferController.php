@@ -449,7 +449,7 @@ class ApiOfferController extends Controller
                                         $getoffersResult = DB::table('offers_products')
                                         ->join('offers', 'offers_products.offer_id', '=', 'offers.id')
                                         ->join('stores', 'stores.id', '=', 'offers.store_id')
-                                        ->where('offers_product.prod_id',$productId)
+                                        ->where('offers_products.prod_id',$productId)
                                         ->where('offers_products.type', 1)
                                         ->where('offers.status', 1)
                                         ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
