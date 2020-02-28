@@ -421,7 +421,7 @@ class ApiDistributorController extends Controller
                 $storeIdResult = DB::table('stores')
                     ->whereIn('stores.merchant_id', $multipleDistributorIds)
                     ->where('stores.store_type', 'distributor')
-                    ->where('stores.exiry_date', '>=', date('Y-m-d'))
+                    ->where('stores.expiry_date', '>=', date('Y-m-d'))
                     ->get(['stores.id']);
                 if (count($storeIdResult) > 0) {
                     if($companyId){
