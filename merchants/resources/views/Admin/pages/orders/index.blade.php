@@ -36,7 +36,7 @@
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
-        <div class="filter-section">
+        <div class="filter-section equal-height-div-1">
                 <div class="filter-left-section">
                     {!! Form::open(['method' => 'get', 'route' => 'admin.orders.view' , 'id' => 'searchForm' ]) !!}
                     <div class="form-group col-md-4">
@@ -111,7 +111,7 @@
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
         </div>
-        <div class="filter-section">
+        <div class="filter-section equal-height-div-2">
                 <div class="filter-right-section"> 
                     <div class="form-group">
                     <a class="btn btn-default fullWidth noAll-margin" href="{{route('admin.orders.sampleexport')}}">Download Sample</a>

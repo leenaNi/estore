@@ -40,15 +40,13 @@
         {{Session::get('msg')}}
         </div>
         @endif --}}
-  </div>
-  <div class="twoDivEqualMain">
-  <div class="twoDivEqualInner">
+  </div> 
   <div class="col-md-9 noLeft-padding">
     <div class="grid-content">
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
-        <div class="filter-section">
+        <div class="filter-section equal-height-div-1">
                 <div class="filter-left-section">
                 {!! Form::open(['method' => 'get', 'route' => 'admin.products.view' , 'id' => 'searchForm' ]) !!}
                 {!! Form::hidden('productsCatalog',null) !!}
@@ -129,16 +127,14 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
-
-  <div class="twoDivEqualInner">
+  </div> 
+ 
     <div class="col-md-3 noRight-padding">
     <div class="grid-content">
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
         </div>
-        <div class="filter-section">
+        <div class="filter-section equal-height-div-2">
           <div class="filter-right-section">            
             <div class="form-group">
             <a class="btn btn-default fullWidth noAll-margin" href="{{ route('admin.products.sampleBulkDownload')}}">Download Products</a>
@@ -188,9 +184,7 @@
         </div>
       </div>
     </div>
-    </div> 
-  </div>
-</div>
+    </div>   
 
   <div class="grid-content">
   <div class="section-main-heading">
@@ -1281,6 +1275,17 @@
       }
     }
   }
-                                   );
+ );
+
+$( document ).ready(function() {
+    var s1 = $('#div1').height();
+    var s2 = $('#div2').height();
+
+    if (s1 > s2)
+        $('#div2').css('height', s1 + "px");
+    else
+        $('#div1').css('height', s2 + "px");
+});
+
 </script>
 @stop

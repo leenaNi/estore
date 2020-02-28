@@ -396,6 +396,8 @@ $(document).keypress(function (e) {
     moreText.style.display = "inline";
   }
 }
+
+// File Uploade Placeholder 
 $(".file-upload-column").on("change", ".file-upload-field", function() {
   $(this)
     .parent(".file-upload-wrapper")
@@ -405,5 +407,16 @@ $(".file-upload-column").on("change", ".file-upload-field", function() {
         .val()
         .replace(/.*(\/|\\)/, "")
     );
+});
+
+// manage 2 div same height
+$( document ).ready(function() {
+    var s1 = $('.equal-height-div-1').height();
+    var s2 = $('.equal-height-div-2').height();
+
+    if (s1 > s2)
+        $('.equal-height-div-2').css('height', s1 + "px");
+    else
+        $('.equal-height-div-1').css('height', s2 + "px");
 });
 </script>
