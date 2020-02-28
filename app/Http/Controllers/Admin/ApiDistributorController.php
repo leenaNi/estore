@@ -754,7 +754,7 @@ class ApiDistributorController extends Controller
                                     $c++;
                                 }
                             }//All products ends here
-
+                            array_push($categoryArray, $categoryArray[0]);
                             //Get ctaegory wise products
                             $i = 0;
                             foreach ($getcategoryResult as $getCategoryData) {
