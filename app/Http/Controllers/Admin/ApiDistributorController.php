@@ -424,18 +424,22 @@ class ApiDistributorController extends Controller
                     ->where('stores.expiry_date', '>=', date('Y-m-d'))
                     ->get(['stores.id']);
                 if (count($storeIdResult) > 0) {
-                    //Comapnywise Brands
-                    $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
-                    $companyBrandIds = [];
-                    foreach ($companyBrands as $companyBrand) {
-                        $companyBrandIds[] = $companyBrand->id;
+                    if($companyId){
+                        //Comapnywise Brands
+                        $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
+                        $companyBrandIds = [];
+                        foreach ($companyBrands as $companyBrand) {
+                            $companyBrandIds[] = $companyBrand->id;
+                        }
                     }
                     $storeIdResult = DB::table('stores')
                         ->join('products', 'products.store_id', '=', 'stores.id')
-                        ->whereIn('stores.merchant_id', $multipleDistributorIds)
-                        ->whereIn('products.brand_id', $companyBrandIds)
-                        ->where('stores.store_type', 'distributor')
-                        ->get(['stores.id', 'stoes.url_key']);
+                        ->whereIn('stores.merchant_id', $multipleDistributorIds);
+                        if($companyId){
+                        $storeIdResult = $storeIdResult->whereIn('products.brand_id', $companyBrandIds);
+                        }
+                        $storeIdResult  = $storeIdResult->where('stores.store_type', 'distributor')
+                        ->get(['stores.id', 'stores.url_key']);
                     if (count($storeIdResult) > 0) {
                         //echo "<pre>";
                         //print_r($storeIdResult);
