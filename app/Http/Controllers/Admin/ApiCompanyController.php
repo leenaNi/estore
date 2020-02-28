@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use DB;
 use Input;
-use Response;
+use Session;
 
 class ApiCompanyController extends Controller
 {
