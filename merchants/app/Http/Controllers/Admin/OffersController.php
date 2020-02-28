@@ -19,6 +19,7 @@ class OffersController extends Controller
     public function index()
     {
         $offerInfo = Offer::orderBy('id', 'DESC')->get();
+        //dd($offerInfo);
         return view(Config('constants.adminOfferView') . '.index', compact('offerInfo'));
     }
 
