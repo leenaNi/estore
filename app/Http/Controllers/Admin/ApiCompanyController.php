@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use DB;
 use Input;
-use Response;
 
 class ApiCompanyController extends Controller
 {
@@ -99,7 +98,7 @@ class ApiCompanyController extends Controller
                     foreach ($brandIdsResult as $brandIdsData) {
                         $brandIds[] = $brandIdsData->brand_id;
                     }
-                    
+
                     // Get company ids
                     $companyResult = DB::table('company')
                         ->join('brand', 'company.id', '=', 'brand.company_id')
@@ -112,7 +111,7 @@ class ApiCompanyController extends Controller
                         $companyArray = array();
                         $brandArray = array();
                         foreach ($companyResult as $companyData) {
-                            
+
                             $companyId = $companyData->company_id;
                             $companyName = $companyData->company_name;
                             $companyLogo = $companyData->company_logo;
@@ -127,12 +126,12 @@ class ApiCompanyController extends Controller
                                 $j = 0;
                                 $companyArray[$i]['compnay_id'] = $companyId;
                                 $companyArray[$i]['company_name'] = $companyName;
-                                $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath').$companyLogo);
+                                $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath') . $companyLogo);
                             } else {
                                 if ($tempId == 0) {
                                     $companyArray[$i]['compnay_id'] = $companyId;
                                     $companyArray[$i]['company_name'] = $companyName;
-                                    $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath').$companyLogo);
+                                    $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath') . $companyLogo);
                                 }
                             }
 
@@ -140,7 +139,6 @@ class ApiCompanyController extends Controller
                             // $brandArray[$j]['brand_name'] = $brandName;
                             // $brandArray[$j]['brand_logo'] = asset(Config('constants.brandImgPath').$brandLogo);
 
-                            
                             $j++;
                             $tempId = $companyId;
 

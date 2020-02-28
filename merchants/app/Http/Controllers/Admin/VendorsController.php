@@ -293,7 +293,7 @@ class VendorsController extends Controller
     public function saleByOrder()
     {
         $where = '';
-        $order = HasProducts::select(DB::raw('count(*) as order_count,sum(price) as sales'), 'created_at', 'id')->where('vendor_id', Auth::user()->id)->whereNotIn('order_status', [0, 4, 6, 10])->groupBy(DB::raw('DATE(created_at)'))->orderBy('sales', 'desc');
+        $order = HasProducts::select(DB::raw('count(*) as order_count,sum(price) as sales'), 'created_at', 'id')->where('vendor_id', Session::get('merchantid'))->whereNotIn('order_status', [0, 4, 6, 10])->groupBy(DB::raw('DATE(created_at)'))->orderBy('sales', 'desc');
 
         if (!empty(Input::get('month'))) {
             $select = "DATE_FORMAT(created_at, '%M %Y') as created_at";
@@ -331,7 +331,7 @@ class VendorsController extends Controller
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['product', 'short_desc', 'long_desc'];
 
-        $prods = HasProducts::with('product')->where('vendor_id', Auth::user()->id);
+        $prods = HasProducts::with('product')->where('vendor_id', Session::get('merchantid'));
         $prods->whereHas('product', function ($q) use ($search) {
             $q->where('is_individual', '=', '1');
             $q->where("is_crowd_funded", "=", "0");

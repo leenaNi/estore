@@ -439,18 +439,21 @@ class ApiDistributorController extends Controller
                     ->where('stores.expiry_date', '>=', date('Y-m-d'))
                     ->get(['stores.id']);
                 if (count($storeIdResult) > 0) {
-
-                    //Comapnywise Brands
-                    $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
-                    $companyBrandIds = [];
-                    foreach ($companyBrands as $companyBrand) {
-                        $companyBrandIds[] = $companyBrand->id;
+                    if($companyId){
+                        //Comapnywise Brands
+                        $companyBrands = DB::table('brand')->where('company_id', $companyId)->get(['id']);
+                        $companyBrandIds = [];
+                        foreach ($companyBrands as $companyBrand) {
+                            $companyBrandIds[] = $companyBrand->id;
+                        }
                     }
                     $storeIdResult = DB::table('stores')
                         ->join('products', 'products.store_id', '=', 'stores.id')
-                        ->whereIn('stores.merchant_id', $multipleDistributorIds)
-                        ->whereIn('products.brand_id', $companyBrandIds)
-                        ->where('stores.store_type', 'distributor')
+                        ->whereIn('stores.merchant_id', $multipleDistributorIds);
+                        if($companyId){
+                        $storeIdResult = $storeIdResult->whereIn('products.brand_id', $companyBrandIds);
+                        }
+                        $storeIdResult  = $storeIdResult->where('stores.store_type', 'distributor')
                         ->get(['stores.id', 'stores.url_key']);
                     if (count($storeIdResult) > 0) {
                         //echo "<pre>";
@@ -466,7 +469,7 @@ class ApiDistributorController extends Controller
                             ->whereIn('store_id', $multipleStoreIds)
                             ->where('status', 1)
                         // ->where('id', 38)
-                            ->get(['id', 'offer_name', 'type', 'offer_type', 'offer_discount_type', 'offer_discount_value', 'preference', 'start_date', 'end_date', DB::raw('concat("' . $offerImagePath . '", offer_image) as offer_image')]);
+                            ->get(['id', 'offer_name', 'type', 'offer_type', 'offer_discount_type', 'offer_discount_value', 'preference', 'start_date', 'end_date', 'offer_image as offer_img', DB::raw('concat("' . $offerImagePath . '", offer_image) as offer_image')]);
 
                         if (count($offersResult) > 0) {
                             //echo "<pre>";
@@ -479,7 +482,7 @@ class ApiDistributorController extends Controller
                                 foreach ($offerProducts as $offerProductKey => $offerProduct) {
                                     $offPrice = 0;
                                     $product = DB::table('products')->where('id', $offerProduct->prod_id)->first(['price']);
-                                    $offPrice = ($offerProduct->qty * $product->price);
+                                    $offPrice = ($offerProduct->qty * @$product->price);
                                     $actualPrice += $offPrice;
                                     $offerPrice += $offPrice;
                                 }
@@ -494,6 +497,7 @@ class ApiDistributorController extends Controller
                                 }
                                 $offerValue->offerPrice = $offerPrice;
                                 $offerValue->actualPrice = $actualPrice;
+                                $offerValue->offer_image = ($offerValue->offer_img != '')? 'http://'.$offerValue->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
                             }
                             return response()->json(["status" => 1, 'msg' => "", 'data' => $offersResult]);
                         } else {
@@ -503,7 +507,7 @@ class ApiDistributorController extends Controller
                         return response()->json(["status" => 1, 'msg' => 'Records not found']);
                     }
                 } else {
-                    return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+                    return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing..']);
                 }
             } else {
                 return response()->json(["status" => 0, 'msg' => 'Invalid data']);

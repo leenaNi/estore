@@ -85,13 +85,13 @@
                 required: true
             },
             address: {
-                required: true
+                required: false
             },
             contact_person_name: {
-                required: true
+                required: false
             },
             contact_person_number: {
-                required: true,
+                required: false,
                 digits: true
             }
         },
