@@ -606,16 +606,9 @@ class CategoryMasterController extends Controller {
             //check if parent category present
             //$checkParentCat = DB::table('store_categories')->where('category_id', $newCat->parent_id)->where('store_id', $reqCategory->requestedBy->store_id)->first(['id']);
             $checkParentCat = DB::table('store_categories')->where('category_id', $newCat->parent_id)->where('store_id', $getStoreId)->first(['id']);
-
-            //echo "check parent db::".$checkParentCat;
-            //exit;
             if($checkParentCat == null) {
-            //Add Parent Category
             //Add New category to store_categories
             $newParentCat = CategoryMaster::find($newCat->parent_id);
-            //echo "<pre>";
-            //print_r($newParentCat);
-            //exit;    
             DB::table('store_categories')->insert([
             "category_id" => $newParentCat->id,
             "is_nav" => $newParentCat->is_nav,
