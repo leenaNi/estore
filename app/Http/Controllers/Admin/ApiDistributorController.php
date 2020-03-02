@@ -1035,6 +1035,11 @@ class ApiDistributorController extends Controller
                     $getUsersResult = DB::table('users')
                     ->whereIn('store_id', $multipleMerchantStoreIds)
                     ->get(['id']);
+                    $userIds = [];
+                    foreach($getUsersResult as $getData)
+                    {
+                        $userIds[] = $getData->id;
+                    }
                    // echo "<pre>";
                     //print_r($getUsersResult);
                     if(!empty($multipleDistributorStoreIds))
@@ -1049,7 +1054,7 @@ class ApiDistributorController extends Controller
                                         ->join('stores', 'orders.store_id', '=', 'stores.id')
                                         ->join('order_status', 'orders.order_status', '=', 'order_status.id')
                                         ->join('payment_status', 'orders.payment_status', '=', 'payment_status.id')
-                                        ->whereIn('orders.user_id', $userId)
+                                        ->whereIn('orders.user_id', $userIds)
                                         ->where('orders.store_id', $storeId)
                                         ->get(['orders.id', 'orders.user_id', 'orders.pay_amt','orders.store_id','orders.created_at','stores.store_name','order_status.order_status','payment_status.payment_status']);
                             //echo "<pre> orders data::";
