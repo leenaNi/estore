@@ -1000,13 +1000,23 @@ class ApiDistributorController extends Controller
         {
             $merchantId = Input::get("merchantId");
             //echo "merchant id::".$merchantId;
-
+            //Get All Distributors
+            $distributors = DB::table('has_distributors as hd')
+            ->join('stores as s', 's.merchant_id', '=', 'hd.distributor_id')
+            ->where('s.store_type', 'distributor')
+            ->where('hd.merchant_id', $merchantId)->where('hd.is_approved', 1)->get();
+            $multipleDistributorIds = [];
+            foreach($distributors as $distributorsData)
+            {
+                $multipleDistributorIds[] = $distributorsData->distributor_id;
+            }
+            dd($multipleDistributorIds);
             //get merchant store id
             //DB::enableQueryLog(); // Enable query log
             $getStoreResult = DB::table('stores')
                     ->select(DB::raw('id'))
                     ->where('merchant_id', $merchantId)
-                    ->where('store_type', 'distributor')
+                    ->where('store_type', 'merchant')
                     ->get();
                   //  dd(DB::getQueryLog()); // Show results of log
             if(count($getStoreResult) > 0)
