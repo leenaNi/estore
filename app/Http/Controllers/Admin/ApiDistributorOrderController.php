@@ -313,14 +313,14 @@ class ApiDistributorOrderController extends Controller
         $stock_status = DB::table('general_setting')->where('url_key', 'stock')->first()->status;
         $courier_status = DB::table('general_setting')->where('url_key', 'default-courier')->first()->status;
         $user = User::find($userid);
-        $distributor = User::find($DistributorID);
+        $distributor = Store::where('merchant_id', $DistributorID)->where('store_type', 'distributor')->first();
         $order = Order::find($orderid);
         $iscod = 0;
         if ($paymentMethod == 1) {
             $iscod = 1;
         }
         if ($courier_status == 1) {
-            $courier = DB::table('has_couriers')->where('status', 1)->where('store_id', $distributor->store_id)->orderBy("preference", "asc")->first();
+            $courier = DB::table('has_couriers')->where('status', 1)->where('store_id', $distributor->id)->orderBy("preference", "asc")->first();
             $order->courier = @$courier->courier_id;
         }
         //if ($this->courierService == 1 && $this->pincodeStatus == 1) {
