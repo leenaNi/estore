@@ -1010,7 +1010,7 @@ class ApiDistributorController extends Controller
             {
                 $multipleDistributorStoreIds[] = $distributorsData->storeId;
             }
-            dd($multipleDistributorStoreIds);
+            // dd($multipleDistributorStoreIds);
             //get merchant store id
             //DB::enableQueryLog(); // Enable query log
             $getStoreResult = DB::table('stores')
