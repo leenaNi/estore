@@ -1004,11 +1004,11 @@ class ApiDistributorController extends Controller
             $distributors = DB::table('has_distributors as hd')
             ->join('stores as s', 's.merchant_id', '=', 'hd.distributor_id')
             ->where('s.store_type', 'distributor')
-            ->where('hd.merchant_id', $merchantId)->where('hd.is_approved', 1)->get();
+            ->where('hd.merchant_id', $merchantId)->where('hd.is_approved', 1)->get(['s.id as storeId']);
             $multipleDistributorStoreIds = [];
             foreach($distributors as $distributorsData)
             {
-                $multipleDistributorStoreIds[] = $distributorsData->store_id;
+                $multipleDistributorStoreIds[] = $distributorsData->storeId;
             }
             dd($multipleDistributorStoreIds);
             //get merchant store id
@@ -1090,14 +1090,11 @@ class ApiDistributorController extends Controller
                                 else
                                 {
                                     $myOrdersArray[$i][$getOrderKey]['total_item'] = 0;    
-                                }
-                                
-                               
+                                }                               
                             }
                             $i++;
                            
-                        }//foreach ends here
-                        
+                        }//foreach ends here                        
                         if (count($myOrdersArray) > 0) {
                             return response()->json(["status" => 1, 'msg' => '', 'data' => $myOrdersArray]);
                         } else {
