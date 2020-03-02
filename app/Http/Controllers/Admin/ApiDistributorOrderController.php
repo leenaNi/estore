@@ -179,10 +179,14 @@ class ApiDistributorOrderController extends Controller
         }
         $order->save();
         //}
-        $country = DB::table('countries')->where('id', $selAdd->country_id)->first();
-        $countryname = $country->name;
-        $countryIsoCode = $country->iso_code_3;
-        $zone = DB::table('zones')->where('id', $selAdd->zone_id)->first()->name;
+        if ($selAdd) {
+            $country = DB::table('countries')->where('id', $selAdd->country_id)->first();
+            $zone = DB::table('zones')->where('id', $selAdd->zone_id)->first()->name;
+        } else {
+            $country = 99;
+            $zone = 1476;
+        }
+
         // $toPayment['address'] = $selAdd;
         // $toPayment['address']['countryname'] = ($countryname) ? $countryname : '';
         // $toPayment['address']['statename'] = ($zone) ? $zone : '';
