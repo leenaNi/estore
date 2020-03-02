@@ -688,7 +688,8 @@ class ApiDistributorController extends Controller
                                     ->where('status', 1)
                                     ->get();    
                             }
-
+                            $categoryArray[0]['category_id'] = "0";
+                            $categoryArray[0]['category_name'] = "All";
                             if (count($getCategoryWiseProductsResult1) > 0) 
                             {
                                 $c = 0;
@@ -756,7 +757,7 @@ class ApiDistributorController extends Controller
                                     $c++;
                                 }
                             }//All products ends here
-
+                            array_push($categoryArray, $categoryArray[0]);
                             //Get ctaegory wise products
                             $i = 0;
                             foreach ($getcategoryResult as $getCategoryData) {
