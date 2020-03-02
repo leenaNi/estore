@@ -181,7 +181,7 @@ class ApiOfferController extends Controller
                             ->whereIn('o.id', $multipleOfferId)
                             ->where('o.status', 1)
                             ->orderBy('o.id','DESC')
-                            ->get(['o.id','store_id', 'type', 'offer_discount_type', 'offer_name','offer_discount_value','start_date','end_date', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]); 
+                            ->get(['o.id','store_id', 'type', 'offer_discount_type', 'offer_name','offer_discount_value','start_date','end_date', 'offer_image as offer_img', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]); 
                         }    
 
                         if(count($getAllOffersResult) > 0)
@@ -210,6 +210,7 @@ class ApiOfferController extends Controller
                                 } else {}
                                 $getOfferData->offerPrice = $offerPrice;
                                 $getOfferData->actualPrice = $actualPrice;
+                                $getOfferData->offer_image = ($getOfferData->offer_img != '')? 'http://'.$getOfferData->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
                             }
                         }
 
@@ -272,7 +273,7 @@ class ApiOfferController extends Controller
                                         ->where('offers_products.prod_id',$productId)
                                         ->where('offers_products.type', 1)
                                         ->where('offers.status', 1)
-                                        ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
+                                        ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value', 'offers.offer_image as offer_img', DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
                                         //echo "<pre> offers data::";
                                         // print_r($getoffersResult);                                    
                                         $j=0;
@@ -280,7 +281,7 @@ class ApiOfferController extends Controller
                                         {
                                             $categoryArray[$i]['offers'][$j]['offer_id'] = $getOfferData->id;
                                             $categoryArray[$i]['offers'][$j]['offer_name'] = $getOfferData->offer_name;
-                                            $categoryArray[$i]['offers'][$j]['offer_image'] = 'http://'.$getOfferData->offer_image;
+                                            $categoryArray[$i]['offers'][$j]['offer_image'] = ($getOfferData->offer_img != '')? 'http://'.$getOfferData->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
                                             $categoryArray[$i]['offers'][$j]['type'] = $getOfferData->type;
                                             $categoryArray[$i]['offers'][$j]['offer_discount_type'] = $getOfferData->offer_discount_type;
                                             $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
@@ -434,13 +435,18 @@ class ApiOfferController extends Controller
 
                                 //check category id present in has_categories table
                                 $getHasCategoryResult = DB::table('has_categories')
+                                ->join('store_categories', 'store_categories.category_id', '=', 'has_categories.cat_id')
                                 ->select(DB::raw('prod_id'))
                                 ->where('cat_id', $categoryId)
+                                ->whereIn('store_id', $storeIds)
                                 ->get();
                                 //echo "<pre> product id::";
                                 // dd($getHasCategoryResult);
                                 if(count($getHasCategoryResult) > 0)
-                                {   //get product id                                    
+                                {   
+                                    //All Product ids of this Category
+                                    
+                                    //get product id                                    
                                     foreach($getHasCategoryResult as $getProdData)
                                     {                                        
                                         $productId = $getProdData->prod_id;
@@ -449,7 +455,7 @@ class ApiOfferController extends Controller
                                         $getoffersResult = DB::table('offers_products')
                                         ->join('offers', 'offers_products.offer_id', '=', 'offers.id')
                                         ->join('stores', 'stores.id', '=', 'offers.store_id')
-                                        ->where('offers_products.prod_id',$productId)
+                                        ->where('offers_products.prod_id', $productId)
                                         ->where('offers_products.type', 1)
                                         ->where('offers.status', 1)
                                         ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value',DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);

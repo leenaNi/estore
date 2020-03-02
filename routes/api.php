@@ -238,7 +238,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/distributor-offer', ["as" => "admin.offer.getOffer", "uses" => "ApiOfferController@getDistributorOffer"]);
             Route::any('/product-wise-offer', ["as" => "admin.offer.getProductWiseOffer", "uses" => "ApiOfferController@getProductWiseOffer"]);
             Route::post('/all-offers', ["as" => "admin.offer.getAllOffers", "uses" => "ApiOfferController@getAllOffer"]);
-            Route::post('/category-wise-offers', ["as" => "admin.offer.getCategoryWiseOffers", "uses" => "ApiOfferController@getCategoryWiseOffer"]);
+            // Route::post('/category-wise-offers', ["as" => "admin.offer.getCategoryWiseOffers", "uses" => "ApiOfferController@getCategoryWiseOffer"]);
         });
 
         Route::group(['prefix' => 'distributor'], function () {
