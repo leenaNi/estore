@@ -344,7 +344,7 @@ class ApiDistributorOrderController extends Controller
         $additional_charge_json = $this->ApplyAdditionalCharge($cartAmount);
         $order->additional_charge = $additional_charge_json;
         //$orderstatus = DB::table('order_status')->where(['sort_order' => 1, 'store_id' => Session::get('distributor_store_id')])->first();
-        $orderstatus = DB::table('order_status')->where(['sort_order' => 1, 'store_id' => $user->store_id])->first();
+        $orderstatus = DB::table('order_status')->where(['is_default' => 1, 'store_id' => $distributor->id])->first();
 
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
@@ -430,7 +430,7 @@ class ApiDistributorOrderController extends Controller
         $cart_ids = [];
 
         DB::table('has_products')->where("order_id", $orderId)->delete();
-        foreach ($cartContent as $cart) {
+        foreach ($cartContent as $key => $cart) {
             $product = DB::table('products')->where('id', $cart->id)->first();
             $sum = 0;
             $prod_tax = array();
@@ -455,11 +455,11 @@ class ApiDistributorOrderController extends Controller
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
+            $cart_ids[$cart->rowId] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
                 'pay_amt' => $payamt, 'store_id' => $order->store_id, 'prefix' => $order->prefix];
 
             if ($cart->options->has('sub_prod') && $cart->options->sub_prod != null) {
-                $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
+                $cart_ids[$cart->rowId]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = DB::table('products')->where('id', $cart->options->sub_prod)->first();
                 $proddetails['id'] = @$prddataS->id;
@@ -469,10 +469,10 @@ class ApiDistributorOrderController extends Controller
                 $proddetails['qty'] = $cart->qty;
                 $proddetails['subtotal'] = $subtotal;
                 $proddetails['is_cod'] = @$prddataS->is_cod;
-                $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetails);
+                $cart_ids[$cart->rowId]["product_details"] = json_encode($proddetails);
                 $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowId]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$cart->rowId]["prod_type"] = $cart->options->prod_type;
 
                 if (@$prddataS->is_stock == 1) {
                     @$prddataS->stock = @$prddataS->stock - $cart->qty;
@@ -513,7 +513,7 @@ class ApiDistributorOrderController extends Controller
                         }
                     }
                 }
-                $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$cart->rowId]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
                 $prddataSp = DB::table('products')->where('id', $cart->id)->first();
@@ -525,11 +525,11 @@ class ApiDistributorOrderController extends Controller
                 $proddetailsp['subtotal'] = $subtotal; //* Session::get('currency_val')
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
 
-                $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetailsp);
+                $cart_ids[$cart->rowId]["product_details"] = json_encode($proddetailsp);
 
                 $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowId]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$cart->rowId]["prod_type"] = $cart->options->prod_type;
                 $prd = DB::table('products')->where('id', $cart->id)->first();
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
@@ -542,10 +542,10 @@ class ApiDistributorOrderController extends Controller
             }
             // $order->products()->attach($cart_ids);
             //  HasProducts::on('mysql2');
-            $cart_ids[$cart->rowid]["order_id"] = $orderId;
-            $cart_ids[$cart->rowid]["prod_id"] = $cart->id;
-            $cart_ids[$cart->rowid]["order_status"] = 1;
-            $cart_ids[$cart->rowid]["order_source"] = 2;
+            $cart_ids[$cart->rowId]["order_id"] = $orderId;
+            $cart_ids[$cart->rowId]["prod_id"] = $cart->id;
+            $cart_ids[$cart->rowId]["order_status"] = 1;
+            $cart_ids[$cart->rowId]["order_source"] = 2;
 
             // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
             //  $order->products()->attach($cart->rowid, $cart_ids[$cart->rowid]);
