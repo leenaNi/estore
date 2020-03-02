@@ -1017,7 +1017,7 @@ class ApiDistributorController extends Controller
                     $multipleMerchantStoreIds[] = $getData->id;
                 }
                 //echo "<pre>";
-                //print_r($multipleMerchantStoreIds);
+                print_r($multipleMerchantStoreIds);
                 $myOrdersArray = array();
                 if(count($multipleMerchantStoreIds) > 0)
                 {
