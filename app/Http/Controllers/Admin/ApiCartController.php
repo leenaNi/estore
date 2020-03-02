@@ -102,7 +102,11 @@ class ApiCartController extends Controller
             } else {
                 //return $msg;
                 $cartData = Cart::instance("shopping")->content();
-                $user->cart = json_encode($cartData);
+                if(Cart::instance("shopping")->count() != 0){
+                    $user->cart = json_encode($cartData);
+                } else {
+                    $user->cart = '';
+                }
                 $user->update();
                 $data['data']['cart'] = $cartData;
                 $data["data"]['cartCount'] = Cart::instance("shopping")->count();
@@ -676,6 +680,24 @@ class ApiCartController extends Controller
     {
         $rowId = filter_var(Input::get('rowid'), FILTER_SANITIZE_STRING);
         $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
+        if($quantity == 0) {
+            $user = User::where('id', Session::get('authUserId'))->first();
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->add($cartData);
+            Cart::instance('shopping')->remove($rowId);
+            $cartData = Cart::instance("shopping")->content();
+            if(Cart::instance("shopping")->count() != 0){
+                $user->cart = json_encode($cartData);
+            } else {
+                $user->cart = '';
+            }
+            $user->update();
+            $data['data']['cart'] = $cartData;
+            $data["data"]['cartCount'] = Cart::instance("shopping")->count();
+            $data['status'] = "1";
+            $data['msg'] = "Item removed successfully";
+            return $data;
+        }
         if(!empty($rowId) && !empty($quantity)) {
             $user = User::where('id', Session::get('authUserId'))->first();
             $cartData = json_decode($user->cart, true);

@@ -659,6 +659,7 @@ class ApiDistributorController extends Controller
                         //print_r($getcategoryResult);
                         //exit;
                         $categoryArray = array();
+                        $categoryDataArray = array();
                         if (count($getcategoryResult) > 0) {
                           
                             $categoryProductArray = array();
@@ -688,8 +689,8 @@ class ApiDistributorController extends Controller
                                     ->where('status', 1)
                                     ->get();    
                             }
-                            $categoryArray[0]['category_id'] = "0";
-                            $categoryArray[0]['category_name'] = "All";
+                            $categoryDataArray['category_id'] = "0";
+                            $categoryDataArray['category_name'] = "All";
                             if (count($getCategoryWiseProductsResult1) > 0) 
                             {
                                 $c = 0;
@@ -728,19 +729,19 @@ class ApiDistributorController extends Controller
                                         $productImage = "http://" . $productUrlArray[$getProductData1->store_id] . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
                                     }
 
-                                    $categoryArray[0]['product'][$c]['product_id'] = $productId;
-                                    $categoryArray[0]['product'][$c]['product_brand_id'] = $productBrandId;
-                                    $categoryArray[0]['product'][$c]['product_name'] = $productName;
-                                    $categoryArray[0]['product'][$c]['product_code'] = $productCode;
-                                    $categoryArray[0]['product'][$c]['short_desc'] = $productShortDesc;
-                                    $categoryArray[0]['product'][$c]['long_desc'] = $productLongDesc;
-                                    $categoryArray[0]['product'][$c]['add_desc'] = $productAddDesc;
-                                    $categoryArray[0]['product'][$c]['is_featured'] = $productIsFeatured;
-                                    $categoryArray[0]['product'][$c]['product_image'] = $productImage;
-                                    $categoryArray[0]['product'][$c]['product_type'] = $productType;
-                                    $categoryArray[0]['product'][$c]['is_stock'] = $productIsStock;
-                                    $categoryArray[0]['product'][$c]['price'] = $productPrice;
-                                    $categoryArray[0]['product'][$c]['selling_price'] = $productSellingPrice;
+                                    $categoryDataArray['product'][$c]['product_id'] = $productId;
+                                    $categoryDataArray['product'][$c]['product_brand_id'] = $productBrandId;
+                                    $categoryDataArray['product'][$c]['product_name'] = $productName;
+                                    $categoryDataArray['product'][$c]['product_code'] = $productCode;
+                                    $categoryDataArray['product'][$c]['short_desc'] = $productShortDesc;
+                                    $categoryDataArray['product'][$c]['long_desc'] = $productLongDesc;
+                                    $categoryDataArray['product'][$c]['add_desc'] = $productAddDesc;
+                                    $categoryDataArray['product'][$c]['is_featured'] = $productIsFeatured;
+                                    $categoryDataArray['product'][$c]['product_image'] = $productImage;
+                                    $categoryDataArray['product'][$c]['product_type'] = $productType;
+                                    $categoryDataArray['product'][$c]['is_stock'] = $productIsStock;
+                                    $categoryDataArray['product'][$c]['price'] = $productPrice;
+                                    $categoryDataArray['product'][$c]['selling_price'] = $productSellingPrice;
 
                                     //get offers count
                                     $getOffersProductResult = DB::table('offers_products')
@@ -753,15 +754,15 @@ class ApiDistributorController extends Controller
                                             $offerCount = $getCount->offer_count;
                                         }
                                     }
-                                    $categoryArray[0]['product'][$c]['offers_count'] = $offerCount;
+                                    $categoryDataArray['product'][$c]['offers_count'] = $offerCount;
                                     $c++;
                                 }
                             }//All products ends here
 
 
-                            array_push($categoryArray, $categoryArray[0]);
+                            array_push($categoryArray, $categoryDataArray);
                             //Get ctaegory wise products
-                            $i = 0;
+                            $i = 1;
                             foreach ($getcategoryResult as $getCategoryData) {
                                 $categoryId = $getCategoryData->id;
                                 $categoryName = $getCategoryData->category;
@@ -769,10 +770,10 @@ class ApiDistributorController extends Controller
                                 $categoryUrlKey = $getCategoryData->url_key;
                                 $cateGoryStoreId = $getCategoryData->store_id;
 
-                                $categoryArray[1][$i]['category_id'] = $categoryId;
-                                $categoryArray[1][$i]['category_name'] = $categoryName;
-                                $categoryArray[1][$i]['category_short_desc'] = $categoryShortDesc;
-                                $categoryArray[1][$i]['category_url_key'] = $categoryUrlKey;
+                                $categoryArray[$i]['category_id'] = $categoryId;
+                                $categoryArray[$i]['category_name'] = $categoryName;
+                                $categoryArray[$i]['category_short_desc'] = $categoryShortDesc;
+                                $categoryArray[$i]['category_url_key'] = $categoryUrlKey;
 
                                 if($pageIndex != '' && $perPageRecord != '')
                                 {
@@ -831,19 +832,19 @@ class ApiDistributorController extends Controller
                                             $productImage = "http://" . $getCategoryData->storeUrl . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
                                         }
 
-                                        $categoryArray[1][$i]['product'][$j]['product_id'] = $productId;
-                                        $categoryArray[1][$i]['product'][$j]['product_brand_id'] = $productBrandId;
-                                        $categoryArray[1][$i]['product'][$j]['product_name'] = $productName;
-                                        $categoryArray[1][$i]['product'][$j]['product_code'] = $productCode;
-                                        $categoryArray[1][$i]['product'][$j]['short_desc'] = $productShortDesc;
-                                        $categoryArray[1][$i]['product'][$j]['long_desc'] = $productLongDesc;
-                                        $categoryArray[1][$i]['product'][$j]['add_desc'] = $productAddDesc;
-                                        $categoryArray[1][$i]['product'][$j]['is_featured'] = $productIsFeatured;
-                                        $categoryArray[1][$i]['product'][$j]['product_image'] = $productImage;
-                                        $categoryArray[1][$i]['product'][$j]['product_type'] = $productType;
-                                        $categoryArray[1][$i]['product'][$j]['is_stock'] = $productIsStock;
-                                        $categoryArray[1][$i]['product'][$j]['price'] = $productPrice;
-                                        $categoryArray[1][$i]['product'][$j]['selling_price'] = $productSellingPrice;
+                                        $categoryArray[$i]['product'][$j]['product_id'] = $productId;
+                                        $categoryArray[$i]['product'][$j]['product_brand_id'] = $productBrandId;
+                                        $categoryArray[$i]['product'][$j]['product_name'] = $productName;
+                                        $categoryArray[$i]['product'][$j]['product_code'] = $productCode;
+                                        $categoryArray[$i]['product'][$j]['short_desc'] = $productShortDesc;
+                                        $categoryArray[$i]['product'][$j]['long_desc'] = $productLongDesc;
+                                        $categoryArray[$i]['product'][$j]['add_desc'] = $productAddDesc;
+                                        $categoryArray[$i]['product'][$j]['is_featured'] = $productIsFeatured;
+                                        $categoryArray[$i]['product'][$j]['product_image'] = $productImage;
+                                        $categoryArray[$i]['product'][$j]['product_type'] = $productType;
+                                        $categoryArray[$i]['product'][$j]['is_stock'] = $productIsStock;
+                                        $categoryArray[$i]['product'][$j]['price'] = $productPrice;
+                                        $categoryArray[$i]['product'][$j]['selling_price'] = $productSellingPrice;
 
                                         //get offers count
                                         $getOffersProductResult = DB::table('offers_products')
@@ -856,7 +857,7 @@ class ApiDistributorController extends Controller
                                                 $offerCount = $getCount->offer_count;
                                             }
                                         }
-                                        $categoryArray[1][$i]['product'][$j]['offers_count'] = $offerCount;
+                                        $categoryArray[$i]['product'][$j]['offers_count'] = $offerCount;
                                         $j++;
                                     }
                                     //$categoryArray[$i]['product'] = $getCategoryWiseProductsResult;
