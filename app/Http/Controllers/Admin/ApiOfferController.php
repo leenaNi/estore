@@ -181,7 +181,7 @@ class ApiOfferController extends Controller
                             ->whereIn('o.id', $multipleOfferId)
                             ->where('o.status', 1)
                             ->orderBy('o.id','DESC')
-                            ->get(['o.id','store_id', 'type', 'offer_discount_type', 'offer_name','offer_discount_value','start_date','end_date', 'offer_image as offer_img', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]); 
+                            ->get(['o.id as offer_id','store_id', 'type', 'offer_type', 'offer_discount_type', 'offer_name','offer_discount_value','start_date','end_date', 'offer_image as offer_img', DB::raw('concat("http://", s.url_key, ".' . $offerImagePath . '", offer_image) as offer_image')]); 
                         }    
 
                         if(count($getAllOffersResult) > 0)
@@ -273,13 +273,16 @@ class ApiOfferController extends Controller
                                         ->where('offers_products.prod_id',$productId)
                                         ->where('offers_products.type', 1)
                                         ->where('offers.status', 1)
-                                        ->get(['offers.id', 'offers.offer_name', 'offers.type','offers.offer_discount_type','offers.offer_type','offers.offer_discount_value', 'offers.offer_image as offer_img', DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
+                                        ->get(['offers.id', 'offers.offer_name', 'offers.type', 'offers.store_id', 'offers.offer_discount_type','offers.offer_type','offers.start_date','offers.end_date','offers.offer_discount_value', 'offers.offer_image as offer_img', DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
                                         //echo "<pre> offers data::";
                                         // print_r($getoffersResult);                                    
                                         $j=0;
                                         foreach($getoffersResult as $getOfferData)
                                         {
                                             $categoryArray[$i]['offers'][$j]['offer_id'] = $getOfferData->id;
+                                            $categoryArray[$i]['offers'][$j]['start_date'] = $getOfferData->start_date;
+                                            $categoryArray[$i]['offers'][$j]['end_date'] = $getOfferData->end_date;
+                                            $categoryArray[$i]['offers'][$j]['store_id'] = $getOfferData->store_id;
                                             $categoryArray[$i]['offers'][$j]['offer_name'] = $getOfferData->offer_name;
                                             $categoryArray[$i]['offers'][$j]['offer_image'] = ($getOfferData->offer_img != '')? 'http://'.$getOfferData->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
                                             $categoryArray[$i]['offers'][$j]['type'] = $getOfferData->type;
