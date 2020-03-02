@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Library\Helper;
+use App\Models\Order;
+use App\Models\User;
+use App\Models\Store;
+use Cart;
 use DB;
 use Input;
-use Cart;
-use App\Library\Helper;
-use App\Models\User;
-use App\Models\Order;
 use stdClass;
+use Session;
 
 class ApiDistributorOrderController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $jsonString = Helper::getSettings();
     }
 
     public function placeOrder()
     {
-        $MerchantId = Input::get('MerchantId');
-        $DistributorID = Input::get('DistributorID');
-        if(!empty($MerchantId) && !empty($DistributorID)){
-            
-            $user = User::find($MerchantId);
+        $MerchantId = Input::get('merchantId');
+        $DistributorID = Input::get('distributorId');
+        if (!empty($MerchantId) && !empty($DistributorID)) {
+
+            $user = User::find(Session::get('authUserId'));
             if ($user->cart != '') {
                 $cartData = json_decode($user->cart, true);
                 Cart::instance('shopping')->add($cartData);
@@ -68,9 +70,9 @@ class ApiDistributorOrderController extends Controller
                     // $paymentHistory->added_by = $userid;
                     // $paymentHistory->save();
                 }
-                $succ = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus,$userid,$orderS->id,$DistributorID);
+                $succ = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $userid, $orderS->id, $DistributorID);
                 Cart::instance("shopping")->destroy();
-                
+
             }
 
             if ($succ['orderId']) {
@@ -81,25 +83,25 @@ class ApiDistributorOrderController extends Controller
             } else {
                 return ['status' => 0, 'msg' => 'Failed']; //failure
             }
-            
-        }else{
+
+        } else {
             return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
-        
+
     }
 
-    public static function ApplyAdditionalCharge($price) {
-        $addCharge = DB::table('general_setting')->where('url_key', 'additional-charge')->where('status', 1)->first();     
+    public static function ApplyAdditionalCharge($price)
+    {
+        $addCharge = DB::table('general_setting')->where('url_key', 'additional-charge')->where('status', 1)->first();
         $data = [];
-        if( is_array($addCharge) && count($addCharge) <= 0)
-        {
+        if (is_array($addCharge) && count($addCharge) <= 0) {
             $data['total_amt'] = 0;
             return json_encode($data);
         }
         $amount = 0;
         $arr = [];
         $charges = [];
-        if ( is_array($addCharge) && $addCharge->status == 1) {
+        if (is_array($addCharge) && $addCharge->status == 1) {
             $charges = AdditionalCharge::where('status', 1)->get();
             foreach ($charges as $key => $charge) {
                 $charge_list = [];
@@ -153,44 +155,48 @@ class ApiDistributorOrderController extends Controller
     {
         $toPayment = [];
         $selAdd = DB::table('has_addresses')->where('user_id', $userid)->first();
-        
+
         $cartContent = Cart::instance("shopping")->content();
         //if (is_null(Session::get('orderId'))) {
-            $order = new Order();
-            $order->user_id = $userid;
-            // if (Input::get("commentText")) {
-            //     $order->remark = Input::get("commentText");
-            // }
-            $order->cart = json_encode($cartContent);
-            $order->first_name = ($selAdd) ? $selAdd->firstname : '';
-            $order->last_name = ($selAdd) ? $selAdd->lastname : '';
-            $order->address1 = ($selAdd) ? $selAdd->address1 : '';
-            $order->address2 = ($selAdd) ? $selAdd->address2 : '';
-            if ($selAdd) {
-                $order->phone_no = !empty($selAdd->phone_no) ? @$selAdd->phone_no : @User::find($userid)->telephone;
-            }
-            $order->country_id = ($selAdd) ? $selAdd->country_id : '';
-            $order->zone_id = ($selAdd) ? $selAdd->zone_id : '';
-            $order->postal_code = ($selAdd) ? $selAdd->postcode : '';
-            $order->city = ($selAdd) ? $selAdd->city : '';
-            $order->thana = ($selAdd) ? $selAdd->thana : '';
-            if ($selAdd) {
-                $order->description = '';
-            }
-            $order->save();
-        //} 
-        $country = DB::table('countries')->where('id',$selAdd->country_id)->first();
-        $countryname = $country->name;
-        $countryIsoCode = $country->iso_code_3;
-        $zone = DB::table('zones')->where('id',$selAdd->zone_id)->first()->name;
+        $order = new Order();
+        $order->user_id = $userid;
+        // if (Input::get("commentText")) {
+        //     $order->remark = Input::get("commentText");
+        // }
+        $order->cart = json_encode($cartContent);
+        $order->first_name = ($selAdd) ? $selAdd->firstname : '';
+        $order->last_name = ($selAdd) ? $selAdd->lastname : '';
+        $order->address1 = ($selAdd) ? $selAdd->address1 : '';
+        $order->address2 = ($selAdd) ? $selAdd->address2 : '';
+        if ($selAdd) {
+            $order->phone_no = !empty($selAdd->phone_no) ? @$selAdd->phone_no : @User::find($userid)->telephone;
+        }
+        $order->country_id = ($selAdd) ? $selAdd->country_id : '';
+        $order->zone_id = ($selAdd) ? $selAdd->zone_id : '';
+        $order->postal_code = ($selAdd) ? $selAdd->postcode : '';
+        $order->city = ($selAdd) ? $selAdd->city : '';
+        $order->thana = ($selAdd) ? $selAdd->thana : '';
+        if ($selAdd) {
+            $order->description = '';
+        }
+        $order->save();
+        //}
+        if ($selAdd) {
+            $country = DB::table('countries')->where('id', $selAdd->country_id)->first();
+            $zone = DB::table('zones')->where('id', $selAdd->zone_id)->first()->name;
+        } else {
+            $country = 99;
+            $zone = 1476;
+        }
+
         // $toPayment['address'] = $selAdd;
         // $toPayment['address']['countryname'] = ($countryname) ? $countryname : '';
         // $toPayment['address']['statename'] = ($zone) ? $zone : '';
         // $toPayment['address']['countryIsoCode'] = ($countryIsoCode) ? $countryIsoCode : '';
-         $cart_amt = Helper::calAmtWithTax();
-         $toPayment['finalAmt'] = $cart_amt['total']; //Session::get('currency_val')
-         $toPayment['payamt'] = $cart_amt['total'] ; //Session::get('currency_val')
-         $toPayment['orderId'] = $order->id;
+        $cart_amt = Helper::calAmtWithTax();
+        $toPayment['finalAmt'] = $cart_amt['total']; //Session::get('currency_val')
+        $toPayment['payamt'] = $cart_amt['total']; //Session::get('currency_val')
+        $toPayment['orderId'] = $order->id;
         // $toPayment['email'] = User::find($userid)->email;
         // $toPayment['retUrl'] = route('response') . "?DR={DR}";
         // $toPayment['ebsStatus'] = DB::table('general_setting')->where('url_key', 'ebs')->first()->status;
@@ -252,7 +258,7 @@ class ApiDistributorOrderController extends Controller
         // }
         $toPayment['is_cod'] = $iscod;
         $toPayment['cod_msg'] = $codmsg;
-         $toPayment['currency_val'] = '1.0000000000';//Session::get('currency_val')
+        $toPayment['currency_val'] = '1.0000000000'; //Session::get('currency_val')
 
         //GET Currency
         // $currencySetting = new HomeController();
@@ -261,7 +267,8 @@ class ApiDistributorOrderController extends Controller
         return $toPayment;
     }
 
-    public function setCurrency() {
+    public function setCurrency()
+    {
         //Default Currency
         $currency = GeneralSetting::where('url_key', 'default-currency')->first(['details']);
         $currencySettings = json_decode($currency->details, true);
@@ -299,36 +306,37 @@ class ApiDistributorOrderController extends Controller
         }
     }
 
-    public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus,$userid,$orderid,$DistributorID)
+    public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $userid, $orderid, $DistributorID)
     {
-        $des = null; $transactioninfo = null;
+        $des = null;
+        $transactioninfo = null;
         $chkReferal = DB::table('general_setting')->where('url_key', 'referral')->first();
         $chkLoyalty = DB::table('general_setting')->where('url_key', 'loyalty')->first();
         $stock_status = DB::table('general_setting')->where('url_key', 'stock')->first()->status;
         $courier_status = DB::table('general_setting')->where('url_key', 'default-courier')->first()->status;
         $user = User::find($userid);
-        $distributor = User::find($DistributorID);
+        $distributor = Store::where('merchant_id', $DistributorID)->where('store_type', 'distributor')->first();
         $order = Order::find($orderid);
         $iscod = 0;
         if ($paymentMethod == 1) {
             $iscod = 1;
         }
         if ($courier_status == 1) {
-            $courier = DB::table('has_couriers')->where('status', 1)->where('store_id', $distributor->store_id)->orderBy("preference", "asc")->first();
+            $courier = DB::table('has_couriers')->where('status', 1)->where('store_id', $distributor->id)->orderBy("preference", "asc")->first();
             $order->courier = @$courier->courier_id;
         }
         //if ($this->courierService == 1 && $this->pincodeStatus == 1) {
-            //            if ($courier_status == 1) {
-            //                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
-            //                $order->courier = $courier->courier_id;
-            //                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
-            //                // $courierServe = Helper::assignCourier($order->postal_code, $iscod);
-            //            }
+        //            if ($courier_status == 1) {
+        //                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
+        //                $order->courier = $courier->courier_id;
+        //                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
+        //                // $courierServe = Helper::assignCourier($order->postal_code, $iscod);
+        //            }
         //}
         $cart_data = Helper::calAmtWithTax();
         $order->user_id = $userid;
         $order->pay_amt = $payAmt;
-       
+
         //echo "session id::".Session::get('distributor_store_id');
         $cartAmount = $cart_data['total'];
         $order->order_amt = $cartAmount;
@@ -337,7 +345,7 @@ class ApiDistributorOrderController extends Controller
         $order->additional_charge = $additional_charge_json;
         //$orderstatus = DB::table('order_status')->where(['sort_order' => 1, 'store_id' => Session::get('distributor_store_id')])->first();
         $orderstatus = DB::table('order_status')->where(['sort_order' => 1, 'store_id' => $user->store_id])->first();
-       
+
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
         $order->transaction_id = $trasactionId;
@@ -345,11 +353,11 @@ class ApiDistributorOrderController extends Controller
         if ($des) {
             $order->description = $des;
         }
-       
+
         // $order->currency_id = Session::get("currency_id");
         // $order->currency_value = Session::get("currency_val");
-         $order->cart = json_encode(Cart::instance('shopping')->content());
-         $order->order_status = $orderstatus->id;
+        $order->cart = json_encode(Cart::instance('shopping')->content());
+        $order->order_status = $orderstatus->id;
         // $order->cod_charges = @Session::get('codCharges');
         // $order->discount_type = (Session::get('discType')) ? Session::get('discType') : 0;
         // $order->discount_amt = (Session::get('discAmt')) ? Session::get('discAmt') : 0;
@@ -360,7 +368,7 @@ class ApiDistributorOrderController extends Controller
         // $order->voucher_used = is_null(Session::get('voucherUsedAmt')) ? 0 : Session::get('voucherUsedAmt');
         $jsonString = Helper::getSettings();
         $order->prefix = $distributor->prefix;
-        $order->store_id = $distributor->store_id;
+        $order->store_id = $distributor->id;
         // $coupon_id = Session::get('voucherUsedAmt');
         // if (isset($coupon_id)) {
         //     $coupon = Coupon::find($coupon_id);
@@ -376,7 +384,7 @@ class ApiDistributorOrderController extends Controller
         //         $order->ref_flag = 0;
         //     }
         // }
-        
+
         $user->update();
         // $tempName = Session::get('login_user_first_name');
         // if (empty($tempName)) {
@@ -396,10 +404,9 @@ class ApiDistributorOrderController extends Controller
             //if ($stock_status == 1) { // commented by bhavana....
             $this->updateStock($order->id);
             //}
-            $storedata = DB::table('stores')->where('id',$distributor->store_id)->first();
+            $storedata = DB::table('stores')->where('id', $distributor->id)->first();
             if ($user->telephone) {
                 $msgOrderSucc = "Your order from " . $storedata->store_name . " with id " . $order->id . " has been placed successfully. Thank you!";
-
                 Helper::sendsms($user->telephone, $msgOrderSucc, $user->country_code);
             }
             $messagearray = new stdClass();
@@ -424,7 +431,7 @@ class ApiDistributorOrderController extends Controller
 
         DB::table('has_products')->where("order_id", $orderId)->delete();
         foreach ($cartContent as $cart) {
-            $product = DB::table('products')->where('id',$cart->id)->first();
+            $product = DB::table('products')->where('id', $cart->id)->first();
             $sum = 0;
             $prod_tax = array();
             $total_tax = array();
@@ -450,34 +457,34 @@ class ApiDistributorOrderController extends Controller
             }
             $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
                 'pay_amt' => $payamt, 'store_id' => $order->store_id, 'prefix' => $order->prefix];
-            
+
             if ($cart->options->has('sub_prod') && $cart->options->sub_prod != null) {
                 $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
-                $prddataS = DB::table('products')->where('id',$cart->options->sub_prod)->first();
-                $proddetails['id'] = $prddataS->id;
-                $proddetails['name'] = $prddataS->product;
+                $prddataS = DB::table('products')->where('id', $cart->options->sub_prod)->first();
+                $proddetails['id'] = @$prddataS->id;
+                $proddetails['name'] = @$prddataS->product;
                 $proddetails['image'] = $cart->options->image;
                 $proddetails['price'] = $cart->price;
                 $proddetails['qty'] = $cart->qty;
                 $proddetails['subtotal'] = $subtotal;
-                $proddetails['is_cod'] = $prddataS->is_cod;
+                $proddetails['is_cod'] = @$prddataS->is_cod;
                 $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetails);
                 $date = $cart->options->eNoOfDaysAllowed;
                 $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
 
-                if ($prddataS->is_stock == 1) {
-                    $prddataS->stock = $prddataS->stock - $cart->qty;
+                if (@$prddataS->is_stock == 1) {
+                    @$prddataS->stock = @$prddataS->stock - $cart->qty;
                     // if ($prddataS->is_share_on_mall == 1) {
                     //     $mallProduct = MallProducts::where("store_prod_id", $cart->options->sub_prod)->first();
                     //     $mallProduct->stock = $prddataS->stock;
                     //     $mallProduct->update();
                     // }
-                    $prddataS->update();
+                    @$prddataS->update();
                 }
 
-                if ($prddataS->stock <= $stockLimit['stocklimit'] && $prddataS->is_stock == 1) {
+                if (@$prddataS->stock <= $stockLimit['stocklimit'] && @$prddataS->is_stock == 1) {
                     // $this->AdminStockAlert($prddataS->id);
                 }
             } else if ($cart->options->has('combos')) {
@@ -485,7 +492,7 @@ class ApiDistributorOrderController extends Controller
                 foreach ($cart->options->combos as $key => $val) {
                     if (isset($val['sub_prod'])) {
                         array_push($sub_prd_ids, (string) $val['sub_prod']);
-                        $prd = DB::table('products')->where('id',$val['sub_prod'])->first();
+                        $prd = DB::table('products')->where('id', $val['sub_prod'])->first();
                         $prd->stock = $prd->stock - $cart->qty;
                         if ($prd->is_stock == 1) {
                             $prd->update();
@@ -495,7 +502,7 @@ class ApiDistributorOrderController extends Controller
                             // $this->AdminStockAlert($prd->id);
                         }
                     } else {
-                        $prd = DB::table('products')->where('id',$key)->first();
+                        $prd = DB::table('products')->where('id', $key)->first();
                         $prd->stock = $prd->stock - $cart->qty;
                         if ($prd->is_stock == 1) {
                             $prd->update();
@@ -509,21 +516,21 @@ class ApiDistributorOrderController extends Controller
                 $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
-                $prddataSp = DB::table('products')->where('id',$cart->id)->first();
+                $prddataSp = DB::table('products')->where('id', $cart->id)->first();
                 $proddetailsp['id'] = $prddataSp->id;
                 $proddetailsp['name'] = $prddataSp->product;
                 $proddetailsp['image'] = $cart->options->image;
                 $proddetailsp['price'] = $cart->price;
                 $proddetailsp['qty'] = $cart->qty;
-                $proddetailsp['subtotal'] = $subtotal ;//* Session::get('currency_val')
+                $proddetailsp['subtotal'] = $subtotal; //* Session::get('currency_val')
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
 
                 $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetailsp);
-            
+
                 $date = $cart->options->eNoOfDaysAllowed;
                 $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
-                $prd = DB::table('products')->where('id',$cart->id)->first();
+                $prd = DB::table('products')->where('id', $cart->id)->first();
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
                     $prd->update();
