@@ -210,7 +210,7 @@ class ApiOfferController extends Controller
                                 } else {}
                                 $getOfferData->offerPrice = $offerPrice;
                                 $getOfferData->actualPrice = $actualPrice;
-                                $getOfferData->offer_image = ($getOfferData->offer_img != '')? 'http://'.$getOfferData->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
+                                $getOfferData->offer_image = ($getOfferData->offer_img != '')? $getOfferData->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
                             }
                         }
 
@@ -284,7 +284,7 @@ class ApiOfferController extends Controller
                                             $categoryArray[$i]['offers'][$j]['end_date'] = $getOfferData->end_date;
                                             $categoryArray[$i]['offers'][$j]['store_id'] = $getOfferData->store_id;
                                             $categoryArray[$i]['offers'][$j]['offer_name'] = $getOfferData->offer_name;
-                                            $categoryArray[$i]['offers'][$j]['offer_image'] = ($getOfferData->offer_img != '')? 'http://'.$getOfferData->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
+                                            $categoryArray[$i]['offers'][$j]['offer_image'] = ($getOfferData->offer_img != '')? $getOfferData->offer_image: 'http://'.$_SERVER['HTTP_HOST'] . '/public/Admin/uploads/company/default-company.jpg';
                                             $categoryArray[$i]['offers'][$j]['type'] = $getOfferData->type;
                                             $categoryArray[$i]['offers'][$j]['offer_discount_type'] = $getOfferData->offer_discount_type;
                                             $categoryArray[$i]['offers'][$j]['offer_type'] = $getOfferData->offer_type;
