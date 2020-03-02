@@ -47,7 +47,7 @@ class ApiCartController extends Controller
             if (Input::get('force_add') && Input::get('force_add') == 1) {
                 Cart::instance('shopping')->destroy();
             } else {
-                if ($user->cart != '' && $user->cart != []) {
+                if ($user->cart != '') {
                     $cartData = json_decode($user->cart, true);
                     Cart::instance('shopping')->add($cartData);
                 }
@@ -102,7 +102,11 @@ class ApiCartController extends Controller
             } else {
                 //return $msg;
                 $cartData = Cart::instance("shopping")->content();
-                $user->cart = json_encode($cartData);
+                if(Cart::instance("shopping")->count() != 0){
+                    $user->cart = json_encode($cartData);
+                } else {
+                    $user->cart = '';
+                }
                 $user->update();
                 $data['data']['cart'] = $cartData;
                 $data["data"]['cartCount'] = Cart::instance("shopping")->count();
@@ -635,47 +639,52 @@ class ApiCartController extends Controller
     public function edit()
     {
         $rowId = filter_var(Input::get('rowid'), FILTER_SANITIZE_STRING);
-        $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);        
-        if(!empty($rowId)) {
+        $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
+        if($quantity == 0) {
             $user = User::where('id', Session::get('authUserId'))->first();
             $cartData = json_decode($user->cart, true);
             Cart::instance('shopping')->add($cartData);
-            //Remove if quantity is 0
-
-            if($quantity == 0) {
-                Cart::instance('shopping')->remove($rowId);
-                $cartData = Cart::instance("shopping")->content();
+            Cart::instance('shopping')->remove($rowId);
+            $cartData = Cart::instance("shopping")->content();
+            if(Cart::instance("shopping")->count() != 0){
                 $user->cart = json_encode($cartData);
-                $user->update();
-                $data['data']['cart'] = $cartData;
-                $data["data"]['cartCount'] = Cart::instance("shopping")->count();
-                $data['status'] = "1";
-                $data['msg'] = "Item removed successfully";
             } else {
-                $cart = Cart::instance('shopping')->update($rowId, ['qty' => $quantity]);
-                $amt = Helper::calAmtWithTax();
-                $cartInstance = Cart::instance('shopping')->get("$rowId");
-                $tax = $cartInstance->options->tax_amt;
-                $sub_total = $cartInstance->subtotal;
-                $total = Cart::total();
-                if ($cartInstance->options->tax_type == 2) {
-                    $sub_total = $cartInstance->subtotal + $tax;
-                    $total = Cart::total() + $tax;
-                }
-                // $cart = Helper::getnewCart();
-                $cartData = Cart::instance("shopping")->content();
-                $user->cart = json_encode($cartData);
-                $user->update();
-                $data['data']['cart'] = $cartData;
-                $data['data']['subtotal'] = $sub_total;
-                $data['data']['finaltotal'] = $amt['total'];
-                $data['data']['total'] = $amt['total'];
-                $data['data']['tax'] = $cartInstance->options->tax_amt;
-                $data['data']['cart_count'] = Cart::instance("shopping")->count();
-                $data['msg'] = '';
-                $data['status'] = 1;
-                Session::put("pay_amt", $amt['total']);
+                $user->cart = '';
             }
+            $user->update();
+            $data['data']['cart'] = $cartData;
+            $data["data"]['cartCount'] = Cart::instance("shopping")->count();
+            $data['status'] = "1";
+            $data['msg'] = "Item removed successfully";
+            return $data;
+        }
+        if(!empty($rowId) && !empty($quantity)) {
+            $user = User::where('id', Session::get('authUserId'))->first();
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->add($cartData);
+            $cart = Cart::instance('shopping')->update($rowId, ['qty' => $quantity]);
+            $amt = Helper::calAmtWithTax();
+            $cartInstance = Cart::instance('shopping')->get("$rowId");
+            $tax = $cartInstance->options->tax_amt;
+            $sub_total = $cartInstance->subtotal;
+            $total = Cart::total();
+            if ($cartInstance->options->tax_type == 2) {
+                $sub_total = $cartInstance->subtotal + $tax;
+                $total = Cart::total() + $tax;
+            }
+            // $cart = Helper::getnewCart();
+            $cartData = Cart::instance("shopping")->content();
+            $user->cart = json_encode($cartData);
+            $user->update();
+            $data['data']['cart'] = $cartData;
+            $data['data']['subtotal'] = $sub_total;
+            $data['data']['finaltotal'] = $amt['total'];
+            $data['data']['total'] = $amt['total'];
+            $data['data']['tax'] = $cartInstance->options->tax_amt;
+            $data['data']['cart_count'] = Cart::instance("shopping")->count();
+            $data['msg'] = '';
+            $data['status'] = 1;
+            Session::put("pay_amt", $amt['total']);
         } else {
             $data['msg'] = 'Mandatory fields are missing.';
             $data['status'] = 0;
