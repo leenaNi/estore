@@ -668,6 +668,9 @@ class ApiDistributorController extends Controller
                                 $multipleCategoryStoreIds[] = $getData1->store_id;
                                 $productUrlArray[$getData1->store_id] = $getData1->storeUrl;
                             }
+                            //echo "<pre>";
+                            //print_r($multipleCategoryStoreIds);
+                            //exit;
                             //Get all Products
                             if($pageIndex != '' && $perPageRecord != '')
                             {
