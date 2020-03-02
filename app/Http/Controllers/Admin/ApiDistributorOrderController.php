@@ -25,7 +25,7 @@ class ApiDistributorOrderController extends Controller
         $DistributorID = Input::get('distributorId');
         if (!empty($MerchantId) && !empty($DistributorID)) {
 
-            $user = User::find($MerchantId);
+            $user = User::find(Session::get('authUserId'));
             if ($user->cart != '') {
                 $cartData = json_decode($user->cart, true);
                 Cart::instance('shopping')->add($cartData);
@@ -406,7 +406,6 @@ class ApiDistributorOrderController extends Controller
             $storedata = DB::table('stores')->where('id', $distributor->id)->first();
             if ($user->telephone) {
                 $msgOrderSucc = "Your order from " . $storedata->store_name . " with id " . $order->id . " has been placed successfully. Thank you!";
-
                 Helper::sendsms($user->telephone, $msgOrderSucc, $user->country_code);
             }
             $messagearray = new stdClass();
