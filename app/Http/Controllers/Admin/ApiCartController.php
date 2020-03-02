@@ -636,7 +636,7 @@ class ApiCartController extends Controller
     {
         $rowId = filter_var(Input::get('rowid'), FILTER_SANITIZE_STRING);
         $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);        
-        if(!empty($rowId) && !empty($quantity)) {
+        if(!empty($rowId)) {
             $user = User::where('id', Session::get('authUserId'))->first();
             $cartData = json_decode($user->cart, true);
             Cart::instance('shopping')->add($cartData);
