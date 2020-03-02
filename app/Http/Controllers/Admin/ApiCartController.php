@@ -47,7 +47,7 @@ class ApiCartController extends Controller
             if (Input::get('force_add') && Input::get('force_add') == 1) {
                 Cart::instance('shopping')->destroy();
             } else {
-                if ($user->cart != '') {
+                if ($user->cart != '' && $user->cart != []) {
                     $cartData = json_decode($user->cart, true);
                     Cart::instance('shopping')->add($cartData);
                 }
