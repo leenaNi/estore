@@ -463,7 +463,7 @@ class ApiDistributorController extends Controller
                             $multipleStoreIds[] = $storeIdsData->id;
                         }
                         $urlKey = $storeIdResult[0]->url_key;
-                        $offerImagePath = "http://" . $urlKey . '.' . $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/';
+                        $offerImagePath = $urlKey . '.' . $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/';
 
                         $offersResult = DB::table('offers')
                             ->whereIn('store_id', $multipleStoreIds)
