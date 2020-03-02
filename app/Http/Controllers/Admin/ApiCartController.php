@@ -60,19 +60,35 @@ class ApiCartController extends Controller
                     return $data;
                 }
             }
-
+            
             switch ($prod_type) {
                 case 1:
-                    $msg = $this->simpleProduct($prod_id, $quantity);
+                    if($quantity == 0) {
+                        $msg = $this->removeCartItem($prod_id);
+                    } else {
+                        $msg = $this->simpleProduct($prod_id, $quantity);
+                    }
                     break;
                 case 2:
-                    $msg = $this->comboProduct($prod_id, $quantity, $sub_prod);
+                    if($quantity == 0) {
+                        $msg = $this->removeCartItem($prod_id);
+                    } else {
+                        $msg = $this->comboProduct($prod_id, $quantity, $sub_prod);
+                    }
                     break;
                 case 3:
-                    $msg = $this->configProduct($prod_id, $quantity, $sub_prod);
+                    if($quantity == 0) {
+                        $msg = $this->removeCartItem($sub_prod);
+                    } else {
+                        $msg = $this->configProduct($prod_id, $quantity, $sub_prod);
+                    }
                     break;
                 case 5:
-                    $msg = $this->downloadProduct($prod_id, $quantity);
+                    if($quantity == 0) {
+                        $msg = $this->removeCartItem($prod_id);
+                    } else {
+                        $msg = $this->downloadProduct($prod_id, $quantity);
+                    }
                     break;
                 default:
             }
@@ -589,7 +605,7 @@ class ApiCartController extends Controller
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
             if (Helper::checkStock($prod_id, $quantity, $sub_prod) == "In Stock") {
                 // $product = Product::find($sub_prod);
-                $searchExist = Helper::searchExistingCart($prod_id);
+                $searchExist = Helper::searchExistingCart($sub_prod);
                 if (!$searchExist["isExist"]) {
                     Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
                         "qty" => $quantity, "price" => $price,
@@ -745,5 +761,17 @@ class ApiCartController extends Controller
         }
         return $data;
     }
+
+    public function removeCartItem($prod_id){
+        $searchExist = Helper::searchExistingCart($prod_id);
+        if($searchExist["isExist"]) {
+            Cart::instance('shopping')->remove($searchExist["rowId"]);
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
+
 
 }
