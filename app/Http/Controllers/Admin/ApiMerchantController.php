@@ -357,7 +357,7 @@ class ApiMerchantController extends Controller
                 ->where('s.store_type', 'distributor')
                 ->where("hd.merchant_id", $merchantId)
                 // ->where("o.status", 1)
-                ->groupBy('o.store_id')
+                // ->groupBy('o.store_id')
                 ->get(['d.id', 'd.phone_no', 's.id as storeId', 's.store_name']); //DB::raw('count(o.id) as offers_count')
                
             if (count($hasDistributorsResult) > 0) {
@@ -369,7 +369,7 @@ class ApiMerchantController extends Controller
                             array_push($companyArr, $company->name);
                     }
                     $distributor->companies = $companyArr;
-                    $distributor->offers_count = count(DB::table('offers')->where('status', 1)->get());
+                    $distributor->offers_count = count(DB::table('offers')->where('status', 1)->where('store_id', $distributor->storeId)->get());
                 }
                 return response()->json(["status" => 1, 'msg' => '', 'data' => $hasDistributorsResult]);
             } else {
