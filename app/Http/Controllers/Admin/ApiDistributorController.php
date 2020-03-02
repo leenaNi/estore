@@ -624,7 +624,7 @@ class ApiDistributorController extends Controller
                 if ($multipleDistributorIds > 0) {
 
                     //print query
-                    //DB::enableQueryLog(); // Enable query log
+                    DB::enableQueryLog(); // Enable query log
                     // get brand id
                     $brandIdsResult = DB::table('stores')
                         ->join('products', 'products.store_id', '=', 'stores.id')
@@ -663,11 +663,14 @@ class ApiDistributorController extends Controller
                           
                             $categoryProductArray = array();
                             $multipleCategoryStoreIds = [];
+                           
                             $productUrlArray = [];
                             foreach ($getcategoryResult as $getData1) {
+                               
                                 $multipleCategoryStoreIds[] = $getData1->store_id;
                                 $productUrlArray[$getData1->store_id] = $getData1->storeUrl;
                             }
+                            
                             //Get all Products
                             if($pageIndex != '' && $perPageRecord != '')
                             {
@@ -754,6 +757,8 @@ class ApiDistributorController extends Controller
                                     $c++;
                                 }
                             }//All products ends here
+
+
                             array_push($categoryArray, $categoryArray[0]);
                             //Get ctaegory wise products
                             $i = 0;
@@ -771,18 +776,21 @@ class ApiDistributorController extends Controller
 
                                 if($pageIndex != '' && $perPageRecord != '')
                                 {
-                                    $getCategoryWiseProductsResult = DB::table('products')
-                                    ->where('store_id', $cateGoryStoreId)
-                                    ->where('status', 1)
+                                    
+                                    $getCategoryWiseProductsResult = DB::table('has_categories as hc')
+                                    ->join('products as p', 'hc.prod_id', '=', 'p.id')
+                                    ->where('hc.cat_id', $categoryId)
+                                    ->where('p.status', 1)
                                     ->offset($pageIndex)
                                     ->limit($perPageRecord)
                                     ->get();  
                                 }
                                 else
                                 {
-                                    $getCategoryWiseProductsResult = DB::table('products')
-                                    ->where('store_id', $cateGoryStoreId)
-                                    ->where('status', 1)
+                                    $getCategoryWiseProductsResult = DB::table('has_categories as hc')
+                                    ->join('products as p', 'hc.prod_id', '=', 'p.id')
+                                    ->where('hc.cat_id', $categoryId)
+                                    ->where('p.status', 1)
                                     ->get();
                                 }
                                
