@@ -11,6 +11,7 @@ use Cart;
 use DB;
 use Input;
 use stdClass;
+use Session;
 
 class ApiDistributorOrderController extends Controller
 {
