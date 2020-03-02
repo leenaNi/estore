@@ -252,6 +252,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/distributor-category-details', ["as" => "admin.distributor.distributorCategoryDetails", "uses" => "ApiDistributorController@getDistributorCategoryDetails"]);
             Route::post('/past-orders-details', ["as" => "admin.distributor.pastOrderDetails", "uses" => "ApiDistributorController@getPastOrderDetails"]);
             Route::post('/my-orders-details', ["as" => "admin.distributor.myOrderDetails", "uses" => "ApiDistributorController@getMyOrderDetails"]);
+            Route::post('/favourite-distributor', ["as" => "admin.distributor.favourite", "uses" => "ApiDistributorController@addFavouriteDistributor"]);
 
         });
         

@@ -970,5 +970,27 @@ class ApiDistributorController extends Controller
 
     }//myorderdetails fun ends here
 
+    public function addFavouriteDistributor(){
+        $merchantId = Input::get('merchantId');
+        $distributorId = Input::get('distributorId');
+        if($merchantId!=null && $distributorId!=null){
+            $status = DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->pluck('is_favourite');
+            if($status[0] == 1){
+                DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->update(['is_favourite'=>0]);
+                $msg = 'Distributor is unmarked favourite';
+            }else if($status[0] == 0){
+                DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->update(['is_favourite'=>1]);
+                $msg = 'Distributor is marked favourite';
+            }
+            return ['status' => 1, 'msg' => $msg]; 
+        }else{
+            if($merchantId != null){
+                $fav_distributors = DB::table('has_distributors')->where(['merchant_id'=> $merchantId])->get(['distributor_id','is_favourite']);
+                return ['status' => 1, 'msg' => 'Favourite Distributors List','data'=>$fav_distributors]; 
+            }else{
+                return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+            }
+        }
+    }
 
 }
