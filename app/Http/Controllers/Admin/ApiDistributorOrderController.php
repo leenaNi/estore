@@ -367,7 +367,7 @@ class ApiDistributorOrderController extends Controller
         // $order->voucher_used = is_null(Session::get('voucherUsedAmt')) ? 0 : Session::get('voucherUsedAmt');
         $jsonString = Helper::getSettings();
         $order->prefix = $distributor->prefix;
-        $order->store_id = $distributor->store_id;
+        $order->store_id = $distributor->id;
         // $coupon_id = Session::get('voucherUsedAmt');
         // if (isset($coupon_id)) {
         //     $coupon = Coupon::find($coupon_id);
@@ -403,7 +403,7 @@ class ApiDistributorOrderController extends Controller
             //if ($stock_status == 1) { // commented by bhavana....
             $this->updateStock($order->id);
             //}
-            $storedata = DB::table('stores')->where('id', $distributor->store_id)->first();
+            $storedata = DB::table('stores')->where('id', $distributor->id)->first();
             if ($user->telephone) {
                 $msgOrderSucc = "Your order from " . $storedata->store_name . " with id " . $order->id . " has been placed successfully. Thank you!";
 
