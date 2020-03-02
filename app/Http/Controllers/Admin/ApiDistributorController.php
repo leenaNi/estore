@@ -624,7 +624,7 @@ class ApiDistributorController extends Controller
                 if ($multipleDistributorIds > 0) {
 
                     //print query
-                    //DB::enableQueryLog(); // Enable query log
+                    DB::enableQueryLog(); // Enable query log
                     // get brand id
                     $brandIdsResult = DB::table('stores')
                         ->join('products', 'products.store_id', '=', 'stores.id')
@@ -663,11 +663,14 @@ class ApiDistributorController extends Controller
                           
                             $categoryProductArray = array();
                             $multipleCategoryStoreIds = [];
+                           
                             $productUrlArray = [];
                             foreach ($getcategoryResult as $getData1) {
+                               
                                 $multipleCategoryStoreIds[] = $getData1->store_id;
                                 $productUrlArray[$getData1->store_id] = $getData1->storeUrl;
                             }
+                            
                             //Get all Products
                             if($pageIndex != '' && $perPageRecord != '')
                             {
@@ -754,6 +757,8 @@ class ApiDistributorController extends Controller
                                     $c++;
                                 }
                             }//All products ends here
+
+
                             array_push($categoryArray, $categoryArray[0]);
                             //Get ctaegory wise products
                             $i = 0;
@@ -771,18 +776,21 @@ class ApiDistributorController extends Controller
 
                                 if($pageIndex != '' && $perPageRecord != '')
                                 {
-                                    $getCategoryWiseProductsResult = DB::table('products')
-                                    ->where('store_id', $cateGoryStoreId)
-                                    ->where('status', 1)
+                                    
+                                    $getCategoryWiseProductsResult = DB::table('has_categories as hc')
+                                    ->join('products as p', 'hc.prod_id', '=', 'p.id')
+                                    ->where('hc.cat_id', $categoryId)
+                                    ->where('p.status', 1)
                                     ->offset($pageIndex)
                                     ->limit($perPageRecord)
                                     ->get();  
                                 }
                                 else
                                 {
-                                    $getCategoryWiseProductsResult = DB::table('products')
-                                    ->where('store_id', $cateGoryStoreId)
-                                    ->where('status', 1)
+                                    $getCategoryWiseProductsResult = DB::table('has_categories as hc')
+                                    ->join('products as p', 'hc.prod_id', '=', 'p.id')
+                                    ->where('hc.cat_id', $categoryId)
+                                    ->where('p.status', 1)
                                     ->get();
                                 }
                                
@@ -1104,5 +1112,27 @@ class ApiDistributorController extends Controller
 
     }//myorderdetails fun ends here
 
+    public function addFavouriteDistributor(){
+        $merchantId = Input::get('merchantId');
+        $distributorId = Input::get('distributorId');
+        if($merchantId!=null && $distributorId!=null){
+            $status = DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->pluck('is_favourite');
+            if($status[0] == 1){
+                DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->update(['is_favourite'=>0]);
+                $msg = 'Distributor is unmarked favourite';
+            }else if($status[0] == 0){
+                DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->update(['is_favourite'=>1]);
+                $msg = 'Distributor is marked favourite';
+            }
+            return ['status' => 1, 'msg' => $msg]; 
+        }else{
+            if($merchantId != null){
+                $fav_distributors = DB::table('has_distributors')->where(['merchant_id'=> $merchantId])->get(['distributor_id','is_favourite']);
+                return ['status' => 1, 'msg' => 'Favourite Distributors List','data'=>$fav_distributors]; 
+            }else{
+                return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+            }
+        }
+    }
 
 }
