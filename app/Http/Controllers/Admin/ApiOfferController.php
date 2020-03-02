@@ -191,7 +191,7 @@ class ApiOfferController extends Controller
                                 $offerPrice = 0;
                                 $actualPrice = 0;
                                 $offPrice = 0;
-                                $offerProducts = DB::table('offers_products')->where('offer_id', $getOfferData->id)->where('type', 1)->get();
+                                $offerProducts = DB::table('offers_products')->where('offer_id', $getOfferData->offer_id)->where('type', 1)->get();
                                 foreach($offerProducts as $offerProductKey => $offerProduct){
                                     $offPrice = 0;
                                     $product = DB::table('products')->where('id', $offerProduct->prod_id)->first(['price']);
