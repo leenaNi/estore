@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Library\Helper;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Store;
 use Cart;
 use DB;
 use Input;
