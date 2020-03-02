@@ -22,7 +22,8 @@ class ApiCartController extends Controller
         $user = User::where('id', Session::get('authUserId'))->first();
         if ($user->cart != '') {
             $cartData = json_decode($user->cart, true);
-            Cart::instance('shopping')->add($cartData);
+            if($cartData != '' && !empty($cartData))
+                Cart::instance('shopping')->add($cartData);
         }
         $cartData = Cart::instance("shopping")->content();
         $data['cart']['data'] = $cartData;
