@@ -462,29 +462,29 @@ class ApiDistributorOrderController extends Controller
                 $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = DB::table('products')->where('id', $cart->options->sub_prod)->first();
-                $proddetails['id'] = $prddataS->id;
-                $proddetails['name'] = $prddataS->product;
+                $proddetails['id'] = @$prddataS->id;
+                $proddetails['name'] = @$prddataS->product;
                 $proddetails['image'] = $cart->options->image;
                 $proddetails['price'] = $cart->price;
                 $proddetails['qty'] = $cart->qty;
                 $proddetails['subtotal'] = $subtotal;
-                $proddetails['is_cod'] = $prddataS->is_cod;
+                $proddetails['is_cod'] = @$prddataS->is_cod;
                 $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetails);
                 $date = $cart->options->eNoOfDaysAllowed;
                 $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                 $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
 
-                if ($prddataS->is_stock == 1) {
-                    $prddataS->stock = $prddataS->stock - $cart->qty;
+                if (@$prddataS->is_stock == 1) {
+                    @$prddataS->stock = @$prddataS->stock - $cart->qty;
                     // if ($prddataS->is_share_on_mall == 1) {
                     //     $mallProduct = MallProducts::where("store_prod_id", $cart->options->sub_prod)->first();
                     //     $mallProduct->stock = $prddataS->stock;
                     //     $mallProduct->update();
                     // }
-                    $prddataS->update();
+                    @$prddataS->update();
                 }
 
-                if ($prddataS->stock <= $stockLimit['stocklimit'] && $prddataS->is_stock == 1) {
+                if (@$prddataS->stock <= $stockLimit['stocklimit'] && @$prddataS->is_stock == 1) {
                     // $this->AdminStockAlert($prddataS->id);
                 }
             } else if ($cart->options->has('combos')) {
