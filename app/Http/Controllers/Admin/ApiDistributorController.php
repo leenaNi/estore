@@ -1006,7 +1006,7 @@ class ApiDistributorController extends Controller
             $getStoreResult = DB::table('stores')
                     ->select(DB::raw('id'))
                     ->where('merchant_id', $merchantId)
-                    ->where('store_type', 'merchant')
+                    ->where('store_type', 'distributor')
                     ->get();
                   //  dd(DB::getQueryLog()); // Show results of log
             if(count($getStoreResult) > 0)
