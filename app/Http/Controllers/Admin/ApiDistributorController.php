@@ -762,7 +762,7 @@ class ApiDistributorController extends Controller
 
                             array_push($categoryArray, $categoryDataArray);
                             //Get ctaegory wise products
-                            $i = 0;
+                            $i = 1;
                             foreach ($getcategoryResult as $getCategoryData) {
                                 $categoryId = $getCategoryData->id;
                                 $categoryName = $getCategoryData->category;
