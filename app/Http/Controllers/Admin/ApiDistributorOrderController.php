@@ -40,7 +40,7 @@ class ApiDistributorOrderController extends Controller
             $paymentAmt = $finalamt;
             $paymentMethod = 8; //"9";
             $paymentStatus = "1";
-            $payAmt = $finalamt;
+            $payAmt = number_format((float)$finalamt, 2, '.', '');
             //apply additional charge to payAmount
             $additional_charge_json = $this->ApplyAdditionalCharge($payAmt);
             $additional_charge = json_decode($additional_charge_json, true);
@@ -339,7 +339,7 @@ class ApiDistributorOrderController extends Controller
 
         //echo "session id::".Session::get('distributor_store_id');
         $cartAmount = $cart_data['total'];
-        $order->order_amt = $cartAmount;
+        $order->order_amt = number_format((float)$cartAmount, 2, '.', '');
         // apply additional charge to payAmount
         $additional_charge_json = $this->ApplyAdditionalCharge($cartAmount);
         $order->additional_charge = $additional_charge_json;
