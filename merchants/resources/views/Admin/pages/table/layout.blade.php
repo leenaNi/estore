@@ -8,7 +8,7 @@
         height: 16px;
         width: 16px;
         cursor: pointer;
-        background-image: url({{asset(Config('constants.adminImgPath').'/rotate.png')}});
+        background-image: url(https://d2102t1lty3x1n.cloudfront.net/Admin/dist/img/rotate.png);
         background-size: 100%;
         left: 5px;
         bottom: 5px;
@@ -47,68 +47,301 @@
         max-height: auto !important;
     }
 </style>
-@stop
-@section('content')
-<section class="content-header">
+@stop 
+@section('content') 
+<form id="set-layout-form" method="POST" action="{{ route('admin.restaurantlayout.save') }}">
+<section class="content-header">   
     <h1>
         Restaurant Layout
         <small>Arrange </small>
-
-        <a href="#" class="btn btn-default pull-right col-md-1 buttonClick">Set</a></h1>
+    
+        <input type="submit" value="Set" class="btn btn-default pull-right col-md-1 buttonClick"></h1>   
+        
 </section>
 <section class="content">
+
     <div class="row">
         <div class="col-md-12">
             <div class="box pull-left">
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
                 <div class="box-body pull-left">
-                        <div id='box' class="pull-left">
+                        <div id='box'  class="pull-left">
                             @foreach($tables as $table)
                             <div class="draggable3 size{{$table->table_type }} col-md-3 col-sm-6 col-xs-12">
-                                <div class="target3">
+                                <div class="target3" id="target_{{$table->id }}" data-myval="{{$table->id }}">
                                     {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
                                     <br>({{$table->chairs}})
-                                <div class="clearfix"></div>
+                                    <div class="clearfix"></div>    
                                 </div>
                             </div>
                             @endforeach
+
+                            <input type="hidden" name="hdn_layout_rotate_array[]" id="hdn_layout_rotate_array" value="">
+                            <input type="hidden" name="hdn_layout_draggable_array[]" id="hdn_layout_draggable_array" value="">
+                            <input type="hidden" name="hdn_layout_resizable_array[]" id="hdn_layout_resizable_array" value="">
                         </div>
 
                 </div><!-- /.box-body -->
             </div>
         </div>
     </div>
+
 </section>
+</form>
 @stop
+
 @section('myscripts')
-<script src="{{asset(Config('constants.adminDistJsPath').'/jquery.ui.rotatable.min.js')}}"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+<script src='https://d2102t1lty3x1n.cloudfront.net/Admin/dist/js/jquery.ui.rotatable.min.js'></script>
 <script>
-    $(document).ready(function () {
-        $('.size1 .target3, .size3 .target3').resizable({
-            aspectRatio: 1 / 1
-        }).rotatable();
-        $('.size2 .target3').resizable().rotatable();
-        $('.draggable3').draggable({
+  
+
+//$("#target_1").css("opacity", "0.5px");
+//$('.target3').resizable().rotatable().draggable();
+
+$(document).ready(function() {
+    
+    var tableLayoutDbArray = <?php echo $tables;?>;
+    //console.log("db array::"+JSON.stringify(tableLayoutDbArray));
+    for(var j=0;j<tableLayoutDbArray.length;j++)
+    {
+        var tableId = tableLayoutDbArray[j]['id'];
+        var tableAngle = tableLayoutDbArray[j]['angle'];
+        var tablePosition = tableLayoutDbArray[j]['position'];
+        var tableSize = tableLayoutDbArray[j]['size'];
+        if(tablePosition && tablePosition != '')
+        {
+            var splitPosition = tablePosition.split(",");
+            var topPosition = splitPosition[0]+"px";
+            var leftPosition = splitPosition[1]+"px";
+            $('#target_'+tableId).css({top: topPosition, left: leftPosition});
+        }
+
+        if(tableSize && tableSize != '')
+        {
+            var splitSize = tableSize.split(",");
+            var tblWidth = splitSize[0]+"px";
+            var tblHeight = splitSize[1]+"px";
+            $('#target_'+tableId).css({width: tblWidth, height: tblHeight});
+        }
+
+        //console.log("table id::"+tableId+"::angle::"+tableAngle);
+        $('#target_'+tableId).rotatable( {degrees: tableAngle} )
+        
+        // $('#target_1').rotatable( {degrees: -2.54856555} )
+        //alert("angle::"+tableAngle);
+        $('#target_'+tableId).resizable().rotatable();
+        
+        //$("#target_1").css("transform", "rotate(-1.69872rad)");
+        var rotateAngle = tableAngle+'rad';
+        $("#target_"+tableId).css("transform", "rotate("+rotateAngle+")");
+        
+        $('#target_'+tableId).rotatable({
+        //degrees: tableAngle,
+        // when rotation starts
+        start: function (event, ui) { 
+            //console.log("Rotating started")
+            return true; 
+        },
+
+        // while rotating
+        rotate: function (event, ui) {
+                //if (Math.abs(ui.angle.current > 6)) {
+                console.log("Rotating " + ui.angle.current)
+                //}
+            return true;
+            },
+
+        // when rotation stops
+        stop: function (event, ui) { 
+            //console.log("rotate ui::"+JSON.stringify(ui));
+        //alert(event.target.id);
+        var layoutDivId = event.target.id;
+        var splitDivId = layoutDivId.split('_');
+        var getLayoutDivIdValue = splitDivId[1];
+        //alert("layout id::"+layoutDivIdValue);
+        var getLastRotateValue = ui.angle.current;
+        //console.log("Rotating stopped");
+        addLayoutKeyValue(getLayoutDivIdValue, getLastRotateValue, 'angle');
+        
+        return true; 
+        
+        }
+        
+        });  //rotatable ends here
+
+        //Draggable start here
+        $('#target_'+tableId).draggable({
             containment: "#box",
-            scroll: false
-        })
-    });
+            scroll: false,
+		    start: function(e, ui) {
+                //ui.helper.addClass("dragging");
+                return true;
+            },
+            stop: function(e, ui) {
+                //var dragDivId = $(this).find('div').attr('id');
+                var myValId = $(this).data('myval');
+                //console.log("draggable ui::"+JSON.stringify(ui));
+                var topPosition = ui.position.top;
+                var leftPosition = ui.position.left;
+                var draggableVal = topPosition+','+leftPosition;
+                //console.log("top position::"+topPosition+"::Left position::"+leftPosition);
+                addLayoutDraggableKeyValue(myValId, draggableVal, 'draggable')
+                return true;
+            }
+        });
 
-    $(document).ready(function () {
-        $(".sidebar-toggle").click();
-    });
+        //Resizable start here
+        $('#target_'+tableId).resizable({
+            resize: function(event, ui) { 
 
-    $('#box').each(function(){
-        console.log($(this).outerWidth());
-        console.log($(this).outerHeight());
-    });
+            },
+            stop: function(e, ui) {
+                var myValId = $(this).data('myval');
+                //console.log("resizable::"+JSON.stringify(ui));
+                var layoutWidth = ui.size.width;
+                var layoutHeight = ui.size.height;
+                var resizableVal = layoutWidth+","+layoutHeight;
+                addLayoutResizableKeyValue(myValId, resizableVal, 'resizable')
+                return true;
+            }
+        });
 
-    $( ".buttonClick" ).click(function() {
-        $('.target3').each(function(){
-            console.log($(this).outerWidth());
-            console.log($(this).outerHeight());
-        })
-    });
+    }//for loop ends here
+});
+
+var layoutArray = [];
+function addLayoutKeyValue(id, val, type)
+{
+    //alert(id +"::"+ val);
+    item = {};
+    if(type == 'angle')
+    {
+        var getHdnRotateArray = $("#hdn_layout_rotate_array").val();
+        if(getHdnRotateArray == '')
+        {
+            item['id'] = id;
+            item[type] = val;
+            layoutArray.push(item);
+            //console.log("json array::"+JSON.stringify(layoutArray));
+            $("#hdn_layout_rotate_array").val(JSON.stringify(layoutArray));
+        }
+        else
+        {
+            getHdnRotateArray = JSON.parse(getHdnRotateArray);
+            //console.log("else json array::"+JSON.stringify(layoutArray));
+            //alert(Object.keys(getHdnRotateArray).length);
+            var flag = 0;
+            for(var i = 0; i < getHdnRotateArray.length; i++)
+            {
+                //Search each key in your object
+                if(getHdnRotateArray[i]['id'] == id)
+                {
+                    getHdnRotateArray[i][type] = val;
+                    $("#hdn_layout_rotate_array").val(JSON.stringify(getHdnRotateArray));
+                    flag = 1;
+                    break;//Exit the loop
+                }
+            }
+            if(flag == 0)
+            {
+                item['id'] = id;
+                item[type] = val;
+                layoutArray.push(item);
+                $("#hdn_layout_rotate_array").val(JSON.stringify(layoutArray));
+            }
+        }//else ends here
+    }//type if ends here
+    else if(type == 'draggable')
+    {
+
+
+    }
+}//rotatable function ends here
+
+var layoutDraggableArray = [];
+function addLayoutDraggableKeyValue(id, val, type)
+{   
+    drggableItem = {};
+    var getHdnDraggableArray = $("#hdn_layout_draggable_array").val();
+    if(getHdnDraggableArray == '')
+    {
+        
+        drggableItem['id'] = id;
+        drggableItem[type] = val;
+        layoutDraggableArray.push(drggableItem);
+        //console.log("json array::"+JSON.stringify(layoutDraggableArray));
+        $("#hdn_layout_draggable_array").val(JSON.stringify(layoutDraggableArray));
+    }
+    else
+    {
+        getHdnDraggableArray = JSON.parse(getHdnDraggableArray);
+        //alert(Object.keys(getHdnDraggableArray).length);
+        var flag = 0;
+        for(var i = 0; i < getHdnDraggableArray.length; i++)
+        {
+            //Search each key in your object
+            if(getHdnDraggableArray[i]['id'] == id)
+            {
+                getHdnDraggableArray[i][type] = val;
+                $("#hdn_layout_draggable_array").val(JSON.stringify(getHdnDraggableArray));
+                flag = 1;
+                break;//Exit the loop
+            }
+        }
+        if(flag == 0)
+        {
+            drggableItem['id'] = id;
+            drggableItem[type] = val;
+            layoutDraggableArray.push(drggableItem);
+            $("#hdn_layout_draggable_array").val(JSON.stringify(layoutDraggableArray));
+        }
+    }//else ends here
+
+}//draggable function ends here
+
+var layoutResizableArray = [];
+function addLayoutResizableKeyValue(id, val, type)
+{   
+    resizeItem = {};
+    var getHdnResizableArray = $("#hdn_layout_resizable_array").val();
+    if(getHdnResizableArray == '')
+    {
+        
+        resizeItem['id'] = id;
+        resizeItem[type] = val;
+        layoutResizableArray.push(resizeItem);
+        //console.log("json array::"+JSON.stringify(layoutResizableArray));
+        $("#hdn_layout_resizable_array").val(JSON.stringify(layoutResizableArray));
+    }
+    else
+    {
+        getHdnResizableArray = JSON.parse(getHdnResizableArray);
+        //alert(Object.keys(getHdnResizableArray).length);
+        var flag = 0;
+        for(var i = 0; i < getHdnResizableArray.length; i++)
+        {
+            //Search each key in your object
+            if(getHdnResizableArray[i]['id'] == id)
+            {
+                getHdnResizableArray[i][type] = val;
+                $("#hdn_layout_resizable_array").val(JSON.stringify(getHdnResizableArray));
+                flag = 1;
+                break;//Exit the loop
+            }
+        }
+        if(flag == 0)
+        {
+            resizeItem['id'] = id;
+            resizeItem[type] = val;
+            layoutResizableArray.push(resizeItem);
+            $("#hdn_layout_resizable_array").val(JSON.stringify(layoutResizableArray));
+        }
+    }//else ends here
+
+}//resizable function ends here
 </script>
 @stop

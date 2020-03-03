@@ -1,7 +1,7 @@
 @extends('Admin.layouts.default')
 
 @section('mystyles')
-<!-- <link rel="stylesheet" href="{{ asset('public/Admin/dist/css/tabs-css.css') }}"> -->
+<link rel="stylesheet" href="{{ asset('public/Admin/dist/css/tabs-css.css') }}">
 <style>
     .target3 {border: 2px dotted; text-align: center; padding-top: 10px; min-width: 100px; min-height: 100px; cursor: pointer; color : #fff;}
     .draggable3{margin: 5px;}
@@ -11,58 +11,11 @@
     .green{background-color: #2ecc71;}
     .red{background-color: #d35400;}
     .yellow{background-color: #f1c40f;}
+    .billedColor{ background: #f1c40f; }
 
 
-</style>
-
-<style>
-    .box-body{ width: 100%;}
-    #box{ width: 100%; min-height: 450px;}
-    /* .ui-rotatable-handle {
-        height: 16px;
-        width: 16px;
-        cursor: pointer;
-        background-image: url(https://d2102t1lty3x1n.cloudfront.net/Admin/dist/img/rotate.png);
-        background-size: 100%;
-        left: 5px;
-        bottom: 5px;
-        position: absolute;
-    } */
-    /* .target3.ui-resizable {
-        border: 2px dotted;
-        text-align: center;
-        padding-top: 10px;
-        margin-bottom: 20px;
-        min-width: 100px;
-        min-height: 100px;
-    } */
-/*    .draggable3{
-        margin: 5px;
-    }*/
-/* 
-    .size1 > .target3 {
-        width: 150px;
-        height: 150px;
-        max-width: 100%;
-        max-height: auto !important;
-    }
-
-    .size2 .target3{
-        width: 200px;
-        height: 150px;
-        max-width: 100%;
-        max-height: auto !important;
-    }
-    .size3  .target3{
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        max-width: 100%;
-        max-height: auto !important;
-    } */
 </style>
 @stop 
-
 @section('content') 
 <section class="content-header">   
     <h1>
@@ -73,10 +26,21 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box">
+            @if(!empty(Session::get('message')))
+                <div class="alert alert-danger" role="alert">
+                    {{ Session::get('message') }}
+                </div>
+                @endif
+                @if(!empty(Session::get('msg')))
+                <div class="alert alert-success" role="alert">
+                    {{Session::get('msg')}}
+                </div>
+                @endif
             <div class="box-header box-tools filter-box col-md-9 noBorder rightBorder">
                 <ul class="orderTableColor">
-                    <li>Occupy<br/><div class="occupyColor"></div></li>
                     <li>Free<br/><div class="freeColor"></div></li>
+                    <li>Occupy<br/><div class="occupyColor"></div></li>
+                    <li>Billed<br/><div class="freeColor billedColor"></div></li>
                 </ul>
             </div>
                 <div class="box-header  col-md-3 col-xs-12 pull-right">
@@ -131,19 +95,17 @@
                                 </ul>
                                 <div class="tab-content pull-left" style="width:100%;">
                                     <div class="tab-pane active" id="tab-linearrow-one">
-                                        <div class="box-body pull-left">
-                                            <div id='box'  class="pull-left">
-                                                @foreach($tables as $table)
-                                                <div class="draggable3 size{{$table->table_type }} col-md-3 col-sm-6 col-xs-12">
-                                                    <div class="target3 context-menu-one {{@$table->tablestatus->color}}" data-tableid="{{ $table->id }}" id="target_{{$table->id }}" data-myval="{{$table->id }}">
-                                                        {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
-                                                        <br>({{$table->chairs}})
-                                                        <div class="clearfix"></div>    
-                                                    </div>
+                                        <div  id='box' class="pull-left">
+                                        <?php //  dd($tables); ?>
+                                            @foreach($tables as $table)
+                                            <div class="draggable3 size{{$table->table_type }} col-md-3 ">
+                                                <div data-tableid="{{ $table->id }}" class="target3 {{@$table->tablestatus->color}} context-menu-one">
+                                                    {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
+                                                    <br>({{$table->chairs}})
                                                 </div>
-                                                @endforeach
-                                            </div>                    
-                                        </div><!-- /.box-body -->
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab-linearrow-two">
                                         <table class="table table-bordered table-condensed table-hover tableVaglignMiddle">
@@ -186,7 +148,6 @@
                                                 <tr>
                                                     <td>{{ $allorder->id }}</td>
                                                     <td>{{ $allorder->type()->first()->otype }}</td>
-                                                    
                                                     <td> <?php 
                                                     $tablesnumbers = "";
                                                     if($allorder->otype == 1){
@@ -198,17 +159,14 @@
                                                                 $tablesnumbers .= App\Models\Table::find($t)->table_no.",";
                                                             }
                                                          $tablesnumbers =   rtrim($tablesnumbers,',');
-                                                        }
-                                                        
-                                                        
+                                                        }                                                                                                                
                                                     }
                                                     echo $tablesnumbers;                                                    
                                                     ?> </td>
-                                                    <td>{{ date("d-M-Y H:i:s",strtotime($allorder->created_at)) }}</td>
+                                                    <td>{{ date("d-M-Y H:i a",strtotime($allorder->created_at)) }}</td>
                                                     <td><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
                                                 </tr>
                                                 @endforeach
-
                                             </tbody>
                                         </table>
                                         <div class="pull-right">
@@ -249,15 +207,14 @@
             </div>
         </div>
 </section>
+
 @stop
 
 @section('myscripts')
-
 <link href="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
 <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.js" type="text/javascript"></script>
 <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.ui.position.min.js" type="text/javascript"></script>
 <script src="https://swisnl.github.io/jQuery-contextMenu/js/main.js" type="text/javascript"></script>
-<script src='https://d2102t1lty3x1n.cloudfront.net/Admin/dist/js/jquery.ui.rotatable.min.js'></script>
 <script>
 var itemsNew = {
     "edit": {name: "Add Order", icon: "edit"},
@@ -276,123 +233,100 @@ var billNew = {
     "paste": {name: "Free Up Table", icon: "delete"},
 }
 $(document).ready(function () {
-    setTableLayout();
-    function setTableLayout() {
-        var tableLayoutDbArray = <?php echo $tables;?>;
-        //console.log("db array::"+JSON.stringify(tableLayoutDbArray));
-        for(var j=0;j<tableLayoutDbArray.length;j++)
-        {
-            var tableId = tableLayoutDbArray[j]['id'];
-            var tableAngle = tableLayoutDbArray[j]['angle'];
-            var tablePosition = tableLayoutDbArray[j]['position'];
-            var tableSize = tableLayoutDbArray[j]['size'];
-            if(tablePosition && tablePosition != '')
-            {
-                var splitPosition = tablePosition.split(",");
-                var topPosition = splitPosition[0]+"px";
-                var leftPosition = splitPosition[1]+"px";
-                $('#target_'+tableId).css({top: topPosition, left: leftPosition});
-            }
 
-            if(tableSize && tableSize != '')
-            {
-                var splitSize = tableSize.split(",");
-                var tblWidth = splitSize[0]+"px";
-                var tblHeight = splitSize[1]+"px";
-                $('#target_'+tableId).css({width: tblWidth, height: tblHeight});
-            }
-
-            //console.log("table id::"+tableId+"::angle::"+tableAngle);
-            $('#target_'+tableId).rotatable( {degrees: tableAngle} )
-            
-            // $('#target_1').rotatable( {degrees: -2.54856555} )
-            //alert("angle::"+tableAngle);
-            $('#target_'+tableId).resizable().rotatable();
-            
-            //$("#target_1").css("transform", "rotate(-1.69872rad)");
-            var rotateAngle = tableAngle+'rad';
-            $("#target_"+tableId).css("transform", "rotate("+rotateAngle+")");
-            $('#target_'+tableId).resizable('disable');
-            // if(j == tableLayoutDbArray.length){
-            //     contextMenuCall();
-            // }
-        }
-    }
-    // $(".sidebar-toggle").click();    
-    // contextMenuCall();
-    // function contextMenuCall() {
-        $.contextMenu({
-            selector: '.context-menu-one.green',
-            callback: function (key, options) {
-                var m = "clicked: " + key;
-                tableid = $(this).attr('data-tableid');
-                if (key == 'edit') {
-                    $.post("{{route('admin.order.addNewOrder')}}", {tableid: tableid}, function (resp) {
-                        if (resp.order.id) {
-                            window.location.href = resp.redirectUrl;
-                        }
-                    });
-                } else if (key == 'copy') {
-                    $.post("{{route('admin.order.getJoinTableCheckbox')}}", {tableid: tableid}, function (resp) {
-                        if(resp.length > 0){
-                        $(".tableSel").html("");
-                        $("input[name='tableid']").val("");
-                        $("input[name='tableid']").val(tableid);
-                        $(".tableSel").append(resp);
-                        $("#newOrdersTables").modal("show");
-                    }else{
-                        alert("Free table is not available.");
+    $(".sidebar-toggle").click();
+    $.contextMenu({
+        selector: '.context-menu-one.green',
+        callback: function (key, options) {
+            var m = "clicked: " + key;
+            tableid = $(this).attr('data-tableid');
+            if (key == 'edit') {
+                $.post("{{route('admin.order.addNewOrder')}}", {tableid: tableid}, function (resp) {
+                    if (resp.order.id) {
+                        window.location.href = resp.redirectUrl;
                     }
-                    });
+                });
+            } else if (key == 'copy') {
+                $.post("{{route('admin.order.getJoinTableCheckbox')}}", {tableid: tableid}, function (resp) {
+                    if(resp.length > 0){
+                    $(".tableSel").html("");
+                    $("input[name='tableid']").val("");
+                    $("input[name='tableid']").val(tableid);
+                    $(".tableSel").append(resp);
+                    $("#newOrdersTables").modal("show");
+                }else{
+                    alert("Free table is not available.");
                 }
-                //window.console && console.log(m) || alert(m);
-            },
-            items: itemsNew
-        });
-    
-        $.contextMenu({
-            selector: '.context-menu-one.yellow',
-            callback: function (key, options) {
-                var m = "clicked: " + key;
-                //window.console && console.log(m) || alert(m);
-                tableid = $(this).attr('data-tableid');
-                if (key == 'edit') {
-                    $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
-                        window.location.href=respurl;
-                    });                
-                }else if(key == 'cut'){
-                    $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
-                        window.location.href=respurl+"?from=regenerateBill";
-                    });  
-                }            
-            },
-            items: billNew
-        });
+                });
 
-        $.contextMenu({
-            selector: '.context-menu-one.red',
-            callback: function (key, options) {
-                var m = "clicked: " + key;
-                //window.console && console.log(m) || alert(m);
-                tableid = $(this).attr('data-tableid');
-                //alert(key);
-                if (key == 'edit') {
-                    $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
-                        window.location.href=respurl;
-                    });                
-                }else if(key=='cut'){
+            }
+            //window.console && console.log(m) || alert(m);
+
+        },
+        items: itemsNew
+
+    });
+
+
+    $.contextMenu({
+        selector: '.context-menu-one.yellow',
+        callback: function (key, options) {
+            var m = "clicked: " + key;
+            //window.console && console.log(m) || alert(m);
+             tableid = $(this).attr('data-tableid');
+              if (key == 'edit') {
                 $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
-                    // console.log(respurl);
-                        window.location.href=respurl+"?from=BillTable";
-                    });
-                }            
-            },
-            items: itemsOccupied
-        });
-        $('.context-menu-one').on('click', function (e) {
-            console.log('clicked', this);
-        });
-    // }
+                    window.location.href=respurl;
+                });                
+            } else if(key == 'cut'){
+              $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
+                  window.location.href=respurl+"?from=regenerateBill";
+                });  
+            } else if(key == 'paste'){
+              $.post("{{ route('admin.tables.changeOccupancyStatus') }}/1",{tableid:tableid, keyname:key},function(res){
+                  console.log(res);
+                  if(res.status){
+                    window.location.href = "{{route('admin.tableorder.view')}}";
+                  }
+                });  
+            }            
+        },
+        items: billNew
+
+    });
+
+    $.contextMenu({
+        selector: '.context-menu-one.red',
+        callback: function (key, options) {
+            var m = "clicked: " + key;
+            //window.console && console.log(m) || alert(m);
+            tableid = $(this).attr('data-tableid');
+            //alert(key);
+            if (key == 'edit') {
+                $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
+                    window.location.href=respurl;
+                });
+                
+            } else if(key=='cut') {
+                $.post("{{route('admin.tableOccupiedOrder')}}", {tableid: tableid, keyname:'edit'}, function (resp) {
+                    if (resp.order.id) {
+                        window.location.href = resp.redirectUrl;
+                    }
+                });
+            //   $.post("{{ route('admin.tableOccupiedOrder') }}",{tableid:tableid,keyname:key},function(respurl){
+            //       // console.log(respurl);
+            //         window.location.href=respurl+"?from=BillTable";
+            //     });  
+            }
+            
+        },
+        items: itemsOccupied
+
+    });
+
+    $('.context-menu-one').on('click', function (e) {
+        console.log('clicked', this);
+    })
 
 });
 
@@ -414,8 +348,13 @@ $(".submitJoinTableOrder").on("click", function () {
     } else {
         $(".chkMsg").addClass("alert alert-danger");
         $(".chkMsg").text("Please select at least one table.");
+
     }
 
+//    $.ajax({
+//       type:"POST",
+//       url:"",
+//    });
 });
 
 </script>
