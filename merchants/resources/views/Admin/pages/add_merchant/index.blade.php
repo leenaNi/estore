@@ -19,6 +19,7 @@
 </section>
 <section class="main-content">
     <div class="notification-column">
+        <div class="alert alert-danger" role="alert" id="errorMsgDiv" style="display: none;"></div>
         <div class="alert alert-success" role="alert" id="successMsgDiv" style="display: none;"></div> 
         <label class="error" id="sendRequestErorr">{{$sendRequestError}}</label>
     </div>
@@ -84,6 +85,7 @@
                             <th class="text-center">Mobile Number</th>
                             <th class="text-center">Connection Date</th>
                             <th class="text-center">Ledger</th>
+                            <th class="text-center">Status</th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>	
@@ -97,8 +99,22 @@
                             $i++;
                             $decodedMerchantDetail = json_decode($data->register_details);
                             $connectionData = date("d-m-Y", strtotime($data->updated_at));
-                            $distributorId = $data->merchant_id;
+                            $distributorId = $data->distributor_id;
+                            $merchantId = $data->merchant_id;
                             $isApprovedVal = $data->is_approved;
+                          
+                            if($isApprovedVal==1)
+                            {
+                                $statusLabel = 'Approved';
+                                $linkLabel = 'DisApprove';
+                            }
+                            else
+                            {
+                                $statusLabel = 'Not Approved';
+                                $linkLabel = 'Approve';
+                            }
+                        
+
                         ?>
                         <tr>
                             <td  class="text-left">{{$i}}</td>
@@ -112,29 +128,15 @@
                                     
                                 </div>
                             </td>
-                            <?php 
-                            if($isApprovedVal > 0)
-                            {
-                            ?>
+
+                            <td class="text-center" id="merchantStatus_{{$distributorId}}">{{$statusLabel}}</td>
+                           
                             <td class="text-center">
                                 <div class="actionCenter">
-                                    <span><a class="btn-action-default" href="javascript:;">Approved</a></span>
-                                </div>
-                            </td>
-                        
-                            <?php 
-                            }
-                            else
-                            {
-                            ?>
-                            <td class="text-center">
-                                <div class="actionCenter">
-                                    <span><a class="btn-action-default"  id="not_approve_distributor_{{$distributorId}}" href="javascript:;" onClick="approveMerchant({{$distributorId}})">Approve</a></span>
+                                    <span><a class="btn-action-default"  id="changeStatusLink_{{$distributorId}}" href="javascript:;" onClick="changeStatus({{$merchantId}}, {{$distributorId}}, {{$isApprovedVal}})">{{$linkLabel}}</a></span>
                                 </siv>
                             </td>
-                            <?php
-                            }
-                            ?>
+                          
                            
                             <!-- <i class="fa fa-pencil-square-o fa-fw" title="Ledger"></i></td> -->
                         </tr> 
@@ -215,7 +217,7 @@
     {
         $("#"+id).hide();
     }
-    function approveMerchant(distributorId)
+    /*function approveMerchant(distributorId, isApprove)
     {
         if (confirm('Are you sure you want to approve this merchant?'))
         {
@@ -226,11 +228,12 @@
                     url: "{{route('admin.vendors.isApproveMerchant')}}",
                     dataType: "json",
                     success: function (data) {
-                       // alert(data['status']);
+                        alert(data['status']);
                         if(data['status'] == 1)
                         {
                            // alert("if");
-                            $("#not_approve_distributor_"+distributorId).html('Approved');
+                            $("#status_approve_distributor_"+distributorId).html('Approved');
+                            $("#not_approve_distributor_"+distributorId).html('Disapprove');
                             $("#not_approve_distributor_"+distributorId).removeAttr("onclick");
                             $("#successMsgDiv").html('Merchant Approved Successfully').show().fadeOut(4000);
                             
@@ -246,6 +249,49 @@
             return false;
              
         }
-    }
+    }*/
+   function changeStatus(merchantId, distributorId, status)
+  {
+      if(status == 1)
+          var msg = 'Are you sure you want to disapprove this merchant?';
+      else
+          var msg = 'Are you sure you want to approve this merchant?';
+
+      if (confirm(msg)) {
+          $.ajax({
+              type: "POST",
+              url: "{{ route('admin.vendors.isApproveMerchant') }}",
+              data: {merchantId: merchantId, distributorId: distributorId},
+              cache: false,
+              success: function(response) {
+                  console.log("done");
+                  alert(response['status']);
+                  if(response['status'] == 1)
+                  {
+                      if(status == 1)
+                      {
+                          $("#changeStatusLink_"+distributorId).html('Approve');
+                          $("#merchantStatus_"+distributorId).html("Not Approve");
+                          $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                          $("#changeStatusLink_"+distributorId).attr("onclick","changeStatus("+distributorId+",0)");
+                      }
+                      else
+                      {
+                          $("#merchantStatus_"+distributorId).html("Approved");
+                          $("#changeStatusLink_"+distributorId).html('DisApprove');
+                          $("#successMsgDiv").html(response['msg']).show().fadeOut(4000);
+                          $("#changeStatusLink_"+distributorId).attr("onclick","changeStatus("+distributorId+",1)");
+                      }
+                  }
+                  else
+                  {
+                      $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                  }
+                  //$(window).scrollTop(0);
+                  $("html, body").animate({ scrollTop: 0 }, "slow");
+              }
+          });
+      }
+  } // End function
 </script>
 @stop
