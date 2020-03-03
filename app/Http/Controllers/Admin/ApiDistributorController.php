@@ -1047,7 +1047,7 @@ class ApiDistributorController extends Controller
                         // $i=0;
                         // foreach($multipleDistributorStoreIds as $distributorKey => $getDistributorData)
                         // {
-                            $storeId = $getDistributorData;
+                            // $storeId = $getDistributorData;
                             //echo "user id::".$userId;
                             //get store_id from order table with the use of user_id
                             $getOrderResult = DB::table('orders')
