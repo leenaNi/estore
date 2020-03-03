@@ -20,11 +20,13 @@ class ApiDistributorController extends Controller
 
             $storeIdsResult = $this->getStoreId($merchantId);
             
-            $storeIdArray = [];
+            //echo "<pre>";
+            //print_r($storeIdsResult);
+            //exit;
             $storeIdWithDistributorId = array();
             $i = 0;
             foreach ($storeIdsResult as $storeIdsData) {
-                $storeIdArray[] = $storeIdsData->id;
+                $storeId = $storeIdsData->id;
                 //$storeIdWithDistributorId[$storeIdsData->id]['merchant_id'] = $storeIdsData->merchant_id;
                 //$storeIdWithDistributorId[$storeIdsData->id]['store_name'] = $storeIdsData->store_name;
 
@@ -36,7 +38,7 @@ class ApiDistributorController extends Controller
                     //get store wise products
                     $productResult = DB::table('products as p')
                     ->join('brand as b', 'p.brand_id', '=', 'b.id')
-                    ->whereIn('p.store_id', $storeIdArray)
+                    ->where('p.store_id', $storeId)
                     ->where(['p.status' => 1, 'p.is_del' => 0])
                     ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
                     ->orderBy('p.store_id', 'ASC')
@@ -48,7 +50,7 @@ class ApiDistributorController extends Controller
                     //get store wise products
                     $productResult = DB::table('products as p')
                     ->join('brand as b', 'p.brand_id', '=', 'b.id')
-                    ->whereIn('p.store_id', $storeIdArray)
+                    ->where('p.store_id', $storeId)
                     ->where(['p.status' => 1, 'p.is_del' => 0])
                     ->orderBy('p.store_id', 'ASC')
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
@@ -102,15 +104,17 @@ class ApiDistributorController extends Controller
                     $storeIdWithDistributorId[$i]['products'][$j]['is_share_on_mall'] = $getProductData->is_share_on_mall;
 
                     //get offers count
+                    //DB::enableQueryLog(); // Enable query log
                     $offersIdCountResult = DB::table('offers')
                         ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
                         ->select(DB::raw('count(offers.id) as offer_count'))
                     //->where('offers.store_id',$storeId)
-                    //->where('offers.status',1)
+                        ->where('offers.status',1)
                         ->where('offers_products.prod_id', $productId)
                         ->where('offers_products.type', 1)
-                        ->groupBy('offers_products.offer_id')
+                        //->groupBy('offers_products.offer_id')
                         ->get();
+                    //dd(DB::getQueryLog()); // Show results of log
 
                     $offerCount = 0;
                     if (count($offersIdCountResult) > 0) {
@@ -129,7 +133,7 @@ class ApiDistributorController extends Controller
             if (count($storeIdWithDistributorId) > 0) {
                 return response()->json(["status" => 1, 'data' => $storeIdWithDistributorId]);
             } else {
-                return response()->json(["status" => 1, 'msg' => 'Product not found']);
+                return response()->json(["status" => 2, 'msg' => 'Product not found']);
             }
         } else {
             return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
@@ -191,7 +195,7 @@ class ApiDistributorController extends Controller
                 }
                 return response()->json(["status" => 1, 'data' => $storeArray]);
             } else {
-                return response()->json(["status" => 1, 'msg' => 'Product not found']);
+                return response()->json(["status" => 2, 'msg' => 'Product not found']);
             }
         } else {
             return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
