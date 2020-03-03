@@ -56,76 +56,98 @@ class ApiDistributorController extends Controller
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
                 
                 }
-                //echo "<pre>";print_r($productResult);exit;
+                //echo "<pre>";print_r($productResult);//exit;
                 $j = 0;
                 $totalOfferOfAllProduct = 0;
+                if(count($productResult) > 0)
+                {
+                    //echo "if";
+                    foreach ($productResult as $getProductData) {
+                        $storeId = $getProductData->store_id;
+                        $productId = $getProductData->id;
 
-                foreach ($productResult as $getProductData) {
-                    $storeId = $getProductData->store_id;
-                    $productId = $getProductData->id;
+                        //Get Product image
+                        $productResult = DB::table('catalog_images')
+                            ->select(DB::raw('filename'))
+                            ->where(['catalog_id' => $productId])
+                            ->get();
+                        $productImage = '';
+                        //echo "<pre>";
+                        //print_r($productResult);
+                        //exit;
+                        if (count($productResult) > 0) {
+                            $productImage = "http://" . $storeIdsData->url_key . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
+                        }
+                        //echo "product image::http://" .$_SERVER['HTTP_HOST'].'/uploads/catalog/products/'.$productImage;
 
-                    //Get Product image
-                    $productResult = DB::table('catalog_images')
-                        ->select(DB::raw('filename'))
-                        ->where(['catalog_id' => $productId])
-                        ->get();
-                    $productImage = '';
-                    //echo "<pre>";
-                    //print_r($productResult);
-                    //exit;
-                    if (count($productResult) > 0) {
-                        $productImage = "http://" . $storeIdsData->url_key . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
-                    }
-                    //echo "product image::http://" .$_SERVER['HTTP_HOST'].'/uploads/catalog/products/'.$productImage;
+                        $storeIdWithDistributorId[$i]['products'][$j]['product_id'] = $getProductData->id;
+                        $storeIdWithDistributorId[$i]['products'][$j]['brand_id'] = $getProductData->brand_id;
+                        $storeIdWithDistributorId[$i]['products'][$j]['brand_name'] = $getProductData->brand_name;
+                        $storeIdWithDistributorId[$i]['products'][$j]['product'] = $getProductData->product;
+                        $storeIdWithDistributorId[$i]['products'][$j]['images'] = $productImage;
+                        $storeIdWithDistributorId[$i]['products'][$j]['product_code'] = $getProductData->product_code;
+                        $storeIdWithDistributorId[$i]['products'][$j]['is_featured'] = $getProductData->is_featured;
+                        $storeIdWithDistributorId[$i]['products'][$j]['prod_type'] = $getProductData->prod_type;
+                        $storeIdWithDistributorId[$i]['products'][$j]['is_stock'] = $getProductData->is_stock;
+                        $storeIdWithDistributorId[$i]['products'][$j]['is_avail'] = $getProductData->is_avail;
+                        $storeIdWithDistributorId[$i]['products'][$j]['is_listing'] = $getProductData->is_listing;
+                        $storeIdWithDistributorId[$i]['products'][$j]['status'] = $getProductData->status;
+                        $storeIdWithDistributorId[$i]['products'][$j]['stock'] = $getProductData->stock;
+                        $storeIdWithDistributorId[$i]['products'][$j]['max_price'] = $getProductData->max_price;
+                        $storeIdWithDistributorId[$i]['products'][$j]['min_price'] = $getProductData->min_price;
+                        $storeIdWithDistributorId[$i]['products'][$j]['purchase_price'] = $getProductData->purchase_price;
+                        $storeIdWithDistributorId[$i]['products'][$j]['price'] = $getProductData->price;
+                        $storeIdWithDistributorId[$i]['products'][$j]['spl_price'] = $getProductData->spl_price;
+                        $storeIdWithDistributorId[$i]['products'][$j]['selling_price'] = $getProductData->selling_price;
+                        $storeIdWithDistributorId[$i]['products'][$j]['is_cod'] = $getProductData->is_cod;
+                        $storeIdWithDistributorId[$i]['products'][$j]['is_tax'] = $getProductData->is_tax;
+                        $storeIdWithDistributorId[$i]['products'][$j]['is_trending'] = $getProductData->is_trending;
+                        $storeIdWithDistributorId[$i]['products'][$j]['min_order_quantity'] = $getProductData->min_order_quantity;
+                        $storeIdWithDistributorId[$i]['products'][$j]['is_share_on_mall'] = $getProductData->is_share_on_mall;
 
-                    $storeIdWithDistributorId[$i]['products'][$j]['product_id'] = $getProductData->id;
-                    $storeIdWithDistributorId[$i]['products'][$j]['brand_id'] = $getProductData->brand_id;
-                    $storeIdWithDistributorId[$i]['products'][$j]['brand_name'] = $getProductData->brand_name;
-                    $storeIdWithDistributorId[$i]['products'][$j]['product'] = $getProductData->product;
-                    $storeIdWithDistributorId[$i]['products'][$j]['images'] = $productImage;
-                    $storeIdWithDistributorId[$i]['products'][$j]['product_code'] = $getProductData->product_code;
-                    $storeIdWithDistributorId[$i]['products'][$j]['is_featured'] = $getProductData->is_featured;
-                    $storeIdWithDistributorId[$i]['products'][$j]['prod_type'] = $getProductData->prod_type;
-                    $storeIdWithDistributorId[$i]['products'][$j]['is_stock'] = $getProductData->is_stock;
-                    $storeIdWithDistributorId[$i]['products'][$j]['is_avail'] = $getProductData->is_avail;
-                    $storeIdWithDistributorId[$i]['products'][$j]['is_listing'] = $getProductData->is_listing;
-                    $storeIdWithDistributorId[$i]['products'][$j]['status'] = $getProductData->status;
-                    $storeIdWithDistributorId[$i]['products'][$j]['stock'] = $getProductData->stock;
-                    $storeIdWithDistributorId[$i]['products'][$j]['max_price'] = $getProductData->max_price;
-                    $storeIdWithDistributorId[$i]['products'][$j]['min_price'] = $getProductData->min_price;
-                    $storeIdWithDistributorId[$i]['products'][$j]['purchase_price'] = $getProductData->purchase_price;
-                    $storeIdWithDistributorId[$i]['products'][$j]['price'] = $getProductData->price;
-                    $storeIdWithDistributorId[$i]['products'][$j]['spl_price'] = $getProductData->spl_price;
-                    $storeIdWithDistributorId[$i]['products'][$j]['selling_price'] = $getProductData->selling_price;
-                    $storeIdWithDistributorId[$i]['products'][$j]['is_cod'] = $getProductData->is_cod;
-                    $storeIdWithDistributorId[$i]['products'][$j]['is_tax'] = $getProductData->is_tax;
-                    $storeIdWithDistributorId[$i]['products'][$j]['is_trending'] = $getProductData->is_trending;
-                    $storeIdWithDistributorId[$i]['products'][$j]['min_order_quantity'] = $getProductData->min_order_quantity;
-                    $storeIdWithDistributorId[$i]['products'][$j]['is_share_on_mall'] = $getProductData->is_share_on_mall;
+                        //get offers count
+                        //DB::enableQueryLog(); // Enable query log
+                        $offersIdCountResult = DB::table('offers')
+                            ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
+                            ->select(DB::raw('count(offers.id) as offer_count'))
+                        //->where('offers.store_id',$storeId)
+                            ->where('offers.status',1)
+                            ->where('offers_products.prod_id', $productId)
+                            ->where('offers_products.type', 1)
+                            //->groupBy('offers_products.offer_id')
+                            ->get();
+                        //dd(DB::getQueryLog()); // Show results of log
 
-                    //get offers count
-                    //DB::enableQueryLog(); // Enable query log
-                    $offersIdCountResult = DB::table('offers')
-                        ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
+                        $offerCount = 0;
+                        if (count($offersIdCountResult) > 0) {
+                            $offerCount = $offersIdCountResult[0]->offer_count;
+                            $totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
+                        }
+                        
+                        $storeIdWithDistributorId[$i]['products'][$j]['offers_count'] = $offerCount;
+                        $j++;
+                    } //product foreach ends here
+
+                    $storeIdWithDistributorId[$i]['offer_count'] = $totalOfferOfAllProduct;
+                }
+                else
+                {   
+                    if($totalOfferOfAllProduct == 0)
+                    {
+                        $offersIdCountResult = DB::table('offers')
                         ->select(DB::raw('count(offers.id) as offer_count'))
-                    //->where('offers.store_id',$storeId)
+                        ->where('offers.store_id',$storeId)
                         ->where('offers.status',1)
-                        ->where('offers_products.prod_id', $productId)
-                        ->where('offers_products.type', 1)
-                        //->groupBy('offers_products.offer_id')
                         ->get();
-                    //dd(DB::getQueryLog()); // Show results of log
-
-                    $offerCount = 0;
-                    if (count($offersIdCountResult) > 0) {
-                        $offerCount = $offersIdCountResult[0]->offer_count;
-                        $totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
+                        $offerCount = 0;
+                        if (count($offersIdCountResult) > 0) {
+                            $offerCount = $offersIdCountResult[0]->offer_count;
+                            $totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
+                        }
+                        
                     }
-                    
-                    $storeIdWithDistributorId[$i]['products'][$j]['offers_count'] = $offerCount;
-                    $j++;
-                } //product foreach ends here
-                $storeIdWithDistributorId[$i]['offer_count'] = $totalOfferOfAllProduct;
+                    $storeIdWithDistributorId[$i]['offer_count'] = $totalOfferOfAllProduct;
+                }
                 $i++;
             } //store foreach ends here
 
