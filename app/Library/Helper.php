@@ -638,7 +638,7 @@ class Helper
             if (array_key_exists("sub_prod", $cartItem['options'])) {
                 $isExist = ($cartItem['options']['sub_prod'] == $prod_id);
                 if ($isExist) {
-                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"], "offer_qty" => $cartItem['options']['offer_qty']];
                 }
             } else {
                 $isExist = ($cartItem["id"] == $prod_id);

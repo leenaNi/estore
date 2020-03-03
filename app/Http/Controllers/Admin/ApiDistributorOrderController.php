@@ -524,6 +524,7 @@ class ApiDistributorOrderController extends Controller
                 $proddetailsp['qty'] = $cart->qty;
                 $proddetailsp['subtotal'] = $subtotal; //* Session::get('currency_val')
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
+                $cart_ids[$cart->rowId]["sub_prod_id"] = 0;
 
                 $cart_ids[$cart->rowId]["product_details"] = json_encode($proddetailsp);
 
