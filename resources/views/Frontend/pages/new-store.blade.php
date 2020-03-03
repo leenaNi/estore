@@ -178,7 +178,9 @@ function checkPhone(mobile){
 					$("#mobsmsg").show();
                 } else if (response['status'] == 'fail') {
 					$("#mobileno_err").show().html(response['msg']);
-					$("#mobemsg").show();$("#successimg").hide();
+					$("#mobemsg").show();
+					$("#successimg").hide();
+					$("#mobsmsg").hide();
                 } 
             },
             error: function (e) {
