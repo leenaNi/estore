@@ -165,21 +165,33 @@ $("#loginbtn").click(function(){
     //var otp = $("input[name=otp]").val();
     var otp = $("#otp1").val()+$("#otp2").val()+$("#otp3").val()+$("#otp4").val();
     console.log(otp);
-    $.ajax({
-            type: 'POST',
-            url: "{{route('checkOtp')}}",
-            data: {otp: otp},
-            success: function (response) {
-                if (response == '1' || otp=='1234') {
-                    $("#adminLogin").submit();
-                } else if (response == '2') {
-                    $("#otperr").css("color", "red").html('Please enter valid OTP'); 
+    if(otp !== '')
+    {
+        $.ajax({
+                type: 'POST',
+                url: "{{route('checkOtp')}}",
+                data: {otp: otp},
+                success: function (response) {
+                    //alert(response);
+                    if (response == '1' || otp=='1234') {
+                        $("#adminLogin").submit();
+                    } else if (response == '2') {
+                        //alert("inside else if");
+                        $("#otperr").show();
+                        $("#otperr").css("color", "red").html('Please enter valid OTP'); 
+                        
+                    }
+                },
+                error: function (e) {
+                    console.log(e.responseText);
                 }
-            },
-            error: function (e) {
-                console.log(e.responseText);
-            }
-        });
+            });
+    }
+    else
+    {
+        $("#otperr").show();
+        $("#otperr").css("color", "red").html('Enter OTP'); 
+    }
 });
         </script>
   <script>

@@ -476,7 +476,6 @@ class VendorsController extends Controller
     }
 
     public function addMerchant() // Display view
-
     {
         $loggedInUserId = Session::get('loggedin_user_id');
         $loginUserType = Session::get('login_user_type');
@@ -539,7 +538,7 @@ class VendorsController extends Controller
                 //     $data = ['status' => 0, 'error' => "Industry not matched"];
                 // }
             } else {
-                $data = ['status' => 0, 'error' => "Invalid merchant code"];
+                $data = ['status' => 2, 'error' => "Invalid merchant code"];
             }
         } else {
             $data = ['status' => 0, 'error' => "Enter merchant code"];
@@ -572,7 +571,8 @@ class VendorsController extends Controller
             $baseurl = str_replace("\\", "/", base_path());
             $linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
             //SMS
-            $msgOrderSucc = $storeName . " is trying to connect with you for business.";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            //$msgOrderSucc = $storeName . " is trying to connect with you for business.";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            $msgOrderSucc = " Distributor added you";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
             Helper::sendsms($hdnMerchantPhone, $msgOrderSucc, $countryCode);
 
             //Email
