@@ -221,7 +221,8 @@ class ApiOfferController extends Controller
                         ->join('categories', 'store_categories.category_id', '=', 'categories.id')
                         ->whereIn('store_categories.store_id', $storeIds)
                         ->where('store_categories.status', 1)
-                        ->get(['store_categories.id', 'categories.category', 'categories.short_desc','categories.long_desc','categories.images','categories.is_home','categories.is_nav','categories.url_key']);
+                        ->groupBy('store_categories.category_id')
+                        ->get(['store_categories.id','store_categories.category_id', 'categories.category', 'categories.short_desc','categories.long_desc','categories.images','categories.is_home','categories.is_nav','categories.url_key']);
                         //dd(DB::getQueryLog()); // Show results of log
                         //echo "<pre>";
                         //print_r($getCategoriesResult);
