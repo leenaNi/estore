@@ -490,7 +490,7 @@ class VendorsController extends Controller
         $viewname = Config('constants.adminAddMerchantView') . '.index';
 
         $merchantListingResult = DB::table('has_distributors as hd')
-        ->select(['hd.merchant_id', 'hd.is_approved','m.register_details','hd.updated_at'])
+        ->select(['hd.distributor_id','hd.merchant_id', 'hd.is_approved','m.register_details','hd.updated_at'])
         ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
         //->where([["hd.distributor_id", $distributorId],['is_approved', '1']])
         ->where([["hd.distributor_id", $distributorId]])
@@ -601,24 +601,41 @@ class VendorsController extends Controller
     public function isApprovedMerchant()
     {
         $allinput = Input::all();
+        $merchantId = $allinput['merchantId'];
         $distributorId = $allinput['distributorId'];
-        //echo "distributor id::".$distributorId;
-        //exit;
-        //update is_approved=1 in has_distributor table
-        $hasDistributorRs = DB::table('has_distributors')
-        ->where('merchant_id', $distributorId)
-        ->update(['is_approved' => 1]);
-        /*$hasDistributorRs = hasDistributor::find($merchantId);
-                $hasDistributorRs->is_approved = 1;
-                $hasDistributorRs->update();*/
-
-        if(!empty($hasDistributorRs))
+        if(($merchantId > 0) && ($distributorId > 0))
         {
-            $data = ['status' => 1, 'error' => "Records updated Successfully"];
+            $distributor = DB::table('has_distributors')
+                           ->where("merchant_id", $merchantId)
+                           ->where("distributor_id", $distributorId)
+                           ->first();
+            //$distributor = hasDistributor::find(Input::get('id'));
+            if ($distributor->is_approved == 1) {
+                $isApproved = 0;
+                $msg = "Merchant Disapproved successfully.";
+                $hasDistributorRs = DB::table('has_distributors')
+                    ->where('merchant_id', $merchantId)
+                    ->where("distributor_id", $distributorId)
+                    ->update(['is_approved' => $isApproved]);
+                
+                Session::flash("message", $msg);
+
+                //return redirect()->back()->with('message', $msg);
+            } else if ($distributor->is_approved == 0) {
+                $isApproved = 1;
+                $msg = "Merchant Approved successfully.";
+                $hasDistributorRs = DB::table('has_distributors')
+                    ->where('merchant_id', $merchantId)
+                    ->where("distributor_id", $distributorId)
+                    ->update(['is_approved' => $isApproved]);
+                Session::flash("msg", $msg);
+                //return redirect()->back()->with('msg', $msg);
+            }
+            $data = ['status' => '1', 'msg' => $msg];    
         }
         else
         {
-            $data = ['status' => 0, 'error' => "Not updated"];
+            $data = ['status' => '0', 'msg' => 'There is somthing wrong.'];
         }
         return $data;
     }
