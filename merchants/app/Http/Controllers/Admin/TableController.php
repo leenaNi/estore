@@ -106,6 +106,77 @@ class TableController extends Controller
         return view(Config('constants.adminTableView') . '.layout', compact('tables'));
     }
 
+    public function layoutsave() 
+    {
+        $inputs = Input::all();
+        //For rotate
+        $getHdnRotateArry = array();
+        $getHdnRotateArry = $inputs['hdn_layout_rotate_array'][0];
+        $flagVal = 0;
+        if(!empty($getHdnRotateArry))
+        {
+            $getHdnRotateArry = json_decode($getHdnRotateArry);
+            for($i=0;$i<count($getHdnRotateArry);$i++)
+            {
+                $restaurantTableId = $getHdnRotateArry[$i]->id;
+                $restaurantTableAngle = $getHdnRotateArry[$i]->angle;
+                //update query
+                $table = Table::findOrNew($restaurantTableId);
+                $table->angle = $restaurantTableAngle;
+                $table->save();
+            }
+            $flagVal = 1;
+        }
+        
+        //For Draggable
+        $getHdnDraggableArry = array();
+        $getHdnDraggableArry = $inputs['hdn_layout_draggable_array'][0];
+        if(!empty($getHdnDraggableArry))
+        {
+            $getHdnDraggableArry = json_decode($getHdnDraggableArry);
+            for($i=0;$i<count($getHdnDraggableArry);$i++)
+            {
+                $restaurantTableId = $getHdnDraggableArry[$i]->id;
+                $restaurantTableDraggable = $getHdnDraggableArry[$i]->draggable;
+                //update query
+                $table = Table::findOrNew($restaurantTableId);
+                $table->position = $restaurantTableDraggable;
+                $table->save();
+
+            }
+            $flagVal = 1;
+        }
+
+        //For Resizable
+        $getHdnResizableArry = array();
+        $getHdnResizableArry = $inputs['hdn_layout_resizable_array'][0];
+        if(!empty($getHdnResizableArry))
+        {
+            $getHdnResizableArry = json_decode($getHdnResizableArry);
+            for($i=0;$i<count($getHdnResizableArry);$i++)
+            {
+                $restaurantTableId = $getHdnResizableArry[$i]->id;
+                $restaurantTableDraggable = $getHdnResizableArry[$i]->resizable;
+                //update query
+                $table = Table::findOrNew($restaurantTableId);
+                $table->size = $restaurantTableDraggable;
+                $table->save();
+
+            }
+            $flagVal = 1;
+        }
+        
+        
+        if($flagVal == 1)
+        {
+            $data = ['status' => "1", "message" => "Table updated successfully."];
+            Session::flash("msg", "Table Layout updated successfully.");
+        }
+        
+        $viewname = '';
+        return Helper::returnView($viewname, $data, $url = 'admin.tables.view');   
+    }   
+
     public function orderview()
     {
         $tables = Table::with('tablestatus')->get();
