@@ -463,7 +463,7 @@ class ApiDistributorController extends Controller
                             $multipleStoreIds[] = $storeIdsData->id;
                         }
                         $urlKey = $storeIdResult[0]->url_key;
-                        $offerImagePath = "http://" . $urlKey . '.' . $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/';
+                        $offerImagePath = $urlKey . '.' . $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/';
 
                         $offersResult = DB::table('offers')
                             ->whereIn('store_id', $multipleStoreIds)
@@ -1000,7 +1000,17 @@ class ApiDistributorController extends Controller
         {
             $merchantId = Input::get("merchantId");
             //echo "merchant id::".$merchantId;
-
+            //Get All Distributors
+            $distributors = DB::table('has_distributors as hd')
+            ->join('stores as s', 's.merchant_id', '=', 'hd.distributor_id')
+            ->where('s.store_type', 'distributor')
+            ->where('hd.merchant_id', $merchantId)->where('hd.is_approved', 1)->get(['s.id as storeId']);
+            $multipleDistributorStoreIds = [];
+            foreach($distributors as $distributorsData)
+            {
+                $multipleDistributorStoreIds[] = $distributorsData->storeId;
+            }
+            // dd($multipleDistributorStoreIds);
             //get merchant store id
             //DB::enableQueryLog(); // Enable query log
             $getStoreResult = DB::table('stores')
@@ -1017,7 +1027,7 @@ class ApiDistributorController extends Controller
                     $multipleMerchantStoreIds[] = $getData->id;
                 }
                 //echo "<pre>";
-                //print_r($multipleMerchantStoreIds);
+                // print_r($multipleMerchantStoreIds);
                 $myOrdersArray = array();
                 if(count($multipleMerchantStoreIds) > 0)
                 {
@@ -1025,27 +1035,33 @@ class ApiDistributorController extends Controller
                     $getUsersResult = DB::table('users')
                     ->whereIn('store_id', $multipleMerchantStoreIds)
                     ->get(['id']);
+                    $userIds = [];
+                    foreach($getUsersResult as $getData)
+                    {
+                        $userIds[] = $getData->id;
+                    }
                    // echo "<pre>";
                     //print_r($getUsersResult);
-                    if(!empty($getUsersResult))
+                    if(!empty($multipleDistributorStoreIds))
                     {
                         $i=0;
-                        foreach($getUsersResult as $getUserData)
+                        foreach($multipleDistributorStoreIds as $distributorKey => $getDistributorData)
                         {
-                            $userId = $getUserData->id;
+                            $storeId = $getDistributorData;
                             //echo "user id::".$userId;
                             //get store_id from order table with the use of user_id
                             $getOrderResult = DB::table('orders')
                                         ->join('stores', 'orders.store_id', '=', 'stores.id')
                                         ->join('order_status', 'orders.order_status', '=', 'order_status.id')
                                         ->join('payment_status', 'orders.payment_status', '=', 'payment_status.id')
-                                        ->where('orders.user_id', $userId)
+                                        ->whereIn('orders.user_id', $userIds)
+                                        ->where('orders.store_id', $storeId)
                                         ->get(['orders.id', 'orders.user_id', 'orders.pay_amt','orders.store_id','orders.created_at','stores.store_name','order_status.order_status','payment_status.payment_status']);
                             //echo "<pre> orders data::";
                             //print_r($getOrderResult);
 
                            
-                            foreach($getOrderResult as $getOrdersData)
+                            foreach($getOrderResult as $getOrderKey => $getOrdersData)
                             {
                                 $orderId = $getOrdersData->id;
                                 $storeId = $getOrdersData->store_id;
@@ -1055,15 +1071,15 @@ class ApiDistributorController extends Controller
                                 $orderStatus = $getOrdersData->order_status;
                                 $paymentStatus = $getOrdersData->payment_status;
                                 
-                                $myOrdersArray[$i]['store_name'] = $orderStoreName;
-                                $myOrdersArray[$i]['order_id'] = $orderId;
-                                $myOrdersArray[$i]['payment_status'] = $paymentStatus;
-                                $myOrdersArray[$i]['order_status'] = $orderStatus;
-                                $myOrdersArray[$i]['total_price'] = $orderPaymentAmt;
+                                $myOrdersArray[$i][$getOrderKey]['store_name'] = $orderStoreName;
+                                $myOrdersArray[$i][$getOrderKey]['order_id'] = $orderId;
+                                $myOrdersArray[$i][$getOrderKey]['payment_status'] = $paymentStatus;
+                                $myOrdersArray[$i][$getOrderKey]['order_status'] = $orderStatus;
+                                $myOrdersArray[$i][$getOrderKey]['total_price'] = $orderPaymentAmt;
 
                                 $date = date_create($orderCreatedDate);
                                 $orderCreatedDate = date_format($date, 'd M, Y g:i A');
-                                $myOrdersArray[$i]['order_created_date'] = $orderCreatedDate;
+                                $myOrdersArray[$i][$getOrderKey]['order_created_date'] = $orderCreatedDate;
 
                                 //getProduct_count
                                 $getHasProductsResult = DB::table('has_products')
@@ -1074,19 +1090,16 @@ class ApiDistributorController extends Controller
                                 
                                 if(count($getHasProductsResult) > 0)
                                 {
-                                    $myOrdersArray[$i]['total_item'] = $getHasProductsResult[0]->total_product_count;    
+                                    $myOrdersArray[$i][$getOrderKey]['total_item'] = $getHasProductsResult[0]->total_product_count;    
                                 }
                                 else
                                 {
-                                    $myOrdersArray[$i]['total_item'] = 0;    
-                                }
-                                
-                               
+                                    $myOrdersArray[$i][$getOrderKey]['total_item'] = 0;    
+                                }                               
                             }
                             $i++;
                            
-                        }//foreach ends here
-                        
+                        }//foreach ends here                        
                         if (count($myOrdersArray) > 0) {
                             return response()->json(["status" => 1, 'msg' => '', 'data' => $myOrdersArray]);
                         } else {
