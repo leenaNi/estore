@@ -56,6 +56,10 @@
     width: 1%;
     margin-bottom: 0;
 }
+.btn-primary:focus {
+    background-color: #359bdb!important;
+    border-color: #359bdb!important;
+}
     </style>
     <body class="hold-transition login-page loginBG">
         <div class="login-box">
@@ -231,8 +235,8 @@ $("#loginbtn").click(function(){
                     } else if (response == '2') {
                         //alert("inside else if");
                         $("#otperr").show();
-                        $("#otperr").css("color", "red").html('Please enter valid OTP'); 
-                        
+                        $("#otperr").css("color", "red").html('Please enter valid OTP');
+
                     }
                 },
                 error: function (e) {
@@ -243,7 +247,7 @@ $("#loginbtn").click(function(){
     else
     {
         $("#otperr").show();
-        $("#otperr").css("color", "red").html('Enter OTP'); 
+        $("#otperr").css("color", "red").html('Enter OTP');
     }
 });
         </script>
