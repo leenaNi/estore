@@ -106,7 +106,7 @@
                             if($isApprovedVal==1)
                             {
                                 $statusLabel = 'Approved';
-                                $linkLabel = 'DisApprove';
+                                $linkLabel = 'Disapprove';
                             }
                             else
                             {
@@ -175,7 +175,7 @@
                         if(data['status'] != 1)
                         {
                             $("#errorLbl").show();
-                            $("#errorLbl").html(data['error']);
+                            $("#errorLbl").html(data['error']).show().fadeOut(4000);
                             $("#merchantDetailDiv").hide();
                         }
                         else
@@ -203,13 +203,13 @@
             }
             else
             {
-                $("#errorLbl").html("Enter valid code");
+                $("#errorLbl").html("Enter valid code").show().fadeOut(4000);
                 return false;
             }
         }
         else
         {
-            $("#errorLbl").html("Enter merchant code");
+            $("#errorLbl").html("Enter merchant code").show().fadeOut(4000);
             return false;
         }
     });
@@ -217,39 +217,7 @@
     {
         $("#"+id).hide();
     }
-    /*function approveMerchant(distributorId, isApprove)
-    {
-        if (confirm('Are you sure you want to approve this merchant?'))
-        {
-           
-            $.ajax({
-                    method: "POST",
-                    data: {'distributorId': distributorId},
-                    url: "{{route('admin.vendors.isApproveMerchant')}}",
-                    dataType: "json",
-                    success: function (data) {
-                        alert(data['status']);
-                        if(data['status'] == 1)
-                        {
-                           // alert("if");
-                            $("#status_approve_distributor_"+distributorId).html('Approved');
-                            $("#not_approve_distributor_"+distributorId).html('Disapprove');
-                            $("#not_approve_distributor_"+distributorId).removeAttr("onclick");
-                            $("#successMsgDiv").html('Merchant Approved Successfully').show().fadeOut(4000);
-                            
-                        }
-                        else
-                        {
-                            alert("Something went wrong!");
-                        }
-                        return false;
-                        // location.reload();courier-services
-                    }
-            });
-            return false;
-             
-        }
-    }*/
+   
    function changeStatus(merchantId, distributorId, status)
   {
       if(status == 1)
@@ -264,8 +232,8 @@
               data: {merchantId: merchantId, distributorId: distributorId},
               cache: false,
               success: function(response) {
-                  console.log("done");
-                  alert(response['status']);
+                  //console.log("done");
+                  //alert(response['status']);
                   if(response['status'] == 1)
                   {
                       if(status == 1)
@@ -278,7 +246,7 @@
                       else
                       {
                           $("#merchantStatus_"+distributorId).html("Approved");
-                          $("#changeStatusLink_"+distributorId).html('DisApprove');
+                          $("#changeStatusLink_"+distributorId).html('Disapprove');
                           $("#successMsgDiv").html(response['msg']).show().fadeOut(4000);
                           $("#changeStatusLink_"+distributorId).attr("onclick","changeStatus("+distributorId+",1)");
                       }

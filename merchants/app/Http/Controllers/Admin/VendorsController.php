@@ -513,13 +513,19 @@ class VendorsController extends Controller
     {
         $viewname = Config('constants.adminAddMerchantView') . '.index';
         $allinput = Input::all();
+        $loggedInUserId = Session::get('loggedin_user_id');
+        $loginUserType = Session::get('login_user_type');
+        $loginDistributorId = Session::get('merchantid');
+        //echo "logged in distributor id::".$loginDistributorId;
+        
+
         $merchantIdentityCode = $allinput['merchantIdentityCode'];
         $storeId = $allinput['hdnStoreId'];
 
         // Get distributor id from store table
         $storeResult = DB::table('stores')->where("id", $storeId)->first();
         $distributorId = $storeResult->merchant_id;
-
+        
         // Get distributor industry id
         $distributorResult = DB::table('distributor')->where("id", $distributorId)->first();
         $decodedDistributorDetail = json_decode($distributorResult->register_details, true);
@@ -530,10 +536,36 @@ class VendorsController extends Controller
             $merchantResult = DB::table('merchants')->where("identity_code", $merchantIdentityCode)->first();
 
             if (isset($merchantResult) && !empty($merchantResult)) {
+
+                //Get merchant id from the merchantIdentity code
+                $merchantResultSet = DB::table('merchants')->where("identity_code", $allinput['merchantIdentityCode'])->first();
+                if(!empty($merchantResultSet))
+                {
+                    $getMerchantId = $merchantResultSet->id;
+
+                }
+                //echo "serach merchant id::".$getMerchantId;
+                $hasDistributorResultSet = DB::table('has_distributors')
+                                            ->where("distributor_id", $distributorId )
+                                            ->where("merchant_id", $getMerchantId)
+                                            ->first();
+                $isApprovedFlagVal = '';
+                if(!empty($hasDistributorResultSet))
+                {
+                    $isApprovedFlagVal = $hasDistributorResultSet->is_approved;
+                }
+                if($isApprovedFlagVal == 1)
+                {
+                    $data = ['status' => 3, 'error' => "Merchant already added"];
+                }
+                else
+                {
+                    $data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
+                }
                 // $decodedMerchantDetail = json_decode($merchantResult->register_details);
                 // $merchantbussinessId = $decodedMerchantDetail->business_type[0];
                 // if (in_array($merchantbussinessId, $distributorbusinessIdArray)) {
-                    $data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
+                    //$data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
                 // } else {
                 //     $data = ['status' => 0, 'error' => "Industry not matched"];
                 // }
