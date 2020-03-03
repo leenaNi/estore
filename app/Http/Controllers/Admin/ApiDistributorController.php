@@ -29,7 +29,7 @@ class ApiDistributorController extends Controller
                 $storeId = $storeIdsData->id;
                 //$storeIdWithDistributorId[$storeIdsData->id]['merchant_id'] = $storeIdsData->merchant_id;
                 //$storeIdWithDistributorId[$storeIdsData->id]['store_name'] = $storeIdsData->store_name;
-
+                //echo "store id::".$storeId;
                 $storeIdWithDistributorId[$i]['store_id'] = $storeIdsData->id;
                 $storeIdWithDistributorId[$i]['store_name'] = $storeIdsData->store_name;
 
@@ -37,7 +37,7 @@ class ApiDistributorController extends Controller
                 {
                     //get store wise products
                     $productResult = DB::table('products as p')
-                    ->join('brand as b', 'p.brand_id', '=', 'b.id')
+                    ->leftJoin('brand as b', 'p.brand_id', '=', 'b.id')
                     ->where('p.store_id', $storeId)
                     ->where(['p.status' => 1, 'p.is_del' => 0])
                     ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
@@ -49,7 +49,7 @@ class ApiDistributorController extends Controller
                 {
                     //get store wise products
                     $productResult = DB::table('products as p')
-                    ->join('brand as b', 'p.brand_id', '=', 'b.id')
+                    ->leftJoin('brand as b', 'p.brand_id', '=', 'b.id')
                     ->where('p.store_id', $storeId)
                     ->where(['p.status' => 1, 'p.is_del' => 0])
                     ->orderBy('p.store_id', 'ASC')
