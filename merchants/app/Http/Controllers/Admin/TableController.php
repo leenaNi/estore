@@ -179,11 +179,12 @@ class TableController extends Controller
 
     public function orderview()
     {
+        $jsonString = Helper::getSettings();
         $tables = Table::with('tablestatus')->get();
         $tableStatus = TableStatus::get();
         $otypes = OrderType::where('id', '!=', 1)->get();
-        $otherorders = Order::whereNotIn("otype", [1, 0])->orderBy("created_at", "desc")->paginate(100);
-        $allorders = Order::where("otype", "!=", 0)->orderBy("created_at", "desc")->paginate(100);
+        $otherorders = Order::whereNotIn("otype", [1, 0])->where("store_id", $jsonString['store_id'])->orderBy("created_at", "desc")->paginate(100);
+        $allorders = Order::where("otype", "!=", 0)->where("store_id", $jsonString['store_id'])->orderBy("created_at", "desc")->paginate(100);
         return view(Config('constants.adminTableView') . '.orderview', compact('tables', 'tableStatus', 'otypes', 'otherorders', 'allorders'));
     }
 
