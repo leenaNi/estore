@@ -234,7 +234,7 @@ class ApiOfferController extends Controller
                             $i=1;
                             foreach($getCategoriesResult as $getCategoryData)
                             {
-                                $categoryId = $getCategoryData->category_id;
+                                $categoryId = $getCategoryData->id;
                                 $categoryName = $getCategoryData->category;
                                 $categoryShortDesc = $getCategoryData->short_desc;
                                 $categoryLongDesc = $getCategoryData->long_desc;
