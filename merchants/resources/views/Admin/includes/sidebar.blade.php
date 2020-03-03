@@ -1,6 +1,6 @@
 <?php
 $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
-?> 
+?>
 
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
@@ -32,23 +32,23 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.orders.cancelOrder/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.orders.cancelOrder') }}"><i class="fa fa-angle-right"></i>Cancel Orders</a>
                     </li>
-                    @if($feature['flag'] == 1)                   
+                    @if($feature['flag'] == 1)
                     <li class="{{ preg_match("/admin.miscellaneous.flags/",Route::currentRouteName()) ? 'active' : '' }} {{$storeViesion}}" >
                         <a  href="{{ route('admin.miscellaneous.flags') }}"><i class="fa fa-angle-right"></i>Flags</a></li>
                     @endif
-                    <li class="{{ preg_match("/admin.order_status.view/",Route::currentRouteName()) ? 'active' : '' }}"> 
+                    <li class="{{ preg_match("/admin.order_status.view/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.order_status.view') }}"><i class="fa fa-angle-right"></i>Order Status</a></li>
                     @if($feature['additional-charge'] == 1)
                     <li class="{{ preg_match("/admin.additional-charges.view/",Route::currentRouteName()) ? 'active' : '' }}">
-                        <a  href="{{ route('admin.additional-charges.view') }}"><i class="fa fa-angle-right"></i>Additional Charges</a></li> 
-                    @endif                          
+                        <a  href="{{ route('admin.additional-charges.view') }}"><i class="fa fa-angle-right"></i>Additional Charges</a></li>
+                    @endif
                 </ul>
-            </li>   
+            </li>
             <?php
-            $settingsdata = App\Library\Helper::getSettings();
-            ?>
+$settingsdata = App\Library\Helper::getSettings();
+?>
             @if(array_key_exists('industry_id',$settingsdata))
-            
+
             @if($settingsdata['industry_id'] == 5)
             <li class="treeview {{ preg_match("/admin.table|admin.restaurantlayout/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="#">
@@ -62,7 +62,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </ul>
             </li>
             @endif
-            @else 
+            @else
                 <li class="treeview {{ preg_match("/admin.table|admin.restaurantlayout/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-cutlery"></i><span>Tables</span>
@@ -109,7 +109,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                         </ul>
                     </li>
                     @endif
-                    @if($feature['tax']==1)  
+                    @if($feature['tax']==1)
                     <li class="{{ preg_match("/admin.tax/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.tax.view') }}"><i class="fa fa-angle-right"></i>Taxes</a></li>
                     @endif
 
@@ -143,7 +143,7 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{Route::currentRouteName()=='admin.sales.bycustomer' ? 'active' : '' }}"><a  href="{{ route('admin.sales.bycustomer') }}"><i class="fa fa-angle-right"></i>By Customers</a></li>
                 </ul>
 
-              
+
                 <ul class="treeview-menu">
                     <li class="{{ preg_match("/admin.sales.bycategory/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.sales.bycategory') }}"><i class="fa fa-angle-right"></i>By Category</a></li>
                 </ul>
@@ -158,28 +158,37 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
 
             </li>
-                    <li class="{{ preg_match("/admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.report.ordersIndex') }}"><i class="fa fa-angle-right"></i>Orders Report</a></li> 
+                    <li class="{{ preg_match("/admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.report.ordersIndex') }}"><i class="fa fa-angle-right"></i>Orders Report</a></li>
                 <!-- </ul> -->
 
                 <!-- <ul class="treeview-menu"> -->
                     <li class="{{ preg_match("/admin.report.productIndex/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.report.productIndex') }}"><i class="fa fa-angle-right"></i>Top Selling Products</a></li>
                 </ul>
-               
+
             </li>
-            <li class="{{ preg_match('/admin.distributor.orders.view/',Route::currentRouteName())? 'active' : ''}}">
-                <a href="{{ route('admin.distributor.orders.view') }}">
-                <i class="fa fa-shopping-bag" aria-hidden="true"></i><span>Distributor Order</span> <i class=""></i>
+            <li class="treeview {{ preg_match("/admin.distributor.orders|admin.distributor/",Route::currentRouteName())? 'active' : ''}}">
+                <a href="#">
+                    <i class="fa fa-credit-card"></i>
+                    <span>Distributors</span>
+                    <i class="fa fa-angle-down pull-right"></i>
                 </a>
-            </li>
-            <li class="{{ preg_match('/admin.distributor.orders.inwardList/',Route::currentRouteName())? 'active' : ''}}">
-                <a href="{{ route('admin.distributor.orders.inwardList') }}">
-                <i class="fa fa-money" aria-hidden="true"></i></i><span>Inward transaction</span> <i class=""></i>
-                </a>
-            </li>
-            <li class="{{ preg_match('/admin.distributor.addDistributor/',Route::currentRouteName())? 'active' : ''}}">
-                <a href="{{ route('admin.distributor.addDistributor') }}">
-                    <i class="fa fa-bar-chart"></i><span>Add Distributor</span> <i class=""></i>
-                </a>
+                <ul class="treeview-menu">
+                    <li class="{{ preg_match('/admin.distributor.orders.view/',Route::currentRouteName())? 'active' : ''}}">
+                        <a href="{{ route('admin.distributor.orders.view') }}">
+                        <i class="fa fa-shopping-bag" aria-hidden="true"></i><span>Distributor Order</span> <i class=""></i>
+                        </a>
+                    </li>
+                    <li class="{{ preg_match('/admin.distributor.orders.inwardList/',Route::currentRouteName())? 'active' : ''}}">
+                        <a href="{{ route('admin.distributor.orders.inwardList') }}">
+                        <i class="fa fa-money" aria-hidden="true"></i></i><span>Inward transaction</span> <i class=""></i>
+                        </a>
+                    </li>
+                    <li class="{{ preg_match('/admin.distributor.addDistributor/',Route::currentRouteName())? 'active' : ''}}">
+                        <a href="{{ route('admin.distributor.addDistributor') }}">
+                            <i class="fa fa-bar-chart"></i><span>Add Distributor</span> <i class=""></i>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li class="treeview {{ preg_match("/admin.vendors|admin.requisition/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
@@ -188,43 +197,43 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="{{ preg_match("/admin.vendors.view|admin.vendors.add|admin.vendors.edit/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.view') }}"><i class="fa fa-angle-right"></i>Vendors</a></li> 
+                    <li class="{{ preg_match("/admin.vendors.view|admin.vendors.add|admin.vendors.edit/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.view') }}"><i class="fa fa-angle-right"></i>Vendors</a></li>
                     <li class="{{ preg_match("/admin.requisition.view|admin.requisition.add|admin.requisition.edit/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.requisition.view') }}"><i class="fa fa-angle-right"></i>Purchase Orders</a></li>
-                   
+
                 </ul>
-            </li> 
+            </li>
             <li class="treeview {{ preg_match("/admin.campaign|admin.coupons|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.emailcampaign.viewemails|admin.emailcampaign.addemail|admin.emailcampaign.editemail|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-bullhorn"></i><span>Marketing</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="{{ preg_match("/admin.campaign/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.campaign.view') }}"><i class="fa fa-angle-right"></i>SMS Campaign</a></li>    
-                    <li class="{{ preg_match("/admin.emailcampaign|admin.emailcampaign.editemail/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.emailcampaign.viewemails') }}"><i class="fa fa-angle-right"></i>Email Campaign</a></li>    
-                    @if($feature['coupon']==1)  
+                    <li class="{{ preg_match("/admin.campaign/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.campaign.view') }}"><i class="fa fa-angle-right"></i>SMS Campaign</a></li>
+                    <li class="{{ preg_match("/admin.emailcampaign|admin.emailcampaign.editemail/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.emailcampaign.viewemails') }}"><i class="fa fa-angle-right"></i>Email Campaign</a></li>
+                    @if($feature['coupon']==1)
                     <li class="{{ preg_match("/admin.coupons/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.coupons.view') }}"><i class="fa fa-angle-right"></i>Coupons</a></li>
-                    @endif             
-                    @if($feature['loyalty']==1)  
-                    <li class="{{ preg_match("/admin.loyalty/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.loyalty.view') }}"><i class="fa fa-angle-right"></i>Loyalty Program</a></li>                                     
-                    @endif   
+                    @endif
+                    @if($feature['loyalty']==1)
+                    <li class="{{ preg_match("/admin.loyalty/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.loyalty.view') }}"><i class="fa fa-angle-right"></i>Loyalty Program</a></li>
+                    @endif
 
 
-                    <?php if (array_key_exists('referral', $feature)) { ?>
-                        @if($feature['referral']==1) 
-                        <li class="{{ preg_match("/admin.referralProgram/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.referralProgram.view') }}"><i class="fa fa-angle-right"></i>Referral Program</a></li>                
-                        @endif 
-                        @if($feature['notification']==1) 
-                        <li class="{{ preg_match("/admin.home/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.home.newsletter') }}"><i class="fa fa-angle-right"></i>Newsletters</a></li> 
-                        @endif 
+                    <?php if (array_key_exists('referral', $feature)) {?>
+                        @if($feature['referral']==1)
+                        <li class="{{ preg_match("/admin.referralProgram/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.referralProgram.view') }}"><i class="fa fa-angle-right"></i>Referral Program</a></li>
+                        @endif
+                        @if($feature['notification']==1)
+                        <li class="{{ preg_match("/admin.home/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.home.newsletter') }}"><i class="fa fa-angle-right"></i>Newsletters</a></li>
+                        @endif
                         <!-- <li class="{{ preg_match("/admin.smsSubscription/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.smsSubscription.view') }}"><i class="fa fa-angle-right"></i>SMS</a></li> -->
-                    <?php } ?>
+                    <?php }?>
 
                     {{-- <li class="{{ preg_match("/admin.newsletter/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.smsSubscription.view') }}"><i class="fa fa-angle-right"></i>NewsLetter</a></li> --}}
-                        
+
 <!--                             <li class="treeview {{ preg_match("/admin.marketing.emails|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-angle-right"></i><span>Bulk Email</span>
-                   
+
                 </a>
                 <ul class="treeview-menu">
                     <li class="{{ preg_match("/admin.marketing.emails/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.marketing.emails') }}"><i class="fa fa-angle-right"></i>Emails & Groups</a></li>
@@ -242,8 +251,8 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </a>
                 <ul class="treeview-menu">
                     @if($feature['acl'] == 1)
-                    <li class="{{ preg_match("/admin.customers.view/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"><i class="fa fa-angle-right"></i>All Customers</a></li> 
-                    <li class="{{ preg_match("/admin.storecontacts/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.storecontacts.view') }}"><i class="fa fa-angle-right"></i>All Contacts</a></li> 
+                    <li class="{{ preg_match("/admin.customers.view/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"><i class="fa fa-angle-right"></i>All Customers</a></li>
+                    <li class="{{ preg_match("/admin.storecontacts/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.storecontacts.view') }}"><i class="fa fa-angle-right"></i>All Contacts</a></li>
                     @endif
                     <li class="{{ Route::currentRouteName() == 'admin.customers.ledger' ? 'active' : '' }}">
                     <a href="{{ route('admin.customers.ledger') }}">
@@ -251,28 +260,28 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     </a>
                     </li>
                 </ul>
-            </li> 
+            </li>
 
             <li class="{{ Route::currentRouteName() == 'admin.payments.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.payments.view') }}">
                     <i class="fa fa-money"></i><span>Settlements</span> <i class=""></i>
                 </a>
             </li>
-            
+
             {{-- <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-user-plus"></i><span>ACL</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                   
+
                     <li class="{{ preg_match("/admin.systemusers/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.systemusers.view') }}"><i class="fa fa-angle-right"></i>System Users</a></li>
 
                     @if($feature['acl'] == 1)
                     <li class="{{ preg_match("/admin.roles/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.roles.view') }}"><i class="fa fa-angle-right"></i>Roles</a></li>
 
                     @endif
-                    @if($settingStatus['purchase'] == 1)   
+                    @if($settingStatus['purchase'] == 1)
                     <li class="{{ preg_match("/admin.vendors/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.vendors.view') }}"><i class="fa fa-angle-right"></i>Vendors</a></li>
                     @endif
 
@@ -295,14 +304,14 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
 
 
                     <li class="{{ preg_match("/admin.socialmedialink/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.socialmedialink.view') }}"><i class="fa fa-angle-right"></i>Social Media Links</a></li>
-                     @if($feature['testimonial'] == 1) 
-                    <li class="{{ preg_match("/admin.testimonial/",Route::currentRouteName()) ? 'active' : '' }} {{$storeViesion}}"><a  href="{{ route('admin.testimonial.view') }}"><i class="fa fa-angle-right"></i>Testimonials</a></li> 
+                     @if($feature['testimonial'] == 1)
+                    <li class="{{ preg_match("/admin.testimonial/",Route::currentRouteName()) ? 'active' : '' }} {{$storeViesion}}"><a  href="{{ route('admin.testimonial.view') }}"><i class="fa fa-angle-right"></i>Testimonials</a></li>
                     @endif
-                    @if($feature['email-facility'] == 1) 
-                    <li class="{{ preg_match("/admin.templateSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.templateSetting.view') }}"><i class="fa fa-angle-right"></i>Email Templates</a></li> 
-                    @endif 
+                    @if($feature['email-facility'] == 1)
+                    <li class="{{ preg_match("/admin.templateSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.templateSetting.view') }}"><i class="fa fa-angle-right"></i>Email Templates</a></li>
+                    @endif
                 </ul>
-            </li>    
+            </li>
             <!--            <li class="treeview {{ preg_match("/admin.apicat/",Route::currentRouteName()) ? 'active' : '' }}">
                             <a href="{{ route('admin.apicat.view') }}">
                                 <i class="fa fa-th-list"></i>
@@ -329,16 +338,16 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                 </a>
                 <ul class="treeview-menu">
                                         <li class="{{ preg_match("/admin.storeSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.storeSetting.view') }}"><i class="fa fa-angle-right"></i>Store Setting</a></li>
-                                        
+
                     <li class="{{ preg_match("/admin.domains/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.domains.view') }}"><i class="fa fa-angle-right"></i>Domain</a></li>
-                    
+
                     <li class="{{ preg_match("/admin.generalSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.generalSetting.view') }}"><i class="fa fa-angle-right"></i>Feature Activation</a></li>
-                                        <li class="{{ preg_match("/admin.paymentSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.paymentSetting.view') }}"><i class="fa fa-angle-right"></i>Payment Gateway</a></li>                     
-<!--                @if($feature['courier-services'] == 1) 
+                                        <li class="{{ preg_match("/admin.paymentSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.paymentSetting.view') }}"><i class="fa fa-angle-right"></i>Payment Gateway</a></li>
+<!--                @if($feature['courier-services'] == 1)
                     <li class="{{ preg_match("/admin.courier/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.courier.view') }}"><i class="fa fa-angle-right"></i>Courier Services</a></li>
                     @endif-->
                        <li class="{{ preg_match("/admin.bankDetails/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.bankDetails.view') }}"><i class="fa fa-angle-right"></i>Bank Details </a></li>
-                      @if($feature['email-facility'] == 1) 
+                      @if($feature['email-facility'] == 1)
                     <li class="{{ preg_match("/admin.emailSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.emailSetting.view') }}"><i class="fa fa-angle-right"></i>Email Gateway</a></li>
                     @endif
                     @if(count($productReturnStatus)>0)
@@ -363,12 +372,12 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.pincodes/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.pincodes.view') }}"><i class="fa fa-angle-right"></i>Pincodes</a></li>
                     @endif
                     <!-- <li class="{{ preg_match("/admin.currency/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.currency.view') }}"><i class="fa fa-angle-right"></i>Currency Conversion</a></li>  -->
-                    @if($feature['multi-language'] == 1)        
+                    @if($feature['multi-language'] == 1)
 <!--                    <li class="{{ preg_match("/admin.language/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.language.view') }}"><i class="fa fa-angle-right"></i>Languages</a></li>-->
 <!--                    <li class="{{ preg_match("/admin.translation/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.translation.view') }}"><i class="fa fa-angle-right"></i>Languages Translations</a></li> -->
                     @endif
 
-                  
+
             </li>
          </ul> --}}
         </li>

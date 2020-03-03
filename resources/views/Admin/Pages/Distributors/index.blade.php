@@ -16,7 +16,7 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
-                    @if (Auth::guard('merchant-users-web-guard')->check() !== true) 
+                    @if (Auth::guard('merchant-users-web-guard')->check() !== true)
                     <div class="row">
                         <div class="col-md-10">
                             {{ Form::open(['method'=>'get']) }}
@@ -27,7 +27,7 @@
                                     {{ Form::text('date_search',!empty(Input::get('date_search'))?Input::get('date_search'):null,['class'=>'form-control','id'=>'dateSearch','placeholder'=>'Select Date']) }}
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-3">
                                 {{ Form::text('s_company_name',!empty(Input::get('s_company_name'))?Input::get('s_company_name'):null,['class'=>'form-control','placeholder'=>'Distributor']) }}
                             </div>
@@ -38,8 +38,8 @@
                                 <button type="submit" class="btn btn-success"><i class="fa fa-search"></i> Search</button>
                             </div>
                             {{ Form::close() }}
-                        </div> 
-                        <div class="col-md-2 text-right"> 
+                        </div>
+                        <div class="col-md-2 text-right">
                             {!! Form::open(['route'=>'admin.distributors.addEdit','method'=>'post']) !!}
                             {!! Form::submit('Add New Distributor',['class'=>'btn btn-info']) !!}
                             {!! Form::close() !!}
@@ -62,24 +62,29 @@
                         </tr>
                         @foreach($distributor as $distributorData)
                             <?php
-                            $name = ucwords($distributorData->firstname." ".$distributorData->lastname);
-                            $industryName = '';
-                            $decodedBusiness = json_decode($distributorData->register_details,true);
-                            asort($decodedBusiness['business_name']);
-                            $decodedBusinessNameKey = array_keys($decodedBusiness['business_name']);
-                            $firstBusinesName = '';
-                            if(!empty($decodedBusiness['business_name']))
-                            {
-                                $industryName = implode(',',$decodedBusiness['business_name']);
-                                $firstBusinesName = $decodedBusiness['business_name'][$decodedBusinessNameKey[0]];
-                                if(count($decodedBusiness['business_name']) > 1)
-                                {
-                                    $countDisplay = ' +'.(count($decodedBusiness['business_name'])-1).' More';
-                                }
-                            } // End if here
-                            $businessNameArray  = $decodedBusiness['business_name'];
-                            array_shift($businessNameArray);
-                        ?>
+$name = ucwords($distributorData->firstname . " " . $distributorData->lastname);
+$industryName = '';
+$decodedBusiness = json_decode($distributorData->register_details, true);
+if ($decodedBusiness['business_name']) {
+    asort($decodedBusiness['business_name']);
+    $decodedBusinessNameKey = array_keys($decodedBusiness['business_name']);
+    $firstBusinesName = '';
+    if (!empty($decodedBusiness['business_name'])) {
+        $industryName = implode(',', $decodedBusiness['business_name']);
+        $firstBusinesName = $decodedBusiness['business_name'][$decodedBusinessNameKey[0]];
+        if (count($decodedBusiness['business_name']) > 1) {
+            $countDisplay = ' +' . (count($decodedBusiness['business_name']) - 1) . ' More';
+        }
+    } // End if here
+    $businessNameArray = $decodedBusiness['business_name'];
+    array_shift($businessNameArray);
+} else {
+    $businessNameArray = [];
+    $countDisplay = '';
+    $firstBusinesName = '';
+}
+
+?>
                             <tr>
                                 <td>{{ ucwords($distributorData->firstname." ".$distributorData->lastname) }}</td>
                                 <td>{{ $distributorData->email }}</td>
@@ -88,10 +93,10 @@
                                     {{ $firstBusinesName}}
                                     <a onmouseover="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').show();" onmouseout="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').hide();">{{ $countDisplay }}</a>
                                     <div id="moreBusinessNameDisplayDiv_{{$distributorData->id}}" style="display: none;">
-                                        @foreach($businessNameArray AS $businessNameId => $businessName)
+                                        @foreach($businessNameArray as $businessNameId => $businessName)
                                             <span>{{$businessName}}</span><br>
                                         @endforeach
-                                        
+
                                     </div>
                                 </td>
                                 <td>{{ date('d-M-Y',strtotime($distributorData->created_at)) }}</td>
@@ -102,7 +107,7 @@
                         @endforeach
                     </table>
                     <div class="pull-right">
-                        
+
                     </div>
 
 
@@ -123,11 +128,11 @@
 
 
 
-<?php if (!empty(Input::get('date_search'))) { ?>
-    <?php $dateArr = explode(" - ", Input::get('date_search')); ?>
+<?php if (!empty(Input::get('date_search'))) {?>
+    <?php $dateArr = explode(" - ", Input::get('date_search'));?>
         s_from_date = '<?php echo date("Y-m-d", strtotime($dateArr[0])) ?>';
         s_to_date = '<?php echo date("Y-m-d", strtotime($dateArr[1])) ?>';
-<?php } ?>
+<?php }?>
 
 
 

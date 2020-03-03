@@ -221,7 +221,8 @@ class ApiOfferController extends Controller
                         ->join('categories', 'store_categories.category_id', '=', 'categories.id')
                         ->whereIn('store_categories.store_id', $storeIds)
                         ->where('store_categories.status', 1)
-                        ->get(['store_categories.id', 'categories.category', 'categories.short_desc','categories.long_desc','categories.images','categories.is_home','categories.is_nav','categories.url_key']);
+                        ->groupBy('store_categories.category_id')
+                        ->get(['store_categories.id','store_categories.category_id', 'categories.category', 'categories.short_desc','categories.long_desc','categories.images','categories.is_home','categories.is_nav','categories.url_key']);
                         //dd(DB::getQueryLog()); // Show results of log
                         //echo "<pre>";
                         //print_r($getCategoriesResult);
@@ -256,27 +257,29 @@ class ApiOfferController extends Controller
                                 ->select(DB::raw('prod_id'))
                                 ->where('cat_id', $categoryId)
                                 ->get();
-                                //echo "<pre> product id::";
-                                // dd($getHasCategoryResult);
+
                                 if(count($getHasCategoryResult) > 0)
                                 {   //get product id
-                                    
+                                    $prodIds = [];
+                                    foreach($getHasCategoryResult as $prodID){
+                                        $prodIds[] = $prodID->prod_id;
+                                    }
                                     foreach($getHasCategoryResult as $getProdData)
                                     {
                                         $offerImagePath = $_SERVER['HTTP_HOST'] . '/public/Admin/uploads/offers/';
                                         $productId = $getProdData->prod_id;
-                                        //echo "<br> prod id::".$productId;
                                         //get category product wise offers
                                         $getoffersResult = DB::table('offers_products')
                                         ->join('offers', 'offers_products.offer_id', '=', 'offers.id')
                                         ->join('stores', 'stores.id', '=', 'offers.store_id')
-                                        ->where('offers_products.prod_id',$productId)
+                                        ->whereIn('offers_products.prod_id', $prodIds)
                                         ->where('offers_products.type', 1)
                                         ->where('offers.status', 1)
                                         ->get(['offers.id', 'offers.offer_name', 'offers.type', 'offers.store_id', 'offers.offer_discount_type','offers.offer_type','offers.start_date','offers.end_date','offers.offer_discount_value', 'offers.offer_image as offer_img', DB::raw('concat("http://", stores.url_key, ".' . $offerImagePath . '", offers.offer_image) as offer_image')]);
                                         //echo "<pre> offers data::";
                                         // print_r($getoffersResult);                                    
                                         $j=0;
+                                        
                                         foreach($getoffersResult as $getOfferData)
                                         {
                                             $categoryArray[$i]['offers'][$j]['offer_id'] = $getOfferData->id;

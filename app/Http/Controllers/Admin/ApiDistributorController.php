@@ -1048,10 +1048,10 @@ class ApiDistributorController extends Controller
                     //print_r($getUsersResult);
                     if(!empty($multipleDistributorStoreIds))
                     {
-                        $i=0;
-                        foreach($multipleDistributorStoreIds as $distributorKey => $getDistributorData)
-                        {
-                            $storeId = $getDistributorData;
+                        // $i=0;
+                        // foreach($multipleDistributorStoreIds as $distributorKey => $getDistributorData)
+                        // {
+                            // $storeId = $getDistributorData;
                             //echo "user id::".$userId;
                             //get store_id from order table with the use of user_id
                             $getOrderResult = DB::table('orders')
@@ -1059,7 +1059,8 @@ class ApiDistributorController extends Controller
                                         ->join('order_status', 'orders.order_status', '=', 'order_status.id')
                                         ->join('payment_status', 'orders.payment_status', '=', 'payment_status.id')
                                         ->whereIn('orders.user_id', $userIds)
-                                        ->where('orders.store_id', $storeId)
+                                        // ->where('orders.store_id', $storeId)
+                                        ->whereIn('orders.store_id', $multipleDistributorStoreIds)
                                         ->get(['orders.id', 'orders.user_id', 'orders.pay_amt','orders.store_id','orders.created_at','stores.store_name','order_status.order_status','payment_status.payment_status']);
                             //echo "<pre> orders data::";
                             //print_r($getOrderResult);
@@ -1075,15 +1076,15 @@ class ApiDistributorController extends Controller
                                 $orderStatus = $getOrdersData->order_status;
                                 $paymentStatus = $getOrdersData->payment_status;
                                 
-                                $myOrdersArray[$i][$getOrderKey]['store_name'] = $orderStoreName;
-                                $myOrdersArray[$i][$getOrderKey]['order_id'] = $orderId;
-                                $myOrdersArray[$i][$getOrderKey]['payment_status'] = $paymentStatus;
-                                $myOrdersArray[$i][$getOrderKey]['order_status'] = $orderStatus;
-                                $myOrdersArray[$i][$getOrderKey]['total_price'] = $orderPaymentAmt;
+                                $myOrdersArray[$getOrderKey]['store_name'] = $orderStoreName;
+                                $myOrdersArray[$getOrderKey]['order_id'] = $orderId;
+                                $myOrdersArray[$getOrderKey]['payment_status'] = $paymentStatus;
+                                $myOrdersArray[$getOrderKey]['order_status'] = $orderStatus;
+                                $myOrdersArray[$getOrderKey]['total_price'] = $orderPaymentAmt;
 
                                 $date = date_create($orderCreatedDate);
                                 $orderCreatedDate = date_format($date, 'd M, Y g:i A');
-                                $myOrdersArray[$i][$getOrderKey]['order_created_date'] = $orderCreatedDate;
+                                $myOrdersArray[$getOrderKey]['order_created_date'] = $orderCreatedDate;
 
                                 //getProduct_count
                                 $getHasProductsResult = DB::table('has_products')
@@ -1094,16 +1095,16 @@ class ApiDistributorController extends Controller
                                 
                                 if(count($getHasProductsResult) > 0)
                                 {
-                                    $myOrdersArray[$i][$getOrderKey]['total_item'] = $getHasProductsResult[0]->total_product_count;    
+                                    $myOrdersArray[$getOrderKey]['total_item'] = $getHasProductsResult[0]->total_product_count;    
                                 }
                                 else
                                 {
-                                    $myOrdersArray[$i][$getOrderKey]['total_item'] = 0;    
+                                    $myOrdersArray[$getOrderKey]['total_item'] = 0;    
                                 }                               
                             }
-                            $i++;
+                        //     $i++;
                            
-                        }//foreach ends here                        
+                        // }//foreach ends here                        
                         if (count($myOrdersArray) > 0) {
                             return response()->json(["status" => 1, 'msg' => '', 'data' => $myOrdersArray]);
                         } else {
