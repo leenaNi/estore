@@ -464,6 +464,7 @@ class ApiCartController extends Controller
                                     $user->cart = json_encode($cartData);
                                     $user->update();
                                     $data['data']['cart'] = $cartData;
+									$data['data']['total'] = Helper::getOrderTotal($cartData);
                                     $data["data"]['cartCount'] = Cart::instance("shopping")->count();
                                     $data['status'] = "1";
                                     $data['msg'] = "";
