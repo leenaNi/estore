@@ -403,8 +403,8 @@ class ApiCartController extends Controller
 									$data['data']['cart'] = $cartData;
 									$data['data']['total'] = Helper::getOrderTotal($cartData);
 									$data["data"]['cartCount'] = Cart::instance("shopping")->count();
-									$data['status'] = "1";
-									$data['msg'] = "";
+									$data['status'] = "0";
+									$data['msg'] = "No Products found";
 								}
                             }
                         }else if($offerDetails->type == 2) {
@@ -443,8 +443,8 @@ class ApiCartController extends Controller
 									$data['data']['cart'] = $cartData;
 									$data['data']['total'] = Helper::getOrderTotal($cartData);
 									$data["data"]['cartCount'] = Cart::instance("shopping")->count();
-									$data['status'] = "1";
-									$data['msg'] = "";
+									$data['status'] = "0";
+									$data['msg'] = "No Products found";
 								}
                         }
                         
