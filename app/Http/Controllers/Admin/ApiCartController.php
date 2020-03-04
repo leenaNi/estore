@@ -746,6 +746,7 @@ class ApiCartController extends Controller
             }
             $user->update();
             $data['data']['cart'] = $cartData;
+			$data['data']['total'] = Helper::getOrderTotal($cartData);
             $data["data"]['cartCount'] = Cart::instance("shopping")->count();
             $data['status'] = "1";
             $data['msg'] = "Item removed successfully";
@@ -772,7 +773,8 @@ class ApiCartController extends Controller
             $data['data']['cart'] = $cartData;
             $data['data']['subtotal'] = $sub_total;
             $data['data']['finaltotal'] = $amt['total'];
-            $data['data']['total'] = $amt['total'];
+            //$data['data']['total'] = $amt['total'];
+			$data['data']['total'] = Helper::getOrderTotal($cartData);
             $data['data']['tax'] = $cartInstance->options->tax_amt;
             $data['data']['cart_count'] = Cart::instance("shopping")->count();
             $data['msg'] = '';
