@@ -228,8 +228,9 @@
       if (confirm(msg)) {
           $.ajax({
               type: "POST",
+              data: {'merchantId':merchantId,'distributorId':distributorId},
               url: "{{ route('admin.vendors.isApproveMerchant') }}",
-              data: {merchantId: merchantId, distributorId: distributorId},
+              dataType: "json",
               cache: false,
               success: function(response) {
                   //console.log("done");
