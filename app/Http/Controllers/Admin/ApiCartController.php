@@ -27,6 +27,7 @@ class ApiCartController extends Controller
         }
         $cartData = Cart::instance("shopping")->content();
         $data['cart']['data'] = $cartData;
+		$data['data']['total'] = Helper::getOrderTotal($cartData);
         $data["ccnt"] = Cart::instance("shopping")->count();
         $data['status'] = "1";
         $data['msg'] = "";
