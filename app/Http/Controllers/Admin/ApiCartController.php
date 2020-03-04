@@ -409,7 +409,7 @@ class ApiCartController extends Controller
                             }
                         }else if($offerDetails->type == 2) {
                             $product = DB::table("products")->where('id',$offerProd->prod_id)->first();
-                                if(!empty($productData)){
+                                if(!empty($product)){
                                     
                                     if($product->prod_type==1 && $product->parent_prod_id==0){
                                         $msg = $this->simpleProduct($product->id,$offerProd->qty);
