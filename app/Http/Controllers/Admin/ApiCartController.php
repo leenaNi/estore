@@ -488,7 +488,16 @@ class ApiCartController extends Controller
                                     $data['status'] = "1";
                                     $data['msg'] = "";
                                 }
-                            }
+                            } else {
+									$cartData = Cart::instance("shopping")->content();
+									$user->cart = json_encode($cartData);
+									$user->update();
+									$data['data']['cart'] = $cartData;
+									$data['data']['total'] = Helper::getOrderTotal($cartData);
+									$data["data"]['cartCount'] = Cart::instance("shopping")->count();
+									$data['status'] = "0";
+									$data['msg'] = "No Products found";
+								}
                         }
                     }else if($offerDetails->type == 2){
                         $product = DB::table("products")->where('id',$offerProd->prod_id)->first();
@@ -519,7 +528,16 @@ class ApiCartController extends Controller
                                     $data['status'] = "1";
                                     $data['msg'] = "";
                                 }
-                            }
+                            }else {
+									$cartData = Cart::instance("shopping")->content();
+									$user->cart = json_encode($cartData);
+									$user->update();
+									$data['data']['cart'] = $cartData;
+									$data['data']['total'] = Helper::getOrderTotal($cartData);
+									$data["data"]['cartCount'] = Cart::instance("shopping")->count();
+									$data['status'] = "0";
+									$data['msg'] = "No Products found";
+								}
                     }
                     
                     return $data;
