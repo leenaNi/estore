@@ -203,57 +203,76 @@ class CategoryMasterController extends Controller {
 
     public function delete() {
         $getId = Input::get('id');
+        
         $cat = CategoryMaster::find($getId);
-
-
-        if ($cat->parent_id == null) {
-            $chidCat = $cat->adminChildren()->get();
-            if (count($chidCat) > 0) {
-                $data = ['status' => 'success', 'msg' => 'Sorry, Can not delete this root category.'];
-                Session::flash("message", "Sorry, Can not delete this root category.");
+        
+        if(!empty($cat))
+        {
+            $action = route("admin.category.view");
+            if ($cat->parent_id == null) {
+                $chidCat = $cat->adminChildren()->get();
+                if (count($chidCat) > 0) {
+                    $data = ['status' => 'success', 'msg' => 'Sorry, Can not delete this root category.', 'action'=>$action];
+                    Session::flash("message", "Sorry, Can not delete this root category.");
+                } else {
+                    $cat->delete();
+                    $data = ['status' => 'success', 'msg' => ' Root category deleted successfully.', 'action'=>$action];
+                    Session::flash("message", "Root category deleted successfully.");
+                }
             } else {
-                $cat->delete();
-                $data = ['status' => 'success', 'msg' => ' Root category deleted successfully.'];
-                Session::flash("message", "Root category deleted successfully.");
-            }
-        } else {
-            $catupdate = CategoryMaster::find($getId);
-            $chidCatUpdate = $catupdate->adminChildren()->get();
-            if (count($chidCatUpdate) > 0) {
-                $flag = 0;
-                foreach ($chidCatUpdate as $childCat) {
-                    $childupdate = CategoryMaster::find($childCat->id);
-                    $getProductInfo = $this->check_product($childupdate);
+            
+                $catupdate = CategoryMaster::find($getId);
+                $chidCatUpdate = $catupdate->adminChildren()->get();
 
-                    //                    $getProductInfo = Product::whereHas('categories', function($query) use ($childCat) {
-                    //                                return $query->where('cat_id', $childCat->id);
-                    //                            })->get();
-                    if (count($getProductInfo) > 0) {
-                        $flag++;
+
+                if (count($chidCatUpdate) > 0) {
+                
+                    $flag = 0;
+                    foreach ($chidCatUpdate as $childCat) {
+                        $childupdate = CategoryMaster::find($childCat->id);
+                        $getProductInfo = $this->check_product($childupdate);
+
+                        //                    $getProductInfo = Product::whereHas('categories', function($query) use ($childCat) {
+                        //                                return $query->where('cat_id', $childCat->id);
+                        //                            })->get();
+                        if (count($getProductInfo) > 0) {
+                            $flag++;
+                        }
+                    }
+                    if ($flag == 0) {
+                        $catupdate->delete();
+                        $data = ['status' => 'success', 'msg' => 'CategoryMaster deleted successfully.', 'action'=>$action];
+                        Session::flash("message", "CategoryMaster deleted successfully.");
+                    } else {
+                        $data = ['status' => 'success', 'msg' => "Sorry, This category and it's sub categoty is part of a product. Delete the sub category first.", 'action'=>$action];
+                        Session::flash("message", "Sorry, This category and it's sub categoty is part of a product. Delete the sub categoty first.");
+                    }
+                } else {
+                    
+                    $productInfo = $this->check_product($catupdate);
+                    if (count($productInfo) > 0) {
+                    
+                        $data = ['status' => 'success', 'msg' => 'Sorry, This category is a part of a product, So remove the product from this category first', 'action'=>$action];
+                        Session::flash("message", 'Sorry, This category is a part of a product, So remove product from this category first');
+                    } else {
+                    
+                        $catupdate->delete();
+                        $data = ['status' => 'success', 'msg' => 'CategoryMaster deleted successfully.', 'action'=>$action];
+                        Session::flash("message", 'CategoryMaster deleted successfully.');
                     }
                 }
-                if ($flag == 0) {
-                    $catupdate->delete();
-                    $data = ['status' => 'success', 'msg' => 'CategoryMaster deleted successfully.'];
-                    Session::flash("message", "CategoryMaster deleted successfully.");
-                } else {
-                    $data = ['status' => 'success', 'msg' => "Sorry, This category and it's sub categoty is part of a product. Delete the sub category first."];
-                    Session::flash("message", "Sorry, This category and it's sub categoty is part of a product. Delete the sub categoty first.");
-                }
-            } else {
-                $productInfo = $this->check_product($catupdate);
-                if (count($productInfo) > 0) {
-                    $data = ['status' => 'success', 'msg' => 'Sorry, This category is a part of a product, So remove the product from this category first'];
-                    Session::flash("message", 'Sorry, This category is a part of a product, So remove product from this category first');
-                } else {
-                    $catupdate->delete();
-                    $data = ['status' => 'success', 'msg' => 'CategoryMaster deleted successfully.'];
-                    Session::flash("message", 'CategoryMaster deleted successfully.');
-                }
             }
+            
+            //$viewname = '';
+           //$viewname = Config('constants.adminCategoryMasterView') . '.index';
+            //return Helper::returnView($viewname, $data);
+            return redirect()->route('admin.category.view');
         }
-        $viewname = '';
-        return Helper::returnView($viewname, $data, $url = 'admin.category.view');
+        else
+        {
+            return redirect()->to("/admin/category");
+        }
+        //return Helper::returnView($viewname, $data, $url = 'admin.category.view');
     }
 
     public function sizeChart() {

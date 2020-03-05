@@ -288,12 +288,24 @@ if (!empty($coupon->products()->get()->toArray())) {
 } else {
     $pIDArr = [];
 }
-
+//echo "<pre>";
+  //  print_r($pIDArr);
 echo "<ul id='catTree' class='tree icheck'>";
 foreach ($products as $product) {
+    $productId = $product->id;
+    if (in_array($productId, $pIDArr))
+    {
+        $checkedValue = "checked=checked";
+        $addClass = "checkbox-highlight";
+    }
+    else {
+        $checkedValue = "";
+        $addClass = "";
+    }
+    //echo "<br> checked val::".$checkedValue;
     echo "<li class='tree-item fl_left ps_relative_li searchProductsList' style='list-style-type:none;'>";
     echo '<div class="checkbox">
-                                <label class="i-checks checks-sm"><input type="checkbox" class="checkProductId" name="product_id[]" value="' . $product->id . '" ' . (in_array($product->id, $pIDArr) ? 'checked' : '') . '  /><i></i>' . $product->product . '</label>
+                                <label class="i-checks checks-sm '.$addClass.' "><input type="checkbox" class="checkProductId" name="product_id[]" value="' . $product->id . '"  "'.$checkedValue.'"/><i></i>' . $product->product . '</label>
                             </div>';
     echo "</li>";
 }

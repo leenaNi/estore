@@ -54,15 +54,15 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ Form::label('Logo', 'Logo *', ['class' => 'col-sm-3 control-label']) }}
+                        {{ Form::label('Logo', 'Logo ', ['class' => 'col-sm-3 control-label']) }}
                         <div class="col-sm-6 col-xs-12">
                             <input type="file" id="logo" name="logo" class="form-control">
                             {{-- <span>(Logo size must be 170px W X 100px H )</span> --}}
-                            <input type="hidden" name="hdnLogo" value="{{@$brandResult->logo}}" class="form-control">
+                            <input type="hidden" id="hdnLogo" name="hdnLogo" value="{{@$brandResult->logo}}" class="form-control">
                             <input type="hidden" name="isValidImage" id="isValidImage" value="1" class="form-control">
                             <div id="imgError" style="color:red;"></div>
                             @if(!empty($brandResult->logo))
-                                <img height="100px" width="100px src="{{ asset(Config('constants.brandImgPath').''.$brandResult->logo) }}" class="img-responsive brandLogo" />
+                                <img height="100px" width="100px" src="{{ asset(Config('constants.brandImgPath').''.$brandResult->logo) }}" class="img-responsive brandLogo" />
                             @else
                                 <img  height="100px" width="100px" class="img-responsive brandLogo" />
                             @endif
@@ -91,6 +91,7 @@
 <script>
 
     $("#brandForm").validate({
+
         // Specify the validation rules
         rules: {
             name: {
