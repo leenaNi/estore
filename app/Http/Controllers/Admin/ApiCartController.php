@@ -333,7 +333,6 @@ class ApiCartController extends Controller
                     
                 }
                 if(count($prodIds) > 0){
-                    
                     if($products == null){
                         return $this->getSubProducts1($prodIds);
                     }else{
@@ -363,42 +362,46 @@ class ApiCartController extends Controller
                         $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();
                         if($offerDetails->type == 1){
                             $getOfferProd = DB::table("offers_products")->where(['offer_id'=>$offerId,'type'=>1])->whereIn('prod_id',$simpleProd)->get();
-                            
-                            foreach($getOfferProd as $product){
-                                $product = DB::table("products")->where('id',$product->prod_id)->first();
-                                if(!empty($product)){
-                                    if($product->prod_type==1 && $product->parent_prod_id==0){
-                                        $msg = $this->simpleProduct($product->id,$offerProd->qty);
-                                    }
-                                    else if($product->prod_type==2){
-                                        $msg = $this->comboProduct($prod_id, $offerProd->qty, $sub_prod);
-                                    }
-                                    else if($product->prod_type==3 || $product->parent_prod_id!=0){  
-                                        $msg = $this->configProduct($product->parent_prod_id, $offerProd->qty,$product->id);
-                                    }
-                                    else if($product->prod_type==5){
-                                        $msg = $this->downloadProduct($product->id,$offerProd->qty);
-                                    }
-                                    
-                                    if ($msg == 1) {
-                                        $data['data']['cart'] = null;
-                                        $data['status'] = "0";
-                                        $data['msg'] = $msg;
-                                    } else {
-                                        //return $msg;
-                                        $cartData = Cart::instance("shopping")->content();
-                                        $user->cart = json_encode($cartData);
-                                        $user->update();
-                                        $data['data']['cart'] = $cartData;
-                                        $data['data']['total'] = Helper::getOrderTotal($cartData);
-                                        $data["data"]['cartCount'] = Cart::instance("shopping")->count();
-                                        $data['status'] = "1";
-                                        $data['msg'] = "";
+                            if(count($getOfferProd) > 0){
+                                foreach($getOfferProd as $product){
+                                    $product = DB::table("products")->where('id',$product->prod_id)->first();
+                                    if(!empty($product)){
+                                        if($product->prod_type==1 && $product->parent_prod_id==0){
+                                            $msg = $this->simpleProduct($product->id,$offerProd->qty);
+                                        }
+                                        else if($product->prod_type==2){
+                                            $msg = $this->comboProduct($prod_id, $offerProd->qty, $sub_prod);
+                                        }
+                                        else if($product->prod_type==3 || $product->parent_prod_id!=0){  
+                                            $msg = $this->configProduct($product->parent_prod_id, $offerProd->qty,$product->id);
+                                        }
+                                        else if($product->prod_type==5){
+                                            $msg = $this->downloadProduct($product->id,$offerProd->qty);
+                                        }
+                                        
+                                        if ($msg == 1) {
+                                            $data['data']['cart'] = null;
+                                            $data['status'] = "0";
+                                            $data['msg'] = $msg;
+                                        } else {
+                                            //return $msg;
+                                            $cartData = Cart::instance("shopping")->content();
+                                            $user->cart = json_encode($cartData);
+                                            $user->update();
+                                            $data['data']['cart'] = $cartData;
+                                            $data['data']['total'] = Helper::getOrderTotal($cartData);
+                                            $data["data"]['cartCount'] = Cart::instance("shopping")->count();
+                                            $data['status'] = "1";
+                                            $data['msg'] = "";
+                                        }
+                                    }else{
+                                        return response()->json(["status" => 0, 'msg' => 'No Product found.']); 
                                     }
                                 }
                             }
+                            
                         }else if($offerDetails->type == 2){
-                            $product = DB::table("products")->where('id',$offerProd->prod_id)->first();
+                            $product = DB::table("products")->where('id',$simpleProd[1])->first();
                                 if(!empty($product)){
                                     
                                     if($product->prod_type==1 && $product->parent_prod_id==0){
@@ -471,6 +474,8 @@ class ApiCartController extends Controller
                                     $data['status'] = "1";
                                     $data['msg'] = "";
                                 }
+                            }else{
+                                return response()->json(["status" => 0, 'msg' => 'No Product found.']); 
                             }
                         }
                     }else if($offerDetails->type == 2){
@@ -502,6 +507,8 @@ class ApiCartController extends Controller
                                     $data['status'] = "1";
                                     $data['msg'] = "";
                                 }
+                            }else{
+                                return response()->json(["status" => 0, 'msg' => 'No Product found.']); 
                             }
                     }
                     
