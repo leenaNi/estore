@@ -212,7 +212,7 @@ $("#sendotp").click(function()
 }); // end click event
 
 
-$("#otp").keyup(function(event) {
+$("#otp4").keyup(function(event) {
     if (event.keyCode === 13) {
         $("#loginbtn").click();
     }
