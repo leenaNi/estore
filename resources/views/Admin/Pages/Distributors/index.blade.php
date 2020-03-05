@@ -62,42 +62,55 @@
                         </tr>
                         @foreach($distributor as $distributorData)
                             <?php
+                            $industryName = '';
+                            $countDisplay = '';
+                            $businessNameArray = [];
+
 $name = ucwords($distributorData->firstname . " " . $distributorData->lastname);
-$industryName = '';
 $decodedBusiness = json_decode($distributorData->register_details, true);
-if ($decodedBusiness['business_name']) {
-    asort($decodedBusiness['business_name']);
-    $decodedBusinessNameKey = array_keys($decodedBusiness['business_name']);
+if(empty($name) || $name == "")
+{
+    $disName= '-';
+}
+else {
+    $disName= $name;
+}
+/*if ($decodedBusiness['store_name']) {
+    asort($decodedBusiness);
+    $decodedBusinessNameKey = array_keys($decodedBusiness);
     $firstBusinesName = '';
-    if (!empty($decodedBusiness['business_name'])) {
-        $industryName = implode(',', $decodedBusiness['business_name']);
-        $firstBusinesName = $decodedBusiness['business_name'][$decodedBusinessNameKey[0]];
-        if (count($decodedBusiness['business_name']) > 1) {
-            $countDisplay = ' +' . (count($decodedBusiness['business_name']) - 1) . ' More';
+    if (!empty($decodedBusiness['store_name'])) {
+        //$industryName = implode(',', $decodedBusiness['store_name']);
+        $industryName = $decodedBusiness['store_name'];
+        $firstBusinesName = $decodedBusiness['store_name'][$decodedBusinessNameKey[0]];
+        if (count($decodedBusiness['store_name']) > 1) {
+            $countDisplay = ' +' . (count($decodedBusiness['store_name']) - 1) . ' More';
         }
     } // End if here
-    $businessNameArray = $decodedBusiness['business_name'];
+    $businessNameArray = $decodedBusiness;
     array_shift($businessNameArray);
 } else {
     $businessNameArray = [];
     $countDisplay = '';
     $firstBusinesName = '';
 }
-
+echo "<pre>";
+    print_r($businessNameArray);
+    exit;*/
 ?>
                             <tr>
-                                <td>{{ ucwords($distributorData->firstname." ".$distributorData->lastname) }}</td>
+                                <td>{{$disName}}</td>
                                 <td>{{ $distributorData->email }}</td>
                                 <td>{{ $distributorData->phone_no }}</td>
                                 <td>
-                                    {{ $firstBusinesName}}
-                                    <a onmouseover="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').show();" onmouseout="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').hide();">{{ $countDisplay }}</a>
+                                    {{ $decodedBusiness['store_name']}}
+                                    <!--<a onmouseover="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').show();" onmouseout="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').hide();">{{ $countDisplay }}</a>
                                     <div id="moreBusinessNameDisplayDiv_{{$distributorData->id}}" style="display: none;">
                                         @foreach($businessNameArray as $businessNameId => $businessName)
                                             <span>{{$businessName}}</span><br>
                                         @endforeach
 
-                                    </div>
+                                    </div>-->
                                 </td>
                                 <td>{{ date('d-M-Y',strtotime($distributorData->created_at)) }}</td>
                                 <td>
