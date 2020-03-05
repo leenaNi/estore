@@ -579,7 +579,9 @@ class Helper
         $sub_total = 0;
         foreach ($cart as $key => $cItm) {
             $getdisc = ($cItm->options->disc + $cItm->options->wallet_disc + $cItm->options->voucher_disc + $cItm->options->referral_disc + $cItm->options->user_disc);
-
+			if(@$cItm->options->offerId>0){
+				$getdisc += @$cItm->options->offer_disc_amt;
+			}
             $sub_total += $cItm->subtotal - $getdisc;
 
         }

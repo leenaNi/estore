@@ -34,8 +34,8 @@ class ApiDistributorOrderController extends Controller
             $cartData = Cart::instance("shopping")->content();
             $cartcount = Cart::instance("shopping")->count();
             $cartInfo = Cart::instance("shopping")->total();
-            $cart_amt = Helper::calAmtWithTax();
-            $finalamt = $cart_amt['total'];
+            $cart_amt = Helper::getOrderTotal($cartData); //Helper::calAmtWithTax();
+            $finalamt = Helper::getOrderTotal($cartData); //$cart_amt['total'];
             //$paymentAmt = Input::get('pay_amt');
             $paymentAmt = $finalamt;
             $paymentMethod = 8; //"9";

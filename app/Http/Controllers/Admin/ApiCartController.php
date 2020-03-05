@@ -27,6 +27,7 @@ class ApiCartController extends Controller
         }
         $cartData = Cart::instance("shopping")->content();
         $data['cart']['data'] = $cartData;
+		$data['total'] = Helper::getOrderTotal($cartData);
         $data["ccnt"] = Cart::instance("shopping")->count();
         $data['status'] = "1";
         $data['msg'] = "";
@@ -110,6 +111,7 @@ class ApiCartController extends Controller
                 }
                 $user->update();
                 $data['data']['cart'] = $cartData;
+				$data['data']['total'] = Helper::getOrderTotal($cartData);
                 $data["data"]['cartCount'] = Cart::instance("shopping")->count();
                 $data['status'] = "1";
                 $data['msg'] = "";
@@ -351,6 +353,7 @@ class ApiCartController extends Controller
                                 $user->cart = json_encode($cartData);
                                 $user->update();
                                 $data['data']['cart'] = $cartData;
+								$data['data']['total'] = Helper::getOrderTotal($cartData);
                                 $data["data"]['cartCount'] = Cart::instance("shopping")->count();
                                 $data['status'] = "1";
                                 $data['msg'] = "";
@@ -358,6 +361,7 @@ class ApiCartController extends Controller
                         }
                         $simpleProd = array_diff($SPids,$prodIds);
                         $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();
+						//dd($offerDetails);
                         if($offerDetails->type == 1){
                             $getOfferProd = DB::table("offers_products")->where(['offer_id'=>$offerId,'type'=>1])->whereIn('prod_id',$simpleProd)->get();
                             
@@ -387,15 +391,25 @@ class ApiCartController extends Controller
                                         $user->cart = json_encode($cartData);
                                         $user->update();
                                         $data['data']['cart'] = $cartData;
+										$data['data']['total'] = Helper::getOrderTotal($cartData);
                                         $data["data"]['cartCount'] = Cart::instance("shopping")->count();
                                         $data['status'] = "1";
                                         $data['msg'] = "";
                                     }
-                                }
+                                } else {
+									$cartData = Cart::instance("shopping")->content();
+									$user->cart = json_encode($cartData);
+									$user->update();
+									$data['data']['cart'] = $cartData;
+									$data['data']['total'] = Helper::getOrderTotal($cartData);
+									$data["data"]['cartCount'] = Cart::instance("shopping")->count();
+									$data['status'] = "0";
+									$data['msg'] = "No Products found";
+								}
                             }
-                        }else if($offerDetails->type == 2){
+                        }else if($offerDetails->type == 2) {
                             $product = DB::table("products")->where('id',$offerProd->prod_id)->first();
-                                if(!empty($productData)){
+                                if(!empty($product)){
                                     
                                     if($product->prod_type==1 && $product->parent_prod_id==0){
                                         $msg = $this->simpleProduct($product->id,$offerProd->qty);
@@ -417,11 +431,21 @@ class ApiCartController extends Controller
                                         $user->cart = json_encode($cartData);
                                         $user->update();
                                         $data['data']['cart'] = $cartData;
+										$data['data']['total'] = Helper::getOrderTotal($cartData);
                                         $data["data"]['cartCount'] = Cart::instance("shopping")->count();
                                         $data['status'] = "1";
                                         $data['msg'] = "";
                                     }
-                                }
+                                } else {
+									$cartData = Cart::instance("shopping")->content();
+									$user->cart = json_encode($cartData);
+									$user->update();
+									$data['data']['cart'] = $cartData;
+									$data['data']['total'] = Helper::getOrderTotal($cartData);
+									$data["data"]['cartCount'] = Cart::instance("shopping")->count();
+									$data['status'] = "0";
+									$data['msg'] = "No Products found";
+								}
                         }
                         
                         return $data;
@@ -459,15 +483,25 @@ class ApiCartController extends Controller
                                     $user->cart = json_encode($cartData);
                                     $user->update();
                                     $data['data']['cart'] = $cartData;
+									$data['data']['total'] = Helper::getOrderTotal($cartData);
                                     $data["data"]['cartCount'] = Cart::instance("shopping")->count();
                                     $data['status'] = "1";
                                     $data['msg'] = "";
                                 }
-                            }
+                            } else {
+									$cartData = Cart::instance("shopping")->content();
+									$user->cart = json_encode($cartData);
+									$user->update();
+									$data['data']['cart'] = $cartData;
+									$data['data']['total'] = Helper::getOrderTotal($cartData);
+									$data["data"]['cartCount'] = Cart::instance("shopping")->count();
+									$data['status'] = "0";
+									$data['msg'] = "No Products found";
+								}
                         }
                     }else if($offerDetails->type == 2){
                         $product = DB::table("products")->where('id',$offerProd->prod_id)->first();
-                            if(!empty($productData)){
+                            if($product != null){
                                 
                                 if($product->prod_type==1 && $product->parent_prod_id==0){
                                     $msg = $this->simpleProduct($product->id,$offerProd->qty);
@@ -489,11 +523,21 @@ class ApiCartController extends Controller
                                     $user->cart = json_encode($cartData);
                                     $user->update();
                                     $data['data']['cart'] = $cartData;
+									$data['data']['total'] = Helper::getOrderTotal($cartData);
                                     $data["data"]['cartCount'] = Cart::instance("shopping")->count();
                                     $data['status'] = "1";
                                     $data['msg'] = "";
                                 }
-                            }
+                            }else {
+									$cartData = Cart::instance("shopping")->content();
+									$user->cart = json_encode($cartData);
+									$user->update();
+									$data['data']['cart'] = $cartData;
+									$data['data']['total'] = Helper::getOrderTotal($cartData);
+									$data["data"]['cartCount'] = Cart::instance("shopping")->count();
+									$data['status'] = "0";
+									$data['msg'] = "No Products found";
+								}
                     }
                     
                     return $data;
@@ -739,6 +783,7 @@ class ApiCartController extends Controller
             }
             $user->update();
             $data['data']['cart'] = $cartData;
+			$data['data']['total'] = Helper::getOrderTotal($cartData);
             $data["data"]['cartCount'] = Cart::instance("shopping")->count();
             $data['status'] = "1";
             $data['msg'] = "Item removed successfully";
@@ -765,7 +810,8 @@ class ApiCartController extends Controller
             $data['data']['cart'] = $cartData;
             $data['data']['subtotal'] = $sub_total;
             $data['data']['finaltotal'] = $amt['total'];
-            $data['data']['total'] = $amt['total'];
+            //$data['data']['total'] = $amt['total'];
+			$data['data']['total'] = Helper::getOrderTotal($cartData);
             $data['data']['tax'] = $cartInstance->options->tax_amt;
             $data['data']['cart_count'] = Cart::instance("shopping")->count();
             $data['msg'] = '';
@@ -883,7 +929,6 @@ class ApiCartController extends Controller
             return 0;
         }
     }
-
-
+	
 
 }
