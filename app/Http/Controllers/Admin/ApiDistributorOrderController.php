@@ -22,7 +22,7 @@ class ApiDistributorOrderController extends Controller
 
     public function placeOrder()
     {
-        $MerchantId = Input::get('merchantId');
+        $MerchantId = Session::get('merchantId');
         $DistributorID = 0;
         if (!empty($MerchantId)) {
 
