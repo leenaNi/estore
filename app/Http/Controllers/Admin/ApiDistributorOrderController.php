@@ -23,14 +23,24 @@ class ApiDistributorOrderController extends Controller
     public function placeOrder()
     {
         $MerchantId = Input::get('merchantId');
-        $DistributorID = Input::get('distributorId');
-        if (!empty($MerchantId) && !empty($DistributorID)) {
+        $DistributorID = 0;
+        if (!empty($MerchantId)) {
 
             $user = User::find(Session::get('authUserId'));
             if ($user->cart != '') {
                 $cartData = json_decode($user->cart, true);
                 Cart::instance('shopping')->add($cartData);
+                $storeid = 0;
+                foreach($cartData as $val){
+                    $store_id = $val['options']['store_id'];
+                    break;
+                }
+                $Storeinfo = Store::find($store_id);
+                $DistributorID = $Storeinfo->merchant_id;
+            }else{
+                return ['status' => 1, 'msg' => 'Cart is empty']; 
             }
+            
             $cartData = Cart::instance("shopping")->content();
             $cartcount = Cart::instance("shopping")->count();
             $cartInfo = Cart::instance("shopping")->total();
@@ -265,45 +275,6 @@ class ApiDistributorOrderController extends Controller
         // $toPayment['curData'] = $currencySetting->setCurrency();
         // $toPayment['addCharge'] = AdditionalCharge::where('status', 1)->get();
         return $toPayment;
-    }
-
-    public function setCurrency()
-    {
-        //Default Currency
-        $currency = GeneralSetting::where('url_key', 'default-currency')->first(['details']);
-        $currencySettings = json_decode($currency->details, true);
-        $jsonString = Helper::getSettings();
-        $data = (object) $jsonString;
-
-        //Current Session Currency
-        $currentCurr = '';
-
-        if ($currencySettings['iso_code'] !== $data->currencyId && empty(Session::get('currency_id'))) { //default currency is changed
-            Session::put('currency', $data->currencyId);
-            $curr = Helper::getCurrency($data->currencyId);
-            return ['currency' => $data->currencyId, 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-        } else if ($currencySettings['iso_code'] === $data->currencyId) { //both currency is same
-            if (!empty($currentCurr)) {
-                if ($currencySettings['iso_code'] !== $currentCurr) { //current session currency is diff then set it to default
-                    Session::put('currency', $currencySettings['iso_code']);
-                    $curr = Helper::getCurrency($currencySettings['iso_code']);
-                    return ['currency' => $currencySettings['iso_code'], 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-                } else {
-                    $curr = Helper::getCurrency($currencySettings['iso_code']);
-                    return ['currency' => $currentCurr, 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-                }
-            } else if (!empty($currency)) {
-                Session::put('currency', $currencySettings['iso_code']);
-                $curr = Helper::getCurrency($currencySettings['iso_code']);
-                return ['currency' => $currencySettings['iso_code'], 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-            } else {
-                $curr = Helper::getCurrency($data->currencyId);
-                return ['currency' => $data->currencyId, 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-            }
-        } else {
-            $curr = Helper::getCurrency($data->currencyId);
-            return ['currency' => $data->currencyId, 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-        }
     }
 
     public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $userid, $orderid, $DistributorID)
@@ -556,5 +527,101 @@ class ApiDistributorOrderController extends Controller
         // dd(Cart::instance('shopping')->content());
         // dd($cart_ids);
         //  $this->orderSuccess();
+    }
+
+    public function reOrder(){
+        $orderId = Input::get('orderId');
+        $orderData = DB::table('has_products')->where('order_id',$orderId)->get();
+        $user = User::where('id', Session::get('authUserId'))->first();
+        if ($user->cart != '') {
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->destroy();
+            if(Cart::instance("shopping")->count() != 0){
+                $user->cart = json_encode($cartData);
+            } else {
+                $user->cart = '';
+            }
+            $user->update();
+            Cart::instance('shopping')->add($cartData);
+        }
+        
+        foreach($orderData as  $prod){
+            $product = DB::table("products")->where('id',$prod->prod_id)->first();
+            if(!empty($product)){
+                if($prod->prod_type==1){
+                    $msg = app('App\Http\Controllers\Admin\ApiCartController')->simpleProduct($prod->prod_id,$prod->qty);
+                }
+                else if($prod->prod_type==2){
+                    $msg = app('App\Http\Controllers\Admin\ApiCartController')->comboProduct($prod->prod_id, $prod->qty,$prod->sub_prod_id);
+                }
+                else if($prod->prod_type==3 || $prod->sub_prod_id !=0 ){  
+                    $msg = app('App\Http\Controllers\Admin\ApiCartController')->configProduct($prod->prod_id, $prod->qty,$prod->sub_prod_id);
+                }
+                else if($prod->prod_type==5){
+                    $msg = app('App\Http\Controllers\Admin\ApiCartController')->downloadProduct($prod->prod_id, $prod->qty);
+                }
+            }else{
+                return response()->json(["status" => 0, 'msg' => 'No Product found.']); 
+            }
+            
+        }
+        $cartData = Cart::instance("shopping")->content();
+        foreach($cartData as $val){
+            $store_id = $val->options->store_id;
+            break;
+        }
+        $Storeinfo = Store::find($store_id);
+        $DistributorID = $Storeinfo->merchant_id;
+        $cartcount = Cart::instance("shopping")->count();
+        $cartInfo = Cart::instance("shopping")->total();
+        $cart_amt = Helper::getOrderTotal($cartData); //Helper::calAmtWithTax();
+        $finalamt = Helper::getOrderTotal($cartData); //$cart_amt['total'];
+        //$paymentAmt = Input::get('pay_amt');
+        $paymentAmt = $finalamt;
+        $paymentMethod = 8; //"9";
+        $paymentStatus = "1";
+        $payAmt = number_format((float)$finalamt, 2, '.', '');
+        //apply additional charge to payAmount
+        $additional_charge_json = $this->ApplyAdditionalCharge($payAmt);
+        $additional_charge = json_decode($additional_charge_json, true);
+        $payAmt = $payAmt + $additional_charge['total_amt'];
+
+        $trasactionId = "";
+        $transactionStatus = "";
+        $userid = $user->id;
+        //$addressid = Input::get('address_id');
+        //$userinfo = User::find($userid);
+        $toPay = $this->toPayment($userid);
+        if (!empty($toPay['orderId'])) {
+            $orderS = Order::find($toPay['orderId']);
+            $orderS->created_by = $userid;
+            $orderS->additional_charge = $additional_charge_json;
+            $orderS->amt_paid = $paymentAmt;
+            $orderS->order_type = 1;
+            $orderS->description = '';
+            $orderS->order_status = 31; //processing
+            $orderS->update();
+            if ($paymentMethod == '10') {
+                $userinfo->credit_amt = $userinfo->credit_amt + ($payAmt - $paymentAmt);
+                $userinfo->update();
+                // $paymentHistory = PaymentHistory::create();
+                // $paymentHistory->order_id = $orderS->id;
+                // $paymentHistory->pay_amount = $paymentAmt;
+                // $paymentHistory->added_by = $userid;
+                // $paymentHistory->save();
+            }
+            $succ = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $userid, $orderS->id, $DistributorID);
+            Cart::instance("shopping")->destroy();
+
+        }
+
+        if ($succ['orderId']) {
+            $order = Order::find($succ['orderId']);
+            $user->cart = '';
+            $user->save();
+            return ['status' => 1, 'msg' => 'Order Created Successfully', 'data' => $order]; //success
+        } else {
+            return ['status' => 0, 'msg' => 'Failed']; //failure
+        }
     }
 }
