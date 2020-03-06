@@ -14,9 +14,9 @@ class ApiDistributorController extends Controller
 {
     public function searchProductWithDistributor()
     {
-        if (!empty(Input::get("merchantId"))) {
+        if (!empty(Session::get("merchantId"))) {
             $searchKeyWord = Input::get("searchKey");
-            $merchantId = Input::get("merchantId");
+            $merchantId = Session::get("merchantId");
 
             $storeIdsResult = $this->getStoreId($merchantId);
             
@@ -164,9 +164,9 @@ class ApiDistributorController extends Controller
 
     public function getDistributorByProduct()
     {
-        if (!empty(Input::get("merchantId"))) {
+        if (!empty(Session::get("merchantId"))) {
             $searchKeyWord = Input::get("searchKey");
-            $merchantId = Input::get("merchantId");
+            $merchantId = Session::get("merchantId");
 
             $storeIdsResult = $this->getStoreId($merchantId);
 
@@ -446,8 +446,8 @@ class ApiDistributorController extends Controller
 
     public function getDistributorOfferDetails()
     {
-        if (!empty(Input::get("merchantId"))) {
-            $merchantId = Input::get("merchantId");
+        if (!empty(Session::get("merchantId"))) {
+            $merchantId = Session::get("merchantId");
             $distributorId = Input::get("distributorId");
             $companyId = Input::get("companyId");
             $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
@@ -533,7 +533,7 @@ class ApiDistributorController extends Controller
                         return response()->json(["status" => 1, 'msg' => 'Records not found']);
                     }
                 } else {
-                    return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing..']);
+                    return response()->json(["status" => 0, 'msg' => 'Records not found']);
                 }
             } else {
                 return response()->json(["status" => 0, 'msg' => 'Invalid data']);
@@ -545,8 +545,8 @@ class ApiDistributorController extends Controller
 
     public function getDistributorBrandDetails()
     {
-        if (!empty(Input::get("merchantId"))) {
-            $merchantId = Input::get("merchantId");
+        if (!empty(Session::get("merchantId"))) {
+            $merchantId = Session::get("merchantId");
             $distributorId = Input::get("distributorId");
             $companyId = Input::get("companyId");
             if (CustomValidator::validateNumber($merchantId) && CustomValidator::validateNumber($distributorId) && CustomValidator::validateNumber($companyId)) {
@@ -627,8 +627,8 @@ class ApiDistributorController extends Controller
 
     public function getDistributorCategoryDetails()
     {
-        if (!empty(Input::get("merchantId"))) {
-            $merchantId = Input::get("merchantId");
+        if (!empty(Session::get("merchantId"))) {
+            $merchantId = Session::get("merchantId");
             $distributorId = Input::get("distributorId");
             $companyId = Input::get("companyId");
             $pageIndex = Input::get("page_index");
@@ -1022,9 +1022,9 @@ class ApiDistributorController extends Controller
     public function getMyOrderDetails()
     {
         //DB::enableQueryLog(); // Enable query log
-        if(!empty(Input::get("merchantId"))) 
+        if(!empty(Session::get("merchantId"))) 
         {
-            $merchantId = Input::get("merchantId");
+            $merchantId = Session::get("merchantId");
             //echo "merchant id::".$merchantId;
             //Get All Distributors
             $distributors = DB::table('has_distributors as hd')
@@ -1154,7 +1154,7 @@ class ApiDistributorController extends Controller
     }//myorderdetails fun ends here
 
     public function addFavouriteDistributor(){
-        $merchantId = Input::get('merchantId');
+        $merchantId = Session::get('merchantId');
         $distributorId = Input::get('distributorId');
         if($merchantId!=null && $distributorId!=null){
             $status = DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->pluck('is_favourite');

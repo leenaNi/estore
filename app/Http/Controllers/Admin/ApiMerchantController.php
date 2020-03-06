@@ -15,6 +15,7 @@ use Hash;
 use Illuminate\Http\Response;
 use Input;
 use JWTAuth;
+use Session;
 
 class ApiMerchantController extends Controller
 {
@@ -344,8 +345,8 @@ class ApiMerchantController extends Controller
     public function getDistributors()
     {
         $temp = array();
-        if (!empty(Input::get("merchantId"))) {
-            $merchantId = Input::get("merchantId");
+        if (!empty(Session::get("merchantId"))) {
+            $merchantId = Session::get("merchantId");
             $hasDistributorsResult = DB::table('has_distributors as hd')
                 ->join("distributor as d", "d.id", "=", "hd.distributor_id")
                 ->join('stores as s', 's.merchant_id', '=', 'd.id')
