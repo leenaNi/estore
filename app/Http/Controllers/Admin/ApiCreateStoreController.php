@@ -333,18 +333,18 @@ class ApiCreateStoreController extends Controller
         $catid = 17;
         ini_set('max_execution_time', 600);
 
-        $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
+        $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "' . env('GODADDY_IP') . '", "ttl": 3600}]';
         $fields = array(
             'data' => $messagearray,
         );
         //building headers for the request
         $headers = array(
-            'Authorization: sso-key dKYQNqECqY1B_KeALbMxBuuwsR54jgwibDA:KeANr8XdSMqcwF9y5CjCZe',
+            'Authorization: sso-key ' . env('GODADDY_KEY'),
             'Content-Type: application/json',
         );
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.godaddy.com/v1/domains/' . $_SERVER['HTTP_HOST'] . '/records');
+        curl_setopt($ch, CURLOPT_URL, Config('constants.domainURL') . $_SERVER['HTTP_HOST'] . '/records');
         //setting the method as post
         // curl_setopt($ch, CURLOPT_POST, true);
         //adding headers
