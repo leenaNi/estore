@@ -344,7 +344,7 @@ class ApiCreateStoreController extends Controller
         );
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.godaddy.com/v1/domains/' . $_SERVER['HTTP_HOST'] . '/records');
+        curl_setopt($ch, CURLOPT_URL, Config('constants.domainURL') . $_SERVER['HTTP_HOST'] . '/records');
         //setting the method as post
         // curl_setopt($ch, CURLOPT_POST, true);
         //adding headers
