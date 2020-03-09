@@ -114,7 +114,7 @@ class ApiCompanyController extends Controller
 
                             $companyId = $companyData->company_id;
                             $companyName = $companyData->company_name;
-                            $companyLogo = $companyData->company_logo;
+                            $companyLogo = ($companyData->company_logo != '') ? $companyData->company_logo : 'default-company.jpg';
                             // $brandId = $companyData->brand_id;
                             // $brandName = $companyData->brand_name;
                             // $brandLogo = $companyData->brand_logo;
