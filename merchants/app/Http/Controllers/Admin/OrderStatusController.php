@@ -7,10 +7,14 @@ use Input;
 use App\Models\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
-use Session;
 use Illuminate\Http\Request;
 use DB;
 use Validator;
+use Hash;
+use Config;
+use Session;
+use Auth;
+use Crypt;
 
 class OrderStatusController extends Controller {
 
@@ -21,6 +25,10 @@ class OrderStatusController extends Controller {
         //echo "<br>login user type::".$loginUserType;
         //get Store id from user table
         $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
+        //dd($userResult);
+        //echo "<pre>";
+        //print_r($userResult);
+        //exit;
         $storeId = $userResult->store_id;
         //echo "store id::".$storeId;
         $search = !empty(Input::get("order_status")) ? Input::get("order_status") : '';

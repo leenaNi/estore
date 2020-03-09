@@ -82,6 +82,8 @@ class CouponsController extends Controller
         $action = route("admin.coupons.save");
 //        return view(Config('constants.adminCouponView') . '.addEdit', compact('coupon', 'products', 'orders', 'action'));
         $data = ['status' => '1', 'products' => $products, 'action' => $action, 'coupon' => $coupon, 'orders' => $orders, 'userCoupon' => $userCoupon];
+        //echo "<pre>";
+        //print_r($data);
         $viewname = Config('constants.adminCouponView') . '.addEdit';
         return Helper::returnView($viewname, $data);
     }

@@ -431,6 +431,8 @@
 
 <script>
 
+
+
   CKEDITOR.replace( 'editor1' );
   @if($is_desc->status)
   CKEDITOR.replace( 'editor2' );

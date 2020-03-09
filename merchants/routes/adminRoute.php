@@ -14,6 +14,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
     Route::any('/admin-edit-profile', ["as" => "adminEditProfile", "uses" => "LoginController@admin_edit_profile"]);
     Route::any('/admin-save-profile', ["as" => "adminSaveProfile", "uses" => "LoginController@admin_save_profile"]);
     Route::any('/check-cur-password', ["as" => "adminCheckCurPassowrd", "uses" => "LoginController@adminCheckCurPassowrd"]);
+    Route::post('/check-mobile-number', ["as" => "adminCheckCurMobileNumber", "uses" => "LoginController@adminCheckCurMobileNumber"]);
 // Route::any('/newsletter',function(){
     //              echo "test";
     //          });

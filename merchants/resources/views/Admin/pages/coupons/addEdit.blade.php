@@ -232,15 +232,12 @@ foreach ($arr as $a) {
                                             <?php
                                             
 if (!empty($coupon->categories()->get()->toArray()))
-// if(count($categoryDataResult) > 0)
  {
     $idArr = [];
     $arr = $coupon->categories()->get(['categories.id'])->toArray();
     foreach ($arr as $a)
-    //foreach ($categoryDataResult as $a)
      {
         array_push($idArr, $a['id']);
-        //array_push($idArr, $a->id);
     }
 } else {
     $idArr = [];
