@@ -60,7 +60,7 @@
 
                                 <td class="text-center">
                                     <div class="actionCenter">
-                                        <span><a class="btn-action-default" href="{!! route('admin.bankDetails.addEdit',['id'=>$bank->id]) !!}"><i class="fa fa-cog" aria-hidden="true"></i> Configure</a></span> 
+                                        <span><a class="btn-action-default" href="{!! route('admin.bankDetails.addEdit',['id'=>$bank->id]) !!}"> Configure</a></span> 
                                     
                                     </div>
                                     <!-- <a href="{!! route('admin.bankDetails.addEdit',['id'=>$bank->id]) !!}" data-toggle="tooltip" title="Configure" ui-toggle-class=""><i class="fa fa-cog btnNo-margn-padd" aria-hidden="true"></i></a> -->
@@ -76,7 +76,7 @@
     </div>
 </section>
 
-
+<div class="clearfix"></div>
 
 @stop
 

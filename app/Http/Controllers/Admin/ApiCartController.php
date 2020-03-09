@@ -161,6 +161,7 @@ class ApiCartController extends Controller
         //Offer product check
         $OfferProd = DB::table("offers_products")->where(['prod_id'=>$prod_id,'type'=>1])->first();
         if ($OfferProd != null) {
+            $date = date('Y-m-d H:i:s');
             $offerDetails = DB::table("offers")->where(['id' => $OfferProd->offer_id])->whereDate('start_date', '>=', $date)->whereDate('end_date', '<=', $date)->first();
             $offerId = $OfferProd->offer_id;
             if (!empty($offerDetails)) {
@@ -199,7 +200,7 @@ class ApiCartController extends Controller
                     $newOfferedQty = ($searchExist['offer_qty']+$offer_qty);
                     $optionsData['offer_qty'] = $newOfferedQty;
                     $optionsData['offer_disc_amt'] = $offer_disc_amt * $newOfferedQty;
-                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity),"options" => $optionsData]);
+                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
                 }
             } else {
                 return 1;
@@ -220,7 +221,7 @@ class ApiCartController extends Controller
                     $newOfferedQty = ($searchExist['offer_qty']+$offer_qty);
                     $optionsData['offer_qty'] = $newOfferedQty;
                     $optionsData['offer_disc_amt'] = $offer_disc_amt * $newOfferedQty;
-                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity),"options" => $optionsData]);
+                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
                 }
         }
         
@@ -712,7 +713,7 @@ class ApiCartController extends Controller
                     $newOfferedQty = ($searchExist['offer_qty']+$offer_qty);
                     $optionsData['offer_qty'] = $newOfferedQty;
                     $optionsData['offer_disc_amt'] = $offer_disc_amt * $newOfferedQty;
-                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity),"options" => $optionsData]);
+                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
                 }
             } else {
                 return 1;
@@ -733,7 +734,7 @@ class ApiCartController extends Controller
                     $newOfferedQty = ($searchExist['offer_qty']+$offer_qty);
                     $options['offer_qty'] = $newOfferedQty;
                     $options['offer_disc_amt'] = $offer_disc_amt * $newOfferedQty;
-                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => ($searchExist["qty"] + $quantity),"options" => $options]);
+                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $options]);
                 }
             
         }
@@ -743,12 +744,24 @@ class ApiCartController extends Controller
     {
         $rowId = filter_var(Input::get('rowid'), FILTER_SANITIZE_STRING);
         $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
+        $prod_id = filter_var(Input::get('prod_id'), FILTER_SANITIZE_STRING);
+        $sub_prod = filter_var(Input::get('sub_prod'), FILTER_SANITIZE_STRING);
         if($quantity == 0) {
             $user = User::where('id', Session::get('authUserId'))->first();
             $cartData = json_decode($user->cart, true);
             Cart::instance('shopping')->add($cartData);
-            Cart::instance('shopping')->remove($rowId);
             $cartData = Cart::instance("shopping")->content();
+            foreach($cartData as $prod){
+                if($prod->id == $prod_id){
+                    if($prod->options->sub_prod && ($prod->options->sub_prod == $sub_prod)){
+                        $rowId = $prod->rowId;
+                        
+                    }else{
+                        $rowId = $prod->rowId;
+                    }
+                    Cart::instance('shopping')->remove($rowId);
+                }
+            }
             if(Cart::instance("shopping")->count() != 0){
                 $user->cart = json_encode($cartData);
             } else {
@@ -762,10 +775,21 @@ class ApiCartController extends Controller
             $data['msg'] = "Item removed successfully";
             return $data;
         }
-        if(!empty($rowId) && !empty($quantity)) {
+        if(!empty($prod_id) && !empty($quantity)) {
             $user = User::where('id', Session::get('authUserId'))->first();
             $cartData = json_decode($user->cart, true);
             Cart::instance('shopping')->add($cartData);
+            $cartData = Cart::instance("shopping")->content();
+            foreach($cartData as $prod){
+                if($prod->id == $prod_id){
+                    if($prod->options->sub_prod && ($prod->options->sub_prod == $sub_prod)){
+                        $rowId = $prod->rowId;
+                        
+                    }else{
+                        $rowId = $prod->rowId;
+                    }
+                }
+            }
             $cart = Cart::instance('shopping')->update($rowId, ['qty' => $quantity]);
             $amt = Helper::calAmtWithTax();
             $cartInstance = Cart::instance('shopping')->get("$rowId");
@@ -776,7 +800,6 @@ class ApiCartController extends Controller
                 $sub_total = $cartInstance->subtotal + $tax;
                 $total = Cart::total() + $tax;
             }
-            // $cart = Helper::getnewCart();
             $cartData = Cart::instance("shopping")->content();
             $user->cart = json_encode($cartData);
             $user->update();

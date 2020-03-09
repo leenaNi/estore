@@ -28,6 +28,9 @@ is being setup. </p>
 		</div>
 		</div>
 	</section>
+	<section class="settingup-section-img mob-disp">
+		<img src="{{ asset('public/Frontend/images/bg-mobile.png')}}" class="img-responsive"/>
+	</section>
 	  <!--==========================
 	      step1 Section ends
 	    ============================-->
