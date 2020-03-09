@@ -190,10 +190,16 @@ class OrdersController extends Controller
             $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
             $additional = json_decode($order->additional_charge, true);
             $prodTab = 'products';
-            $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')
-                ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
+            $hasCategories = 'has_categories';
+            $prods = HasProducts::where('order_id', Input::get("id"))
+                    ->join($hasCategories, $hasCategories.'.prod_id', '=', 'has_products.prod_id')
+                      ->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')
+                    ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
 
             $products = $prods;
+            //echo "<pre>";
+            //print_r($products);
+            //exit;
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
             // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users',
@@ -204,7 +210,7 @@ class OrdersController extends Controller
             $products = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->first();
             $action = route("admin.orders.mallOrderSave");
             $viewname = Config('constants.adminOrderView') . '.addEditMall';
-            // dd($orders);
+             dd($products);
             $data = ['order' => $order, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones,
                 'products' => $products, 'courier' => $courier_status];
             return Helper::returnView($viewname, $data);
@@ -682,7 +688,7 @@ class OrdersController extends Controller
                     //Partially shipped mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'partial-shipping')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -697,7 +703,7 @@ class OrdersController extends Controller
                     //Undelivered mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'undelivered')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -716,7 +722,7 @@ class OrdersController extends Controller
                     $rewardPtUpdate->Update();
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'return-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -732,7 +738,7 @@ class OrdersController extends Controller
                     // Exchanged mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'exchange-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -756,7 +762,7 @@ class OrdersController extends Controller
 
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'cancel-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -772,7 +778,7 @@ class OrdersController extends Controller
                     //Refunded mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'refund-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -792,7 +798,7 @@ class OrdersController extends Controller
 
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'deliver-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
