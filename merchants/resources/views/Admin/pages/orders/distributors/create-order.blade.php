@@ -236,7 +236,12 @@
                                         <select name='payment_mode' class="form-control paymode validate[required]">
                                             <option value="">Select Payment Mode</option>
                                             @foreach($paymentMethods as $paymentMethod)
-                                            <option value="{{$paymentMethod->id }}" >{{$paymentMethod->name }}</option>
+                                                @if ($paymentMethod->name == 'Cash')
+                                                    <option selected value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                @else
+                                                    <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                @endif
+                                              
                                             @endforeach
                                         </select>
                                     </td>
@@ -466,6 +471,7 @@ var prodoffer = 0;
     }
 
     function getSubprods(prodid, ele) {
+        alert("get subproducts")
         var rows = $(".newRow").find('tr');
         var selected_prod = [];
         jQuery.each(rows, function (i, item) {
@@ -483,6 +489,7 @@ var prodoffer = 0;
             // prodSel.parent().parent().find('.prodPrice').text(0);
             prodSel.parent().parent().find('.prodQty').show();
             if (subprodsData.length > 0) {
+                alert("inside if");
                 prodSel.parent().parent().find('.subprod').show();
                 subProdOpt = '<select name="cartData[prod_id][sub_prod_id]" class="form-control subprodid validate[required]" >'
                 subprodsData.forEach((subprods, subprodKey) => {

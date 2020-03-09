@@ -74,7 +74,7 @@
                            <!--  <td>{{ $merchant->firstname." ".$merchant->lastname }}</td>-->
                             <td>{{ $merchant->email }}</td>
                             <td>{{ $merchant->phone }}</td>
-                            <td>{{ !empty(json_decode($merchant->register_details)->business_name) ? json_decode($merchant->register_details)->business_name : " " }}</td>
+                            <td>{{ !empty(json_decode($merchant->register_details)->store_name) ? json_decode($merchant->register_details)->store_name : " " }}</td>
                             <!--<td><?php
                                 //$banks = '';
                                 //print_r($merchant->hasMarchants()->get());

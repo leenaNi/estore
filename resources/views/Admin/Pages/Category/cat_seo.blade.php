@@ -1,5 +1,5 @@
 @extends('Admin.Layouts.default')
-@section('content')
+@section('contents')
 
 
 <section class="content-header">

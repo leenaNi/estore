@@ -65,6 +65,7 @@
                     <table class="table table-striped table-hover">
                         <?php
 echo "<ul  id='catTree' class='tree icheck catTrEE'>";
+  
 foreach ($roots as $root) {
     renderNode($root);
 }
@@ -119,7 +120,7 @@ function renderNode($node)
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input class="form-control" name="category" required />
+                                    <input class="form-control" name="category" style="border:1px solid #ddd !important" required />
                                     <input type="hidden" class="form-control" name="parent_id" required />
                                 </div>
                             </div>
@@ -249,7 +250,7 @@ function renderNode($node)
 <!-- The Canvas to Blob plugin is included for image resizing functionality -->
 <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
 <!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
 <!-- blueimp Gallery script -->
 <script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
 <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->

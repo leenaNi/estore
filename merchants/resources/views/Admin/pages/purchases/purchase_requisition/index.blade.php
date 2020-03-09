@@ -53,7 +53,6 @@
                     <div class="form-group col-md-4">
                         {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control ', "placeholder"=>"Maximum Amount"]) !!}
                     </div>
-                    
                    
                     @if($order_status->count())
                     @php echo Input::get('searchStatus[]'); @endphp
@@ -166,7 +165,7 @@
                                     </a>
                                     <a href="{!! route('admin.requisition.edit',['id'=>1]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
 
-                                    </td>
+                                </td>
                             </tr>
                            
                         </tbody>

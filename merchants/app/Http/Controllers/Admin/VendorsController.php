@@ -476,7 +476,6 @@ class VendorsController extends Controller
     }
 
     public function addMerchant() // Display view
-
     {
         $loggedInUserId = Session::get('loggedin_user_id');
         $loginUserType = Session::get('login_user_type');
@@ -491,7 +490,7 @@ class VendorsController extends Controller
         $viewname = Config('constants.adminAddMerchantView') . '.index';
 
         $merchantListingResult = DB::table('has_distributors as hd')
-        ->select(['hd.merchant_id', 'hd.is_approved','m.register_details','hd.updated_at'])
+        ->select(['hd.distributor_id','hd.merchant_id', 'hd.is_approved','m.register_details','hd.updated_at'])
         ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
         //->where([["hd.distributor_id", $distributorId],['is_approved', '1']])
         ->where([["hd.distributor_id", $distributorId]])
@@ -514,13 +513,19 @@ class VendorsController extends Controller
     {
         $viewname = Config('constants.adminAddMerchantView') . '.index';
         $allinput = Input::all();
+        $loggedInUserId = Session::get('loggedin_user_id');
+        $loginUserType = Session::get('login_user_type');
+        $loginDistributorId = Session::get('merchantid');
+        //echo "logged in distributor id::".$loginDistributorId;
+        
+
         $merchantIdentityCode = $allinput['merchantIdentityCode'];
         $storeId = $allinput['hdnStoreId'];
 
         // Get distributor id from store table
         $storeResult = DB::table('stores')->where("id", $storeId)->first();
         $distributorId = $storeResult->merchant_id;
-
+        
         // Get distributor industry id
         $distributorResult = DB::table('distributor')->where("id", $distributorId)->first();
         $decodedDistributorDetail = json_decode($distributorResult->register_details, true);
@@ -531,15 +536,41 @@ class VendorsController extends Controller
             $merchantResult = DB::table('merchants')->where("identity_code", $merchantIdentityCode)->first();
 
             if (isset($merchantResult) && !empty($merchantResult)) {
+
+                //Get merchant id from the merchantIdentity code
+                $merchantResultSet = DB::table('merchants')->where("identity_code", $allinput['merchantIdentityCode'])->first();
+                if(!empty($merchantResultSet))
+                {
+                    $getMerchantId = $merchantResultSet->id;
+
+                }
+                //echo "serach merchant id::".$getMerchantId;
+                $hasDistributorResultSet = DB::table('has_distributors')
+                                            ->where("distributor_id", $distributorId )
+                                            ->where("merchant_id", $getMerchantId)
+                                            ->first();
+                $isApprovedFlagVal = '';
+                if(!empty($hasDistributorResultSet))
+                {
+                    $isApprovedFlagVal = $hasDistributorResultSet->is_approved;
+                }
+                if($isApprovedFlagVal == 1)
+                {
+                    $data = ['status' => 3, 'error' => "Merchant already added"];
+                }
+                else
+                {
+                    $data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
+                }
                 // $decodedMerchantDetail = json_decode($merchantResult->register_details);
                 // $merchantbussinessId = $decodedMerchantDetail->business_type[0];
                 // if (in_array($merchantbussinessId, $distributorbusinessIdArray)) {
-                    $data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
+                    //$data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
                 // } else {
                 //     $data = ['status' => 0, 'error' => "Industry not matched"];
                 // }
             } else {
-                $data = ['status' => 0, 'error' => "Invalid merchant code"];
+                $data = ['status' => 2, 'error' => "Invalid merchant code"];
             }
         } else {
             $data = ['status' => 0, 'error' => "Enter merchant code"];
@@ -564,7 +595,7 @@ class VendorsController extends Controller
         $distributorId = $storeResult->merchant_id;
         $distributorStoreName = $storeResult->store_name;
 
-        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId,'raised_by'=>'distributor'];
+        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId,'is_approved'=>1,'raised_by'=>'distributor'];
         $isInserted = DB::table('has_distributors')->insert($insertData);
 
         if ($isInserted) {
@@ -572,7 +603,8 @@ class VendorsController extends Controller
             $baseurl = str_replace("\\", "/", base_path());
             $linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
             //SMS
-            $msgOrderSucc = $storeName . " is trying to connect with you for business.";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            //$msgOrderSucc = $storeName . " is trying to connect with you for business.";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            $msgOrderSucc = " Distributor added you";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
             Helper::sendsms($hdnMerchantPhone, $msgOrderSucc, $countryCode);
 
             //Email
@@ -601,74 +633,80 @@ class VendorsController extends Controller
     public function isApprovedMerchant()
     {
         $allinput = Input::all();
+        $merchantId = $allinput['merchantId'];
         $distributorId = $allinput['distributorId'];
-        //echo "distributor id::".$distributorId;
-        //exit;
-        //update is_approved=1 in has_distributor table
-        $hasDistributorRs = DB::table('has_distributors')
-        ->where('merchant_id', $distributorId)
-        ->update(['is_approved' => 1]);
-        /*$hasDistributorRs = hasDistributor::find($merchantId);
-                $hasDistributorRs->is_approved = 1;
-                $hasDistributorRs->update();*/
-
-        if(!empty($hasDistributorRs))
+        if(($merchantId > 0) && ($distributorId > 0))
         {
-            $data = ['status' => 1, 'error' => "Records updated Successfully"];
+            $distributor = DB::table('has_distributors')
+                           ->where("merchant_id", $merchantId)
+                           ->where("distributor_id", $distributorId)
+                           ->first();
+            //$distributor = hasDistributor::find(Input::get('id'));
+            if ($distributor->is_approved == 1) {
+                $isApproved = 0;
+                $msg = "Merchant Disapproved successfully.";
+                $hasDistributorRs = DB::table('has_distributors')
+                    ->where('merchant_id', $merchantId)
+                    ->where("distributor_id", $distributorId)
+                    ->update(['is_approved' => $isApproved]);
+                
+                Session::flash("message", $msg);
+
+                //return redirect()->back()->with('message', $msg);
+            } else if ($distributor->is_approved == 0) {
+                $isApproved = 1;
+                $msg = "Merchant Approved successfully.";
+                $hasDistributorRs = DB::table('has_distributors')
+                    ->where('merchant_id', $merchantId)
+                    ->where("distributor_id", $distributorId)
+                    ->update(['is_approved' => $isApproved]);
+                Session::flash("msg", $msg);
+                //return redirect()->back()->with('msg', $msg);
+            }
+            $data = ['status' => '1', 'msg' => $msg];    
         }
         else
         {
-            $data = ['status' => 0, 'error' => "Not updated"];
+            $data = ['status' => '0', 'msg' => 'There is somthing wrong.'];
         }
         return $data;
     }
 
 
-    //for mail purpose
-    public function approveRequest($id)
+    //for SMS/mail purpose
+    public function approveRequest()
     {
-        if(isset($id) && !empty($id))
+        $approvalId = Session::get('approval_id');
+        //echo "approval id::".$approvalId;
+        if(isset($approvalId) && ($approvalId > 0))
         {
-            $decryptedId = Crypt::decrypt($id);
+            Session::forget('approval_id'); // Removes a specific session variable
             
             $isUpdated = DB::table('has_distributors')
-            ->where('id', $decryptedId)
+            ->where('id', $approvalId)
             ->update(array('is_approved' => 1));  // update the record in the DB. 
             
             if($isUpdated)
             {
                 // Get distributor id from has_distributor
-                $hasDistributorResult = DB::table('has_distributors')->where("id", $decryptedId)->first();
-                $distributorId = $hasDistributorResult->distributor_id;
+                $hasDistributorResult = DB::table('has_distributors')->where("id", $approvalId)->first();
+                $merchantId = $hasDistributorResult->merchant_id;
 
                 // Distributor data
-                $distributorResult = DB::table('distributor')->where("id", $distributorId)->first();
-                $distributorEmail = $distributorResult->email;
-                $distributorPhoneNo = $distributorResult->phone_no;
-                $countryCode = $distributorResult->country;
+                $merchantResult = DB::table('merchants')->where("id", $merchantId)->first();
+                //$distributorEmail = $distributorResult->email;
+                $merchantPhoneNo = $merchantResult->phone;
+                $countryCode = $merchantResult->country_code;
 
                 //SMS
-                if(!empty($distributorPhoneNo))
+                if(!empty($merchantPhoneNo))
                 {
-                    $massage = "Request accepted by merchant";
-                    Helper::sendsms($distributorPhoneNo, $massage, $countryCode);
-                }
-
-                //Email        
-                //$domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
-                $sub = "Request  accepted by merchant";
-            
-                $mailcontent = "Request accepted by merchant";
-            
-                if (!empty($distributorEmail)) {
-                    Helper::withoutViewSendMail($distributorEmail, $sub, $mailcontent);
+                    $massage = "Request accepted by distributor";
+                    Helper::sendsms($merchantPhoneNo, $massage, $countryCode);
                 }
                 
             } // End isUpdated if
-           $viewname = Config('constants.adminAddMerchantView') . '.thank_you';
-           //$viewname = "Frontend.pages.thank_you";
-            return Helper::returnView($viewname, '');
-            //return view($viewname);
+            return redirect()->route('admin.vendors.addMerchant');
         } // End if here
     } // ENd approveRequest() 
     

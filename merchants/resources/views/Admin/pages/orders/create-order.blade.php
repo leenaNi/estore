@@ -228,7 +228,11 @@
                                         <select name='payment_mode' class="form-control paymode validate[required]">
                                             <option value="">Select Payment Mode</option>
                                             @foreach($paymentMethods as $paymentMethod)
-                                            <option value="{{$paymentMethod->id }}" >{{$paymentMethod->name }}</option>
+                                                @if ($paymentMethod->name == 'Cash')
+                                                    <option selected value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                @else
+                                                    <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </td>

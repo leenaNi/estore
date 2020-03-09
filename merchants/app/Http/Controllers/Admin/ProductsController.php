@@ -143,12 +143,15 @@ class ProductsController extends Controller
 
         foreach ($products as $prd) {
             $totstock = Product::where('parent_prod_id',$prd->id)->sum('stock');  
-            if($totstock > 0)
-            {
-                $prd->stock = $totstock;
+            $varient_prd = Product::where('parent_prod_id',$prd->id)->get(['id']);
+            if(count($varient_prd) > 0){
                 $startprice = Product::where('parent_prod_id',$prd->id)->orderBy('price','asc')->pluck('price');
                 $endprice = Product::where('parent_prod_id',$prd->id)->orderBy('price','desc')->pluck('price');
                 $prd->price = $startprice[0].'-'.$endprice[0];
+            }
+            if($totstock > 0)
+            {
+                $prd->stock = $totstock;
             }
             $getPrdImg = ($prd->catalogimgs()->where("image_mode", 1)->count() > 0) ? $prd->catalogimgs()->where("image_mode", 1)->first()->filename : 'default_product.png';
             $prd->prodImage = Config('constants.productImgPath') . "/" . @$getPrdImg;
@@ -521,7 +524,7 @@ class ProductsController extends Controller
     public function saveImg()
     {
         // dd(Product::find(Input::get('prod_id'))->catalogimgs()->where("image_type", "=", 1)->get());
-        //  dd(Input::all());
+       //dd(Input::all());
         if (Input::file('images')) {
             foreach (Input::file('images') as $key => $value) {
                 // if (Input::get('file_upload_status')[$key] == 0) {
@@ -573,8 +576,29 @@ class ProductsController extends Controller
         $attributes_filter_yes = AttributeSet::find($prod->attributeset['id'])->attributes_filter_yes();
         $attributes_filter_no = AttributeSet::find($prod->attributeset['id'])->attributes_filter_no();
         if (!empty(Input::get('return_url'))) {
-
-            $nextView = redirect()->to(Input::get('return_url'));
+            if ($prod->prod_type == 2) {
+                $nextView = redirect()->route("admin.combo.products.view", ['id' => $prod->id]);
+            } else if (!empty($attrs)) {
+                if ($attributes_filter_no != 0) {
+                    $nextView = redirect()->route("admin.products.attribute", ['id' => $prod->id]);
+                } else if ($attributes_filter_yes != 0) {
+                    $nextView = redirect()->route("admin.products.configurable.attributes", ['id' => $prod->id]);
+                } else {
+                    $nextView = redirect()->route("admin.products.upsell.related", ['id' => $prod->id]);
+                }
+            } elseif ($prod->prod_type == 3) {
+                //    echo 1;
+                if (!empty($attrs)) {
+                    $nextView = redirect()->route("admin.products.configurable.attributes", ['id' => $prod->id]);
+                } else {
+                    $nextView = redirect()->route("admin.products.upsell.related", ['id' => $prod->id]);
+                }
+            } elseif ($prod->prod_type == 4) {
+                $nextView = redirect()->route("admin.products.configurable.without.stock.attributes", ['id' => $prod->id]);
+            } else {
+                $nextView = redirect()->to(Input::get('return_url'));
+            }
+           // $nextView = redirect()->to(Input::get('return_url'));
         } else {
             if ($prod->prod_type == 2) {
                 $nextView = redirect()->route("admin.combo.products.view", ['id' => $prod->id]);

@@ -20,14 +20,21 @@ class CategoryController extends Controller
 
     public function index()
     {
+        DB::enableQueryLog(); // Enable query log
         $categories = Category::whereIn("status", [1, 0])->with('categoryName')->orderBy("id", "asc");
         $categories = $categories->paginate(Config('constants.paginateNo'));
         $roots = Category::roots()->get();
+        //dd(DB::getQueryLog()); // Show results of log
+        
         //dd($roots);
         //return view(Config('constants.adminCategoryView') . '.index', compact('categories', 'roots'));
 
         $viewname = Config('constants.adminCategoryView') . '.index';
-        // dd($categories);
+        //echo "<pre>";
+        //print_r($categories);
+        //exit;
+
+        //dd($categories);
         $data = ['categories' => $categories, 'roots' => $roots];
         return Helper::returnView($viewname, $data);
     }
@@ -534,11 +541,16 @@ class CategoryController extends Controller
     }
 
     public function newCategory(){
+        
+        echo "inbput get parent id::".Input::get('parent_id');
         if(Input::get('parent_id') && Input::get('parent_id') !='') {
             $parentId = DB::table('store_categories')->where('id', Input::get('parent_id'))->first(['category_id'])->category_id;
         } else {
             $parentId = 0;
         }
+
+        echo "store cate id::".$parentId;
+        
         $newCatName = Input::get('category');
         $newCategory = DB::table('temp_categories')->insert([
             "name" => $newCatName,
@@ -546,6 +558,8 @@ class CategoryController extends Controller
             "user_id" => Session::get('loggedinAdminId'), 
         ]);
 
+        echo "category name::".$newCatName;     
+        
         //insert category with parent category id into store_category table
         /*$storeCategoryRs = DB::table('store_categories')->insert([
             "parent_id" => $parentId, 
@@ -554,40 +568,54 @@ class CategoryController extends Controller
 
         // Send mail to admin with hierarchy from parent to child according to the selected category
         $superAdminEmail = DB::table('vswipe_users')->get(['email']);
-
+        
         if($parentId > 0)
         {
             $categoryArray = array();
             $categoryData = DB::table('categories')->where('id', $parentId)->get(['id','category','parent_id']);
             $parentCategoryId = $categoryData[0]->parent_id;
             $categoryName = $categoryData[0]->category;
-            
-            do 
+            //dd($parentCategoryId);
+
+            if($parentCategoryId != 0 || $parentCategoryId != NULL)
             {
-                if($parentCategoryId != 0)
-                    array_push($categoryArray, $categoryName);
+
+                do 
+                {
+                        array_push($categoryArray, $categoryName);
+                        $parentCategoryId = $parentCategoryId;
+
+                        $categoryData = DB::table('categories')->where('id', $parentCategoryId)->get(['id','category','parent_id']);
+                        $parentCategoryId = $categoryData[0]->parent_id;
+                        $categoryName = $categoryData[0]->category;
+                        if($parentCategoryId == 0)
+                            array_push($categoryArray, $categoryName);
                     
-                $categoryData = DB::table('categories')->where('id', $parentCategoryId)->get(['id','category','parent_id']);
-                $parentCategoryId = $categoryData[0]->parent_id;
-                $categoryName = $categoryData[0]->category;
-                if($parentCategoryId == 0)
-                    array_push($categoryArray, $categoryName);
-                
+                }
+                while($parentCategoryId > 0);
             }
-            while($parentCategoryId > 0);
-            $parentToChild = $implode(' -> ',array_reverse($categoryArray));
-            $mailcontent = 'Please add new "$newCatName" Category. Below is the hierarchy of new category.<br> $parentToChild';
+            else
+            {
+                //echo "else";
+                array_push($categoryArray, $categoryName);
+                $parentCategoryId = $parentId;
+            }
+
+            $parentToChild = implode(' -> ',array_reverse($categoryArray));
+    
+            //echo "parent child arry::".$parentToChild;
+            //exit;    
+            $mailcontent = "Please add new category '$newCatName' inside the parent category of $parentToChild";
         }
         else
         {
-            $mailcontent = 'Please add new "$newCatName" parent Category.';
+            $mailcontent = "Please add new parent category '$newCatName'.";
         }
         
         $sub = "New Category Request";
-
         if($newCategory){
             if (!empty($superAdminEmail)) {
-                Helper::withoutViewSendMail($superAdminEmail, $sub, $mailcontent);
+                //Helper::withoutViewSendMail($superAdminEmail, $sub, $mailcontent);
             }
             Session::flash("msg", "New category request sent successfully.");
         } else {

@@ -18,7 +18,7 @@
 
             @endif
             <div class="box">
-                <form role="form" action="{{$action}}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="Edit-form">
+                <form role="form" method="POST" action="{{$action}}" enctype="multipart/form-data" class="form-horizontal" id="Edit-form">
                     <div class="box-body">
                         <input type="hidden" name="id" value="{{$user->id}}" >
                         <div class="form-group">
@@ -43,55 +43,54 @@
                             <label for="email" class="col-sm-4 control-label">Email</label><span class="red-astrik"> *</span>
                             <div class="col-sm-8">
 
-                                <input type="email" class="form-control" name="email_id" value="{{$user->email}}"  readonly>
+                                <input type="email" class="form-control" name="email_id" value="{{$user->email}}" >
 
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="telephone" class="col-sm-4 control-label">Mobile</label><span class="red-astrik"> *</span>
                             <div class="col-sm-8">
-
-                                <input type="text" class="form-control  validate[required,custom[phone]]" name="telephone"  value="{{$user->telephone}}" readonly>
-
+                                <input type="text" class="form-control  validate[required,custom[phone]]" id="mobile_number" name="telephone"  value="{{$user->telephone}}" onBlur="checkUniqueMobileNum()">
                             </div>
+                            <span style="color:red" id="err_mobile_number"></span>
                         </div>
-                        @if(Session::get('loggedinAdminId') && Auth::User()->user_type == 3)
-                        <div class="form-group">
+                        
+                        <!--<div class="form-group">
                             <label for="addressline1" class="col-sm-4 control-label">Address line 1</label><span class="red-astrik"></span>
                             <div class="col-sm-8">
-                            <textarea name="addressLine1">{{$distributorIdData->address_line_1}}</textarea>
+                            <textarea name="addressLine1"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="addressline2" class="col-sm-4 control-label">Address line 2</label><span class="red-astrik"></span>
                             <div class="col-sm-8">
-                                <textarea name="addressLine2">{{$distributorIdData->address_line_2}}</textarea>
+                                <textarea name="addressLine2"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="locality" class="col-sm-4 control-label">Locality</label><span class="red-astrik"></span>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="locality" value="{{$distributorIdData->locality}}">
+                                <input type="text" class="form-control" name="locality" value="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="pincode" class="col-sm-4 control-label">Pincode</label><span class="red-astrik"></span>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="pincode" value="{{$distributorIdData->zip}}">
+                                <input type="text" class="form-control" name="pincode" value="">
                             </div>
-                        </div>
+                        </div>-->
                         <input type="hidden" id="hdnDistributorId" name="hdnDistributorId" value="{{$distributorIdData->id}}">
-                        @endif
-                        <div class="form-group">
+                        
+                        <!--<div class="form-group">
                             <label for="profile" class="col-sm-4 control-label">Upload Photo</label>
                             <div class="col-sm-8">
                                 <input type="file" name="profile" onchange="readURL(this);">
-                            </div>
+                            </div>-->
                             <!-- <p class="help-block">Example block-level help text here.</p> -->
-                            <img id="select_image" src="#" alt="Selected Image" style="display: none;" />
-                        </div>
+                            <!--<img id="select_image" src="#" alt="Selected Image" style="display: none;" />
+                        </div>-->
 
-                        <div class="form-group">
+                        <!--<div class="form-group">
                             <label for="exampleInputPassword1" class="col-sm-4 control-label">
                                 Current Password</label>
                             <div class="col-sm-8">
@@ -115,11 +114,11 @@
                                 <input type="password"  name="confirmpwd" class="form-control" placeholder="Confirm New Password">
                                 <div id="confirmpwd_login_validate" style="color:red;"></div>
                             </div>
-                        </div>
+                        </div>-->
 
                         <div class="col-sm-8 col-sm-offset-4 noAllpadding">
                         
-                            <input  type="submit" class="btn btn-primary " value="Submit">
+                            <input  type="submit" class="btn btn-primary " value="Submit" id="submitBtn">
                             <button type="button" class="btn btn-default">Cancel</button>
                         </div>	
                     </div>
@@ -232,11 +231,55 @@
             @php
     }
     @endphp
-
-
-
-
-
     });
+
+    $("#submitBtn").click(function(){
+      
+      var isFlagVal = checkUniqueMobileNum();
+      if(isFlagVal == 1)
+      {
+        $("#Edit-form").submit();
+      }
+      else
+      {
+          return false;
+      }
+      
+    });
+  
+    var isFlag = 1;
+    function checkUniqueMobileNum()
+    {
+        var txtMobileNumber = $("#mobile_number").val();
+        var loggedInUserId = $("#id").val();
+        var hdnLoggedInMerchantId = $("#hdnDistributorId").val();
+        //alert("txt mob::"+txtMobileNumber+"::logged in id::"+hdnLoggedInMerchantId);
+        $.ajax({
+            method: "POST",
+            data: {'txtMobileNumber': txtMobileNumber,'hdnLoggedInMerchantId':hdnLoggedInMerchantId,'hdnUserId':loggedInUserId},
+            url: "{{route('adminCheckCurMobileNumber')}}",
+            dataType: "json",
+            success: function (data) {
+                //alert(data);
+                if(data == 1)
+                {
+                    $("#err_mobile_number").show();
+                    $("#err_mobile_number").html('Mobile number already exist, Please try another!');
+                    isFlag = 0;
+                    return isFlag;
+                }   
+                else
+                {
+                    //alert("else");
+                    $("#err_mobile_number").html('');
+                    $("#err_mobile_number").hide();
+                    isFlag = 1;
+                    return isFlag;
+                }
+            }
+        });
+        return isFlag;
+    }
+    
 </script>
 @stop

@@ -62,7 +62,7 @@ $frontendConstants = [
     'frontendPublicImgPath' => 'public/Frontend/images/',
     'frontviewEmailTemplatesPath' => 'Frontend/emails/',
     'frontendPublicCSSPath' => 'public/Frontend/css/',
-    'domainURL'=> 'https://api.godaddy.com/v1/domains/' . env('APP_URL') . '/records'
+    'domainURL'=> 'https://api.godaddy.com/v1/domains/'
 
 ];
 

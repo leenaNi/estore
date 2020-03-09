@@ -390,11 +390,46 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = 0; ?>
+                            <?php $i = 0;
+                            ?>
                             @foreach($products as $k =>$prd)
-                         
-                            <tr> 
-                                <td>{{ @$prd->categories()->first()->category }}</td>
+                                <?php
+                                    
+                                    $getProductId = $prd->id;
+                                    $hasCategories = DB::table('has_categories')
+                                            ->where("prod_id", $getProductId )
+                                            ->first();
+                                    if(!empty($hasCategories))
+                                    {
+                                        $getStoreCategoryId = $hasCategories->cat_id;
+                                        $storeCategories = DB::table('store_categories as sc')
+                                            ->join('categories as c', 'c.id', '=', 'sc.category_id')
+                                            ->where("sc.id", $getStoreCategoryId)
+                                            ->select('c.category')
+                                            ->get();
+                                        //echo "<pre>";
+                                        //print_r($storeCategories);
+                                        if(!empty($storeCategories))
+                                        {
+                                             foreach($storeCategories as $getCatName)
+                                            {
+                                                $categoryName = ucwords($getCatName->category);
+                                            }
+                                            //$categoryName = ucwords($storeCategories->[0]->category);
+                                            //$categoryName = ucwords($storeCategories[0]['category']);
+                                            //$categoryName = ucwords($storeCategories->$i->category);
+                                            
+                                        }
+                                    }
+                                    else {
+                                        $categoryName = '-';    
+                                    }
+                                    
+                                       
+                                 ?>
+                                <tr> 
+                                <!--<td>{{ @$prd->categories()->first()->category }}</td>-->
+                                <td>{{$categoryName}}</td>
                                 <td>{{ $prd->product }}</td>
                                 @if($prd->prod_type == 3)
                                 <?php

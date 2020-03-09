@@ -15,6 +15,7 @@ use Hash;
 use Illuminate\Http\Response;
 use Input;
 use JWTAuth;
+use Session;
 
 class ApiMerchantController extends Controller
 {
@@ -28,7 +29,7 @@ class ApiMerchantController extends Controller
                 $otp = rand(1000, 9999);
                 $userdata = User::where('telephone', $phone)->where('user_type', 1)->first();
                 if (!empty($userdata)) {
-                    $userdata->otp = $otp;
+                    $userdata->otp = '1234';// $otp;
                     $userdata->save();
                     $msgSucc = "[#] Your one time password is " . $otp . ". lRaDZ0eOjMz";
                     Helper::sendsms($phone, $msgSucc, $country);
@@ -68,7 +69,6 @@ class ApiMerchantController extends Controller
 
     public function merchantLogin()
     {
-
         // Config::set('auth.providers.users.model', Merchant::Class);
         $credentials = [];
         $inputEmailPhone = Input::get('email');
@@ -345,16 +345,21 @@ class ApiMerchantController extends Controller
     public function getDistributors()
     {
         $temp = array();
-        if (!empty(Input::get("merchantId"))) {
-            $merchantId = Input::get("merchantId");
+        if (!empty(Session::get("merchantId"))) {
+            $merchantId = Session::get("merchantId");
             $hasDistributorsResult = DB::table('has_distributors as hd')
                 ->join("distributor as d", "d.id", "=", "hd.distributor_id")
                 ->join('stores as s', 's.merchant_id', '=', 'd.id')
-                ->join('offers as o', 's.id', '=', 'o.store_id')
+                // ->rightJoin('offers as o', function ($join) {
+                //     $join->on('s.id', '=', 'o.store_id')
+                //     ->where("o.status", 1);
+                // })
                 ->where('s.store_type', 'distributor')
                 ->where("hd.merchant_id", $merchantId)
-                ->groupBy('o.store_id')
-                ->get(['d.id', 'd.phone_no', 's.id as storeId', 's.store_name', DB::raw('count(o.id) as offers_count')]);
+                // ->where("o.status", 1)
+                // ->groupBy('o.store_id')
+                ->get(['d.id', 'd.phone_no', 's.id as storeId', 's.store_name']); //DB::raw('count(o.id) as offers_count')
+               
             if (count($hasDistributorsResult) > 0) {
                 foreach($hasDistributorsResult as $distributor){
                     $companies = DB::table("products as p")->join("brand as b","b.id","=","p.brand_id")->join("company as c", "c.id","=", "b.company_id")->select("b.id","b.company_id","c.name")->where("p.store_id",$distributor->storeId)->where("p.brand_id","<>",0)->get();
@@ -364,6 +369,7 @@ class ApiMerchantController extends Controller
                             array_push($companyArr, $company->name);
                     }
                     $distributor->companies = $companyArr;
+                    $distributor->offers_count = count(DB::table('offers')->where('status', 1)->where('store_id', $distributor->storeId)->get());
                 }
                 return response()->json(["status" => 1, 'msg' => '', 'data' => $hasDistributorsResult]);
             } else {

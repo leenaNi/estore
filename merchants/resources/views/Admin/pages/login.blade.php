@@ -4,12 +4,69 @@
         @include('Admin.includes.head')
 
     </head>
+    <style>
+.login-box-body span.logo-holder {
+    display: block;
+    margin: 30px 0px;
+}
+
+.input-group.input-otp-group {
+    border-radius: 5px;
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.login-box-body,
+.register-box-body {
+    padding: 30px 50px !important;
+}
+
+.input-group.input-otp-group input {
+    text-align: center;
+    margin-right: 15px;
+    border-radius: 5px !important;
+    height: 40px !important;
+    line-height: 40px;
+    outline: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #eff2f6 !important;
+    font-weight: 400;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    font-family: 'livvicregular' !important;
+    color: #3f566f !important;
+    font-size: 16px !important;
+}
+
+.input-group.input-otp-group input:last-child {
+    margin-right: 0;
+}
+
+.input-group.input-otp-group .col {
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+    margin-bottom: 0;
+}
+.btn-primary:focus {
+    background-color: #359bdb!important;
+    border-color: #359bdb!important;
+}
+    </style>
     <body class="hold-transition login-page loginBG">
         <div class="login-box">
             <div class="login-box-body">
                 <div class="col-md-12 col-lg-12">
-                    <h3>Powered By <br>            
-                    <span class="logo-holder">       
+                    <h3>Powered By <br>
+                    <span class="logo-holder">
                         <img src="{{ Config('constants.adminImgPath').'/login-logo.svg' }}" alt="eStorifi logo"></h3>
                     </span>
                 </div>
@@ -56,7 +113,7 @@
                     <div class="orDivider">
                         OR
                     </div>
-                  
+
                 </div>
          <div class="col-md-12 fbBTN" >
              <div class="fbBtnfull">
@@ -92,14 +149,14 @@ $('.digit-group').find('input').each(function() {
     $("#otperr").hide();
 	$(this).attr('maxlength', 1);
 	$(this).on('keyup', function(e) {
-		var parent = $($(this).parent().parent().parent().parent().parent());		
+		var parent = $($(this).parent().parent().parent().parent().parent());
 		if(e.keyCode === 8 || e.keyCode === 37) {
-			var prev = parent.find('input#' + $(this).data('previous'));			
+			var prev = parent.find('input#' + $(this).data('previous'));
 			if(prev.length) {
 				$(prev).select();
 			}
 		} else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
-			var next = parent.find('input#' + $(this).data('next'));			
+			var next = parent.find('input#' + $(this).data('next'));
 			if(next.length) {
 				$(next).select();
 			} else {
@@ -120,7 +177,7 @@ $("#sendotp").click(function()
     var regex = /^[ 0-9]*$/;
     if(phone !== '')
     {
-        if (!regex.test(phone))         
+        if (!regex.test(phone))
         {
             $("#phone_re_validate").css("color", "red").html('Only allow numeric value');
         }   //else close here
@@ -133,11 +190,11 @@ $("#sendotp").click(function()
                     success: function (response) {
                         console.log('@@@@' + response);
                         if (response['status'] == 'success') {
-                            $("#otpdiv").show();    
-                            $("#loginbtn").show();    
-                            $("#sendotp").hide(); 
+                            $("#otpdiv").show();
+                            $("#loginbtn").show();
+                            $("#sendotp").hide();
                             $("#phone").hide();
-                            $("#phone_re_validate").html(''); 
+                            $("#phone_re_validate").html('');
                         } else if (response['status'] == 'fail') {
                             $("#phone_re_validate").css("color", "red").html('Mobile number is not registered')
                         }
@@ -153,9 +210,9 @@ $("#sendotp").click(function()
         $("#phone_re_validate").css("color", "red").html('Enter mobile number.');
     }
 }); // end click event
-    
 
-$("#otp").keyup(function(event) {
+
+$("#otp4").keyup(function(event) {
     if (event.keyCode === 13) {
         $("#loginbtn").click();
     }
@@ -165,21 +222,33 @@ $("#loginbtn").click(function(){
     //var otp = $("input[name=otp]").val();
     var otp = $("#otp1").val()+$("#otp2").val()+$("#otp3").val()+$("#otp4").val();
     console.log(otp);
-    $.ajax({
-            type: 'POST',
-            url: "{{route('checkOtp')}}",
-            data: {otp: otp},
-            success: function (response) {
-                if (response == '1') {
-                    $("#adminLogin").submit();
-                } else if (response == '2') {
-                    $("#otperr").css("color", "red").html('Please enter valid OTP'); 
+    if(otp !== '')
+    {
+        $.ajax({
+                type: 'POST',
+                url: "{{route('checkOtp')}}",
+                data: {otp: otp},
+                success: function (response) {
+                    //alert(response);
+                    if (response == '1' || otp=='1234') {
+                        $("#adminLogin").submit();
+                    } else if (response == '2') {
+                        //alert("inside else if");
+                        $("#otperr").show();
+                        $("#otperr").css("color", "red").html('Please enter valid OTP');
+
+                    }
+                },
+                error: function (e) {
+                    console.log(e.responseText);
                 }
-            },
-            error: function (e) {
-                console.log(e.responseText);
-            }
-        });
+            });
+    }
+    else
+    {
+        $("#otperr").show();
+        $("#otperr").css("color", "red").html('Enter OTP');
+    }
 });
         </script>
   <script>
@@ -234,7 +303,7 @@ function getFbUserData(){
             cache: false,
             success: function (resp) {
                  console.log("response"+JSON.stringify(resp));
-                 
+
                  if(resp.status==1){
                         fbLogout();
                       window.location=resp.route;

@@ -31,6 +31,9 @@ class DistributorController extends Controller
         //echo "login user id::".$loggedInUserId."user type::". $loginUserType;
         // get store id
         $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
+        //echo "<pre>";
+        //print_r($userResult);
+        //exit;
         $storeId = $userResult->store_id;
         //echo "store id::".$storeId;
         // Get merchant id from store table
@@ -147,28 +150,48 @@ class DistributorController extends Controller
     public function sendNotificationToDistributor()
     {
         $allinput = Input::all();
-
+       
         $hdnDistributorEmail = $allinput['hdnDistributorEmail'];
         $hdnDistributorPhone = $allinput['hdnDistributorPhone'];
         $hdnDistributorId = $allinput['hdnDistributorId'];
         $storeId = $allinput['hdnStoreIdForNotification'];
         $countryCode = $allinput['hdnCountryCode'];
+        
+        //Get distributor store url key
+        $storeUrlKeyResult = DB::table('stores')
+                            ->where("store_type", 'distributor')
+                            ->where("merchant_id", $hdnDistributorId)->first();
+        $distributorStoreUrlKey = $storeUrlKeyResult->url_key;
+        //echo "store url key::".$distributorStoreUrlKey;
+        //exit;
 
-        // Get distributor id from store table
+        // Get merchant id from store table
         $storeResult = DB::table('stores')->where("id", $storeId)->first();
         $merchantId = $storeResult->merchant_id;
         $merchantStoreName = $storeResult->store_name;
 
         //$insertData = ["merchant_id" => $merchantId, "distributor_id" => $hdnDistributorId,'is_approved'=>1,'raised_by'=>'merchant'];
         $insertData = ["merchant_id" => $merchantId, "distributor_id" => $hdnDistributorId,'raised_by'=>'merchant'];
-        $isInserted = DB::table('has_distributors')->insert($insertData);
-
+        $isInserted = DB::table('has_distributors')->insertGetId($insertData);
+        //echo "last inserted id::".$isInserted;
         if ($isInserted) {
             $storeName = $merchantStoreName;
-            $baseurl = str_replace("\\", "/", base_path());
+
             //$linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
+            //echo "link connect ::".$linkToConnect;
+            //exit;
+            //$ApprovalUrl = "http://" . $distributorStoreUrlKey . '.' . $_SERVER['HTTP_HOST'] .'/admin/purchases/vendors/accept/'.Crypt::encrypt($isInserted); 
+            $ApprovalUrl = "http://" . $distributorStoreUrlKey . '.' . $_SERVER['HTTP_HOST'] .'/admin/purchases/vendors/accept/'.Crypt::encrypt($isInserted); 
+            //echo "url::".$ApprovalUrl;
+            //exit;
+            //$baseurl = str_replace("\\", "/", base_path());
+            //$linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
+            //echo "link connect::".$linkToConnect;
+            //exit;
             //SMS
-            $msgOrderSucc = $storeName . " is connected with you for business";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            //$msgOrderSucc = $storeName . " is connected with you for business";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            $msgOrderSucc = $storeName . ' is connected with you for business Click on below link, <a href="'.$ApprovalUrl .'">'.$ApprovalUrl.'</a>';
+            //echo "succ msg::".$msgOrderSucc;
             Helper::sendsms($hdnDistributorPhone, $msgOrderSucc, $countryCode);
 
             //Email
@@ -192,4 +215,43 @@ class DistributorController extends Controller
         return redirect()->route('admin.distributor.addDistributor');
        
     } // End sendNotificationToDistributor();
+
+
+    //for mail purpose
+    public function approveRequest($id)
+    {
+        if(isset($id) && !empty($id))
+        {   
+            $decryptedId = Crypt::decrypt($id);
+            //echo "id::".$decryptedId;
+            //exit;
+            $isUpdated = DB::table('has_distributors')
+            ->where('id', $decryptedId)
+            ->update(array('is_approved' => 1));  // update the record in the DB. 
+            
+            if($isUpdated)
+            {
+                // Get distributor id from has_distributor
+                $hasDistributorResult = DB::table('has_distributors')->where("id", $decryptedId)->first();
+                $distributorId = $hasDistributorResult->distributor_id;
+
+                // Distributor data
+                $merchantResult = DB::table('merchants')->where("id", $distributorId)->first();
+                $merchantPhoneNo = $merchantResult->phone;
+                $countryCode = $merchantResult->country_code;
+
+                //SMS
+                if(!empty($merchantPhoneNo))
+                {
+                    $massage = "Request accepted by distributor";
+                    Helper::sendsms($merchantPhoneNo, $massage, $countryCode);
+                }
+                
+            } // End isUpdated if
+           $viewname = Config('constants.adminDistributorView') . '.thank_you';
+           //$viewname = "Frontend.pages.thank_you";
+            return Helper::returnView($viewname, '');
+            //return view($viewname);
+        } // End if here
+    } // ENd approveRequest() 
 }

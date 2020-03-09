@@ -148,6 +148,7 @@ class Helper
             Session::put('bankid', Auth::guard('bank-users-web-guard')->user()->bank_id);
         } else if (Auth::guard('merchant-users-web-guard')->check() !== false) {
             Session::put('authUserId', Auth::guard('merchant-users-web-guard')->user()->id);
+            Session::put('merchantId', Store::where('id', Auth::guard('merchant-users-web-guard')->user()->store_id)->where('store_type', 'merchant')->first()->merchant_id);
             Session::put('authUserData', Auth::guard('merchant-users-web-guard')->user()->first());
         }
     }
@@ -360,17 +361,17 @@ class Helper
                 $option = '';
                 // dd($cart['price']);
                 $tableContant = $tableContant . '   <tr class="cart_item">
-																						        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
+																								        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
                 if ($cart['options']['image'] != '') {
                     $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . $cart["options"]["image"]) . '" alt="">
-																						          </a>';
+																								          </a>';
                 } else {
                     $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
                 }
                 $tableContant = $tableContant . '</td>
-																						        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
-																						            <br>
-																						          <small><a href="#"> ';
+																								        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
+																								            <br>
+																								          <small><a href="#"> ';
                 if (!empty($cart['options']['options'])) {
 
                     foreach ($cart['options']['options'] as $key => $value) {
@@ -378,19 +379,19 @@ class Helper
                     }
                 }
                 $tableContant = $tableContant . @$option . ' </a></small></td>
-																						        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
-																						        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-																						          <div class=""> ' . $cart["qty"] . '</div>
-																						        </td>';
+																								        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
+																								        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
+																								          <div class=""> ' . $cart["qty"] . '</div>
+																								        </td>';
                 $tax_amt = 0;
                 if ($tax == 1) {
                     $tableContant = $tableContant . '   <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-																						         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
-																						        </td>';
+																								         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
+																								        </td>';
                     $tax_amt = $cart['options']["tax_amt"];
                 }
                 $tableContant = $tableContant . '<td class="cart-product-subtotal" align="center" style="border: 1px solid #ddd;border-left: 0;border-right:0px;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format((@$cart["subtotal"] * Session::get('currency_val')), 2, '.', '') . '</span> </td>
-																						      </tr>';
+																								      </tr>';
                 $gettotal += $cart["subtotal"] + $tax_amt;
             endforeach;
             $tableContant = $tableContant . '  </tbody>
@@ -578,7 +579,9 @@ class Helper
         $sub_total = 0;
         foreach ($cart as $key => $cItm) {
             $getdisc = ($cItm->options->disc + $cItm->options->wallet_disc + $cItm->options->voucher_disc + $cItm->options->referral_disc + $cItm->options->user_disc);
-
+			if(@$cItm->options->offerId>0){
+				$getdisc += @$cItm->options->offer_disc_amt;
+			}
             $sub_total += $cItm->subtotal - $getdisc;
 
         }
@@ -632,17 +635,17 @@ class Helper
     public static function searchExistingCart($prod_id)
     {
         $cartContent = Cart::instance("shopping")->content()->toArray();
-        $isExist = 0; 
+        $isExist = 0;
         foreach ($cartContent as $key => $cartItem) {
             if (array_key_exists("sub_prod", $cartItem['options'])) {
                 $isExist = ($cartItem['options']['sub_prod'] == $prod_id);
                 if ($isExist) {
-                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"], "offer_qty" => $cartItem['options']['offer_qty']];
                 }
             } else {
                 $isExist = ($cartItem["id"] == $prod_id);
                 if ($isExist) {
-                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"],"offer_qty"=>$cartItem['options']['offer_qty']];
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"], "offer_qty" => $cartItem['options']['offer_qty']];
                 }
             }
         }

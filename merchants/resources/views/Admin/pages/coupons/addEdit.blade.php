@@ -230,11 +230,17 @@ foreach ($arr as $a) {
 
                                         <div class="allCategories">
                                             <?php
-if (!empty($coupon->categories()->get()->toArray())) {
+                                            
+if (!empty($coupon->categories()->get()->toArray()))
+// if(count($categoryDataResult) > 0)
+ {
     $idArr = [];
     $arr = $coupon->categories()->get(['categories.id'])->toArray();
-    foreach ($arr as $a) {
+    foreach ($arr as $a)
+    //foreach ($categoryDataResult as $a)
+     {
         array_push($idArr, $a['id']);
+        //array_push($idArr, $a->id);
     }
 } else {
     $idArr = [];
@@ -243,7 +249,7 @@ if (!empty($coupon->categories()->get()->toArray())) {
 $roots = App\Models\Category::roots()->get();
 echo "<ul id='catTree' class='tree icheck'>";
 foreach ($roots as $root) {
-    renderNode($root, $idArr);
+    renderNode($root,$idArr);
 }
 
 echo "</ul>";
@@ -254,11 +260,11 @@ function renderNode($node, $idArr)
     $classStyle = (in_array($node->id, $idArr) ? 'checkbox-highlight' : '');
     echo "<li class='tree-item fl_left ps_relative_li'>";
     echo '<div class="checkbox">
-                        <label class="i-checks checks-sm ' . $classStyle . '"><input type="checkbox" class="checkCategoryId" name="category_id[]" value="' . $node->id . '" ' . (in_array($node->id, $idArr) ? 'checked' : '') . '  /><i></i>' . $node->category . '</label></div>';
+                        <label class="i-checks checks-sm ' . $classStyle . '"><input type="checkbox" class="checkCategoryId" name="category_id[]" value="' . $node->id . '" ' . (in_array($node->id, $idArr) ? 'checked' : '') . '  /><i></i>' . $node->categoryName->category . '</label></div>';
 
-    if ($node->children()->count() > 0) {
-        echo "<ul class='treemap fl_left'>";
-        foreach ($node->children as $child) {
+    if ($node->adminChildren->count() > 0) {
+       echo "<ul class='treemap fl_left'>";
+        foreach ($node->adminChildren as $child) {
             renderNode($child, $idArr);
         }
 
@@ -288,12 +294,25 @@ if (!empty($coupon->products()->get()->toArray())) {
 } else {
     $pIDArr = [];
 }
-
+//echo "<pre>";
+//print_r($pIDArr);
+//exit;
 echo "<ul id='catTree' class='tree icheck'>";
 foreach ($products as $product) {
+    $productId = $product->id;
+    if (in_array($productId, $pIDArr))
+    {
+        $checkedValue = "checked=checked";
+        $addClass = "checkbox-highlight";
+    }
+    else {
+        $checkedValue = "";
+        $addClass = "";
+    }
+    //echo "<br> checked val::".$checkedValue;
     echo "<li class='tree-item fl_left ps_relative_li searchProductsList' style='list-style-type:none;'>";
     echo '<div class="checkbox">
-                                <label class="i-checks checks-sm"><input type="checkbox" class="checkProductId" name="product_id[]" value="' . $product->id . '" ' . (in_array($product->id, $pIDArr) ? 'checked' : '') . '  /><i></i>' . $product->product . '</label>
+                                <label class="i-checks checks-sm '.$addClass.' "><input type="checkbox" class="checkProductId" name="product_id[]" value="' . $product->id . '"  "'.$checkedValue.'"/><i></i>' . $product->product . '</label>
                             </div>';
     echo "</li>";
 }
