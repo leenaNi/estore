@@ -49,7 +49,7 @@
 													</select>
 												</div>
 												<div class="input-group">
-													<input tabindex="2" type="text" name="phone" class="form-control" id="mobNumber" placeholder="" onBlur="checkPhone(this.value)">
+													<input  type="text" name="phone" class="form-control" id="mobNumber" placeholder="" onBlur="checkPhone(this.value)">
 													<span>
 														<img id="mobsmsg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success" class="success-tick hidden">
 														<img id="mobemsg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success" class="error-mark hidden">
@@ -183,7 +183,7 @@ function checkPhone(mobile){
 					$("#mobileno_err").show().html(response['msg']);
 					$("#mobemsg").show();
 					$("#successimg").hide();
-					$("#mobsmsg").hide();
+					$("#mobsmsg").hide();$("#mobNumber").val('');
                 } 
             },
             error: function (e) {
