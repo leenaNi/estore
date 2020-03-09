@@ -1522,6 +1522,12 @@ hr.header-divider {
     }
 }
 
+@media (max-width: 1199px) {
+    .log-reg-form-container {
+        max-width: 80% !important;
+    }
+}
+
 @media (max-width: 991px) {
     #services {
         border-radius: 25px !important;
@@ -1592,6 +1598,9 @@ hr.header-divider {
 }
 
 @media (max-width: 767px) {
+    .log-reg-form-container .description {
+        padding: 40px 100px 40px 100px !important;
+    }
     .not-vert-mob {
         position: relative;
         top: 0 !important;
@@ -1641,6 +1650,9 @@ hr.header-divider {
     section.steps-section {
         height: auto !important;
     }
+    section.steps-section {
+        background: #e7f2fe !important;
+    }
     section.steps-section .vert-middle-container {
         position: relative !important;
         top: 0 !important;
@@ -1653,6 +1665,7 @@ hr.header-divider {
     .log-reg-form-container {
         border-radius: 0 !important;
         display: block !important;
+        max-width: 100% !important;
     }
     .log-reg-form-container .row {
         box-shadow: none !important;
@@ -1665,13 +1678,18 @@ hr.header-divider {
     }
     .description-content .logo {
         max-width: 100px;
-        margin: 0 auto 30px auto !important;
+        margin: 0 auto 20px auto !important;
     }
     .log-reg-form-container .form-fields {
         border-top-right-radius: 0px !important;
         border-bottom-right-radius: 0px !important;
-        padding: 30px 30px !important;
-        background: #e7f2fe;
+        padding: 40px 30px !important;
+        background: #e7f2fe !important;
+        border-radius: 0 !important;
+    }
+    .form-fields input {
+        background: #fff !important;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05) !important;
     }
     #intro .intro-info p,
     #intro .intro-info a.link {
@@ -1840,7 +1858,7 @@ hr.header-divider {
     font-size: 18px;
     letter-spacing: 0;
     display: inline-block;
-    padding: 7px 40px;
+    padding: 4px 40px;
     border-radius: 5px;
     transition: 0.5s;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05)
@@ -1913,7 +1931,7 @@ header#header:after {
 }
 
 .mb-30 {
-    margin-bottom: 30px;
+    margin-bottom: 30px !important;
 }
 
 .mb-5 {
@@ -2020,12 +2038,16 @@ section.steps-section {
 .log-reg-form-container {
     border-radius: 30px;
     display: flex;
+    max-width: 50%;
+    margin: 0 auto;
+    background: #fff;
 }
 
-.log-reg-form-container .form-fields,
+
+/* .log-reg-form-container .form-fields,
 .log-reg-form-container .description {
     flex: 1;
-}
+} */
 
 .log-reg-form-container .row {
     box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.03);
@@ -2035,17 +2057,19 @@ section.steps-section {
 }
 
 .log-reg-form-container .description {
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
     background: #fff;
-    padding: 50px 50px;
+    padding: 40px 100px 0px 100px;
+    text-align: center;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
 }
 
 .log-reg-form-container .form-fields {
-    border-top-right-radius: 30px;
+    border-radius: 0;
+    padding: 0px 100px 40px 100px;
+    background: #fff;
+    border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
-    padding: 50px 120px;
-    background: #e7f2fe;
 }
 
 .log-reg-form-container .sh:only-of-type {
@@ -2053,24 +2077,24 @@ section.steps-section {
 }
 
 .description-content .logo {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .description-content .logo img {
-    max-width: 100%;
+    max-width: 100px;
 }
 
 .description-content .title h3 {
-    font-size: 28px;
+    font-size: 20px;
     font-family: 'livvicsemibold';
     color: #3f566f;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .description-content .desc-box p {
     color: #566575;
     font-family: 'livvicregular';
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .description-content .desc-box p:last-child {
@@ -2104,7 +2128,7 @@ section.steps-section {
 .role-radio-group ul li {
     display: inline-block;
     margin-right: 15px;
-    width: 48%;
+    width: 47%;
 }
 
 .role-radio-group ul li:last-child {
@@ -2167,7 +2191,7 @@ button {
 .form-fields label {
     color: #3f566f;
     font-family: 'livvicmedium';
-    font-size: 14px;
+    font-size: 12px;
     margin-bottom: 5px;
 }
 
@@ -2182,10 +2206,14 @@ button {
     font-size: 14px;
     border: 0;
     outline: 0;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05);
-    padding: 10px 10px;
-    height: 40px;
-    line-height: 40px;
+    /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05); */
+    padding: 6px 10px;
+    height: 35px;
+    line-height: 35px;
+    outline: none !important;
+    border: 0 !important;
+    box-shadow: none;
+    background: #eff2f6;
 }
 
 .input-group span {
@@ -2211,7 +2239,8 @@ button {
 }
 
 .log-reg-form-container .form-fields p {
-    font-size: 13px;
+    font-size: 12px;
+    margin-bottom: 15px;
 }
 
 .full-width-btn {
@@ -2238,6 +2267,7 @@ button {
     outline: none !important;
     border: 0 !important;
     box-shadow: none !IMPORTANT;
+    background: #eff2f6;
 }
 
 .input-group.input-otp-group input {
@@ -2250,11 +2280,12 @@ button {
     margin-right: 0px;
 }
 
-.log-reg-form-container .form-fields .scroller-y {
+
+/* .log-reg-form-container .form-fields .scroller-y {
     max-height: 350px;
     overflow-y: auto;
     margin-bottom: 15px;
-}
+} */
 
 .form-fields .input-group>.custom-select:not(:last-child),
 .form-fields .input-group>.form-control:not(:last-child) {
@@ -2623,14 +2654,15 @@ section.settingup-section {
 section.settingup-section h1 {
     color: #3f566f;
     font-family: 'livvicsemibold';
-    margin-top: 25px;
-    margin-bottom: 15px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 20px;
 }
 section.settingup-section p {
     font-family: 'livvicregular';
-    font-size: 25px;
+    font-size: 16px;
     color: #566575;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 .progress-holder .progress {
     margin-bottom: 30px;
@@ -2681,4 +2713,154 @@ img.changeno-arrow {
     display: block;
     margin-bottom: 15px;
     font-size: 15px;
+}
+.mt-mb-30 {
+    margin: 30px 0px !important;
+}
+#mobno {
+    color: #359bdb;
+    font-weight: 600;
+}
+.setup-onlinestore-box .setup-box {
+    display: flex;
+    flex-wrap: nowrap;
+    background: #fff;
+    /* padding: 30px 20px; */
+    
+    border-radius: 10px;
+    box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.03);
+    margin-bottom: 20px;
+    align-items: flex-start;
+    max-width: 380px;
+}
+.setup-onlinestore-box .setup-box .img-holder {
+    max-width: 60px;
+    margin-right: 15px;
+}
+.setup-onlinestore-box .setup-box .img-holder img {
+    max-width: 100%;
+}
+.setup-onlinestore-box .setup-box .content-holder h5 {
+    color: #3f566f;
+    font-family: 'livvicsemibold';
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+.setup-onlinestore-box .setup-box .content-holder p {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+.setup-onlinestore-box .setup-box a {
+    padding: 20px 20px;
+    display: flex;
+    flex-wrap: nowrap;
+}
+.setup-onlinestore-box .online-box {
+    display: flex;
+    flex-wrap: nowrap;
+    background: #fff;
+    /* padding: 30px 20px; */
+    
+    border-radius: 10px;
+    box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.03);
+    margin-bottom: 30px;
+    align-items: flex-start;
+    max-width: 380px;
+}
+.setup-onlinestore-box .online-box .img-holder {
+    max-width: 60px;
+    margin-right: 15px;
+}
+.setup-onlinestore-box .online-box .img-holder img {
+    max-width: 100%;
+}
+.setup-onlinestore-box .online-box .content-holder h5 {
+    color: #3f566f;
+    font-family: 'livvicsemibold';
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+.setup-onlinestore-box .online-box .content-holder p {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+.setup-onlinestore-box .online-box a {
+    padding: 20px 20px;
+    display: flex;
+    flex-wrap: nowrap;
+}
+.app-btn-links p {
+    color: #3f566f !important;
+    font-family: 'livvicsemibold' !important;
+    font-size: 16px !important;
+}
+.app-btn-links .app-btn-links-btns {
+    display: flex;
+}
+.app-btn-links .app-btn-links-btns a {
+    display: block;
+    max-width: 150px;
+    margin-right: 10px;
+}
+.app-btn-links .app-btn-links-btns a img {
+    max-width: 100%;
+}
+.setup-img img {
+    max-width: 40px;
+}
+.right-arrow {
+    position: relative;
+    min-width: 30px;
+    text-align: center;
+}
+.right-arrow img {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+textarea:focus, input:focus {
+    font-family: 'livvicregular' !important;
+    color: #3f566f !important;
+    font-size: 16px !important;
+}
+input, select, textarea {
+    font-family: 'livvicregular' !important;
+    color: #3f566f !important;
+    font-size: 16px !important;
+}
+::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    
+    font-family: 'livvicregular' !important;
+    color: #3f566f !important;
+    font-size: 16px !important;
+}
+ :-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    
+    font-family: 'livvicregular' !important;
+    color: #3f566f !important;
+    font-size: 16px !important;
+}
+ ::-ms-input-placeholder {
+    /* Microsoft Edge */
+    
+    font-family: 'livvicregular' !important;
+    color: #3f566f !important;
+    font-size: 16px !important;
+}
+.log-reg-form-container .otp-description {
+    padding: 30px 150px 0px 150px;
+}
+.log-reg-form-container .otp-form-fields {
+    padding: 30px 150px 30px 150px;
+}
+.otp-form-fields input {
+    height: 40px;
+    line-height: 40px;
+}
+.otp-description .description-content .logo {
+    margin-bottom: 35px;
 }

@@ -88,7 +88,7 @@
                                 <div class="digit-group">
                                 <div class="scroller-y">
                                     <div class="form-group">
-                                        <label for="">Type in your OTP</label>
+                                        <label for="">Type in your OTP</label> 
                                         <div class="input-group input-otp-group">
                                             <input tabindex="6" type="tel" class="form-control col" id="otp1" data-next="otp2" placeholder="">
                                             <input tabindex="7" type="tel" class="form-control col" id="otp2" data-next="otp3" data-previous="otp1" placeholder="">
@@ -103,8 +103,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 text-center">
-                            <button type="button" class="btn btn-primary bottommargin-xs fullWidthBtn" id="sendotp">Send OTP</button>
+                        <div class="col-xs-12 text-center marginBottom-lg">
+                            <button type="button" class="btn btn-primary fullWidthBtn" id="sendotp">Send OTP</button>
                             <button type="button" class="btn btn-primary bottommargin-xs fullWidthBtn" style="display:none" id="loginbtn">Sign In</button>
                         </div><!-- /.col -->
                     </div>

@@ -1,10 +1,6 @@
 @extends('Admin.layouts.default')
 @section('mystyles')
-<link rel="stylesheet" href="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker-bs3.css') }}">
-<style type="text/css">.capitalizeText select {
-        text-transform: capitalize;
-    } 
-    select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transform: capitalize !important;}</style>
+<link rel="stylesheet" href="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker-bs3.css') }}"> 
 @stop
 
 @section('content')
@@ -13,7 +9,7 @@
         Add Merchant
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+       <li><a href="#"><i class="fa fa-dashboard"></i> Merchants</a></li>
         <li class="active">Add merchant</li>
     </ol>
 </section>
@@ -26,11 +22,11 @@
     <div id="addMerchantDiv">
         <div class="grid-content">
             <div class="section-main-heading">
-                <h1>Add merchant</h1>
+                <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
             </div>
-            <div class="filter-section displayFlex">
+            <div class="filter-section">
 
-                <div class="col-md-9 noAll-padding displayFlex">
+                <div class="col-md-12 noAll-padding">
                     <div class="filter-left-section">
                        
                         <form  method="get" id="merchantCodeForm">
@@ -46,9 +42,9 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-md-3 noAll-padding displayFlex" style="background:#fff;">
+                <div class="col-md-3 hide noAll-padding">
                     <div class="filter-right-section">
-                        <div class="clearfix" id="merchantDetailDiv" style="display:none;" >
+                        <div class="clearfix" id="merchantDetailDiv">
                             <div class="info-box">
                                 <form action="{{ route('admin.vendors.send-notification') }}" method="post">
                                 
@@ -75,13 +71,15 @@
             </div>
         </div>
         <div class="grid-content">
+            <div class="section-main-heading">
+                <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Add Merchant</h1>
+            </div>
             <div class="listing-section">
                 <table class="table table-striped table-hover tableVaglignMiddle">
                     <thead>
                         <tr>
                             <th class="text-left">#</th>
-                            <th class="text-left">Business Name</th>
-                            <!--<th class="text-center">Concern Person Name</th>-->
+                            <th class="text-left">Business Name</th> 
                             <th class="text-center">Mobile Number</th>
                             <th class="text-center">Connection Date</th>
                             <th class="text-center">Ledger</th>
@@ -118,14 +116,12 @@
                         ?>
                         <tr>
                             <td  class="text-left">{{$i}}</td>
-                            <td  class="text-left">{{$decodedMerchantDetail->store_name}}</td>
-                            <!--<td  class="text-center"></td>-->
-                            <td  class="text-center">{{$decodedMerchantDetail->phone}}</td>
-                            <td  class="text-center">{{$connectionData}}</td>
+                            <td  class="text-left">{{$decodedMerchantDetail->store_name}}</td> 
+                            <td  class="text-left">{{$decodedMerchantDetail->phone}}</td>
+                            <td  class="text-right">{{$connectionData}}</td>
                             <td  class="text-center">
                                 <div class="actionCenter">
-                                        <span><a class="btn-action-default" href=""><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> Ledger</a></span> 
-                                    
+                                <span><a class="btn-action-default" href=""><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> Ledger</a></span> 
                                 </div>
                             </td>
 
@@ -142,7 +138,9 @@
                         </tr> 
                         @endforeach
                     @else
-                        <label class="text-center"> No records found.</label>
+                        <tr colspan="6">
+                            <td> No records found.</td>
+                        </tr>
                     @endif 
                     
                     </tbody>

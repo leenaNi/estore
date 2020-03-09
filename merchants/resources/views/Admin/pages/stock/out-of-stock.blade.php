@@ -3,11 +3,11 @@
 
 <section class="content-header">
     <h1>
-        Products ({{$productCount }})
-        <small></small>
+        Products  
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Catalog</a></li>
+        <li class="active">Inventory <i class="fa fa-dashboard"></i></li>
         <li class="active">Out Of Stock</li>
     </ol>
 </section>
@@ -28,20 +28,21 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
         <div class="filter-section">
             <div class="col-md-12 no-padding">
                 <div class="filter-full-section">
                     <form method="get" action="{{route('admin.stock.outOfStock')}}" id="searchForm">
-                        <div class="form-group col-sm-4 col-sm-6 col-xs-12 noBottom-margin">
-                        <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control medium" placeholder="Product name">
+                        <div class="form-group col-md-8 col-sm-6 col-xs-12 noBottom-margin">                        
+                        <div class="input-group">
+                            <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
+                            <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control form-control-right-border-radius medium" placeholder="Product name">
+                            </div>
                         </div>
-                        <div class="from-group col-md-2 col-sm-3 col-xs-12 noBottom-margin mob-marBottom15">
-                        <button type="submit" class="btn btn-primary fullWidth noAll-margin"> Search</button>
-                        </div>
-                        <div class="form-group col-md-2 col-sm-3 col-xs-12 noBottom-margin">
-                        <a href="{{route('admin.stock.outOfStock')}}" class="btn reset-btn fullWidth noMob-leftmargin">Reset </a>
+                        <div class="from-group col-md-4 col-sm-4 col-xs-12 noBottom-margin mob-marBottom15">
+                        <a href="{{route('admin.stock.outOfStock')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset </a>
+                        <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg"> Filter</button> 
                         </div>
                     </form>
                 </div>
@@ -51,7 +52,7 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Products <span class="listing-counter">{{$productCount }} </span> </h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Products <span class="listing-counter">{{$productCount }} </span> </h1>
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">
