@@ -205,7 +205,7 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'adminReports' => 'Admin.pages.reports',
         'adminPaymentsView' => 'Admin.pages.payments',
         'adminDistributorOrderView' => 'Admin.pages.orders.distributors',
-        'adminDistCssTempPath' => "https://d2102t1lty3x1n.cloudfront.net/Admin/css",
+        'adminDistCssTempPath' => asset('css'),
         'adminDistributorView' => 'Admin.pages.add_distributor',
     ];
 }

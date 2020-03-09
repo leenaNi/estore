@@ -3,8 +3,7 @@
 
 <section class="content-header">
     <h1>
-        Vendors
-        <!--        <small>Add/Edit/Delete</small>-->
+        Vendors 
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>

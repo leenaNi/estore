@@ -4,10 +4,10 @@
 
 <section class="content-header">
     <h1>
-        Attributes ({{$attrsCount }})
+        Attributes 
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Catalog </a></li>
         <li class="active">Attributes</li>
     </ol>
 </section>
@@ -15,51 +15,48 @@
 
 <section class="main-content">
     <div class="notification-column">
-                    @if(!empty(Session::get('message')))
-                    <div class="alert alert-danger" role="alert">
-                        {{ Session::get('message') }}
-                    </div>
-                    @endif
-                    @if(!empty(Session::get('msg')))
-                    <div class="alert alert-success" role="alert">
-                        {{Session::get('msg')}}
-                    </div>
-                    @endif
+        @if(!empty(Session::get('message')))
+        <div class="alert alert-danger" role="alert">
+            {{ Session::get('message') }}
+        </div>
+        @endif
+        @if(!empty(Session::get('msg')))
+        <div class="alert alert-success" role="alert">
+            {{Session::get('msg')}}
+        </div>
+        @endif
     </div>
   <div class="grid-content">
         <div class="section-main-heading">
-            <h1> Attributes</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
-        <div class="filter-section displayFlex">
-            <div class="col-md-9 noAll-padding displayFlex">
+        <div class="filter-section">
+            <div class="col-md-12 noAll-padding">
                 <div class="filter-left-section">
                     
                     <form method="get" action=" " id="searchForm">
                       
-                        <div class="form-group col-md-8 col-sm-6 col-xs-12">
-                            <input type="text" value="{{ !empty(Input::get('attr_name'))?Input::get('attr_name'):'' }}" name="attr_name" aria-controls="editable-sample" class="form-control medium" placeholder="Attribute Name">
+                        <div class="form-group noBottom-margin col-md-8 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span> 
+                                <input type="text" value="{{ !empty(Input::get('attr_name'))?Input::get('attr_name'):'' }}" name="attr_name" aria-controls="editable-sample" class="form-control form-control-right-border-radius medium" placeholder="Attribute Name">
+                            </div>
                         </div>
-                        <div class="form-group col-md-2  col-sm-3 col-xs-12">
-                            <input type="submit" name="submit" vlaue='Submit' class='btn btn-primary  noMob-leftmargin'>
-                        </div>
-                        <div class="from-group col-md-2  col-sm-3 col-xs-12">
-                            <a href="{{ route('admin.attributes.view')}}" class="btn reset-btn noMob-leftmargin">Reset </a>
+                        <div class="form-group noBottom-margin col-md-4  col-sm-3 col-xs-12">
+                            <a href="{{ route('admin.attributes.view')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset </a>
+                            <button type="submit" name="submit" vlaue='Filter' class='btn btn-primary noAll-margin pull-right marginRight-lg'> Filter</button>
                         </div>
 
                     </form>
 
                 </div>
-            </div>
-            <div class="col-md-3 noAll-padding displayFlex">
-                <div class="filter-right-section">
-                    <a href="{!! route('admin.attributes.add') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" type="button">Add New Attribute</a>
-                </div>
-            </div>
+            </div> 
         </div>
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Attributes <span class="listing-counter">{{$attrsCount }}</span></h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Attributes <span class="listing-counter">{{$attrsCount }}</span></h1>
+            <a href="{!! route('admin.attributes.add') !!}" class="btn btn-listing-heading pull-right noAll-margin"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create</a>
         </div>
         <div class="listing-section">
         <table class="table table-striped table-hover tableVaglignMiddle">
@@ -101,20 +98,18 @@
                                     <?php } ?>
                                 </td>
                                 <td class="text-center">
-                                    <div class="actionLeft">
-                                        <span><a class="btn-action-default" href="{!! route('admin.attributes.edit',['id'=>$attr->id]) !!}">Edit</a></span> 
-                                        <span class="dropdown">
+                                    <div class="actionCenter">
+                                        <span>
+                                            <a class="btn-action-default" href="{!! route('admin.attributes.edit',['id'=>$attr->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
+                                            <span class="dropdown">
                                             <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <span class="caret"></span>
+                                            <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
                                                 <li><a href="{!! route('admin.attributes.delete',['id'=>$attr->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
                                             </ul>
                                         </span>  
-                                    </div>
-                                    <!-- <a href="{!! route('admin.attributes.edit',['id'=>$attr->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
-                               
-                                    <a href="{!! route('admin.attributes.delete',['id'=>$attr->id]) !!}"  class="" ui-toggle-class=""  onclick="return confirm('Are you sure you want to delete attribute?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i></a> -->
+                                    </div> 
                                 </td>
                             </tr>
                             @endforeach 
@@ -138,7 +133,7 @@
         </div>
     </div>
 </section>
-
+<div class="clearfix"></div>
 @stop
 
 @section('myscripts')

@@ -1,16 +1,8 @@
 @extends('Admin.layouts.default')
 @section('mystyles')
 <style>
-    .bxmodal{
-        margin: 10px 0;
-        border: 1px #eee solid;
-        float: left;
-        width: 100%;
-        padding: 15px;
-    }
-
+.bxmodal{margin: 10px 0; border: 1px #eee solid; float: left; width: 100%; padding: 15px;}
 .tree li{margin: 10px 0px;}
-
 </style>
 
 <!--<link rel="stylesheet" href="{{asset(Config('constants.fileUploadPluginPath').'css/style.css')}}">-->
@@ -28,45 +20,45 @@
         Categories
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Catalog </a></li>
         <li class="active">Categories</li>
     </ol>
 </section>
 
 <section class="main-content">
-    <div class="notification-column">
-       
-                @if(!empty(Session::get('message')))
-                <div  class="alert alert-danger" role="alert">
-                    {{ Session::get('message') }}
-                </div>
-                @endif
-                @if(!empty(Session::get('msg')))
-                <div  class="alert alert-success" role="alert">
-                    {{ Session::get('msg') }}
-                </div>
-                @endif
-                </div>   
+    <div class="notification-column">       
+    @if(!empty(Session::get('message')))
+    <div  class="alert alert-danger" role="alert">
+        {{ Session::get('message') }}
+    </div>
+    @endif
+    @if(!empty(Session::get('msg')))
+    <div  class="alert alert-success" role="alert">
+        {{ Session::get('msg') }}
+    </div>
+    @endif
+    </div>   
 
-                <div class="grid-content">
+<div class="grid-content">
         <div class="section-main-heading">
-            <h1>Categories</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
       <div class="filter-section">
             <div class="col-md-12 noAll-padding">
                 <div class="filter-full-section">
                     <div class="form-group col-md-6 noBottomMargin">
-                    <div class="input-group-btn">
-                        <input type="text" name="catSearch" class="form-control medium pull-right catSearcH" placeholder="Search Category">
+                     <div class="input-group">
+                         <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span> 
+                        <input type="text" name="catSearch" class="form-control form-control-right-border-radius medium pull-right catSearcH" placeholder="Search Category">
                     </div>
                 </div>
                 </div>
                 </div>
-                <div>
+                </div>
                 </div>
                 <div class="grid-content">
         <div class="section-main-heading">
-            <h1>All Categories</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Categories</h1>
         </div>
       <div class="listing-section">
             <div class="col-md-12 noAll-padding">

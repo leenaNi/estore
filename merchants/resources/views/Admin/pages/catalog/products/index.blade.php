@@ -1,15 +1,6 @@
 @extends('Admin.layouts.default')
 @section('mystyles')
-<style>
-  .bxmodal{
-    margin: 10px 0;
-    border: 1px #eee solid;
-    float: left;
-    width: 100%;
-    padding: 15px;
-  }
-</style>
-<!--<link rel="stylesheet" href="{{asset(Config('constants.fileUploadPluginPath').'css/style.css')}}">-->
+<style>.bxmodal{margin: 10px 0; border: 1px #eee solid; float: left; width: 100%; padding: 15px;}</style> 
 <link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload.css'}}">
 <link rel="stylesheet" href="{{Config('constants.fileUploadPluginPath').'css/jquery.fileupload-ui.css'}}">
 <noscript>
@@ -22,18 +13,16 @@
 @section('content')
 <section class="content-header">
   <h1>
-    Products ({{$productCount }})
-    <small>
-    </small>
+    All Products
   </h1>
   <ol class="breadcrumb">
     <li>
-      <a href="{{ route('admin.dashboard') }}">
+      <a href="#">
         <i class="fa fa-dashboard">
-        </i> Home
+        </i> Catalog
       </a>
     </li>
-    <li class="active">Products
+    <li class="active">All Products 
     </li>
   </ol>
 </section>
@@ -51,27 +40,22 @@
         {{Session::get('msg')}}
         </div>
         @endif --}}
-  </div>
-  <div class="grid-content">
+  </div> 
+  <div class="col-md-9 noLeft-padding">
+    <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
-        <div class="filter-section displayFlex">
-        <div class="col-md-9 noAll-padding displayFlex">
-            <div class="filter-left-section">
-               
-
+        <div class="filter-section equal-height-div-1">
+                <div class="filter-left-section">
                 {!! Form::open(['method' => 'get', 'route' => 'admin.products.view' , 'id' => 'searchForm' ]) !!}
                 {!! Form::hidden('productsCatalog',null) !!}
                 {!! Form::hidden('prdSearch',1) !!}
-                <div class="form-group col-md-4">
-                    {!! Form::text('product_name',Input::get('product_name'), ["class"=>'form-control', "placeholder"=>"Product"]) !!}
-                </div>
-                <div class="form-group col-md-4">
-                    {!! Form::text('pricemin',Input::get('pricemin'), ["class"=>'form-control ', "placeholder"=>"Min Price"]) !!}
-                </div>
-                <div class="form-group col-md-4">
-                    {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control ', "placeholder"=>"Max Price"]) !!}
+                <div class="form-group col-md-8">
+                  <div class="input-group">
+                    <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
+                    {!! Form::text('product_name',Input::get('product_name'), ["class"=>'form-control  form-control-right-border-radius', "placeholder"=>"Product"]) !!}
+                  </div>
                 </div>
                 <div class="form-group col-md-4">
                     <!--                        {!! Form::select('category',$category,Input::get('category'), ["class"=>'form-control', "placeholder"=>"Category"]) !!}-->
@@ -113,93 +97,135 @@
                 <div class="form-group col-md-4">
                     {!! Form::select('updated_by',$user,Input::get('updated_by'), ["class"=>'form-control ', "placeholder"=>"Updated By"]) !!}
                 </div>
-                <div class="form-group col-md-4">
-                    {!! Form::text('datefrom',Input::get('datefrom'), ["class"=>'form-control fromDate', "placeholder"=>"From Date"]) !!}
+                <span id="advanced-filter"> 
+                <div class="form-group col-md-3">
+                    {!! Form::text('pricemin',Input::get('pricemin'), ["class"=>'form-control form-control-border-radius ', "placeholder"=>"Min Price"]) !!}
                 </div>
-                <div class="form-group col-md-4">
-                    {!! Form::text('dateto',Input::get('dateto'), ["class"=>'form-control toDate', "placeholder"=>"To Date"]) !!}
+                <div class="form-group col-md-3">
+                    {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control form-control-border-radius ', "placeholder"=>"Max Price"]) !!}
                 </div>
-                <div class="form-group col-md-4 noBottomMargin">
-                    <div class=" button-filter-search col-md-6 no-padding">
-                    <button type="submit" name="search" class="btn btn-primary fullWidth noAll-margin" style="margin-left: 0px;" value="Search"> Filter
-                    </button>
-                    </div>
-                    <div class="btn-group button-filter col-md-5 noBottomMargin no-padding">
+                <div class="form-group col-md-3">
+                    {!! Form::text('datefrom',Input::get('datefrom'), ["class"=>'form-control form-control-border-radius fromDate', "placeholder"=>"From Date"]) !!}
+                </div>
+                <div class="form-group col-md-3">
+                    {!! Form::text('dateto',Input::get('dateto'), ["class"=>'form-control form-control-border-radius toDate', "placeholder"=>"To Date"]) !!}
+                </div>
+                </span>
+                <span id="dots"></span><div class="clearfix"></div> 
+                <div class="form-group col-md-6 noBottomMargin">
+                    <span onclick="myFunction()" id="advanced-filter-Btn"><i class="fa fa-caret-down" aria-hidden="true"></i> Advanced Filters</span>
+                </div>
+                <div class="form-group col-md-6 noBottomMargin"> 
                     <a href="{{route('admin.products.view')}}">
-                        <button type="button" class="btn sbtn btn-block reset-btn" value="reset">Reset
+                        <button type="button" class="btn reset-btn noMob-leftmargin pull-right" value="reset">Reset
                         </button>
-                    </a>
-                    </div>
+                    </a>  
+                    <button type="submit" name="search" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Search"> Filter
+                    </button>  
                 </div>
                 {!! Form::close() !!}
         </div>
       </div>
-      <div class="col-md-3 noAll-padding displayFlex">
-        <div class="filter-right-section">
-            <?php $cat = count($rootsS) > 0 ? '' : "Cat";?>
-            <a class="btn btn-default pull-right col-md-12 marginBottom15 mobAddnewflagBTN" type="button" data-toggle="modal" data-target="#addProduct{{$cat}}">Add New Product
-            </a>
-            <div class="clearfix">
+    </div>
+  </div> 
+ 
+    <div class="col-md-3 noRight-padding">
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
+        </div>
+        <div class="filter-section equal-height-div-2">
+          <div class="filter-right-section">            
+            <div class="form-group">
+            <a class="btn btn-default fullWidth noAll-margin" href="{{ route('admin.products.sampleBulkDownload')}}">Download Products</a>
+            </div>  
+            @if(Session::get('login_user_type') != 3)           
+            <div class="form-group">
+              <a href="{{route('admin.product.wishlist')}}">
+                  <button type="button" class="btn btn-default fullWidth noAll-margin" >Export Wishlist Products
+                  </button>
+              </a> 
             </div>
-            @if(Session::get('login_user_type') != 3)
-            <a href="{{route('admin.product.wishlist')}}">
-                <button type="button" class="btn btn-default pull-right col-md-12 marginBottom15 mobAddnewflagBTN" >Export Wishlist Products
-                </button>
-            </a>
-            <div class="clearfix">
-            </div>
-            @endif
-            <button class="btn btn-default pull-right col-md-12 bulkuploadprod marginBottom15 mobAddnewflagBTN" type="button">Bulk Upload
-            </button>
-            <div class="clearfix">
-            </div>
-
-            <div class="clearfix">
-            <select id="bulk_action" class="dropdown-toggle form-control mob-marBottom15 mobAddnewflagBTN" type="button">
-                <option value="">Bulk Action
-                </option>
-                <option value="export">Export
-                </option>
-                <option value="remove">Delete
-                </option>
-                            <!--                        @if($settingStatus['stock'] == 1)
-                <option value="update_stock_status">Change Stock Status</option>
-                @endif
-                <option value="update_special_price">Update Price/Special Price</option>
-                <option value="add_category">Assign New Category</option>
-                @if($barcode == 1)
-                <option value="print_barcode">Print Barcode</option>
-                @endif
-                <option value="update_availability">Update Availability</option>-->
-            </select>
-            </div>
-            @if($barcode == 1)
-                    <!--                <div class="box-header col-md-3">
-            <button id="print_all" class="btn btn-info pull-right col-md-12 barcode_print" type="button">Print Barcode</button>
-            </div>-->
-            @endif
+            @endif         
+            <div class="form-group">
+            <form action="{{ route('admin.products.productBulkUpload') }}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <div class="input-group file-upload-column">
+                        <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'up-arrow.svg'}}"></span>
+                        <div class="file-upload-wrapper" data-text="Products Upload"> 
+                            <input type="file" name="file" class="fullWidth form-control form-control-right-border-radius file-upload-field fileUploder file-upload-field" onChange="validateFile(this.value)"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group noAll-margin">
+                    <input type="submit" class="btn sbtn btn-secondary submitBulkUpload fullWidth noAll-margin" value="Upload"/> 
+                </div>
+            </form>   
+          </div>          
+            <div class="form-group noAll-margin">
+             <form id="fileupload" action="{{ asset(route('admin.products.prdBulkImgUpload')) }}" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <div class="input-group file-upload-column">
+                        <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'up-arrow.svg'}}"></span>
+                        <div class="file-upload-wrapper" data-text="Images Upload">  
+                        <input type="file" class="fullWidth form-control form-control-right-border-radius file-upload-field" name="files[]" multiple>
+                        <input type="hidden" name="redirect" value="back">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group noAll-margin">
+                    <input type="submit" class="start uploadBulkImages btn sbtn btn-secondary submitBulkUpload fullWidth noAll-margin" value="Start Upload"/> 
+                </div>
+                <span class="fileupload-process"></span>
+            </form>   
+            </div> 
+            <!-- <button class="btn btn-default pull-right col-md-12 bulkuploadprod marginBottom15 mobAddnewflagBTN" type="button">Bulk Upload
+            </button> --> 
         </div>
       </div>
     </div>
+    </div>   
 
-  </div>
   <div class="grid-content">
   <div class="section-main-heading">
-            <h1>Products  <span class="listing-counter">{{$productCount }}</span> </h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Products  <span class="listing-counter">{{$productCount }}</span> </h1> 
+            <?php $cat = count($rootsS) > 0 ? '' : "Cat";?> 
+            <a type="button" class="btn btn-listing-heading pull-right noAll-margin" data-toggle="modal" data-target="#addProduct{{$cat}}"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create </a> 
+
         </div>
       <div class="listing-section">
       <table class="table table-striped table-hover tableVaglignMiddle">
             <thead>
               <tr>
                 @if($barcode == 1)   
-                  <th class="text-center">
-                    <input type="checkbox" id="masterCheck" value="00"/>
+                  <th width="5%" class="text-center">
+                    <label class="custom-checkbox">
+                      <input type="checkbox" id="masterCheck" value="00"/>
+                      <span class="checkmark"></span>
+                    </label>
+
+                    <div> 
+                     <span class="dropdown">
+                        <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+                          <span class="caret"></span>
+                        </button>
+                        <ul id="bulk_action" class="dropdown-menu bulk-action-dropdown-menu" aria-labelledby="dropdownMenu1">
+                          <li role="presentation" class="dropdown-header">Select Bulk Action</li>
+                          <li><input type="radio" id="export" name="Bulk Action" value="export">
+                              <label for="export">Export</label> 
+                          </li>
+                          <li><input type="radio" id="remove" name="Bulk Action" value="remove">
+                              <label for="remove">Delete</label> 
+                          </li> 
+                        </ul>
+                      </span>
+                    </div>
                   </th>  
                 @endif
-                <th class="text-left">@sortablelink ('product', 'Product')</th>
+                <th width="35%" class="text-left">@sortablelink ('product', 'Product')</th>
                 <th class="text-left">Categories</th>
                 <th class="text-right">@sortablelink ('price', 'Price') </th>
-                <th class="text-center">Product Type</th>
+                <th class="text-left">Product Type</th>
                 @if($settingStatus['stock'] == 1)
                   <th class="text-center">Stock</th>
                 @endif
@@ -227,7 +253,10 @@
               ?>
               <tr> @if($barcode == 1)  
                 <td class="text-center">
-                  <input type="checkbox" class="singleCheck" name="singleCheck[]" value="{{ $product->id }}-{{ $product->prod_type }}"/>
+                    <label class="custom-checkbox">
+                    <input type="checkbox" class="singleCheck" name="singleCheck[]" value="{{ $product->id }}-{{ $product->prod_type }}"/>
+                    <span class="checkmark"></span>
+                    </label>
                 </td>
                 @endif
                 <td class="text-left">
@@ -275,11 +304,11 @@
                     </span>
                     @endif
                   </td>
-                <td class="text-center"> {{ $product->producttype->type }}</td>
+                <td class="text-left"> {{ $product->producttype->type }}</td>
                 @if($settingStatus['stock'] == 1)
                 <td class="text-center">{{ $product->stock }}</td>
                 @endif
-                <td class="text-center" id="productStatus_{{$product->id}}"> {{$statusLabel}}</td>
+                <td class="text-center" id="productStatus_{{$product->id}}"><span class="alertSuccess">{{$statusLabel}}</span></td>
                 @if(Session::get('login_user_type') != 3)
                 <td class="text-center">
                   @if($product->is_share_on_mall==0)
@@ -295,14 +324,14 @@
                 @endif
                 <td class="text-center">
                 <div class="actionCenter">
-                      <span><a class="btn-action-default" href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}">Edit</a></span> 
+                      <span><a class="btn-action-default" href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                       <span class="dropdown">
                           <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <span class="caret"></span>
+                          <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                           </button>
                           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
                               <li><a href="{!! route('admin.products.delete',['id'=>$product->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
-                              <li><a href="javascript:;" id="changeStatusLink_{{$product->id}}" onclick="changeStatus({{$product->id}},{{$product->status}})" >{{$linkLabel}}</a></li>
+                              <li><a href="javascript:;" id="changeStatusLink_{{$product->id}}" onclick="changeStatus({{$product->id}},{{$product->status}})" ><i class="fa fa-check "></i> {{$linkLabel}}</a></li>
                           </ul>
                       </span>  
                   </div>
@@ -320,7 +349,7 @@
               @endif
             </tbody>
           </table>
-          <div class="box-footer clearfix">
+          <div class="clearfix">
           <?php
             $args = [];
             !empty(Input::get("product_name")) ? $args["product_name"] = Input::get("product_name") : '';
@@ -1246,6 +1275,17 @@
       }
     }
   }
-                                   );
+ );
+
+$( document ).ready(function() {
+    var s1 = $('#div1').height();
+    var s2 = $('#div2').height();
+
+    if (s1 > s2)
+        $('#div2').css('height', s1 + "px");
+    else
+        $('#div1').css('height', s2 + "px");
+});
+
 </script>
 @stop

@@ -9,11 +9,49 @@
 	      	<div class="row">
 		        <div class="col-md-7 intro-info">
 					<div class="setup-img">
-						<img src="{{ asset('public/Frontend/images/settings.svg')}}" alt=""> 
+						<img src="{{ asset('public/Frontend/images/like.png')}}" alt=""> 
 					</div>
-		          	<h1>Congrats!</h1>
-		          	<p>Your Online Store Super Market is ready</p>
-		          	<div class="button-center-align">
+		          	<h1>Congratulations!</h1>
+                      <p class="mb-30">Your Online Store is ready to use.</p>
+                    <div class="setup-onlinestore-box">
+                        <div class="setup-box">
+                            <a href="{{$storedata->store_domain}}">
+                                <div class="img-holder">
+                                    <img src="{{ asset('public/Frontend/images/setup.png')}}" alt=""> 
+                                </div>
+                                <div class="content-holder">
+                                    <h5>Setup</h5>
+                                    <p>Manage Products, Orders, etc. of your Online Store</p>
+                                </div>
+                                <div class="right-arrow">
+                                    <img src="{{ asset('public/Frontend/images/setup-right-arrow.png')}}" alt=""> 
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="online-box">
+                            <a href="{{$storedata->store_domain}}">
+                                <div class="img-holder">
+                                    <img src="{{ asset('public/Frontend/images/shopping-online.png')}}" alt=""> 
+                                </div>
+                                <div class="content-holder">
+                                    <h5>Online Store</h5>
+                                    <p>E-Commerce website where your customers will shop</p>
+                                </div>
+                                <div class="right-arrow">
+                                    <img src="{{ asset('public/Frontend/images/setup-right-arrow.png')}}" alt=""> 
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="app-btn-links">
+                        <p>Manage your Store at your fingertips</p>
+                        <div class="app-btn-links-btns">
+                            <a href=""><img src="{{ asset('public/Frontend/images/google-play.png')}}" alt=""> </a>
+                            <a href=""><img src="{{ asset('public/Frontend/images/ios.png')}}" alt=""> </a>
+                        </div>
+                    </div>
+		          	<!-- <div class="button-center-align">
 					  <a href="{{$storedata->store_domain}}" class="theme-btn dark-theme-btn">Go to your Online Store</a>
 					  <a href="{{$storedata->store_domain}}/admin" class="theme-btn dark-theme-btn">Let's setup your Store</a>
 					</div>
@@ -26,7 +64,7 @@
                         @endif
 						<p>To manage your online store, click on the Store Admin link or download eStorifi Merchant app and login with the same credentials used to create the store.</p>
 						<a href="#" class="download-app-btn"><img src="{{ asset('public/Frontend/images/download-app.png')}}" alt=""> </a>
-					</div>
+					</div> -->
 		        </div>
 			</div>
 		</div>

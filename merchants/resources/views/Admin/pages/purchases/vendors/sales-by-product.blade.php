@@ -5,8 +5,9 @@
     <h1>
         By Products 
     </h1>
-    <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
+    <ol class="breadcrumb">       
+        <li><a href="#"><i class="fa fa-dashboard"></i> Reports</a></li>
+        <li class="active">Analytics</li>
         <li class="active">By Products</li>
     </ol>
 </section>
@@ -15,23 +16,23 @@
 <section class="main-content">     
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
         <div class="filter-section">
             <div class="col-md-12 no-padding">
                 <div class="filter-full-section">
                     <form method="get" action="{{ route('admin.vendors.saleByProduct')}}">
                         <input type="hidden" value="dateSearch" name="dateSearch"> 
-                        <div class="form-group col-md-4 noBottomMargin">
-                            <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Search Product"/>
+                        <div class="form-group col-md-8 noBottomMargin">
+                        <div class="input-group">
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
+                            <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control form-control-right-border-radius medium" placeholder="Search Product"/>
+                        </div>
                         </div>
 
-                        <div class="form-group col-md-2 noBottomMargin">
-                            <input type="submit" name="submit" class="btn btn-primary noAll-margin fullWidth" value="Submit">
-                        </div>
-                       <div class="form-group col-md-2 noBottomMargin">
-                         <a  href="{{route('admin.sales.byproduct')}}" class="medium btn btn-block fullWidth reset-btn">Reset</a>
-                        </div>
+                        <div class="form-group col-md-4 noBottomMargin">
+                        <a  href="{{route('admin.sales.byproduct')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset</a>
+                        <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Filter">  </div>
                     </form>
                 </div>
             </div>
@@ -40,7 +41,7 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Product{{$prodCount > 1 ?'s':'' }} <span class="listing-counter"> {{$prodCount }} </span> </h1>  
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Product{{$prodCount > 1 ?'s':'' }} <span class="listing-counter"> {{$prodCount }} </span> </h1>  
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding"> 
@@ -50,7 +51,7 @@
                         <th class="text-left">Product</th>
                         <th class="text-left">Category</th>
                         <th class="text-center">Quantity Sold</th>
-                        <th class="text-right">Sales</th>
+                        <th class="text-left">Sales</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,7 +79,7 @@
                             ?>
 
                         </td>
-                        <td class="text-right">
+                        <td class="text-left">
                             <?php
                             echo number_format($sales->sum('price'), 2);
                             ?>
