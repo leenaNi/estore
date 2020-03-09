@@ -800,7 +800,6 @@ class ApiCartController extends Controller
                 $sub_total = $cartInstance->subtotal + $tax;
                 $total = Cart::total() + $tax;
             }
-            // $cart = Helper::getnewCart();
             $cartData = Cart::instance("shopping")->content();
             $user->cart = json_encode($cartData);
             $user->update();
