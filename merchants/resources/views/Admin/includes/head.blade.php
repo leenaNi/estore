@@ -29,8 +29,6 @@
 <link rel="icon" type="image/png" href="{{ Config('constants.frontendThemeImagePath').'/favicon.png' }}">
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin.css' }}">
-<link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin.css' }}">
-<link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin-vikram.css' }}">
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/livvic-fonts/livvic-fonts.css' }}">
 
 <?php
@@ -44,26 +42,26 @@ Session::put('storelogo', $data->logo);
     <div class="modal-dialog">
 
         <!-- Modal content-->
-        <div class="modal-content">    
+        <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Choose Logo (170px W X 100px H)</h4>
             </div>
-            <div class="modal-body">        
-                <form role="form" id="store_save"  enctype="multipart/form-data" class="cls_logo">   
+            <div class="modal-body">
+                <form role="form" id="store_save"  enctype="multipart/form-data" class="cls_logo">
                     <div class="col-md-12 col-sm-12 col-xs-12 mobilepopup-chooselogo"><div class="form-group">
                             <div class="choosebtnbox text-center">
                                 <input type="file" class="custom-file-input chooselogottext" id="logoF" name="logo_img" >
                             </div>
                             <span id="error-logo" class="text-danger"></span>
-                        </div></div>      
+                        </div></div>
                     <div class="col-md-10 col-sm-12 col-xs-12 mobilepopup-chooselogo">
                         <div class="box-2 padd-0" >
                             <div class="result padd-0" style="width: 300px; min-height:10px; max-height: 180px;"></div>
                         </div>
-                        <div class="options hide">                      
+                        <div class="options hide">
                         </div>
-                    </div>    
+                    </div>
                     <div class="text-center col-md-12 topmargin-sm mobilepopup-chooselogo">
                         <button type="submit" id="saveLogo" class="btn btn-default btn-success"> Upload</button>
                     </div>
@@ -80,8 +78,8 @@ Session::put('storelogo', $data->logo);
                 <div class='clearfix'></div>
             </div>
         </div>
-    </div> 
-</div>  
+    </div>
+</div>
 <div id="renewModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
@@ -143,7 +141,7 @@ Session::put('storelogo', $data->logo);
         background-color: <?php echo "#" . $data->secondary_color . " !important"; ?>;
     }
     /*.main-header, .navbar .navbar-static-top{
-        background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;} 
+        background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
 
     .btn-primary, .btn-default{
         background-color: <?php echo "#" . @$data->btn_color . " !important"; ?>;}
@@ -157,4 +155,4 @@ Session::put('storelogo', $data->logo);
     .nav-tabs-custom>.nav-tabs>li.active{border-top-color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
 
     .btn{margin-left:10px;}
-</style> 
+</style>
