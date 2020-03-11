@@ -1855,6 +1855,10 @@ class DistributorOrdersController extends Controller
     public function getSubProds()
     {
         $prod = DistributorProduct::find(Input::get('prodid'));
+        /*echo "<pre>";
+        print_r($prod);
+        echo "prod type::".$prod->prod_type;
+        exit;*/
         if ($prod->prod_type != 2) {
             return $subprods[] = DistributorProduct::find(Input::get('prodid'))->subproducts()->get();
         } else {
@@ -1971,17 +1975,24 @@ class DistributorOrdersController extends Controller
             $tax_type = $pprod->parentproduct->is_tax;
             $tax_rate = $pprod->parentproduct->totalTaxRate();
         }
+        //echo "qty val::".$qty;
+        //echo "price val::".$price;
         $total = array();
         $sub_total = $qty * $price;
+        //echo "<br>sub_total if::".$sub_total;
         if ($this->feature['tax'] == 1) {
+            //echo "inside if:";
             $tax_amt = round($sub_total * $tax_rate / 100, 2);
             if ($tax_type == 2) {
+                echo "<br>inside if";
                 $sub_total = $sub_total + $tax_amt;
+                //echo "<br>inside if::".$sub_total;
             }
             $total['tax'] = $tax_amt * Session::get('currency_val');
         } else {
             $total['tax'] = 0;
         }
+        //echo "<br>inside if::".$sub_total;
         $discount = 0;
         if ($offerid != 0) {
             //Session::put("offerid", $offerid);
@@ -2040,6 +2051,8 @@ class DistributorOrdersController extends Controller
             }
 
         }
+        //echo "sub total::".$sub_total;
+        //echo "<br> dis::".$discount;
         $totprice = $sub_total - $discount;
         $total['price'] = number_format((float) $totprice * Session::get('currency_val'), 2, '.', '');
 
@@ -2048,6 +2061,10 @@ class DistributorOrdersController extends Controller
         $total['subtotal'] = $cart_amt['sub_total'];
         $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
         $total['unitPrice'] = number_format((float) $price * Session::get('currency_val'), 2, '.', '');
+        //echo "total arry::";
+        //echo "<pre>";
+        //print_r($total);
+        //exit;
         return $total;
     }
 

@@ -279,7 +279,7 @@ class Helper
         DB::table('has_industries')->insert($saveIndustryQuestion);
 
         if ($storeType == 'distributor') {
-            $distributorDefaultSettingUrlKey = array("email-facility" => 1, "acl" => 1, "invoice" => 1, "additional-charge" => 1, "default-courier" => 0, "cod" => 0, "stock" => 1, "related-products" => 0);
+            $distributorDefaultSettingUrlKey = array("email-facility" => 1, "acl" => 1, "invoice" => 1, "additional-charge" => 1, "default-courier" => 0, "cod" => 0, "stock" => 1, "related-products" => 0,"products-with-variants" => 1);
             foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
                 if (array_key_exists($hasIndVal->url_key, $distributorDefaultSettingUrlKey)) {
                     $value = $distributorDefaultSettingUrlKey[$hasIndVal->url_key];

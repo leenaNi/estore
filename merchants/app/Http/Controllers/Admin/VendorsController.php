@@ -552,10 +552,6 @@ class VendorsController extends Controller
                 $isApprovedFlagVal = '';
                 if(!empty($hasDistributorResultSet))
                 {
-                    $isApprovedFlagVal = $hasDistributorResultSet->is_approved;
-                }
-                if($isApprovedFlagVal == 1)
-                {
                     $data = ['status' => 3, 'error' => "Merchant already added"];
                 }
                 else

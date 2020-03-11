@@ -359,7 +359,7 @@ $(".catSearcH").keyup(function () {
 
 $(".delCat").click(function () {
     var nid = $(this).attr('data-nid');
-alert("hhh")
+//alert("hhh")
     var chkdel = confirm('Are you sure want to delete this categoy?');
     if (chkdel === true)
     {

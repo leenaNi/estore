@@ -33,7 +33,7 @@ class RouteServiceProvider extends ServiceProvider {
      * @return void
      */
     public function map() {
-        //$req_uri = \URL::to('/');
+		//$req_uri = \URL::to('/');
         
         $req_uri = $_SERVER['REQUEST_URI'];
        

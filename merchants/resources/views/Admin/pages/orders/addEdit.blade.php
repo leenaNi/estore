@@ -373,6 +373,9 @@
                                 <th>Product</th>
                                 <th>Product Variant</th>
                                 <th>Qty</th>
+                                <th>Offer Name</th>
+                                <th>Offer discount Value</th>
+                                <th>Offer qty</th>
                                 <th>Unit Price <span class="currency-sym-in-braces"></span></th>
                                 <th>Price <span class="currency-sym-in-braces"></span></th>
                                 @if($feature['coupon']==1)
@@ -394,7 +397,7 @@
                             ?>
                             @foreach($products as $k =>$prd)
                                 <?php
-                                    
+                                    //Get Category Name
                                     $getProductId = $prd->id;
                                     $hasCategories = DB::table('has_categories')
                                             ->where("prod_id", $getProductId )
@@ -411,14 +414,10 @@
                                         //print_r($storeCategories);
                                         if(!empty($storeCategories))
                                         {
-                                             foreach($storeCategories as $getCatName)
+                                            foreach($storeCategories as $getCatName)
                                             {
                                                 $categoryName = ucwords($getCatName->category);
-                                            }
-                                            //$categoryName = ucwords($storeCategories->[0]->category);
-                                            //$categoryName = ucwords($storeCategories[0]['category']);
-                                            //$categoryName = ucwords($storeCategories->$i->category);
-                                            
+                                            }          
                                         }
                                     }
                                     else {
@@ -426,6 +425,37 @@
                                     }
                                     
                                        
+                                    //Get product wise Offers
+                                    $offersProducts = DB::table('offers_products as op')
+                                            ->join('offers as o', 'o.id', '=', 'op.offer_id')
+                                            ->where("op.prod_id", $getProductId)
+                                            ->whereDate('o.start_date', '<=', date("Y-m-d"))->where('o.end_date', '>=', date("Y-m-d"))
+                                            ->where("o.status", 1)
+                                            ->select('o.offer_name', 'o.offer_discount_value', 'op.qty')
+                                            ->get();
+                                    if(count($offersProducts) > 0)
+                                    {
+                                        $offerNameArry = array();
+                                        $offerNameDisValArry = array();
+                                        $offerQtyArry = array();
+                                        foreach($offersProducts as $getOffersData)
+                                        {
+                                            $offerName = $getOffersData->offer_name;
+                                            array_push($offerNameArry, $offerName);
+                                            $offerDiscountValue = $getOffersData->offer_discount_value;
+                                            array_push($offerNameDisValArry, $offerDiscountValue);
+                                            $offerQty = $getOffersData->qty;
+                                            array_push($offerQtyArry, $offerQty);
+                                        }
+                                        $offerNameList = implode(', ', $offerNameArry); 
+                                        $offerDiscountValueList = implode(', ', $offerNameDisValArry); 
+                                        $offerQtyList = implode(', ', $offerQtyArry); 
+                                    }   
+                                    else {
+                                        $offerNameList = '-';
+                                        $offerDiscountValueList = '-';
+                                        $offerQtyList = '-';
+                                    } 
                                  ?>
                                 <tr> 
                                 <!--<td>{{ @$prd->categories()->first()->category }}</td>-->
@@ -500,6 +530,9 @@
                                     <input type="hidden" class="pid_{{$prd->id}}" value="{{ $prd->qty }}"  />
                                     <input  name="{{"cartdata[".$k."][".$prd->id."]"}}[qty]" type="number" min="1" data-ppid="{{$prd->id}}" data-prdType="{{$prd->prod_type}}" {{ $prd->prod_type == 3?' subprod-id='.$prd->sub_prod_id:'' }} class="qtyOrder editqty form-control validate[required, custom[number],,min[1]]" value="{{ $prd->qty }}" />
                                 </td>
+                                <td>{{$offerNameList}}</td>
+                                <td>{{$offerDiscountValueList}}</td>
+                                <td>{{$offerQtyList}}</td>
                                 <td><b class="price">{{ number_format((@$prd->selling_price * Session::get("currency_val")), 2) }}</b></td>
                                 <td><b class="subT">{{ number_format((@$prd->hasPrice * Session::get("currency_val")), 2)}}</b></td>
                                 @if($feature['coupon']==1)
