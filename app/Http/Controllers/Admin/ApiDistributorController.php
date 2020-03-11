@@ -1156,10 +1156,10 @@ class ApiDistributorController extends Controller
     public function addFavouriteDistributor(){
         $merchantId = Session::get('merchantId');
         $distributorId = Input::get('distributorId');
-        $status = Input::get('status'); //1=favourite, 0= not favorite
-        //dd($status);
-        if($distributorId!=null && $status != null){
-            if($status == 0){
+        $status = Input::get('status'); //1=favourite, 2= not favorite
+        //dd($distributorId);
+        if(!empty($distributorId) && !empty($status)){
+            if($status == 2){
                 DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->update(['is_favourite'=>0]);
                 $msg = 'Distributor is unmarked favourite';
             }else if($status == 1){
