@@ -109,7 +109,7 @@
 
 
             
-            <li class="treeview {{ preg_match('/admin.customers|admin.storecontacts/',Route::currentRouteName())? 'active' : ''}}">
+            <li class="treeview {{ preg_match('/admin.customers|admin.storecontacts|admin.vendors.addMerchant/',Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                      <img class="left-menu-img" src="{{ Config('constants.adminImgangePath') }}/icons/{{'merchants.svg'}}"> <span>Merchants</span>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -124,7 +124,7 @@
                 </ul>
             </li> 
 
-            <li class="treeview {{ preg_match("/admin.report.productIndex|admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}">
+            <li class="treeview {{ preg_match("/admin.report.productIndex|admin.report.ordersIndex|admin.vendors.saleByOrder|admin.vendors.saleByProduct/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
                     <img class="left-menu-img" src="{{ Config('constants.adminImgangePath') }}/icons/{{'analytics.svg'}}"> <span>Reports</span>
                     <i class="fa fa-angle-down pull-right"></i>
