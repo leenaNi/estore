@@ -31,7 +31,7 @@
 										<div class="form-group clearfix">
 											<label>Business Name </label>
 											<div class="input-group">
-												<input tabindex="1" type="text" class="form-control" name="store_name" id="store_name" placeholder="Business Name">
+												<input tabindex="1" type="text" class="form-control" name="store_name" id="store_name" onBlur="checkStorename(this.value)" placeholder="Business Name">
 												<span>
 													<img id="successimg" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success"/ class="success-tick hidden">
 													<img id="errorimg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success"/ class="error-mark hidden">
@@ -151,23 +151,31 @@
 	</section>
 <script>
 function checkStorename(storename){
-	$.ajax({
-            type: 'POST',
-            url: "{{route('checkStorename')}}",
-            data: {storename: storename},
-            success: function (response) {
-                if (response['status'] == 'success') {
-					$("#business_name_err").hide();  $("#errorimg").hide();
-					$("#successimg").show();
-                } else if (response['status'] == 'fail') {
-					$("#business_name_err").show().html(response['msg']);
-					$("#errorimg").show();$("#successimg").hide();
-                }
-            },
-            error: function (e) {
-                console.log(e.responseText);
-            }
-        });
+	if(storename == ''){
+		$("#business_name_err").show();  $("#errorimg").show();
+		$("#successimg").hide();
+	}else{
+		$("#business_name_err").hide();  $("#errorimg").hide();
+		$("#successimg").show();
+	}
+	
+	// $.ajax({
+    //         type: 'POST',
+    //         url: "{{route('checkStorename')}}",
+    //         data: {storename: storename},
+    //         success: function (response) {
+    //             if (response['status'] == 'success') {
+	// 				$("#business_name_err").hide();  $("#errorimg").hide();
+	// 				$("#successimg").show();
+    //             } else if (response['status'] == 'fail') {
+	// 				$("#business_name_err").show().html(response['msg']);
+	// 				$("#errorimg").show();$("#successimg").hide();
+    //             }
+    //         },
+    //         error: function (e) {
+    //             console.log(e.responseText);
+    //         }
+    //     });
 }
 function checkPhone(mobile){
 	$.ajax({

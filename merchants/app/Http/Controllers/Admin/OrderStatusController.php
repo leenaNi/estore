@@ -17,9 +17,6 @@ class OrderStatusController extends Controller {
     public function index() {
         $loggedInUserId = Session::get('loggedin_user_id');
         $loginUserType = Session::get('login_user_type');
-        //echo "login user id::".$loggedInUserId;
-        //echo "<br>login user type::".$loginUserType;
-        //get Store id from user table
         $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
         $storeId = $userResult->store_id;
         //echo "store id::".$storeId;

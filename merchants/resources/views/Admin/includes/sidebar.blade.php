@@ -119,7 +119,7 @@ $settingsdata = App\Library\Helper::getSettings();
 
                 </ul>
             </li>
-            <li class="treeview {{ preg_match("/admin.report.productIndex|admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}">
+            <li class="treeview {{ preg_match("/admin.report.productIndex|admin.report.ordersIndex|admin.sales/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
                     <i class="fa fa-file"></i><span>Reports</span>
                     <i class="fa fa-angle-down pull-right"></i>
