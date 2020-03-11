@@ -1,6 +1,6 @@
 @extends('Admin.layouts.default')
 @section('mystyles')
-<link rel="stylesheet" href="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker-bs3.css') }}"> 
+<link rel="stylesheet" href="{{ asset('public/Admin/plugins/daterangepicker/daterangepicker-bs3.css') }}">
 @stop
 
 @section('content')
@@ -16,7 +16,7 @@
 <section class="main-content">
     <div class="notification-column">
         <div class="alert alert-danger" role="alert" id="errorMsgDiv" style="display: none;"></div>
-        <div class="alert alert-success" role="alert" id="successMsgDiv" style="display: none;"></div> 
+        <div class="alert alert-success" role="alert" id="successMsgDiv" style="display: none;"></div>
         <label class="error" id="sendRequestErorr">{{$sendRequestError}}</label>
     </div>
     <div id="addMerchantDiv">
@@ -28,13 +28,13 @@
 
                 <div class="col-md-12 noAll-padding">
                     <div class="filter-left-section">
-                       
+
                         <form  method="get" id="merchantCodeForm">
                             <div class="form-group col-md-8 col-sm-6 col-xs-12" id="inputDiv">
                                 <input type="text" name="merchantIdentityCode" id="merchantIdentityCode" value="{{isset($identityCode)?$identityCode:''}}" onkeypress="hideErrorMsg('errorLbl')" class="form-control medium pull-right " placeholder="Enter Merchant Code">
                                 <label class="error" id="errorLbl"></label>
                             </div>
-                            
+
                             <div class="form-group col-md-2 col-sm-3 col-xs-12">
                                 <button id="searchMerchant" class="btn btn-primary fullWidth noAll-margin" style="margin-left: 0px;">Search</button>
                             </div>
@@ -42,18 +42,18 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-md-3 hide noAll-padding">
+                <div class="col-md-3 noAll-padding" style="display: none;" id="merchantDetailDiv">
                     <div class="filter-right-section">
-                        <div class="clearfix" id="merchantDetailDiv">
+                        <div class="clearfix">
                             <div class="info-box">
                                 <form action="{{ route('admin.vendors.send-notification') }}" method="post">
-                                
+
                                         <label>Business Name: </label> <span id="storeName"></span><br>
                                         <label>Person Name: </label> <span id="firstname"></span><br>
                                         <label>Email: </label> <span id="email"></span><br>
                                         <label>Mobile number: </label> <span id="phone"></span><br>
                                         <label>Industry: </label> <span id="businessName"></span><br>
-                                        
+
                                         <input type="hidden" id="hdnMerchantEmail" name="hdnMerchantEmail" value="">
                                         <input type="hidden" id="hdnMerchantPhone" name="hdnMerchantPhone" value="">
                                         <input type="hidden" id="hdnMerchantId" name="hdnMerchantId" value="">
@@ -79,70 +79,66 @@
                     <thead>
                         <tr>
                             <th class="text-left">#</th>
-                            <th class="text-left">Business Name</th> 
+                            <th class="text-left">Business Name</th>
                             <th class="text-center">Mobile Number</th>
                             <th class="text-center">Connection Date</th>
                             <th class="text-center">Ledger</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">Action</th>
                         </tr>
-                    </thead>	
+                    </thead>
                     <tbody>
                     @if(!empty($merchantListingData))
                     <?php
-                    $i = 0;
-                    ?>
+$i = 0;
+?>
                         @foreach($merchantListingData as $data)
                         <?php
-                            $i++;
-                            $decodedMerchantDetail = json_decode($data->register_details);
-                            $connectionData = date("d-m-Y", strtotime($data->updated_at));
-                            $distributorId = $data->distributor_id;
-                            $merchantId = $data->merchant_id;
-                            $isApprovedVal = $data->is_approved;
-                          
-                            if($isApprovedVal==1)
-                            {
-                                $statusLabel = 'Approved';
-                                $linkLabel = 'Disapprove';
-                            }
-                            else
-                            {
-                                $statusLabel = 'Not Approved';
-                                $linkLabel = 'Approve';
-                            }
-                        
+$i++;
+$decodedMerchantDetail = json_decode($data->register_details);
+$connectionData = date("d-m-Y", strtotime($data->updated_at));
+$distributorId = $data->distributor_id;
+$merchantId = $data->merchant_id;
+$isApprovedVal = $data->is_approved;
 
-                        ?>
+if ($isApprovedVal == 1) {
+    $statusLabel = 'Approved';
+    $linkLabel = 'Disapprove';
+} else {
+    $statusLabel = 'Not Approved';
+    $linkLabel = 'Approve';
+}
+
+?>
                         <tr>
                             <td  class="text-left">{{$i}}</td>
-                            <td  class="text-left">{{$decodedMerchantDetail->store_name}}</td> 
+                            <td  class="text-left">{{$decodedMerchantDetail->store_name}}</td>
                             <td  class="text-left">{{$decodedMerchantDetail->phone}}</td>
                             <td  class="text-right">{{$connectionData}}</td>
                             <td  class="text-center">
                                 <div class="actionCenter">
-                                <span><a class="btn-action-default" href=""><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> Ledger</a></span> 
+                                <span><a class="btn-action-default" href=""><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> Ledger</a></span>
                                 </div>
                             </td>
 
                             <td class="text-center" id="merchantStatus_{{$distributorId}}">{{$statusLabel}}</td>
-                           
+
                             <td class="text-center">
                                 <div class="actionCenter">
                                     <span><a class="btn-action-default"  id="changeStatusLink_{{$distributorId}}" href="javascript:;" onClick="changeStatus({{$merchantId}}, {{$distributorId}}, {{$isApprovedVal}})">{{$linkLabel}}</a></span>
                                 </siv>
                             </td>
-                          
-                           
+
+
                             <!-- <i class="fa fa-pencil-square-o fa-fw" title="Ledger"></i></td> -->
-                        </tr> 
+                        </tr>
                         @endforeach
                     @else
                         <tr colspan="6">
                             <td> No records found.</td>
                         </tr>
-                    @endif 
-                    
+                    @endif
+
                     </tbody>
                 </table>
             </div>
@@ -154,7 +150,7 @@
 @stop
 @section('myscripts')
 <script>
-    $("#searchMerchant").on("click", function () 
+    $("#searchMerchant").on("click", function ()
     {
         var identityCode = $("#merchantIdentityCode").val();
         var hdnStoreId = $("#hdnStoreId").val();
@@ -169,7 +165,7 @@
                     url: "{{route('admin.vendors.verifyCode')}}",
                     dataType: "json",
                     success: function (data) {
-                        
+
                         if(data['status'] != 1)
                         {
                             $("#errorLbl").show();
@@ -215,7 +211,7 @@
     {
         $("#"+id).hide();
     }
-   
+
    function changeStatus(merchantId, distributorId, status)
   {
       if(status == 1)
