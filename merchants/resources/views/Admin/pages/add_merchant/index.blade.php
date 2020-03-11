@@ -42,7 +42,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-md-3 hide noAll-padding" id="merchantDetailDiv">
+                <div class="col-md-3 noAll-padding" style="display: none;" id="merchantDetailDiv">
                     <div class="filter-right-section">
                         <div class="clearfix">
                             <div class="info-box">
