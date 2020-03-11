@@ -4,63 +4,6 @@
         @include('Admin.includes.head')
 
     </head>
-    <style>
-.login-box-body span.logo-holder {
-    display: block;
-    margin: 30px 0px;
-}
-
-.input-group.input-otp-group {
-    border-radius: 5px;
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -ms-flex-align: stretch;
-    align-items: stretch;
-    width: 100%;
-    margin-top: 15px;
-}
-
-.login-box-body,
-.register-box-body {
-    padding: 30px 50px !important;
-}
-
-.input-group.input-otp-group input {
-    text-align: center;
-    margin-right: 15px;
-    border-radius: 5px !important;
-    height: 40px !important;
-    line-height: 40px;
-    outline: none !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    background: #eff2f6 !important;
-    font-weight: 400;
-    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-    font-family: 'livvicregular' !important;
-    color: #3f566f !important;
-    font-size: 16px !important;
-}
-
-.input-group.input-otp-group input:last-child {
-    margin-right: 0;
-}
-
-.input-group.input-otp-group .col {
-    position: relative;
-    -ms-flex: 1 1 auto;
-    flex: 1 1 auto;
-    width: 1%;
-    margin-bottom: 0;
-}
-.btn-primary:focus {
-    background-color: #359bdb!important;
-    border-color: #359bdb!important;
-}
-    </style>
     <body class="hold-transition login-page loginBG">
         <div class="login-box">
             <div class="login-box-body">
@@ -88,7 +31,7 @@
                                 <div class="digit-group">
                                 <div class="scroller-y">
                                     <div class="form-group">
-                                        <label for="">Type in your OTP</label> 
+                                        <label for="">Type in your OTP</label>
                                         <div class="input-group input-otp-group">
                                             <input tabindex="6" type="tel" class="form-control col" id="otp1" data-next="otp2" placeholder="">
                                             <input tabindex="7" type="tel" class="form-control col" id="otp2" data-next="otp3" data-previous="otp1" placeholder="">
