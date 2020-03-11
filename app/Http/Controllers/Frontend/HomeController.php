@@ -368,8 +368,8 @@ class HomeController extends Controller
         // echo "getcongrats  call function";
         // if(Input::get('id')){
         $dataS = [];
-        $dataS['id'] = 3; //Input::get('id');
-        $dataS['storedata'] = Store::find(3); //  //  Store::find(Input::get('id'));
+        $dataS['id'] = Input::get('id'); // 3; //
+        $dataS['storedata'] = Store::find(Input::get('id')); // Store::find(3); // ;
         $viewname = Config('constants.frontendView') . ".success";
         return Helper::returnView($viewname, $dataS);
         // } else {
