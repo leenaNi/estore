@@ -297,7 +297,7 @@
                             <td class="text-left"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{ @$order->users->firstname }} {{ @$order->users->lastname }} </a><div class="clearfix"></div>
                                 <span class="list-light-color list-small-font">{{ @$order->users->telephone }}</span>
                             </td> 
-                            <td class="text-center"><span class="alertWarning">{{ @$order->orderstatus['order_status']  }}</span></td>
+<td class="text-center"><span class="alertWarning" style="background-color: {{@$order->orderstatus['color']}}">{{ @$order->orderstatus['order_status']  }}</span></td>
                             <td class="text-center"><span class="alertWarning">{{ @$order->paymentstatus['payment_status'] }}</span></td>
                             <td class="text-right">@if(@$order->prefix)
                                 <!-- <span class="currency-sym"></span> --> <span class="list-dark-color">{{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}</span>
