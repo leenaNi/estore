@@ -76,10 +76,9 @@ class ReportController extends Controller {
             $prods = $prods->where('p.status',1)->paginate(Config('constants.paginateNo'));
             $prodCount=$prods->total();
         }
-         
         $cat = DB::table("categories")->select("category","id")->get()->toArray();
         foreach($prods as $prd){
-            if($prd->id != $prd->sub_prod_id){
+            if($prd->sub_prod_id!=0 || $prd->sub_prod_id!=""){
                 $prodname = Product::find($prd->sub_prod_id);
                 $prd->product = $prodname->product;
             }

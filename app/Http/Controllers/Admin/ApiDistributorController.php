@@ -1157,7 +1157,8 @@ class ApiDistributorController extends Controller
         $merchantId = Session::get('merchantId');
         $distributorId = Input::get('distributorId');
         $status = Input::get('status'); //1=favourite, 0= not favorite
-        if($distributorId!=null){
+        //dd($status);
+        if($distributorId!=null && $status != null){
             if($status == 0){
                 DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->update(['is_favourite'=>0]);
                 $msg = 'Distributor is unmarked favourite';
@@ -1167,7 +1168,7 @@ class ApiDistributorController extends Controller
             }
             return ['status' => 1, 'msg' => $msg]; 
         }else{
-            if($merchantId != null){
+            if($distributorId == null){
                 $fav_distributors = DB::table('has_distributors')->where(['merchant_id'=> $merchantId])->get(['distributor_id','is_favourite']);
                 return ['status' => 1, 'msg' => 'Favourite Distributors List','data'=>$fav_distributors]; 
             }else{
