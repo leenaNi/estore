@@ -694,7 +694,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/send-notification', array('as' => 'admin.vendors.send-notification', 'uses' => 'VendorsController@sendNotificationToMerchant'));
                 Route::get('/accept/{id?}', array('as' => 'admin.vendors.accept', 'uses' => 'VendorsController@approveRequest'));
                 Route::post('/is-approve-merchant', array('as' => 'admin.vendors.isApproveMerchant', 'uses' => 'VendorsController@isApprovedMerchant'));
-                
+                //All Merchant
+                Route::any('/all-merchant', array('as' => 'admin.vendors.allMerchant', 'uses' => 'VendorsController@allMerchant'));
             });
 
             Route::group(['prefix' => 'purchase-requisition', 'middlewareGroups' => ['CheckUser', 'web']], function () {

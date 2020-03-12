@@ -8,7 +8,7 @@
                     <i class="fa fa-bar-chart"></i> <span>Home</span> <i class=""></i>
                 </a>
             </li>
-            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.payment-settlement','admin.payment-settlements.settlementSummary']) ? 'active' : '' }}">
+            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.payment-settlement.view','admin.payment-settlements.settlementSummary']) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-money"></i> <span>Sales</span>
                     <span class="pull-right-container">
@@ -21,7 +21,7 @@
                 </ul>
             </li>
 
-            <li class="treeview  {{ in_array(Route::currentRouteName(),['admin.masters.category.view','admin.masters.language.view','admin.masters.language.addEdit','admin.masters.category.addEdit','admin.masters.themes.view','admin.masters.themes.addEdit']) ? 'active' : '' }}" >
+            <li class="treeview  {{ in_array(Route::currentRouteName(),['admin.masters.category.view','admin.masters.company.view','admin.masters.brand.view','admin.masters.language.view','admin.masters.translation.view','admin.masters.language.addEdit','admin.masters.category.addEdit','admin.masters.company.addEdit','admin.masters.brand.addEdit','admin.masters.themes.view','admin.masters.themes.addEdit','admin.masters.country.view','admin.masters.country.addEdit','admin.masters.currency.view','admin.masters.currency.addEdit','admin.category.view','admin.category.add','admin.category.edit','admin.category.categoriesRequested']) ? 'active' : '' }}" >
                 <a href="#">
                     <i class="fa fa-database"></i> <span>Catalog</span>
                     <span class="pull-right-container">
@@ -43,7 +43,7 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li class="{{ in_array(Route::currentRouteName(),['admin.category.view','admin.category.addEdit'])?'active':'' }}"><a href="{{ route('admin.category.view') }}"><i class="fa fa-circle-o"></i>Master</a></li>
+                            <li class="{{ in_array(Route::currentRouteName(),['admin.category.view','admin.category.add','admin.category.edit'])?'active':'' }}"><a href="{{ route('admin.category.view') }}"><i class="fa fa-circle-o"></i>Master</a></li>
                             <li class="{{ in_array(Route::currentRouteName(),['admin.category.categoriesRequested'])?'active':'' }}"><a href="{{ route('admin.category.categoriesRequested') }}"><i class="fa fa-circle-o"></i>Requested</a></li>
                         </ul>
                     </li>
@@ -57,7 +57,7 @@
                 </ul>
             </li>
 
-            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.reports.view','admin.reports.getstoreorders']) ? 'active' : '' }}">
+            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.reports.view','admin.reports.getstoreorders','admin.analytics.byStore','admin.analytics.byCategory']) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-file"></i> <span>Reports</span>
                     <span class="pull-right-container">
@@ -86,17 +86,17 @@
                     </li>
                 </ul>
             </li>
-            <li class="{{ (in_array(Route::currentRouteName(),['admin.courier.view', 'admin.settings.view', 'admin.notification.view'])?'active':'') }}">
+            <li class="{{ (in_array(Route::currentRouteName(),['admin.courier.view', 'admin.courier.add', 'admin.courier.edit', 'admin.courier.update', 'admin.courier.save', 'admin.settings.view', 'admin.notification.view'])?'active':'') }}">
                 <a href="{{route('admin.settings.view')}}">
                     <i class="fa fa-cogs"></i> <span>Configurations</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
-                <ul class="treeview-menu {{ in_array(Route::currentRouteName(),['admin.courier.view', 'admin.notification.view', 'admin.settings.view']) ? 'menu-open' : '' }}">
-                    <li><a href="{{route('admin.settings.view')}}"><i class="fa fa-circle-o"></i>Settings</a></li>
-                    <li><a href="{{ route('admin.notification.view') }}"><i class="fa fa-circle-o"></i>Sent Notification</a></li>
-                    <li><a href="{{ route('admin.courier.view') }}"><i class="fa fa-circle-o"></i>Courier Services</a></li>
+                <ul class="treeview-menu {{ in_array(Route::currentRouteName(),['admin.courier.view','admin.courier.add','admin.courier.edit','admin.courier.save','admin.courier.update','admin.courier.changeStatus', 'admin.courier.delete','admin.notification.view','admin.notification.addNew', 'admin.settings.view','admin.settings.update']) ? 'menu-open' : '' }}">
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.settings.view','admin.settings.update']) ? 'active' : '' }}"><a href="{{route('admin.settings.view')}}"><i class="fa fa-circle-o"></i>Settings</a></li>
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.notification.view','admin.notification.addNew']) ? 'active' : '' }}"><a href="{{ route('admin.notification.view') }}"><i class="fa fa-circle-o"></i>Sent Notification</a></li>
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.courier.view','admin.courier.add','admin.courier.edit','admin.courier.save','admin.courier.update','admin.courier.changeStatus','admin.courier.delete']) ? 'active' : '' }}"><a href="{{ route('admin.courier.view') }}"><i class="fa fa-circle-o"></i>Courier Services</a></li>
                 </ul>
             </li>
 
@@ -107,23 +107,23 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
-                <ul class="treeview-menu {{ in_array(Route::currentRouteName(),['admin.systemusers.roles.view','admin.systemusers.users.view']) ? 'menu-open' : '' }}">
-                    <li class="active"><a href="{{ route('admin.systemusers.roles.view') }}"><i class="fa fa-circle-o"></i>Roles</a></li>
-                    <li><a href="{{ route('admin.systemusers.users.view') }}"><i class="fa fa-circle-o"></i>Users</a></li>
+                <ul class="treeview-menu {{ in_array(Route::currentRouteName(),['admin.systemusers.roles.view','admin.systemusers.roles.addEdit','admin.systemusers.roles.saveUpdate','admin.systemusers.roles.delete','admin.systemusers.users.view','admin.systemusers.users.addEdit','admin.systemusers.users.saveUpdate','admin.systemusers.users.delete']) ? 'menu-open' : '' }}">
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.systemusers.roles.view','admin.systemusers.roles.addEdit','admin.systemusers.roles.saveUpdate','admin.systemusers.roles.delete']) ? 'active' : '' }}"><a href="{{ route('admin.systemusers.roles.view') }}"><i class="fa fa-circle-o"></i>Roles</a></li>
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.systemusers.users.view','admin.systemusers.users.addEdit','admin.systemusers.users.saveUpdate','admin.systemusers.users.delete']) ? 'active' : '' }}"><a href="{{ route('admin.systemusers.users.view') }}"><i class="fa fa-circle-o"></i>Users</a></li>
 
                 </ul>
             </li>
-            <li class="{{ (in_array(Route::currentRouteName(),['admin.merchants.view'])?'active':'') }}">
+            <li class="{{ (in_array(Route::currentRouteName(),['admin.merchants.view','admin.merchants.addEdit'])?'active':'') }}">
                 <a href="{{ route('admin.merchants.view') }}">
                     <i class="fa fa-users"></i> <span>Merchants</span>
                 </a>
             </li>
-            <li class="{{ (in_array(Route::currentRouteName(),['admin.distributors.view'])?'active':'') }}">
+            <li class="{{ (in_array(Route::currentRouteName(),['admin.distributors.view','admin.distributors.addEdit','admin.distributors.saveUpdate'])?'active':'') }}">
                 <a href="{{ route('admin.distributors.view') }}">
                     <i class="fa fa-users"></i> <span>Distributors</span>
                 </a>
             </li>
-            <li class="{{ (in_array(Route::currentRouteName(),['admin.stores.view'])?'active':'') }}">
+            <li class="{{ (in_array(Route::currentRouteName(),['admin.stores.view','admin.stores.addEdit'])?'active':'') }}">
                 <a href="{{ route('admin.stores.view') }}">
                     <i class="fa fa-shopping-cart"></i> <span>Stores</span>
                 </a>
@@ -133,15 +133,15 @@
                     <i class="fa fa-laptop"></i> <span>Templates</span>
                 </a>
             </li>-->
-            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.updates.codeUpdate.view','admin.updates.databaseUpdate.view']) ? 'active' : '' }}">
+            <li class="treeview {{ in_array(Route::currentRouteName(),['admin.updates.codeUpdate.view','admin.updates.databaseUpdate.view','admin.updates.codeUpdate.newCodeUpdate','admin.updates.backup.index']) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-wrench"></i> <span>Version Upgrade</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
-                <ul class="treeview-menu {{ in_array(Route::currentRouteName(),['admin.updates.codeUpdate.view','admin.updates.databaseUpdate.view']) ? 'menu-open' : '' }}">
-                    <li><a href="{{ route('admin.updates.codeUpdate.view') }}"><i class="fa fa-circle-o"></i>Code Update</a></li>
+                <ul class="treeview-menu {{ in_array(Route::currentRouteName(),['admin.updates.codeUpdate.view','admin.updates.codeUpdate.newCodeUpdate','admin.updates.databaseUpdate.view','admin.updates.backup.index']) ? 'menu-open' : '' }}">
+                    <li class="{{ in_array(Route::currentRouteName(),['admin.updates.codeUpdate.view','admin.updates.codeUpdate.newCodeUpdate','admin.updates.backup.index']) ? 'active' : '' }}"><a href="{{ route('admin.updates.codeUpdate.view') }}"><i class="fa fa-circle-o"></i>Code Update</a></li>
 <!--                    <li class="active"><a href="{{ route('admin.updates.databaseUpdate.view') }}"><i class="fa fa-circle-o"></i>Database Update</a></li>-->
                 </ul>
             </li>

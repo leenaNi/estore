@@ -475,6 +475,91 @@ class VendorsController extends Controller
         return Helper::returnView($viewname, $data);
     }
 
+    //Get All Merchants list
+    public function allMerchant()
+    {
+        $loggedInUserId = Session::get('loggedin_user_id');
+        $loginUserType = Session::get('login_user_type');
+        // get store id
+        $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
+        $storeId = $userResult->store_id;
+
+        // Get distributor id from store table
+        $storeResult = DB::table('stores')->where("id", $storeId)->first();
+        $distributorId = $storeResult->merchant_id;
+
+        $viewname = Config('constants.adminAddMerchantView') . '.all_merchant';
+
+        $merchantListingResult = DB::table('has_distributors as hd')
+        ->select(['hd.distributor_id','hd.is_approved','m.id as merchant_id','m.company_name','m.phone','hd.updated_at'])
+        ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
+        //->where([["hd.distributor_id", $distributorId],['is_approved', '1']])
+        ->where([["hd.distributor_id", $distributorId]])
+        ->get();
+        //echo "<pre>";
+        //print_r($merchantListingResult);
+        $merchantIds = [];
+        $merchantListingData = [];
+        $i=0;
+        foreach ($merchantListingResult as $allMerchantsData) {
+            //array_push($merchantIds, $allMerchantsData->merchant_id);
+            $merchhantBusinessName = $allMerchantsData->company_name;
+            $merchantphoneNumber = $allMerchantsData->phone;
+            
+            $merchantId = $allMerchantsData->merchant_id;
+            $merchantStores = DB::table('stores')->where('store_type', 'LIKE', 'merchant')->where('merchant_id', $merchantId)->get(['id']);
+            foreach($merchantStores as $getStoreId)
+            {
+                $merchantStoreId = $getStoreId->id;
+                //get Orders count with the using of store id
+                $selects = array(
+                    'count(id) as orders_count',
+                    'SUM(order_amt) as TotalOrderAmt'
+                );
+                $orders = DB::table('orders')
+                ->selectRaw(implode(',', $selects))
+                ->where("order_status", "!=", 0)
+                ->where('store_id', $merchantStoreId)
+                ->where('order_type', 0)
+                ->groupBy('store_id')
+                ->get();
+                
+                if(count($orders) > 0)
+                {
+                    $orderCount = $orders[0]->orders_count;
+                    $orderAmount = $orders[0]->TotalOrderAmt;
+                }
+                else
+                {
+                    $orderCount = '-';
+                    $orderAmount = '-';
+                }
+                $merchantListingData[$i]['merchant_id'] = $merchantId;
+                $merchantListingData[$i]['merchant_store_id'] = $merchantStoreId;
+                $merchantListingData[$i]['business_name'] = $merchhantBusinessName;
+                $merchantListingData[$i]['phone_number'] = $merchantphoneNumber;
+                $merchantListingData[$i]['order_count'] = $orderCount;
+                $merchantListingData[$i]['total_order_amt'] = $orderAmount;
+            }
+            $i++;
+        }
+        /*echo "<pre>";
+        print_r($merchantListingData);
+        exit;*/
+        if (isset($merchantListingData) && !empty($merchantListingData)) 
+        {
+            $data = ['merchantListingData' => $merchantListingData,"storeId"=>$storeId,"sendRequestError" => Session::get('sendRequestMsg')];
+        }
+        else 
+        {
+            $data = ['error' => "No Merchant found","storeId"=>$storeId,"sendRequestError" => Session::get('sendRequestMsg')];
+        }
+        
+       
+        return Helper::returnView($viewname, $data);
+
+    }
+
     public function addMerchant() // Display view
     {
         $loggedInUserId = Session::get('loggedin_user_id');
