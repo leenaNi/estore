@@ -38,6 +38,8 @@ use DB;
 use Hash;
 use Input;
 use Session;
+use Cookie;
+
 
 class OrdersController extends Controller
 {
@@ -46,14 +48,30 @@ class OrdersController extends Controller
 
     public function index()
     {
+        $allinput = Input::all();
+        $getMerchantStoreIdVal = 0;
+        if(!empty($allinput))
+        {
+            $getMerchantStoreIdVal = $allinput['id'];
+        }
+       
         $jsonString = Helper::getSettings();
+        if($getMerchantStoreIdVal > 0)
+        {
+            $storeId = $getMerchantStoreIdVal;
+        }
+        else
+        {
+            $storeId = $jsonString['store_id'];
+        }
+
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
-        $orders = Order::where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
-        //   dd($orders);
+        
+        $orders = Order::where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $storeId)->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
@@ -114,10 +132,11 @@ class OrdersController extends Controller
             }
         }
 
+       
         $orders = $orders->paginate(Config('constants.paginateNo'));
         $ordersCount = $orders->total();
         $flags = Flags::all();
-
+       
         $viewname = Config('constants.adminOrderView') . '.index';
         $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
         return Helper::returnView($viewname, $data);

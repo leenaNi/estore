@@ -269,10 +269,15 @@ class LoginController extends Controller
             if(!empty($distributorId) && $distributorId > 0)
             {
                 $distributorObj = Vendor::find($distributorId);
+                $registerDetails = json_decode($distributorObj->register_details, true);
+                
                 $distributorObj->email = Input::get("email_id");
                 $distributorObj->firstname = Input::get("firstname");
                 $distributorObj->lastname = Input::get("lastname");
                 $distributorObj->phone_no = Input::get("telephone");
+                $registerDetails['phone'] = Input::get("telephone");
+                $distributorObj->register_details = json_encode($registerDetails);
+                //$distributorObj->register_details = ['phone' => Input::get("telephone")];
                 $distributorObj->save();
             }
         }
@@ -281,10 +286,14 @@ class LoginController extends Controller
             if(!empty($distributorId) && $distributorId > 0)
             {
                 $merchantObj = Merchants::find($distributorId);
+                $registerDetails = json_decode($merchantObj->register_details, true);
                 $merchantObj->email = Input::get("email_id");
                 $merchantObj->firstname = Input::get("firstname");
                 $merchantObj->lastname = Input::get("lastname");
                 $merchantObj->phone = Input::get("telephone");
+                $registerDetails['phone'] = Input::get("telephone");
+                $merchantObj->register_details = json_encode($registerDetails);
+                //$merchantObj->register_details->phone = Input::get("telephone");
                 $merchantObj->save();
             }
         }

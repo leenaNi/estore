@@ -28,14 +28,15 @@
             <div class="col-md-12 noAll-padding">
                 <div class="filter-left-section">
                    
-                    <form  method="get" id="merchantCodeForm">
+                    <form  method="post" id="merchantCodeForm">
                         <div class="form-group col-md-8 col-sm-6 col-xs-12" id="inputDiv">
-                            <input type="text" name="merchant_search_keyword" id="merchant_search_keyword" value="" onkeypress="hideErrorMsg('errorLbl')" class="form-control medium pull-right " placeholder="Enter Merchant Business name or Phone number">
+                            <input type="text" value="{{ !empty(Input::get('merchant_search_keyword'))?Input::get('merchant_search_keyword'):'' }}" name="merchant_search_keyword" id="merchant_search_keyword" onkeypress="hideErrorMsg('errorLbl')" class="form-control medium pull-right " placeholder="Enter Merchant Business name or Phone number">
                             <label class="error" id="errorLbl" style="color:red"></label>
                         </div>
                         
-                        <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                            <button id="searchMerchant" class="btn btn-primary fullWidth noAll-margin" style="margin-left: 0px;">Search</button>
+                        <div class="form-group col-md-4 noBottomMargin">
+                            <a href="{{ route('admin.vendors.allMerchant')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset </a> 
+                            <button type="submit" id="searchMerchant" name="submit" vlaue="Filter" class='btn btn-primary noAll-margin pull-right marginRight-lg'>Filter</button> 
                         </div>
                         <input type="hidden" id="hdnStoreId" name="hdnStoreId" value="">
                     </form>
@@ -56,7 +57,7 @@
                             <th class="text-left">Business Name</th> 
                             <th class="text-center">Mobile</th>
                             <th class="text-center">Total No. of Orders</th>
-                            <th class="text-right">Total Order Amt</th>
+                            <th class="text-center">Total Order Amt</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,13 +72,25 @@
                             $merchantPhoneNum = $data['phone_number'];
                             $merchantTotalOrderCnt = $data['order_count'];
                             $merchantTotalOrderAmt = $data['total_order_amt'];
-
+                            $getMerchantStoreId = $data['merchant_store_id'];
                         ?>
                         <tr>  
                             <td class="text-left">{{ $merchantBusinessName }}</td>
                             <td class="text-center">{{ $merchantPhoneNum }}</td>
-                            <td class="text-right">{{ $merchantTotalOrderCnt }}</td>
-                            <td class="text-right">{{ $merchantTotalOrderAmt }}</td>
+                            <?php if($merchantTotalOrderCnt > 0)
+                            {
+                            ?>
+                            <td class="text-center"><a href="{{ URL::route('admin.orders.view',['id'=>"$getMerchantStoreId"]) }}">{{ $merchantTotalOrderCnt }}</a></td>
+                            <?php
+                            }
+                            else
+                            {?>
+                             <td class="text-center">{{ $merchantTotalOrderCnt }}</td>   
+                            <?php 
+                            }
+                            ?>
+                            
+                            <td class="text-center">{{ $merchantTotalOrderAmt }}</td>
                         </tr>
                         @endforeach
                         @else
@@ -87,6 +100,9 @@
                         @endif 
                     </tbody>
                 </table>
+                <div class="clearfix">
+                   
+                </div>
             </div>
         </div>
     </div>
@@ -101,57 +117,15 @@
 $("#searchMerchant").on("click", function () 
     {
         var searchKeyword = $("#merchant_search_keyword").val();
-        var hdnStoreId = $("#hdnStoreId").val();
-
+        
         if(searchKeyword != '')
-        {
-            /*if(identityCode.length > 9)
-            {
-                $.ajax({
-                    method: "POST",
-                    data: {'merchantIdentityCode': identityCode,'hdnStoreId':hdnStoreId},
-                    url: "{{route('admin.vendors.verifyCode')}}",
-                    dataType: "json",
-                    success: function (data) {
-                        
-                        if(data['status'] != 1)
-                        {
-                            $("#errorLbl").show();
-                            $("#errorLbl").html(data['error']).show().fadeOut(4000);
-                            $("#merchantDetailDiv").hide();
-                        }
-                        else
-                        {
-                            var resgisterDetail = data['merchantData']['register_details'];
-                            var parsedRegistrationDtaa = JSON.parse(resgisterDetail);
-
-                            $("#storeName").html(parsedRegistrationDtaa['store_name']);
-                            $("#firstname").html(parsedRegistrationDtaa['firstname']);
-                            $("#email").html(parsedRegistrationDtaa['email']);
-                            $("#phone").html(parsedRegistrationDtaa['phone']);
-                            $("#businessName").html(parsedRegistrationDtaa['business_name']);
-                            $("#hdnMerchantEmail").val(data['merchantData']['email']);
-                            $("#hdnMerchantPhone").val(data['merchantData']['phone']);
-                            $("#hdnMerchantId").val(data['merchantId']);
-                            $("#hdnCountryCode").val(data['merchantData']['country_code']);
-                            $("#hdnStoreIdForNotification").val(hdnStoreId);
-                            $("#merchantDetailDiv").show();
-                        }
-                        return false;
-                        // location.reload();courier-services
-                    }
-                });
-                return false;
-            }
-            else
-            {
-                $("#errorLbl").html("Enter valid code").show().fadeOut(4000);
-                return false;
-            }*/
+        {   
+            $("#merchantCodeForm").submit();
         }
         else
         {
-            $("#errorLbl").html("Enter merchant Business Name or Phone Number").show().fadeOut(4000);
+            //$("#errorLbl").html("Enter merchant Business Name or Phone Number").show().fadeOut(4000);
+            $("#errorLbl").html("Enter merchant Business Name or Phone Number");
             return false;
         }
     });
@@ -160,5 +134,7 @@ $("#searchMerchant").on("click", function ()
     {
         $("#"+id).hide();
     }
+
+    
 </script>
 @stop 

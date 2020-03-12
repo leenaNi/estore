@@ -478,6 +478,13 @@ class VendorsController extends Controller
     //Get All Merchants list
     public function allMerchant()
     {
+        $allinput = Input::all();
+        $getSearchKeywordVal = '';
+        if(!empty($allinput))
+        {
+            $getSearchKeywordVal = $allinput['merchant_search_keyword'];
+        }
+
         $loggedInUserId = Session::get('loggedin_user_id');
         $loginUserType = Session::get('login_user_type');
         // get store id
@@ -489,15 +496,28 @@ class VendorsController extends Controller
         $distributorId = $storeResult->merchant_id;
 
         $viewname = Config('constants.adminAddMerchantView') . '.all_merchant';
-
-        $merchantListingResult = DB::table('has_distributors as hd')
-        ->select(['hd.distributor_id','hd.is_approved','m.id as merchant_id','m.company_name','m.phone','hd.updated_at'])
-        ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
-        //->where([["hd.distributor_id", $distributorId],['is_approved', '1']])
-        ->where([["hd.distributor_id", $distributorId]])
-        ->get();
-        //echo "<pre>";
-        //print_r($merchantListingResult);
+        //DB::enableQueryLog(); // Enable query log
+        if($getSearchKeywordVal != '')
+        {
+            $merchantListingResult = DB::table('has_distributors as hd')
+            ->select(['hd.distributor_id','hd.is_approved','m.id as merchant_id','m.company_name','m.phone','hd.updated_at'])
+            ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
+            ->where("m.company_name", "like","%". $getSearchKeywordVal . "%")
+            ->orWhere('m.phone', 'like', '%' . $getSearchKeywordVal . '%')
+            ->where([["hd.distributor_id", $distributorId],["hd.is_approved", 1]])
+            ->get();
+            //dd(DB::getQueryLog()); // Show results of log
+        }
+        else
+        {
+            $merchantListingResult = DB::table('has_distributors as hd')
+            ->select(['hd.distributor_id','hd.is_approved','m.id as merchant_id','m.company_name','m.phone','hd.updated_at'])
+            ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
+            ->where([["hd.distributor_id", $distributorId],["hd.is_approved", 1]])
+            ->get();
+        }
+        
+        
         $merchantIds = [];
         $merchantListingData = [];
         $i=0;
@@ -505,12 +525,13 @@ class VendorsController extends Controller
             //array_push($merchantIds, $allMerchantsData->merchant_id);
             $merchhantBusinessName = $allMerchantsData->company_name;
             $merchantphoneNumber = $allMerchantsData->phone;
-            
+            $merchantStoreIds = [];
             $merchantId = $allMerchantsData->merchant_id;
             $merchantStores = DB::table('stores')->where('store_type', 'LIKE', 'merchant')->where('merchant_id', $merchantId)->get(['id']);
             foreach($merchantStores as $getStoreId)
             {
                 $merchantStoreId = $getStoreId->id;
+                array_push($merchantStoreIds, $merchantStoreId);
                 //get Orders count with the using of store id
                 $selects = array(
                     'count(id) as orders_count',
@@ -548,11 +569,11 @@ class VendorsController extends Controller
         exit;*/
         if (isset($merchantListingData) && !empty($merchantListingData)) 
         {
-            $data = ['merchantListingData' => $merchantListingData,"storeId"=>$storeId,"sendRequestError" => Session::get('sendRequestMsg')];
+            $data = ['merchantListingData' => $merchantListingData,"storeId"=>$merchantStoreIds,"sendRequestError" => Session::get('sendRequestMsg')];
         }
         else 
         {
-            $data = ['error' => "No Merchant found","storeId"=>$storeId,"sendRequestError" => Session::get('sendRequestMsg')];
+            $data = ['error' => "No Merchant found","storeId"=>$merchantStoreIds,"sendRequestError" => Session::get('sendRequestMsg')];
         }
         
        
