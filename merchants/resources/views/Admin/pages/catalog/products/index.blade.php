@@ -72,7 +72,7 @@
                         function renderNode1($node, $dash)
                         {
                         echo "<li>";
-                        echo "<option value='{$node->id}'   > {$dash}{$node->category}</option>";
+                        echo "<option value='{$node->id}'   > {$dash}{$node->categoryName->category}</option>";
                         if ($node->children()->count() > 0) {
                         $dash .= " -- ";
                         echo "<ul>";
