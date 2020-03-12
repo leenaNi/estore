@@ -183,7 +183,11 @@ class DistributorCartController extends Controller
             }
         
             public function simpleProduct($prod_id, $quantity,$offerid) {
-                $offerProduct = DB::table("offers_products")->where(["prod_id"=>$prod_id,"offer_id"=>$offerid])->first();
+                if($offerid!=0){
+                    $offerProduct = DB::table("offers_products")->where(["prod_id"=>$prod_id,"offer_id"=>$offerid])->first();
+                }else{
+                    $offerProduct ='';
+                }
                 
                 $jsonString = Helper::getSettings();
                 if(Session::get('distributor_store_id')){

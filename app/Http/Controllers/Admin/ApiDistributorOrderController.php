@@ -544,7 +544,7 @@ class ApiDistributorOrderController extends Controller
             $user->update();
             Cart::instance('shopping')->add($cartData);
         }
-        
+        $data = [];
         foreach($orderData as  $prod){
             $product = DB::table("products")->where('id',$prod->prod_id)->first();
             if(!empty($product)){
@@ -560,68 +560,84 @@ class ApiDistributorOrderController extends Controller
                 else if($prod->prod_type==5){
                     $msg = app('App\Http\Controllers\Admin\ApiCartController')->downloadProduct($prod->prod_id, $prod->qty);
                 }
+
+                if ($msg == 1) {
+                    $data['data']['cart'] = null;
+                    $data['status'] = "0";
+                    $data['msg'] = $msg;
+                } else {
+                    //return $msg;
+                    $cartData = Cart::instance("shopping")->content();
+                    if(Cart::instance("shopping")->count() != 0){
+                        $user->cart = json_encode($cartData);
+                    } else {
+                        $user->cart = '';
+                    }
+                    $user->update();
+                    $data['data']['cart'] = $cartData;
+                    $data['data']['total'] = Helper::getOrderTotal($cartData);
+                    $data["data"]['cartCount'] = Cart::instance("shopping")->count();
+                    $data['status'] = "1";
+                    $data['msg'] = "";
+                }
+                
             }else{
-                return response()->json(["status" => 0, 'msg' => 'No Product found.']); 
+                $data['data']['cart'] = null;
+                $data['status'] = "0";
+                $data['msg'] = $msg;
             }
-            
         }
-        $cartData = Cart::instance("shopping")->content();
-        foreach($cartData as $val){
-            $store_id = $val->options->store_id;
-            break;
-        }
-        $Storeinfo = Store::find($store_id);
-        $DistributorID = $Storeinfo->merchant_id;
-        $cartcount = Cart::instance("shopping")->count();
-        $cartInfo = Cart::instance("shopping")->total();
-        $cart_amt = Helper::getOrderTotal($cartData); //Helper::calAmtWithTax();
-        $finalamt = Helper::getOrderTotal($cartData); //$cart_amt['total'];
-        //$paymentAmt = Input::get('pay_amt');
-        $paymentAmt = $finalamt;
-        $paymentMethod = 8; //"9";
-        $paymentStatus = "1";
-        $payAmt = number_format((float)$finalamt, 2, '.', '');
-        //apply additional charge to payAmount
-        $additional_charge_json = $this->ApplyAdditionalCharge($payAmt);
-        $additional_charge = json_decode($additional_charge_json, true);
-        $payAmt = $payAmt + $additional_charge['total_amt'];
+        return $data;
+        //$cartData = Cart::instance("shopping")->content();
+        // foreach($cartData as $val){
+        //     $store_id = $val->options->store_id;
+        //     break;
+        // }
+        // $Storeinfo = Store::find($store_id);
+        // $DistributorID = $Storeinfo->merchant_id;
+        // $cartcount = Cart::instance("shopping")->count();
+        // $cartInfo = Cart::instance("shopping")->total();
+        // $cart_amt = Helper::getOrderTotal($cartData); //Helper::calAmtWithTax();
+        // $finalamt = Helper::getOrderTotal($cartData); //$cart_amt['total'];
+        // $paymentAmt = $finalamt;
+        // $paymentMethod = 8; //"9";
+        // $paymentStatus = "1";
+        // $payAmt = number_format((float)$finalamt, 2, '.', '');
+        // //apply additional charge to payAmount
+        // $additional_charge_json = $this->ApplyAdditionalCharge($payAmt);
+        // $additional_charge = json_decode($additional_charge_json, true);
+        // $payAmt = $payAmt + $additional_charge['total_amt'];
 
-        $trasactionId = "";
-        $transactionStatus = "";
-        $userid = $user->id;
-        //$addressid = Input::get('address_id');
-        //$userinfo = User::find($userid);
-        $toPay = $this->toPayment($userid);
-        if (!empty($toPay['orderId'])) {
-            $orderS = Order::find($toPay['orderId']);
-            $orderS->created_by = $userid;
-            $orderS->additional_charge = $additional_charge_json;
-            $orderS->amt_paid = $paymentAmt;
-            $orderS->order_type = 1;
-            $orderS->description = '';
-            $orderS->order_status = 31; //processing
-            $orderS->update();
-            if ($paymentMethod == '10') {
-                $userinfo->credit_amt = $userinfo->credit_amt + ($payAmt - $paymentAmt);
-                $userinfo->update();
-                // $paymentHistory = PaymentHistory::create();
-                // $paymentHistory->order_id = $orderS->id;
-                // $paymentHistory->pay_amount = $paymentAmt;
-                // $paymentHistory->added_by = $userid;
-                // $paymentHistory->save();
-            }
-            $succ = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $userid, $orderS->id, $DistributorID);
-            Cart::instance("shopping")->destroy();
+        // $trasactionId = "";
+        // $transactionStatus = "";
+        // $userid = $user->id;
+        // $toPay = $this->toPayment($userid);
+        // if (!empty($toPay['orderId'])) {
+        //     $orderS = Order::find($toPay['orderId']);
+        //     $orderS->created_by = $userid;
+        //     $orderS->additional_charge = $additional_charge_json;
+        //     $orderS->amt_paid = $paymentAmt;
+        //     $orderS->order_type = 1;
+        //     $orderS->description = '';
+        //     $orderS->order_status = 31; //processing
+        //     $orderS->update();
+        //     if ($paymentMethod == '10') {
+        //         $userinfo->credit_amt = $userinfo->credit_amt + ($payAmt - $paymentAmt);
+        //         $userinfo->update();
+                
+        //     }
+        //     $succ = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $userid, $orderS->id, $DistributorID);
+        //     Cart::instance("shopping")->destroy();
 
-        }
+        // }
 
-        if ($succ['orderId']) {
-            $order = Order::find($succ['orderId']);
-            $user->cart = '';
-            $user->save();
-            return ['status' => 1, 'msg' => 'Order Created Successfully', 'data' => $order]; //success
-        } else {
-            return ['status' => 0, 'msg' => 'Failed']; //failure
-        }
+        // if ($succ['orderId']) {
+        //     $order = Order::find($succ['orderId']);
+        //     $user->cart = '';
+        //     $user->save();
+        //     return ['status' => 1, 'msg' => 'Order Created Successfully', 'data' => $order]; //success
+        // } else {
+        //     return ['status' => 0, 'msg' => 'Failed']; //failure
+        // }
     }
 }
