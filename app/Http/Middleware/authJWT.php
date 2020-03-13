@@ -25,7 +25,7 @@ use Auth;
 use Closure;
 use Exception;
 use JWTAuth;
-use App/Library/Helper;
+use App\Library\Helper;
 
 class authJWT
 {
