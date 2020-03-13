@@ -53,7 +53,16 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Coupons <span class="listing-counter">{{$couponCount }}</span> </h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Coupons 
+                <?php
+                if($couponCount > 0)
+                {
+                ?>
+                   <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$couponCount }}</span> </h1>
+                <?php
+                }
+                ?>
+                
              <a href="{!! route('admin.coupons.add') !!}" class="btn btn-listing-heading pull-right noAll-margin"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create</a>
         </div>
         <div class="listing-section">

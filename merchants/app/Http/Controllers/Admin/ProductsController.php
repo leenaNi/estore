@@ -70,14 +70,15 @@ class ProductsController extends Controller
                     ->get(['store_categories.id', 'categories.category'])
                     ->toArray();
         $rootsS = Category::roots()->with('categoryName')->where("status", 1)->get();
+        // $rootsS = Category::with('categoryName')->where("status", 1)->get();
         $category = [];
         foreach ($categoryA as $val) {
             $category[$val->id] = $val->category;
         }
-        $userA = User::get(['id', 'firstname', 'lastname'])->toArray();
+        $userA = User::whereIn('user_type', [1, 3])->get(['id', 'firstname', 'telephone'])->toArray();
         $user = [];
         foreach ($userA as $val) {
-            $user[$val['id']] = $val['firstname'] . ' ' . $val['lastname'];
+            $user[$val['id']] = $val['firstname'] . ' ' . $val['telephone'];
         }
         if (!empty(Input::get('product_name'))) {
             $products = $products->where('product', 'like', "%" . Input::get('product_name') . "%");
@@ -92,7 +93,7 @@ class ProductsController extends Controller
         }
         if (!empty(Input::get('category'))) {
             $products = $products->whereHas('categories', function ($q) {
-                $q->where('categories.id', Input::get('category'));
+                $q->where('store_categories.id', Input::get('category'));
             });
         }
         if (Input::get('status') == '0' || Input::get('status') == '1') {
@@ -157,7 +158,31 @@ class ProductsController extends Controller
             $prd->prodImage = Config('constants.productImgPath') . "/" . @$getPrdImg;
         }
 
-        return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets'));
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $productCount)
+            {
+                $endIndex = ($productCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $productCount)
+            {
+                $endIndex = ($productCount);
+            }
+        }
+
+        return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets', 'startIndex', 'endIndex'));
     }
 
     public function selectThemes()

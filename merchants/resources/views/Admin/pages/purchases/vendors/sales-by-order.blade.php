@@ -49,7 +49,15 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Order{{$orderCount > 1 ?'s':'' }} <span class="listing-counter"> {{$orderCount }} </span> </h1> 
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Order{{$orderCount > 1 ?'s':'' }} 
+            <?php
+            if($orderCount > 0)
+            {
+            ?>
+                <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$orderCount }} </span> </h1> 
+            <?php
+            }
+            ?>    
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding"> 

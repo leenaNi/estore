@@ -72,7 +72,7 @@
                         function renderNode1($node, $dash)
                         {
                         echo "<li>";
-                        echo "<option value='{$node->id}'   > {$dash}{$node->category}</option>";
+                        echo "<option value='{$node->id}'   > {$dash}{$node->categoryName->category}</option>";
                         if ($node->children()->count() > 0) {
                         $dash .= " -- ";
                         echo "<ul>";
@@ -188,7 +188,16 @@
 
   <div class="grid-content">
   <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Products  <span class="listing-counter">{{$productCount }}</span> </h1> 
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Products  
+			<?php
+                if($productCount > 0)
+                {
+                ?>
+                    <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$productCount }}</span> </h1> 
+                <?php
+                }
+                ?>  
+			
             <?php $cat = count($rootsS) > 0 ? '' : "Cat";?> 
             <a type="button" class="btn btn-listing-heading pull-right noAll-margin" data-toggle="modal" data-target="#addProduct{{$cat}}"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create </a> 
 
