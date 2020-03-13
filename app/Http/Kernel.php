@@ -37,6 +37,9 @@ class Kernel extends HttpKernel
             'bindings',
             \Illuminate\Session\Middleware\StartSession::class,
         ],
+        'sessions' => [
+            \Illuminate\Session\Middleware\StartSession::class,
+        ]
     ];
 
     /**
