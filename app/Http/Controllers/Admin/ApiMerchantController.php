@@ -50,7 +50,7 @@ class ApiMerchantController extends Controller
     {
         $phone = Input::get("phone");
         $otp = Input::get("otp");
-        $userdata = User::where(['telephone' => $phone, 'otp' => $otp])->first();
+        $userdata = User::where(['telephone' => $phone, 'otp' => $otp, 'user_type' => 1])->first();
         if (!empty($userdata)) {
             if (!$token = JWTAuth::fromUser($userdata)) {
                 return response()->json(["status" => 0, 'msg' => "Invalid Mobile Number"]);
@@ -59,7 +59,8 @@ class ApiMerchantController extends Controller
             $getData = $result->getdata();
             $user = JWTAuth::toUser($getData->token);
             $merchant = Merchant::where(['phone' => $phone])->first(['id', 'company_name', 'phone']);
-            $store = Store::where('merchant_id', $merchant->id)->where('store_type', 'merchant')->first();
+            $store = Store::where('merchant_id', $merchant->id)->where('store_type', 'merchant')->first();                        
+            Helper::postLogin($user);
             return response()->json(["status" => 1, 'msg' => "Successfully Loggedin", 'data' => ['merchant' => $merchant, 'store' => $store]])->header('token', $getData->token);
         } else {
             $data = ["status" => "0", "msg" => "Please Enter Valid OTP"];
@@ -78,7 +79,6 @@ class ApiMerchantController extends Controller
         $credentials[$login_type] = $inputEmailPhone;
         $credentials['password'] = Input::get('password');
         if (!$token = JWTAuth::attempt($credentials)) {
-
             return response()->json(["status" => 0, 'msg' => "Invalid Mobile / Email or Password"]);
         }
         $result = response()->json(compact('token'));

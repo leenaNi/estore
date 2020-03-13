@@ -70,14 +70,15 @@ class ProductsController extends Controller
                     ->get(['store_categories.id', 'categories.category'])
                     ->toArray();
         $rootsS = Category::roots()->with('categoryName')->where("status", 1)->get();
+        // $rootsS = Category::with('categoryName')->where("status", 1)->get();
         $category = [];
         foreach ($categoryA as $val) {
             $category[$val->id] = $val->category;
         }
-        $userA = User::get(['id', 'firstname', 'lastname'])->toArray();
+        $userA = User::whereIn('user_type', [1, 3])->get(['id', 'firstname', 'telephone'])->toArray();
         $user = [];
         foreach ($userA as $val) {
-            $user[$val['id']] = $val['firstname'] . ' ' . $val['lastname'];
+            $user[$val['id']] = $val['firstname'] . ' ' . $val['telephone'];
         }
         if (!empty(Input::get('product_name'))) {
             $products = $products->where('product', 'like', "%" . Input::get('product_name') . "%");
@@ -92,7 +93,7 @@ class ProductsController extends Controller
         }
         if (!empty(Input::get('category'))) {
             $products = $products->whereHas('categories', function ($q) {
-                $q->where('categories.id', Input::get('category'));
+                $q->where('store_categories.id', Input::get('category'));
             });
         }
         if (Input::get('status') == '0' || Input::get('status') == '1') {

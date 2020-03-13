@@ -36,8 +36,12 @@ class authJWT
         try {
             // print_r($request->header('token'));
             // dd($request->headers->all());
+            JWTAuth::setToken($request->header('token'));
             $user = JWTAuth::toUser($request->header('token'));
             Auth::guard('merchant-users-web-guard')->login($user, true);
+            header("Access-Control-Allow-Origin: *");
+            header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
+            header('Access-Control-Allow-Headers: Content-Type, X-Auth-Token, Authorization, Origin');
             Helper::postLogin($user);
 
         } catch (Exception $e) {

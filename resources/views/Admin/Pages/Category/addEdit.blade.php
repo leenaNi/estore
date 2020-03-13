@@ -213,8 +213,10 @@ function renderNode($node, $category, $reqCat = null)
     // $style=(Input::get("parent_id")  == $node->id? 'checkbox-highligh':'');
     echo "<li class='tree-item fl_left ps_relative_li'>";
     echo '<div class="checkbox">
-                                           <label class="i-checks checks-sm text-left ' . $classStyle . ' ' . $parentClassStyle . '" id="li_' . $node->id . '"><input type="checkbox"  name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/><i></i>' . $node->category . '</label>
-                                       </div>';
+    <label class="i-checks checks-sm text-left ' . $classStyle . ' ' . $parentClassStyle . '" id="li_' . $node->id . '">
+    <input type="checkbox" class="parent-cat" id="cat-'.$node->id.'" name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/>
+    ' . $node->category . '</label>
+    </div>';
     if ($node->children()->count() > 0) {
         echo "<ul class='treemap fl_left'>";
         foreach ($node->children as $child) {
@@ -311,6 +313,8 @@ function renderNode($node, $category, $reqCat = null)
    $(document).ready(function () {
 
         $('.checkbox').on('click', 'input:checkbox', function () {
+            console.log($(this).is(':checked'), $(this));
+            $('input:checkbox').parent().removeClass('checkbox-highlight');
             if ($(this).is(':checked')) {
                 $(this).parent().addClass('checkbox-highlight');
             } else {
