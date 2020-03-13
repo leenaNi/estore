@@ -41,7 +41,15 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Product{{$prodCount > 1 ?'s':'' }} <span class="listing-counter"> {{$prodCount }} </span> </h1>  
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Product{{$prodCount > 1 ?'s':'' }} 
+                <?php
+                if($prodCount > 0)
+                {
+                ?>
+                    <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$prodCount }} </span> </h1> 
+                <?php
+                }
+                ?>   
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding"> 
