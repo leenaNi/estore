@@ -75,7 +75,7 @@ class ApiCompanyController extends Controller
         // DB::enableQueryLog();
         $isError = '';
         //dd(Input::all());
-        dd(Session::all());
+        // dd(Session::all());
         if (!empty(Session::get("merchantId"))) {
             $merchantId = Session::get("merchantId");
             // get distributor id from has_distributor table
