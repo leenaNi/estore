@@ -3,7 +3,14 @@
 
 
 <section class="content-header">
-    <h1>Emails</h1>
+    <h1>Emails <?php
+        if($templatesCount > 0)
+        {
+        ?>
+        ({{$startIndex}}-{{$endIndex}} of {{$templatesCount }})
+        <?php
+        }
+        ?></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>  Home</a></li>
         <li class="active"> Emails </li>

@@ -751,13 +751,13 @@ class ApiCartController extends Controller
             $cartData = json_decode($user->cart, true);
             Cart::instance('shopping')->add($cartData);
             $cartData = Cart::instance("shopping")->content();
-            foreach($cartData as $prod){
-                if($prod->id == $prod_id){
-                    if($prod->options->sub_prod && ($prod->options->sub_prod == $sub_prod)){
-                        $rowId = $prod->rowId;
+            foreach($cartData as $cItem){
+                if($cItem->id == $prod_id){
+                    if($cItem->options->sub_prod && ($cItem->options->sub_prod == $sub_prod)){
+                        $rowId = $cItem->rowId;
                         
                     }else{
-                        $rowId = $prod->rowId;
+                        $rowId = $cItem->rowId;
                     }
                     Cart::instance('shopping')->remove($rowId);
                 }
@@ -781,36 +781,34 @@ class ApiCartController extends Controller
             Cart::instance('shopping')->add($cartData);
             $cartData = Cart::instance("shopping")->content();
             $offer_disc_amt = 0;
-            foreach($cartData as $prod){
-                if($prod->id == $prod_id){
-                    if($prod->options->sub_prod && ($prod->options->sub_prod == $sub_prod)){
-                        $rowId = $prod->rowId;
+            foreach($cartData as $cItem){
+                if($cItem->id == $prod_id){
+                    if($cItem->options->sub_prod && ($cItem->options->sub_prod == $sub_prod)){
+                        $rowId = $cItem->rowId;
                         
                     }else{
-                        $rowId = $prod->rowId;
+                        $rowId = $cItem->rowId;
                     }
-                    $offer_id = $prod->options->offerId;
-                    $offerprdqty = DB::table('offers_products')->where(['offer_id'=>$offer_id,'prod_id'=>$prod->id])->pluck('qty');
+                    $offer_id = $cItem->options->offerId;
+                    $offerprdqty = DB::table('offers_products')->where(['offer_id'=>$offer_id,'prod_id'=>$cItem->id])->pluck('qty');
                     if(!empty($offerprdqty[0])){
                         if($quantity >= $offerprdqty[0]){
                             $offerData = DB::table('offers')->where('id',$offer_id)->first();
                             if($offerData->offer_discount_type == 1){
-                                $offer_disc_amt = $prod->price * ($offerData->offer_discount_value/100);
+                                $offer_disc_amt = $cItem->price * ($offerData->offer_discount_value/100);
                             }else{
                                 $offer_disc_amt = $offerData->offer_discount_value;
                             }
-                            
+                            $cItem->options->offer_disc_amt = $offer_disc_amt;
                         }
                     }
                 }
             }
-            //$item = Cart::instance('shopping')->get($rowId);
             $cart = Cart::instance('shopping')->update($rowId, ['qty' => $quantity]);
-            $option = $cart->options->merge(["offer_disc_amt"=>$offer_disc_amt]);//dd($option);
-            //dd(Cart::instance("shopping")->content());
+            // $option = $cart->options->merge(["offer_disc_amt"=>$offer_disc_amt]); // dd($option);
+            // dd(Cart::instance("shopping")->content());
             $amt = Helper::calAmtWithTax();
-            $cartInstance = Cart::instance('shopping')->get("$rowId");
-          
+            $cartInstance = Cart::instance('shopping')->get("$rowId");          
             $tax = $cartInstance->options->tax_amt;
             $sub_total = $cartInstance->subtotal;
             $total = Cart::total();

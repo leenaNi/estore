@@ -2,7 +2,14 @@
 @section('content')
 <section class="content-header">
     <h1>
-        By Categories ({{$categoryCount }})
+        By Categories <?php
+        if($categoryCount > 0)
+        {
+        ?>
+            ({{$startIndex}}-{{$endIndex}} of {{$categoryCount }}) </span> </h1> 
+        <?php
+        }
+        ?>
         <small></small>
     </h1>
     <ol class="breadcrumb">

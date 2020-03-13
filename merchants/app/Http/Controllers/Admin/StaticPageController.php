@@ -32,7 +32,33 @@ class StaticPageController extends Controller {
             $staticpageInfo = StaticPage::paginate(Config('constants.paginateNo'));
             $staticPageCount = $staticpageInfo->total();
         }
-        $data = ['staticpageInfo' => $staticpageInfo, 'staticPageCount' => $staticPageCount];
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $staticPageCount)
+            {
+                $endIndex = ($staticPageCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $staticPageCount)
+            {
+                $endIndex = ($staticPageCount);
+            }
+        }
+
+
+        $data = ['staticpageInfo' => $staticpageInfo, 'staticPageCount' => $staticPageCount, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         $viewname = Config('constants.adminStaticPageView') . '.index';
         return Helper::returnView($viewname, $data);
     }
