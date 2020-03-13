@@ -803,7 +803,7 @@ class ApiCartController extends Controller
                         }
                     }
                 }
-            }
+            }//dd(Cart::instance("shopping")->content());
             $cart = Cart::instance('shopping')->update($rowId, ['qty' => $quantity]);
             // $option = $cart->options->merge(["offer_disc_amt"=>$offer_disc_amt]); // dd($option);
             // dd(Cart::instance("shopping")->content());

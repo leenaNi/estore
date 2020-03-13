@@ -44,6 +44,7 @@ class ApiDistributorController extends Controller
                     ->where('p.store_id', $storeId)
                     ->where(['p.status' => 1, 'p.is_del' => 0])
                     ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
+                    ->where('p.parent_prod_id',0)
                     ->orderBy('p.store_id', 'ASC')
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
                 
@@ -82,7 +83,7 @@ class ApiDistributorController extends Controller
                             $productImage = "http://" . $storeIdsData->url_key . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
                         }
                         //echo "product image::http://" .$_SERVER['HTTP_HOST'].'/uploads/catalog/products/'.$productImage;
-
+                        
                         $storeIdWithDistributorId[$i]['products'][$j]['product_id'] = $getProductData->id;
                         $storeIdWithDistributorId[$i]['products'][$j]['brand_id'] = $getProductData->brand_id;
                         $storeIdWithDistributorId[$i]['products'][$j]['brand_name'] = $getProductData->brand_name;
@@ -128,6 +129,27 @@ class ApiDistributorController extends Controller
                         }
                         
                         $storeIdWithDistributorId[$i]['products'][$j]['offers_count'] = $offerCount;
+                        //product variants
+                        $prod = Product::find($getProductData->id);
+                        if($prod != null && $prod->prod_type == 3){
+                            if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                $subprods = $prod->getsubproducts()->get();
+                            } else {
+                                $subprods = $prod->subproducts()->get();
+                            }        
+                            foreach ($subprods as $subP) {
+                                $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                foreach ($hasOpt as $prdOpt) {
+                                    $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                    $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                }
+                            }
+                            $storeIdWithDistributorId[$i]['products'][$j]['variants'] = $selAttrs;
+                        }
                         $j++;
                     } //product foreach ends here
 
@@ -724,6 +746,7 @@ class ApiDistributorController extends Controller
                                 $getCategoryWiseProductsResult1 = DB::table('products')
                                     ->whereIn('store_id', $multipleCategoryStoreIds)
                                     ->where('status', 1)
+                                    ->where('parent_prod_id',0)
                                     ->offset($pageIndex)
                                     ->limit($perPageRecord)
                                     ->get();    
@@ -733,6 +756,7 @@ class ApiDistributorController extends Controller
                                 $getCategoryWiseProductsResult1 = DB::table('products')
                                     ->whereIn('store_id', $multipleCategoryStoreIds)
                                     ->where('status', 1)
+                                    ->where('parent_prod_id',0)
                                     ->get();    
                             }
                             $categoryDataArray['category_id'] = "0";
@@ -801,6 +825,28 @@ class ApiDistributorController extends Controller
                                         }
                                     }
                                     $categoryDataArray['product'][$c]['offers_count'] = $offerCount;
+
+                                    //product variants
+                                    $prod = Product::find($productId);
+                                    if($prod != null && $prod->prod_type == 3){
+                                        if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                            $subprods = $prod->getsubproducts()->get();
+                                        } else {
+                                            $subprods = $prod->subproducts()->get();
+                                        }        
+                                        foreach ($subprods as $subP) {
+                                            $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                            foreach ($hasOpt as $prdOpt) {
+                                                $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                                $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                            }
+                                        }
+                                        $categoryDataArray['product'][$c]['variants'] = $selAttrs;
+                                    }
                                     $c++;
                                 }
                             }//All products ends here
