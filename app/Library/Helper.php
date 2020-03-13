@@ -149,7 +149,7 @@ class Helper
         } else if (Auth::guard('merchant-users-web-guard')->check() !== false) {
             Session::put('authUserId', Auth::guard('merchant-users-web-guard')->user()->id);
             Session::put('merchantId', Store::where('id', Auth::guard('merchant-users-web-guard')->user()->store_id)->where('store_type', 'merchant')->first()->merchant_id);
-            Session::put('authUserData', Auth::guard('merchant-users-web-guard')->user()->first());
+            Session::put('authUserData', User::find(Auth::guard('merchant-users-web-guard')->user()->id));
         }
     }
 
