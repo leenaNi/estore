@@ -2,7 +2,14 @@
 @section('content')
 <section class="content-header">
     <h1>
-        By Orders ({{$orderCount }})
+        By Orders <?php
+        if($orderCount > 0)
+        {
+        ?>
+            ({{$startIndex}}-{{$endIndex}} of {{$orderCount }}) </span> </h1> 
+        <?php
+        }
+        ?>  
         <small></small>
     </h1>
     <ol class="breadcrumb">

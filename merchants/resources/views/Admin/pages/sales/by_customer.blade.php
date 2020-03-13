@@ -3,7 +3,14 @@
 @section('content')
 <section class="content-header">
     <h1>
-        By Customers ({{$userCount}})
+        By Customers <?php
+        if($userCount > 0)
+        {
+        ?>
+            ({{$startIndex}}-{{$endIndex}} of {{$userCount }}) </span> </h1> 
+        <?php
+        }
+        ?>
         <small></small>
     </h1>
     <ol class="breadcrumb">

@@ -30,7 +30,31 @@ class SocialMediaLinksController extends Controller
             $smlinkInfo = SocialMediaLink::paginate(Config('constants.paginateNo'));
             $smlinkCount = $smlinkInfo->total();
         }
-        $data = ['smlinkInfo' => $smlinkInfo, 'public_path' => 'public/Admin/uploads/socialmedia/', 'smlinkCount' => $smlinkCount];
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $smlinkCount)
+            {
+                $endIndex = ($smlinkCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $smlinkCount)
+            {
+                $endIndex = ($smlinkCount);
+            }
+        }
+        $data = ['smlinkInfo' => $smlinkInfo, 'public_path' => 'public/Admin/uploads/socialmedia/', 'smlinkCount' => $smlinkCount, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         $viewname = Config('constants.adminSocialMediaLinkView') . '.index';
         return Helper::returnView($viewname, $data);
     }

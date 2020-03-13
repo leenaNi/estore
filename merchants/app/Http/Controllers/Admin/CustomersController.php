@@ -72,7 +72,31 @@ class CustomersController extends Controller
         $loyalty = array_map('strtolower', $loyalty);
         $setting = GeneralSetting::where('url_key', '=', 'loyalty')->first();
         $viewname = Config('constants.adminCustomersView') . '.index';
-        $data = ['customers' => $customers, 'customerCount' => $customerCount, 'loyalty' => $loyalty, 'setting' => $setting];
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $customerCount)
+            {
+                $endIndex = ($customerCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $customerCount)
+            {
+                $endIndex = ($customerCount);
+            }
+        }
+        $data = ['customers' => $customers, 'customerCount' => $customerCount, 'loyalty' => $loyalty, 'setting' => $setting, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         return Helper::returnView($viewname, $data);
     }
 

@@ -3,7 +3,14 @@
 
 <section class="content-header">
     <h1>
-        Social Media Links ({{$smlinkCount }})
+        Social Media Links <?php
+        if($smlinkCount > 0)
+        {
+        ?>
+        ({{$startIndex}}-{{$endIndex}} of {{$smlinkCount }})
+        <?php
+        }
+        ?>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
