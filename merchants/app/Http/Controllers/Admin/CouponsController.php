@@ -36,8 +36,32 @@ class CouponsController extends Controller
             $couponInfo = $couponInfo->paginate(Config('constants.paginateNo'));
             $couponCount = $couponInfo->total();
         }
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $couponCount)
+            {
+                $endIndex = ($couponCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $couponCount)
+            {
+                $endIndex = ($couponCount);
+            }
+        }
         //return view(Config('constants.adminCouponView') . '.index', compact('couponInfo'));
-        $data = ['status' => '1', 'coupons' => $couponInfo, 'couponCount' => $couponCount];
+        $data = ['status' => '1', 'coupons' => $couponInfo, 'couponCount' => $couponCount, 'startIndex' => $startIndex,'endIndex' => $endIndex];
         $viewname = Config('constants.adminCouponView') . '.index';
         return Helper::returnView($viewname, $data);
     }

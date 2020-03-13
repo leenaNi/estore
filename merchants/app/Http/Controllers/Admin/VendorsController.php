@@ -320,7 +320,31 @@ class VendorsController extends Controller
             $orderCount = $order->total();
         }
 
-        return view(Config('constants.adminVendorView') . '.sales-by-order', compact('order', 'orderCount'));
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $orderCount)
+            {
+                $endIndex = ($orderCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $orderCount)
+            {
+                $endIndex = ($orderCount);
+            }
+        }
+
+        return view(Config('constants.adminVendorView') . '.sales-by-order', compact('order', 'orderCount', 'startIndex', 'endIndex'));
     }
 
     public function saleByProduct()
@@ -352,7 +376,30 @@ class VendorsController extends Controller
         $prods = $prods->paginate(Config('constants.paginateNo'));
         $prodCount = $prods->total();
 
-        return view(Config('constants.adminVendorView') . '.sales-by-product', compact('prods', 'prodCount'));
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $prodCount)
+            {
+                $endIndex = ($prodCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $prodCount)
+            {
+                $endIndex = ($prodCount);
+            }
+        }
+        return view(Config('constants.adminVendorView') . '.sales-by-product', compact('prods', 'prodCount', 'startIndex', 'endIndex'));
 
     }
 
