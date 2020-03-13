@@ -859,7 +859,6 @@ class ApiCartController extends Controller
     public function getSubProducts1($prodIds)
     {
         $data = [];
-        $subProdsList = [];
         foreach($prodIds as $prodIdKey => $prod_id) {
             if($prod_id){
                 $prod = Product::find($prod_id);
@@ -880,7 +879,7 @@ class ApiCartController extends Controller
                             $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
                         }
                     }
-                    array_push($subProdsList, ['productId' => $prod_id, 'variants' => $selAttrs]);
+                   
                     $data['data']['products'][] = ['productId' => $prod_id, 'variants' => $selAttrs];
                     //$data['data'][$prodIdKey]['variants'] = $selAttrs;
                     $data['status'] = "1";

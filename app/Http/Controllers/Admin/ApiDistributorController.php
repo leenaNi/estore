@@ -200,6 +200,13 @@ class ApiDistributorController extends Controller
                         }
 
                     }
+                    $distributorId = DB::table("stores")->where("id",$getData->store_id)->pluck('merchant_id');
+                    $has_distributors = DB::table("has_distributors")->where(['distributor_id'=>$distributorId,'merchant_id'=>$merchantId])->first();
+                    $is_favourite = 0;
+                    if(!empty($has_distributors)){
+                       $is_favourite = $has_distributors->is_favourite; 
+                    }
+                    $storeArray[$i]['is_favourite'] = $is_favourite;
 
                     $storeArray[$i]['store_id'] = $getData->store_id;
                     $storeArray[$i]['store_name'] = $getData->store_name;
@@ -338,28 +345,6 @@ class ApiDistributorController extends Controller
         //DB::enableQueryLog(); // Enable query log
         if (!empty(Input::get("companyId"))) {
             $companyId = Input::get("companyId");
-
-            //get merchant wise distributor id
-            /*$merchantId = Input::get("merchantId");
-            $getDistributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
-            if(count($getDistributorIdsResult) > 0)
-            {
-            $multipleDistributorIds = [];
-            foreach ($getDistributorIdsResult as $distributorIdsData)
-            {
-            $multipleDistributorIds[] = $distributorIdsData->distributor_id;
-            }
-            //Get distributor id wise data
-            $merchantWiseDistributorResult = DB::table('distributor')
-            ->whereIn('id', $multipleDistributorIds)
-            ->get();
-
-            //echo "<pre> Merchant wise ditributor::";
-            //print_r($multipleDistributorIds);
-            //exit;
-
-            }*/
-
             //check company id is present in brand table
             $getBrandIdsResult = DB::table('brand')
                 ->select(DB::raw('id'))
@@ -439,6 +424,13 @@ class ApiDistributorController extends Controller
                                     }
 
                                     $finalDistributorArray[$i]['distributor_id'] = $companyWiseDistributorIds;
+                                    
+                                    $has_distributors = DB::table("has_distributors")->where(['distributor_id'=>$companyWiseDistributorIds,'merchant_id'=>Session::get("merchantId")])->first();
+                                    $is_favourite = 0;
+                                    if(!empty($has_distributors)){
+                                        $is_favourite = $has_distributors->is_favourite; 
+                                    }
+                                    $finalDistributorArray[$i]['is_favourite'] = $is_favourite;
                                     // $finalDistributorArray[$i]['register_details'] = $distributorRegisterDetails;
                                     $finalDistributorArray[$i]['phone_no'] = $getData->phone_no;
                                     $finalDistributorArray[$i]['store_id'] = $getData->storeId;
