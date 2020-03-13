@@ -50,7 +50,7 @@ class OrdersController extends Controller
     {
         $allinput = Input::all();
         $getMerchantStoreIdVal = 0;
-        if(!empty($allinput))
+        if(!empty($allinput) && !empty(Input::get('id')))
         {
             $getMerchantStoreIdVal = $allinput['id'];
         }
@@ -132,13 +132,35 @@ class OrdersController extends Controller
             }
         }
 
-       
         $orders = $orders->paginate(Config('constants.paginateNo'));
         $ordersCount = $orders->total();
         $flags = Flags::all();
-       
         $viewname = Config('constants.adminOrderView') . '.index';
-        $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $ordersCount)
+            {
+                $endIndex = ($ordersCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $ordersCount)
+            {
+                $endIndex = ($ordersCount);
+            }
+        }
+
+        $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         return Helper::returnView($viewname, $data);
     }
 

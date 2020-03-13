@@ -157,7 +157,31 @@ class ProductsController extends Controller
             $prd->prodImage = Config('constants.productImgPath') . "/" . @$getPrdImg;
         }
 
-        return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets'));
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $productCount)
+            {
+                $endIndex = ($productCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $productCount)
+            {
+                $endIndex = ($productCount);
+            }
+        }
+
+        return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets', 'startIndex', 'endIndex'));
     }
 
     public function selectThemes()
