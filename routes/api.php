@@ -36,7 +36,7 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::any('/verify-otp', array('as' => 'admin.createStore.verifyotp', 'uses' => 'ApiCreateStoreController@verifyotp'));
     });
 
-    Route::group(['middleware' => ['jwt-auth']], function () {
+    Route::group(['middleware' => ['jwt-auth', 'sessions']], function () {
 
         Route::group(['prefix' => 'merchants'], function () {
             Route::get('/', ["as" => "admin.merchants.view", "uses" => "MerchantController@index"]);
@@ -256,7 +256,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/distributor-reorder', ["as" => "admin.distributor.reorder", "uses" => "ApiDistributorOrderController@reOrder"]);
 
         });
-        
+
         Route::group(['prefix' => 'cart'], function () {
             Route::post('', ["as" => "admin.cart.view", "uses" => "ApiCartController@index"]);
             Route::post('/add', ["as" => "admin.cart.add", "uses" => "ApiCartController@add"]);
