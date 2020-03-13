@@ -882,7 +882,7 @@ class ApiCartController extends Controller
                     }
                     array_push($subProdsList, ['productId' => $prod_id, 'variants' => $selAttrs]);
                     $data['data']['products'][] = ['productId' => $prod_id, 'variants' => $selAttrs];
-                    $data['data'][$prodIdKey]['variants'] = $selAttrs;
+                    //$data['data'][$prodIdKey]['variants'] = $selAttrs;
                     $data['status'] = "1";
                     $data['msg'] = "";
                 } else {
