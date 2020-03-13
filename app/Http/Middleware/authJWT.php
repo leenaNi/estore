@@ -21,11 +21,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Library\Helper;
 use Auth;
 use Closure;
 use Exception;
 use JWTAuth;
+use App\Library\Helper;
 
 class authJWT
 {
@@ -43,9 +43,7 @@ class authJWT
             header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
             header('Access-Control-Allow-Headers: Content-Type, X-Auth-Token, Authorization, Origin');
             Helper::postLogin($user);
-
         } catch (Exception $e) {
-
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
                 return response()->json(['error' => 'Token is Invalid'])->setStatusCode(401);
             } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {

@@ -29,7 +29,7 @@ class ApiMerchantController extends Controller
                 $otp = rand(1000, 9999);
                 $userdata = User::where('telephone', $phone)->where('user_type', 1)->first();
                 if (!empty($userdata)) {
-                    $userdata->otp = '1234';// $otp;
+                    $userdata->otp = '1234'; // $otp;
                     $userdata->save();
                     $msgSucc = "[#] Your one time password is " . $otp . ". lRaDZ0eOjMz";
                     Helper::sendsms($phone, $msgSucc, $country);
@@ -50,18 +50,19 @@ class ApiMerchantController extends Controller
     {
         $phone = Input::get("phone");
         $otp = Input::get("otp");
-        $userdata = User::where(['telephone' => $phone, 'otp' => $otp, 'user_type' => 1])->first();
+        $userdata = User::where(['telephone' => $phone, 'otp' => $otp, 'user_type' => 1])->first(['id', 'firstname', 'lastname', 'telephone', 'store_id']);
         if (!empty($userdata)) {
             if (!$token = JWTAuth::fromUser($userdata)) {
                 return response()->json(["status" => 0, 'msg' => "Invalid Mobile Number"]);
             }
-            $result = response()->json(compact('token'));
-            $getData = $result->getdata();
-            $user = JWTAuth::toUser($getData->token);
+            // $result = response()->json(compact('token'));
+            // $getData = $result->getdata();
             $merchant = Merchant::where(['phone' => $phone])->first(['id', 'company_name', 'phone']);
-            $store = Store::where('merchant_id', $merchant->id)->where('store_type', 'merchant')->first();                        
-            Helper::postLogin($user);
-            return response()->json(["status" => 1, 'msg' => "Successfully Loggedin", 'data' => ['merchant' => $merchant, 'store' => $store]])->header('token', $getData->token);
+            $store = Store::where('merchant_id', $merchant->id)->where('store_type', 'merchant')->first();
+            Auth::guard('merchant-users-web-guard')->login($userdata, true);
+            // dd(Auth::guard('merchant-users-web-guard')->user());
+            Helper::postLogin($userdata);
+            return response()->json(["status" => 1, 'msg' => "Successfully Loggedin", 'data' => ['user' => $userdata, 'merchant' => $merchant, 'store' => $store]])->header('token', $token);
         } else {
             $data = ["status" => "0", "msg" => "Please Enter Valid OTP"];
             return response()->json($data);
@@ -350,23 +351,25 @@ class ApiMerchantController extends Controller
             $hasDistributorsResult = DB::table('has_distributors as hd')
                 ->join("distributor as d", "d.id", "=", "hd.distributor_id")
                 ->join('stores as s', 's.merchant_id', '=', 'd.id')
-                // ->rightJoin('offers as o', function ($join) {
-                //     $join->on('s.id', '=', 'o.store_id')
-                //     ->where("o.status", 1);
-                // })
+            // ->rightJoin('offers as o', function ($join) {
+            //     $join->on('s.id', '=', 'o.store_id')
+            //     ->where("o.status", 1);
+            // })
                 ->where('s.store_type', 'distributor')
                 ->where("hd.merchant_id", $merchantId)
-                // ->where("o.status", 1)
-                // ->groupBy('o.store_id')
+            // ->where("o.status", 1)
+            // ->groupBy('o.store_id')
                 ->get(['d.id', 'd.phone_no', 's.id as storeId', 's.store_name']); //DB::raw('count(o.id) as offers_count')
-               
+
             if (count($hasDistributorsResult) > 0) {
-                foreach($hasDistributorsResult as $distributor){
-                    $companies = DB::table("products as p")->join("brand as b","b.id","=","p.brand_id")->join("company as c", "c.id","=", "b.company_id")->select("b.id","b.company_id","c.name")->where("p.store_id",$distributor->storeId)->where("p.brand_id","<>",0)->get();
+                foreach ($hasDistributorsResult as $distributor) {
+                    $companies = DB::table("products as p")->join("brand as b", "b.id", "=", "p.brand_id")->join("company as c", "c.id", "=", "b.company_id")->select("b.id", "b.company_id", "c.name")->where("p.store_id", $distributor->storeId)->where("p.brand_id", "<>", 0)->get();
                     $companyArr = [];
-                    foreach($companies as $company){
-                        if(!in_array($company->name, $companyArr))
+                    foreach ($companies as $company) {
+                        if (!in_array($company->name, $companyArr)) {
                             array_push($companyArr, $company->name);
+                        }
+
                     }
                     $distributor->companies = $companyArr;
                     $distributor->offers_count = count(DB::table('offers')->where('status', 1)->where('store_id', $distributor->storeId)->get());
