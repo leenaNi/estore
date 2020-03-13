@@ -325,7 +325,7 @@ class ApiCartController extends Controller
             if(!empty($offerProd)){
                 $productId = DB::table("offers_products")->where(['offer_id'=>$offerId,'type'=>1])->get();
                 $prodIds = []; $SPids = [];
-                foreach($productId as $prodId){
+                foreach($productId as $prodId) {
                     $SPids[] = $prodId->prod_id;
                     $product = DB::table("products")->where(['id'=>$prodId->prod_id,'prod_type'=>3])->first();
                     if(!empty($product)){
@@ -861,7 +861,8 @@ class ApiCartController extends Controller
     public function getSubProducts1($prodIds)
     {
         $data = [];
-        foreach($prodIds as $prodIdKey => $prod_id){
+        $subProdsList = [];
+        foreach($prodIds as $prodIdKey => $prod_id) {
             if($prod_id){
                 $prod = Product::find($prod_id);
                 if($prod != null && $prod->prod_type == 3){
@@ -881,8 +882,9 @@ class ApiCartController extends Controller
                             $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
                         }
                     }
-                    $data[$prodIdKey]['productId'] = $prod_id;
-                    $data[$prodIdKey]['variants'] = $selAttrs;
+                    array_push($subProdsList, ['productId' => $prod_id, 'variants' => $selAttrs]);
+                    $data['data']['products'][] = ['productId' => $prod_id, 'variants' => $selAttrs];
+                    $data['data'][$prodIdKey]['variants'] = $selAttrs;
                     $data['status'] = "1";
                     $data['msg'] = "";
                 } else {
