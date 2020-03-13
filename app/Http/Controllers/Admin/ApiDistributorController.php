@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Library\CustomValidator;
 use App\Models\User;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
+use App\Models\Product;
 use Config;
 use DB;
 use Input;
@@ -234,7 +237,6 @@ class ApiDistributorController extends Controller
     }
 
     public function getProduct() // distributoe product
-
     {
         if (!empty(Input::get("distributorId"))) {
             $distributorId = Input::get("distributorId");
@@ -245,15 +247,41 @@ class ApiDistributorController extends Controller
                 ->get(['id']);
             if (count($storeResult) > 0) {
                 $storeId = $storeResult[0]->id;
-
+                $allproducts = [];
                 // Get product
                 $productResult = DB::table('products as p')
                     ->join('brand as b', 'p.brand_id', '=', 'b.id')
                     ->where('p.store_id', $storeId)
                     ->where('p.is_del', 0)
                     ->get(['p.id', 'b.name', 'p.product', 'p.images', 'p.product_code', 'is_featured', 'prod_type', 'is_stock', 'is_avail', 'is_listing', 'status', 'stock', 'max_price', 'min_price', 'purchase_price', 'price', 'spl_price', 'selling_price', 'is_cod', 'is_tax', 'is_trending', 'min_order_quantity', 'is_share_on_mall']);
+                    if(count($productResult) > 0){
+                        $data =[];$prods = [];
+                        foreach($productResult as $product){
+                            $prod = Product::find($product->id);
+                            if($prod != null && $prod->prod_type == 3){
+                                if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                    $subprods = $prod->getsubproducts()->get();
+                                } else {
+                                    $subprods = $prod->subproducts()->get();
+                                }        
+                                foreach ($subprods as $subP) {
+                                    $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                    foreach ($hasOpt as $prdOpt) {
+                                        $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                        $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                    }
+                                }
+                                $product->variants = $selAttrs;
+                            }
+                        }
+                    }
+                    
+                
                 if (count($storeResult) > 0) {
-                    //echo "<pre>";print_r($productResult);exit;
                     return response()->json(["status" => 1, 'msg' => '', 'data' => $productResult]);
                 } else {
                     return response()->json(["status" => 0, 'msg' => 'Record not found']);

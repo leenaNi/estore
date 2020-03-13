@@ -491,19 +491,11 @@ var prodoffer = 0;
             // prodSel.parent().parent().find('.prodPrice').text(0);
             prodSel.parent().parent().find('.prodQty').show();
             if (subprodsData.length > 0) {
-                //alert("inside if");
                 prodSel.parent().parent().find('.subprod').show();
                 subProdOpt = '<select id="variant_product" name="cartData[prod_id][sub_prod_id]" class="form-control subprodid validate[required]" >'
                     subProdOpt += "<option value=''>Please select</option>";
                 subprodsData.forEach((subprods, subprodKey) => {
-                console.log(subprods, subprodKey);
-                console.log("<br>subproducts::"+JSON.stringify(subprods));
-                console.log("<br>subproducts key::"+subprodKey);
-                console.log("<br> product name::"+subprods.product);
-                    //subProdOpt += "<option value=''>Please select</option>";
-                    //$.each(subprods, function (subprdk, subprdv) {
-                        //console.log("<br>inside each:::subprodk::"+subprdk);
-                        //onsole.log("<br>::inside each:::subprodv::"+subprdv);
+                //console.log(subprods, subprodKey);
                         subprodname = subprods.product.split("Variant (");
                         if (selected_prod.indexOf(subprods.id) == -1) {
                             subProdOpt += "<option value='" + subprods.id + "'>" + subprodname[1].replace(")", "") + "</option>";
@@ -523,7 +515,6 @@ var prodoffer = 0;
                 qty = prodSel.parent().parent().find('.qty').val();
                 parentprdid = prodid;
                 $.post("{{route('admin.distributor.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1, offerid:prodoffer}, function (price) {
-                    //console.log(JSON.stringify(price));
                     prodSel.parent().parent().find('.prodUnitPrice').text(price.unitPrice);
                     prodSel.parent().parent().find('.prodDiscount').text(price.offer);
                     prodSel.parent().parent().find('.prodPrice').text(price.price);
@@ -591,20 +582,7 @@ function getParentProductPrice(qty,parentprdid,prodoffer)
     $(".customerEmail").on("keyup", function () {
         // $(".custdata").show();
     });
-    // $(".customerEmail").on("keyup", function () {
-    //     term = $(this).val();
-    //     thisEle = $(this);
-    //     thisEle.css("border-color", "");
-    //     thisEle.closest("p").remove();
-    //     $.post("{{route('admin.distributor.orders.getDistributor') }}", {term: term}, function (res) {
-    //         resp = JSON.parse(res);
-    //         chkLengh = Object.keys(resp).length;
-    //         if (chkLengh == 1) {
-    //             setValuesToInpt(resp[0].id, resp[0].store_name, resp[0].identity_code, resp[0].firstname, resp[0].phone_no, resp[0].email, resp[0].user_id);
-    //             $(".custdata").show();
-    //         }             
-    //     });
-    // });
+    
     $(".skipAddress").on("click", function () {
         $('.nav-tabs a[href="#customer-details"]').removeAttr('data-toggle');
         $('.nav-tabs a[href="#shipping-address"]').removeAttr('data-toggle');
