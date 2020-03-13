@@ -2128,7 +2128,6 @@ class DistributorOrdersController extends Controller
         //Session::forget("offerid");
         $mycarts = Input::get('mycart');
 
-        dd($mycarts);
         if (!empty($mycarts)) {
             foreach ($mycarts as $key => $mycart) {
                 $offerid = $mycart['offerid'];
