@@ -162,7 +162,8 @@ class ApiCartController extends Controller
         $OfferProd = DB::table("offers_products")->where(['prod_id'=>$prod_id,'type'=>1])->first();
         if ($OfferProd != null) {
             $date = date('Y-m-d H:i:s');
-            $offerDetails = DB::table("offers")->where(['id' => $OfferProd->offer_id])->whereDate('start_date', '>=', $date)->whereDate('end_date', '<=', $date)->first();
+            // $offerDetails = DB::table("offers")->where(['id' => $OfferProd->offer_id])->whereDate('start_date', '>=', $date)->whereDate('end_date', '<=', $date)->first();
+            $offerDetails = DB::table("offers")->where(['id' => $OfferProd->offer_id])->first();
             $offerId = $OfferProd->offer_id;
             if (!empty($offerDetails)) {
                 $discount = 0;
