@@ -80,7 +80,7 @@ class ApiCartController extends Controller
                     break;
                 case 3:
                     
-                    if($quantity == 0) {dd('sdd');
+                    if($quantity == 0) {
                         $msg = $this->removeCartItem($sub_prod);
                     } else {
                         if($sub_prod == 0){
@@ -597,7 +597,6 @@ class ApiCartController extends Controller
                                 else if($product->prod_type==3 || $product->parent_prod_id!=0){  
                                     $msg = $this->configProduct($product->parent_prod_id, $offerProd->qty,$product->id);
                                 }
-                                //dd($msg);
                                 if ($msg == 1) {
                                     $data['data']['cart'] = null;
                                     $data['status'] = "0";
