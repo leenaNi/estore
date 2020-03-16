@@ -79,9 +79,15 @@ class ApiCartController extends Controller
                     }
                     break;
                 case 3:
-                    if($quantity == 0) {
+                    
+                    if($quantity == 0) {dd('sdd');
                         $msg = $this->removeCartItem($sub_prod);
                     } else {
+                        if($sub_prod == 0){
+                            $data['status'] = "0";
+                            $data['msg'] = "Please Select Product Varient";
+                            return $data;
+                        }
                         $msg = $this->configProduct($prod_id, $quantity, $sub_prod);
                     }
                     break;
@@ -307,6 +313,99 @@ class ApiCartController extends Controller
                     // $optionsData['offer_qty'] = $newOfferedQty;
                     // $optionsData['offer_disc_amt'] = $offer_disc_amt * $newOfferedQty;
                     Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity, "options" => $optionsData]);
+                }
+            }
+        }
+    }
+
+    public function addOfferConfigProd($offerId,$sub_prod){
+        $pprod = Product::find($sub_prod);
+        $discProd = DB::table("offers_products")->where(['offer_id'=>$offerId,'type'=>2])->orWhere(['prod_id'=>$pprod->parent_prod_id,'offer_id'=>$offerId])->get();
+        
+        foreach($discProd as $prod){
+            $product = Product::find($prod->prod_id);
+
+            $store = DB::table('stores')->where('id', $product->store_id)->first();
+            $store_id = $store->id;
+            $prefix = $store->prefix;
+
+            //config prod
+            $prefix = $store->prefix;
+            $is_stockable = DB::table('general_setting')->where('url_key', 'stock')->where('store_id', $product->store_id)->first();
+            $cats = [];
+
+            foreach ($product->categories as $cat) {
+                array_push($cats, $cat->id);
+            }
+            $pname = $product->product;
+            $prod_type = $product->prod_type;
+            $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
+            $imagPath = 'http://' . $store->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/products/' . $images;
+            $subProd = Product::where("id", "=", $sub_prod)->first();
+            if (($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)) {
+                $price = $product->price;
+            } else {
+                $price = $product->selling_price; //$product->price;
+            }
+            if ($subProd != 'NULL') {
+                $price = $subProd->price + $price;
+            }
+
+            $aoptions = [];
+            $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
+            $option_name = [];
+            foreach ($hasOptn as $optn) {
+                $aoptions[$optn->pivot->attr_id] = $optn->pivot->attr_val;
+                $option_name[] = AttributeValue::find($optn->pivot->attr_id)->option_name;
+            }
+            $image = isset($images) ? $images : "default.jpg";
+            $option_name = json_encode($option_name);
+            $type = $product->is_tax;
+            $sum = 0;
+            foreach ($product->texes as $tax) {
+                $sum = $sum + $tax->rate;
+            }
+            $tax_amt = 0;
+            if ($type == 1 || $type == 2) {
+                $tax = $product->selling_price * $quantity * $sum / 100;
+                $tax_amt = round($tax, 2);
+            }
+            $isOfferProduct = 0;$offer_qty=0;
+            $offerId = 0; $offer_disc_amt = 0;
+            $quantity = $prod->qty;
+            //create cart instance            
+            
+            if ($product->is_stock == 1 && $is_stockable->status == 1) {
+                if (Helper::checkStock($product->id, $quantity) == "In Stock") {
+                    $searchExist = Helper::searchExistingCart($prod->prod_id);
+                    $options = ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
+                    "options" => $aoptions, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
+                    'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type];
+                    if (!$searchExist["isExist"]) {
+                        Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname,
+                            "qty" => $quantity, "price" => $price,
+                            "options" => $options]);
+                    } else {
+                        $newOfferedQty = ($searchExist['offer_qty']+$offer_qty);
+                        $optionsData['offer_qty'] = $newOfferedQty;
+                        $optionsData['offer_disc_amt'] = $offer_disc_amt * $newOfferedQty;
+                        Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
+                    }
+                } else {
+                    return 1;
+                }
+            } else {
+                $searchExist = Helper::searchExistingCart($prod->prod_id);
+                $options = ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProd->id,
+                "options" => $aoptions, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
+                'cats' => $cats, 'stock' => $subProd->stock, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type];
+                if (!$searchExist["isExist"]) {
+                    Cart::instance('shopping')->add(["id" => $product->id, "name" => $pname,
+                        "qty" => $quantity, "price" => $price,
+                        "options" => $options]);
+                } else {
+                    $optionsData['offer_disc_amt'] = $offer_disc_amt * $quantity;
+                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
                 }
             }
         }
@@ -691,7 +790,6 @@ class ApiCartController extends Controller
             if (!empty($offerDetails)) {
                 $discount = 0;
                 if ($offerDetails->type == 1) {
-                   // $discount = 0;
                     if($offerDetails->offer_discount_type==1){
                         $offer_disc_amt = $price * ($offerDetails->offer_discount_value / 100);
                     }else if($offerDetails->offer_discount_type==2){
@@ -701,7 +799,12 @@ class ApiCartController extends Controller
                     $qty = $OfferProd->qty;
                     
                 }else if ($offerDetails->type == 2) {
-                    return $this->addOfferProd($offerId);
+                    return $this->addOfferConfigProd($offerId,$sub_prod);
+                    // $data = [];
+                    // $data = $this->addOfferConfigProd($offerId,$sub_prod);
+                    // $cartData = Cart::instance("shopping")->content();
+                    // $data['data']['cart'] = $cartData;
+                    // dd($data);
                 }
             }
             
