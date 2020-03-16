@@ -363,6 +363,12 @@ class ApiMerchantController extends Controller
 
             if (count($hasDistributorsResult) > 0) {
                 foreach ($hasDistributorsResult as $distributor) {
+                    $has_distributors = DB::table("has_distributors")->where(['distributor_id'=>$distributor->id,'merchant_id'=>$merchantId])->first();
+                    $is_favourite = 0;
+                    if(!empty($has_distributors)){
+                       $is_favourite = $has_distributors->is_favourite; 
+                    }
+                    $distributor->is_favourite = $is_favourite;
                     $companies = DB::table("products as p")->join("brand as b", "b.id", "=", "p.brand_id")->join("company as c", "c.id", "=", "b.company_id")->select("b.id", "b.company_id", "c.name")->where("p.store_id", $distributor->storeId)->where("p.brand_id", "<>", 0)->get();
                     $companyArr = [];
                     foreach ($companies as $company) {
