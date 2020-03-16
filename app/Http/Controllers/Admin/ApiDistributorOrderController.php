@@ -505,7 +505,7 @@ class ApiDistributorOrderController extends Controller
                 $prd = DB::table('products')->where('id', $cart->id)->first();
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
-                    $prd->update();
+                    DB::table('products')->where('id', $cart->id)->update(['stock'=>$prd->stock]);
                 }
 
                 if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
