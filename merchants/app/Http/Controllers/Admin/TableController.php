@@ -199,7 +199,7 @@ class TableController extends Controller {
         $data['order']->type = $data['order']->type;
         $data['categories'] = Category::where("status", 1)->with(['products' => function($q) {
                         $q->where("status", 1)->where("prod_type", 1);
-                    }])->get();
+                    }, 'categoryName'])->get();
         $data['tables'] = Table::where("status", 1)
                 ->select(DB::raw("CONCAT(table_no,' - ',table_label) AS table_name"), 'id')
                 ->pluck("table_name", 'id');

@@ -418,5 +418,7 @@ $( document ).ready(function() {
         $('.equal-height-div-2').css('height', s1 + "px");
     else
         $('.equal-height-div-1').css('height', s2 + "px");
+        
 });
+
 </script>
