@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Library\CustomValidator;
 use App\Models\User;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
+use App\Models\Product;
 use Config;
 use DB;
 use Input;
@@ -41,6 +44,7 @@ class ApiDistributorController extends Controller
                     ->where('p.store_id', $storeId)
                     ->where(['p.status' => 1, 'p.is_del' => 0])
                     ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
+                    ->where('p.parent_prod_id',0)
                     ->orderBy('p.store_id', 'ASC')
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
                 
@@ -79,7 +83,7 @@ class ApiDistributorController extends Controller
                             $productImage = "http://" . $storeIdsData->url_key . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
                         }
                         //echo "product image::http://" .$_SERVER['HTTP_HOST'].'/uploads/catalog/products/'.$productImage;
-
+                        
                         $storeIdWithDistributorId[$i]['products'][$j]['product_id'] = $getProductData->id;
                         $storeIdWithDistributorId[$i]['products'][$j]['brand_id'] = $getProductData->brand_id;
                         $storeIdWithDistributorId[$i]['products'][$j]['brand_name'] = $getProductData->brand_name;
@@ -125,6 +129,27 @@ class ApiDistributorController extends Controller
                         }
                         
                         $storeIdWithDistributorId[$i]['products'][$j]['offers_count'] = $offerCount;
+                        //product variants
+                        $prod = Product::find($getProductData->id);
+                        if($prod != null && $prod->prod_type == 3){
+                            if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                $subprods = $prod->getsubproducts()->get();
+                            } else {
+                                $subprods = $prod->subproducts()->get();
+                            }        
+                            foreach ($subprods as $subP) {
+                                $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                foreach ($hasOpt as $prdOpt) {
+                                    $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                    $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                }
+                            }
+                            $storeIdWithDistributorId[$i]['products'][$j]['variants'] = $selAttrs;
+                        }
                         $j++;
                     } //product foreach ends here
 
@@ -197,6 +222,13 @@ class ApiDistributorController extends Controller
                         }
 
                     }
+                    $distributorId = DB::table("stores")->where("id",$getData->store_id)->pluck('merchant_id');
+                    $has_distributors = DB::table("has_distributors")->where(['distributor_id'=>$distributorId,'merchant_id'=>$merchantId])->first();
+                    $is_favourite = 0;
+                    if(!empty($has_distributors)){
+                       $is_favourite = $has_distributors->is_favourite; 
+                    }
+                    $storeArray[$i]['is_favourite'] = $is_favourite;
 
                     $storeArray[$i]['store_id'] = $getData->store_id;
                     $storeArray[$i]['store_name'] = $getData->store_name;
@@ -234,7 +266,6 @@ class ApiDistributorController extends Controller
     }
 
     public function getProduct() // distributoe product
-
     {
         if (!empty(Input::get("distributorId"))) {
             $distributorId = Input::get("distributorId");
@@ -245,15 +276,41 @@ class ApiDistributorController extends Controller
                 ->get(['id']);
             if (count($storeResult) > 0) {
                 $storeId = $storeResult[0]->id;
-
+                $allproducts = [];
                 // Get product
                 $productResult = DB::table('products as p')
                     ->join('brand as b', 'p.brand_id', '=', 'b.id')
                     ->where('p.store_id', $storeId)
                     ->where('p.is_del', 0)
                     ->get(['p.id', 'b.name', 'p.product', 'p.images', 'p.product_code', 'is_featured', 'prod_type', 'is_stock', 'is_avail', 'is_listing', 'status', 'stock', 'max_price', 'min_price', 'purchase_price', 'price', 'spl_price', 'selling_price', 'is_cod', 'is_tax', 'is_trending', 'min_order_quantity', 'is_share_on_mall']);
+                    if(count($productResult) > 0){
+                        $data =[];$prods = [];
+                        foreach($productResult as $product){
+                            $prod = Product::find($product->id);
+                            if($prod != null && $prod->prod_type == 3){
+                                if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                    $subprods = $prod->getsubproducts()->get();
+                                } else {
+                                    $subprods = $prod->subproducts()->get();
+                                }        
+                                foreach ($subprods as $subP) {
+                                    $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                    foreach ($hasOpt as $prdOpt) {
+                                        $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                        $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                    }
+                                }
+                                $product->variants = $selAttrs;
+                            }
+                        }
+                    }
+                    
+                
                 if (count($storeResult) > 0) {
-                    //echo "<pre>";print_r($productResult);exit;
                     return response()->json(["status" => 1, 'msg' => '', 'data' => $productResult]);
                 } else {
                     return response()->json(["status" => 0, 'msg' => 'Record not found']);
@@ -310,28 +367,6 @@ class ApiDistributorController extends Controller
         //DB::enableQueryLog(); // Enable query log
         if (!empty(Input::get("companyId"))) {
             $companyId = Input::get("companyId");
-
-            //get merchant wise distributor id
-            /*$merchantId = Input::get("merchantId");
-            $getDistributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
-            if(count($getDistributorIdsResult) > 0)
-            {
-            $multipleDistributorIds = [];
-            foreach ($getDistributorIdsResult as $distributorIdsData)
-            {
-            $multipleDistributorIds[] = $distributorIdsData->distributor_id;
-            }
-            //Get distributor id wise data
-            $merchantWiseDistributorResult = DB::table('distributor')
-            ->whereIn('id', $multipleDistributorIds)
-            ->get();
-
-            //echo "<pre> Merchant wise ditributor::";
-            //print_r($multipleDistributorIds);
-            //exit;
-
-            }*/
-
             //check company id is present in brand table
             $getBrandIdsResult = DB::table('brand')
                 ->select(DB::raw('id'))
@@ -411,6 +446,13 @@ class ApiDistributorController extends Controller
                                     }
 
                                     $finalDistributorArray[$i]['distributor_id'] = $companyWiseDistributorIds;
+                                    
+                                    $has_distributors = DB::table("has_distributors")->where(['distributor_id'=>$companyWiseDistributorIds,'merchant_id'=>Session::get("merchantId")])->first();
+                                    $is_favourite = 0;
+                                    if(!empty($has_distributors)){
+                                        $is_favourite = $has_distributors->is_favourite; 
+                                    }
+                                    $finalDistributorArray[$i]['is_favourite'] = $is_favourite;
                                     // $finalDistributorArray[$i]['register_details'] = $distributorRegisterDetails;
                                     $finalDistributorArray[$i]['phone_no'] = $getData->phone_no;
                                     $finalDistributorArray[$i]['store_id'] = $getData->storeId;
@@ -704,6 +746,7 @@ class ApiDistributorController extends Controller
                                 $getCategoryWiseProductsResult1 = DB::table('products')
                                     ->whereIn('store_id', $multipleCategoryStoreIds)
                                     ->where('status', 1)
+                                    ->where('parent_prod_id',0)
                                     ->offset($pageIndex)
                                     ->limit($perPageRecord)
                                     ->get();    
@@ -713,6 +756,7 @@ class ApiDistributorController extends Controller
                                 $getCategoryWiseProductsResult1 = DB::table('products')
                                     ->whereIn('store_id', $multipleCategoryStoreIds)
                                     ->where('status', 1)
+                                    ->where('parent_prod_id',0)
                                     ->get();    
                             }
                             $categoryDataArray['category_id'] = "0";
@@ -781,6 +825,28 @@ class ApiDistributorController extends Controller
                                         }
                                     }
                                     $categoryDataArray['product'][$c]['offers_count'] = $offerCount;
+
+                                    //product variants
+                                    $prod = Product::find($productId);
+                                    if($prod != null && $prod->prod_type == 3){
+                                        if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                            $subprods = $prod->getsubproducts()->get();
+                                        } else {
+                                            $subprods = $prod->subproducts()->get();
+                                        }        
+                                        foreach ($subprods as $subP) {
+                                            $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                            foreach ($hasOpt as $prdOpt) {
+                                                $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                                $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                            }
+                                        }
+                                        $categoryDataArray['product'][$c]['variants'] = $selAttrs;
+                                    }
                                     $c++;
                                 }
                             }//All products ends here

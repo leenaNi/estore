@@ -3,7 +3,14 @@
 
 <section class="content-header">
     <h1>
-        Online Pages ({{$staticPageCount }})
+        Online Pages <?php
+        if($staticPageCount > 0)
+        {
+        ?>
+        ({{$startIndex}}-{{$endIndex}} of {{$staticPageCount }})
+        <?php
+        }
+        ?>
         <!--        <small>Add/Edit/Delete</small>-->
     </h1>
     <ol class="breadcrumb">

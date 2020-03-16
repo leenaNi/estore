@@ -58,7 +58,15 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Loyalty Programs <span class="listing-counter">{{$loyaltyCount}}</span> </h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Loyalty Programs 
+                <?php
+                if($loyaltyCount > 0)
+                {
+                ?>
+                   <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$loyaltyCount}}</span> </h1>
+                <?php
+                }
+                ?> 
 
             <button id="editable-sample_new" class="btn btn-listing-heading pull-right noAll-margin" onclick="window.location.href ='{{ route('admin.loyalty.add')}}'"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create</button>
         </div>

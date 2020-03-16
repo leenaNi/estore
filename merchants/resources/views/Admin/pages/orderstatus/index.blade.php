@@ -54,7 +54,7 @@
 
 <div class="grid-content">
     <div class="section-main-heading">
-        <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Order Status <span class="listing-counter"> {{$orderstatusCount }} </span> </h1>
+        <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Order Status <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$orderstatusCount }} </span> </h1>
         <button onclick="window.location.href ='{{ route('admin.order_status.add')}}'" target="_blank" class="btn btn-listing-heading pull-right noAll-margin"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create </button> 
     </div>
     <div class="listing-section">

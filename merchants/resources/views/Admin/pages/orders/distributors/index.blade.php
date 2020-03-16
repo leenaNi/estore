@@ -23,7 +23,14 @@
 @section('content')
 <section class="content-header">
     <h1>
-        All Distributors Orders ({{$ordersCount }})
+        All Distributors Orders  <?php
+        if($ordersCount > 0)
+        {
+        ?>
+            ({{$startIndex}}-{{$endIndex}} of {{$ordersCount }}) </span> </h1> 
+        <?php
+        }
+        ?>
         <small></small>
     </h1>
     <ol class="breadcrumb">

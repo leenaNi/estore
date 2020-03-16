@@ -215,8 +215,32 @@ class MiscellaneousController extends Controller {
 
     public function templateSetting() {
         $templates = EmailTemplate::paginate(Config('constants.paginateNo'));
+        $templatesCount = $templates->total();
 
-        return view(Config('constants.adminMiscellaneousTemplateSettingView') . '.index', compact('templates'));
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $templatesCount)
+            {
+                $endIndex = ($templatesCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $templatesCount)
+            {
+                $endIndex = ($templatesCount);
+            }
+        }
+        return view(Config('constants.adminMiscellaneousTemplateSettingView') . '.index', compact('templates','templatesCount','startIndex','endIndex'));
     }
 
     public function templateSettingEdit() {

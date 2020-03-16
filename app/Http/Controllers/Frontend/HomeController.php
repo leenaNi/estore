@@ -66,16 +66,14 @@ class HomeController extends Controller
 
         //     return redirect()->to("/select-themes");
         // }
-
+        Session::flush();
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
-
         $settings = Settings::where('bank_id', 0)->first();
         $country = Country::where("id", $settings->country_id)->get()->first();
         $currency = Currency::where("id", $settings->currency_id)->get()->first();
         $settings['country_code'] = $country['country_code'];
         $settings['country_name'] = $country['name'];
         $settings['currency_code'] = $currency['currency_code'];
-
         $curr = HasCurrency::where('status', 1)->orderBy("currency_code", "asc")->get(['status', 'id', 'name', 'iso_code', 'currency_code']);
         $viewname = Config('constants.frontendView') . ".new-store";
         //$data = ['cat' => $cat, 'curr' => $curr,'default_currency'=>$settings['id'],'default_country'=>$country['country_code']];
@@ -87,12 +85,10 @@ class HomeController extends Controller
     public function checkDomainAvail()
     {
         $getvalue = Input::get('domain_name');
-
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
         $checkdomain = $checkhttps . "://" . $getvalue . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
         // dd($checkdomain);
         $storedomain = Store::pluck('store_domain')->toArray();
-
         if (in_array($checkdomain, $storedomain)) {
             return 1;
         } else {
@@ -105,14 +101,10 @@ class HomeController extends Controller
         // if (!empty(Input::get('availdomain'))) {
         //     $availdomain = Input::get('availdomain');
         // }
-
         $domainname = str_replace(" ", '-', trim(strtolower($availdomain), " "));
-
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
-
         $checkdomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
         $storedomain = Store::pluck('store_domain')->toArray();
-
         if (in_array($checkdomain, $storedomain)) {
             $domainname = $domainname . rand(100, 999);
             $this->availDomain($domainname);

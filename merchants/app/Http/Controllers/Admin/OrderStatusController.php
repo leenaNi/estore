@@ -43,7 +43,33 @@ class OrderStatusController extends Controller {
               $orderstatusCount=$orderstatusInfo->total();
         }
         //echo "<pre>";print_r($orderstatusInfo);exit;
-        $data = ['orderstatusInfo' => $orderstatusInfo,'orderstatusCount' =>$orderstatusCount, 'storeId' => $storeId];
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $orderstatusCount)
+            {
+                $endIndex = ($orderstatusCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $orderstatusCount)
+            {
+                $endIndex = ($orderstatusCount);
+            }
+        }
+
+
+        $data = ['orderstatusInfo' => $orderstatusInfo,'orderstatusCount' =>$orderstatusCount, 'storeId' => $storeId, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         $viewname = Config('constants.adminOrderStatusView') . '.index';
         return Helper::returnView($viewname, $data);
     }

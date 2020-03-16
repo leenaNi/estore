@@ -320,7 +320,31 @@ class VendorsController extends Controller
             $orderCount = $order->total();
         }
 
-        return view(Config('constants.adminVendorView') . '.sales-by-order', compact('order', 'orderCount'));
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $orderCount)
+            {
+                $endIndex = ($orderCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $orderCount)
+            {
+                $endIndex = ($orderCount);
+            }
+        }
+
+        return view(Config('constants.adminVendorView') . '.sales-by-order', compact('order', 'orderCount', 'startIndex', 'endIndex'));
     }
 
     public function saleByProduct()
@@ -352,7 +376,30 @@ class VendorsController extends Controller
         $prods = $prods->paginate(Config('constants.paginateNo'));
         $prodCount = $prods->total();
 
-        return view(Config('constants.adminVendorView') . '.sales-by-product', compact('prods', 'prodCount'));
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $prodCount)
+            {
+                $endIndex = ($prodCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $prodCount)
+            {
+                $endIndex = ($prodCount);
+            }
+        }
+        return view(Config('constants.adminVendorView') . '.sales-by-product', compact('prods', 'prodCount', 'startIndex', 'endIndex'));
 
     }
 
@@ -473,6 +520,112 @@ class VendorsController extends Controller
         $viewname = Config('constants.adminVendorView') . '.order-details';
         $data = ['order' => $order, 'action' => $action, 'payment_methods' => $payment_methods, 'payment_status' => $payment_status, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones, 'products' => $products, 'coupon' => $coupon, 'coupons' => $coupons];
         return Helper::returnView($viewname, $data);
+    }
+
+    //Get All Merchants list
+    public function allMerchant()
+    {
+        $allinput = Input::all();
+        $getSearchKeywordVal = '';
+        if(!empty($allinput))
+        {
+            $getSearchKeywordVal = $allinput['merchant_search_keyword'];
+        }
+
+        $loggedInUserId = Session::get('loggedin_user_id');
+        $loginUserType = Session::get('login_user_type');
+        // get store id
+        $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
+        $storeId = $userResult->store_id;
+
+        // Get distributor id from store table
+        $storeResult = DB::table('stores')->where("id", $storeId)->first();
+        $distributorId = $storeResult->merchant_id;
+
+        $viewname = Config('constants.adminAddMerchantView') . '.all_merchant';
+        //DB::enableQueryLog(); // Enable query log
+        if($getSearchKeywordVal != '')
+        {
+            $merchantListingResult = DB::table('has_distributors as hd')
+            ->select(['hd.distributor_id','hd.is_approved','m.id as merchant_id','m.company_name','m.phone','hd.updated_at'])
+            ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
+            ->where("m.company_name", "like","%". $getSearchKeywordVal . "%")
+            ->orWhere('m.phone', 'like', '%' . $getSearchKeywordVal . '%')
+            ->where([["hd.distributor_id", $distributorId],["hd.is_approved", 1]])
+            ->get();
+            //dd(DB::getQueryLog()); // Show results of log
+        }
+        else
+        {
+            $merchantListingResult = DB::table('has_distributors as hd')
+            ->select(['hd.distributor_id','hd.is_approved','m.id as merchant_id','m.company_name','m.phone','hd.updated_at'])
+            ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
+            ->where([["hd.distributor_id", $distributorId],["hd.is_approved", 1]])
+            ->get();
+        }
+        
+        
+        $merchantIds = [];
+        $merchantListingData = [];
+        $i=0;
+        foreach ($merchantListingResult as $allMerchantsData) {
+            //array_push($merchantIds, $allMerchantsData->merchant_id);
+            $merchhantBusinessName = $allMerchantsData->company_name;
+            $merchantphoneNumber = $allMerchantsData->phone;
+            $merchantStoreIds = [];
+            $merchantId = $allMerchantsData->merchant_id;
+            $merchantStores = DB::table('stores')->where('store_type', 'LIKE', 'merchant')->where('merchant_id', $merchantId)->get(['id']);
+            foreach($merchantStores as $getStoreId)
+            {
+                $merchantStoreId = $getStoreId->id;
+                array_push($merchantStoreIds, $merchantStoreId);
+                //get Orders count with the using of store id
+                $selects = array(
+                    'count(id) as orders_count',
+                    'SUM(order_amt) as TotalOrderAmt'
+                );
+                $orders = DB::table('orders')
+                ->selectRaw(implode(',', $selects))
+                ->where("order_status", "!=", 0)
+                ->where('store_id', $merchantStoreId)
+                ->where('order_type', 0)
+                ->groupBy('store_id')
+                ->get();
+                
+                if(count($orders) > 0)
+                {
+                    $orderCount = $orders[0]->orders_count;
+                    $orderAmount = $orders[0]->TotalOrderAmt;
+                }
+                else
+                {
+                    $orderCount = '-';
+                    $orderAmount = '-';
+                }
+                $merchantListingData[$i]['merchant_id'] = $merchantId;
+                $merchantListingData[$i]['merchant_store_id'] = $merchantStoreId;
+                $merchantListingData[$i]['business_name'] = $merchhantBusinessName;
+                $merchantListingData[$i]['phone_number'] = $merchantphoneNumber;
+                $merchantListingData[$i]['order_count'] = $orderCount;
+                $merchantListingData[$i]['total_order_amt'] = $orderAmount;
+            }
+            $i++;
+        }
+        /*echo "<pre>";
+        print_r($merchantListingData);
+        exit;*/
+        if (isset($merchantListingData) && !empty($merchantListingData)) 
+        {
+            $data = ['merchantListingData' => $merchantListingData,"storeId"=>$merchantStoreIds,"sendRequestError" => Session::get('sendRequestMsg')];
+        }
+        else 
+        {
+            $data = ['error' => "No Merchant found","storeId"=>$merchantStoreIds,"sendRequestError" => Session::get('sendRequestMsg')];
+        }
+        
+       
+        return Helper::returnView($viewname, $data);
+
     }
 
     public function addMerchant() // Display view

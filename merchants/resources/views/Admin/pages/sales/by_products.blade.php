@@ -3,7 +3,14 @@
 
 <section class="content-header">
     <h1>
-        By Products ({{$prodCount }})
+        By Products <?php
+        if($prodCount > 0)
+        {
+        ?>
+            ({{$startIndex}}-{{$endIndex}} of {{$prodCount }}) </span> </h1> 
+        <?php
+        }
+        ?>  
         <small></small>
     </h1>
     <ol class="breadcrumb">

@@ -22,20 +22,20 @@
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="{{ preg_match("/admin.orders.view/",Route::currentRouteName()) ? 'active' : '' }}">
+                    <li class="{{ preg_match("/admin.orders.view|admin.orders.add|admin.orders.createOrder|admin.orders.edit|admin.orders.delete/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.orders.view') }}"> All Orders</a>
                     </li>
-                    <li class="{{ preg_match("/admin.orders.OrderReturn/",Route::currentRouteName()) ? 'active' : '' }}">
+                    <li class="{{ preg_match("/admin.orders.OrderReturn|admin.orders.editreturn|admin.orders.UpdateReturnOrderStatus|admin.orders.ReturnOrderCal/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.orders.OrderReturn') }}"> Return Orders</a>
                     </li>
-                    <li class="{{ preg_match("/admin.orders.cancelOrder/",Route::currentRouteName()) ? 'active' : '' }}">
+                    <li class="{{ preg_match("/admin.orders.cancelOrder|admin.orders.cancelOrderEdit|admin.orders.cancelOrderUpdate/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.orders.cancelOrder') }}"> Cancel Orders</a>
                     </li>
                     @if($feature['flag'] == 1)
                     <li class="{{ preg_match("/admin.miscellaneous.flags/",Route::currentRouteName()) ? 'active' : '' }} {{$storeViesion}}" >
                         <a  href="{{ route('admin.miscellaneous.flags') }}"> Flags</a></li>
                     @endif
-                    <li class="{{ preg_match("/admin.order_status.view/",Route::currentRouteName()) ? 'active' : '' }}">
+                    <li class="{{ preg_match("/admin.order_status.view|admin.order_status.add|admin.order_status.edit|admin.order_status.save|admin.order_status.update|admin.order_status.delete|admin.order_status.changeStatus/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.order_status.view') }}"> Order Status</a></li>
                     @if($feature['additional-charge'] == 1)
                     <li class="{{ preg_match("/admin.additional-charges.view/",Route::currentRouteName()) ? 'active' : '' }}">
@@ -120,14 +120,14 @@
 
 
             
-            <li class="treeview {{ preg_match('/admin.customers|admin.storecontacts/',Route::currentRouteName())? 'active' : ''}}">
+            <li class="treeview {{ preg_match('/admin.vendors.allMerchant|admin.vendors.addMerchant|admin.storecontacts/',Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                      <img class="left-menu-img" src="{{ Config('constants.adminImgangePath') }}/icons/{{'merchants.svg'}}"> <span>Merchants</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     @if($feature['acl'] == 1) 
-                    <li class="{{ preg_match('/admin.customers/',Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"> All Merchants</a></li> 
+                    <li class="{{ Route::currentRouteName() == 'admin.vendors.allMerchant' ? 'active' : '' }}"><a  href="{{ route('admin.vendors.allMerchant') }}"> All Merchants</a></li> 
                     <li  class="{{ Route::currentRouteName() == 'admin.vendors.addMerchant' ? 'active' : '' }}">
                         <a href="{{ route('admin.vendors.addMerchant') }}"> Add Merchant</a>
                     </li>
@@ -135,7 +135,7 @@
                 </ul>
             </li> 
 
-            <li class="treeview {{ preg_match("/admin.report.productIndex|admin.report.ordersIndex/",Route::currentRouteName()) ? 'active' : '' }}">
+            <li class="treeview {{ preg_match("/admin.report.productIndex|admin.report.ordersIndex|admin.vendors.saleByOrder|admin.vendors.saleByProduct/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
                     <img class="left-menu-img" src="{{ Config('constants.adminImgangePath') }}/icons/{{'analytics.svg'}}"> <span>Reports</span>
                     <i class="fa fa-angle-down pull-right"></i>

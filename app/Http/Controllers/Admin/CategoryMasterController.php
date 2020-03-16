@@ -106,7 +106,6 @@ class CategoryMasterController extends Controller
 
     public function save()
     {
-
         $category = CategoryMaster::findOrNew(Input::get('id'));
         //dd($category);
         $category->category = Input::get('category');
@@ -172,6 +171,9 @@ class CategoryMasterController extends Controller
             }
         }
         if (Session::get('requested_cat')) {
+            $reqCat = CategoryRequested::find(Session::get('requested_cat'));
+            $category->parent_id = $reqCat->parent_id;
+            $category->update();
             $returnValue = $this->updateNewCategoryRequest($category->id);
         }
 
@@ -622,18 +624,14 @@ class CategoryMasterController extends Controller
 
     public function categoriesRequested()
     {
-
         $categories = CategoryRequested::with(['requestedBy.store'])->orderBy("id", "desc");
-
         $search = Input::get('search');
-
         if (!empty($search)) {
             if (!empty(Input::get('s_category'))) {
                 $categories = $categories->where("name", "like", "%" . Input::get('s_category') . "%");
             }
             if (!empty(Input::get('date_search'))) {
                 $dateArr = explode(" - ", Input::get('date_search'));
-
                 $fromdate = date("Y-m-d", strtotime($dateArr[0]));
                 $todate = date("Y-m-d", strtotime($dateArr[1]));
                 $categories = $categories->where("created_at", ">=", "$fromdate")->where('created_at', "<", "$todate");
@@ -660,10 +658,9 @@ class CategoryMasterController extends Controller
 
     public function updateNewCategoryRequest($newCatId)
     {
-
         $reqCat = Session::get('requested_cat');
-        //echo "req cat id::".$reqCat;
-
+        echo "req cat id::".$reqCat;
+        echo "New Cat Id::" . $newCatId;
         $catsave = [];
         $reqCategory = CategoryRequested::find($reqCat);
         if (!empty($reqCategory)) {
@@ -690,7 +687,6 @@ class CategoryMasterController extends Controller
                     "lft" => $newParentCat->lft,
                     "rgt" => $newParentCat->rgt,
                     "depth" => 0,
-                    "parent_id" => $reqCategory->parent_id,
                     //"store_id" => $reqCategory->requestedBy->store_id,
                     "store_id" => $getStoreId,
                     "created_at" => date('Y-m-d H:i:s'),
@@ -702,7 +698,7 @@ class CategoryMasterController extends Controller
             $catsave['lft'] = $newCat->lft;
             $catsave['rgt'] = $newCat->rgt;
             $catsave['depth'] = 0;
-            $catsave['parent_id'] = $checkParentCat->parent_id;
+            $catsave['parent_id'] = $checkParentCat->id;
             //$catsave['store_id'] = $reqCategory->requestedBy->store_id;
             $catsave['store_id'] = $getStoreId;
             $catsave['created_at'] = date('Y-m-d H:i:s');

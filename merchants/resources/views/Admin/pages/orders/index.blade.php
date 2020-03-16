@@ -175,7 +175,16 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Orders  <span class="listing-counter"> 1-6 of  {{$ordersCount }}</span>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Orders  
+			<?php
+                if($ordersCount > 0)
+                {
+                ?>
+                    <span class="listing-counter"> {{$startIndex}}-{{$endIndex}} of  {{$ordersCount }}</span>
+                <?php
+                }
+                ?>  
+			
             </h1>
             <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-listing-heading pull-right noAll-margin"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create </a>   
         </div>

@@ -75,7 +75,16 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Merchants <span class="listing-counter">{{$customerCount }}</span></h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Merchants 
+                <?php
+                if($customerCount > 0)
+                {
+                ?>
+                <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$customerCount }}</span></h1>
+                <?php
+                }
+                ?>
+                
             <a href="{!! route('admin.customers.add') !!}" class="btn btn-listing-heading pull-right noAll-margin"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create</a>
         </div>
         <div class="listing-section">
