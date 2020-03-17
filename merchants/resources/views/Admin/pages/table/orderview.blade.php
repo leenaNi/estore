@@ -3,7 +3,7 @@
 @section('mystyles')
 <!-- <link rel="stylesheet" href="{{ asset('public/Admin/dist/css/tabs-css.css') }}"> -->
 <style>
-    .target3 {border: 2px dotted; text-align: center; padding-top: 10px; min-width: 100px; min-height: 100px; cursor: pointer; color : #fff;}
+    .target3 {border: 2px dotted; text-align: center; padding-top: 10px; min-width: 100px; min-height: 100px; cursor: pointer;}
     .draggable3{margin: 5px;}
     .size1 > .target3 {width: 150px; height: 150px;}
     .size2 .target3{width: 200px; height: 150px;}
@@ -11,7 +11,19 @@
     .green{background-color: #2ecc71;}
     .red{background-color: #d35400;}
     .yellow{background-color: #f1c40f;}
-
+    .text-v-center{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .size1 > .target3 a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+}
 
 </style>
 
@@ -69,14 +81,15 @@
         Manage Orders
     </h1>
 </section>
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">
             <div class="box">
             <div class="box-header box-tools filter-box col-md-9 noBorder rightBorder">
                 <ul class="orderTableColor">
-                    <li>Occupy<br/><div class="occupyColor"></div></li>
-                    <li>Free<br/><div class="freeColor"></div></li>
+                    <li>Occupied<br/><div class="occupyColor"></div></li>
+                    <li>Available<br/><div class="freeColor"></div></li>
                 </ul>
             </div>
                 <div class="box-header  col-md-3 col-xs-12 pull-right">
@@ -135,9 +148,10 @@
                                             <div id='box'  class="pull-left">
                                                 @foreach($tables as $table)
                                                 <div class="draggable3 size{{$table->table_type }} col-md-3 col-sm-6 col-xs-12">
-                                                    <div class="target3 context-menu-one {{@$table->tablestatus->color}}" data-tableid="{{ $table->id }}" id="target_{{$table->id }}" data-myval="{{$table->id }}">
-                                                        {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
-                                                        <br>({{$table->chairs}})
+                                                    <div class="target3 text-v-center context-menu-one {{@$table->tablestatus->color}}" data-tableid="{{ $table->id }}" id="target_{{$table->id }}" data-myval="{{$table->id }}">
+                                                        <a href="#">Table No: {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
+                                                            <br>{{$table->chairs}} (Packs)
+                                                        </a>
                                                         <div class="clearfix"></div>    
                                                     </div>
                                                 </div>

@@ -75,9 +75,15 @@ class CheckUser {
                 $roles = $user->roles;
                 $roles_data = $roles->toArray();
                 $r = Role::find($roles_data[0]['id']);
-               // dd($r);
+                //echo "<pre>";
+                //print_r($r);
+                //exit;
+                //dd($r);
                 $per = $r->perms()->get(['name'])->toArray();
+                //echo "<br>per ::";print_r($per);
                 $curRoute = $request->route()->getName();
+                //echo "route::".$curRoute;
+                //exit;
                // dd(json_encode($per));
                 if (!in_array($curRoute, array_flatten($per))) {
                     abort(403);

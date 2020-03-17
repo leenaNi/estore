@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22.817" height="21.866" viewBox="0 0 22.817 21.866">
+    <defs>
+        <style>
+            .prefix__cls-1{fill:#3f566f}
+        </style>
+    </defs>
+    <g id="prefix__settings-2" transform="translate(0 -10.667)">
+        <g id="prefix__Group_897" data-name="Group 897" transform="translate(0 25.878)">
+            <g id="prefix__Group_896" data-name="Group 896">
+                <path id="prefix__Path_2687" d="M21.866 354.377h-2.531a3.306 3.306 0 00-6.345 0H.951a.951.951 0 000 1.9h12.038a3.306 3.306 0 006.345 0h2.532a.951.951 0 000-1.9zm-5.7 2.377a1.426 1.426 0 111.426-1.426 1.428 1.428 0 01-1.43 1.426z" class="prefix__cls-1" data-name="Path 2687" transform="translate(0 -352)"/>
+            </g>
+        </g>
+        <g id="prefix__Group_899" data-name="Group 899" transform="translate(0 10.667)">
+            <g id="prefix__Group_898" data-name="Group 898">
+                <path id="prefix__Path_2688" d="M21.866 13.044h-2.531a3.306 3.306 0 00-6.345 0H.951a.951.951 0 100 1.9h12.038a3.306 3.306 0 006.345 0h2.532a.951.951 0 000-1.9zm-5.7 2.377a1.426 1.426 0 111.426-1.426 1.428 1.428 0 01-1.43 1.426z" class="prefix__cls-1" data-name="Path 2688" transform="translate(0 -10.667)"/>
+            </g>
+        </g>
+        <g id="prefix__Group_901" data-name="Group 901" transform="translate(0 18.273)">
+            <g id="prefix__Group_900" data-name="Group 900">
+                <path id="prefix__Path_2689" d="M21.866 183.711H9.827a3.306 3.306 0 00-6.345 0H.951a.951.951 0 000 1.9h2.531a3.306 3.306 0 006.345 0h12.039a.951.951 0 000-1.9zm-15.211 2.377a1.426 1.426 0 111.426-1.426 1.428 1.428 0 01-1.426 1.426z" class="prefix__cls-1" data-name="Path 2689" transform="translate(0 -181.334)"/>
+            </g>
+        </g>
+    </g>
+</svg>

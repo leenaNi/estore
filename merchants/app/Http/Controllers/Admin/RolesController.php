@@ -63,12 +63,14 @@ class RolesController extends Controller {
 
         ini_set('max_execution_time', -1);
         $per = $permissions = Permission::pluck('display_name')->toArray();
+        //echo "<pre>";
+        //print_r($per);
         $newRoutes = [];
         $i = 0;
         foreach (Route::getRoutes() as $value) {
             if (strpos($value->getPrefix(), "admin") !== false) {
                 $displayName = ucwords(strtolower(str_replace(".", " ", str_replace("admin.", "", $value->getName()))));
-                //  echo $displayName . "<br/>";
+                  //echo $displayName . "<br/>";
                 if (!in_array($displayName, $per)) {
                     if (!empty($displayName)) {
                         $newRoutes[$i]['dispname'] = $displayName;
@@ -78,6 +80,9 @@ class RolesController extends Controller {
                 $i++;
             }
         }
+        //echo "<pre>";
+        //print_r($newRoutes);
+        //exit;
         if (count($newRoutes) > 0) {
             foreach ($newRoutes as $value) {
                 $permissions = new Permission();

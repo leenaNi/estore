@@ -46,6 +46,19 @@
         max-width: 100%;
         max-height: auto !important;
     }
+    .text-v-center {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.size1 > .target3 a, .size2 .target3 a, .size3 .target3 a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
 </style>
 @stop 
 @section('content') 
@@ -69,9 +82,10 @@
                         <div id='box'  class="pull-left">
                             @foreach($tables as $table)
                             <div class="draggable3 size{{$table->table_type }} col-md-3 col-sm-6 col-xs-12">
-                                <div class="target3" id="target_{{$table->id }}" data-myval="{{$table->id }}">
-                                    {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
-                                    <br>({{$table->chairs}})
+                                <div class="target3 text-v-center" id="target_{{$table->id }}" data-myval="{{$table->id }}">
+                                    <a href="#">Table No: {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
+                                        <br>{{$table->chairs}} (Packs)
+                                    </a>
                                     <div class="clearfix"></div>    
                                 </div>
                             </div>

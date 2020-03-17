@@ -1,3 +1,11 @@
+<style>
+    .skin-blue .main-header .navbar .nav .open>a {
+        color: #555 !important;
+    }
+    .open>.dropdown-menu {
+        width: 100%;
+    }
+</style>
 <header class="main-header">
     <?php
 $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
@@ -50,8 +58,8 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                                 @if($feature['pincode']==1)
                                     <li class="{{ preg_match("/admin.pincodes/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.pincodes.view') }}"><i class="fa fa-angle-right"></i>Pincodes</a></li>
                                 @endif
-                                <li class="dropdown {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
-                                    <a href="#">
+                                <li class="dropdown dropdown-submenu {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                         <i class="fa fa-user-plus"></i><span>ACL</span>
                                         <i class="fa fa-angle-down pull-right"></i>
                                     </a>
@@ -65,6 +73,8 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                                         @endif
                                     </ul>
                                 </li>
+                                <li class="{{ preg_match("/admin.systemusers/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.systemusers.view') }}"><i class="fa fa-angle-right"></i>System Users</a></li>
+                                <li class="{{ preg_match("/admin.roles/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.roles.view') }}"><i class="fa fa-angle-right"></i>Roles</a></li>
                             </ul>
                         </li>
                         <li class="dropdown user user-menu">
