@@ -188,7 +188,7 @@ echo "<ul id='catTree' class='tree icheck'>";
 foreach ($roots as $root)
 //echo $root."||||||".$category;
 {
-    renderNode($root, $category, $reqCat);
+    renderNode($root, $category, @$reqCat);
 }
 
 echo "</ul>";
