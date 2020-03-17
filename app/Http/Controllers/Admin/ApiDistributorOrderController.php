@@ -119,8 +119,7 @@ class ApiDistributorOrderController extends Controller
                 //DB::enableQueryLog(); // Enable query log
                 $offersIdCountResult = DB::table('offers')
                     ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
-                    ->select(DB::raw('count(offers.id) as offer_count'),'offers.*')
-                //->where('offers.store_id',$storeId)
+                    ->select('offers.*')
                     ->where('offers.status',1)
                     ->where('offers_products.prod_id', $productId)
                     ->where('offers_products.type', 1)
@@ -128,14 +127,19 @@ class ApiDistributorOrderController extends Controller
                 //dd(DB::getQueryLog()); // Show results of log
 
                 $offerCount = 0;
+                $storeIdWithDistributorId['offers_count'] = $offerCount;
                 if (count($offersIdCountResult) > 0) {
-                    $offerCount = $offersIdCountResult[0]->offer_count;
-                    $storeIdWithDistributorId['offer_id'] = $offersIdCountResult[0]->id;
-                    $storeIdWithDistributorId['offer_name'] = $offersIdCountResult[0]->offer_name;
+                    //$offerCount = $offersIdCountResult[0]->offer_count;
+                    $storeIdWithDistributorId['offers_count'] = count($offersIdCountResult);
+                    $j =0;
+                    foreach($offersIdCountResult as $offer){
+                        $storeIdWithDistributorId['offers'][$j]['offer_id'] = $offer->id;
+                        $storeIdWithDistributorId['offers'][$j]['offer_name'] = $offer->offer_name;
+                        $j++;
+                    }
+                    
                     //$totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
                 }
-                
-                $storeIdWithDistributorId['offers_count'] = $offerCount;
                 //product variants
                 $prod = Product::find($getProductData->id);
                 if($prod != null && $prod->prod_type == 3){
