@@ -122,6 +122,7 @@ Route::group(['namespace' => 'Admin'], function () {
 
             Route::post('/place-distributor-order', ["as" => "admin.apiDistOrder", "uses" => "ApiDistributorOrderController@placeOrder"]);
             Route::any('/order-details', ["as" => "admin.orderDetails", "uses" => "ApiDistributorOrderController@orderDetails"]);
+            Route::any('/product-details', ["as" => "admin.productDetails", "uses" => "ApiDistributorOrderController@productDetails"]);
 
         });
 
