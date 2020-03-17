@@ -18,7 +18,6 @@
         <div class="col-md-12">
             <div class="box">
                 <div class="box-body">
-
         {!! Form::model($role, ['method' => 'post', 'route' => $action ]) !!}
         <div class="col-md-6">
             <div class="form-group">

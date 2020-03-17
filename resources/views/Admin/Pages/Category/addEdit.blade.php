@@ -214,7 +214,7 @@ function renderNode($node, $category, $reqCat = null)
     echo "<li class='tree-item fl_left ps_relative_li'>";
     echo '<div class="checkbox">
     <label class="i-checks checks-sm text-left ' . $classStyle . ' ' . $parentClassStyle . '" id="li_' . $node->id . '">
-    <input type="checkbox" class="parent-cat" id="cat-'.$node->id.'" name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/>
+    <input type="checkbox" class="parent-cat" id="cat-' . $node->id . '" name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/>
     ' . $node->category . '</label>
     </div>';
     if ($node->children()->count() > 0) {
