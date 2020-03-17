@@ -7,6 +7,9 @@ use App\Library\Helper;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Product;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
 use Cart;
 use DB;
 use Input;
@@ -18,6 +21,131 @@ class ApiDistributorOrderController extends Controller
     public function index()
     {
         $jsonString = Helper::getSettings();
+    }
+    
+    public function orderDetails(){
+        $orderId = Input::get('orderId');
+        if($orderId != null){
+        $data = [];
+        $orderDetails = DB::table('orders')->where('id',$orderId)->first();
+        $orderedProduct = DB::table('has_products')->where('order_id',$orderId)->get();
+            if(count($orderedProduct) > 0){
+                $temp = [];
+                foreach($orderedProduct as $prod){
+                    $productResult = DB::table('products as p')
+                            ->leftJoin('brand as b', 'p.brand_id', '=', 'b.id')
+                            ->where('p.id', $prod->prod_id)
+                            ->where(['p.status' => 1, 'p.is_del' => 0])
+                            //->where('p.parent_prod_id',0)
+                            ->orderBy('p.store_id', 'ASC')
+                            ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
+                            if(count($productResult) > 0)
+                            {
+                                $storeIdWithDistributorId = [];
+                                foreach ($productResult as $getProductData) {
+                                    
+                                    $storeId = $getProductData->store_id;
+                                    $productId = $getProductData->id;
+            
+                                    //Get Product image
+                                    $productResult = DB::table('catalog_images')
+                                        ->select(DB::raw('filename'))
+                                        ->where(['catalog_id' => $productId])
+                                        ->get();
+                                    $productImage = '';
+                                    $strore_name = DB::table('stores')->where('id',$storeId)->first();
+                                    if (count($productResult) > 0) {
+                                        $productImage = "http://" . $strore_name->url_key . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
+                                    }
+                                    //echo "product image::http://" .$_SERVER['HTTP_HOST'].'/uploads/catalog/products/'.$productImage;
+                                    
+                                    $storeIdWithDistributorId['product_id'] = $getProductData->id;
+                                    $storeIdWithDistributorId['brand_name'] = $getProductData->brand_name;
+                                    $storeIdWithDistributorId['product'] = $getProductData->product;
+                                    $storeIdWithDistributorId['images'] = $productImage;
+                                    $storeIdWithDistributorId['product_code'] = $getProductData->product_code;
+                                    $storeIdWithDistributorId['is_featured'] = $getProductData->is_featured;
+                                    $storeIdWithDistributorId['prod_type'] = $getProductData->prod_type;
+                                    $storeIdWithDistributorId['is_stock'] = $getProductData->is_stock;
+                                    $storeIdWithDistributorId['is_avail'] = $getProductData->is_avail;
+                                    $storeIdWithDistributorId['is_listing'] = $getProductData->is_listing;
+                                    $storeIdWithDistributorId['status'] = $getProductData->status;
+                                    $storeIdWithDistributorId['stock'] = $getProductData->stock;
+                                    $storeIdWithDistributorId['max_price'] = $getProductData->max_price;
+                                    $storeIdWithDistributorId['min_price'] = $getProductData->min_price;
+                                    $storeIdWithDistributorId['purchase_price'] = $getProductData->purchase_price;
+                                    $storeIdWithDistributorId['price'] = $getProductData->price;
+                                    $storeIdWithDistributorId['spl_price'] = $getProductData->spl_price;
+                                    $storeIdWithDistributorId['selling_price'] = $getProductData->selling_price;
+                                    $storeIdWithDistributorId['is_cod'] = $getProductData->is_cod;
+                                    $storeIdWithDistributorId['is_tax'] = $getProductData->is_tax;
+                                    $storeIdWithDistributorId['is_trending'] = $getProductData->is_trending;
+                                    $storeIdWithDistributorId['min_order_quantity'] = $getProductData->min_order_quantity;
+                                    $storeIdWithDistributorId['is_share_on_mall'] = $getProductData->is_share_on_mall;
+            
+                                    //get offers count
+                                    //DB::enableQueryLog(); // Enable query log
+                                    $offersIdCountResult = DB::table('offers')
+                                        ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
+                                        ->select(DB::raw('count(offers.id) as offer_count'))
+                                    //->where('offers.store_id',$storeId)
+                                        ->where('offers.status',1)
+                                        ->where('offers_products.prod_id', $productId)
+                                        ->where('offers_products.type', 1)
+                                        //->groupBy('offers_products.offer_id')
+                                        ->get();
+                                    //dd(DB::getQueryLog()); // Show results of log
+            
+                                    $offerCount = 0;
+                                    if (count($offersIdCountResult) > 0) {
+                                        $offerCount = $offersIdCountResult[0]->offer_count;
+                                        //$totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
+                                    }
+                                    
+                                    $storeIdWithDistributorId['offers_count'] = $offerCount;
+                                    $storeIdWithDistributorId['sub_prod_id'] = $prod->sub_prod_id;
+                                    $storeIdWithDistributorId['prod_order_qty'] = $prod->qty;
+                                    //product variants
+                                    $prod = Product::find($getProductData->id);
+                                    if($prod != null && $prod->prod_type == 3){
+                                        if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                            $subprods = $prod->getsubproducts()->get();
+                                        } else {
+                                            $subprods = $prod->subproducts()->get();
+                                        }        
+                                        foreach ($subprods as $subP) {
+                                            $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                            foreach ($hasOpt as $prdOpt) {
+                                                $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                                $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                            }
+                                        }
+                                        $storeIdWithDistributorId['variants'] = $selAttrs;
+                                    }$temp[] = $storeIdWithDistributorId;
+                                    $orderDetails->products = $temp;
+                                    //$j++;
+                                } //product foreach ends here
+                                
+                                //$storeIdWithDistributorId[$i]['offer_count'] = $totalOfferOfAllProduct;
+                            }
+                            
+                }
+                
+                if (count($orderDetails) > 0) {
+                    return response()->json(["status" => 1, 'data' => $orderDetails]);
+                }
+                
+            }
+            else {
+                            return response()->json(["status" => 2, 'msg' => 'Product not found']);
+            }
+        } else {
+                return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+            }
     }
 
     public function placeOrder()
