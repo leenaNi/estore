@@ -225,7 +225,17 @@ class ApiDistributorOrderController extends Controller
             }
 
             if ($succ['orderId']) {
+
                 $order = Order::find($succ['orderId']);
+                $orderedProduct = DB::table('has_products')->where('order_id',$order->id)->get();
+                if(count($orderedProduct) > 0){
+                    $temp = [];
+                    foreach($orderedProduct as $prod){
+                        $temp[] = $this->getProduct($prod->prod_id);
+                        
+                    }
+                    $order->products = $temp;
+                } //product foreach ends here
                 $user->cart = '';
                 $user->save();
                 return ['status' => 1, 'msg' => 'Order Created Successfully', 'data' => $order]; //success
