@@ -7,11 +7,11 @@
         if($prodCount > 0)
         {
         ?>
-            ({{$startIndex}}-{{$endIndex}} of {{$prodCount }}) </span> </h1> 
+           <span> ({{$startIndex}}-{{$endIndex}} of {{$prodCount }}) </span> 
         <?php
         }
         ?>  
-        <small></small>
+        </h1>  <small></small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashnoard</a></li>

@@ -65,6 +65,8 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                                         @endif
                                     </ul>
                                 </li>
+                                <li class="{{ preg_match("/admin.systemusers/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.systemusers.view') }}"><i class="fa fa-angle-right"></i>System Users</a></li>
+                                <li class="{{ preg_match("/admin.roles/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.roles.view') }}"><i class="fa fa-angle-right"></i>Roles</a></li>
                             </ul>
                         </li>
                         <li class="dropdown user user-menu">
