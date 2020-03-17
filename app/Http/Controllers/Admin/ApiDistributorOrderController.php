@@ -51,6 +51,7 @@ class ApiDistributorOrderController extends Controller
         $prod_id = Input::get('prod_id');
         if($prod_id != null){
             $data = $this->getProduct($prod_id);
+            //dd($data);
             if(!empty($data)){
                 return response()->json(["status" => 1, 'data' => $data]);
             }
@@ -70,7 +71,7 @@ class ApiDistributorOrderController extends Controller
                             ->where(['p.status' => 1, 'p.is_del' => 0])
                             //->where('p.parent_prod_id',0)
                             ->orderBy('p.store_id', 'ASC')
-                            ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
+                            ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id','p.short_desc']);
         if(count($productResult) > 0)
         {
             $storeIdWithDistributorId = [];
@@ -95,6 +96,7 @@ class ApiDistributorOrderController extends Controller
                 $storeIdWithDistributorId['product'] = $getProductData->product;
                 $storeIdWithDistributorId['images'] = $productImage;
                 $storeIdWithDistributorId['product_code'] = $getProductData->product_code;
+                $storeIdWithDistributorId['short_desc'] = $getProductData->short_desc;
                 $storeIdWithDistributorId['is_featured'] = $getProductData->is_featured;
                 $storeIdWithDistributorId['prod_type'] = $getProductData->prod_type;
                 $storeIdWithDistributorId['is_stock'] = $getProductData->is_stock;
@@ -117,7 +119,7 @@ class ApiDistributorOrderController extends Controller
                 //DB::enableQueryLog(); // Enable query log
                 $offersIdCountResult = DB::table('offers')
                     ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
-                    ->select(DB::raw('count(offers.id) as offer_count'))
+                    ->select(DB::raw('count(offers.id) as offer_count'),'offers.*')
                 //->where('offers.store_id',$storeId)
                     ->where('offers.status',1)
                     ->where('offers_products.prod_id', $productId)
@@ -128,6 +130,8 @@ class ApiDistributorOrderController extends Controller
                 $offerCount = 0;
                 if (count($offersIdCountResult) > 0) {
                     $offerCount = $offersIdCountResult[0]->offer_count;
+                    $storeIdWithDistributorId['offer_id'] = $offersIdCountResult[0]->id;
+                    $storeIdWithDistributorId['offer_name'] = $offersIdCountResult[0]->offer_name;
                     //$totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
                 }
                 
