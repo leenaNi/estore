@@ -93,51 +93,6 @@ body * { visibility: hidden; }
     .control-label{ font-size: 14px!important; }
     .error{color:red;}
     .shop-logo img {max-width: 100px;}
-    .item-cat-list {
-            border: 1px solid #e6e6e6;
-            text-align: center;
-            border-radius: 5px;
-            background: #fafafa;
-        }
-        .item-cat-list a{
-            display:block;
-            width:100%;
-            height:100%;
-            padding: 30px;
-            font-size: 16px;
-            font-weight: 450;
-        }
-        label.fnt-bold {
-            font-weight: 450 !important;
-            font-size: 16px !important;
-        }
-        a.remark-plus {
-            line-height: 36px;
-        }
-        .height-auto{
-            height:auto !important;
-        }
-        .search-item-list input {
-            max-width: 80px;
-            text-align: center;
-        }
-        .kot-order table tr th, .kot-order table tr td {
-            width: 33.33%;
-        }
-        .kot-order .table.no-top-border>tbody>tr>td{
-            border-top:0 !important;
-        }
-        .kot-btn {
-            clear: both;
-            overflow: auto;
-            margin-top: 50px;
-        }
-        .mleft0{
-            margin-left:0px;
-        }
-        .notop-padding{
-            padding-top:0;
-        }
 </style>
 @stop
 @section('content')
@@ -147,201 +102,6 @@ body * { visibility: hidden; }
         Add/Edit Items
         <small>{{ $order->type->otype }} #{{ $order->id }} </small>
     </h1>
-</section>
-
-<section class="main-content">
-
-    <div class="col-md-8 noLeft-padding">
-        <div class="grid-content">
-            <div class="section-main-heading">
-                <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> New KOT</h1>
-                <a href="#" target="_blank" class="btn btn-listing-heading pull-right noAll-margin"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> New KOT </a>
-            </div>
-            <div class="filter-section equal-height-div-1">
-                <div class="filter-left-section">
-                    <div class="form-group col-md-6">
-                        <label class="fnt-bold">Add Items</label>
-                        <div class="input-group">
-                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
-                            <input type="text" class="form-control" placeholder="Search Category/Product Name/SKU/ID" name="Search Category/Product Name/SKU/ID">
-                        </div>                        
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="cat-list">
-                        <div class="form-group col-md-3">
-                            <div class="item-cat-list">
-                            <a href="#">
-                                Cat 1
-                                </a>
-                            </div>                        
-                        </div>
-                        <div class="form-group col-md-3">
-                            <div class="item-cat-list">
-                            <a href="#">
-                                Cat 2
-                                </a>
-                            </div>                        
-                        </div>
-                        <div class="form-group col-md-3">
-                            <div class="item-cat-list">
-                            <a href="#">
-                                Cat 3
-                                </a>
-                            </div>                        
-                        </div>
-                        <div class="form-group col-md-3">
-                            <div class="item-cat-list">
-                            <a href="#">
-                                Cat 4
-                                </a>
-                            </div>                        
-                        </div>
-                        <div class="form-group col-md-3">
-                            <div class="item-cat-list">
-                            <a href="#">
-                                Cat 5
-                                </a>
-                            </div>                        
-                        </div>
-                        <div class="form-group col-md-3">
-                            <div class="item-cat-list">
-                            <a href="#">
-                                Cat 6
-                                </a>
-                            </div>                        
-                        </div>
-                        <div class="form-group col-md-3">
-                            <div class="item-cat-list">
-                            <a href="#">
-                                Cat 7
-                                </a>
-                            </div>                        
-                        </div>
-                        <div class="form-group col-md-3">
-                            <div class="item-cat-list">
-                                <a href="#">
-                                    Cat 8
-                                </a>
-                            </div>                        
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="search-item-list">
-                        <div class="form-group col-md-6">
-                            <div class="table-responsive">
-                                <table class="table table-condensed">
-                                    <thead>
-                                        <tr>
-                                            <th>Item</th>
-                                            <th>Qty</th>
-                                            <th>&nbsp;</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><a href="#">Dosa</a></td>
-                                            <td><input type="number" value="" class="form-control" placeholder="No."></td>
-                                            <td class="text-center"><a href="#anyRemark" data-toggle="modal" class="remark-plus"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'black-plus.svg'}}"></a></td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="#">Idali</a></td>
-                                            <td><input type="number" value="" class="form-control" placeholder="No."></td>
-                                            <td class="text-center"><a href="#anyRemark" data-toggle="modal" class="remark-plus"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'black-plus.svg'}}"></a></td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="#">Wada</a></td>
-                                            <td><input type="number" value="" class="form-control" placeholder="No."></td>
-                                            <td class="text-center"><a href="#anyRemark" data-toggle="modal" class="remark-plus"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'black-plus.svg'}}"></a></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>                       
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 noRight-padding">
-        <div class="grid-content">
-            <div class="section-main-heading">
-                <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Current Order</h1>
-            </div>
-            <div class="filter-section equal-height-div-2">
-                <div class="filter-right-section notop-padding">
-                    <div class="table-responsive">
-                        <div class="kot-order">
-                            <table class="table table-condensed">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th class="text-center">Remark</th>
-                                        <th class="text-center">Qty</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                            <table class="table table-condensed no-top-border mb-30">
-                                <tbody>
-                                    <tr>
-                                        <td colspan="3"><strong>KOT #3</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 1</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">5</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 2</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">3</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table class="table table-condensed no-top-border mb-30">
-                                <tbody>
-                                    <tr>
-                                        <td colspan="3"><strong>KOT #2</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 4</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">2</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 3</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">1</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table class="table table-condensed no-top-border mb-30">
-                                <tbody>
-                                    <tr>
-                                        <td colspan="3"><strong>KOT #1</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 4</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">7</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 3</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">6</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="kot-btn">
-                            <button type="button" class="btn btn-primary pull-left mleft0">Reset</button>
-                            <button type="button" class="btn btn-primary pull-right">Save KOT</button>
-                        </div>
-                    </div>  
-                </div>
-            </div>
-        </div>
-    </div>
-
 </section>
 <section class="content">
 
@@ -396,7 +156,7 @@ body * { visibility: hidden; }
                             <div class="box-header with-border">
                                 <h6 class="box-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#{{ $cat->url_key }}">
-                                        {{ $cat->categoryName->category }}
+                                        {{ $cat->category }}
                                     </a>
                                 </h6>
                             </div>
@@ -653,7 +413,7 @@ body * { visibility: hidden; }
     </div>
     <!-- Modal -->
     <div id="getAddCustomer" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog" style="width: 75%;top:40px">
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
@@ -710,7 +470,7 @@ body * { visibility: hidden; }
 
                                 <div class="tab-pane" id="addressTab">
                                     <div class="post clearfix">
-                                        <div  class="col-md-12 noallMargin noallpadding">
+                                        <div  class="col-md-6 noallMargin noallpadding">
                                             {!! Form::open(['id'=>'custAddForm']) !!}
                                             <div class="row form-group">
                                                 <div class="col-md-6">
@@ -797,26 +557,6 @@ body * { visibility: hidden; }
 </div>
 
 
-
-<div id="anyRemark" class="modal fade in" role="dialog" aria-hidden="false">
-        <div class="modal-dialog modal-md">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header bord-bot0">
-                    <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h4 class="modal-title text-left">
-                        Any Remark
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <form action="">
-                        <textarea class="form-control height-auto" rows="3"></textarea> 
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
 </section>
 

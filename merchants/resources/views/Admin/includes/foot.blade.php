@@ -418,5 +418,19 @@ $( document ).ready(function() {
         $('.equal-height-div-2').css('height', s1 + "px");
     else
         $('.equal-height-div-1').css('height', s2 + "px");
+        
 });
+
+
+(function($){
+	$(document).ready(function(){
+		$('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
+			event.preventDefault(); 
+			event.stopPropagation(); 
+			$(this).parent().siblings().removeClass('open');
+			$(this).parent().toggleClass('open');
+		});
+	});
+})(jQuery);
+
 </script>
