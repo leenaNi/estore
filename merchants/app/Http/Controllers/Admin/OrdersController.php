@@ -29,6 +29,7 @@ use App\Models\Product;
 use App\Models\ReturnOrder;
 use App\Models\StaticPage;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\Zone;
 use App\Traits\Admin\OrdersTrait;
 use Cart;
@@ -48,6 +49,21 @@ class OrdersController extends Controller
 
     public function index()
     {
+        $user = User::with('roles')->find(Session::get('loggedinAdminId'));      
+        $roles = $user->roles;
+        $roles_data = $roles->toArray();
+        $r = Role::find($roles_data[0]['id']);
+        //echo "<pre>";
+        //print_r($r);
+        //exit;
+        //dd($r);
+        $loggedInUserName = $r->name;
+        //echo "<br>per ::".$per;
+        //$data = session()->all();
+        //echo "all session::".print_r($data);
+        //echo "logged in admin id::".Session::get('loggedinAdminId');
+        //exit;
+        $loggedInUserId = Session::get('loggedinAdminId');
         $allinput = Input::all();
         $getMerchantStoreIdVal = 0;
         if(!empty($allinput) && !empty(Input::get('id')))
@@ -71,10 +87,19 @@ class OrdersController extends Controller
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
         
-        $orders = Order::where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $storeId)->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        $orders = Order::where("orders.order_status", "!=", 0)
+                ->join("has_products", "has_products.order_id", '=', 'orders.id')
+                ->where("has_products.store_id", $storeId)
+                ->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))
+                ->groupBy('has_products.order_id')
+                ->orderBy('orders.id', 'desc');
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
+        if($loggedInUserName != 'admin')
+        {
+            $orders = $orders->where("orders.user_id", $loggedInUserId);
+        }
         if (!empty(Input::get('order_ids'))) {
             $mulIds = explode(",", Input::get('order_ids'));
             $orders = $orders->whereIn("orders.id", $mulIds);

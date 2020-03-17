@@ -47,7 +47,16 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Merchant</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Merchant
+                <?php
+                if($countofAllMerchant > 0)
+                {
+                ?>
+                    <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$countofAllMerchant }}</span>
+                <?php
+                }
+                ?> 
+            </h1>
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">
@@ -100,8 +109,8 @@
                         @endif 
                     </tbody>
                 </table>
-                <div class="clearfix">
-                   
+                <div class="box-footer clearfix">
+                    {!! $merchantListingResult->render() !!}
                 </div>
             </div>
         </div>

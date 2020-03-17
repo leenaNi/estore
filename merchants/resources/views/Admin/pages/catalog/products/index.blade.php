@@ -193,11 +193,11 @@
                 if($productCount > 0)
                 {
                 ?>
-                    <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$productCount }}</span> </h1> 
+                    <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$productCount }}</span>
                 <?php
                 }
                 ?>  
-			
+			 </h1> 
             <?php $cat = count($rootsS) > 0 ? '' : "Cat";?> 
             <a type="button" class="btn btn-listing-heading pull-right noAll-margin" data-toggle="modal" data-target="#addProduct{{$cat}}"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create </a> 
 

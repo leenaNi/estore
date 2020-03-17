@@ -527,7 +527,7 @@ class VendorsController extends Controller
     {
         $allinput = Input::all();
         $getSearchKeywordVal = '';
-        if(!empty($allinput))
+        if(!empty($allinput) && !empty(Input::get('merchant_search_keyword')))
         {
             $getSearchKeywordVal = $allinput['merchant_search_keyword'];
         }
@@ -552,7 +552,8 @@ class VendorsController extends Controller
             ->where("m.company_name", "like","%". $getSearchKeywordVal . "%")
             ->orWhere('m.phone', 'like', '%' . $getSearchKeywordVal . '%')
             ->where([["hd.distributor_id", $distributorId],["hd.is_approved", 1]])
-            ->get();
+            ->paginate(Config('constants.paginateNo'));
+            //->get();
             //dd(DB::getQueryLog()); // Show results of log
         }
         else
@@ -561,7 +562,8 @@ class VendorsController extends Controller
             ->select(['hd.distributor_id','hd.is_approved','m.id as merchant_id','m.company_name','m.phone','hd.updated_at'])
             ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
             ->where([["hd.distributor_id", $distributorId],["hd.is_approved", 1]])
-            ->get();
+            ->paginate(Config('constants.paginateNo'));
+            //->get();
         }
         
         
@@ -614,9 +616,36 @@ class VendorsController extends Controller
         /*echo "<pre>";
         print_r($merchantListingData);
         exit;*/
+
+        $countofAllMerchant = count($merchantListingData);
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $countofAllMerchant)
+            {
+                $endIndex = ($countofAllMerchant);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $countofAllMerchant)
+            {
+                $endIndex = ($countofAllMerchant);
+            }
+        }
+
+
         if (isset($merchantListingData) && !empty($merchantListingData)) 
         {
-            $data = ['merchantListingData' => $merchantListingData,"storeId"=>$merchantStoreIds,"sendRequestError" => Session::get('sendRequestMsg')];
+            $data = ['merchantListingResult' => $merchantListingResult, 'merchantListingData' => $merchantListingData,"storeId"=>$merchantStoreIds,"sendRequestError" => Session::get('sendRequestMsg'), 'countofAllMerchant' => $countofAllMerchant,'startIndex' => $startIndex, 'endIndex' => $endIndex];
         }
         else 
         {

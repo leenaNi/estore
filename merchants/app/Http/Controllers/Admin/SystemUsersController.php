@@ -16,9 +16,21 @@ class SystemUsersController extends Controller
 
     public function index()
     {
-//dd(base64_decode("YXNkZjEyMzQ="));
+        //dd(base64_decode("YXNkZjEyMzQ="));
+        $loggedInUserId = Session::get('loggedinAdminId');
+        //get user_type id from user table
+        $usersResult = DB::table('users')
+        ->where('id', $loggedInUserId)
+        ->where('status', 1)
+        ->get();
+        if(count($usersResult) > 0)
+        {
+            $userTypeId = $usersResult[0]->user_type;
+        }
+        
         $search = !empty(Input::get("empSearch")) ? Input::get("empSearch") : '';
-        $system_users = User::with('roles')->where('user_type', '1')->where("store_id", Session::get('store_id'))->whereIn('status', [1, 0]);
+        //$system_users = User::with('roles')->where('user_type', '1')->where("store_id", Session::get('store_id'))->whereIn('status', [1, 0]);
+        $system_users = User::with('roles')->where('user_type', $userTypeId)->where("store_id", Session::get('store_id'))->whereIn('status', [1, 0]);
 
         $roles = Role::get(['id', 'name'])->toArray();
         $search_fields = ['firstname', 'lastname', 'email', 'telephone'];
@@ -38,8 +50,33 @@ class SystemUsersController extends Controller
             $userCount = $system_users->total();
         }
 
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $userCount)
+            {
+                $endIndex = ($userCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $userCount)
+            {
+                $endIndex = ($userCount);
+            }
+        }
+
+
         $viewname = Config('constants.adminSystemUsersView') . '.index';
-        $data = ['system_users' => $system_users, 'roles' => $roles, 'userCount' => $userCount];
+        $data = ['system_users' => $system_users, 'roles' => $roles, 'userCount' => $userCount, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         return Helper::returnView($viewname, $data);
     }
 
@@ -60,6 +97,17 @@ class SystemUsersController extends Controller
 
     public function save()
     {
+        $loggedInUserId = Session::get('loggedinAdminId');
+        //get user_type id from user table
+        $usersResult = DB::table('users')
+        ->where('id', $loggedInUserId)
+        ->where('status', 1)
+        ->get();
+        if(count($usersResult) > 0)
+        {
+            $userTypeId = $usersResult[0]->user_type;
+        }
+        
 
         $chk = User::where("email", "=", Input::get('email'))->where("telephone", "=", Input::get('telephone'))->where('user_type', 1)->first();
         if (Input::get('password')) {
@@ -76,7 +124,8 @@ class SystemUsersController extends Controller
             $user->country_code = Input::get('country_code');
             $user->password = Hash::make($password);
             $user->password_crpt = base64_encode($password);
-            $user->user_type = 1;
+            //$user->user_type = 1;
+            $user->user_type = $userTypeId;
             $user->store_id = Helper::getSettings()['store_id'];
             $user->save();
             // print_r($user); die;
@@ -103,6 +152,16 @@ class SystemUsersController extends Controller
 
     public function update()
     {
+        $loggedInUserId = Session::get('loggedinAdminId');
+        //get user_type id from user table
+        $usersResult = DB::table('users')
+        ->where('id', $loggedInUserId)
+        ->where('status', 1)
+        ->get();
+        if(count($usersResult) > 0)
+        {
+            $userTypeId = $usersResult[0]->user_type;
+        }
 
         $user = User::find(Input::get('id'));
 
@@ -123,7 +182,8 @@ class SystemUsersController extends Controller
         $user->status = Input::get('status');
         $user->country_code = Input::get('country_code');
         $user->store_id = Helper::getSettings()['store_id'];
-        $user->user_type = 1;
+        //$user->user_type = 1;
+        $user->user_type = $userTypeId;
 
         $user->save();
 //dd(Input::all());

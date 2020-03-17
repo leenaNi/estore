@@ -18,9 +18,36 @@ class OffersController extends Controller
 
     public function index()
     {
-        $offerInfo = Offer::orderBy('id', 'DESC')->get();
+        //$offerInfo = Offer::orderBy('id', 'DESC')->get();
+        $offerInfo = Offer::orderBy('id', 'DESC')->paginate(Config('constants.paginateNo'));
+        $offerInfoCount = $offerInfo->total();
         //dd($offerInfo);
-        return view(Config('constants.adminOfferView') . '.index', compact('offerInfo'));
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $offerInfoCount)
+            {
+                $endIndex = ($offerInfoCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $offerInfoCount)
+            {
+                $endIndex = ($offerInfoCount);
+            }
+        }
+
+
+        return view(Config('constants.adminOfferView') . '.index', compact('offerInfo', 'offerInfoCount', 'startIndex', 'endIndex'));
     }
 
     public function add()

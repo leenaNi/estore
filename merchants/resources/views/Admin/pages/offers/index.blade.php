@@ -17,7 +17,16 @@
     </div> 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Offer</h1> 
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Offer 
+                <?php
+                if($offerInfoCount > 0)
+                {
+                ?>
+                    <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$offerInfoCount }}</span>
+                <?php
+                }
+                ?>  
+            </h1> 
             <a href="{!! route('admin.offers.add') !!}" class="btn btn-listing-heading pull-right noAll-margin" target="_"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create</a> 
         </div>
         <div class="listing-section">
@@ -38,6 +47,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if(count($offerInfo) > 0)
                         @foreach ($offerInfo as $offer)
                         <tr>
                             <td class="text-center">{{$offer->id}}</td>
@@ -79,9 +89,17 @@
                             </td>
                         </tr>
                         @endforeach
+                        @else
+                        <tr><td colspan=3>No Record Found.</td></tr>
+                        @endif
                     </tbody>
                 </table>
             </div>
+
+            <div class="box-footer clearfix">
+                {!! $offerInfo->render() !!}
+            </div>
+
         </div>
     </div>
 </section>
