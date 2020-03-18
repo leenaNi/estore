@@ -21,6 +21,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
     Route::group(['middleware' => 'CheckUser', 'web'], function () {
         Route::get('/home', ["as" => "admin.home.view", "uses" => "HomeController@index"]);
 //
+        Route::any('/show-merchant-admin-themes', ["as" => "admin.home.showMerchantTheme", "uses" => "HomeController@showMerchantAdminThemes"]);
+        Route::any('/apply-merchant-admin-themes', ["as" => "admin.home.applyMerchantTheme", "uses" => "HomeController@applyMerchantAdminThemes"]);
         Route::any('/newsletter', ["as" => "admin.home.newsletter", "uses" => "HomeController@newsLetter"]);
         Route::post('/saveNewsLetter', ["as" => "admin.home.saveNewsLetter", "uses" => "HomeController@saveNewsLetter"]);
         Route::any('/export-newsLetter', ["as" => "admin.home.exportNewsLetter", "uses" => "HomeController@exportNewsLetter"]);
