@@ -327,7 +327,7 @@ class ProductsController extends Controller
 
     public function save()
     {
-        //dd(Input::all());
+        // dd(Input::all());
         $prod = Product::create(Input::all());
         $category = Input::get("category");
         $retunUrl = Input::get("return_url");
@@ -356,6 +356,8 @@ class ProductsController extends Controller
         }
 
         $prod->added_by = Input::get('added_by');
+        $prod->selling_price = Input::get('selling_price');
+        $prod->spl_price = Input::get('selling_price');
         if ($prod->prod_type == 1) {
             $attr = AttributeSet::where(['store_id' => Session::get('store_id'), 'attr_set' => 'Default'])->first();
             $prod->attr_set = $attr->id;
