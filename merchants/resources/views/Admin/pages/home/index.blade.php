@@ -19,6 +19,21 @@
         font-size: 20px;
     }
 
+    div.logo .updateTheme {
+        position: absolute;
+        right: 0px !important;
+        top: 30% !important;
+    }
+    div.logo .updateTheme a {
+        color: #fff !important;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .updateTheme i {
+        color: #fff;
+        font-size: 20px;
+    }
+
     span.editicons {
         position: absolute;
         top: 35%;
@@ -41,7 +56,21 @@
 @section('content')
 <!-- Main content -->
 <section>
-    <div class="panel-body">        
+    
+    <p id="success_theme_msg" style="color:green;text-align: center;">
+        {{ Form::hidden('hdn_session_theme_status_val', Session::get('selectedThemeStatus'), array('id' => 'hdn_session_theme_status_val_id')) }}
+        <input type="hidden" name="hdn_session_theme_status_val" id="hdn_session_theme_status_val_id" value="">
+        <?php 
+        if( (Session::get('selectedThemeStatus')) > 0)
+        {
+            Session::flash('selectedThemeStatus', "Error");
+         ?>
+         Theme Updated Successfully <a href="https://{{$hostUrl}}" target="_blank"> Click here to view your page</a>
+        <?php
+         }?>
+     </p>
+    <div class="panel-body">    
+
         <div class="row">
             <div class="col-sm-12 text-center marginBottom20">
                 <img src="{{  Config('constants.adminImgPath').'/help-desktop.png' }}" class="mobileFullWidth">	
@@ -71,6 +100,31 @@
                         </div>
                     </div>
                 </div>
+
+                <!--Select Theme Option start From here -->
+                @if($templateId == 0)
+                <div class="box box-solid marginBottom20" id="select_theme_div">
+                    <div class="box-header with-border noleftBorder">
+                        <h3 class="box-title">Select Theme</h3>
+                        <!-- tools box -->
+                        <div class="pull-right box-tools">
+                            <button type="button" class="btn btn-defualt btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-defualt btn-sm" data-widget="remove"><i class="fa fa-times"></i>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <p>Update your theme for users to understand it's your online store.</p>
+                                <a href="#" class="btn btn-default noAllMargin updateTheme mobileSpecialfullBTN">Update Theme</a>	
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                <!--Select Theme Option Ends from here -->
+
                 <div class="box box-solid marginBottom20">
                     <div class="box-header with-border noleftBorder">
                         <h3 class="box-title">Slider Images</h3>
@@ -209,11 +263,54 @@
             
 
             </div>
+            
         </div>
     </div>
     <!-- open popup model -->
   
 </section>
+
+
+<!--Theme Selection Modal Popup Div start here-->
+<div class="modal fade" id="themeModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">    
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Choose Theme</h4>
+            </div>
+            <div class="modal-body" id="theme_div">        
+                <!--<section id="page-title" class=" page-title-center" style=" padding: 50px 0;" data-stellar-background-ratio="0.3">
+
+                    <div class="container clearfix">
+                        <h1 class="">Themes for your online store </h1>
+                        <span class="">Easily customizable and mobile friendly themes to match your brand</span>
+                    </div>
+                
+                </section><!-- #page-title end -->
+
+
+                <!--<section id="content">
+                    <div class="content-wrap">
+                        <div class="container clearfix">
+                
+                            
+
+                        </div>
+                    </div>
+                </section>-->
+
+            <div class='clearfix'></div>
+            </div>
+
+        </div>
+    </div> 
+</div> 
+<!--Theme Selection Modal Popup Dive ends here -->
+
+
 @stop
 @section('myscripts')
 
@@ -259,9 +356,27 @@ $("#courierSelect").change(function () {
 });
 $(document).ready(function () {
 
+    //$('#success_theme_msg').delay(5000).fadeOut('slow');
+
     $(".updateLogo").click(function () {
         $("#logoModal").modal('show');
     });
+    $(".updateTheme").click(function () {
+        //$("#themeModal").modal('show');
+
+        $.ajax({
+            method: "POST",
+            url: "<?php echo route('admin.home.showMerchantTheme'); ?>",
+            success: function (data) {
+                console.log(data);
+                //$("#themeModal").modal('show');
+                $("#theme_div").html(data);
+            }
+        })
+
+        $("#themeModal").modal('show');
+        
+    })
 
     var modal = document.getElementById('myModal');
     var is_popup_open = "{{ $set_popup->status }}";
@@ -276,6 +391,7 @@ $(document).ready(function () {
 
     }
 });
+
 $("#submit").click(function () {
     if ($('.courier-services').prop("checked") == true) {
         if ($('#courierSelect').val() == '') {
@@ -296,6 +412,39 @@ $("#submit").click(function () {
     })
 })
 
+$(window).load(function () {
+
+//hide the select theme div if the theme is applied by merchants admin
+var getHdnSelectThemeSessionVal = $("#hdn_session_theme_status_val_id").val();
+if(getHdnSelectThemeSessionVal > 0)
+{
+    $("#select_theme_div").hide();
+}
+
+});
+
+/*function applyMerchantTheme(cateId,themeId)
+{
+    alert("cat id::"+cateId+":: theme id::"+themeId);
+    modal.style.display = "none";
+    //$("#themeModal").modal('hide');
+    $.ajax({
+            method: "POST",
+            data: {'cateId': cateId, 'themeId': themeId},
+            url: "<?php echo route('admin.home.applyMerchantTheme'); ?>",
+            success: function (response) {
+                alert(response);
+                if (response.status == '1' ) {
+                    window.location.href = 'admin.home.view';
+                } 
+            },
+            error: function (e) {
+                console.log(e.responseText);
+            }
+            
+        })
+        return false;  
+}*/
 </script>
 
 @stop

@@ -264,9 +264,9 @@ function renderNode($node, $category, $reqCat = null)
                         <div class="col-sm-10 col-sm-offset-2">
                             {!! Form::hidden('return_url',null,['class'=>'rtUrl']) !!}
                             <div class="form-group col-sm-12 ">
-                                {!! Form::button('Save & Exit',["class" => "btn btn-primary pull-right saveCatExit mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
-                                {!! Form::button('Save & Continue',["class" => "btn btn-primary pull-right saveCatContine mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
-                                {!! Form::button('Save & Next',["class" => "btn btn-primary pull-right saveCatNext mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
+                                {!! Form::button('Save & Exit',["class" => "btn btn-primary pull-right saveCatExit mobileSpecialfullBTN"]) !!}
+                                {!! Form::button('Save & Continue',["class" => "btn btn-primary pull-right saveCatContine mobileSpecialfullBTN", "style"=>"margin-right:10px"]) !!}
+                                {!! Form::button('Save & Next',["class" => "btn btn-primary pull-right saveCatNext mobileSpecialfullBTN", "style"=>"margin-right:10px"]) !!}
 
                             </div>
                         </div>
