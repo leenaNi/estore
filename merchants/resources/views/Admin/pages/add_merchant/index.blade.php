@@ -4,6 +4,17 @@
 @stop
 
 @section('content')
+<style>
+.successMsgDiv{
+    color:green;
+}
+div#merchantDetailDiv .info-box {
+    padding: 15px;
+    border: 1px solid #f2f2f2;
+    border-radius: 4px;
+    box-shadow: none;
+}
+    </style>
 <section class="content-header">
     <h1>
         Add Merchant
@@ -42,7 +53,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-md-3 noAll-padding" style="display: none;" id="merchantDetailDiv">
+                <div class="col-md-3" style="display: none;" id="merchantDetailDiv">
                     <div class="filter-right-section">
                         <div class="clearfix">
                             <div class="info-box">
@@ -59,7 +70,7 @@
                                         <input type="hidden" id="hdnMerchantId" name="hdnMerchantId" value="">
                                         <input type="hidden" id="hdnStoreIdForNotification" name="hdnStoreIdForNotification" value="">
                                         <input type="hidden" id="hdnCountryCode" name="hdnCountryCode" value="">
-                                        <button type="submit">Connect</button>
+                                        <button type="submit" class="btn btn-primary noAll-margin">Connect</button>
                                     {{-- @else
                                         <label> No merchant found.</label>
                                     @endif --}}

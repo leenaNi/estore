@@ -98,7 +98,7 @@ class OrdersController extends Controller
         $payment_stuatus = PaymentStatus::all();
         if($loggedInUserName != 'admin')
         {
-            $orders = $orders->where("orders.user_id", $loggedInUserId);
+            $orders = $orders->where("orders.created_by", $loggedInUserId);
         }
         if (!empty(Input::get('order_ids'))) {
             $mulIds = explode(",", Input::get('order_ids'));
