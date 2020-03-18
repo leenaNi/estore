@@ -773,13 +773,13 @@ class ApiCartController extends Controller
                 if($cItem->id == $prod_id){
                     if($cItem->options->sub_prod && ($cItem->options->sub_prod == $sub_prod)){
                         $rowId = $cItem->rowId;
-                        
+                    break;
                     }else{
                         $rowId = $cItem->rowId;
                     }
-                    Cart::instance('shopping')->remove($rowId);
+                    
                 }
-            }
+            }Cart::instance('shopping')->remove($rowId);
             if(Cart::instance("shopping")->count() != 0){
                 $user->cart = json_encode($cartData);
             } else {
