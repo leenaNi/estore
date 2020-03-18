@@ -121,6 +121,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/cal-aditional-charge', ['as' => 'admin.apiorder.calAditionalCharge', 'uses' => 'ApiOrderController@calAditionalCharge']);
 
             Route::post('/place-distributor-order', ["as" => "admin.apiDistOrder", "uses" => "ApiDistributorOrderController@placeOrder"]);
+            Route::any('/order-details', ["as" => "admin.orderDetails", "uses" => "ApiDistributorOrderController@orderDetails"]);
+            Route::any('/product-details', ["as" => "admin.productDetails", "uses" => "ApiDistributorOrderController@productDetails"]);
 
         });
 
@@ -254,7 +256,6 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/my-orders-details', ["as" => "admin.distributor.myOrderDetails", "uses" => "ApiDistributorController@getMyOrderDetails"]);
             Route::post('/favourite-distributor', ["as" => "admin.distributor.favourite", "uses" => "ApiDistributorController@addFavouriteDistributor"]);
             Route::post('/distributor-reorder', ["as" => "admin.distributor.reorder", "uses" => "ApiDistributorOrderController@reOrder"]);
-
         });
 
         Route::group(['prefix' => 'cart'], function () {

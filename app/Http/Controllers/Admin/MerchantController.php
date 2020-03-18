@@ -30,7 +30,11 @@ class MerchantController extends Controller
         foreach ($allBanks as $allB) {
             $bank[$allB->id] = $allB->name;
         }
-        $userMerchant = User::where('id', Session::get('authUserId'))->first()->store()->first();
+        $userMerchant = User::where('id', Session::get('authUserId'))->first();
+        if ($userMerchant != null) {
+            $userMerchant = $userMerchant->store()->first();
+        }
+
         if (Auth::guard('vswipe-users-web-guard')->check() !== false) {
             $merchants = Merchant::orderBy('id', 'desc');
         } else if (Auth::guard('bank-users-web-guard')->check() !== false) {
@@ -39,9 +43,9 @@ class MerchantController extends Controller
                 $q->where("bank_id", $bkid);
             })->orderBy('id', 'desc');
         } else if (Auth::guard('merchant-users-web-guard')->check() !== false) {
-            $merchants = Merchant::orderBy('id', 'desc')->where("id", $userMerchant->merchant_id);
+            $merchants = Merchant::orderBy('id', 'desc')->where("id", @$userMerchant->merchant_id);
         } else if (array_key_exists('token', $headers)) {
-            $merchants = Merchant::orderBy('id', 'desc')->where("id", $userMerchant->merchant_id);
+            $merchants = Merchant::orderBy('id', 'desc')->where("id", @$userMerchant->merchant_id);
         }
 
         $search = Input::get('search');

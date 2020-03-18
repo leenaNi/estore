@@ -188,7 +188,7 @@ echo "<ul id='catTree' class='tree icheck'>";
 foreach ($roots as $root)
 //echo $root."||||||".$category;
 {
-    renderNode($root, $category, $reqCat);
+    renderNode($root, $category, @$reqCat);
 }
 
 echo "</ul>";
@@ -214,7 +214,7 @@ function renderNode($node, $category, $reqCat = null)
     echo "<li class='tree-item fl_left ps_relative_li'>";
     echo '<div class="checkbox">
     <label class="i-checks checks-sm text-left ' . $classStyle . ' ' . $parentClassStyle . '" id="li_' . $node->id . '">
-    <input type="checkbox" class="parent-cat" id="cat-'.$node->id.'" name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/>
+    <input type="checkbox" class="parent-cat" id="cat-' . $node->id . '" name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/>
     ' . $node->category . '</label>
     </div>';
     if ($node->children()->count() > 0) {
@@ -264,9 +264,9 @@ function renderNode($node, $category, $reqCat = null)
                         <div class="col-sm-10 col-sm-offset-2">
                             {!! Form::hidden('return_url',null,['class'=>'rtUrl']) !!}
                             <div class="form-group col-sm-12 ">
-                                {!! Form::button('Save & Exit',["class" => "btn btn-primary pull-right saveCatExit mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
-                                {!! Form::button('Save & Continue',["class" => "btn btn-primary pull-right saveCatContine mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
-                                {!! Form::button('Save & Next',["class" => "btn btn-primary pull-right saveCatNext mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
+                                {!! Form::button('Save & Exit',["class" => "btn btn-primary pull-right saveCatExit mobileSpecialfullBTN"]) !!}
+                                {!! Form::button('Save & Continue',["class" => "btn btn-primary pull-right saveCatContine mobileSpecialfullBTN", "style"=>"margin-right:10px"]) !!}
+                                {!! Form::button('Save & Next',["class" => "btn btn-primary pull-right saveCatNext mobileSpecialfullBTN", "style"=>"margin-right:10px"]) !!}
 
                             </div>
                         </div>
