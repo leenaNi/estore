@@ -30,17 +30,17 @@
   <div class="notification-column">
     <div class="alert alert-danger" role="alert" id="errorMsgDiv" style="display: none;"></div>
     <div class="alert alert-success" role="alert" id="successMsgDiv" style="display: none;"></div> 
-      {{-- @if(!empty(Session::get('message')))
+       @if((Session::get('message')))
         <div class="alert alert-danger" role="alert">
         {{ Session::get('message') }}
         </div>
         @endif
-        @if(!empty(Session::get('msg')))
+        @if((Session::get('msg')))
         <div class="alert alert-success" role="alert">
         {{Session::get('msg')}}
         </div>
-        @endif --}}
-  </div> 
+        @endif 
+        </div> 
   <div class="col-md-9 noLeft-padding">
     <div class="grid-content">
         <div class="section-main-heading">

@@ -770,4 +770,64 @@ class TableController extends Controller {
         return $data;
     }
 
+    public function changeOccupancyStatus($oStatus)
+    {
+        if (Input::get("orderId")) {
+            $order = Order::find(Input::get("orderId"));
+            if ($order->otype == 1) {
+                $table = Table::find($order->table_id);
+                $table->ostatus = $oStatus;
+                $table->update();
+                Session::flash("msg", 'Table status updated successfully.');
+                return ['status' => 1, 'msg' => "Table status updated successfully."];
+            } else {
+                $order->order_status = 3;
+                $order->update();
+                $statusHistory = ['order_id' => $order->id, 'status_id' => 3, 'remark' => 'Table order completed', 'notify' => 0, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
+                OrderStatusHistory::insert($statusHistory);
+                Session::flash("msg", '');
+                return ['status' => 1, 'msg' => ""];
+            }
+        } else if (Input::get("tableid")) {
+            $order = Order::where('table_id', Input::get("tableid"))->first();
+            $order->order_status = 3;
+            $order->update();
+            $statusHistory = ['order_id' => $order->id, 'status_id' => 3, 'remark' => 'Table order completed', 'notify' => 0, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
+            OrderStatusHistory::insert($statusHistory);
+            $table = Table::find($order->table_id);
+            $table->ostatus = $oStatus;
+            $table->update();
+            Session::flash("msg", 'Table status updated successfully.');
+            return ['status' => 1, 'msg' => "Table status updated successfully."];
+        } else {
+            Session::flash("message", 'Oops something went wrong.');
+            return ['status' => 0, 'msg' => "Oops something went wrong."];
+        }
+    }
+
+    public function getSearchData()
+    {
+        $searchStr = Input::get('term');
+        $products = DB::table('products')
+            ->select('products.id', 'products.product', 'products.selling_price', 'categories.category', 'categories.url_key as cat_url')
+            ->leftJoin('has_categories', 'products.id', 'has_categories.prod_id')
+            ->leftJoin('categories', 'categories.id', '=', 'has_categories.cat_id')
+            ->where("products.is_individual", 1)->where('products.status', 1)
+            ->where('products.product', "like", "%" . $searchStr . "%")
+            ->orWhere('products.id', "like", "%" . $searchStr . "%")
+            ->get();
+
+        // $data = [];
+        // foreach ($products as $k => $prd) {
+        //     if (!in_array($prd->id, $added_prod)) {
+        //         $data[$k]['id'] = $prd->id;
+        //         $data[$k]['value'] = $prd->product;
+        //         $data[$k]['label'] = "[" . $prd->id . "]" . $prd->product;
+        //     }
+        // }
+
+        return $products;
+    }
+
+
 }
