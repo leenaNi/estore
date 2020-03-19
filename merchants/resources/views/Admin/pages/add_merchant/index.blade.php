@@ -28,7 +28,13 @@ div#merchantDetailDiv .info-box {
     <div class="notification-column">
         <div class="alert alert-danger" role="alert" id="errorMsgDiv" style="display: none;"></div>
         <div class="alert alert-success" role="alert" id="successMsgDiv" style="display: none;"></div>
-        <label class="error" id="sendRequestErorr">{{$sendRequestError}}</label>
+        @if(Session::get('sendRequestMsg'))
+        <div class="alert alert-success" role="alert">{{Session::get('sendRequestMsg')}}</div>
+        @endif
+        @if(Session::get('sendRequestErrMsg'))
+        <div class="alert alert-danger" role="alert">{{Session::get('sendRequestErrMsg')}}</div>
+        @endif
+        <!-- <label class="error" id="sendRequestErorr">{{$sendRequestError}}</label> -->
     </div>
     <div id="addMerchantDiv">
         <div class="grid-content">
@@ -36,16 +42,13 @@ div#merchantDetailDiv .info-box {
                 <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
             </div>
             <div class="filter-section">
-
                 <div class="col-md-12 noAll-padding">
                     <div class="filter-left-section">
-
                         <form  method="get" id="merchantCodeForm">
                             <div class="form-group col-md-8 col-sm-6 col-xs-12" id="inputDiv">
                                 <input type="text" name="merchantIdentityCode" id="merchantIdentityCode" value="{{isset($identityCode)?$identityCode:''}}" onkeypress="hideErrorMsg('errorLbl')" class="form-control medium pull-right " placeholder="Enter Merchant Code">
                                 <label class="error" id="errorLbl"></label>
                             </div>
-
                             <div class="form-group col-md-2 col-sm-3 col-xs-12">
                                 <button id="searchMerchant" class="btn btn-primary fullWidth noAll-margin" style="margin-left: 0px;">Search</button>
                             </div>
@@ -53,18 +56,16 @@ div#merchantDetailDiv .info-box {
                         </form>
                     </div>
                 </div>
-                <div class="col-md-3" style="display: none;" id="merchantDetailDiv">
+                <div class="col-md-6" style="display: none;" id="merchantDetailDiv">
                     <div class="filter-right-section">
                         <div class="clearfix">
                             <div class="info-box">
                                 <form action="{{ route('admin.vendors.send-notification') }}" method="post">
-
                                         <label>Business Name: </label> <span id="storeName"></span><br>
-                                        <label>Person Name: </label> <span id="firstname"></span><br>
-                                        <label>Email: </label> <span id="email"></span><br>
+                                        <!-- <label>Person Name: </label> <span id="firstname"></span><br> -->
+                                        <!-- <label>Email: </label> <span id="email"></span><br> -->
                                         <label>Mobile number: </label> <span id="phone"></span><br>
-                                        <label>Industry: </label> <span id="businessName"></span><br>
-
+                                        <!-- <label>Industry: </label> <span id="businessName"></span><br> -->
                                         <input type="hidden" id="hdnMerchantEmail" name="hdnMerchantEmail" value="">
                                         <input type="hidden" id="hdnMerchantPhone" name="hdnMerchantPhone" value="">
                                         <input type="hidden" id="hdnMerchantId" name="hdnMerchantId" value="">
@@ -115,11 +116,12 @@ $isApprovedVal = $data->is_approved;
 if ($isApprovedVal == 1) {
     $statusLabel = 'Approved';
     $linkLabel = 'Disapprove';
+    $iClass = "remove";
 } else {
     $statusLabel = 'Not Approved';
     $linkLabel = 'Approve';
+    $iClass = "check";
 }
-
 ?>
                         <tr>
                             <td  class="text-left">{{$i}}</td>
@@ -128,19 +130,22 @@ if ($isApprovedVal == 1) {
                             <td  class="text-right">{{$connectionData}}</td>
                             <td  class="text-center">
                                 <div class="actionCenter">
-                                <span><a class="btn-action-default" href=""><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> Ledger</a></span>
+                                <span><a class="btn-action-default" href="" title="Ledger"><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> </a></span>
                                 </div>
                             </td>
-
                             <td class="text-center" id="merchantStatus_{{$distributorId}}">{{$statusLabel}}</td>
-
                             <td class="text-center">
                                 <div class="actionCenter">
-                                    <span><a class="btn-action-default"  id="changeStatusLink_{{$distributorId}}" href="javascript:;" onClick="changeStatus({{$merchantId}}, {{$distributorId}}, {{$isApprovedVal}})">{{$linkLabel}}</a></span>
-                                </siv>
+                                <span class="dropdown">
+                                    <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+                                        <li><a id="changeStatusLink_{{$distributorId}}" href="javascript:;" onClick="changeStatus({{$merchantId}}, {{$distributorId}}, {{$isApprovedVal}})" title="{{$linkLabel}}"><!---<i class="fa fa-{{$iClass}}"></i>--->{{$linkLabel}}</a></li>
+                                    </ul>
+                                </span>
+                                </div>
                             </td>
-
-
                             <!-- <i class="fa fa-pencil-square-o fa-fw" title="Ledger"></i></td> -->
                         </tr>
                         @endforeach
@@ -149,14 +154,12 @@ if ($isApprovedVal == 1) {
                             <td> No records found.</td>
                         </tr>
                     @endif
-
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </section>
-
 <div class="clearfix"></div>
 @stop
 @section('myscripts')
@@ -192,7 +195,7 @@ if ($isApprovedVal == 1) {
                             $("#firstname").html(parsedRegistrationDtaa['firstname']);
                             $("#email").html(parsedRegistrationDtaa['email']);
                             $("#phone").html(parsedRegistrationDtaa['phone']);
-                            $("#businessName").html(parsedRegistrationDtaa['business_name']);
+                            // $("#businessName").html(parsedRegistrationDtaa['business_name']);
                             $("#hdnMerchantEmail").val(data['merchantData']['email']);
                             $("#hdnMerchantPhone").val(data['merchantData']['phone']);
                             $("#hdnMerchantId").val(data['merchantId']);
