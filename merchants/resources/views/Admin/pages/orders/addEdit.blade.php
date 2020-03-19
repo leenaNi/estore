@@ -463,22 +463,29 @@
                                 <td>{{ $prd->product }}</td>
                                 @if($prd->prod_type == 3)
                                 <?php
-                                $parentid = App\Models\Product::find($prd->sub_prod_id)->parent_prod_id;
-                                $getSubprods = App\Models\Product::find($parentid)->subproducts()->get();
                                 $configPrds = [];
-                                foreach ($getSubprods as $subp) {
-                                    $nameProd = explode("Variant", $subp->product, 2);
-                                    $filtered_words = array(
-                                        '(',
-                                        ')',
-                                        'frames',
-                                        'posters',
-                                    );
-                                    $gap = '';
+                                if($prd->sub_prod_id != '')
+                                {
+                                    echo "inside if";
+                                    exit;
+                                    $parentid = App\Models\Product::find($prd->sub_prod_id)->parent_prod_id;
+                                    $getSubprods = App\Models\Product::find($parentid)->subproducts()->get();
+                                    
+                                    foreach ($getSubprods as $subp) {
+                                        $nameProd = explode("Variant", $subp->product, 2);
+                                        $filtered_words = array(
+                                            '(',
+                                            ')',
+                                            'frames',
+                                            'posters',
+                                        );
+                                        $gap = '';
 
-                                    $prodSize = str_replace($filtered_words, $gap, $nameProd[1]);
-                                    $configPrds[$subp->id] = $prodSize;
+                                        $prodSize = str_replace($filtered_words, $gap, $nameProd[1]);
+                                        $configPrds[$subp->id] = $prodSize;
+                                    }
                                 }
+                                
                                 ?>
                                 <td>
                                     {{ Form::select("cartdata[".$i."][".$prd->id."][subprd]",$configPrds,$prd->sub_prod_id,['class'=>'form-control selConfigProd addPrdVar']) }}
@@ -490,7 +497,11 @@
                                 // foreach ($cmb as $combos) {
                                 //     $comboSub[App\Models\Product::find($combos)->parent_prod_id] = $combos;
                                 // }
-                                    $comboSub[App\Models\Product::find($prd->sub_prod_id)->parent_prod_id] = $prd->sub_prod_id;
+                                if($prd->sub_prod_id != '')
+                                {
+                                    $comboSub[App\Models\Product::find($prd->sub_prod_id)->parent_prod_id] = $prd->sub_prod_id;    
+                                }
+                                    
                                 ?>
                                 <td>
                                     <?php
