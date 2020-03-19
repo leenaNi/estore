@@ -13,20 +13,15 @@ use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\PaymentMethod;
 use App\Models\PaymentStatus;
-use App\Models\GeneralSetting;
-use App\Models\ProductType;
-use App\Models\AttributeSet;
-use App\Models\Merchant;
-use App\Models\hasDistributor;
 use App\Models\User;
-use Hash;
+use Auth;
 use Config;
+use Crypt;
 use DB;
+use Hash;
 use Input;
 use Route;
 use Session;
-use Auth;
-use Crypt;
 
 class VendorsController extends Controller
 {
@@ -323,23 +318,18 @@ class VendorsController extends Controller
         $startIndex = 1;
         $getPerPageRecord = Config('constants.paginateNo');
         $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
+        if (!empty($allinput) && !empty(Input::get('page'))) {
             $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+            $startIndex = ((($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex + $getPerPageRecord) - 1);
 
-            if($endIndex > $orderCount)
-            {
+            if ($endIndex > $orderCount) {
                 $endIndex = ($orderCount);
             }
-        }
-        else
-        {
+        } else {
             $startIndex = 1;
             $endIndex = $getPerPageRecord;
-            if($endIndex > $orderCount)
-            {
+            if ($endIndex > $orderCount) {
                 $endIndex = ($orderCount);
             }
         }
@@ -379,23 +369,18 @@ class VendorsController extends Controller
         $startIndex = 1;
         $getPerPageRecord = Config('constants.paginateNo');
         $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
+        if (!empty($allinput) && !empty(Input::get('page'))) {
             $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+            $startIndex = ((($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex + $getPerPageRecord) - 1);
 
-            if($endIndex > $prodCount)
-            {
+            if ($endIndex > $prodCount) {
                 $endIndex = ($prodCount);
             }
-        }
-        else
-        {
+        } else {
             $startIndex = 1;
             $endIndex = $getPerPageRecord;
-            if($endIndex > $prodCount)
-            {
+            if ($endIndex > $prodCount) {
                 $endIndex = ($prodCount);
             }
         }
@@ -527,8 +512,7 @@ class VendorsController extends Controller
     {
         $allinput = Input::all();
         $getSearchKeywordVal = '';
-        if(!empty($allinput) && !empty(Input::get('merchant_search_keyword')))
-        {
+        if (!empty($allinput) && !empty(Input::get('merchant_search_keyword'))) {
             $getSearchKeywordVal = $allinput['merchant_search_keyword'];
         }
 
@@ -544,32 +528,28 @@ class VendorsController extends Controller
 
         $viewname = Config('constants.adminAddMerchantView') . '.all_merchant';
         //DB::enableQueryLog(); // Enable query log
-        if($getSearchKeywordVal != '')
-        {
+        if ($getSearchKeywordVal != '') {
             $merchantListingResult = DB::table('has_distributors as hd')
-            ->select(['hd.distributor_id','hd.is_approved','m.id as merchant_id','m.company_name','m.phone','hd.updated_at'])
-            ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
-            ->where("m.company_name", "like","%". $getSearchKeywordVal . "%")
-            ->orWhere('m.phone', 'like', '%' . $getSearchKeywordVal . '%')
-            ->where([["hd.distributor_id", $distributorId],["hd.is_approved", 1]])
-            ->paginate(Config('constants.paginateNo'));
+                ->select(['hd.distributor_id', 'hd.is_approved', 'm.id as merchant_id', 'm.company_name', 'm.phone', 'hd.updated_at'])
+                ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
+                ->where("m.company_name", "like", "%" . $getSearchKeywordVal . "%")
+                ->orWhere('m.phone', 'like', '%' . $getSearchKeywordVal . '%')
+                ->where([["hd.distributor_id", $distributorId], ["hd.is_approved", 1]])
+                ->paginate(Config('constants.paginateNo'));
             //->get();
             //dd(DB::getQueryLog()); // Show results of log
-        }
-        else
-        {
+        } else {
             $merchantListingResult = DB::table('has_distributors as hd')
-            ->select(['hd.distributor_id','hd.is_approved','m.id as merchant_id','m.company_name','m.phone','hd.updated_at'])
-            ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
-            ->where([["hd.distributor_id", $distributorId],["hd.is_approved", 1]])
-            ->paginate(Config('constants.paginateNo'));
+                ->select(['hd.distributor_id', 'hd.is_approved', 'm.id as merchant_id', 'm.company_name', 'm.phone', 'hd.updated_at'])
+                ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
+                ->where([["hd.distributor_id", $distributorId], ["hd.is_approved", 1]])
+                ->paginate(Config('constants.paginateNo'));
             //->get();
         }
-        
-        
+
         $merchantIds = [];
         $merchantListingData = [];
-        $i=0;
+        $i = 0;
         foreach ($merchantListingResult as $allMerchantsData) {
             //array_push($merchantIds, $allMerchantsData->merchant_id);
             $merchhantBusinessName = $allMerchantsData->company_name;
@@ -577,30 +557,26 @@ class VendorsController extends Controller
             $merchantStoreIds = [];
             $merchantId = $allMerchantsData->merchant_id;
             $merchantStores = DB::table('stores')->where('store_type', 'LIKE', 'merchant')->where('merchant_id', $merchantId)->get(['id']);
-            foreach($merchantStores as $getStoreId)
-            {
+            foreach ($merchantStores as $getStoreId) {
                 $merchantStoreId = $getStoreId->id;
                 array_push($merchantStoreIds, $merchantStoreId);
                 //get Orders count with the using of store id
                 $selects = array(
                     'count(id) as orders_count',
-                    'SUM(order_amt) as TotalOrderAmt'
+                    'SUM(order_amt) as TotalOrderAmt',
                 );
                 $orders = DB::table('orders')
-                ->selectRaw(implode(',', $selects))
-                ->where("order_status", "!=", 0)
-                ->where('store_id', $merchantStoreId)
-                ->where('order_type', 0)
-                ->groupBy('store_id')
-                ->get();
-                
-                if(count($orders) > 0)
-                {
+                    ->selectRaw(implode(',', $selects))
+                    ->where("order_status", "!=", 0)
+                    ->where('store_id', $merchantStoreId)
+                    ->where('order_type', 0)
+                    ->groupBy('store_id')
+                    ->get();
+
+                if (count($orders) > 0) {
                     $orderCount = $orders[0]->orders_count;
                     $orderAmount = $orders[0]->TotalOrderAmt;
-                }
-                else
-                {
+                } else {
                     $orderCount = '-';
                     $orderAmount = '-';
                 }
@@ -621,43 +597,34 @@ class VendorsController extends Controller
         $startIndex = 1;
         $getPerPageRecord = Config('constants.paginateNo');
         $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
+        if (!empty($allinput) && !empty(Input::get('page'))) {
             $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+            $startIndex = ((($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex + $getPerPageRecord) - 1);
 
-            if($endIndex > $countofAllMerchant)
-            {
+            if ($endIndex > $countofAllMerchant) {
                 $endIndex = ($countofAllMerchant);
             }
-        }
-        else
-        {
+        } else {
             $startIndex = 1;
             $endIndex = $getPerPageRecord;
-            if($endIndex > $countofAllMerchant)
-            {
+            if ($endIndex > $countofAllMerchant) {
                 $endIndex = ($countofAllMerchant);
             }
         }
 
+        if (isset($merchantListingData) && !empty($merchantListingData)) {
+            $data = ['merchantListingResult' => $merchantListingResult, 'merchantListingData' => $merchantListingData, "storeId" => $merchantStoreIds, "sendRequestError" => Session::get('sendRequestMsg'), 'countofAllMerchant' => $countofAllMerchant, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
+        } else {
+            $data = ['error' => "No Merchant found", "storeId" => [], "merchantListingResult" => null, "countofAllMerchant" => 0, "sendRequestError" => Session::get('sendRequestMsg')];
+        }
 
-        if (isset($merchantListingData) && !empty($merchantListingData)) 
-        {
-            $data = ['merchantListingResult' => $merchantListingResult, 'merchantListingData' => $merchantListingData,"storeId"=>$merchantStoreIds,"sendRequestError" => Session::get('sendRequestMsg'), 'countofAllMerchant' => $countofAllMerchant,'startIndex' => $startIndex, 'endIndex' => $endIndex];
-        }
-        else 
-        {
-            $data = ['error' => "No Merchant found","storeId"=>$merchantStoreIds,"sendRequestError" => Session::get('sendRequestMsg')];
-        }
-        
-       
         return Helper::returnView($viewname, $data);
 
     }
 
     public function addMerchant() // Display view
+
     {
         $loggedInUserId = Session::get('loggedin_user_id');
         $loginUserType = Session::get('login_user_type');
@@ -672,19 +639,16 @@ class VendorsController extends Controller
         $viewname = Config('constants.adminAddMerchantView') . '.index';
 
         $merchantListingResult = DB::table('has_distributors as hd')
-        ->select(['hd.distributor_id','hd.merchant_id', 'hd.is_approved','m.register_details','hd.updated_at'])
-        ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
+            ->select(['hd.distributor_id', 'hd.merchant_id', 'hd.is_approved', 'm.register_details', 'hd.updated_at'])
+            ->join('merchants as m', 'hd.merchant_id', '=', 'm.id')
         //->where([["hd.distributor_id", $distributorId],['is_approved', '1']])
-        ->where([["hd.distributor_id", $distributorId]])
-        ->orderBy('hd.id','desc')->get();
-        
-        if (isset($merchantListingResult) && !empty($merchantListingResult)) 
-        {
-            $data = ['merchantListingData' => $merchantListingResult,"storeId"=>$storeId,"sendRequestError" => Session::get('sendRequestMsg')];
-        }
-        else 
-        {
-            $data = ['error' => "Invalid merchant code","storeId"=>$storeId,"sendRequestError" => Session::get('sendRequestMsg')];
+            ->where([["hd.distributor_id", $distributorId]])
+            ->orderBy('hd.id', 'desc')->get();
+
+        if (isset($merchantListingResult) && !empty($merchantListingResult)) {
+            $data = ['merchantListingData' => $merchantListingResult, "storeId" => $storeId, "sendRequestError" => Session::get('sendRequestMsg')];
+        } else {
+            $data = ['error' => "Invalid merchant code", "storeId" => $storeId, "sendRequestError" => Session::get('sendRequestMsg')];
         }
 
         return Helper::returnView($viewname, $data);
@@ -699,7 +663,6 @@ class VendorsController extends Controller
         $loginUserType = Session::get('login_user_type');
         $loginDistributorId = Session::get('merchantid');
         //echo "logged in distributor id::".$loginDistributorId;
-        
 
         $merchantIdentityCode = $allinput['merchantIdentityCode'];
         $storeId = $allinput['hdnStoreId'];
@@ -707,11 +670,11 @@ class VendorsController extends Controller
         // Get distributor id from store table
         $storeResult = DB::table('stores')->where("id", $storeId)->first();
         $distributorId = $storeResult->merchant_id;
-        
+
         // Get distributor industry id
         $distributorResult = DB::table('distributor')->where("id", $distributorId)->first();
         $decodedDistributorDetail = json_decode($distributorResult->register_details, true);
-        if(!empty($decodedDistributorDetail['business_type'])){
+        if (!empty($decodedDistributorDetail['business_type'])) {
             $distributorbusinessIdArray = $decodedDistributorDetail['business_type'];
         }
         if (!empty($merchantIdentityCode)) {
@@ -721,29 +684,25 @@ class VendorsController extends Controller
 
                 //Get merchant id from the merchantIdentity code
                 $merchantResultSet = DB::table('merchants')->where("identity_code", $allinput['merchantIdentityCode'])->first();
-                if(!empty($merchantResultSet))
-                {
+                if (!empty($merchantResultSet)) {
                     $getMerchantId = $merchantResultSet->id;
 
                 }
                 //echo "serach merchant id::".$getMerchantId;
                 $hasDistributorResultSet = DB::table('has_distributors')
-                                            ->where("distributor_id", $distributorId )
-                                            ->where("merchant_id", $getMerchantId)
-                                            ->first();
+                    ->where("distributor_id", $distributorId)
+                    ->where("merchant_id", $getMerchantId)
+                    ->first();
                 $isApprovedFlagVal = '';
-                if(!empty($hasDistributorResultSet))
-                {
+                if (!empty($hasDistributorResultSet)) {
                     $data = ['status' => 3, 'error' => "Merchant already added"];
-                }
-                else
-                {
+                } else {
                     $data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
                 }
                 // $decodedMerchantDetail = json_decode($merchantResult->register_details);
                 // $merchantbussinessId = $decodedMerchantDetail->business_type[0];
                 // if (in_array($merchantbussinessId, $distributorbusinessIdArray)) {
-                    //$data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
+                //$data = ['status' => 1, 'merchantData' => $merchantResult, 'merchantId' => $merchantResult->id];
                 // } else {
                 //     $data = ['status' => 0, 'error' => "Industry not matched"];
                 // }
@@ -773,39 +732,38 @@ class VendorsController extends Controller
         $distributorId = $storeResult->merchant_id;
         $distributorStoreName = $storeResult->store_name;
 
-        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId,'is_approved'=>1,'raised_by'=>'distributor'];
+        $insertData = ["distributor_id" => $distributorId, "merchant_id" => $hdnMerchantId, 'is_approved' => 1, 'raised_by' => 'distributor'];
         $isInserted = DB::table('has_distributors')->insert($insertData);
 
         if ($isInserted) {
             $storeName = $distributorStoreName;
             $baseurl = str_replace("\\", "/", base_path());
-            $linkToConnect = route('admin.vendors.accept',['id' => Crypt::encrypt($isInserted)]);
+            $linkToConnect = route('admin.vendors.accept', ['id' => Crypt::encrypt($isInserted)]);
             //SMS
             //$msgOrderSucc = $storeName . " is trying to connect with you for business.";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
-            $msgOrderSucc = " Distributor added you";// Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
+            $msgOrderSucc = " Distributor added you"; // Click on below link, if you want to connect with distributor<a onclick='#'>Conenct</a>";
             Helper::sendsms($hdnMerchantPhone, $msgOrderSucc, $countryCode);
 
             //Email
             $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
             $sub = "Distributor request";
-        
+
             //$mailcontent = $storeName." is trying to connect with you for business. ";
             //$mailcontent .= "Click on below link, if you want to connect with distributor ".$linkToConnect;
-        
+
             /*if (!empty($hdnMerchantEmail)) {
-                Helper::withoutViewSendMail($hdnMerchantEmail, $sub, $mailcontent);
+            Helper::withoutViewSendMail($hdnMerchantEmail, $sub, $mailcontent);
             }*/
             Session::flash('sendRequestMsg', 'Your request successfully sent to the merchant.');
-            
+
         } // End if
-        else
-        {
-            Session::flash('sendRequestMsg', 'There is somthing wrong.');
+        else {
+            Session::flash('sendRequestErrMsg', 'There is somthing wrong.');
         }
         //return $this->addMerchant();
-       
+
         return redirect()->route('admin.vendors.addMerchant');
-       
+
     } // End sendNotificationToMerchant();
 
     public function isApprovedMerchant()
@@ -813,12 +771,11 @@ class VendorsController extends Controller
         $allinput = Input::all();
         $merchantId = $allinput['merchantId'];
         $distributorId = $allinput['distributorId'];
-        if(($merchantId > 0) && ($distributorId > 0))
-        {
+        if (($merchantId > 0) && ($distributorId > 0)) {
             $distributor = DB::table('has_distributors')
-                           ->where("merchant_id", $merchantId)
-                           ->where("distributor_id", $distributorId)
-                           ->first();
+                ->where("merchant_id", $merchantId)
+                ->where("distributor_id", $distributorId)
+                ->first();
             //$distributor = hasDistributor::find(Input::get('id'));
             if ($distributor->is_approved == 1) {
                 $isApproved = 0;
@@ -827,7 +784,7 @@ class VendorsController extends Controller
                     ->where('merchant_id', $merchantId)
                     ->where("distributor_id", $distributorId)
                     ->update(['is_approved' => $isApproved]);
-                
+
                 Session::flash("message", $msg);
 
                 //return redirect()->back()->with('message', $msg);
@@ -841,31 +798,26 @@ class VendorsController extends Controller
                 Session::flash("msg", $msg);
                 //return redirect()->back()->with('msg', $msg);
             }
-            $data = ['status' => '1', 'msg' => $msg];    
-        }
-        else
-        {
+            $data = ['status' => '1', 'msg' => $msg];
+        } else {
             $data = ['status' => '0', 'msg' => 'There is somthing wrong.'];
         }
         return $data;
     }
-
 
     //for SMS/mail purpose
     public function approveRequest()
     {
         $approvalId = Session::get('approval_id');
         //echo "approval id::".$approvalId;
-        if(isset($approvalId) && ($approvalId > 0))
-        {
+        if (isset($approvalId) && ($approvalId > 0)) {
             Session::forget('approval_id'); // Removes a specific session variable
-            
+
             $isUpdated = DB::table('has_distributors')
-            ->where('id', $approvalId)
-            ->update(array('is_approved' => 1));  // update the record in the DB. 
-            
-            if($isUpdated)
-            {
+                ->where('id', $approvalId)
+                ->update(array('is_approved' => 1)); // update the record in the DB.
+
+            if ($isUpdated) {
                 // Get distributor id from has_distributor
                 $hasDistributorResult = DB::table('has_distributors')->where("id", $approvalId)->first();
                 $merchantId = $hasDistributorResult->merchant_id;
@@ -877,15 +829,14 @@ class VendorsController extends Controller
                 $countryCode = $merchantResult->country_code;
 
                 //SMS
-                if(!empty($merchantPhoneNo))
-                {
+                if (!empty($merchantPhoneNo)) {
                     $massage = "Request accepted by distributor";
                     Helper::sendsms($merchantPhoneNo, $massage, $countryCode);
                 }
-                
+
             } // End isUpdated if
             return redirect()->route('admin.vendors.addMerchant');
         } // End if here
-    } // ENd approveRequest() 
-    
+    } // ENd approveRequest()
+
 }
