@@ -239,8 +239,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/get-occupied-table-order', array('as' => 'admin.tableOccupiedOrder', 'uses' => 'TableController@tableOccupiedOrder'));
             Route::any('/get-orderBill/{id?}', array('as' => 'admin.order.getbill', 'uses' => 'TableController@tableOccupiedOrderBill'));
             Route::any('/get-cart-amount', array('as' => 'admin.getCartAmt', 'uses' => 'TableController@getCartAmt'));
-
             Route::any('/delete-kot-prods', array('as' => 'admin.order.deleteKotProds', 'uses' => 'TableController@deleteKotProds'));
+            Route::post('/change-occupancy-status/{id?}', array('as' => 'admin.tables.changeOccupancyStatus', 'uses' => 'TableController@changeOccupancyStatus'));
         });
 
         Route::group(['prefix' => 'orders', 'middlewareGroups' => ['CheckUser', 'web']], function () {

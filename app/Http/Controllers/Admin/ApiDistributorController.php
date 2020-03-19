@@ -20,22 +20,15 @@ class ApiDistributorController extends Controller
         if (!empty(Session::get("merchantId"))) {
             $searchKeyWord = Input::get("searchKey");
             $merchantId = Session::get("merchantId");
-
             $storeIdsResult = $this->getStoreId($merchantId);
             
-            //echo "<pre>";
-            //print_r($storeIdsResult);
-            //exit;
             $storeIdWithDistributorId = array();
-            $i = 0;
+            $i = 0;$temp = 0;
             foreach ($storeIdsResult as $storeIdsData) {
                 $storeId = $storeIdsData->id;
-                //$storeIdWithDistributorId[$storeIdsData->id]['merchant_id'] = $storeIdsData->merchant_id;
-                //$storeIdWithDistributorId[$storeIdsData->id]['store_name'] = $storeIdsData->store_name;
-                //echo "store id::".$storeId;
                 $storeIdWithDistributorId[$i]['store_id'] = $storeIdsData->id;
                 $storeIdWithDistributorId[$i]['store_name'] = $storeIdsData->store_name;
-
+                
                 if($searchKeyWord != '')
                 {
                     //get store wise products
@@ -47,7 +40,10 @@ class ApiDistributorController extends Controller
                     ->where('p.parent_prod_id',0)
                     ->orderBy('p.store_id', 'ASC')
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
-                
+                    
+                    if(count($productResult) > 0){
+                        $temp++;
+                    }
                 }
                 else
                 {
@@ -60,12 +56,16 @@ class ApiDistributorController extends Controller
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
                 
                 }
+                
+                if($temp == 0){
+                    return response()->json(["status" => 2, 'msg' => 'Product not found']);
+                }
                 //echo "<pre>";print_r($productResult);//exit;
+                //dD(count($productResult));
                 $j = 0;
                 $totalOfferOfAllProduct = 0;
                 if(count($productResult) > 0)
                 {
-                    //echo "if";
                     foreach ($productResult as $getProductData) {
                         $storeId = $getProductData->store_id;
                         $productId = $getProductData->id;
@@ -172,6 +172,7 @@ class ApiDistributorController extends Controller
                         
                     }
                     $storeIdWithDistributorId[$i]['offer_count'] = $totalOfferOfAllProduct;
+                    
                 }
                 $i++;
             } //store foreach ends here
@@ -192,7 +193,7 @@ class ApiDistributorController extends Controller
         if (!empty(Session::get("merchantId"))) {
             $searchKeyWord = Input::get("searchKey");
             $merchantId = Session::get("merchantId");
-
+            //dd($searchKeyWord);
             $storeIdsResult = $this->getStoreId($merchantId);
 
             $storeIdArray = [];
@@ -202,15 +203,25 @@ class ApiDistributorController extends Controller
             //echo "<pre>";print_r($storeIdArray);exit;
             $productResult = DB::table('products as p')
                 ->join('stores as s', 'p.store_id', '=', 's.id')
+                ->join('distributor as d', 'd.id', '=', 's.merchant_id')
                 ->whereIn('p.store_id', $storeIdArray)
                 ->where(['p.status' => 1, 'p.is_del' => 0])
                 ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
                 ->groupBy('p.store_id')
                 ->get(['s.id', 'p.store_id', 's.store_name']);
 
-            //echo "<pre>";
-            //print_r($productResult);
-            if (count($productResult) > 0) {
+            if (count($productResult) == 0) {
+                $productResult = DB::table('products as p')
+                ->join('stores as s', 'p.store_id', '=', 's.id')
+                ->join('distributor as d', 'd.id', '=', 's.merchant_id')
+                ->whereIn('p.store_id', $storeIdArray)
+                ->where(['p.status' => 1, 'p.is_del' => 0])
+                ->where('d.business_name', 'LIKE', '%' . $searchKeyWord . '%')
+                ->groupBy('p.store_id')
+                ->get(['s.id', 'p.store_id', 's.store_name']);
+                
+            } 
+            if (count($productResult) > 0){
                 $storeArray = [];
                 $i = 0;
                 foreach ($productResult as $getData) {
@@ -226,7 +237,7 @@ class ApiDistributorController extends Controller
                     $has_distributors = DB::table("has_distributors")->where(['distributor_id'=>$distributorId,'merchant_id'=>$merchantId])->first();
                     $is_favourite = 0;
                     if(!empty($has_distributors)){
-                       $is_favourite = $has_distributors->is_favourite; 
+                    $is_favourite = $has_distributors->is_favourite; 
                     }
                     $storeArray[$i]['is_favourite'] = $is_favourite;
 
@@ -248,7 +259,7 @@ class ApiDistributorController extends Controller
                     $i++;
                 }
                 return response()->json(["status" => 1, 'data' => $storeArray]);
-            } else {
+            }else{
                 return response()->json(["status" => 2, 'msg' => 'Product not found']);
             }
         } else {
