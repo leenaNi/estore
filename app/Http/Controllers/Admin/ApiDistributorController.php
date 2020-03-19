@@ -23,16 +23,10 @@ class ApiDistributorController extends Controller
 
             $storeIdsResult = $this->getStoreId($merchantId);
             
-            //echo "<pre>";
-            //print_r($storeIdsResult);
-            //exit;
             $storeIdWithDistributorId = array();
             $i = 0;
             foreach ($storeIdsResult as $storeIdsData) {
                 $storeId = $storeIdsData->id;
-                //$storeIdWithDistributorId[$storeIdsData->id]['merchant_id'] = $storeIdsData->merchant_id;
-                //$storeIdWithDistributorId[$storeIdsData->id]['store_name'] = $storeIdsData->store_name;
-                //echo "store id::".$storeId;
                 $storeIdWithDistributorId[$i]['store_id'] = $storeIdsData->id;
                 $storeIdWithDistributorId[$i]['store_name'] = $storeIdsData->store_name;
 
@@ -61,11 +55,11 @@ class ApiDistributorController extends Controller
                 
                 }
                 //echo "<pre>";print_r($productResult);//exit;
+                //dD(count($productResult));
                 $j = 0;
                 $totalOfferOfAllProduct = 0;
                 if(count($productResult) > 0)
                 {
-                    //echo "if";
                     foreach ($productResult as $getProductData) {
                         $storeId = $getProductData->store_id;
                         $productId = $getProductData->id;
@@ -172,6 +166,7 @@ class ApiDistributorController extends Controller
                         
                     }
                     $storeIdWithDistributorId[$i]['offer_count'] = $totalOfferOfAllProduct;
+                    
                 }
                 $i++;
             } //store foreach ends here
@@ -205,7 +200,7 @@ class ApiDistributorController extends Controller
                 ->join('distributor as d', 'd.id', '=', 's.merchant_id')
                 ->whereIn('p.store_id', $storeIdArray)
                 ->where(['p.status' => 1, 'p.is_del' => 0])
-                ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
+                //->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
                 ->orWhere('d.business_name', 'LIKE', '%' . $searchKeyWord . '%')
                 ->groupBy('p.store_id')
                 ->get(['s.id', 'p.store_id', 's.store_name']);
