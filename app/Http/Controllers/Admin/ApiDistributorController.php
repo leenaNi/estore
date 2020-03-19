@@ -201,7 +201,7 @@ class ApiDistributorController extends Controller
                 ->whereIn('p.store_id', $storeIdArray)
                 ->where(['p.status' => 1, 'p.is_del' => 0])
                 //->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
-                ->orWhere('d.business_name', 'LIKE', '%' . $searchKeyWord . '%')
+                ->Where('d.business_name', 'LIKE', '%' . $searchKeyWord . '%')
                 ->groupBy('p.store_id')
                 ->get(['s.id', 'p.store_id', 's.store_name']);
 
