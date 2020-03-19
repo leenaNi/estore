@@ -20,16 +20,15 @@ class ApiDistributorController extends Controller
         if (!empty(Session::get("merchantId"))) {
             $searchKeyWord = Input::get("searchKey");
             $merchantId = Session::get("merchantId");
-
             $storeIdsResult = $this->getStoreId($merchantId);
             
             $storeIdWithDistributorId = array();
-            $i = 0;
+            $i = 0;$temp = 0;
             foreach ($storeIdsResult as $storeIdsData) {
                 $storeId = $storeIdsData->id;
                 $storeIdWithDistributorId[$i]['store_id'] = $storeIdsData->id;
                 $storeIdWithDistributorId[$i]['store_name'] = $storeIdsData->store_name;
-
+                
                 if($searchKeyWord != '')
                 {
                     //get store wise products
@@ -41,7 +40,10 @@ class ApiDistributorController extends Controller
                     ->where('p.parent_prod_id',0)
                     ->orderBy('p.store_id', 'ASC')
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
-                
+                    
+                    if(count($productResult) > 0){
+                        $temp++;
+                    }
                 }
                 else
                 {
@@ -53,6 +55,10 @@ class ApiDistributorController extends Controller
                     ->orderBy('p.store_id', 'ASC')
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
                 
+                }
+                
+                if($temp == 0){
+                    return response()->json(["status" => 2, 'msg' => 'Product not found']);
                 }
                 //echo "<pre>";print_r($productResult);//exit;
                 //dD(count($productResult));
