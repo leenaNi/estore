@@ -200,14 +200,22 @@ class ApiDistributorController extends Controller
                 ->join('distributor as d', 'd.id', '=', 's.merchant_id')
                 ->whereIn('p.store_id', $storeIdArray)
                 ->where(['p.status' => 1, 'p.is_del' => 0])
-                //->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
-                ->Where('d.business_name', 'LIKE', '%' . $searchKeyWord . '%')
+                ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
                 ->groupBy('p.store_id')
                 ->get(['s.id', 'p.store_id', 's.store_name']);
 
-            //echo "<pre>";
-            //print_r($productResult);
-            if (count($productResult) > 0) {
+            if (count($productResult) == 0) {
+                $productResult = DB::table('products as p')
+                ->join('stores as s', 'p.store_id', '=', 's.id')
+                ->join('distributor as d', 'd.id', '=', 's.merchant_id')
+                ->whereIn('p.store_id', $storeIdArray)
+                ->where(['p.status' => 1, 'p.is_del' => 0])
+                ->where('d.business_name', 'LIKE', '%' . $searchKeyWord . '%')
+                ->groupBy('p.store_id')
+                ->get(['s.id', 'p.store_id', 's.store_name']);
+                
+            } 
+            if (count($productResult) > 0){
                 $storeArray = [];
                 $i = 0;
                 foreach ($productResult as $getData) {
@@ -223,7 +231,7 @@ class ApiDistributorController extends Controller
                     $has_distributors = DB::table("has_distributors")->where(['distributor_id'=>$distributorId,'merchant_id'=>$merchantId])->first();
                     $is_favourite = 0;
                     if(!empty($has_distributors)){
-                       $is_favourite = $has_distributors->is_favourite; 
+                    $is_favourite = $has_distributors->is_favourite; 
                     }
                     $storeArray[$i]['is_favourite'] = $is_favourite;
 
@@ -245,7 +253,7 @@ class ApiDistributorController extends Controller
                     $i++;
                 }
                 return response()->json(["status" => 1, 'data' => $storeArray]);
-            } else {
+            }else{
                 return response()->json(["status" => 2, 'msg' => 'Product not found']);
             }
         } else {
