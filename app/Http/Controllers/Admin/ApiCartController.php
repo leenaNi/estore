@@ -401,20 +401,20 @@ class ApiCartController extends Controller
                     
                         $getOfferProd = DB::table("offers_products")->where(['offer_id'=>$offerId,'type'=>1])->get();
                         
-                        foreach($getOfferProd as $product){
-                            $product = DB::table("products")->where('id',$product->prod_id)->first();
+                        foreach($getOfferProd as $prd){
+                            $product = DB::table("products")->where('id',$prd->prod_id)->first();
                             if(!empty($product)){
                                 if($product->prod_type==1 && $product->parent_prod_id==0){
-                                    $msg = $this->simpleProduct($product->id,$product->qty);
+                                    $msg = $this->simpleProduct($product->id,$prd->qty);
                                 }
                                 else if($product->prod_type==2){
-                                    $msg = $this->comboProduct($prod_id, $product->qty, $sub_prod);
+                                    $msg = $this->comboProduct($prod_id, $prd->qty, $sub_prod);
                                 }
                                 else if($product->prod_type==3 || $product->parent_prod_id!=0){  
-                                    $msg = $this->configProduct($product->parent_prod_id, $product->qty,$product->id);
+                                    $msg = $this->configProduct($product->parent_prod_id, $prd->qty,$product->id);
                                 }
                                 else if($product->prod_type==5){
-                                    $msg = $this->downloadProduct($product->id,$product->qty);
+                                    $msg = $this->downloadProduct($product->id,$prd->qty);
                                 }
                                 
                                 if ($msg == 1) {
