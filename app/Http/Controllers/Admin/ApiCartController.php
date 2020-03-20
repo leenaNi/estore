@@ -171,7 +171,7 @@ class ApiCartController extends Controller
                 $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();
             }else{ //offer add to cart
                 //dd('dxcxvc');
-                $searchExist = Helper::searchExistingCart($sub_prod);
+                $searchExist = Helper::searchExistingCart($prod_id);
                 if ($searchExist["isExist"]) {
                     $proddata = Cart::instance('shopping')->get($searchExist["rowId"]);
                     if($proddata->options->offerId == 0){
@@ -203,17 +203,16 @@ class ApiCartController extends Controller
                 }
             }
 
-            $offerId = $OfferProd->offer_id;
             if (!empty($offerDetails)) {
                 $discount = 0;
                 if ($offerDetails->type == 1) {
-                    $discount = 0;
                     if($offerDetails->offer_discount_type==1){
                         $discount = $price * ($offerDetails->offer_discount_value / 100);
                     }else if($offerDetails->offer_discount_type==2){
                         $discount = $offerDetails->offer_discount_value;
                     }
-                    $price = $price - $discount; 
+                    $offer_disc_amt = number_format((float)$discount * $quantity,2,'.','');
+                    //$price = $price - $offer_disc_amt; 
                     $qty = $OfferProd->qty;
                 }else if ($offerDetails->type == 2) {
                     return $this->addOfferProd($offerId);
