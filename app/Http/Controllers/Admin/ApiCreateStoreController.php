@@ -108,13 +108,15 @@ class ApiCreateStoreController extends Controller
         $storeName = Input::get('store_name');
         $phone = Input::get('phone');
         $roleType = Input::get('roleType');
+        
         if ((!empty($roleType) && in_array($roleType, ['1', '2'])) && !empty($storeName) && !empty($phone)) {
             if (CustomValidator::validatePhone($phone)) {
                 $verifyOTP = $this->verifyOTP();
                 if ($verifyOTP) {
                     $checkStore = $this->checkStore();
                     if ($checkStore['status']) {
-                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : ($allinput['roleType'] == '2') ? 'distributor' : '';
+                        // $storeType = ($allinput['roleType'] == '1') ? 'merchant' : ($allinput['roleType'] == '2') ? 'distributor' : '';
+                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : 'distributor';
                         $settings = Settings::where('bank_id', 0)->first();
                         $country = Country::where("id", $settings->country_id)->get()->first();
                         $currency = Currency::where("id", $settings->currency_id)->get()->first();
