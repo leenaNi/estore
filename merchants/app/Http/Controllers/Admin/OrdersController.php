@@ -1868,9 +1868,16 @@ class OrdersController extends Controller
         $added_prod = [];
         if (count($cart_products) > 0) {
             foreach ($cart_products as $key => $product) {
-                if ($product['id'] == $product['options']['sub_prod']) {
+                if(array_key_exists("sub_prod",$product['options']))
+                {
+                    if ($product['id'] == $product['options']['sub_prod']) {
+                        $added_prod[] = $product['id'];
+                    }
+                }
+                else {
                     $added_prod[] = $product['id'];
                 }
+                
             }
         }
         $searchStr = Input::get('term');
@@ -1879,9 +1886,26 @@ class OrdersController extends Controller
         $data = [];
         foreach ($products as $k => $prd) {
             if (!in_array($prd->id, $added_prod)) {
+
+                $offersProduct = DB::table("offers_products")->where(['prod_id' => $prd->id, 'type' => 1])->first();
+                if (!empty($offersProduct)) {
+                    $offerData = DB::table("offers")->where('id', $offersProduct->offer_id)->first();
+                    $offer_name = $offerData->offer_name;
+                    $offer_id = $offerData->id;
+                } else {
+                    $offer_name = '';
+                    $offer_id = 0;
+                }
                 $data[$k]['id'] = $prd->id;
                 $data[$k]['value'] = $prd->product;
-                $data[$k]['label'] = "[" . $prd->id . "]" . $prd->product;
+                $data[$k]['type'] = $prd->prod_type;
+                $data[$k]['label'] = $offer_name . " [" . $prd->id . "]" . $prd->product;
+                $data[$k]['offer'] = $offer_id;
+
+                /*$data[$k]['id'] = $prd->id;
+                $data[$k]['value'] = $prd->product;
+                $data[$k]['label'] = "[" . $prd->id . "]" . $prd->product;*/
+                
             }
         }
 
@@ -1890,6 +1914,13 @@ class OrdersController extends Controller
 
     public function getSubProds()
     {
+        /*echo "<pre>";
+        print_r(Input::get('prodid'));
+        exit;*/
+        /*$subprods = Product::find(Input::get('prodid'))->subproducts()->where("status", 1)->get();
+        echo "<pre>";
+        print_r($subprods);
+        exit;*/
         return $subprods = Product::find(Input::get('prodid'))->subproducts()->where("status", 1)->get();
     }
 
@@ -1976,7 +2007,7 @@ class OrdersController extends Controller
     public function getProdPrice()
     {
         $qty = (Input::get('qty'))? Input::get('qty'): 1;
-
+        $offerid = Input::get('offerid');
         if (Input::get('pprd') == 1) {
             $pprod = Product::find(Input::get('parentprdid'));
             $price = ($pprod->selling_price != 0)? $pprod->selling_price: $pprod->price;
@@ -2000,15 +2031,89 @@ class OrdersController extends Controller
         } else {
             $total['tax'] = 0;
         }
-        $total['price'] = $sub_total * Session::get('currency_val');
 
+        $discount = 0;
+        if ($offerid != 0) {
+            //Session::put("offerid", $offerid);
+            $offerDetails = DB::table("offers")->where(['id' => $offerid])->first();
+            if (!empty($offerDetails)) {
+                $total['offerName'] = $offerDetails->offer_name;
+                $total['offerQty'] = $offerDetails->min_order_qty;
+                $total['offertype'] = $offerDetails->type;
+                if ($offerDetails->type == 1) {
+                    if($offerDetails->offer_discount_type==1){
+                        $discount = $sub_total * ($offerDetails->offer_discount_value / 100);
+                        $total['offer'] = number_format((float) $discount * Session::get('currency_val'), 2, '.', '') . ' (' . $offerDetails->offer_name . ')';
+                    }else if($offerDetails->offer_discount_type==2){
+                        $discount = $offerDetails->offer_discount_value;
+                        $total['offer'] = number_format((float) $discount * Session::get('currency_val'), 2, '.', '') . ' (' . $offerDetails->offer_name . ')';
+                    }
+                    
+                } else if ($offerDetails->type == 2) {
+                    $prodQty = DB::table("offers_products")->where(['offer_id' => $offerid, 'prod_id' => $pprod->id])->first();
+                    $total['offer'] = '(' . $offerDetails->offer_name . ')';
+                    if ($qty >= $prodQty->qty) {
+                        // dd($qty);
+                        $offer_product = DB::table("offers_products as op")->join('products as p', 'op.prod_id', '=', 'p.id')->select('op.qty', 'p.product', 'op.prod_id')->where(['op.type' => 2, 'op.offer_id' => $offerid])->get();
+                        if (count($offer_product) > 0) {
+                            $total['offerProdCount'] = count($offer_product);
+                            $prod = [];
+                            foreach ($offer_product as $offerprod) {
+                                $prod[] = '
+                            <tr class="delOfferRow">
+                                <td width="30%">
+                                    <input type="text" class="form-control prodSearch" placeholder="Search Product" value="' . addslashes($offerprod->product) . '" name="prod_search" data-prdid="' . $offerprod->prod_id . '" data-prdtype="1">
+                                </td>
+                                <td width="20%">
+                                </td>
+                                <td width="20%" >
+                                    <span class="prodQty"><input type="number" min="1" value="' . $offerprod->qty . '" class="qty form-control" name="" disabled></span>
+                                </td>
+                                <td width="20%">
+                                        <span class="prodUnitPrice">0</span>
+                                    </td>
+                                <td width="20%">
+                                    <span class="prodDiscount">0</span>
+                                </td>
+                                <td width="20%">
+                                    <span class="prodPrice">0</span>
+                                </td>
+                                <td width="5%" class="text-center">
+
+                                </td>
+                            </tr>
+                    ';
+                            }
+                            $total['offerProd'] = $prod;
+                        }
+                    }
+
+                }
+            }
+
+        }    
+
+
+        $totprice = $sub_total - $discount;
+        $total['price'] = number_format((float) $totprice * Session::get('currency_val'), 2, '.', '');
+        
+        $cart_amt = Helper::calAmtWithTax();
+        $total['cart'] = Cart::instance('shopping')->content()->toArray();
+        $total['subtotal'] = $cart_amt['sub_total'];
+        $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
+        $total['unitPrice'] = number_format((float) $price * Session::get('currency_val'), 2, '.', '');
+       
+
+        /*
+        $total['price'] = $sub_total * Session::get('currency_val');
         $cart_amt = Helper::calAmtWithTax();
 
         $total['cart'] = Cart::instance('shopping')->content()->toArray();
         //  $newAmnt = $cart_amt['total'] * Session::get('currency_val');
         $total['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
         $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
-        $total['unitPrice'] = $price * Session::get('currency_val');
+        $total['unitPrice'] = $price * Session::get('currency_val');*/
+
         return $total;
     }
 
