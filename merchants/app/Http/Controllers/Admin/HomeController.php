@@ -41,10 +41,14 @@ class HomeController extends Controller {
        
         $hostUrl = $_SERVER['HTTP_HOST'];
         $templateId = 0;
-        $allinput = json_decode(Merchants::find(Session::get('merchantid'))->register_details, true);
-        if(!empty($allinput) && (!empty($allinput['templateId'])) )
+        $loggedInUserType = session::get('login_user_type');
+        if($loggedInUserType == 1)//For merchants only
         {
-            $templateId = $allinput['templateId'];
+            $allinput = json_decode(Merchants::find(Session::get('merchantid'))->register_details, true);
+            if(!empty($allinput) && (!empty($allinput['templateId'])) )
+            {
+                $templateId = $allinput['templateId'];
+            }
         }
         
         $general_setting = GeneralSetting::where('is_question', 1)->where('is_active', 1)->where('name', '<>', 'set_popup')->orderBy('sort_order', 'DESC');
