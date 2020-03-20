@@ -107,6 +107,10 @@ Route::group(['namespace' => 'Admin'], function () {
 
         });
 
+        Route::group(['prefix' => 'category'], function () {
+            Route::get('/', ['as' => 'admin.categories.view', 'uses' => 'ApiCategoryController@index']);
+        });
+
         Route::group(['prefix' => 'order'], function () {
             Route::get('/', ['as' => 'admin.apiorder.view', 'uses' => 'ApiOrderController@index']);
             Route::post('/checkOut', ['as' => 'admin.apiorder.checkout', 'uses' => 'ApiOrderController@checkOut']);
