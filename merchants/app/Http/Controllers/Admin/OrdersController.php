@@ -263,9 +263,9 @@ class OrdersController extends Controller
                     ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
 
             $products = $prods;
-            //echo "<pre>";
-            //print_r($products);
-            //exit;
+            // echo "<pre>";
+            // print_r($products);
+            // exit;
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
             // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users',
@@ -276,7 +276,7 @@ class OrdersController extends Controller
             $products = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->first();
             $action = route("admin.orders.mallOrderSave");
             $viewname = Config('constants.adminOrderView') . '.addEditMall';
-             dd($products);
+            //  dd($products);
             $data = ['order' => $order, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones,
                 'products' => $products, 'courier' => $courier_status];
             return Helper::returnView($viewname, $data);
