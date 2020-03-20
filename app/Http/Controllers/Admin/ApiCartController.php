@@ -200,9 +200,11 @@ class ApiCartController extends Controller
                     Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                         "options" => $optionsData]);
                 } else {
-                    $newOfferedQty = ($searchExist['offer_qty']+$offer_qty);
-                    $optionsData['offer_qty'] = $newOfferedQty;
-                    $optionsData['offer_disc_amt'] = $offer_disc_amt * $newOfferedQty;
+                    if($searchExist['offer_qty']){
+                        $newOfferedQty = $searchExist['offer_qty']+$offer_qty;
+                        $optionsData['offer_qty'] = $newOfferedQty;
+                        $optionsData['offer_disc_amt'] = $offer_disc_amt * $newOfferedQty;
+                    }
                     Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
                 }
             } else {
@@ -239,6 +241,7 @@ class ApiCartController extends Controller
             $product = Product::find($prod->prod_id);
             $store = DB::table('stores')->where('id', $product->store_id)->first();
             $store_id = $store->id;
+            $store_name = $store->store_name;
             $prefix = $store->prefix;
             $quantity = $prod->qty;
 
@@ -278,7 +281,7 @@ class ApiCartController extends Controller
             if ($product->is_stock == 1 && $is_stockable->status == 1) {
                 if (Helper::checkStock($prod->prod_id, $quantity) == "In Stock") {
                     $searchExist = Helper::searchExistingCart($prod->prod_id);
-                    $optionsData = ["offerId"=>$offerId,"isOfferProduct"=>$isOfferProduct,"offer_qty"=>$offer_qty,"offer_disc_amt"=>$offer_disc_amt,"image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
+                    $optionsData = ["offerId"=>$offerId,"isOfferProduct"=>$isOfferProduct,"offer_qty"=>$offer_qty,"offer_disc_amt"=>$offer_disc_amt,"image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'store_name'=>$store_name, 'prefix' => $prefix,
                     'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                     "prod_type" => $prod_type,
                     "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt];
@@ -299,7 +302,7 @@ class ApiCartController extends Controller
                 }
             } else {
                 $searchExist = Helper::searchExistingCart($prod->prod_id);
-                $optionsData = ["offerId"=>$offerId,"isOfferProduct"=>$isOfferProduct,"offer_qty"=>$offer_qty,"offer_disc_amt"=>$offer_disc_amt,"image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix,
+                $optionsData = ["offerId"=>$offerId,"isOfferProduct"=>$isOfferProduct,"offer_qty"=>$offer_qty,"offer_disc_amt"=>$offer_disc_amt,"image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'store_name'=>$store_name, 'prefix' => $prefix,
                 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
                 "prod_type" => $prod_type,
                 "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt];
