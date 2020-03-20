@@ -632,8 +632,8 @@ $discReferalA = 0;
 
                             <div class="summry_col">
                             <?php
-                                $orderUser = DB::table('users')->where('id', $order->user_id)->first();
-                            ?>
+$orderUser = DB::table('users')->where('id', $order->user_id)->first();
+?>
                                 @if($feature['loyalty'] == 1)
                                 <h3>
                                     <span class="pull-left summry_title">Current Reward Points </span>&nbsp;&nbsp;<span class="currency-sym"></span>

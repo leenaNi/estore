@@ -39,13 +39,12 @@
             foreach(App\Models\StoreTheme::where("cat_id",$catID)->where("status",1)->get() as $theme)
             {
                 $themimg = ($theme->image)?$theme->image:'default-theme.png';
-                $imagePathUrl = $_SERVER['HTTP_HOST'].'/public/admin/themes/'.$themimg;
+                $serveHost = substr($_SERVER['HTTP_HOST'], (strpos($_SERVER['HTTP_HOST'], '.') + 1));
+                $imagePathUrl = "https://".$serveHost.'/public/admin/themes/'.$themimg;
                 $path = $basePathUrl.$themimg;
-                $themeVal = '/themes/'.strtolower($theme->name)."_home.php";
+                $themeVal = "https://" . $serveHost. '/themes/'.strtolower($theme->name)."_home.php";
                 $themeId = $theme->id;
                 $themeName = $theme->name;
-                
-             
                 $html .= '<article class="portfolio-item tab{{$c->id}} tab0">';
                 $html .= '<div class="portfolio-image port-img-outline">';
                 //$html .= '<img src="{{ asset('.$path.') }}" alt="'.$themeName.'">';
