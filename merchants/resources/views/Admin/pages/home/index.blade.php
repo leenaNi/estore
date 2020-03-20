@@ -102,6 +102,7 @@
                 </div>
 
                 <!--Select Theme Option start From here -->
+                @if(session::get('login_user_type') == 1)
                 @if($templateId == 0)
                 <div class="box box-solid marginBottom20" id="select_theme_div">
                     <div class="box-header with-border noleftBorder">
@@ -122,6 +123,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 @endif
                 <!--Select Theme Option Ends from here -->
 

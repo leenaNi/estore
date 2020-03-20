@@ -3177,7 +3177,6 @@ class DistributorOrdersController extends Controller
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-
         HasProducts::where("order_id", $orderId)->delete();
         foreach ($cartContent as $cart) {
             $product = DistributorProduct::find($cart->id);
@@ -3204,7 +3203,7 @@ class DistributorOrdersController extends Controller
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
+            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "sub_prod_id" => "", "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
                 'pay_amt' => $payamt, 'store_id' => Session::get('distributor_store_id'), 'prefix' => Session::get('distributor_store_prefix')];
             //            $market_place = Helper::generalSetting(35);
             //            if (isset($market_place) && $market_place->status == 1) {
@@ -3253,8 +3252,7 @@ class DistributorOrdersController extends Controller
                         $prd->stock = $prd->stock - $cart->qty;
                         if ($prd->is_stock == 1) {
                             $prd->update();
-                        };
-
+                        }
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             // $this->AdminStockAlert($prd->id);
                         }
@@ -3264,13 +3262,15 @@ class DistributorOrdersController extends Controller
                         if ($prd->is_stock == 1) {
                             $prd->update();
                         }
-
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             // $this->AdminStockAlert($prd->id);
                         }
                     }
                 }
                 $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ ".$cart->options->eNoOfDaysAllowed." days"));
+                $cart_ids[$cart->rowid]["product_details"] = '';
             } else {
                 $proddetailsp = [];
                 $prddataSp = DistributorProduct::find($cart->id);
