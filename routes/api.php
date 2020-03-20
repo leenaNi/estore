@@ -109,6 +109,7 @@ Route::group(['namespace' => 'Admin'], function () {
 
         Route::group(['prefix' => 'category'], function () {
             Route::get('/', ['as' => 'admin.categories.view', 'uses' => 'ApiCategoryController@index']);
+            Route::post('/requestnewcat', ['as' => 'admin.categories.reqcat', 'uses' => 'ApiCategoryController@requestNewCategory']);
         });
 
         Route::group(['prefix' => 'order'], function () {
