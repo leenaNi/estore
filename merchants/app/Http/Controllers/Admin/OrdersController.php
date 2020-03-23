@@ -1863,6 +1863,8 @@ class OrdersController extends Controller
 
     public function getSearchProds()
     {
+        $sessionStoreIdVal = Session::get('store_id');
+        //echo "session store val::".$sessionStoreIdVal;
         // hidding product which is already added
         $cart_products = Cart::instance('shopping')->content()->toArray();
         $added_prod = [];
@@ -1880,8 +1882,24 @@ class OrdersController extends Controller
                 
             }
         }
+        //echo "added product::";
+        //print_r($added_prod);
+        
+        //DB::enableQueryLog(); // Enable query log
         $searchStr = Input::get('term');
-        $products = Product::where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product']);
+        $products = Product::where('is_individual', 1)
+				->where('status', 1)
+				->where(function($query) use ($searchStr){
+                    $query->where('product', 'like', '%' . $searchStr . '%')
+                   ->orWhere('id', 'like', '%' . $searchStr . '%');
+				})
+                ->get();
+                
+        //$products = Product::where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product']);
+        //dd(DB::getQueryLog()); // Show results of log
+        //echo "<pre>:::::product:::";
+        //print_r($products );
+        //exit;
 
         $data = [];
         foreach ($products as $k => $prd) {
@@ -1914,6 +1932,8 @@ class OrdersController extends Controller
 
     public function getSubProds()
     {
+        $sessionValue = Session::all();
+        $sessionStoreIdVal = Session::get('store_id');
         /*echo "<pre>";
         print_r(Input::get('prodid'));
         exit;*/
@@ -1921,7 +1941,11 @@ class OrdersController extends Controller
         echo "<pre>";
         print_r($subprods);
         exit;*/
-        return $subprods = Product::find(Input::get('prodid'))->subproducts()->where("status", 1)->get();
+        return $subprods = Product::find(Input::get('prodid'))
+                            ->subproducts()
+                            ->where("status", 1)
+                            ->where("store_id", $sessionStoreIdVal)
+                            ->get();
     }
 
     public function saveCartData()
