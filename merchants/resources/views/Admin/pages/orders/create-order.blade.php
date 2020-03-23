@@ -215,10 +215,10 @@
                                             <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span>
                                         </td>
                                         <td width="20%">
-                                            <span class='offer_name'>0</span>
+                                            <span class='offer_name'>-</span>
                                         </td>
                                         <td width="20%">
-                                            <span class='qty'>0</span>
+                                            <span class='qty'>-</span>
                                         </td>
                                         <td width="20%">
                                             <span class='prodUnitPrice'>0</span>
@@ -415,10 +415,10 @@
                                         <span class='prodQty' style="display:none"><input type="number" min="1" value="1" name='cartData[prod_id][qty]' class='qty form-control'></span>
                                     </td>
                                     <td width="20%">
-                                        <span class='offer_name'>0</span>
+                                        <span class='offer_name'>-</span>
                                     </td>
                                     <td width="20%">
-                                        <span class='qty'>0</span>
+                                        <span class='qty'>-</span>
                                     </td>
                                     <td width="20%">
                                         <span class='prodUnitPrice'>0</span>
@@ -557,8 +557,27 @@ var prodoffer = 0;
                     prodSel.parent().parent().find('.prodUnitPrice').text(price.unitPrice);
                     prodSel.parent().parent().find('.prodDiscount').text(price.offer);
                     prodSel.parent().parent().find('.prodPrice').text(price.price);
-                    prodSel.parent().parent().find('.offer_name').text(price.offerName);
-                    prodSel.parent().parent().find('.qty').text(price.offerQty);
+                    if(typeof price.offerName === 'undefined')
+                    {
+                        prodSel.parent().parent().find('.offer_name').text('-');
+                        
+                    }
+                    else
+                    {
+                        prodSel.parent().parent().find('.offer_name').text(price.offerName);
+                    }
+
+                    if(typeof price.offerQty === 'undefined')
+                    {
+                        prodSel.parent().parent().find('.qty').text('-');
+                        
+                    }
+                    else
+                    {
+                        prodSel.parent().parent().find('.qty').text(price.offerQty);
+                    }
+                    
+                    
                     $(".subtotal").text(price.price);
                     $(".finalAmt").text(price.price);
                     $("#amountallSubtotal").text(price.price);
@@ -785,9 +804,6 @@ var prodoffer = 0;
             $('.subtotal').text(data.price);
             $(".finalAmt").text(data.price);
             
-                
-                
-              
 
             <?php if ($feature['tax'] == 1) {?>
                 subp.parent().parent().find('.taxAmt').text((data.tax).toFixed(2));
