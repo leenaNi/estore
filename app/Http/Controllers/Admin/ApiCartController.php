@@ -124,7 +124,7 @@ class ApiCartController extends Controller
         return $data;
     }
 
-    public function simpleProduct($prod_id, $quantity,$offerId='')
+    public function simpleProduct($prod_id, $quantity,$offerId=0)
     {
         $product = Product::find($prod_id);
         $store = DB::table('stores')->where('id', $product->store_id)->first();
@@ -166,7 +166,7 @@ class ApiCartController extends Controller
             // $offerDetails = DB::table("offers")->where(['id' => $OfferProd->offer_id])->whereDate('start_date', '>=', $date)->whereDate('end_date', '<=', $date)->first();
             $date = date('Y-m-d H:i:s');
             // single product add to cart
-            if($offerId == ''){
+            if($offerId == 0){
                 $offerId = $OfferProd->offer_id;
                 $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();
             }else{ //offer add to cart
@@ -312,7 +312,6 @@ class ApiCartController extends Controller
             }
             
             $isOfferProduct = 1;$offer_qty= $prod->qty;
-            //$offer_disc_amt = $price;
             $offer_disc_amt = $price;
 
             //create cart instance            
@@ -595,7 +594,7 @@ class ApiCartController extends Controller
         }
     }
 
-    public function configProduct($prod_id, $quantity, $sub_prod,$offerId='')
+    public function configProduct($prod_id, $quantity, $sub_prod,$offerId=0)
     {   
         $product = Product::find($prod_id);
         $store = DB::table('stores')->where('id', $product->store_id)->first();
@@ -613,6 +612,7 @@ class ApiCartController extends Controller
         $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
         $imagPath = 'http://' . $store->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/products/' . $images;
         $subProd = Product::where("id", "=", $sub_prod)->first();
+        $pprdID = $subProd->parent_prod_id;
         if (($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)) {
             $price = $product->price;
         } else {
@@ -648,11 +648,20 @@ class ApiCartController extends Controller
         if ($OfferProd != null) {
             $date = date('Y-m-d H:i:s');
             // single product add to cart
-            if($offerId == ''){
-                $offerId = $OfferProd->offer_id;
-                $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();
+            if($offerId == 0){
+                if($pprdID != 0){ // check parent prod id ==0 or not
+                    $OfferProd1 = DB::table("offers_products")->where(['prod_id'=>$sub_prod,'type'=>1])->first();
+                    if(!empty($OfferProd1)){
+                        $offerId = $OfferProd1->offer_id;
+                        $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();
+                    }else{
+                        $offerDetails = '';
+                    }
+                }else if($pprdID == 0){
+                    $offerId = $OfferProd->offer_id;
+                    $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();
+                }
             }else{ //offer add to cart
-                //dd('dxcxvc');
                 $searchExist = Helper::searchExistingCart($sub_prod);
                 if ($searchExist["isExist"]) {
                     $proddata = Cart::instance('shopping')->get($searchExist["rowId"]);
