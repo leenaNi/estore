@@ -170,7 +170,6 @@ class ApiCartController extends Controller
                 $offerId = $OfferProd->offer_id;
                 $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();
             }else{ //offer add to cart
-                //dd('dxcxvc');
                 $searchExist = Helper::searchExistingCart($prod_id);
                 if ($searchExist["isExist"]) {
                     $proddata = Cart::instance('shopping')->get($searchExist["rowId"]);
@@ -179,24 +178,29 @@ class ApiCartController extends Controller
                     }else{//check offer isCombined if yes then apply all can_combined offers else apply first offer
                         
                         $getOfferProds = DB::table("offers_products")->where(['prod_id'=>$prod_id,'type'=>1])->where('offer_id','!=',$proddata->options->offerId)->get();
-                        foreach($getOfferProds as $offer){
-                            $offerInfo = DB::table('offers')->where(['id'=>$offer->offer_id,'can_combined'=>1])->first();
-                            if(!empty($offerInfo)){
-                                if ($offerInfo->type == 1) {
-                                    if($offerInfo->offer_discount_type==1){
-                                        $offer_disc_amt = $price * ($offerInfo->offer_discount_value / 100);
-                                    }else if($offerInfo->offer_discount_type==2){
-                                        $offer_disc_amt = $offerInfo->offer_discount_value;
+                        if(count($getOfferProds) > 0){
+                            foreach($getOfferProds as $offer){
+                                $offerInfo = DB::table('offers')->where(['id'=>$offer->offer_id,'can_combined'=>1])->first();
+                                if(!empty($offerInfo)){
+                                    if ($offerInfo->type == 1) {
+                                        if($offerInfo->offer_discount_type==1){
+                                            $offer_disc_amt = $price * ($offerInfo->offer_discount_value / 100);
+                                        }else if($offerInfo->offer_discount_type==2){
+                                            $offer_disc_amt = $offerInfo->offer_discount_value;
+                                        }
+                                        $price = $price - $offer_disc_amt; 
+                                        //$offer_qty = $OfferProd->qty;
+                                        
+                                    }else if ($offerInfo->type == 2) {
+                                        $this->addOfferProd($offer->offer_id);
                                     }
-                                    $price = $price - $offer_disc_amt; 
-                                    //$offer_qty = $OfferProd->qty;
-                                    
-                                }else if ($offerInfo->type == 2) {
-                                    $this->addOfferProd($offer->offer_id);
                                 }
+                                
                             }
-                            
+                        }else{
+                            $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();
                         }
+                        
                     }
                 }else{
                     $offerDetails = DB::table("offers")->where(['id' => $offerId])->first();

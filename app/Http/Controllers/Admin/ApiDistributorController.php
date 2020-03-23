@@ -1160,6 +1160,7 @@ class ApiDistributorController extends Controller
                                         ->whereIn('orders.user_id', $userIds)
                                         // ->where('orders.store_id', $storeId)
                                         ->whereIn('orders.store_id', $multipleDistributorStoreIds)
+                                        ->orderBy('orders.id','desc')
                                         ->get(['orders.id', 'orders.user_id', 'orders.pay_amt','orders.store_id','orders.created_at','stores.store_name','order_status.order_status','payment_status.payment_status']);
                             //echo "<pre> orders data::";
                             //print_r($getOrderResult);
