@@ -26,6 +26,13 @@
     }
     .mar-bot15{margin-bottom: 15px;}
 </style>
+<?php
+/*echo "<pre>";
+$data = session()->all();
+echo "all session::".print_r($data);
+echo "logged in admin id::".Session::get('loggedinAdminId');
+exit;*/
+ ?>
 @stop
 @section('content')
 <section class="content-header">
@@ -453,6 +460,15 @@
 @section('myscripts')
 
 <script>
+var onSelectCustomer = 0;
+var loggedInUserType = 0;
+<?php
+if(!empty(Session::get("login_user_type")))
+{?>
+    loggedInUserType =  <?php echo Session::get("login_user_type") ?>;
+<?php
+}
+ ?>
 
 var prodoffer = 0;
     jQuery.validator.addMethod("phonevalidate", function (telephone, element) {
@@ -479,6 +495,7 @@ var prodoffer = 0;
     }
 
     function setValuesToInpt(custid, firstname, lastname, telephone, emailid, credit) {
+        //alert("set val point::"+telephone);
         $("input[name='s_phone']").val(telephone);
         $("input[name='customer_id']").val(custid);
         $("input[name='cust_firstname']").val(firstname);
@@ -610,6 +627,8 @@ var prodoffer = 0;
         source: "{{ route('admin.orders.getCustomerEmails') }}",
         minLength: 1,
         select: function (event, ui) {
+            onSelectCustomer = 1;
+            $(".msg").html('');
             ele = event.target;
             setValuesToInpt(ui.item.id, ui.item.firstname, ui.item.lastname, ui.item.telephone, ui.item.email , ui.item.credit);
             $(".custdata").show();
@@ -617,10 +636,37 @@ var prodoffer = 0;
         }
     });
     $(".customerEmail").on("keyup", function () {
-        $(".custdata").show();
+        //console.log("texbox click");
+        //console.log("inselect sutomer val flag::"+onSelectCustomer);
+        
+        //console.log("logged in user type::"+loggedInUserType);
+        if((parseInt(loggedInUserType) == 3) && (parseInt(onSelectCustomer) == 0))//if logged inusertype is distributor(3)
+        {
+            //alert("if");
+            //dont submit the new user data
+            $(".msg").html('please select user from suggestion list').css( "color", "red");
+            return false;
+        }
+        else
+        {
+            //alert("else");
+            $(".custdata").show();
+        }
+        
     });
     $(".customerEmail").on("change", function () {
-        $(".custdata").show();
+
+        if((parseInt(loggedInUserType) == 3) && (parseInt(onSelectCustomer) == 0))//if logged inusertype is distributor(3)
+        {
+            //dont submit the new user data
+            $(".custdata").hide();
+            return false;
+        }
+        else
+        {
+            $(".custdata").show();
+        }
+        
         term = $(this).val();
         thisEle = $(this);
         thisEle.css("border-color", "");
@@ -628,6 +674,7 @@ var prodoffer = 0;
         $.post("{{route('admin.orders.getCustomerEmails') }}", {term: term}, function (res) {
             resp = JSON.parse(res);
             chkLengh = Object.keys(resp).length;
+            //alert("check length::"+chkLengh);
             if (chkLengh == 1) {
                 setValuesToInpt(resp[0].id, resp[0].firstname, resp[0].lastname, resp[0].telephone, resp[0].email, resp[0].credit);
             } else if (chkLengh == 0) {
@@ -918,8 +965,9 @@ var prodoffer = 0;
     });
 
     $("table").delegate(".qty", "change", function () {
-        console.log("inside qty");
+        //console.log("inside qty");
         var qty = $(this).val();
+        var qtty = $(this);
         var subprdid = $(this).parents("td").prev().find(".subprodid").val();
         var parentprdid = $(this).parents("td").siblings().find(".prodSearch").attr('data-prdid');
         if (subprdid == null || subprdid == "") {
@@ -931,14 +979,18 @@ var prodoffer = 0;
             var pprd = 0;
             var data = {qty: qty, subprdid: subprdid, pprd: pprd, offerid:prodoffer};
         }
-        var qtty = $(this)
+
+        //qtty.parent().parent().find('.prodPrice').attr('data-prdid', subprdid);
+
+        
         $.ajax({
             type: "POST",
             url: "{{ route('admin.orders.getProdPrice') }}",
             data: data,
             cache: false,
             success: function (price) {
-                prod.parent().parent().find('.prodPrice').text((price.price));
+                qtty.closest("td").next('td').next('td').next('td').next('td').next('td').find('.prodPrice').text(price.price);
+                //prod.parent().parent().find('.prodPrice').text((price.price));
                 $(".subtotal").text(price.price);
                 $(".finalAmt").text(price.price);
                 prod.parent().parent().find('.prodDiscount').text(price.offer);

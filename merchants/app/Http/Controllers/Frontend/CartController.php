@@ -371,7 +371,7 @@ class CartController extends Controller {
     }
 
     public function configProduct($prod_id, $quantity, $sub_prod) {
-        echo "product id::".$prod_id;
+        //echo "product id::".$prod_id;
 
         $jsonString = Helper::getSettings();
         // $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
