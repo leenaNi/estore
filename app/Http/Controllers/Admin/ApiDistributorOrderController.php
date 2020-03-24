@@ -69,6 +69,55 @@ class ApiDistributorOrderController extends Controller
 
     }
 
+    public function addShippingAddressDetails()
+    {
+        $shippingAddress = [];
+        $userId = Input::get('userId');
+        $action = Input::get('action');
+        if($userId > 0)
+        {
+            if(Input::get('firstname') != '')
+            {
+                //insert data into has_address table
+                $userId = Input::get('userId');
+                $firstName = Input::get('firstname');
+                $lastName = Input::get('lastname');
+                $address1 = Input::get('address1');
+                $address2 = Input::get('address2');
+                $phoneNo = Input::get('phone_no');
+                $cityName = Input::get('city');
+                $pincode = Input::get('pincode');
+                $stateId = Input::get('state_id');
+
+                //insert data into has_address table
+                $shippingAddress["user_id"] = $userId;
+                $shippingAddress["firstname"] = $firstName;
+                $shippingAddress["lastname"] = $lastName;
+                $shippingAddress["address1"] = $address1;
+                $shippingAddress["address2"] = $address2;
+                $shippingAddress["phone_no"] = $phoneNo;
+                $shippingAddress["city"] = $cityName;
+                $shippingAddress["postcode"] = $pincode;
+                $shippingAddress["zone_id"] = $stateId;
+                
+                if($action == 'add')
+                {
+                    $lastInsertedId = DB::table('has_addresses')->insertGetId($shippingAddress);
+                    return response()->json(["status" => 2, 'shipping_address_id' => $lastInsertedId, 'msg' => 'Shipping Address inserted successfully.']);
+                }
+                
+            }
+            else
+            {
+                return response()->json(["status" => 2, 'msg' => 'First name is required.']);
+            }
+            
+        }
+        else{
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+    }
+
     public function productDetails(){
         $prod_id = Input::get('prod_id');
         if($prod_id != null){

@@ -133,7 +133,7 @@ Route::group(['namespace' => 'Admin'], function () {
 
             Route::post('/place-distributor-order', ["as" => "admin.apiDistOrder", "uses" => "ApiDistributorOrderController@placeOrder"]);
             Route::get('/shipping-address-details', ["as" => "admin.shippingAddressDetails", "uses" => "ApiDistributorOrderController@shippingAddressDetails"]);
-            Route::any('/add-shipping-address-details', ["as" => "admin.addShippingAddressDetails", "uses" => "ApiDistributorOrderController@addShippingAddressDetails"]);
+            Route::post('/add-shipping-address-details', ["as" => "admin.addShippingAddressDetails", "uses" => "ApiDistributorOrderController@addShippingAddressDetails"]);
             Route::any('/order-details', ["as" => "admin.orderDetails", "uses" => "ApiDistributorOrderController@orderDetails"]);
             Route::any('/product-details', ["as" => "admin.productDetails", "uses" => "ApiDistributorOrderController@productDetails"]);
 
