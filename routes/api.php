@@ -90,6 +90,12 @@ Route::group(['namespace' => 'Admin'], function () {
         });
 
         Route::group(['prefix' => 'products'], function () {
+
+            //new APIs routes
+            Route::get('/productlist', ['as' => 'admin.apiprod.list', 'uses' => 'ApiProductsController@index']);
+            Route::post('/addproduct', ['as' => 'admin.apiprod.add', 'uses' => 'ApiProductsController@addProduct']);
+            //end
+
             Route::get('/', ['as' => 'admin.apiprod.view', 'uses' => 'ApiProductController@index']);
             Route::get('/categoryListing', ['as' => 'admin.apiprod.add', 'uses' => 'ApiProductController@categoryListing']);
             Route::post('/save', ['as' => 'admin.apiprod.save', 'uses' => 'ApiProductController@save']);
