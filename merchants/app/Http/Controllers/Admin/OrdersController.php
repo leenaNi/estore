@@ -2009,18 +2009,21 @@ class OrdersController extends Controller
             }
             $succ = app('App\Http\Controllers\Frontend\CheckoutController')->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus);
             Cart::instance("shopping")->destroy();
-            Session::forget('loggedin_user_id');
+            //Session::forget('loggedin_user_id');
             Session::forget("addressSelected");
             Session::forget('orderId');
             Session::forget('usedCouponId');
-            Session::forget('logged_in_user');
+            //Session::forget('logged_in_user');
             Session::forget('user_cashback');
-            Session::forget('login_user_type');
+            //Session::forget('login_user_type');
             Session::forget('login_user_first_name');
             Session::forget('login_user_last_name');
             Session::forget('login_user_telephone');
         }
 
+        /*echo "<pre> session val::";
+        print_r(session::all());
+        exit;*/
         if ($succ['orderId']) {
             return ['status' => 3, 'msg' => 'Created', 'orderId' => $succ['orderId']]; //success
         } else {
