@@ -54,8 +54,7 @@ class ApiDistributorOrderController extends Controller
         if($userId > 0)
         {
             //get list of shipping address details
-            $data = Address::find(Input::get('userId'));
-            
+            $data = DB::table("has_addresses")->where('user_id',Input::get('userId'))->get();
             if(!empty($data)){
                 return response()->json(["status" => 1, 'data' => $data]);
             }
