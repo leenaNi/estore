@@ -61,4 +61,55 @@ class ApiCategoryController extends Controller
         }
         
     }
+
+    public function variantSetList() {
+        $marchantId = Session::get("merchantId");
+        $store = DB::table("stores")->where('merchant_id',$marchantId)->first();
+        $variants = DB::table('attribute_sets')->where(['store_id'=>$store->id,'status'=>1])->get();
+        return response()->json(['status'=>1,'data'=>$variants]);
+    }
+
+    public function addEditVariantSet() {
+        $marchantId = Session::get("merchantId");
+        $store = DB::table("stores")->where('merchant_id',$marchantId)->first();
+        $variantSetName = Input::get("variant_set_name");
+        $status = Input::get("status");
+        if($variantSetName != null){
+            if(Input::get("variant_set_name"))
+            $variantSet = [];
+            $variantSet['attr_set'] = $variantSetName;
+            $variantSet['status'] = $status;
+            $variantSet['store_id'] = $store->id;
+            $id = Input::get("id");
+            if (!empty($id)) {
+                $variantSetsUpdate = DB::table('attribute_sets')->where("id", $id)->update($variantSet);
+                $data = ["status" => 1, 'msg' => "Variant set updated successfully!"];
+            } else {
+                $insertedId = DB::table('attribute_sets')->insertGetId($variantSet);
+                $data = ["status" => 1, 'msg' => "Variant set added successfully!"];
+            }
+        }else{
+            $data = ["status" => 0, 'msg' => "Mandatory fields are missing."];
+        }
+        return $data;
+    }
+
+    public function variantSetDelete() {
+        $marchantId = Session::get("merchantId");
+        $store = DB::table("stores")->where('merchant_id',$marchantId)->first();
+        $id = Input::get("id");
+        if (!empty($id)) {
+            $products = DB::table('products')->where("attr_set", $id)->count();
+            if ($products > 0) {
+                $data = ["status" => 0, 'msg' => "Sorry, This variant set is the part of products. Delete the Product  First!"];
+            } else {
+                $attributes = DB::table('has_attributes')->where("attr_set", $id)->delete();
+                DB::table('attribute_sets')->where("id", $id)->delete();
+                $data = ["status" => 1, 'msg' => "Variant set deleted successfully!"];
+            }
+        } else {
+            $data = ["status" => 0, 'msg' => "Mandatory fields are missing."];
+        }
+        return $data;
+    }
 }

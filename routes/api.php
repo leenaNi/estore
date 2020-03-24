@@ -116,6 +116,10 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::group(['prefix' => 'category'], function () {
             Route::get('/', ['as' => 'admin.categories.view', 'uses' => 'ApiCategoryController@index']);
             Route::post('/requestnewcat', ['as' => 'admin.categories.reqcat', 'uses' => 'ApiCategoryController@requestNewCategory']);
+            //variant sets APIs
+            Route::get('/all-variant-set', ['as' => 'admin.variants.view', 'uses' => 'ApiCategoryController@variantSetList']);
+            Route::post('/variant-set-save', ['as' => 'admin.variants.variantSetSave', 'uses' => 'ApiCategoryController@addEditVariantSet']);
+            Route::get('/variant-set-delete', ['as' => 'admin.variants.variantSetDelete', 'uses' => 'ApiCategoryController@variantSetDelete']);
         });
 
         Route::group(['prefix' => 'order'], function () {
