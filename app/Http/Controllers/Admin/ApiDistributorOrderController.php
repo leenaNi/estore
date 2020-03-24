@@ -10,6 +10,7 @@ use App\Models\Store;
 use App\Models\Product;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
+use App\Models\Address;
 use Cart;
 use DB;
 use Input;
@@ -45,6 +46,27 @@ class ApiDistributorOrderController extends Controller
         } else {
                 return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
             }
+    }
+
+    public function shippingAddressDetails()
+    {
+        $userId = Input::get('userId');
+        if($userId > 0)
+        {
+            //get list of shipping address details
+            $data = Address::find(Input::get('userId'));
+            
+            if(!empty($data)){
+                return response()->json(["status" => 1, 'data' => $data]);
+            }
+            else{
+                return response()->json(["status" => 2, 'msg' => 'Shipping address not found']);
+            }
+        }
+        else{
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+
     }
 
     public function productDetails(){
