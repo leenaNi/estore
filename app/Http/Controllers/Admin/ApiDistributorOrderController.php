@@ -106,18 +106,20 @@ class ApiDistributorOrderController extends Controller
                 }
                 else if($action == 'edit')
                 {
-                    if(Input::get('shipping_address_id') > 0)
+                    if((Input::get('shippingAddressId') > 0) && (Input::get('userId') > 0))
                     {
-                        $shippingAddressId =  Input::get('shipping_address_id');
+                        $shippingAddressId =  Input::get('shippingAddressId');
+                        $userId =  Input::get('userId');
                         $updatedShippingAddIds = DB::table('has_addresses')
                             ->where('id', $shippingAddressId)
+                            ->where('user_id', $userId)
                             ->update($shippingAddress);
 
                         return response()->json(["status" => 1, 'shipping_address_id' => $shippingAddressId, 'msg' => 'Shipping Address data updated successfully.']);
                     }
                     else
                     {
-                        return response()->json(["status" => 3, 'msg' => 'Shipping Address id is required.']);
+                        return response()->json(["status" => 3, 'msg' => 'Mandatory fields is required.']);
                     }
                     
                 }//else if ends here
@@ -137,10 +139,11 @@ class ApiDistributorOrderController extends Controller
     public function deleteShippingAddressDetails()
     {
         $shippingAddressId = Input::get('shippingAddressId');
-        if($shippingAddressId > 0)
+        $userId = Input::get('userId');
+        if(($shippingAddressId > 0) && ($userId > 0))
         {
             //delete row from has_addresses table
-            DB::table('has_addresses')->where('id', '=', $shippingAddressId)->delete();
+            DB::table('has_addresses')->where('id', '=', $shippingAddressId)->where('user_id', '=', $userId)->delete();
             return response()->json(["status" => 1, 'msg' => 'Data deleted successfully.']);
         }
         else
