@@ -74,7 +74,7 @@ class ApiDistributorOrderController extends Controller
         $shippingAddress = [];
         $userId = Input::get('userId');
         $action = Input::get('action');
-        if($userId > 0)
+        if($userId > 0 && ($action != ''))
         {
             if(Input::get('firstname') != '')
             {
@@ -103,8 +103,25 @@ class ApiDistributorOrderController extends Controller
                 if($action == 'add')
                 {
                     $lastInsertedId = DB::table('has_addresses')->insertGetId($shippingAddress);
-                    return response()->json(["status" => 2, 'shipping_address_id' => $lastInsertedId, 'msg' => 'Shipping Address inserted successfully.']);
+                    return response()->json(["status" => 1, 'shipping_address_id' => $lastInsertedId, 'msg' => 'Shipping Address inserted successfully.']);
                 }
+                else if($action == 'edit')
+                {
+                    if(Input::get('shipping_address_id') > 0)
+                    {
+                        $shippingAddressId =  Input::get('shipping_address_id');
+                        $updatedShippingAddIds = DB::table('has_addresses')
+                            ->where('id', $shippingAddressId)
+                            ->update($shippingAddress);
+
+                        return response()->json(["status" => 1, 'shipping_address_id' => $shippingAddressId, 'msg' => 'Shipping Address data updated successfully.']);
+                    }
+                    else
+                    {
+                        return response()->json(["status" => 3, 'msg' => 'Shipping Address id is required.']);
+                    }
+                    
+                }//else if ends here
                 
             }
             else
@@ -114,6 +131,21 @@ class ApiDistributorOrderController extends Controller
             
         }
         else{
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+    }
+
+    public function deleteShippingAddressDetails()
+    {
+        $shippingAddressId = Input::get('shippingAddressId');
+        if($shippingAddressId > 0)
+        {
+            //delete row from has_addresses table
+            DB::table('has_addresses')->where('id', '=', $shippingAddressId)->delete();
+            return response()->json(["status" => 1, 'msg' => 'Data deleted successfully.']);
+        }
+        else
+        {
             return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
     }
