@@ -68,6 +68,90 @@ class ApiDistributorOrderController extends Controller
 
     }
 
+    public function addShippingAddressDetails()
+    {
+        $shippingAddress = [];
+        $userId = Input::get('userId');
+        $action = Input::get('action');
+        if($userId > 0 && ($action != ''))
+        {
+            if(Input::get('firstname') != '')
+            {
+                //insert data into has_address table
+                $userId = Input::get('userId');
+                $firstName = Input::get('firstname');
+                $lastName = Input::get('lastname');
+                $address1 = Input::get('address1');
+                $address2 = Input::get('address2');
+                $phoneNo = Input::get('phone_no');
+                $cityName = Input::get('city');
+                $pincode = Input::get('pincode');
+                $stateId = Input::get('state_id');
+
+                //insert data into has_address table
+                $shippingAddress["user_id"] = $userId;
+                $shippingAddress["firstname"] = $firstName;
+                $shippingAddress["lastname"] = $lastName;
+                $shippingAddress["address1"] = $address1;
+                $shippingAddress["address2"] = $address2;
+                $shippingAddress["phone_no"] = $phoneNo;
+                $shippingAddress["city"] = $cityName;
+                $shippingAddress["postcode"] = $pincode;
+                $shippingAddress["zone_id"] = $stateId;
+                
+                if($action == 'add')
+                {
+                    $lastInsertedId = DB::table('has_addresses')->insertGetId($shippingAddress);
+                    return response()->json(["status" => 1, 'shipping_address_id' => $lastInsertedId, 'msg' => 'Shipping Address inserted successfully.']);
+                }
+                else if($action == 'edit')
+                {
+                    if((Input::get('shippingAddressId') > 0) && (Input::get('userId') > 0))
+                    {
+                        $shippingAddressId =  Input::get('shippingAddressId');
+                        $userId =  Input::get('userId');
+                        $updatedShippingAddIds = DB::table('has_addresses')
+                            ->where('id', $shippingAddressId)
+                            ->where('user_id', $userId)
+                            ->update($shippingAddress);
+
+                        return response()->json(["status" => 1, 'shipping_address_id' => $shippingAddressId, 'msg' => 'Shipping Address data updated successfully.']);
+                    }
+                    else
+                    {
+                        return response()->json(["status" => 3, 'msg' => 'Mandatory fields is required.']);
+                    }
+                    
+                }//else if ends here
+                
+            }
+            else
+            {
+                return response()->json(["status" => 2, 'msg' => 'First name is required.']);
+            }
+            
+        }
+        else{
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+    }
+
+    public function deleteShippingAddressDetails()
+    {
+        $shippingAddressId = Input::get('shippingAddressId');
+        $userId = Input::get('userId');
+        if(($shippingAddressId > 0) && ($userId > 0))
+        {
+            //delete row from has_addresses table
+            DB::table('has_addresses')->where('id', '=', $shippingAddressId)->where('user_id', '=', $userId)->delete();
+            return response()->json(["status" => 1, 'msg' => 'Data deleted successfully.']);
+        }
+        else
+        {
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+    }
+
     public function productDetails(){
         $prod_id = Input::get('prod_id');
         if($prod_id != null){
