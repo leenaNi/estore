@@ -68,6 +68,20 @@ class ApiDistributorOrderController extends Controller
 
     }
 
+    public function getStates(){
+        $marchantId = Session::get("merchantId");
+        $merchant = DB::table("merchants")->where('id',$marchantId)->first();
+        $country_code = $merchant->country_code;
+        $country = DB::table("countries")->where('country_code',$country_code)->first();
+        $zones = DB::table("zones")->where('country_id',$country->id)->get();
+        if(count($zones)>0){
+            $data = ["status" => 1, 'msg' => 'All States','data'=>$zones];
+        }else{
+            $data = ["status" => 0, 'msg' => 'No States Found.'];
+        }
+        return response()->json($data);
+    }
+
     public function addShippingAddressDetails()
     {
         $shippingAddress = [];
@@ -98,6 +112,7 @@ class ApiDistributorOrderController extends Controller
                 $shippingAddress["city"] = $cityName;
                 $shippingAddress["postcode"] = $pincode;
                 $shippingAddress["zone_id"] = $stateId;
+                $shippingAddress["is_shipping"] = 1;
                 
                 if($action == 'add')
                 {
@@ -144,7 +159,7 @@ class ApiDistributorOrderController extends Controller
         {
             //delete row from has_addresses table
             DB::table('has_addresses')->where('id', '=', $shippingAddressId)->where('user_id', '=', $userId)->delete();
-            return response()->json(["status" => 1, 'msg' => 'Data deleted successfully.']);
+            return response()->json(["status" => 1, 'msg' => 'Address deleted successfully.']);
         }
         else
         {

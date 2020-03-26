@@ -116,10 +116,17 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::group(['prefix' => 'category'], function () {
             Route::get('/', ['as' => 'admin.categories.view', 'uses' => 'ApiCategoryController@index']);
             Route::post('/requestnewcat', ['as' => 'admin.categories.reqcat', 'uses' => 'ApiCategoryController@requestNewCategory']);
+
             //variant sets APIs
             Route::get('/all-variant-set', ['as' => 'admin.variants.view', 'uses' => 'ApiCategoryController@variantSetList']);
             Route::post('/variant-set-save', ['as' => 'admin.variants.variantSetSave', 'uses' => 'ApiCategoryController@addEditVariantSet']);
-            Route::get('/variant-set-delete', ['as' => 'admin.variants.variantSetDelete', 'uses' => 'ApiCategoryController@variantSetDelete']);
+            Route::post('/variant-set-delete', ['as' => 'admin.variants.variantSetDelete', 'uses' => 'ApiCategoryController@variantSetDelete']);
+
+            //attributes APIs
+            Route::get('/get-attribute-list', ['as' => 'admin.attributes.allAttribute', 'uses' => 'ApiCategoryController@attributes']);
+            Route::get('/get-attribute-type', ['as' => 'admin.attributes.getAttributeType', 'uses' => 'ApiCategoryController@attributeType']);
+            Route::post('/delete-attribute', ['as' => 'admin.attributes.deleteAttribute', 'uses' => 'ApiCategoryController@attributesDelete']);
+            Route::post('/attribute-add-edit', ['as' => 'admin.attributes.attributeAddEdit', 'uses' => 'ApiCategoryController@attributeSave']);
         });
 
         Route::group(['prefix' => 'order'], function () {
@@ -137,6 +144,7 @@ Route::group(['namespace' => 'Admin'], function () {
 
             Route::post('/place-distributor-order', ["as" => "admin.apiDistOrder", "uses" => "ApiDistributorOrderController@placeOrder"]);
             Route::get('/shipping-address-details', ["as" => "admin.shippingAddressDetails", "uses" => "ApiDistributorOrderController@shippingAddressDetails"]);
+            Route::get('/get-all-states', ["as" => "admin.getallstates", "uses" => "ApiDistributorOrderController@getStates"]);
             Route::post('/add-shipping-address-details', ["as" => "admin.addShippingAddressDetails", "uses" => "ApiDistributorOrderController@addShippingAddressDetails"]);
             Route::post('/delete-shipping-address-details', ["as" => "admin.deleteShippingAddressDetails", "uses" => "ApiDistributorOrderController@deleteShippingAddressDetails"]);
             Route::any('/order-details', ["as" => "admin.orderDetails", "uses" => "ApiDistributorOrderController@orderDetails"]);
