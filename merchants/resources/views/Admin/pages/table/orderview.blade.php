@@ -138,9 +138,9 @@
                             <!-- tab style -->
                             <div class="clearfix tabs-linearrow">
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a href="#tab-linearrow-one" data-toggle="tab">Dine In Orders</a></li>
-                                    <li><a href="#tab-linearrow-two" data-toggle="tab">Other Orders</a></li>
-                                    <li><a href="#tab-linearrow-three" data-toggle="tab">All Orders</a></li>
+                                    <li id="dine_in_orders" class="active"><a href="#tab-linearrow-one" data-toggle="tab">Dine In Orders</a></li>
+                                    <li id="other_orders"><a href="#tab-linearrow-two" data-toggle="tab">Other Orders</a></li>
+                                    <li id="all_orders"><a href="#tab-linearrow-three" data-toggle="tab">All Orders</a></li>
                                 </ul>
                                 <div class="tab-content pull-left" style="width:100%;">
                                     <div class="tab-pane active" id="tab-linearrow-one">
@@ -219,7 +219,14 @@
                                                     echo $tablesnumbers;                                                    
                                                     ?> </td>
                                                     <td>{{ date("d-M-Y H:i:s",strtotime($allorder->created_at)) }}</td>
-                                                    <td><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+                                                    <?php
+                                                    if($allorder->cart == '')
+                                                    {
+                                                    ?>
+                                                    <td id="edit_order_link"><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+                                                    <?php
+                                                    }
+                                                     ?>
                                                 </tr>
                                                 @endforeach
 
@@ -290,6 +297,21 @@ var billNew = {
     "paste": {name: "Free Up Table", icon: "delete"},
 }
 $(document).ready(function () {
+    //alert("local storage item status::"+localStorage.getItem('orderCompleted') ); // 1
+    var orderCompletedStatusVal = localStorage.getItem('orderCompleted');
+    //alert("order status completed val::"+orderCompletedStatusVal);
+    if(orderCompletedStatusVal == 1)
+    {
+        localStorage.setItem('orderCompleted', 0);
+        //active li of All orders
+        $("#dine_in_orders").removeClass('active');
+        $("#tab-linearrow-one").removeClass('active');
+        $("#all_orders").addClass('active');
+        $("#tab-linearrow-three").addClass('active');
+        $("#edit_order_link").hide();
+        localStorage.removeItem(orderCompleted);//remove localstorage
+    }
+
     setTableLayout();
     function setTableLayout() {
         var tableLayoutDbArray = <?php echo $tables;?>;
