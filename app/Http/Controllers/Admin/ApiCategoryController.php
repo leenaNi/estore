@@ -65,7 +65,7 @@ class ApiCategoryController extends Controller
     public function variantSetList() {
         $marchantId = Session::get("merchantId");
         $store = DB::table("stores")->where('merchant_id',$marchantId)->first();
-        $variants = DB::table('attribute_sets')->where(['store_id'=>$store->id,'status'=>1])->get();
+        $variants = DB::table('attribute_sets')->where(['store_id'=>$store->id])->get();
         return response()->json(['status'=>1,'data'=>$variants]);
     }
 
@@ -73,7 +73,7 @@ class ApiCategoryController extends Controller
         $marchantId = Session::get("merchantId");
         $store = DB::table("stores")->where('merchant_id',$marchantId)->first();
         $variantSetName = Input::get("variant_set_name");
-        $status = Input::get("status");
+        $status = !empty(Input::get("status")) ? Input::get("status"):0 ;
         if($variantSetName != null){
             if(Input::get("variant_set_name"))
             $variantSet = [];
@@ -109,6 +109,108 @@ class ApiCategoryController extends Controller
             }
         } else {
             $data = ["status" => 0, 'msg' => "Mandatory fields are missing."];
+        }
+        return $data;
+    }
+
+    public function attributes() {
+        $marchantId = Session::get("merchantId");
+        $store = DB::table("stores")->where('merchant_id',$marchantId)->first();
+        
+        $attributes = DB::table("attributes")->where('store_id',$store->id)->get();
+        foreach($attributes as $attribute){
+         $attribute->aatrSetId= DB::table("has_attributes")->where("attr_id",$attribute->id)->pluck("attr_set");
+         $attribute->options=DB::table("attribute_values")->where("attr_id",$attribute->id)->get();
+        }
+        $attributeset = DB::table('attribute_sets')->where('store_id',$store->id)->get();
+       
+        $data=["attribute"=>$attributes,"attributeSet"=>$attributeset];
+        return $data;
+    }
+
+    public function attributeType() {
+        $marchantId = Session::get("merchantId");
+        $attributeType = DB::table('attribute_types')->orderBy("id", "asc")->get(["id","attr_type"])->toArray();
+        $data = ["attributeType" => $attributeType];
+        return $data;
+    }
+    
+    public function attributeSave() {
+        $marchantId = Session::get("merchantId");
+        $store = DB::table("stores")->where('merchant_id',$marchantId)->first();
+        $id=Input::get('id');
+        $ids=Input::get('id');
+        $attr=[];
+        $attr['attr'] = Input::get('attr');
+        $attr['attr_type'] = Input::get('attr_type');
+        $attr['is_filterable'] = Input::get('is_filterable');
+        $attr['placeholder'] = Input::get('placeholder');
+        $attr['att_sort_order'] = Input::get('att_sort_order');
+        $attr['is_required'] = Input::get('is_required');
+        $attr['status'] = !empty(Input::get('status'))?Input::get('status'):0;
+        $attr['store_id'] = $store->id;
+        $attribute_options=Input::get('attribute_options');
+       
+        if(!empty($id)){
+          DB::table('attributes')->where("id",$id)->update($attr);  
+        }else{
+            $id= DB::table('attributes')->insertGetId($attr);   
+        }
+     
+        $attrSet=Input::get('attr_set');
+         DB::table('has_attributes')->where("attr_id",$id)->delete();  
+        foreach($attrSet as $value){
+            DB::table('has_attributes')->insert(['attr_id'=>$id,'attr_set'=>$value]); 
+        }
+
+        if (!empty($attribute_options)) {
+            foreach ($attribute_options as $key => $val) {
+                $attrval = [];//AttributeValue::findOrNew(Input::get('idd')[$key]);
+                $attrval['option_name'] = $val['option_name'];
+                $attrval['option_value'] =$val['option_value'];
+                $attrval['is_active'] = $val['is_active'];
+                $attrval['sort_order'] = $val['sort_order'];
+                $attrval['attr_id'] = $id;
+                if(!empty($val['opid']) || $val['opid']!= 0){
+                    $attrvalId= $val['opid'];
+                }
+                if(!empty($attrvalId)){
+                DB::table('attribute_values')->where("id",$attrvalId)->update($attrval); 
+                }else{
+                DB::table('attribute_values')->insert($attrval);     
+                }
+             
+            }
+        }
+        $attributes = DB::table('attributes')->where("id",$id)->get();
+        foreach($attributes as $attribute){
+         $attribute->aatrSetId= DB::table('has_attributes')->where("attr_id",$attribute->id)->pluck("attr_set");
+         $attribute->options=DB::table('attribute_values')->where("attr_id",$attribute->id)->get();
+        }
+        $attributeset = DB::table('attribute_sets')->where("store_id",$store->id)->get();
+         if(empty($ids)){
+         $data=["status"=>1,"msg"=>"Attribute added successfully",'attributes'=>$attributes,'attributeset'=>$attributeset];
+         }else{
+          $data=["status"=>1,"msg"=>"Attribute updated successfully",'attributes'=>$attributes,'attributeset'=>$attributeset];
+              
+         }
+    return $data;
+    }
+    
+    public function attributesDelete() {
+        $marchantId = Session::get("merchantId");
+        $id=Input::get('id');      
+        $attributes = DB::table('attributes')->find($id);  
+        $productAttrs = DB::table('has_options')->where("attr_id",$id)->get();
+     
+        if(count($productAttrs) > 0) {
+             $data=["status"=>0,"msg"=>"Sorry, This Attribute is the part of a product. Delete the product first."];
+      
+        } else {
+         DB::table('has_attributes')->where('attr_id',$id)->delete(); 
+         DB::table('attribute_values')->where('attr_id',$id)->delete(); 
+         DB::table('attributes')->where('id',$id)->delete(); 
+         $data=["status"=>1,"msg"=>"Attribute deleted Successfully!"]; 
         }
         return $data;
     }

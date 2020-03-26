@@ -116,10 +116,17 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::group(['prefix' => 'category'], function () {
             Route::get('/', ['as' => 'admin.categories.view', 'uses' => 'ApiCategoryController@index']);
             Route::post('/requestnewcat', ['as' => 'admin.categories.reqcat', 'uses' => 'ApiCategoryController@requestNewCategory']);
+
             //variant sets APIs
             Route::get('/all-variant-set', ['as' => 'admin.variants.view', 'uses' => 'ApiCategoryController@variantSetList']);
             Route::post('/variant-set-save', ['as' => 'admin.variants.variantSetSave', 'uses' => 'ApiCategoryController@addEditVariantSet']);
-            Route::get('/variant-set-delete', ['as' => 'admin.variants.variantSetDelete', 'uses' => 'ApiCategoryController@variantSetDelete']);
+            Route::post('/variant-set-delete', ['as' => 'admin.variants.variantSetDelete', 'uses' => 'ApiCategoryController@variantSetDelete']);
+
+            //attributes APIs
+            Route::get('/get-attribute-list', ['as' => 'admin.attributes.allAttribute', 'uses' => 'ApiCategoryController@attributes']);
+            Route::get('/get-attribute-type', ['as' => 'admin.attributes.getAttributeType', 'uses' => 'ApiCategoryController@attributeType']);
+            Route::post('/delete-attribute', ['as' => 'admin.attributes.deleteAttribute', 'uses' => 'ApiCategoryController@attributesDelete']);
+            Route::post('/attribute-add-edit', ['as' => 'admin.attributes.attributeAddEdit', 'uses' => 'ApiCategoryController@attributeSave']);
         });
 
         Route::group(['prefix' => 'order'], function () {
