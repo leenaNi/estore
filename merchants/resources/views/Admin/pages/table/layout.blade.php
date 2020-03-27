@@ -269,11 +269,7 @@ function addLayoutKeyValue(id, val, type)
             }
         }//else ends here
     }//type if ends here
-    else if(type == 'draggable')
-    {
-
-
-    }
+    
 }//rotatable function ends here
 
 var layoutDraggableArray = [];

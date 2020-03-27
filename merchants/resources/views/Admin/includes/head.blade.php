@@ -82,6 +82,9 @@ Session::put('storelogo', $data->logo);
         </div>
     </div>
 </div>
+
+
+
 <div id="renewModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
