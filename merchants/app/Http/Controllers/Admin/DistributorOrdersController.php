@@ -171,7 +171,31 @@ class DistributorOrdersController extends Controller
 
         $viewname = Config('constants.adminDistributorOrderView') . '.index';
 
-        $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $ordersCount)
+            {
+                $endIndex = ($ordersCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $ordersCount)
+            {
+                $endIndex = ($ordersCount);
+            }
+        }
+
+        $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         return Helper::returnView($viewname, $data);
     }
 
@@ -1855,6 +1879,10 @@ class DistributorOrdersController extends Controller
     public function getSubProds()
     {
         $prod = DistributorProduct::find(Input::get('prodid'));
+        /*echo "<pre>";
+        print_r($prod);
+        echo "prod type::".$prod->prod_type;
+        exit;*/
         if ($prod->prod_type != 2) {
             return $subprods[] = DistributorProduct::find(Input::get('prodid'))->subproducts()->get();
         } else {
@@ -1971,17 +1999,24 @@ class DistributorOrdersController extends Controller
             $tax_type = $pprod->parentproduct->is_tax;
             $tax_rate = $pprod->parentproduct->totalTaxRate();
         }
+        //echo "qty val::".$qty;
+        //echo "price val::".$price;
         $total = array();
         $sub_total = $qty * $price;
+        //echo "<br>sub_total if::".$sub_total;
         if ($this->feature['tax'] == 1) {
+            //echo "inside if:";
             $tax_amt = round($sub_total * $tax_rate / 100, 2);
             if ($tax_type == 2) {
+                echo "<br>inside if";
                 $sub_total = $sub_total + $tax_amt;
+                //echo "<br>inside if::".$sub_total;
             }
             $total['tax'] = $tax_amt * Session::get('currency_val');
         } else {
             $total['tax'] = 0;
         }
+        //echo "<br>inside if::".$sub_total;
         $discount = 0;
         if ($offerid != 0) {
             //Session::put("offerid", $offerid);
@@ -2040,6 +2075,8 @@ class DistributorOrdersController extends Controller
             }
 
         }
+        //echo "sub total::".$sub_total;
+        //echo "<br> dis::".$discount;
         $totprice = $sub_total - $discount;
         $total['price'] = number_format((float) $totprice * Session::get('currency_val'), 2, '.', '');
 
@@ -2048,6 +2085,10 @@ class DistributorOrdersController extends Controller
         $total['subtotal'] = $cart_amt['sub_total'];
         $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
         $total['unitPrice'] = number_format((float) $price * Session::get('currency_val'), 2, '.', '');
+        //echo "total arry::";
+        //echo "<pre>";
+        //print_r($total);
+        //exit;
         return $total;
     }
 
@@ -3136,7 +3177,6 @@ class DistributorOrdersController extends Controller
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
-
         HasProducts::where("order_id", $orderId)->delete();
         foreach ($cartContent as $cart) {
             $product = DistributorProduct::find($cart->id);
@@ -3163,7 +3203,7 @@ class DistributorOrdersController extends Controller
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
+            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "sub_prod_id" => "", "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
                 'pay_amt' => $payamt, 'store_id' => Session::get('distributor_store_id'), 'prefix' => Session::get('distributor_store_prefix')];
             //            $market_place = Helper::generalSetting(35);
             //            if (isset($market_place) && $market_place->status == 1) {
@@ -3212,8 +3252,7 @@ class DistributorOrdersController extends Controller
                         $prd->stock = $prd->stock - $cart->qty;
                         if ($prd->is_stock == 1) {
                             $prd->update();
-                        };
-
+                        }
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             // $this->AdminStockAlert($prd->id);
                         }
@@ -3223,13 +3262,15 @@ class DistributorOrdersController extends Controller
                         if ($prd->is_stock == 1) {
                             $prd->update();
                         }
-
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             // $this->AdminStockAlert($prd->id);
                         }
                     }
                 }
                 $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ ".$cart->options->eNoOfDaysAllowed." days"));
+                $cart_ids[$cart->rowid]["product_details"] = '';
             } else {
                 $proddetailsp = [];
                 $prddataSp = DistributorProduct::find($cart->id);

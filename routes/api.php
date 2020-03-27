@@ -36,7 +36,7 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::any('/verify-otp', array('as' => 'admin.createStore.verifyotp', 'uses' => 'ApiCreateStoreController@verifyotp'));
     });
 
-    Route::group(['middleware' => ['jwt-auth']], function () {
+    Route::group(['middleware' => ['jwt-auth', 'sessions']], function () {
 
         Route::group(['prefix' => 'merchants'], function () {
             Route::get('/', ["as" => "admin.merchants.view", "uses" => "MerchantController@index"]);
@@ -90,6 +90,12 @@ Route::group(['namespace' => 'Admin'], function () {
         });
 
         Route::group(['prefix' => 'products'], function () {
+
+            //new APIs routes
+            Route::get('/productlist', ['as' => 'admin.apiprod.list', 'uses' => 'ApiProductsController@index']);
+            Route::post('/addproduct', ['as' => 'admin.apiprod.add', 'uses' => 'ApiProductsController@addProduct']);
+            //end
+
             Route::get('/', ['as' => 'admin.apiprod.view', 'uses' => 'ApiProductController@index']);
             Route::get('/categoryListing', ['as' => 'admin.apiprod.add', 'uses' => 'ApiProductController@categoryListing']);
             Route::post('/save', ['as' => 'admin.apiprod.save', 'uses' => 'ApiProductController@save']);
@@ -107,6 +113,22 @@ Route::group(['namespace' => 'Admin'], function () {
 
         });
 
+        Route::group(['prefix' => 'category'], function () {
+            Route::get('/', ['as' => 'admin.categories.view', 'uses' => 'ApiCategoryController@index']);
+            Route::post('/requestnewcat', ['as' => 'admin.categories.reqcat', 'uses' => 'ApiCategoryController@requestNewCategory']);
+
+            //variant sets APIs
+            Route::get('/all-variant-set', ['as' => 'admin.variants.view', 'uses' => 'ApiCategoryController@variantSetList']);
+            Route::post('/variant-set-save', ['as' => 'admin.variants.variantSetSave', 'uses' => 'ApiCategoryController@addEditVariantSet']);
+            Route::post('/variant-set-delete', ['as' => 'admin.variants.variantSetDelete', 'uses' => 'ApiCategoryController@variantSetDelete']);
+
+            //attributes APIs
+            Route::get('/get-attribute-list', ['as' => 'admin.attributes.allAttribute', 'uses' => 'ApiCategoryController@attributes']);
+            Route::get('/get-attribute-type', ['as' => 'admin.attributes.getAttributeType', 'uses' => 'ApiCategoryController@attributeType']);
+            Route::post('/delete-attribute', ['as' => 'admin.attributes.deleteAttribute', 'uses' => 'ApiCategoryController@attributesDelete']);
+            Route::post('/attribute-add-edit', ['as' => 'admin.attributes.attributeAddEdit', 'uses' => 'ApiCategoryController@attributeSave']);
+        });
+
         Route::group(['prefix' => 'order'], function () {
             Route::get('/', ['as' => 'admin.apiorder.view', 'uses' => 'ApiOrderController@index']);
             Route::post('/checkOut', ['as' => 'admin.apiorder.checkout', 'uses' => 'ApiOrderController@checkOut']);
@@ -121,6 +143,12 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/cal-aditional-charge', ['as' => 'admin.apiorder.calAditionalCharge', 'uses' => 'ApiOrderController@calAditionalCharge']);
 
             Route::post('/place-distributor-order', ["as" => "admin.apiDistOrder", "uses" => "ApiDistributorOrderController@placeOrder"]);
+            Route::get('/shipping-address-details', ["as" => "admin.shippingAddressDetails", "uses" => "ApiDistributorOrderController@shippingAddressDetails"]);
+            Route::get('/get-all-states', ["as" => "admin.getallstates", "uses" => "ApiDistributorOrderController@getStates"]);
+            Route::post('/add-shipping-address-details', ["as" => "admin.addShippingAddressDetails", "uses" => "ApiDistributorOrderController@addShippingAddressDetails"]);
+            Route::post('/delete-shipping-address-details', ["as" => "admin.deleteShippingAddressDetails", "uses" => "ApiDistributorOrderController@deleteShippingAddressDetails"]);
+            Route::any('/order-details', ["as" => "admin.orderDetails", "uses" => "ApiDistributorOrderController@orderDetails"]);
+            Route::any('/product-details', ["as" => "admin.productDetails", "uses" => "ApiDistributorOrderController@productDetails"]);
 
         });
 
@@ -253,9 +281,9 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('/past-orders-details', ["as" => "admin.distributor.pastOrderDetails", "uses" => "ApiDistributorController@getPastOrderDetails"]);
             Route::post('/my-orders-details', ["as" => "admin.distributor.myOrderDetails", "uses" => "ApiDistributorController@getMyOrderDetails"]);
             Route::post('/favourite-distributor', ["as" => "admin.distributor.favourite", "uses" => "ApiDistributorController@addFavouriteDistributor"]);
-
+            Route::post('/distributor-reorder', ["as" => "admin.distributor.reorder", "uses" => "ApiDistributorOrderController@reOrder"]);
         });
-        
+
         Route::group(['prefix' => 'cart'], function () {
             Route::post('', ["as" => "admin.cart.view", "uses" => "ApiCartController@index"]);
             Route::post('/add', ["as" => "admin.cart.add", "uses" => "ApiCartController@add"]);

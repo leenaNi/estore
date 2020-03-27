@@ -7,6 +7,10 @@ use App\Library\Helper;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Product;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
+use App\Models\Address;
 use Cart;
 use DB;
 use Input;
@@ -19,18 +23,291 @@ class ApiDistributorOrderController extends Controller
     {
         $jsonString = Helper::getSettings();
     }
+    
+    public function orderDetails(){
+        $orderId = Input::get('orderId');
+        if($orderId != null){
+        $data = [];
+        $orderDetails = DB::table('orders')->where('id',$orderId)->first();
+        $orderedProduct = DB::table('has_products')->where('order_id',$orderId)->get();
+            if(count($orderedProduct) > 0){
+                $temp = [];
+                foreach($orderedProduct as $prod){
+                    $temp[] = $this->getProduct($prod->prod_id);
+                    
+                } //product foreach ends here
+                $orderDetails->products = $temp;
+                if (count($orderDetails) > 0) {
+                    return response()->json(["status" => 1, 'data' => $orderDetails]);
+                }               
+            }else {
+                    return response()->json(["status" => 2, 'msg' => 'Product not found']);
+            }
+        } else {
+                return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+            }
+    }
+
+    public function shippingAddressDetails()
+    {
+        $userId = Input::get('userId');
+        if($userId > 0)
+        {
+            //get list of shipping address details
+            $data = DB::table("has_addresses")->where('user_id',Input::get('userId'))->get();
+            if(count($data)>0){
+                return response()->json(["status" => 1, 'data' => $data]);
+            }
+            else{
+                return response()->json(["status" => 2, 'msg' => 'Shipping address not found']);
+            }
+        }
+        else{
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+
+    }
+
+    public function getStates(){
+        $marchantId = Session::get("merchantId");
+        $merchant = DB::table("merchants")->where('id',$marchantId)->first();
+        $country_code = $merchant->country_code;
+        $country = DB::table("countries")->where('country_code',$country_code)->first();
+        $zones = DB::table("zones")->where('country_id',$country->id)->get();
+        if(count($zones)>0){
+            $data = ["status" => 1, 'msg' => 'All States','data'=>$zones];
+        }else{
+            $data = ["status" => 0, 'msg' => 'No States Found.'];
+        }
+        return response()->json($data);
+    }
+
+    public function addShippingAddressDetails()
+    {
+        $shippingAddress = [];
+        $userId = Input::get('userId');
+        $action = Input::get('action');
+        if($userId > 0 && ($action != ''))
+        {
+            if(Input::get('firstname') != '')
+            {
+                //insert data into has_address table
+                $userId = Input::get('userId');
+                $firstName = Input::get('firstname');
+                $lastName = Input::get('lastname');
+                $address1 = Input::get('address1');
+                $address2 = Input::get('address2');
+                $phoneNo = Input::get('phone_no');
+                $cityName = Input::get('city');
+                $pincode = Input::get('pincode');
+                $stateId = Input::get('state_id');
+
+                //insert data into has_address table
+                $shippingAddress["user_id"] = $userId;
+                $shippingAddress["firstname"] = $firstName;
+                $shippingAddress["lastname"] = $lastName;
+                $shippingAddress["address1"] = $address1;
+                $shippingAddress["address2"] = $address2;
+                $shippingAddress["phone_no"] = $phoneNo;
+                $shippingAddress["city"] = $cityName;
+                $shippingAddress["postcode"] = $pincode;
+                $shippingAddress["zone_id"] = $stateId;
+                $shippingAddress["is_shipping"] = 1;
+                
+                if($action == 'add')
+                {
+                    $lastInsertedId = DB::table('has_addresses')->insertGetId($shippingAddress);
+                    return response()->json(["status" => 1, 'shipping_address_id' => $lastInsertedId, 'msg' => 'Shipping Address inserted successfully.']);
+                }
+                else if($action == 'edit')
+                {
+                    if((Input::get('shippingAddressId') > 0) && (Input::get('userId') > 0))
+                    {
+                        $shippingAddressId =  Input::get('shippingAddressId');
+                        $userId =  Input::get('userId');
+                        $updatedShippingAddIds = DB::table('has_addresses')
+                            ->where('id', $shippingAddressId)
+                            ->where('user_id', $userId)
+                            ->update($shippingAddress);
+
+                        return response()->json(["status" => 1, 'shipping_address_id' => $shippingAddressId, 'msg' => 'Shipping Address data updated successfully.']);
+                    }
+                    else
+                    {
+                        return response()->json(["status" => 3, 'msg' => 'Mandatory fields is required.']);
+                    }
+                    
+                }//else if ends here
+                
+            }
+            else
+            {
+                return response()->json(["status" => 2, 'msg' => 'First name is required.']);
+            }
+            
+        }
+        else{
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+    }
+
+    public function deleteShippingAddressDetails()
+    {
+        $shippingAddressId = Input::get('shippingAddressId');
+        $userId = Input::get('userId');
+        if(($shippingAddressId > 0) && ($userId > 0))
+        {
+            //delete row from has_addresses table
+            DB::table('has_addresses')->where('id', '=', $shippingAddressId)->where('user_id', '=', $userId)->delete();
+            return response()->json(["status" => 1, 'msg' => 'Address deleted successfully.']);
+        }
+        else
+        {
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+    }
+
+    public function productDetails(){
+        $prod_id = Input::get('prod_id');
+        if($prod_id != null){
+            $data = $this->getProduct($prod_id);
+            //dd($data);
+            if(!empty($data)){
+                return response()->json(["status" => 1, 'data' => $data]);
+            }
+            else{
+                return response()->json(["status" => 2, 'msg' => 'Product not found']);
+            }
+        }else{
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+        
+    }
+
+    public function getProduct($prod_id){
+        $productResult = DB::table('products as p')
+                            ->leftJoin('brand as b', 'p.brand_id', '=', 'b.id')
+                            ->where('p.id', $prod_id)
+                            ->where(['p.status' => 1, 'p.is_del' => 0])
+                            //->where('p.parent_prod_id',0)
+                            ->orderBy('p.store_id', 'ASC')
+                            ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id','p.short_desc']);
+        if(count($productResult) > 0)
+        {
+            $storeIdWithDistributorId = [];
+            foreach ($productResult as $getProductData) {
+                
+                $storeId = $getProductData->store_id;
+                $productId = $getProductData->id;
+
+                //Get Product image
+                $productResult = DB::table('catalog_images')
+                    ->select(DB::raw('filename'))
+                    ->where(['catalog_id' => $productId])
+                    ->get();
+                $productImage = '';
+                $strore_name = DB::table('stores')->where('id',$storeId)->first();
+                if (count($productResult) > 0) {
+                    $productImage = "http://" . $strore_name->url_key . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
+                }
+                
+                $storeIdWithDistributorId['product_id'] = $getProductData->id;
+                $storeIdWithDistributorId['brand_name'] = $getProductData->brand_name;
+                $storeIdWithDistributorId['product'] = $getProductData->product;
+                $storeIdWithDistributorId['images'] = $productImage;
+                $storeIdWithDistributorId['product_code'] = $getProductData->product_code;
+                $storeIdWithDistributorId['short_desc'] = $getProductData->short_desc;
+                $storeIdWithDistributorId['is_featured'] = $getProductData->is_featured;
+                $storeIdWithDistributorId['prod_type'] = $getProductData->prod_type;
+                $storeIdWithDistributorId['is_stock'] = $getProductData->is_stock;
+                $storeIdWithDistributorId['is_avail'] = $getProductData->is_avail;
+                $storeIdWithDistributorId['is_listing'] = $getProductData->is_listing;
+                $storeIdWithDistributorId['status'] = $getProductData->status;
+                $storeIdWithDistributorId['stock'] = $getProductData->stock;
+                $storeIdWithDistributorId['max_price'] = $getProductData->max_price;
+                $storeIdWithDistributorId['min_price'] = $getProductData->min_price;
+                $storeIdWithDistributorId['purchase_price'] = $getProductData->purchase_price;
+                $storeIdWithDistributorId['price'] = $getProductData->price;
+                $storeIdWithDistributorId['spl_price'] = $getProductData->spl_price;
+                $storeIdWithDistributorId['selling_price'] = $getProductData->selling_price;
+                $storeIdWithDistributorId['is_cod'] = $getProductData->is_cod;
+                $storeIdWithDistributorId['is_tax'] = $getProductData->is_tax;
+                $storeIdWithDistributorId['is_trending'] = $getProductData->is_trending;
+                $storeIdWithDistributorId['min_order_quantity'] = $getProductData->min_order_quantity;
+                $storeIdWithDistributorId['is_share_on_mall'] = $getProductData->is_share_on_mall;
+
+                //DB::enableQueryLog(); // Enable query log
+                $offersIdCountResult = DB::table('offers')
+                    ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
+                    ->select('offers.*')
+                    ->where('offers.status',1)
+                    ->where('offers_products.prod_id', $productId)
+                    ->where('offers_products.type', 1)
+                    ->get();
+                //dd(DB::getQueryLog()); // Show results of log
+
+                $offerCount = 0;
+                $storeIdWithDistributorId['offers_count'] = $offerCount;
+                if (count($offersIdCountResult) > 0) {
+                    //$offerCount = $offersIdCountResult[0]->offer_count;
+                    $storeIdWithDistributorId['offers_count'] = count($offersIdCountResult);
+                    $j =0;
+                    foreach($offersIdCountResult as $offer){
+                        $storeIdWithDistributorId['offers'][$j]['offer_id'] = $offer->id;
+                        $storeIdWithDistributorId['offers'][$j]['offer_name'] = $offer->offer_name;
+                        $j++;
+                    }
+                    
+                    //$totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
+                }
+                //product variants
+                $prod = Product::find($getProductData->id);
+                if($prod != null && $prod->prod_type == 3){
+                    if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                        $subprods = $prod->getsubproducts()->get();
+                    } else {
+                        $subprods = $prod->subproducts()->get();
+                    }        
+                    foreach ($subprods as $subP) {
+                        $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                        foreach ($hasOpt as $prdOpt) {
+                            $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                            $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                            $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                            $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                            $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                            $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                        }
+                    }
+                    $storeIdWithDistributorId['variants'] = $selAttrs;
+                }
+            }
+            return $storeIdWithDistributorId;
+            
+        }
+    }
 
     public function placeOrder()
     {
-        $MerchantId = Input::get('merchantId');
-        $DistributorID = Input::get('distributorId');
-        if (!empty($MerchantId) && !empty($DistributorID)) {
+        $MerchantId = Session::get('merchantId');
+        $DistributorID = 0;
+        if (!empty($MerchantId)) {
 
             $user = User::find(Session::get('authUserId'));
             if ($user->cart != '') {
                 $cartData = json_decode($user->cart, true);
                 Cart::instance('shopping')->add($cartData);
+                $storeid = 0;
+                foreach($cartData as $val){
+                    $store_id = $val['options']['store_id'];
+                    break;
+                }
+                $Storeinfo = Store::find($store_id);
+                $DistributorID = $Storeinfo->merchant_id;
+            }else{
+                return ['status' => 1, 'msg' => 'Cart is empty']; 
             }
+            
             $cartData = Cart::instance("shopping")->content();
             $cartcount = Cart::instance("shopping")->count();
             $cartInfo = Cart::instance("shopping")->total();
@@ -76,7 +353,17 @@ class ApiDistributorOrderController extends Controller
             }
 
             if ($succ['orderId']) {
+
                 $order = Order::find($succ['orderId']);
+                $orderedProduct = DB::table('has_products')->where('order_id',$order->id)->get();
+                if(count($orderedProduct) > 0){
+                    $temp = [];
+                    foreach($orderedProduct as $prod){
+                        $temp[] = $this->getProduct($prod->prod_id);
+                        
+                    }
+                    $order->products = $temp;
+                } //product foreach ends here
                 $user->cart = '';
                 $user->save();
                 return ['status' => 1, 'msg' => 'Order Created Successfully', 'data' => $order]; //success
@@ -265,45 +552,6 @@ class ApiDistributorOrderController extends Controller
         // $toPayment['curData'] = $currencySetting->setCurrency();
         // $toPayment['addCharge'] = AdditionalCharge::where('status', 1)->get();
         return $toPayment;
-    }
-
-    public function setCurrency()
-    {
-        //Default Currency
-        $currency = GeneralSetting::where('url_key', 'default-currency')->first(['details']);
-        $currencySettings = json_decode($currency->details, true);
-        $jsonString = Helper::getSettings();
-        $data = (object) $jsonString;
-
-        //Current Session Currency
-        $currentCurr = '';
-
-        if ($currencySettings['iso_code'] !== $data->currencyId && empty(Session::get('currency_id'))) { //default currency is changed
-            Session::put('currency', $data->currencyId);
-            $curr = Helper::getCurrency($data->currencyId);
-            return ['currency' => $data->currencyId, 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-        } else if ($currencySettings['iso_code'] === $data->currencyId) { //both currency is same
-            if (!empty($currentCurr)) {
-                if ($currencySettings['iso_code'] !== $currentCurr) { //current session currency is diff then set it to default
-                    Session::put('currency', $currencySettings['iso_code']);
-                    $curr = Helper::getCurrency($currencySettings['iso_code']);
-                    return ['currency' => $currencySettings['iso_code'], 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-                } else {
-                    $curr = Helper::getCurrency($currencySettings['iso_code']);
-                    return ['currency' => $currentCurr, 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-                }
-            } else if (!empty($currency)) {
-                Session::put('currency', $currencySettings['iso_code']);
-                $curr = Helper::getCurrency($currencySettings['iso_code']);
-                return ['currency' => $currencySettings['iso_code'], 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-            } else {
-                $curr = Helper::getCurrency($data->currencyId);
-                return ['currency' => $data->currencyId, 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-            }
-        } else {
-            $curr = Helper::getCurrency($data->currencyId);
-            return ['currency' => $data->currencyId, 'sym' => trim($curr->css_code), 'curval' => $curr->currency_val, 'store_cur' => $data->currencyId];
-        }
     }
 
     public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $userid, $orderid, $DistributorID)
@@ -534,7 +782,7 @@ class ApiDistributorOrderController extends Controller
                 $prd = DB::table('products')->where('id', $cart->id)->first();
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
-                    $prd->update();
+                    DB::table('products')->where('id', $cart->id)->update(['stock'=>$prd->stock]);
                 }
 
                 if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
@@ -556,5 +804,117 @@ class ApiDistributorOrderController extends Controller
         // dd(Cart::instance('shopping')->content());
         // dd($cart_ids);
         //  $this->orderSuccess();
+    }
+
+    public function reOrder(){
+        $orderId = Input::get('orderId');
+        $orderData = DB::table('has_products')->where('order_id',$orderId)->get();
+        $user = User::where('id', Session::get('authUserId'))->first();
+        if ($user->cart != '') {
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->destroy();
+            if(Cart::instance("shopping")->count() != 0){
+                $user->cart = json_encode($cartData);
+            } else {
+                $user->cart = '';
+            }
+            $user->update();
+            Cart::instance('shopping')->add($cartData);
+        }
+        $data = [];
+        foreach($orderData as  $prod){
+            $product = DB::table("products")->where('id',$prod->prod_id)->first();
+            if(!empty($product)){
+                if($prod->prod_type==1){
+                    $msg = app('App\Http\Controllers\Admin\ApiCartController')->simpleProduct($prod->prod_id,$prod->qty);
+                }
+                else if($prod->prod_type==2){
+                    $msg = app('App\Http\Controllers\Admin\ApiCartController')->comboProduct($prod->prod_id, $prod->qty,$prod->sub_prod_id);
+                }
+                else if($prod->prod_type==3 || $prod->sub_prod_id !=0 ){  
+                    $msg = app('App\Http\Controllers\Admin\ApiCartController')->configProduct($prod->prod_id, $prod->qty,$prod->sub_prod_id);
+                }
+                else if($prod->prod_type==5){
+                    $msg = app('App\Http\Controllers\Admin\ApiCartController')->downloadProduct($prod->prod_id, $prod->qty);
+                }
+
+                if ($msg == 1) {
+                    $data['data']['cart'] = null;
+                    $data['status'] = "0";
+                    $data['msg'] = $msg;
+                } else {
+                    //return $msg;
+                    $cartData = Cart::instance("shopping")->content();
+                    if(Cart::instance("shopping")->count() != 0){
+                        $user->cart = json_encode($cartData);
+                    } else {
+                        $user->cart = '';
+                    }
+                    $user->update();
+                    $data['data']['cart'] = $cartData;
+                    $data['data']['total'] = Helper::getOrderTotal($cartData);
+                    $data["data"]['cartCount'] = Cart::instance("shopping")->count();
+                    $data['status'] = "1";
+                    $data['msg'] = "";
+                }
+                
+            }else{
+                $data['data']['cart'] = null;
+                $data['status'] = "0";
+                $data['msg'] = $msg;
+            }
+        }
+        return $data;
+        //$cartData = Cart::instance("shopping")->content();
+        // foreach($cartData as $val){
+        //     $store_id = $val->options->store_id;
+        //     break;
+        // }
+        // $Storeinfo = Store::find($store_id);
+        // $DistributorID = $Storeinfo->merchant_id;
+        // $cartcount = Cart::instance("shopping")->count();
+        // $cartInfo = Cart::instance("shopping")->total();
+        // $cart_amt = Helper::getOrderTotal($cartData); //Helper::calAmtWithTax();
+        // $finalamt = Helper::getOrderTotal($cartData); //$cart_amt['total'];
+        // $paymentAmt = $finalamt;
+        // $paymentMethod = 8; //"9";
+        // $paymentStatus = "1";
+        // $payAmt = number_format((float)$finalamt, 2, '.', '');
+        // //apply additional charge to payAmount
+        // $additional_charge_json = $this->ApplyAdditionalCharge($payAmt);
+        // $additional_charge = json_decode($additional_charge_json, true);
+        // $payAmt = $payAmt + $additional_charge['total_amt'];
+
+        // $trasactionId = "";
+        // $transactionStatus = "";
+        // $userid = $user->id;
+        // $toPay = $this->toPayment($userid);
+        // if (!empty($toPay['orderId'])) {
+        //     $orderS = Order::find($toPay['orderId']);
+        //     $orderS->created_by = $userid;
+        //     $orderS->additional_charge = $additional_charge_json;
+        //     $orderS->amt_paid = $paymentAmt;
+        //     $orderS->order_type = 1;
+        //     $orderS->description = '';
+        //     $orderS->order_status = 31; //processing
+        //     $orderS->update();
+        //     if ($paymentMethod == '10') {
+        //         $userinfo->credit_amt = $userinfo->credit_amt + ($payAmt - $paymentAmt);
+        //         $userinfo->update();
+                
+        //     }
+        //     $succ = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $userid, $orderS->id, $DistributorID);
+        //     Cart::instance("shopping")->destroy();
+
+        // }
+
+        // if ($succ['orderId']) {
+        //     $order = Order::find($succ['orderId']);
+        //     $user->cart = '';
+        //     $user->save();
+        //     return ['status' => 1, 'msg' => 'Order Created Successfully', 'data' => $order]; //success
+        // } else {
+        //     return ['status' => 0, 'msg' => 'Failed']; //failure
+        // }
     }
 }

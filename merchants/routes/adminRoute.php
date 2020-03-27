@@ -14,12 +14,15 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
     Route::any('/admin-edit-profile', ["as" => "adminEditProfile", "uses" => "LoginController@admin_edit_profile"]);
     Route::any('/admin-save-profile', ["as" => "adminSaveProfile", "uses" => "LoginController@admin_save_profile"]);
     Route::any('/check-cur-password', ["as" => "adminCheckCurPassowrd", "uses" => "LoginController@adminCheckCurPassowrd"]);
+    Route::post('/check-mobile-number', ["as" => "adminCheckCurMobileNumber", "uses" => "LoginController@adminCheckCurMobileNumber"]);
 // Route::any('/newsletter',function(){
     //              echo "test";
     //          });
     Route::group(['middleware' => 'CheckUser', 'web'], function () {
         Route::get('/home', ["as" => "admin.home.view", "uses" => "HomeController@index"]);
 //
+        Route::any('/show-merchant-admin-themes', ["as" => "admin.home.showMerchantTheme", "uses" => "HomeController@showMerchantAdminThemes"]);
+        Route::any('/apply-merchant-admin-themes', ["as" => "admin.home.applyMerchantTheme", "uses" => "HomeController@applyMerchantAdminThemes"]);
         Route::any('/newsletter', ["as" => "admin.home.newsletter", "uses" => "HomeController@newsLetter"]);
         Route::post('/saveNewsLetter', ["as" => "admin.home.saveNewsLetter", "uses" => "HomeController@saveNewsLetter"]);
         Route::any('/export-newsLetter', ["as" => "admin.home.exportNewsLetter", "uses" => "HomeController@exportNewsLetter"]);
@@ -236,8 +239,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/get-occupied-table-order', array('as' => 'admin.tableOccupiedOrder', 'uses' => 'TableController@tableOccupiedOrder'));
             Route::any('/get-orderBill/{id?}', array('as' => 'admin.order.getbill', 'uses' => 'TableController@tableOccupiedOrderBill'));
             Route::any('/get-cart-amount', array('as' => 'admin.getCartAmt', 'uses' => 'TableController@getCartAmt'));
-
             Route::any('/delete-kot-prods', array('as' => 'admin.order.deleteKotProds', 'uses' => 'TableController@deleteKotProds'));
+            Route::post('/change-occupancy-status/{id?}', array('as' => 'admin.tables.changeOccupancyStatus', 'uses' => 'TableController@changeOccupancyStatus'));
         });
 
         Route::group(['prefix' => 'orders', 'middlewareGroups' => ['CheckUser', 'web']], function () {
@@ -693,7 +696,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/send-notification', array('as' => 'admin.vendors.send-notification', 'uses' => 'VendorsController@sendNotificationToMerchant'));
                 Route::get('/accept/{id?}', array('as' => 'admin.vendors.accept', 'uses' => 'VendorsController@approveRequest'));
                 Route::post('/is-approve-merchant', array('as' => 'admin.vendors.isApproveMerchant', 'uses' => 'VendorsController@isApprovedMerchant'));
-                
+                //All Merchant
+                Route::any('/all-merchant', array('as' => 'admin.vendors.allMerchant', 'uses' => 'VendorsController@allMerchant'));
             });
 
             Route::group(['prefix' => 'purchase-requisition', 'middlewareGroups' => ['CheckUser', 'web']], function () {

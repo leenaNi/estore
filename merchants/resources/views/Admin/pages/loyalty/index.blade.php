@@ -7,9 +7,9 @@
 
 
 <section class="content-header">
-    <h1>Loyalty Programs ({{$loyaltyCount}})</h1>
+    <h1>Loyalty Programs </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+         <li><a href="#"><i class="fa fa-dashboard"></i> Marketing</a></li>
         <li class="active">Loyalty Program</li>
     </ol>
 </section>        
@@ -35,34 +35,40 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
-        <div class="filter-section displayFlex">
-            <div class="col-md-9 noAll-padding displayFlex">
+        <div class="filter-section">
+            <div class="col-md-12 noAll-padding">
                 <div class="filter-left-section"> 
                     <form method="get" action="{{ route('admin.loyalty.view')}}" >
-                           <div class="form-group col-md-8 col-sm-6 col-xs-12 noBottom-margin">
-                            <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Loyalty Group"/>
+                           <div class="form-group col-md-8 col-sm-8 col-xs-12 noBottom-margin">
+                            <div class="input-group">
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
+                            <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control form-control-right-border-radius medium" placeholder="Loyalty Group"/>
                             </div>
-                            <div class="form-group col-md-2 col-sm-3 col-xs-12 noBottom-margin">
-                            <input type="submit" name="submit" class="fullWidth noAll-margin btn btn-primary noMob-leftmargin" value="Search">
-                        </div>
-                        <div class="form-group col-md-2 col-sm-3 col-xs-12 noBottom-margin">
-                         <a  href="{{route('admin.loyalty.view')}}" class="fullWidth medium btn reset-btn noMob-leftmargin">Reset</a>
+                            </div>
+                            <div class="form-group col-md-4 col-sm-4 col-xs-12 noBottom-margin">
+                            <a  href="{{route('admin.loyalty.view')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset</a>
+                            <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Filter"> 
                         </div>
                     </form>
                 </div>
-            </div>
-            <div class="col-md-3 noAll-padding displayFlex">
-                <div class="filter-right-section">
-                    <button id="editable-sample_new" class="btn btn-default pull-right fullWidth mobFloatLeft mobAddnewflagBTN" onclick="window.location.href ='{{ route('admin.loyalty.add')}}'">Add New Loyalty Group</button>
-                </div>
-            </div>
+            </div> 
         </div>
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Loyalty Programs <span class="listing-counter">{{$loyaltyCount}}</span> </h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Loyalty Programs 
+                <?php
+                if($loyaltyCount > 0)
+                {
+                ?>
+                   <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$loyaltyCount}}</span> </h1>
+                <?php
+                }
+                ?> 
+
+            <button id="editable-sample_new" class="btn btn-listing-heading pull-right noAll-margin" onclick="window.location.href ='{{ route('admin.loyalty.add')}}'"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create</button>
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">
@@ -93,10 +99,10 @@
                                 @endif</td>
                             <td class="text-center">
                                 <div class="actionCenter">
-                                    <span><a class="btn-action-default edit" href="{{  route('admin.loyalty.edit',['id'=>$lyt->id]) }}">Edit</a></span> 
+                                    <span><a class="btn-action-default edit" href="{{  route('admin.loyalty.edit',['id'=>$lyt->id]) }}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                     <span class="dropdown">
                                         <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span class="caret"></span>
+                                        <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">  
                                             <li><a href="{{route('admin.loyalty.delete',['id'=>$lyt])}}" onclick="return confirm('Are you sure you want to delete the loyalty group ?')"><i class="fa fa-trash "></i> Delete</a></li>

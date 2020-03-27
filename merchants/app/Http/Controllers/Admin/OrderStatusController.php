@@ -7,20 +7,25 @@ use Input;
 use App\Models\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
-use Session;
 use Illuminate\Http\Request;
 use DB;
 use Validator;
+use Hash;
+use Config;
+use Session;
+use Auth;
+use Crypt;
 
 class OrderStatusController extends Controller {
 
     public function index() {
         $loggedInUserId = Session::get('loggedin_user_id');
         $loginUserType = Session::get('login_user_type');
-        //echo "login user id::".$loggedInUserId;
-        //echo "<br>login user type::".$loginUserType;
-        //get Store id from user table
         $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
+        //dd($userResult);
+        //echo "<pre>";
+        //print_r($userResult);
+        //exit;
         $storeId = $userResult->store_id;
         //echo "store id::".$storeId;
         $search = !empty(Input::get("order_status")) ? Input::get("order_status") : '';
@@ -38,7 +43,33 @@ class OrderStatusController extends Controller {
               $orderstatusCount=$orderstatusInfo->total();
         }
         //echo "<pre>";print_r($orderstatusInfo);exit;
-        $data = ['orderstatusInfo' => $orderstatusInfo,'orderstatusCount' =>$orderstatusCount, 'storeId' => $storeId];
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $orderstatusCount)
+            {
+                $endIndex = ($orderstatusCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $orderstatusCount)
+            {
+                $endIndex = ($orderstatusCount);
+            }
+        }
+
+
+        $data = ['orderstatusInfo' => $orderstatusInfo,'orderstatusCount' =>$orderstatusCount, 'storeId' => $storeId, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         $viewname = Config('constants.adminOrderStatusView') . '.index';
         return Helper::returnView($viewname, $data);
     }

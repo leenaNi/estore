@@ -5,7 +5,7 @@
         Products Sales Report 
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i>Reports</a></li>
         <li class="active">Products Sales Report</li>
     </ol>
 </section>
@@ -13,38 +13,35 @@
 <section class="main-content"> 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
         <div class="filter-section displayFlex">
-            <div class="col-md-9 noAll-padding displayFlex">
+            <div class="col-md-12 noAll-padding displayFlex">
                 <div class="filter-left-section"> 
                      <form method="get" action=" " id="searchForm">
                         <input type="hidden" name="attrSetCatalog"> 
                         <div class="form-group noBottom-margin col-md-4 col-sm-4 col-xs-12">
-                            <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control medium" placeholder="Product Name">
+                            <div class="input-group">
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
+                            <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control form-control-right-border-radius medium" placeholder="Product Name">
+                        </div>
                         </div> 
                         <div class="form-group noBottom-margin col-md-4 col-sm-4 col-xs-12">
                             {!! Form::select('category',$categrs,Input::get('category'), ["class"=>'form-control filter_type', "placeholder"=>"Category"]) !!}
                         </div> 
-                        <div class="form-group noBottom-margin col-md-2 col-sm-3 col-xs-12">
-                            <input type="submit" name="submit" vlaue='Submit' class='btn btn-primary noMob-leftmargin'>
-                        </div>
-                        <div class="from-group noBottom-margin col-md-2 col-sm-3 col-xs-12">
-                            <a href="{{ route('admin.report.productIndex')}}" class="btn reset-btn fullWidth noAll-margin noMob-leftmargin">Reset </a>
+                        <div class="form-group noBottom-margin col-md-4 col-sm-4 col-xs-12">
+                            <a href="{{ route('admin.report.productIndex')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset </a>
+                            <button type="submit" name="submit" vlaue='Filter' class='btn btn-primary noAll-margin pull-right marginRight-lg'>Filter</button>
                         </div>
                     </form>
                 </div>
-            </div>
-            <div class="col-md-3 noAll-padding displayFlex">
-                <div class="filter-right-section"> 
-                    <a href="{!! route('admin.report.productIndexExport') !!}" class="btn btn-primary fullWidth pull-left" target="_" type="button">Export</a>
-                </div>
-            </div>
+            </div> 
         </div>
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Orders Report </h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Products Sales Report </h1>            
+            <a href="{!! route('admin.report.productIndexExport') !!}" class="btn btn-listing-heading pull-right noAll-margin" target="_">Export</a>
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">

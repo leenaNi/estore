@@ -9,7 +9,14 @@ select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transfo
 
 <section class="content-header">
     <h1>
-        All Contacts ({{$contactsCount }})
+        All Contacts  <?php
+        if($contactsCount > 0)
+        {
+        ?>
+        ({{$startIndex}}-{{$endIndex}} of {{$contactsCount }})
+        <?php
+        }
+        ?>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -131,7 +138,16 @@ select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transfo
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>All Contacts <span class="listing-counter">{{$contactsCount }}</span> </h1>
+            <h1>All Contacts 
+                <?php
+        if($contactsCount > 0)
+        {
+        ?>
+        <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$contactsCount }}</span> </h1>
+        <?php
+        }
+        ?>
+        
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">

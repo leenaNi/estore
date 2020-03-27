@@ -361,7 +361,7 @@ body * { visibility: hidden; }
 
     </div>
          <div id="printInvoicce" class="modal fade" role="dialog">
-        <div class="modal-dialog" style="width: 75%;top:40px">
+        <div class="modal-dialog modal-md">
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header bord-bot0">

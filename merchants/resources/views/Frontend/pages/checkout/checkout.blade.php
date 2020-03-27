@@ -91,8 +91,8 @@
                                         <div class="form-group col-md-12">
                                             <select class="form-control county_code" required="true" name="country_code">
                                                 <option value="">Select Country Code</option>
-                                                <option value="+91">(+91) India</option>
-                                                <option value="+880">(+880) Bangladesh</option>
+                                                <option value="91">(+91) India</option>
+                                                <option value="880">(+880) Bangladesh</option>
                                             </select>
 
                                             <div id="country_code_checkout_re_validate" class="newerror"></div>

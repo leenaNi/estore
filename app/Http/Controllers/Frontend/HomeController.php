@@ -4,17 +4,16 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
-use App\Models\Settings;
 use App\Models\Category;
-use App\Models\HasCurrency;
-use App\Models\Merchant;
-use App\Models\User;
-use App\Models\MerchantOrder;
-use App\Models\Store;
-use App\Models\StoreTheme;
-use App\Models\Vendor;
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\HasCurrency;
+use App\Models\Merchant;
+use App\Models\MerchantOrder;
+use App\Models\Settings;
+use App\Models\Store;
+use App\Models\User;
+use App\Models\Vendor;
 use Auth;
 use Crypt;
 use DB;
@@ -23,7 +22,6 @@ use GuzzleHttp\Client;
 use Hash;
 use Illuminate\Support\Facades\Input;
 use Mail;
-use Schema;
 use Session;
 use Validator;
 use ZipArchive;
@@ -65,23 +63,21 @@ class HomeController extends Controller
     {
         // if (Session::get('merchantid')) {
         //     Session::flash('storeadded', 'You can not create more than one store.');
-           
+
         //     return redirect()->to("/select-themes");
         // }
-        
+        Session::flush();
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
-        
         $settings = Settings::where('bank_id', 0)->first();
         $country = Country::where("id", $settings->country_id)->get()->first();
         $currency = Currency::where("id", $settings->currency_id)->get()->first();
         $settings['country_code'] = $country['country_code'];
         $settings['country_name'] = $country['name'];
         $settings['currency_code'] = $currency['currency_code'];
-
         $curr = HasCurrency::where('status', 1)->orderBy("currency_code", "asc")->get(['status', 'id', 'name', 'iso_code', 'currency_code']);
         $viewname = Config('constants.frontendView') . ".new-store";
         //$data = ['cat' => $cat, 'curr' => $curr,'default_currency'=>$settings['id'],'default_country'=>$country['country_code']];
-        $data = ['cat' => $cat, 'curr' => $curr,'settings'=>$settings];
+        $data = ['cat' => $cat, 'curr' => $curr, 'settings' => $settings];
         //echo "<pre>";print_r($data);
         return Helper::returnView($viewname, $data);
     }
@@ -89,12 +85,10 @@ class HomeController extends Controller
     public function checkDomainAvail()
     {
         $getvalue = Input::get('domain_name');
-
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
         $checkdomain = $checkhttps . "://" . $getvalue . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
         // dd($checkdomain);
         $storedomain = Store::pluck('store_domain')->toArray();
-
         if (in_array($checkdomain, $storedomain)) {
             return 1;
         } else {
@@ -107,21 +101,17 @@ class HomeController extends Controller
         // if (!empty(Input::get('availdomain'))) {
         //     $availdomain = Input::get('availdomain');
         // }
-           
         $domainname = str_replace(" ", '-', trim(strtolower($availdomain), " "));
-        
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
-
         $checkdomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
         $storedomain = Store::pluck('store_domain')->toArray();
-        
         if (in_array($checkdomain, $storedomain)) {
-            $domainname = $domainname.rand(100, 999);
+            $domainname = $domainname . rand(100, 999);
             $this->availDomain($domainname);
             return $domainname;
             //print_r('name '.$domainname);
             //return $availability = "icon-remove red-close";
-        } else { 
+        } else {
             return $domainname;
         }
     }
@@ -148,7 +138,7 @@ class HomeController extends Controller
             Session::put('merchantid', $lastInsteredId);
             Session::put('storename', $allinput['store_name']);
             Session::put('merchantstorecount', 0);
-           
+
         } else {
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
             $checkStote = Merchant::find(Session::get('merchantid'))->getstores()->count();
@@ -185,7 +175,7 @@ class HomeController extends Controller
             Session::put('merchantid', $lastInsteredId);
             Session::put('storename', $allinput['store_name']);
             Session::put('merchantstorecount', 0);
-          
+
         } else {
             $allinput = json_decode(Vendor::find(Session::get('merchantid'))->register_details, true);
             $checkStote = Vendor::find(Session::get('merchantid'))->getstores()->count();
@@ -199,6 +189,7 @@ class HomeController extends Controller
     } // End distributorSignup()
 
     public function createUniqueIdentityCode($allinput, $lastInsteredId) // for merchnat and distributor
+
     {
         $storeName = $allinput['store_name'];
         $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
@@ -278,19 +269,19 @@ class HomeController extends Controller
         $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
         $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
         $actualDomain = str_replace("..", ".", $actualDomain);
-       
+
         // if (!empty($themeInput->email)) {
         //     // $this->confirmMail($themeInput);
         // }
         $storeType = $themeInput->roleType;
         //echo "session :: ".Session::get('merchantid');exit;
         if ($storeType == 'merchant') {
-            $getMerchat = Merchant::find(Session::get('merchantid'));   
+            $getMerchat = Merchant::find(Session::get('merchantid'));
         } else {
             $getMerchat = Vendor::find(Session::get('merchantid'));
         }
-        $decoded = json_decode($getMerchat->register_details,TRUE);
-        $decoded['business_type'] = ["17"];
+        $decoded = json_decode($getMerchat->register_details, true);
+        $decoded['business_type'] = ["5"];
         $json = json_encode($decoded);
         $getMerchat->register_details = $json;
         $getMerchat->save();
@@ -301,12 +292,12 @@ class HomeController extends Controller
         $store->url_key = $domainname;
         $store->store_type = $storeType; // merchant/distributor
         $store->merchant_id = $getMerchat->id;
-        
+
         if ($storeType == 'merchant') //Theme selection is available only for merchants
         {
             $phoneNo = $getMerchat->phone;
             // $store->template_id = $themeInput->theme_id;
-            $store->category_id = 17;
+            $store->category_id = 5;
             $storeName = $themeInput->store_name;
         } else {
             $phoneNo = $getMerchat->phone_no;
@@ -314,7 +305,7 @@ class HomeController extends Controller
             $storeName = $themeInput->store_name;
             $themeInput->theme_id = 0;
             $store->template_id = 0;
-            $store->category_id = 17;
+            $store->category_id = 5;
         }
         $store->store_domain = $actualDomain;
         $store->percent_to_charge = 1.00;
@@ -339,7 +330,7 @@ class HomeController extends Controller
         }
         // $merchantEamil = $getMerchat->email;
         // $merchantPassword = $getMerchat->password;
-         $storeVersion = $themeInput->store_version;
+        $storeVersion = $themeInput->store_version;
         // $firstname = $getMerchat->firstname;
         $identityCode = $getMerchat->identity_code;
         // if (!empty($themeInput->password)) {
@@ -352,7 +343,7 @@ class HomeController extends Controller
             //dd("teme id >> ".$themeInput->theme_id);
             if (empty($themeInput->id)) {
                 //dd((object) Input::get('themeInput')." :: ".$storeType);
-                $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key,  $password, $storeName, $themeInput->currency_code, $phoneNo, $domainname, $storeVersion, $store->expiry_date, $identityCode);
+                $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $password, $storeName, $themeInput->currency_code, $phoneNo, $domainname, $storeVersion, $store->expiry_date, $identityCode);
                 // dd($result);
             }
         }
@@ -367,22 +358,22 @@ class HomeController extends Controller
     public function getcongrats()
     {
         // echo "getcongrats  call function";
-        if(Input::get('id')){
-            $dataS = [];
-            $dataS['id'] = Input::get('id');
-            $dataS['storedata'] = Store::find(Input::get('id'));
-            $viewname = Config('constants.frontendView') . ".success";
-            return Helper::returnView($viewname, $dataS);
-        } else {
-            return redirect()->route('home');
-        }
+        // if(Input::get('id')){
+        $dataS = [];
+        $dataS['id'] = Input::get('id'); // 3; //
+        $dataS['storedata'] = Store::find(Input::get('id')); // Store::find(3); // ;
+        $viewname = Config('constants.frontendView') . ".success";
+        return Helper::returnView($viewname, $dataS);
+        // } else {
+        //     return redirect()->route('home');
+        // }
     }
 
     public function createInstance($storeType, $storeId, $prefix, $urlKey, $merchantPassword, $storeName, $currency, $phone, $domainname, $storeVersion, $expirydate, $identityCode)
     {
         //echo "createInstance function storeid >> $storeId ";
         //echo "<br> Cat array >> <pre>";print_r($catid);
-        $catid = 17;
+        $catid = 5;
         ini_set('max_execution_time', 600);
         if ($storeType == 'merchant') {
             $merchantd = Merchant::find(Session::get('merchantid'));
@@ -402,7 +393,7 @@ class HomeController extends Controller
         );
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, Config('constants.domainURL'));
+        curl_setopt($ch, CURLOPT_URL, Config('constants.domainURL') . $_SERVER['HTTP_HOST'] . '/records');
         //setting the method as post
         // curl_setopt($ch, CURLOPT_POST, true);
         //adding headers
@@ -425,7 +416,7 @@ class HomeController extends Controller
         $contents = File::get(public_path() . "/public/skeleton.sql");
         $sql = str_replace('tblprfx_', $storeId, $contents);
         $test = DB::unprepared($sql);
-        
+
         if ($test) {
             $path = base_path() . "/merchants/" . "$domainname";
             $mk = File::makeDirectory($path, 0777, true, true);
@@ -460,7 +451,7 @@ class HomeController extends Controller
                     } else {
                         $userType = 3; // distributor
                     }
-                    $insertArr = ["id" => ($lastRecordUserId),  "user_type" => $userType, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
+                    $insertArr = ["id" => ($lastRecordUserId), "user_type" => $userType, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
                     if (!empty($merchantPassword)) {
                         $randno = $merchantPassword;
                         $password = Hash::make($randno);
@@ -531,7 +522,7 @@ class HomeController extends Controller
                     fclose($fp);
 
                     if (!empty($catid)) {
-                        Helper::saveDefaultSet($catid, $prefix, $storeId,$storeType);
+                        Helper::saveDefaultSet($catid, $prefix, $storeId, $storeType);
                     }
 
                     if (!empty($currency)) {
@@ -585,7 +576,7 @@ class HomeController extends Controller
                     if ($phone) {
                         $msgOrderSucc = "Congrats! Your new Online Store is ready. Store Admin Link: https://" . $domainname . "." . $domain . "/admin Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
-                        $idcodeMsg = "Your unique identification code is ".$identityCode;
+                        $idcodeMsg = "Your unique identification code is " . $identityCode;
                         Helper::sendsms($phone, $idcodeMsg, $country_code);
                     }
                     if (!empty($merchantEamil)) {
@@ -1162,11 +1153,10 @@ class HomeController extends Controller
     public function checkStorename()
     {
         $storename = strtolower(Input::get("storename"));
-        $storedata = Store::where(strtolower("store_name"),$storename)->first();
+        $storedata = Store::where(strtolower("store_name"), $storename)->first();
         if (empty($storedata) && $storename != '') {
             return $data = ["status" => "success", "msg" => "Correct Business Name"];
-        }
-        else if($storename == ''){
+        } else if ($storename == '') {
             return $data = ["status" => "fail", "msg" => "Business name can not be blank"];
         } else {
             return $data = ["status" => "fail", "msg" => "Business Name Already Exists"];
@@ -1176,11 +1166,10 @@ class HomeController extends Controller
     public function checkPhone()
     {
         $mobile = Input::get("mobile");
-        $user = User::where("telephone",$mobile)->first();
+        $user = User::where("telephone", $mobile)->first();
         if (empty($user) && $mobile != '') {
             return $data = ["status" => "success", "msg" => "Correct"];
-        } 
-        else if($mobile == ''){
+        } else if ($mobile == '') {
             return $data = ["status" => "fail", "msg" => "Mobile No. can not be blank"];
         } else {
             return $data = ["status" => "fail", "msg" => "Mobile No. Already Exists"];

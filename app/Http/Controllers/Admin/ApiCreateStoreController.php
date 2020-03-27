@@ -108,13 +108,15 @@ class ApiCreateStoreController extends Controller
         $storeName = Input::get('store_name');
         $phone = Input::get('phone');
         $roleType = Input::get('roleType');
+        
         if ((!empty($roleType) && in_array($roleType, ['1', '2'])) && !empty($storeName) && !empty($phone)) {
             if (CustomValidator::validatePhone($phone)) {
                 $verifyOTP = $this->verifyOTP();
                 if ($verifyOTP) {
                     $checkStore = $this->checkStore();
                     if ($checkStore['status']) {
-                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : ($allinput['roleType'] == '2') ? 'distributor' : '';
+                        // $storeType = ($allinput['roleType'] == '1') ? 'merchant' : ($allinput['roleType'] == '2') ? 'distributor' : '';
+                        $storeType = ($allinput['roleType'] == '1') ? 'merchant' : 'distributor';
                         $settings = Settings::where('bank_id', 0)->first();
                         $country = Country::where("id", $settings->country_id)->get()->first();
                         $currency = Currency::where("id", $settings->currency_id)->get()->first();
@@ -333,18 +335,18 @@ class ApiCreateStoreController extends Controller
         $catid = 17;
         ini_set('max_execution_time', 600);
 
-        $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "13.234.230.182","ttl": 3600}]';
+        $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "' . env('GODADDY_IP') . '", "ttl": 3600}]';
         $fields = array(
             'data' => $messagearray,
         );
         //building headers for the request
         $headers = array(
-            'Authorization: sso-key dKYQNqECqY1B_KeALbMxBuuwsR54jgwibDA:KeANr8XdSMqcwF9y5CjCZe',
+            'Authorization: sso-key ' . env('GODADDY_KEY'),
             'Content-Type: application/json',
         );
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.godaddy.com/v1/domains/' . $_SERVER['HTTP_HOST'] . '/records');
+        curl_setopt($ch, CURLOPT_URL, Config('constants.domainURL') . $_SERVER['HTTP_HOST'] . '/records');
         //setting the method as post
         // curl_setopt($ch, CURLOPT_POST, true);
         //adding headers

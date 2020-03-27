@@ -29,6 +29,7 @@ use App\Models\Product;
 use App\Models\ReturnOrder;
 use App\Models\StaticPage;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\Zone;
 use App\Traits\Admin\OrdersTrait;
 use Cart;
@@ -38,6 +39,8 @@ use DB;
 use Hash;
 use Input;
 use Session;
+use Cookie;
+
 
 class OrdersController extends Controller
 {
@@ -46,17 +49,57 @@ class OrdersController extends Controller
 
     public function index()
     {
+        $user = User::with('roles')->find(Session::get('loggedinAdminId'));      
+        $roles = $user->roles;
+        $roles_data = $roles->toArray();
+        $r = Role::find($roles_data[0]['id']);
+        //echo "<pre>";
+        //print_r($r);
+        //exit;
+        //dd($r);
+        $loggedInUserName = $r->name;
+        //echo "<br>per ::".$per;
+        //$data = session()->all();
+        //echo "all session::".print_r($data);
+        //echo "logged in admin id::".Session::get('loggedinAdminId');
+        //exit;
+        $loggedInUserId = Session::get('loggedinAdminId');
+        $allinput = Input::all();
+        $getMerchantStoreIdVal = 0;
+        if(!empty($allinput) && !empty(Input::get('id')))
+        {
+            $getMerchantStoreIdVal = $allinput['id'];
+        }
+       
         $jsonString = Helper::getSettings();
+        if($getMerchantStoreIdVal > 0)
+        {
+            $storeId = $getMerchantStoreIdVal;
+        }
+        else
+        {
+            $storeId = $jsonString['store_id'];
+        }
+
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
         $order_options = '';
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
-        $orders = Order::where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
-        //   dd($orders);
+        
+        $orders = Order::where("orders.order_status", "!=", 0)
+                ->join("has_products", "has_products.order_id", '=', 'orders.id')
+                ->where("has_products.store_id", $storeId)
+                ->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))
+                ->groupBy('has_products.order_id')
+                ->orderBy('orders.id', 'desc');
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
         $payment_stuatus = PaymentStatus::all();
+        if($loggedInUserName != 'admin')
+        {
+            $orders = $orders->where("orders.created_by", $loggedInUserId);
+        }
         if (!empty(Input::get('order_ids'))) {
             $mulIds = explode(",", Input::get('order_ids'));
             $orders = $orders->whereIn("orders.id", $mulIds);
@@ -117,9 +160,32 @@ class OrdersController extends Controller
         $orders = $orders->paginate(Config('constants.paginateNo'));
         $ordersCount = $orders->total();
         $flags = Flags::all();
-
         $viewname = Config('constants.adminOrderView') . '.index';
-        $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $ordersCount)
+            {
+                $endIndex = ($ordersCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $ordersCount)
+            {
+                $endIndex = ($ordersCount);
+            }
+        }
+
+        $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         return Helper::returnView($viewname, $data);
     }
 
@@ -190,10 +256,16 @@ class OrdersController extends Controller
             $coupons = Coupon::whereDate('start_date', '<=', date("Y-m-d"))->where('end_date', '>=', date("Y-m-d"))->get();
             $additional = json_decode($order->additional_charge, true);
             $prodTab = 'products';
-            $prods = HasProducts::where('order_id', Input::get("id"))->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')
-                ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
+            $hasCategories = 'has_categories';
+            $prods = HasProducts::where('order_id', Input::get("id"))
+                    ->join($hasCategories, $hasCategories.'.prod_id', '=', 'has_products.prod_id')
+                      ->join($prodTab, $prodTab . '.id', '=', 'has_products.prod_id')
+                    ->select($prodTab . ".*", 'has_products.order_id', 'has_products.disc', 'has_products.prod_id', 'has_products.qty', 'has_products.price as hasPrice', 'has_products.product_details', 'has_products.sub_prod_id')->get();
 
             $products = $prods;
+            // echo "<pre>";
+            // print_r($products);
+            // exit;
             $coupon = Coupon::find($order->coupon_used);
             $action = route("admin.orders.save");
             // return view(Config('constants.adminOrderView') . '.addEdit', compact('order', 'action', 'payment_methods', 'payment_status', 'order_status', 'countries', 'zones', 'products', 'coupon')); //'users',
@@ -204,7 +276,7 @@ class OrdersController extends Controller
             $products = HasProducts::where("order_status", "!=", 0)->where("order_id", Input::get('id'))->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->first();
             $action = route("admin.orders.mallOrderSave");
             $viewname = Config('constants.adminOrderView') . '.addEditMall';
-            // dd($orders);
+            //  dd($products);
             $data = ['order' => $order, 'action' => $action, 'order_status' => $order_status, 'countries' => $countries, 'zones' => $zones,
                 'products' => $products, 'courier' => $courier_status];
             return Helper::returnView($viewname, $data);
@@ -682,7 +754,7 @@ class OrdersController extends Controller
                     //Partially shipped mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'partial-shipping')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -697,7 +769,7 @@ class OrdersController extends Controller
                     //Undelivered mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'undelivered')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -716,7 +788,7 @@ class OrdersController extends Controller
                     $rewardPtUpdate->Update();
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'return-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -732,7 +804,7 @@ class OrdersController extends Controller
                     // Exchanged mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'exchange-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -756,7 +828,7 @@ class OrdersController extends Controller
 
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'cancel-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -772,7 +844,7 @@ class OrdersController extends Controller
                     //Refunded mail
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'refund-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -792,7 +864,7 @@ class OrdersController extends Controller
 
                     $name = $orderUser->users['firstname'];
                     $email_id = $orderUser->users['email'];
-                    if ($notify == 1 && $this->getEmailStatus == 1) {
+                    if ($notify == 1 && $this->getEmailStatus == 1 && $email_id != '') {
                         $emailContent = EmailTemplate::where('url_key', 'deliver-order')->select('content', 'subject')->get()->toArray();
                         $email_template = $emailContent[0]['content'];
                         $subject = $emailContent[0]['subject'];
@@ -1791,25 +1863,67 @@ class OrdersController extends Controller
 
     public function getSearchProds()
     {
+        $sessionStoreIdVal = Session::get('store_id');
+        //echo "session store val::".$sessionStoreIdVal;
         // hidding product which is already added
         $cart_products = Cart::instance('shopping')->content()->toArray();
         $added_prod = [];
         if (count($cart_products) > 0) {
             foreach ($cart_products as $key => $product) {
-                if ($product['id'] == $product['options']['sub_prod']) {
+                if(array_key_exists("sub_prod",$product['options']))
+                {
+                    if ($product['id'] == $product['options']['sub_prod']) {
+                        $added_prod[] = $product['id'];
+                    }
+                }
+                else {
                     $added_prod[] = $product['id'];
                 }
+                
             }
         }
+        //echo "added product::";
+        //print_r($added_prod);
+        
+        //DB::enableQueryLog(); // Enable query log
         $searchStr = Input::get('term');
-        $products = Product::where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product']);
+        $products = Product::where('is_individual', 1)
+				->where('status', 1)
+				->where(function($query) use ($searchStr){
+                    $query->where('product', 'like', '%' . $searchStr . '%')
+                   ->orWhere('id', 'like', '%' . $searchStr . '%');
+				})
+                ->get();
+                
+        //$products = Product::where("is_individual", 1)->where('status', 1)->where('product', "like", "%" . $searchStr . "%")->orWhere('id', "like", "%" . $searchStr . "%")->get(['id', 'product']);
+        //dd(DB::getQueryLog()); // Show results of log
+        //echo "<pre>:::::product:::";
+        //print_r($products );
+        //exit;
 
         $data = [];
         foreach ($products as $k => $prd) {
             if (!in_array($prd->id, $added_prod)) {
+
+                $offersProduct = DB::table("offers_products")->where(['prod_id' => $prd->id, 'type' => 1])->first();
+                if (!empty($offersProduct)) {
+                    $offerData = DB::table("offers")->where('id', $offersProduct->offer_id)->first();
+                    $offer_name = $offerData->offer_name;
+                    $offer_id = $offerData->id;
+                } else {
+                    $offer_name = '';
+                    $offer_id = 0;
+                }
                 $data[$k]['id'] = $prd->id;
                 $data[$k]['value'] = $prd->product;
-                $data[$k]['label'] = "[" . $prd->id . "]" . $prd->product;
+                $data[$k]['type'] = $prd->prod_type;
+                $data[$k]['label'] = $offer_name . " [" . $prd->id . "]" . $prd->product;
+                $data[$k]['offer'] = $offer_id;
+
+                /*$data[$k]['id'] = $prd->id;
+                $data[$k]['value'] = $prd->product;
+                $data[$k]['label'] = "[" . $prd->id . "]" . $prd->product;*/
+                
             }
         }
 
@@ -1818,7 +1932,20 @@ class OrdersController extends Controller
 
     public function getSubProds()
     {
-        return $subprods = Product::find(Input::get('prodid'))->subproducts()->where("status", 1)->get();
+        $sessionValue = Session::all();
+        $sessionStoreIdVal = Session::get('store_id');
+        /*echo "<pre>";
+        print_r(Input::get('prodid'));
+        exit;*/
+        /*$subprods = Product::find(Input::get('prodid'))->subproducts()->where("status", 1)->get();
+        echo "<pre>";
+        print_r($subprods);
+        exit;*/
+        return $subprods = Product::find(Input::get('prodid'))
+                            ->subproducts()
+                            ->where("status", 1)
+                            ->where("store_id", $sessionStoreIdVal)
+                            ->get();
     }
 
     public function saveCartData()
@@ -1882,18 +2009,21 @@ class OrdersController extends Controller
             }
             $succ = app('App\Http\Controllers\Frontend\CheckoutController')->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus);
             Cart::instance("shopping")->destroy();
-            Session::forget('loggedin_user_id');
+            //Session::forget('loggedin_user_id');
             Session::forget("addressSelected");
             Session::forget('orderId');
             Session::forget('usedCouponId');
-            Session::forget('logged_in_user');
+            //Session::forget('logged_in_user');
             Session::forget('user_cashback');
-            Session::forget('login_user_type');
+            //Session::forget('login_user_type');
             Session::forget('login_user_first_name');
             Session::forget('login_user_last_name');
             Session::forget('login_user_telephone');
         }
 
+        /*echo "<pre> session val::";
+        print_r(session::all());
+        exit;*/
         if ($succ['orderId']) {
             return ['status' => 3, 'msg' => 'Created', 'orderId' => $succ['orderId']]; //success
         } else {
@@ -1904,7 +2034,7 @@ class OrdersController extends Controller
     public function getProdPrice()
     {
         $qty = (Input::get('qty'))? Input::get('qty'): 1;
-
+        $offerid = Input::get('offerid');
         if (Input::get('pprd') == 1) {
             $pprod = Product::find(Input::get('parentprdid'));
             $price = ($pprod->selling_price != 0)? $pprod->selling_price: $pprod->price;
@@ -1928,15 +2058,89 @@ class OrdersController extends Controller
         } else {
             $total['tax'] = 0;
         }
-        $total['price'] = $sub_total * Session::get('currency_val');
 
+        $discount = 0;
+        if ($offerid != 0) {
+            //Session::put("offerid", $offerid);
+            $offerDetails = DB::table("offers")->where(['id' => $offerid])->first();
+            if (!empty($offerDetails)) {
+                $total['offerName'] = $offerDetails->offer_name;
+                $total['offerQty'] = $offerDetails->min_order_qty;
+                $total['offertype'] = $offerDetails->type;
+                if ($offerDetails->type == 1) {
+                    if($offerDetails->offer_discount_type==1){
+                        $discount = $sub_total * ($offerDetails->offer_discount_value / 100);
+                        $total['offer'] = number_format((float) $discount * Session::get('currency_val'), 2, '.', '') . ' (' . $offerDetails->offer_name . ')';
+                    }else if($offerDetails->offer_discount_type==2){
+                        $discount = $offerDetails->offer_discount_value;
+                        $total['offer'] = number_format((float) $discount * Session::get('currency_val'), 2, '.', '') . ' (' . $offerDetails->offer_name . ')';
+                    }
+                    
+                } else if ($offerDetails->type == 2) {
+                    $prodQty = DB::table("offers_products")->where(['offer_id' => $offerid, 'prod_id' => $pprod->id])->first();
+                    $total['offer'] = '(' . $offerDetails->offer_name . ')';
+                    if ($qty >= $prodQty->qty) {
+                        // dd($qty);
+                        $offer_product = DB::table("offers_products as op")->join('products as p', 'op.prod_id', '=', 'p.id')->select('op.qty', 'p.product', 'op.prod_id')->where(['op.type' => 2, 'op.offer_id' => $offerid])->get();
+                        if (count($offer_product) > 0) {
+                            $total['offerProdCount'] = count($offer_product);
+                            $prod = [];
+                            foreach ($offer_product as $offerprod) {
+                                $prod[] = '
+                            <tr class="delOfferRow">
+                                <td width="30%">
+                                    <input type="text" class="form-control prodSearch" placeholder="Search Product" value="' . addslashes($offerprod->product) . '" name="prod_search" data-prdid="' . $offerprod->prod_id . '" data-prdtype="1">
+                                </td>
+                                <td width="20%">
+                                </td>
+                                <td width="20%" >
+                                    <span class="prodQty"><input type="number" min="1" value="' . $offerprod->qty . '" class="qty form-control" name="" disabled></span>
+                                </td>
+                                <td width="20%">
+                                        <span class="prodUnitPrice">0</span>
+                                    </td>
+                                <td width="20%">
+                                    <span class="prodDiscount">0</span>
+                                </td>
+                                <td width="20%">
+                                    <span class="prodPrice">0</span>
+                                </td>
+                                <td width="5%" class="text-center">
+
+                                </td>
+                            </tr>
+                    ';
+                            }
+                            $total['offerProd'] = $prod;
+                        }
+                    }
+
+                }
+            }
+
+        }    
+
+
+        $totprice = $sub_total - $discount;
+        $total['price'] = number_format((float) $totprice * Session::get('currency_val'), 2, '.', '');
+        
+        $cart_amt = Helper::calAmtWithTax();
+        $total['cart'] = Cart::instance('shopping')->content()->toArray();
+        $total['subtotal'] = $cart_amt['sub_total'];
+        $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
+        $total['unitPrice'] = number_format((float) $price * Session::get('currency_val'), 2, '.', '');
+       
+
+        /*
+        $total['price'] = $sub_total * Session::get('currency_val');
         $cart_amt = Helper::calAmtWithTax();
 
         $total['cart'] = Cart::instance('shopping')->content()->toArray();
         //  $newAmnt = $cart_amt['total'] * Session::get('currency_val');
         $total['subtotal'] = $cart_amt['sub_total'] * Session::get('currency_val');
         $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
-        $total['unitPrice'] = $price * Session::get('currency_val');
+        $total['unitPrice'] = $price * Session::get('currency_val');*/
+
         return $total;
     }
 

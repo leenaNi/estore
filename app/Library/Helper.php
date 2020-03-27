@@ -149,7 +149,7 @@ class Helper
         } else if (Auth::guard('merchant-users-web-guard')->check() !== false) {
             Session::put('authUserId', Auth::guard('merchant-users-web-guard')->user()->id);
             Session::put('merchantId', Store::where('id', Auth::guard('merchant-users-web-guard')->user()->store_id)->where('store_type', 'merchant')->first()->merchant_id);
-            Session::put('authUserData', Auth::guard('merchant-users-web-guard')->user()->first());
+            Session::put('authUserData', User::find(Auth::guard('merchant-users-web-guard')->user()->id));
         }
     }
 
@@ -279,7 +279,7 @@ class Helper
         DB::table('has_industries')->insert($saveIndustryQuestion);
 
         if ($storeType == 'distributor') {
-            $distributorDefaultSettingUrlKey = array("email-facility" => 1, "acl" => 1, "invoice" => 1, "additional-charge" => 1, "default-courier" => 0, "cod" => 0, "stock" => 1, "related-products" => 0);
+            $distributorDefaultSettingUrlKey = array("email-facility" => 1, "acl" => 1, "invoice" => 1, "additional-charge" => 1, "default-courier" => 0, "cod" => 0, "stock" => 1, "related-products" => 0,"products-with-variants" => 1);
             foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
                 if (array_key_exists($hasIndVal->url_key, $distributorDefaultSettingUrlKey)) {
                     $value = $distributorDefaultSettingUrlKey[$hasIndVal->url_key];

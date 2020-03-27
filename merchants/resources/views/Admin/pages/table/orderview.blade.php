@@ -3,7 +3,7 @@
 @section('mystyles')
 <!-- <link rel="stylesheet" href="{{ asset('public/Admin/dist/css/tabs-css.css') }}"> -->
 <style>
-    .target3 {border: 2px dotted; text-align: center; padding-top: 10px; min-width: 100px; min-height: 100px; cursor: pointer; color : #fff;}
+    .target3 {border: 2px dotted; text-align: center; padding-top: 10px; min-width: 100px; min-height: 100px; cursor: pointer;}
     .draggable3{margin: 5px;}
     .size1 > .target3 {width: 150px; height: 150px;}
     .size2 .target3{width: 200px; height: 150px;}
@@ -11,7 +11,19 @@
     .green{background-color: #2ecc71;}
     .red{background-color: #d35400;}
     .yellow{background-color: #f1c40f;}
-
+    .text-v-center{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .size1 > .target3 a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+}
 
 </style>
 
@@ -69,14 +81,15 @@
         Manage Orders
     </h1>
 </section>
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">
             <div class="box">
             <div class="box-header box-tools filter-box col-md-9 noBorder rightBorder">
                 <ul class="orderTableColor">
-                    <li>Occupy<br/><div class="occupyColor"></div></li>
-                    <li>Free<br/><div class="freeColor"></div></li>
+                    <li>Occupied<br/><div class="occupyColor"></div></li>
+                    <li>Available<br/><div class="freeColor"></div></li>
                 </ul>
             </div>
                 <div class="box-header  col-md-3 col-xs-12 pull-right">
@@ -125,9 +138,9 @@
                             <!-- tab style -->
                             <div class="clearfix tabs-linearrow">
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a href="#tab-linearrow-one" data-toggle="tab">Dine In Orders</a></li>
-                                    <li><a href="#tab-linearrow-two" data-toggle="tab">Other Orders</a></li>
-                                    <li><a href="#tab-linearrow-three" data-toggle="tab">All Orders</a></li>
+                                    <li id="dine_in_orders" class="active"><a href="#tab-linearrow-one" data-toggle="tab">Dine In Orders</a></li>
+                                    <li id="other_orders"><a href="#tab-linearrow-two" data-toggle="tab">Other Orders</a></li>
+                                    <li id="all_orders"><a href="#tab-linearrow-three" data-toggle="tab">All Orders</a></li>
                                 </ul>
                                 <div class="tab-content pull-left" style="width:100%;">
                                     <div class="tab-pane active" id="tab-linearrow-one">
@@ -135,9 +148,10 @@
                                             <div id='box'  class="pull-left">
                                                 @foreach($tables as $table)
                                                 <div class="draggable3 size{{$table->table_type }} col-md-3 col-sm-6 col-xs-12">
-                                                    <div class="target3 context-menu-one {{@$table->tablestatus->color}}" data-tableid="{{ $table->id }}" id="target_{{$table->id }}" data-myval="{{$table->id }}">
-                                                        {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
-                                                        <br>({{$table->chairs}})
+                                                    <div class="target3 text-v-center context-menu-one {{@$table->tablestatus->color}}" data-tableid="{{ $table->id }}" id="target_{{$table->id }}" data-myval="{{$table->id }}">
+                                                        <a href="#">Table No: {{ $table->table_no  . ($table->table_label !='' ? ' - ' . $table->table_label : '') }}
+                                                            <br>{{$table->chairs}} (Packs)
+                                                        </a>
                                                         <div class="clearfix"></div>    
                                                     </div>
                                                 </div>
@@ -205,7 +219,14 @@
                                                     echo $tablesnumbers;                                                    
                                                     ?> </td>
                                                     <td>{{ date("d-M-Y H:i:s",strtotime($allorder->created_at)) }}</td>
-                                                    <td><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+                                                    <?php
+                                                    if($allorder->cart == '')
+                                                    {
+                                                    ?>
+                                                    <td id="edit_order_link"><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+                                                    <?php
+                                                    }
+                                                     ?>
                                                 </tr>
                                                 @endforeach
 
@@ -276,6 +297,21 @@ var billNew = {
     "paste": {name: "Free Up Table", icon: "delete"},
 }
 $(document).ready(function () {
+    //alert("local storage item status::"+localStorage.getItem('orderCompleted') ); // 1
+    var orderCompletedStatusVal = localStorage.getItem('orderCompleted');
+    //alert("order status completed val::"+orderCompletedStatusVal);
+    if(orderCompletedStatusVal == 1)
+    {
+        localStorage.setItem('orderCompleted', 0);
+        //active li of All orders
+        $("#dine_in_orders").removeClass('active');
+        $("#tab-linearrow-one").removeClass('active');
+        $("#all_orders").addClass('active');
+        $("#tab-linearrow-three").addClass('active');
+        $("#edit_order_link").hide();
+        localStorage.removeItem(orderCompleted);//remove localstorage
+    }
+
     setTableLayout();
     function setTableLayout() {
         var tableLayoutDbArray = <?php echo $tables;?>;

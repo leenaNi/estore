@@ -98,9 +98,9 @@ class ApiOfferController extends Controller
     public function getAllOffer()
     {
         //DB::enableQueryLog(); // Enable query log
-        if(!empty(Input::get("merchantId"))) 
+        if(!empty(Session::get("merchantId"))) 
         {
-            $merchantId = Input::get("merchantId");
+            $merchantId = Session::get("merchantId");
             $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
             if(count($getDitributorIdsResult) > 0)
             {
@@ -336,12 +336,12 @@ class ApiOfferController extends Controller
                     }
                     else
                     {
-                        return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+                        return response()->json(["status" => 0, 'msg' => 'No Offers Found.']);
                     }
                 }
                 else
                 {
-                    return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+                    return response()->json(["status" => 0, 'msg' => 'No Offers Found..']);
                 }
             }
             else

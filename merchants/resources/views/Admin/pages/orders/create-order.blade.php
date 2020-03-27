@@ -26,6 +26,13 @@
     }
     .mar-bot15{margin-bottom: 15px;}
 </style>
+<?php
+/*echo "<pre>";
+$data = session()->all();
+echo "all session::".print_r($data);
+echo "logged in admin id::".Session::get('loggedinAdminId');
+exit;*/
+ ?>
 @stop
 @section('content')
 <section class="content-header">
@@ -193,6 +200,10 @@
                                 <th width="30%">Product</th>
                                 <th width="20%">Variant</th>
                                 <th width="20%">Quantity </th>
+                                <th width="20%">Offer Name </th>
+                                <th width="20%">Offer Quantity </th>
+                                <th width="20%">Unit Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
+                                <th width="20%">Discount </th>
                                 <th width="20%">Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
                                 @if($feature['tax']==1)
                                 <th width="20%">Tax ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
@@ -209,6 +220,18 @@
                                         </td>
                                         <td width="20%">
                                             <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='offer_name'>-</span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='qty'>-</span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='prodUnitPrice'>0</span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='prodDiscount'>0</span>
                                         </td>
                                         <td width="20%">
                                             <span class='prodPrice'>0</span>
@@ -228,7 +251,11 @@
                                         <select name='payment_mode' class="form-control paymode validate[required]">
                                             <option value="">Select Payment Mode</option>
                                             @foreach($paymentMethods as $paymentMethod)
-                                            <option value="{{$paymentMethod->id }}" >{{$paymentMethod->name }}</option>
+                                                @if ($paymentMethod->name == 'Cash')
+                                                    <option selected value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                @else
+                                                    <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </td>
@@ -395,6 +422,18 @@
                                         <span class='prodQty' style="display:none"><input type="number" min="1" value="1" name='cartData[prod_id][qty]' class='qty form-control'></span>
                                     </td>
                                     <td width="20%">
+                                        <span class='offer_name'>-</span>
+                                    </td>
+                                    <td width="20%">
+                                        <span class='qty'>-</span>
+                                    </td>
+                                    <td width="20%">
+                                        <span class='prodUnitPrice'>0</span>
+                                    </td>
+                                    <td width="20%">
+                                        <span class='prodDiscount'>0</span>
+                                    </td>
+                                    <td width="20%">
                                         <span class='prodPrice'>0</span>
                                     </td>
                                     @if($feature['tax']==1)
@@ -421,6 +460,17 @@
 @section('myscripts')
 
 <script>
+var onSelectCustomer = 0;
+var loggedInUserType = 0;
+<?php
+if(!empty(Session::get("login_user_type")))
+{?>
+    loggedInUserType =  <?php echo Session::get("login_user_type") ?>;
+<?php
+}
+ ?>
+
+var prodoffer = 0;
     jQuery.validator.addMethod("phonevalidate", function (telephone, element) {
         telephone = telephone.replace(/\s+/g, "");
         return this.optional(element) || telephone.length > 9 &&
@@ -445,6 +495,7 @@
     }
 
     function setValuesToInpt(custid, firstname, lastname, telephone, emailid, credit) {
+        //alert("set val point::"+telephone);
         $("input[name='s_phone']").val(telephone);
         $("input[name='customer_id']").val(custid);
         $("input[name='cust_firstname']").val(firstname);
@@ -478,10 +529,21 @@
         var rows = $(".newRow").find('tr');
         //console.log($(".newRow").find('tr'));
         var selected_prod = [];
+        var subprodid = 0;
         jQuery.each(rows, function (i, item) {
-            var subprodid = parseInt($(this).find('.subprodid').val());
-            if (subprodid != "" && subprodid != null) {
-                selected_prod.push(subprodid);
+            subprodid = parseInt($(this).find('.subprodid').val());
+            if (subprodid != "" && subprodid != null && subprodid != 'NaN') {
+                
+                if(subprodid == 'NaN')
+                {
+                    subprodid = 0;
+                    selected_prod = [];
+                }
+                else
+                {
+                    selected_prod.push(subprodid);
+                }
+                
             }
         });
         prodid = prodid;
@@ -507,9 +569,46 @@
                 qty = prodSel.parent().parent().find('.qty').val();
                 parentprdid = prodid;
                 //console.log(parentprdid);exite;
-                $.post("{{route('admin.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1}, function (price) {
+                $.post("{{route('admin.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1, offerid:prodoffer}, function (price) {
                     //console.log(JSON.stringify(price));
-                    prodSel.parent().parent().find('.prodPrice').text((price.price).toFixed(2));
+                    prodSel.parent().parent().find('.prodUnitPrice').text(price.unitPrice);
+                    prodSel.parent().parent().find('.prodDiscount').text(price.offer);
+                    prodSel.parent().parent().find('.prodPrice').text(price.price);
+                    if(typeof price.offerName === 'undefined')
+                    {
+                        prodSel.parent().parent().find('.offer_name').text('-');
+                        
+                    }
+                    else
+                    {
+                        prodSel.parent().parent().find('.offer_name').text(price.offerName);
+                    }
+
+                    if(typeof price.offerQty === 'undefined')
+                    {
+                        prodSel.parent().parent().find('.qty').text('-');
+                        
+                    }
+                    else
+                    {
+                        prodSel.parent().parent().find('.qty').text(price.offerQty);
+                    }
+                    
+                    
+                    $(".subtotal").text(price.price);
+                    $(".finalAmt").text(price.price);
+                    $("#amountallSubtotal").text(price.price);
+
+                    if(price.offertype==2){
+                        var countprod = price.offerProdCount;
+                        $(".newRow").append(price.offerProd);
+                        // while(countprod > 0){
+                        //     $(".newRow").append($(".toClonetr").html());
+                        //     countprod --;
+                        // }
+                    }
+
+                    //prodSel.parent().parent().find('.prodPrice').text((price.price).toFixed(2));
                     <?php if ($feature['tax'] == 1) {?>
                     prodSel.parent().parent().find('.taxAmt').text((price.tax).toFixed(2));
                     <?php }?>
@@ -528,6 +627,8 @@
         source: "{{ route('admin.orders.getCustomerEmails') }}",
         minLength: 1,
         select: function (event, ui) {
+            onSelectCustomer = 1;
+            $(".msg").html('');
             ele = event.target;
             setValuesToInpt(ui.item.id, ui.item.firstname, ui.item.lastname, ui.item.telephone, ui.item.email , ui.item.credit);
             $(".custdata").show();
@@ -535,10 +636,37 @@
         }
     });
     $(".customerEmail").on("keyup", function () {
-        $(".custdata").show();
+        //console.log("texbox click");
+        //console.log("inselect sutomer val flag::"+onSelectCustomer);
+        
+        //console.log("logged in user type::"+loggedInUserType);
+        if((parseInt(loggedInUserType) == 3) && (parseInt(onSelectCustomer) == 0))//if logged inusertype is distributor(3)
+        {
+            //alert("if");
+            //dont submit the new user data
+            $(".msg").html('please select user from suggestion list').css( "color", "red");
+            return false;
+        }
+        else
+        {
+            //alert("else");
+            $(".custdata").show();
+        }
+        
     });
     $(".customerEmail").on("change", function () {
-        $(".custdata").show();
+
+        if((parseInt(loggedInUserType) == 3) && (parseInt(onSelectCustomer) == 0))//if logged inusertype is distributor(3)
+        {
+            //dont submit the new user data
+            $(".custdata").hide();
+            return false;
+        }
+        else
+        {
+            $(".custdata").show();
+        }
+        
         term = $(this).val();
         thisEle = $(this);
         thisEle.css("border-color", "");
@@ -546,6 +674,7 @@
         $.post("{{route('admin.orders.getCustomerEmails') }}", {term: term}, function (res) {
             resp = JSON.parse(res);
             chkLengh = Object.keys(resp).length;
+            //alert("check length::"+chkLengh);
             if (chkLengh == 1) {
                 setValuesToInpt(resp[0].id, resp[0].firstname, resp[0].lastname, resp[0].telephone, resp[0].email, resp[0].credit);
             } else if (chkLengh == 0) {
@@ -684,8 +813,11 @@
          }, */
         minLength: 1,
         select: function (event, ui) {
+            prodoffer = ui.item.offer;
             getSubprods(ui.item.id, $(this));
             $(this).attr('data-prdid', ui.item.id);
+            $(this).attr('data-prdtype', ui.item.type);
+            $(this).attr('data-prdoffer', ui.item.offer);
 
         }
     });
@@ -693,13 +825,33 @@
     $("table").delegate(".subprodid", "change", function () {
         subprdid = $(this).val();
         subp = $(this);
+
         parentprodid = subp.parent().parent().find('.prodSearch').attr('data-prdid');
+        parentprodtype = subp.parent().parent().find('.prodSearch').attr('data-prdtype');
+        prodoffer = subp.parent().parent().find('.prodSearch').attr('data-prdoffer'); 
+
         removeError(subp);
         $(this).attr("name", "cartData[" + parentprodid + "][subprodid]");
         qty = subp.parent().parent().find('.qty').val();
         subp.parent().parent().find('.qty').attr('subprod-id', subprdid);
-        $.post("{{route('admin.orders.getProdPrice')}}", {subprdid: subprdid, qty: qty, pprd: 0}, function (data) {
-            subp.parent().parent().find('.prodPrice').text((data.price).toFixed(2));
+        
+        var that = $(this);
+        if(parentprodtype != 2)
+            var params = {subprdid: subprdid, qty: qty, pprd: 0,offerid:prodoffer};
+        else 
+            var params = {qty: qty, parentprdid: parentprodid, pprd: 1, offerid:prodoffer};
+            
+        //$.post("{{route('admin.orders.getProdPrice')}}", {subprdid: subprdid, qty: qty, pprd: 0}, function (data) {
+        $.post("{{route('admin.orders.getProdPrice')}}", params, function (data) {
+            //subp.parent().parent().find('.prodPrice').text((data.price).toFixed(2));
+            $("#selected_product_price").val(data.price);
+            subp.parent().parent().find('.prodPrice').text(data.price);
+            subp.parent().parent().find('.prodDiscount').text(data.offer);
+            //that.closest('td').next('td').next('td').next('td').next('td').find('.prodPrice').text(data.price);
+            $('.subtotal').text(data.price);
+            $(".finalAmt").text(data.price);
+            
+
             <?php if ($feature['tax'] == 1) {?>
                 subp.parent().parent().find('.taxAmt').text((data.tax).toFixed(2));
             <?php }?>
@@ -813,27 +965,38 @@
     });
 
     $("table").delegate(".qty", "change", function () {
-        console.log("inside qty");
+        //console.log("inside qty");
         var qty = $(this).val();
+        var qtty = $(this);
         var subprdid = $(this).parents("td").prev().find(".subprodid").val();
         var parentprdid = $(this).parents("td").siblings().find(".prodSearch").attr('data-prdid');
         if (subprdid == null || subprdid == "") {
+            var prod = $("[data-prdid=" + parentprdid + "]");
             var pprd = 1;
-            var data = {qty: qty, parentprdid: parentprdid, pprd: pprd};
+            var data = {qty: qty, parentprdid: parentprdid, pprd: pprd, offerid:prodoffer};
         } else {
+            var prod = $("[data-prdid=" + subprdid + "]");
             var pprd = 0;
-            var data = {qty: qty, subprdid: subprdid, pprd: pprd};
+            var data = {qty: qty, subprdid: subprdid, pprd: pprd, offerid:prodoffer};
         }
-        var qtty = $(this)
+
+        //qtty.parent().parent().find('.prodPrice').attr('data-prdid', subprdid);
+
+        
         $.ajax({
             type: "POST",
             url: "{{ route('admin.orders.getProdPrice') }}",
             data: data,
             cache: false,
             success: function (price) {
-                qtty.parents("td").next().find('.prodPrice').text((price.price).toFixed(2));
+                qtty.closest("td").next('td').next('td').next('td').next('td').next('td').find('.prodPrice').text(price.price);
+                //prod.parent().parent().find('.prodPrice').text((price.price));
+                $(".subtotal").text(price.price);
+                $(".finalAmt").text(price.price);
+                prod.parent().parent().find('.prodDiscount').text(price.offer);
+               
                 <?php if ($feature['tax'] == 1) {?>
-                qtty.parents("td").next().next().find('.taxAmt').text((price.tax).toFixed(2));
+                qtty.parents("td").next().next().find('.taxAmt').text((price.tax));
                 <?php }?>
                 // ApplyCoupon();
                 clearAllDiscount();
@@ -860,7 +1023,7 @@
                 var subprodid = $(this).find('.subprodid').val();
                 var qty = $(this).find('.qty').val();
                 var prodPrice = $(this).find('.prodPrice').text();
-                var data = {prod_id: prod_id, subprodid: subprodid, qty: qty, prodPrice: prodPrice};
+                var data = {prod_id: prod_id, subprodid: subprodid, qty: qty, prodPrice: prodPrice, offerid:prodoffer};
                 prod.push(data);
             }
         });
@@ -1180,7 +1343,7 @@
         $(".voucher-code").remove();
         $(".vMsg").css("display", "none");
 
-        ApplyCoupon();
+        //ApplyCoupon();
 
     }
 

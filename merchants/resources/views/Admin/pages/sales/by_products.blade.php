@@ -3,8 +3,15 @@
 
 <section class="content-header">
     <h1>
-        By Products ({{$prodCount }})
-        <small></small>
+        By Products <?php
+        if($prodCount > 0)
+        {
+        ?>
+           <span> ({{$startIndex}}-{{$endIndex}} of {{$prodCount }}) </span> 
+        <?php
+        }
+        ?>  
+        </h1>  <small></small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashnoard</a></li>

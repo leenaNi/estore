@@ -2,22 +2,16 @@
 
 @section('mystyles')
 <link rel="stylesheet" href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css">
-<link rel="stylesheet" href="{{  Config('constants.adminPlugins').'/bootstrap-multiselect/bootstrap-multiselect.css' }}">
-<style type="text/css">
-.multiselect-container {width: 100% !important;}
-.brbottom1{margin-bottom: 10px; padding: 10px;}
-.success{color: #3c763d;}
-.error{color: #d73925;}
-</style>
+<link rel="stylesheet" href="{{  Config('constants.adminPlugins').'/bootstrap-multiselect/bootstrap-multiselect.css' }}"> 
 @stop
 
 @section('content')
 <section class="content-header">
     <h1>
-        All Orders ({{$ordersCount }}) 
+        All Orders 
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i>Sales</a></li>
         <li class="active">All Orders</li>
     </ol>
 </section>
@@ -37,46 +31,31 @@
         @endif
     </div>
 
+    <div class="col-md-9 noLeft-padding">
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Filter</h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
-        <div class="filter-section displayFlex">
-            <div class="col-md-9 noAll-padding displayFlex">
+        <div class="filter-section equal-height-div-1">
                 <div class="filter-left-section">
                     {!! Form::open(['method' => 'get', 'route' => 'admin.orders.view' , 'id' => 'searchForm' ]) !!}
                     <div class="form-group col-md-4">
-                        {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"Order Id"]) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
+                            {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control  form-control-right-border-radius', "placeholder"=>"Search for Order Id"]) !!}
+                        </div>                        
                     </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control ', "placeholder"=>"Order No. From"]) !!}
+                    <div class="form-group col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'noun_user.svg'}}"></span>                        
+                        {!! Form::text('search',Input::get('search'), ["class"=>'form-control  form-control-right-border-radius', "placeholder"=>"Search for Name, Email or Mobile Number"]) !!}
+                        </div>
                     </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control ', "placeholder"=>"Order No. To"]) !!}
-                    </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('search',Input::get('search'), ["class"=>'form-control ', "placeholder"=>"Name/Email/Mobile"]) !!}
-                    </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('pricemin',Input::get('pricemin'), ["class"=>'form-control ', "placeholder"=>"Minimum Amount"]) !!}
-                    </div>
-                    <div class="form-group col-md-4">
-                        {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control ', "placeholder"=>"Maximum Amount"]) !!}
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <div class="input-group date">
-                            {!! Form::text('date',Input::get('date'), ["class"=>'form-control date', "placeholder"=>"Order Date"]) !!}
-                            <div class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </div>
-                        </div> 
-                    </div>  
 
                     @if($order_status->count())
                     @php echo Input::get('searchStatus[]'); @endphp
                     <div class="btn-group form-group col-md-4 col-xs-12">
-                        <select name='searchStatus[]' class="multiselect form-control" multiple="multiple" style="background-color: none!important;">
+                        <select name='searchStatus[]' class="multiselect form-control" multiple="multiple">
                             @php echo $order_options @endphp
                         </select>
                     </div>
@@ -91,53 +70,81 @@
                         </select>
                     </div>
                     @endif
-                    <div class="clearfix"></div>
-                    <div class="form-group col-md-4 noBottomMargin">
-                        <div class="button-filter-search col-md-4 col-xs-12 no-padding mob-marBottom15">
-                            <button type="submit" class="btn btn-primary fullWidth noAll-margin"> Filter</button>
+                    <div class="form-group col-md-4">
+
+                        <div class="input-group">
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'calendar.svg'}}"></span>
+                             {!! Form::text('date',Input::get('date'), ["class"=>'form-control-no-border-radius darkPlaceholder', "placeholder"=>"Order Date"]) !!}
+                            <span class="input-group-addon date"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'arrow_drop_down.png'}}" class="autoWidth"></span>
+                        </div> 
+                    </div>
+                    <span id="advanced-filter"> 
+                        <div class="form-group col-md-3"> 
+                            {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control form-control-border-radius', "placeholder"=>"Order No. From"]) !!} 
                         </div>
-                        <div class="button-filter col-md-4 col-xs-12 no-padding noBottomMargin">
-                            <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn fullWidth noMob-leftmargin">Reset</button></a>
+                        <div class="form-group col-md-3"> 
+                            {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control form-control-border-radius', "placeholder"=>"Order No. To"]) !!} 
+                        </div> 
+                        <div class="form-group col-md-3"> 
+                            {!! Form::text('pricemin',Input::get('pricemin'), ["class"=>'form-control form-control-border-radius', "placeholder"=>"Minimum Amount"]) !!} 
                         </div>
+                        <div class="form-group col-md-3"> 
+                            {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control form-control-border-radius', "placeholder"=>"Maximum Amount"]) !!} 
+                        </div>  
+                    </span>
+                    <span id="dots"></span><div class="clearfix"></div> 
+                    <div class="form-group col-md-6 noBottomMargin">
+                        <span onclick="myFunction()" id="advanced-filter-Btn"><i class="fa fa-caret-down" aria-hidden="true"></i> Advanced Filters</span>
+                    </div>
+                    <div class="form-group col-md-6 noBottomMargin"> 
+                        <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right">Reset</button></a> 
+                        <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg"> Filter</button> 
                     </div>
                     {!! Form::close() !!}
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="col-md-3 noAll-padding displayFlex">
-                <div class="filter-right-section">
-                    <div class="form-group">
-                        <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-default fullWidth noAll-margin">Create New Order</a>  
-                    </div>
+    <div class="col-md-3 noRight-padding">
+    <div class="grid-content">
+        <div class="section-main-heading">
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
+        </div>
+        <div class="filter-section equal-height-div-2">
+                <div class="filter-right-section"> 
                     <div class="form-group">
                     <a class="btn btn-default fullWidth noAll-margin" href="{{route('admin.orders.sampleexport')}}">Download Sample</a>
+                    </div>
+                    <div class="form-group">
+                     <a href="{{route('admin.orders.export')}}"  class="btn btn-default noAll-margin fullWidth">Export All Order</a>
                     </div> 
                     <form action="{{route('admin.traits.orders')}}"  method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <input type="file" class="validate[required] fileUploder fullWidth" name="order_file" placeholder="Browse CSV file"  required onChange="validateFile(this.value)"/>
+                            <div class="input-group file-upload-column">
+                                <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'up-arrow.svg'}}"></span>
+                                <div class="file-upload-wrapper" data-text="Upload Import File">
+                                    <input type="file" class="validate[required] fileUploder fullWidth form-control form-control-right-border-radius file-upload-field" name="order_file" placeholder="Upload Import File"  required onChange="validateFile(this.value)"/>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <input type="submit" class="btn sbtn btn-primary submitBulkUpload fullWidth noAll-margin" value="Bulk Order Upload"/>
+                        <div class="form-group noAll-margin">
+                            <input type="submit" class="btn sbtn btn-secondary submitBulkUpload fullWidth noAll-margin" value="Import from File"/>
                         </div>
-                    </form> 
-                    <div class="form-group">
-                     <a href="{{route('admin.orders.export')}}"  class="btn btn-default noAll-margin fullWidth">Export All Order</a>
-                    </div>
-                    <form action="" class="formMul" method="post" >
+                    </form>  
+
+                    <!-- <form action="" class="formMul" method="post" >
                         <input type="hidden" value="" name="OrderIds" />
                         <select name="orderAction" id="orderAction" class="form-control">
-                            <option value="">Select Bulk Action</option>
-                            <!--                            <option value="">Generate Waybill</option>-->
-                            <option value="1">Print Invoice</option>
-                            <!--<option value="17">Send to Shiprocket</option>-->
+                            <option value="">Select Bulk Action</option> 
+                            <option value="1">Print Invoice</option> 
                             <option value="3" >Export</option>
                             @if($feature['flag'] == 1)
                             <option value="30" >Flag</option>
                             @endif
                             <optgroup label="Courier Services">
                                 <option value="31">E-courier</option>
-                            </optgroup>
-                            <!--<option value="25" >Warehouse Order Export</option>-->
+                            </optgroup> 
                             <optgroup label="Update Order Status">
                                 <option value="8">Cancelled</option>
                                 <option value="12" >Delayed</option>
@@ -158,7 +165,7 @@
                             </optgroup>
 
                         </select>
-                    </form>
+                    </form> -->
                 </div>
             </div>
 
@@ -168,23 +175,111 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>All Orders  <span class="listing-counter">{{$ordersCount }}</span> </h1>
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Orders  
+			<?php
+                if($ordersCount > 0)
+                {
+                ?>
+                    <span class="listing-counter"> {{$startIndex}}-{{$endIndex}} of  {{$ordersCount }}</span>
+                <?php
+                }
+                ?>  
+			
+            </h1>
+            <a href="{{route('admin.orders.createOrder')}}" target="_blank" class="btn btn-listing-heading pull-right noAll-margin"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create </a>   
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">
                 <table class="table orderTable table-striped table-hover tableVaglignMiddle">
                     <thead>
                         <tr>
-                            <th class="text-center"><input type="checkbox" id="checkAll" /></th>
-                            <th class="text-center">@sortablelink ('id', 'Order Id')</th>
-                            <th class="text-left">Customer</th>
+                            <th class="text-center">
+                                <label class="custom-checkbox">
+                                   <input type="checkbox" id="checkAll" />
+                                  <span class="checkmark"></span>
+                                </label>
+
+                              <form action="" class="formMul" method="post" >
+                                <input type="hidden" value="" name="OrderIds" />
+                                <span class="dropdown">
+                                  <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+                                    <span class="caret"></span>
+                                  </button>
+                                  <ul name="orderAction" id="orderAction" class="dropdown-menu bulk-action-dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <li role="presentation" class="dropdown-header">Select Bulk Action</li>
+                                    <li><input type="radio" id="1" name="Bulk Action" value="1">
+                                        <label for="1">Print Invoice</label> 
+                                    </li>
+                                    <li><input type="radio" id="3" name="Bulk Action" value="3">
+                                        <label for="3">Export</label> 
+                                    </li> 
+                                    @if($feature['flag'] == 1) 
+                                    <li><input type="radio" id="30" name="Bulk Action" value="30">
+                                        <label for="30">Flag</label> 
+                                    </li> 
+                                     @endif
+                                    <li role="presentation" class="dropdown-header"> Courier Services </li>
+                                    <li><input type="radio" id="31" name="Bulk Action" value="31">
+                                        <label for="31">E-courier</label> 
+                                    </li>  
+                                    <li role="presentation" class="dropdown-header"> Update Order Status </li>
+                                     <li><input type="radio" id="8" name="Bulk Action" value="8">
+                                        <label for="8">Cancelled</label> 
+                                    </li>
+                                     <li><input type="radio" id="12" name="Bulk Action" value="12">
+                                        <label for="12">Delayed</label> 
+                                    </li>
+                                     <li><input type="radio" id="6" name="Bulk Action" value="6">
+                                        <label for="6">Delivered</label> 
+                                    </li>
+                                     <li><input type="radio" id="9" name="Bulk Action" value="9">
+                                        <label for="9">Exchanged</label> 
+                                    </li>
+                                     <li><input type="radio" id="10" name="Bulk Action" value="10">
+                                        <label for="10">Returned</label> 
+                                    </li> 
+                                     <li><input type="radio" id="20" name="Bulk Action" value="20">
+                                        <label for="20">Partially Shipped</label> 
+                                    </li> 
+                                     <li><input type="radio" id="4" name="Bulk Action" value="4">
+                                        <label for="4">Processing</label> 
+                                    </li> 
+                                     <li><input type="radio" id="21" name="Bulk Action" value="21">
+                                        <label for="21">Refunded</label> 
+                                    </li> 
+                                     <li><input type="radio" id="5" name="Bulk Action" value="5">
+                                        <label for="5">Shipped</label> 
+                                    </li> 
+                                     <li><input type="radio" id="11" name="Bulk Action" value="11">
+                                        <label for="11">Undelivered</label> 
+                                    </li>   
+                                    <li role="presentation" class="dropdown-header"> Update Payment Status </li>
+                                    <li><input type="radio" id="13" name="Bulk Action" value="13">
+                                        <label for="13">Pending</label> 
+                                    </li>
+                                     <li><input type="radio" id="14" name="Bulk Action" value="14">
+                                        <label for="14">Cancelled</label> 
+                                    </li>
+                                     <li><input type="radio" id="15" name="Bulk Action" value="15">
+                                        <label for="15">Partially Paid</label> 
+                                    </li>
+                                     <li><input type="radio" id="16" name="Bulk Action" value="16">
+                                        <label for="16">Paid</label> 
+                                    </li> 
+                                  </ul>
+                                </span>  
+                            </form>
+
+                            </th>
+                            <th class="text-right">@sortablelink ('id', 'Order Id')</th>
                             <th class="text-right">Order Date</th> 
+                            <th class="text-left">Customer Name</th>
                             <th class="text-center">Order Status</th>
                             <th class="text-center">Payment Status</th>
-                            <th class="text-right">@sortablelink ('pay_amt', 'Amount')</th>
+                            <th class="text-right">@sortablelink ('pay_amt', 'Amount (INR)')</th>
                             <!-- <th class="text-right">Paid Amount</th>  -->
                             @if($feature['courier-services'] == 1)
-<!--                                <th>Courier Service</th>-->
+                            <!-- <th>Courier Service</th>-->
                             @endif
                             <th class="text-center">Action</th>
                         </tr>
@@ -194,21 +289,29 @@
                         @foreach($orders as $order)
                      
                         <tr>
-                            <td class="text-center"><input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /></td>
-                            <td class="text-center"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
-                            <td class="text-left"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"><span class="list-dark-color">{{ @$order->users->firstname }} {{ @$order->users->lastname }} </span></a><div class="clearfix"></div>
-                                <span class="list-light-color list-small-font">{{ @$order->users->telephone }}</span>
+                            <td class="text-center">
+                                <!-- <input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /> -->
+
+                                <label class="custom-checkbox">
+                                  <input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" />
+                                  <span class="checkmark"></span>
+                                </label>
+
                             </td>
+                            <td class="text-right"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{$order->id }}</a></td>
                             <td class="text-right">{{ date('d-M-Y',strtotime($order->created_at)) }}
                                 <div class="clearfix"></div>
-                                <span class="list-light-color list-small-font">8:30 PM</span>
+                                <span class="list-light-color list-small-font">10:53:12 AM</span>
+                            </td>
+                            <td class="text-left"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{ @$order->users->firstname }} {{ @$order->users->lastname }} </a><div class="clearfix"></div>
+                                <span class="list-light-color list-small-font">{{ @$order->users->telephone }}</span>
                             </td> 
-                            <td class="text-center"><span class="alertWarning">{{ @$order->orderstatus['order_status']  }}</span></td>
+<td class="text-center"><span class="alertWarning" style="background-color: {{@$order->orderstatus['color']}}">{{ @$order->orderstatus['order_status']  }}</span></td>
                             <td class="text-center"><span class="alertWarning">{{ @$order->paymentstatus['payment_status'] }}</span></td>
                             <td class="text-right">@if(@$order->prefix)
-                                <span class="currency-sym"></span> {{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}
+                                <!-- <span class="currency-sym"></span> --> <span class="list-dark-color">{{ number_format((@$order->pay_amt  * Session::get('currency_val')), 2) }}</span>
                                 @else
-                                <span class="currency-sym"></span> {{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}
+                                <!-- <span class="currency-sym"></span> --> <span class="list-dark-color">{{ number_format((@$order->hasPayamt  * Session::get('currency_val')), 2) }}</span>
                                 @endif
                             </td>
                             <!-- <td class="text-right">
@@ -239,10 +342,10 @@
                             @endif
                             <td class="text-center">  
                             <div class="actionCenter">
-                                <span><a class="btn-action-default" href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">Edit</a></span> 
+                                <span><a class="btn-action-default" href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                 <span class="dropdown">
                                     <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="caret"></span>
+                                    <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
                                         <li><a href="#" data-ordId ="{{$order->id}}"  class="flage"><i class="fa fa-flag-o btn-plen"></i> Flag</a></li>
@@ -259,7 +362,7 @@
                         @endif
                     </tbody>
                 </table>
-                <div class="box-footer clearfix">
+                <div class="clearfix">
                     <?php
 echo $orders->appends(Input::except('page'))->render();
 ?>

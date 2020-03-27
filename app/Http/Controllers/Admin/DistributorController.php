@@ -92,6 +92,9 @@ class DistributorController extends Controller
        
         $data = [];
         $viewname = Config('constants.AdminPagesDistributors') . ".index";
+        //echo "<pre>";
+        //print_r($distributors);
+        //exit;
         $data['distributor'] = $distributors;
         $data['selCats'] = $selCats;
         //$data['selBanks'] = $selBanks;
@@ -108,12 +111,14 @@ class DistributorController extends Controller
         $data['already_selling'] = [];
         if ($fetchedDistributorData && Input::get('id')) {
             $resgisterDetails = json_decode($fetchedDistributorData->register_details);
-            //echo "<pre>";print_r($resgisterDetails);
+            //echo "<pre>";print_r($resgisterDetails);exit;
             $data['cat_selected'] = $resgisterDetails->business_type;
-            $data['curr_selected'] = $resgisterDetails->currency;
+            //$data['curr_selected'] = $resgisterDetails->currency;
+            $data['curr_selected'] = $fetchedDistributorData->currency_code;
             if(isset($resgisterDetails->already_selling) && !empty($resgisterDetails->already_selling))
                 $data['already_selling'] = ($resgisterDetails->already_selling);
-            $data['store_version'] = ($resgisterDetails->store_version);
+            //$data['store_version'] = ($resgisterDetails->store_version);
+            $data['store_version'] = '';
         }
 
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Choose your Industry *', '');

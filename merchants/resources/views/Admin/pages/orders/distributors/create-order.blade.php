@@ -218,7 +218,7 @@
                                         <td width="20%">
                                             <span class='prodDiscount'>0</span>
                                         </td>
-                                        <td width="20%">
+                                        <td width="20%" class="productPriceValue">
                                             <span class='prodPrice'>0</span>
                                         </td>
                                         @if($feature['tax']==1)
@@ -231,12 +231,18 @@
                                         </td>
                                     </tr>
                                 </tbody>
+                                <input type="hidden" id="selected_product_price" value="">
                                 <tr>
                                     <td>
                                         <select name='payment_mode' class="form-control paymode validate[required]">
                                             <option value="">Select Payment Mode</option>
                                             @foreach($paymentMethods as $paymentMethod)
-                                            <option value="{{$paymentMethod->id }}" >{{$paymentMethod->name }}</option>
+                                                @if ($paymentMethod->name == 'Cash')
+                                                    <option selected value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                @else
+                                                    <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                @endif
+                                              
                                             @endforeach
                                         </select>
                                     </td>
@@ -412,6 +418,7 @@
 @section('myscripts')
 
 <script>
+
 var prodoffer = 0;
     jQuery.validator.addMethod("phonevalidate", function (telephone, element) {
         telephone = telephone.replace(/\s+/g, "");
@@ -466,6 +473,7 @@ var prodoffer = 0;
     }
 
     function getSubprods(prodid, ele) {
+        //alert("get subproducts")
         var rows = $(".newRow").find('tr');
         var selected_prod = [];
         jQuery.each(rows, function (i, item) {
@@ -484,25 +492,29 @@ var prodoffer = 0;
             prodSel.parent().parent().find('.prodQty').show();
             if (subprodsData.length > 0) {
                 prodSel.parent().parent().find('.subprod').show();
-                subProdOpt = '<select name="cartData[prod_id][sub_prod_id]" class="form-control subprodid validate[required]" >'
+                subProdOpt = '<select id="variant_product" name="cartData[prod_id][sub_prod_id]" class="form-control subprodid validate[required]" >'
+                    subProdOpt += "<option value=''>Please select</option>";
                 subprodsData.forEach((subprods, subprodKey) => {
                 //console.log(subprods, subprodKey);
-                    subProdOpt += "<option value=''>Please select</option>";
-                    $.each(subprods, function (subprdk, subprdv) {
-                        subprodname = subprdv.product.split("Variant (");
-                        if (selected_prod.indexOf(subprdv.id) == -1) {
-                            subProdOpt += "<option value='" + subprdv.id + "'>" + subprodname[1].replace(")", "") + "</option>";
+                        subprodname = subprods.product.split("Variant (");
+                        if (selected_prod.indexOf(subprods.id) == -1) {
+                            subProdOpt += "<option value='" + subprods.id + "'>" + subprodname[1].replace(")", "") + "</option>";
                         }
-                    });
+                    //});
                 });
                 subProdOpt += '</select>';
                
                 prodSel.parent().parent().find('.subprod').html(subProdOpt);
+
+                qty = prodSel.parent().parent().find('.qty').val();
+                parentprdid = prodid;
+                //getParentProductPrice(qty,parentprdid,prodoffer);
+
             } else {
+                //alert("else");
                 qty = prodSel.parent().parent().find('.qty').val();
                 parentprdid = prodid;
                 $.post("{{route('admin.distributor.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1, offerid:prodoffer}, function (price) {
-                    //console.log(JSON.stringify(price));
                     prodSel.parent().parent().find('.prodUnitPrice').text(price.unitPrice);
                     prodSel.parent().parent().find('.prodDiscount').text(price.offer);
                     prodSel.parent().parent().find('.prodPrice').text(price.price);
@@ -526,6 +538,33 @@ var prodoffer = 0;
         });
     }
 
+
+function getParentProductPrice(qty,parentprdid,prodoffer)
+{
+    $.post("{{route('admin.distributor.orders.getProdPrice')}}", {parentprdid: parentprdid, qty: qty, pprd: 1, offerid:prodoffer}, function (price) {
+        //console.log(JSON.stringify(price));
+        prodSel.parent().parent().find('.prodUnitPrice').text(price.unitPrice);
+        prodSel.parent().parent().find('.prodDiscount').text(price.offer);
+        prodSel.parent().parent().find('.prodPrice').text(price.price);
+        
+        if(price.offertype==2){
+            var countprod = price.offerProdCount;
+            $(".newRow").append(price.offerProd);
+            // while(countprod > 0){
+            //     $(".newRow").append($(".toClonetr").html());
+            //     countprod --;
+            // }
+        }
+        <?php if ($feature['tax'] == 1) {?>
+        prodSel.parent().parent().find('.taxAmt').text((price.tax).toFixed(2));
+        <?php }?>
+        // calc();
+    });
+    prodSel.parent().parent().find('.subprod').hide();
+    clearAllDiscount();
+}
+
+
     $(".cancelBtn").on("click", function () {
         window.location.href = "{{ route('admin.distributor.orders.view') }}";
     });
@@ -543,20 +582,7 @@ var prodoffer = 0;
     $(".customerEmail").on("keyup", function () {
         // $(".custdata").show();
     });
-    // $(".customerEmail").on("keyup", function () {
-    //     term = $(this).val();
-    //     thisEle = $(this);
-    //     thisEle.css("border-color", "");
-    //     thisEle.closest("p").remove();
-    //     $.post("{{route('admin.distributor.orders.getDistributor') }}", {term: term}, function (res) {
-    //         resp = JSON.parse(res);
-    //         chkLengh = Object.keys(resp).length;
-    //         if (chkLengh == 1) {
-    //             setValuesToInpt(resp[0].id, resp[0].store_name, resp[0].identity_code, resp[0].firstname, resp[0].phone_no, resp[0].email, resp[0].user_id);
-    //             $(".custdata").show();
-    //         }             
-    //     });
-    // });
+    
     $(".skipAddress").on("click", function () {
         $('.nav-tabs a[href="#customer-details"]').removeAttr('data-toggle');
         $('.nav-tabs a[href="#shipping-address"]').removeAttr('data-toggle');
@@ -678,26 +704,47 @@ var prodoffer = 0;
     });
 
     $("table").delegate(".subprodid", "change", function () {
+        subprdid = $(this).val();
         subp = $(this);
         parentprodid = subp.parent().parent().find('.prodSearch').attr('data-prdid');
-        parentprodtype = subp.parent().parent().find('.prodSearch').attr('data-prdtype');    prodoffer = subp.parent().parent().find('.prodSearch').attr('data-prdoffer'); 
-        subprdid = (parentprodtype != 2)? $(this).val(): null;
         removeError(subp);
         $(this).attr("name", "cartData[" + parentprodid + "][subprodid]");
-        qty = subp.parent().parent().find('.qty').val();
-        subp.parent().parent().find('.qty').attr('subprod-id', subprdid);
+        //qty = subp.parent().parent().find('.qty').val();
+        qty = $(this).closest('td').next('td').find('.qty').val();
+        //alert("qty::"+qty);
+       subp.parent().parent().find('.qty').attr('subprod-id', subprdid);
+        //subprdid = $(this).val();
+        //subp = $(this);
+        parentprodid = subp.parent().parent().find('.prodSearch').attr('data-prdid');
+        parentprodtype = subp.parent().parent().find('.prodSearch').attr('data-prdtype');
+        prodoffer = subp.parent().parent().find('.prodSearch').attr('data-prdoffer'); 
+        //subprdid = (parentprodtype != 2)? $(this).val(): null;
+        //removeError(subp);
+        //$(this).attr("name", "cartData[" + parentprodid + "][subprodid]");
+        //qty = subp.parent().parent().find('.qty').val();
+        
+        //subp.parent().parent().find('.qty').attr('subprod-id', subprdid);
+        var that = $(this);
         if(parentprodtype != 2)
             var params = {subprdid: subprdid, qty: qty, pprd: 0,offerid:prodoffer};
         else 
             var params = {qty: qty, parentprdid: parentprodid, pprd: 1, offerid:prodoffer};
         $.post("{{route('admin.distributor.orders.getProdPrice')}}", params, function (data) {
-            subp.parent().parent().find('.prodPrice').text(data.price);
-            subp.parent().parent().find('.prodDiscount').text(5000);
+            //alert(data.price);
+            $("#selected_product_price").val(data.price);
+            //subp.parent().parent().find('.prodPrice').text(data.price);
+            that.closest('td').next('td').next('td').next('td').next('td').find('.prodPrice').text(data.price);
+            $('.subtotal').text(data.price);
+            //$(".prodPrice").text(data.price);
+             //subp.parent().parent().find('.prodDiscount').text(5000);
             <?php if ($feature['tax'] == 1) {?>
                 subp.parent().parent().find('.taxAmt').text((data.tax).toFixed(2));
             <?php }?>
             clearAllDiscount();
         });
+        
+
+        
     });
     $(".addCourse").on("click", function () {
         $(".product-empty").remove();
@@ -809,6 +856,7 @@ var prodoffer = 0;
 
     $("table").delegate(".qty", "change", function () {
         var qty = $(this).val();
+        //alert("qty::"+qty);
         var subprdid = $(this).parents("td").prev().find(".subprodid").val();
         var parentprdid = $(this).parents("td").siblings().find(".prodSearch").attr('data-prdid');
         if (subprdid == null || subprdid == "") {
@@ -820,6 +868,7 @@ var prodoffer = 0;
             var pprd = 0;
             var data = {qty: qty, subprdid: subprdid, pprd: pprd, offerid:prodoffer};
         }
+        //alert("data::"+JSON.stringify(data));
         var qtty = $(this)
         $.ajax({
             type: "POST",
@@ -828,7 +877,8 @@ var prodoffer = 0;
             cache: false,
             success: function (price) {
                 //console.log(price);
-                qtty.parents("td").next().find('.prodPrice').text(price.price);
+                qtty.closest("td").next('td').next('td').next('td').find('.prodPrice').text(price.price);
+                $(".subtotal").text(price.price);
                 prod.parent().parent().find('.prodDiscount').text(price.offer);
                 if(price.offertype==2){
                         var countprod = price.offerProdCount;
@@ -1228,5 +1278,6 @@ var prodoffer = 0;
         }
         return true;
     }
+
 </script>
 @stop

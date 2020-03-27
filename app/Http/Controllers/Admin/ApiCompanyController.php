@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use DB;
 use Input;
+use Session;
 
 class ApiCompanyController extends Controller
 {
@@ -71,12 +72,12 @@ class ApiCompanyController extends Controller
 
     public function getMerchantCompanyList()
     {
-        DB::enableQueryLog();
+        // DB::enableQueryLog();
         $isError = '';
         //dd(Input::all());
-        if (!empty(Input::get("merchantId"))) {
-            $merchantId = Input::get("merchantId");
-
+        // dd(Session::all());
+        if (!empty(Session::get("merchantId"))) {
+            $merchantId = Session::get("merchantId");
             // get distributor id from has_distributor table
             $distributorIdResult = DB::table('has_distributors')->where('merchant_id', $merchantId)->get(['distributor_id']);
 
@@ -85,20 +86,17 @@ class ApiCompanyController extends Controller
                 foreach ($distributorIdResult as $distributorIdData) {
                     $distributorIds[] = $distributorIdData->distributor_id;
                 }
-
                 // get brand id
                 $brandIdsResult = DB::table('stores')
                     ->join('products', 'products.store_id', '=', 'stores.id')
                     ->whereIn('stores.merchant_id', $distributorIds)
                     ->where('stores.store_type', 'distributor')->get(['products.brand_id', 'products.store_id']);
-
                 if (count($brandIdsResult) > 0) {
                     $brandIds = [];
                     $storeId = [];
                     foreach ($brandIdsResult as $brandIdsData) {
                         $brandIds[] = $brandIdsData->brand_id;
                     }
-
                     // Get company ids
                     $companyResult = DB::table('company')
                         ->join('brand', 'company.id', '=', 'brand.company_id')
@@ -111,10 +109,9 @@ class ApiCompanyController extends Controller
                         $companyArray = array();
                         $brandArray = array();
                         foreach ($companyResult as $companyData) {
-
                             $companyId = $companyData->company_id;
                             $companyName = $companyData->company_name;
-                            $companyLogo = $companyData->company_logo;
+                            $companyLogo = ($companyData->company_logo != '') ? $companyData->company_logo : 'default-company.jpg';
                             // $brandId = $companyData->brand_id;
                             // $brandName = $companyData->brand_name;
                             // $brandLogo = $companyData->brand_logo;
@@ -134,17 +131,14 @@ class ApiCompanyController extends Controller
                                     $companyArray[$i]['company_logo'] = asset(Config('constants.companyImgPath') . $companyLogo);
                                 }
                             }
-
                             // $brandArray[$j]['brand_id'] = $brandId;
                             // $brandArray[$j]['brand_name'] = $brandName;
                             // $brandArray[$j]['brand_logo'] = asset(Config('constants.brandImgPath').$brandLogo);
-
                             $j++;
                             $tempId = $companyId;
 
                         } // End foreach
                         $isError = 0;
-
                         if (!empty($brandArray)) {
                             $companyArray[$i]['brand'] = $brandArray;
                         }

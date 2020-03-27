@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Library\CustomValidator;
 use App\Models\User;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
+use App\Models\Product;
 use Config;
 use DB;
 use Input;
@@ -14,25 +17,18 @@ class ApiDistributorController extends Controller
 {
     public function searchProductWithDistributor()
     {
-        if (!empty(Input::get("merchantId"))) {
+        if (!empty(Session::get("merchantId"))) {
             $searchKeyWord = Input::get("searchKey");
-            $merchantId = Input::get("merchantId");
-
+            $merchantId = Session::get("merchantId");
             $storeIdsResult = $this->getStoreId($merchantId);
             
-            //echo "<pre>";
-            //print_r($storeIdsResult);
-            //exit;
             $storeIdWithDistributorId = array();
-            $i = 0;
+            $i = 0;$temp = 0;
             foreach ($storeIdsResult as $storeIdsData) {
                 $storeId = $storeIdsData->id;
-                //$storeIdWithDistributorId[$storeIdsData->id]['merchant_id'] = $storeIdsData->merchant_id;
-                //$storeIdWithDistributorId[$storeIdsData->id]['store_name'] = $storeIdsData->store_name;
-                //echo "store id::".$storeId;
                 $storeIdWithDistributorId[$i]['store_id'] = $storeIdsData->id;
                 $storeIdWithDistributorId[$i]['store_name'] = $storeIdsData->store_name;
-
+                
                 if($searchKeyWord != '')
                 {
                     //get store wise products
@@ -41,9 +37,13 @@ class ApiDistributorController extends Controller
                     ->where('p.store_id', $storeId)
                     ->where(['p.status' => 1, 'p.is_del' => 0])
                     ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
+                    ->where('p.parent_prod_id',0)
                     ->orderBy('p.store_id', 'ASC')
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
-                
+                    
+                    if(count($productResult) > 0){
+                        $temp++;
+                    }
                 }
                 else
                 {
@@ -56,12 +56,16 @@ class ApiDistributorController extends Controller
                     ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id']);
                 
                 }
+                
+                if($temp == 0){
+                    return response()->json(["status" => 2, 'msg' => 'Product not found']);
+                }
                 //echo "<pre>";print_r($productResult);//exit;
+                //dD(count($productResult));
                 $j = 0;
                 $totalOfferOfAllProduct = 0;
                 if(count($productResult) > 0)
                 {
-                    //echo "if";
                     foreach ($productResult as $getProductData) {
                         $storeId = $getProductData->store_id;
                         $productId = $getProductData->id;
@@ -79,7 +83,7 @@ class ApiDistributorController extends Controller
                             $productImage = "http://" . $storeIdsData->url_key . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
                         }
                         //echo "product image::http://" .$_SERVER['HTTP_HOST'].'/uploads/catalog/products/'.$productImage;
-
+                        
                         $storeIdWithDistributorId[$i]['products'][$j]['product_id'] = $getProductData->id;
                         $storeIdWithDistributorId[$i]['products'][$j]['brand_id'] = $getProductData->brand_id;
                         $storeIdWithDistributorId[$i]['products'][$j]['brand_name'] = $getProductData->brand_name;
@@ -125,6 +129,27 @@ class ApiDistributorController extends Controller
                         }
                         
                         $storeIdWithDistributorId[$i]['products'][$j]['offers_count'] = $offerCount;
+                        //product variants
+                        $prod = Product::find($getProductData->id);
+                        if($prod != null && $prod->prod_type == 3){
+                            if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                $subprods = $prod->getsubproducts()->get();
+                            } else {
+                                $subprods = $prod->subproducts()->get();
+                            }        
+                            foreach ($subprods as $subP) {
+                                $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                foreach ($hasOpt as $prdOpt) {
+                                    $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                    $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                    $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                }
+                            }
+                            $storeIdWithDistributorId[$i]['products'][$j]['variants'] = $selAttrs;
+                        }
                         $j++;
                     } //product foreach ends here
 
@@ -147,6 +172,7 @@ class ApiDistributorController extends Controller
                         
                     }
                     $storeIdWithDistributorId[$i]['offer_count'] = $totalOfferOfAllProduct;
+                    
                 }
                 $i++;
             } //store foreach ends here
@@ -164,10 +190,10 @@ class ApiDistributorController extends Controller
 
     public function getDistributorByProduct()
     {
-        if (!empty(Input::get("merchantId"))) {
+        if (!empty(Session::get("merchantId"))) {
             $searchKeyWord = Input::get("searchKey");
-            $merchantId = Input::get("merchantId");
-
+            $merchantId = Session::get("merchantId");
+            //dd($searchKeyWord);
             $storeIdsResult = $this->getStoreId($merchantId);
 
             $storeIdArray = [];
@@ -177,15 +203,25 @@ class ApiDistributorController extends Controller
             //echo "<pre>";print_r($storeIdArray);exit;
             $productResult = DB::table('products as p')
                 ->join('stores as s', 'p.store_id', '=', 's.id')
+                ->join('distributor as d', 'd.id', '=', 's.merchant_id')
                 ->whereIn('p.store_id', $storeIdArray)
                 ->where(['p.status' => 1, 'p.is_del' => 0])
                 ->where('p.product', 'LIKE', '%' . $searchKeyWord . '%')
                 ->groupBy('p.store_id')
                 ->get(['s.id', 'p.store_id', 's.store_name']);
 
-            //echo "<pre>";
-            //print_r($productResult);
-            if (count($productResult) > 0) {
+            if (count($productResult) == 0) {
+                $productResult = DB::table('products as p')
+                ->join('stores as s', 'p.store_id', '=', 's.id')
+                ->join('distributor as d', 'd.id', '=', 's.merchant_id')
+                ->whereIn('p.store_id', $storeIdArray)
+                ->where(['p.status' => 1, 'p.is_del' => 0])
+                ->where('d.business_name', 'LIKE', '%' . $searchKeyWord . '%')
+                ->groupBy('p.store_id')
+                ->get(['s.id', 'p.store_id', 's.store_name']);
+                
+            } 
+            if (count($productResult) > 0){
                 $storeArray = [];
                 $i = 0;
                 foreach ($productResult as $getData) {
@@ -197,6 +233,13 @@ class ApiDistributorController extends Controller
                         }
 
                     }
+                    $distributorId = DB::table("stores")->where("id",$getData->store_id)->pluck('merchant_id');
+                    $has_distributors = DB::table("has_distributors")->where(['distributor_id'=>$distributorId,'merchant_id'=>$merchantId])->first();
+                    $is_favourite = 0;
+                    if(!empty($has_distributors)){
+                    $is_favourite = $has_distributors->is_favourite; 
+                    }
+                    $storeArray[$i]['is_favourite'] = $is_favourite;
 
                     $storeArray[$i]['store_id'] = $getData->store_id;
                     $storeArray[$i]['store_name'] = $getData->store_name;
@@ -216,7 +259,7 @@ class ApiDistributorController extends Controller
                     $i++;
                 }
                 return response()->json(["status" => 1, 'data' => $storeArray]);
-            } else {
+            }else{
                 return response()->json(["status" => 2, 'msg' => 'Product not found']);
             }
         } else {
@@ -234,7 +277,6 @@ class ApiDistributorController extends Controller
     }
 
     public function getProduct() // distributoe product
-
     {
         if (!empty(Input::get("distributorId"))) {
             $distributorId = Input::get("distributorId");
@@ -245,15 +287,41 @@ class ApiDistributorController extends Controller
                 ->get(['id']);
             if (count($storeResult) > 0) {
                 $storeId = $storeResult[0]->id;
-
+                $allproducts = [];
                 // Get product
                 $productResult = DB::table('products as p')
                     ->join('brand as b', 'p.brand_id', '=', 'b.id')
                     ->where('p.store_id', $storeId)
                     ->where('p.is_del', 0)
                     ->get(['p.id', 'b.name', 'p.product', 'p.images', 'p.product_code', 'is_featured', 'prod_type', 'is_stock', 'is_avail', 'is_listing', 'status', 'stock', 'max_price', 'min_price', 'purchase_price', 'price', 'spl_price', 'selling_price', 'is_cod', 'is_tax', 'is_trending', 'min_order_quantity', 'is_share_on_mall']);
+                    if(count($productResult) > 0){
+                        $data =[];$prods = [];
+                        foreach($productResult as $product){
+                            $prod = Product::find($product->id);
+                            if($prod != null && $prod->prod_type == 3){
+                                if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                    $subprods = $prod->getsubproducts()->get();
+                                } else {
+                                    $subprods = $prod->subproducts()->get();
+                                }        
+                                foreach ($subprods as $subP) {
+                                    $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                    foreach ($hasOpt as $prdOpt) {
+                                        $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                        $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                        $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                    }
+                                }
+                                $product->variants = $selAttrs;
+                            }
+                        }
+                    }
+                    
+                
                 if (count($storeResult) > 0) {
-                    //echo "<pre>";print_r($productResult);exit;
                     return response()->json(["status" => 1, 'msg' => '', 'data' => $productResult]);
                 } else {
                     return response()->json(["status" => 0, 'msg' => 'Record not found']);
@@ -310,28 +378,6 @@ class ApiDistributorController extends Controller
         //DB::enableQueryLog(); // Enable query log
         if (!empty(Input::get("companyId"))) {
             $companyId = Input::get("companyId");
-
-            //get merchant wise distributor id
-            /*$merchantId = Input::get("merchantId");
-            $getDistributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
-            if(count($getDistributorIdsResult) > 0)
-            {
-            $multipleDistributorIds = [];
-            foreach ($getDistributorIdsResult as $distributorIdsData)
-            {
-            $multipleDistributorIds[] = $distributorIdsData->distributor_id;
-            }
-            //Get distributor id wise data
-            $merchantWiseDistributorResult = DB::table('distributor')
-            ->whereIn('id', $multipleDistributorIds)
-            ->get();
-
-            //echo "<pre> Merchant wise ditributor::";
-            //print_r($multipleDistributorIds);
-            //exit;
-
-            }*/
-
             //check company id is present in brand table
             $getBrandIdsResult = DB::table('brand')
                 ->select(DB::raw('id'))
@@ -411,6 +457,13 @@ class ApiDistributorController extends Controller
                                     }
 
                                     $finalDistributorArray[$i]['distributor_id'] = $companyWiseDistributorIds;
+                                    
+                                    $has_distributors = DB::table("has_distributors")->where(['distributor_id'=>$companyWiseDistributorIds,'merchant_id'=>Session::get("merchantId")])->first();
+                                    $is_favourite = 0;
+                                    if(!empty($has_distributors)){
+                                        $is_favourite = $has_distributors->is_favourite; 
+                                    }
+                                    $finalDistributorArray[$i]['is_favourite'] = $is_favourite;
                                     // $finalDistributorArray[$i]['register_details'] = $distributorRegisterDetails;
                                     $finalDistributorArray[$i]['phone_no'] = $getData->phone_no;
                                     $finalDistributorArray[$i]['store_id'] = $getData->storeId;
@@ -446,8 +499,8 @@ class ApiDistributorController extends Controller
 
     public function getDistributorOfferDetails()
     {
-        if (!empty(Input::get("merchantId"))) {
-            $merchantId = Input::get("merchantId");
+        if (!empty(Session::get("merchantId"))) {
+            $merchantId = Session::get("merchantId");
             $distributorId = Input::get("distributorId");
             $companyId = Input::get("companyId");
             $getDitributorIdsResult = $this->getMerchantWiseDistributorId($merchantId);
@@ -533,7 +586,7 @@ class ApiDistributorController extends Controller
                         return response()->json(["status" => 1, 'msg' => 'Records not found']);
                     }
                 } else {
-                    return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing..']);
+                    return response()->json(["status" => 0, 'msg' => 'Records not found']);
                 }
             } else {
                 return response()->json(["status" => 0, 'msg' => 'Invalid data']);
@@ -545,8 +598,8 @@ class ApiDistributorController extends Controller
 
     public function getDistributorBrandDetails()
     {
-        if (!empty(Input::get("merchantId"))) {
-            $merchantId = Input::get("merchantId");
+        if (!empty(Session::get("merchantId"))) {
+            $merchantId = Session::get("merchantId");
             $distributorId = Input::get("distributorId");
             $companyId = Input::get("companyId");
             if (CustomValidator::validateNumber($merchantId) && CustomValidator::validateNumber($distributorId) && CustomValidator::validateNumber($companyId)) {
@@ -627,8 +680,8 @@ class ApiDistributorController extends Controller
 
     public function getDistributorCategoryDetails()
     {
-        if (!empty(Input::get("merchantId"))) {
-            $merchantId = Input::get("merchantId");
+        if (!empty(Session::get("merchantId"))) {
+            $merchantId = Session::get("merchantId");
             $distributorId = Input::get("distributorId");
             $companyId = Input::get("companyId");
             $pageIndex = Input::get("page_index");
@@ -704,6 +757,7 @@ class ApiDistributorController extends Controller
                                 $getCategoryWiseProductsResult1 = DB::table('products')
                                     ->whereIn('store_id', $multipleCategoryStoreIds)
                                     ->where('status', 1)
+                                    ->where('parent_prod_id',0)
                                     ->offset($pageIndex)
                                     ->limit($perPageRecord)
                                     ->get();    
@@ -713,6 +767,7 @@ class ApiDistributorController extends Controller
                                 $getCategoryWiseProductsResult1 = DB::table('products')
                                     ->whereIn('store_id', $multipleCategoryStoreIds)
                                     ->where('status', 1)
+                                    ->where('parent_prod_id',0)
                                     ->get();    
                             }
                             $categoryDataArray['category_id'] = "0";
@@ -781,6 +836,28 @@ class ApiDistributorController extends Controller
                                         }
                                     }
                                     $categoryDataArray['product'][$c]['offers_count'] = $offerCount;
+
+                                    //product variants
+                                    $prod = Product::find($productId);
+                                    if($prod != null && $prod->prod_type == 3){
+                                        if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                                            $subprods = $prod->getsubproducts()->get();
+                                        } else {
+                                            $subprods = $prod->subproducts()->get();
+                                        }        
+                                        foreach ($subprods as $subP) {
+                                            $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                                            foreach ($hasOpt as $prdOpt) {
+                                                $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                                $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                                                $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                                            }
+                                        }
+                                        $categoryDataArray['product'][$c]['variants'] = $selAttrs;
+                                    }
                                     $c++;
                                 }
                             }//All products ends here
@@ -1022,9 +1099,9 @@ class ApiDistributorController extends Controller
     public function getMyOrderDetails()
     {
         //DB::enableQueryLog(); // Enable query log
-        if(!empty(Input::get("merchantId"))) 
+        if(!empty(Session::get("merchantId"))) 
         {
-            $merchantId = Input::get("merchantId");
+            $merchantId = Session::get("merchantId");
             //echo "merchant id::".$merchantId;
             //Get All Distributors
             $distributors = DB::table('has_distributors as hd')
@@ -1083,6 +1160,7 @@ class ApiDistributorController extends Controller
                                         ->whereIn('orders.user_id', $userIds)
                                         // ->where('orders.store_id', $storeId)
                                         ->whereIn('orders.store_id', $multipleDistributorStoreIds)
+                                        ->orderBy('orders.id','desc')
                                         ->get(['orders.id', 'orders.user_id', 'orders.pay_amt','orders.store_id','orders.created_at','stores.store_name','order_status.order_status','payment_status.payment_status']);
                             //echo "<pre> orders data::";
                             //print_r($getOrderResult);
@@ -1154,20 +1232,21 @@ class ApiDistributorController extends Controller
     }//myorderdetails fun ends here
 
     public function addFavouriteDistributor(){
-        $merchantId = Input::get('merchantId');
+        $merchantId = Session::get('merchantId');
         $distributorId = Input::get('distributorId');
-        if($merchantId!=null && $distributorId!=null){
-            $status = DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->pluck('is_favourite');
-            if($status[0] == 1){
+        $status = Input::get('status'); //1=favourite, 2= not favorite
+        //dd($distributorId);
+        if(!empty($distributorId) && !empty($status)){
+            if($status == 2){
                 DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->update(['is_favourite'=>0]);
                 $msg = 'Distributor is unmarked favourite';
-            }else if($status[0] == 0){
+            }else if($status == 1){
                 DB::table('has_distributors')->where(['merchant_id'=> $merchantId,'distributor_id'=>$distributorId])->update(['is_favourite'=>1]);
                 $msg = 'Distributor is marked favourite';
             }
             return ['status' => 1, 'msg' => $msg]; 
         }else{
-            if($merchantId != null){
+            if($distributorId == null){
                 $fav_distributors = DB::table('has_distributors')->where(['merchant_id'=> $merchantId])->get(['distributor_id','is_favourite']);
                 return ['status' => 1, 'msg' => 'Favourite Distributors List','data'=>$fav_distributors]; 
             }else{

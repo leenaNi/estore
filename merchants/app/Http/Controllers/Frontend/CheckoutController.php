@@ -54,7 +54,10 @@ class CheckoutController extends Controller
 
         $jsonString = Helper::getSettings();
         $data = (object) $jsonString;
-        $country_code = (int) explode("+", $data->country_code)[1];
+        //$country_code = (int) explode("+", $data->country_code)[1];
+        $country_code = $data->country_code;
+        //echo "country code::".$country_code;
+        //exit;
         $country = Helper::getCountry($country_code);
 
         $my_data = [];
@@ -102,7 +105,8 @@ class CheckoutController extends Controller
 
         $jsonString = Helper::getSettings();
         $temp_data = (object) $jsonString;
-        $country_code = (int) explode("+", $temp_data->country_code)[1];
+        //$country_code = (int) explode("+", $temp_data->country_code)[1];
+        $country_code = $temp_data->country_code;
         $cnt = Helper::getCountry($country_code);
         $countryid = Country::where('country_code', $country_code)->first();
         $json_data = Helper::getSettings();
@@ -2211,6 +2215,15 @@ foreach ($_POST as $a => $b) {
                     $total_tax[] = $prod_tax;
                 }
             }
+            
+            if(count($total_tax) > 0)
+            {
+                $taxval = json_encode($total_tax);
+            }
+            else
+            {
+                $taxval = count($total_tax);
+            }
             $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
             if ($cart->options->tax_type == 2) {
                 $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
@@ -2222,7 +2235,7 @@ foreach ($_POST as $a => $b) {
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
+            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => $taxval,
                 'pay_amt' => $payamt, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix']];
             //            $market_place = Helper::generalSetting(35);
             //            if (isset($market_place) && $market_place->status == 1) {
@@ -2233,34 +2246,51 @@ foreach ($_POST as $a => $b) {
             //                $cart_ids[$cart->rowid] = array_merge($cart_ids[$cart->rowid], $vendor);
             //            }
             if ($cart->options->has('sub_prod')) {
-                $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
+                if(($cart->options->sub_prod != '') || ($cart->options->sub_prod > 0))
+                {
+                    $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
+                }
+                
                 $proddetails = [];
                 $prddataS = Product::find($cart->options->sub_prod);
-                $proddetails['id'] = $prddataS->id;
-                $proddetails['name'] = $prddataS->product;
-                $proddetails['image'] = $cart->options->image;
-                $proddetails['price'] = $cart->price;
-                $proddetails['qty'] = $cart->qty;
-                $proddetails['subtotal'] = $subtotal;
-                $proddetails['is_cod'] = $prddataS->is_cod;
-                $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetails);
-                $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
-
-                if ($prddataS->is_stock == 1) {
-                    $prddataS->stock = $prddataS->stock - $cart->qty;
-                    if ($prddataS->is_share_on_mall == 1) {
-                        $mallProduct = MallProducts::where("store_prod_id", $cart->options->sub_prod)->first();
-                        $mallProduct->stock = $prddataS->stock;
-                        $mallProduct->update();
+                   
+                if(!empty($prddataS))
+                {
+                    $proddetails['id'] = $prddataS->id;
+                    $proddetails['name'] = $prddataS->product;
+                    $proddetails['image'] = $cart->options->image;
+                    $proddetails['price'] = $cart->price;
+                    $proddetails['qty'] = $cart->qty;
+                    $proddetails['subtotal'] = $subtotal;
+                    $proddetails['is_cod'] = $prddataS->is_cod;
+                    
+                    $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetails);
+                    $date = $cart->options->eNoOfDaysAllowed;
+                    $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                    $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
+    
+                    if ($prddataS->is_stock == 1) {
+                        $prddataS->stock = $prddataS->stock - $cart->qty;
+                        if ($prddataS->is_share_on_mall == 1) {
+                            $mallProduct = MallProducts::where("store_prod_id", $cart->options->sub_prod)->first();
+                            $mallProduct->stock = $prddataS->stock;
+                            $mallProduct->update();
+                        }
+                        $prddataS->update();
                     }
-                    $prddataS->update();
+    
+                    if ($prddataS->stock <= $stockLimit['stocklimit'] && $prddataS->is_stock == 1) {
+                        $this->AdminStockAlert($prddataS->id);
+                    }
                 }
-
-                if ($prddataS->stock <= $stockLimit['stocklimit'] && $prddataS->is_stock == 1) {
-                    $this->AdminStockAlert($prddataS->id);
+                else
+                {
+                    $cart_ids[$cart->rowid]["product_details"] = '';
+                    $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d');
+                    $cart_ids[$cart->rowid]["prod_type"] = 0;
+    
                 }
+               
             } else if ($cart->options->has('combos')) {
                 $sub_prd_ids = [];
                 foreach ($cart->options->combos as $key => $val) {
@@ -2287,7 +2317,12 @@ foreach ($_POST as $a => $b) {
                         }
                     }
                 }
-                $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                if(count($sub_prd_ids) > 0)
+                {
+                    $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                }
+                
+                
             } else {
                 $proddetailsp = [];
                 $prddataSp = Product::find($cart->id);
@@ -2324,6 +2359,7 @@ foreach ($_POST as $a => $b) {
             // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
             //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
+        
         HasProducts::insert($cart_ids);
         //  $this->orderSuccess();
     }

@@ -2,7 +2,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        System Users ({{$userCount }})
+        System Users ({{$startIndex}} - {{$endIndex}} of {{$userCount}})
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -57,7 +57,7 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>System Users <span class="listing-counter"> {{$userCount }} </span> </h1>
+            <h1>System Users <span class="listing-counter"> {{$startIndex}} - {{$endIndex}} of {{$userCount }} </span> </h1>
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">

@@ -4,63 +4,6 @@
         @include('Admin.includes.head')
 
     </head>
-    <style>
-.login-box-body span.logo-holder {
-    display: block;
-    margin: 30px 0px;
-}
-
-.input-group.input-otp-group {
-    border-radius: 5px;
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -ms-flex-align: stretch;
-    align-items: stretch;
-    width: 100%;
-    margin-top: 15px;
-}
-
-.login-box-body,
-.register-box-body {
-    padding: 30px 50px !important;
-}
-
-.input-group.input-otp-group input {
-    text-align: center;
-    margin-right: 15px;
-    border-radius: 5px !important;
-    height: 40px !important;
-    line-height: 40px;
-    outline: none !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    background: #eff2f6 !important;
-    font-weight: 400;
-    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-    font-family: 'livvicregular' !important;
-    color: #3f566f !important;
-    font-size: 16px !important;
-}
-
-.input-group.input-otp-group input:last-child {
-    margin-right: 0;
-}
-
-.input-group.input-otp-group .col {
-    position: relative;
-    -ms-flex: 1 1 auto;
-    flex: 1 1 auto;
-    width: 1%;
-    margin-bottom: 0;
-}
-.btn-primary:focus {
-    background-color: #359bdb!important;
-    border-color: #359bdb!important;
-}
-    </style>
     <body class="hold-transition login-page loginBG">
         <div class="login-box">
             <div class="login-box-body">
@@ -103,8 +46,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 text-center">
-                            <button type="button" class="btn btn-primary bottommargin-xs fullWidthBtn" id="sendotp">Send OTP</button>
+                        <div class="col-xs-12 text-center marginBottom-lg">
+                            <button type="button" class="btn btn-primary fullWidthBtn" id="sendotp">Send OTP</button>
                             <button type="button" class="btn btn-primary bottommargin-xs fullWidthBtn" style="display:none" id="loginbtn">Sign In</button>
                         </div><!-- /.col -->
                     </div>

@@ -2,10 +2,10 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Order Status ({{$orderstatusCount }})
+        Order Status 
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Sales</a></li>
         <li class="active">Order Status</li>
     </ol>
 </section>
@@ -30,35 +30,32 @@
 
 <div class="grid-content">
     <div class="section-main-heading">
-        <h1>Filter</h1>
+        <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
     </div>
-    <div class="filter-section displayFlex">
-        <div class="col-md-9 noAll-padding displayFlex">
-            <div class="filter-left-section"> 
+     <div class="filter-section">
+            <div class="col-md-12 no-padding">
+                <div class="filter-full-section"> 
                 <form action="{{ route('admin.order_status.view') }}" method="get" >
                 <div class="form-group col-md-8 noAll-margin">
-                        <input type="text" value="{{ !empty(Input::get('order_status')) ? Input::get('order_status') : '' }}" name="order_status" aria-controls="editable-sample" class="form-control medium" placeholder="Order Status"/>    
+                    <div class="input-group">
+                    <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
+                    <input type="text" value="{{ !empty(Input::get('order_status')) ? Input::get('order_status') : '' }}" name="order_status" aria-controls="editable-sample" class="form-control  form-control-right-border-radius  medium" placeholder="Order Status"/>  
+                    </div>  
                     </div>
-                    <div class="form-group noAll-margin col-md-2 col-sm-12 col-xs-12">
-                        <input type="submit" name="submit" class="btn btn-primary fullWidth noAll-margin" value="Search">
-                    </div>
-                    <div class="btn-group noAll-margin col-md-2 col-sm-12 col-xs-12">
-                        <a href="{{route('admin.order_status.view')}}"><button type="button" class="btn reset-btn fullWidth noMob-leftmargin" >Reset</button></a>
+                    <div class="form-group col-md-4 noBottomMargin"> 
+                        <a href="{{route('admin.order_status.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right" >Reset</button></a>
+                        <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Filter"> 
                     </div>
                 </form>
             </div>
-        </div>
-        <div class="col-md-3 noAll-padding displayFlex">
-            <div class="filter-right-section">                    
-                <button id="editable-sample_new" class="btn btn-default pull-right col-md-12 noMob-leftmargin mobAddnewflagBTN" onclick="window.location.href ='{{ route('admin.order_status.add')}}'">Add New Order Status</button>
-            </div>
-        </div>
+        </div> 
     </div>
 </div>
 
 <div class="grid-content">
     <div class="section-main-heading">
-        <h1> Order Status <span class="listing-counter"> {{$orderstatusCount }} </span> </h1>
+        <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Order Status <span class="listing-counter">{{$startIndex}}-{{$endIndex}} of {{$orderstatusCount }} </span> </h1>
+        <button onclick="window.location.href ='{{ route('admin.order_status.add')}}'" target="_blank" class="btn btn-listing-heading pull-right noAll-margin"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> Create </button> 
     </div>
     <div class="listing-section">
         <div class="table-responsive overflowVisible no-padding">
@@ -107,27 +104,24 @@
                 <tr>
                 <td class="text-center"><span class="alertSuccess" style="{{$colorVal}}">{{$status->order_status}}</span></td>
                     <td class="text-center">{{$status->sort_order}}</td>
-                    <td class="text-center" id="orderStatus_{{$status->id}}">{{$statusLabel}}</td>
+                    <td class="text-center" id="orderStatus_{{$status->id}}"><span class="alertSuccess">{{$statusLabel}}</span></td>
                     <td class="text-center isDefaultCls" id="orderStatusIsDefault_{{$status->id}}">{{$isDefaultVal}}</td>
                     <td class="text-center">
                          @if($status->id !=1) 
-                         <div class="actionCenter">
-                            {{-- <span>
-                                <a href="javascript:;" id="changeStatusLink_{{$status->id}}" class="btn-action-default" onclick="changeStatus({{$status->id}},{{$status->status}})" >{{$linkLabel}}</a>
-                            </span>  --}}
-                            <span><a class="btn-action-default" href="{!! route('admin.order_status.edit',['id'=>$status->id]) !!}">Edit</a></span> 
+                         <div class="actionCenter"> 
+                            <span><a class="btn-action-default" href="{!! route('admin.order_status.edit',['id'=>$status->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span>  
                             <span class="dropdown">
                                 <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
+                                <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">  
                                     <li><a href="{!! route('admin.order_status.delete',['id'=>$status->id]) !!}" onclick="return confirm('Are you sure you want to delete this status?')"><i class="fa fa-trash "></i> Delete</a></li>
-                                    <li><a href="javascript:;" id="changeStatusLink_{{$status->id}}" onclick="changeStatus({{$status->id}},{{$status->status}})" >{{$linkLabel}}</a></li>
+                                    <li><a href="javascript:;" id="changeStatusLink_{{$status->id}}" onclick="changeStatus({{$status->id}},{{$status->status}})" > <i class="fa fa-thumbs-o-up"></i> {{$linkLabel}}</a></li>
                                     <?php
                                     if($status->is_default == 0)
                                     {
                                      ?>
-                                    <li class="changeIsDefaultCls" id="changeIsDefaultLink_{{$status->id}}" ><a href="javascript:;" onclick="changeDefaultValue({{$status->id}},{{$storeId}},{{$status->is_default}})" >Mark as a Default</a></li>
+                                    <li class="changeIsDefaultCls" id="changeIsDefaultLink_{{$status->id}}" ><a href="javascript:;" onclick="changeDefaultValue({{$status->id}},{{$storeId}},{{$status->is_default}})" ><i class="fa fa-check"></i> Mark as a Default</a></li>
                                     <?php 
                                     }
                                     else 

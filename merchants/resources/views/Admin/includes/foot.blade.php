@@ -380,4 +380,57 @@ $(document).keypress(function (e) {
         // always reset after close
         $(this).removeClass("dropup");
     });
+
+    function myFunction() {
+  var dots = document.getElementById("dots");
+  var moreText = document.getElementById("advanced-filter");
+  var btnText = document.getElementById("advanced-filter-Btn");
+
+  if (dots.style.display === "none") {
+    dots.style.display = "inline";
+    btnText.innerHTML = "<i class='fa fa-caret-down'></i> Advanced Filters"; 
+    moreText.style.display = "none";
+  } else {
+    dots.style.display = "none";
+    btnText.innerHTML = "<i class='fa fa-caret-up'></i> Advanced Filters"; 
+    moreText.style.display = "inline";
+  }
+}
+
+// File Uploade Placeholder 
+$(".file-upload-column").on("change", ".file-upload-field", function() {
+  $(this)
+    .parent(".file-upload-wrapper")
+    .attr(
+      "data-text",
+      $(this)
+        .val()
+        .replace(/.*(\/|\\)/, "")
+    );
+});
+
+// manage 2 div same height
+$( document ).ready(function() {
+    var s1 = $('.equal-height-div-1').height();
+    var s2 = $('.equal-height-div-2').height();
+
+    if (s1 > s2)
+        $('.equal-height-div-2').css('height', s1 + "px");
+    else
+        $('.equal-height-div-1').css('height', s2 + "px");
+        
+});
+
+
+(function($){
+	$(document).ready(function(){
+		$('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
+			event.preventDefault(); 
+			event.stopPropagation(); 
+			$(this).parent().siblings().removeClass('open');
+			$(this).parent().toggleClass('open');
+		});
+	});
+})(jQuery);
+
 </script>

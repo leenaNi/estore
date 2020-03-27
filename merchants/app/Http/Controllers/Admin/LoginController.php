@@ -6,19 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Library\Helper;
 use App\Models\EmailTemplate;
 use App\Models\GeneralSetting;
+use App\Models\Merchants;
 use App\Models\Role;
-use App\Models\User;
 use App\Models\Store;
+use App\Models\User;
 use App\Models\Vendor;
 use Auth;
 use Config;
 use Crypt;
+use DB;
 use Hash;
 use Input;
 use Route;
 use Session;
-use DB;
-use Illuminate\Contracts\Encryption\DecryptException;
 
 class LoginController extends Controller
 {
@@ -30,7 +30,7 @@ class LoginController extends Controller
         } else {
             return view(Config('constants.adminView') . '.login');
         }
-        
+
     }
 
     public function unauthorized()
@@ -38,14 +38,14 @@ class LoginController extends Controller
         return view(Config('constants.adminView') . '.unauthorized');
     }
 
-    public function checkExistingphone() {
+    public function checkExistingphone()
+    {
 
-      
         $chkEmail = User::where("telephone", Input::get('phone_no'))->first();
-        
+
         //if (count($chkEmail) > 0){
-            if (!empty($chkEmail)){
-            $country = '+'.$chkEmail->country_code;
+        if (!empty($chkEmail)) {
+            $country = '+' . $chkEmail->country_code;
             $mobile = Input::get("phone_no");
             $otp = rand(1000, 9999);
             Session::put('otp', $otp);
@@ -55,7 +55,7 @@ class LoginController extends Controller
             }
             $data = ["otp" => $otp, "status" => "success", "msg" => "OTP Successfully send on your mobileNumber"];
             return $data;
-        }else{
+        } else {
             $data = ["status" => "fail", "msg" => "Invalid mobile Number"];
             return $data;
         }
@@ -74,12 +74,12 @@ class LoginController extends Controller
 
     public function chk_admin_user()
     {
-       echo "inside fun";
-       // DB::enableQueryLog(); // Enable query log
+        //echo "inside fun";
+        // DB::enableQueryLog(); // Enable query log
         $input = Input::get("phone");
         $login_type = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
-        $userDetails = User::where('telephone',Input::get("phone"))->whereIn('user_type', [1, 3])->where('store_id', Helper::getSettings()['store_id'])->where("status", 1)->first();
-        $userData = [$login_type => Input::get('phone'),'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
+        $userDetails = User::where('telephone', Input::get("phone"))->whereIn('user_type', [1, 3])->where('store_id', Helper::getSettings()['store_id'])->where("status", 1)->first();
+        $userData = [$login_type => Input::get('phone'), 'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
         // $userData = [$login_type => Input::get('phone'),
         //     'password' => Input::get('password'), 'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
 
@@ -87,39 +87,41 @@ class LoginController extends Controller
         //echo "store id::".Helper::getSettings()['store_id'];
         //echo "<pre> user details::";
         //print_r($userDetails);
-        //exit;
 
         if (!empty($userDetails)) {
-                //if (Auth::login($userData, true)) {
-                 //dd($userData);
-                $user = User::with('roles')->find($userDetails->id);
-                $store = Store::find($user->store_id);
-                Session::put('loggedinAdminId', $userDetails->id);
-                Session::put('profile', $userDetails->profile);
-                Session::put('loggedin_user_id', $user->id);
-                Session::put('login_user_type', $user->user_type);
-                Session::put('merchantid', $store->merchant_id);
-                $roles = $user->roles()->first();
-                $r = Role::find($roles->id);
-                $per = $r->perms()->get()->toArray();
-
-                $approvalId = Session::get('approval_id');
-                //echo "approval id::".$approvalId;
-                if($approvalId > 0)
-                {
-                    return redirect()->route('admin.vendors.accept');                         
-                }
-                else
-                {
+            //if (Auth::login($userData, true)) {
+            //dd($userData);
+            $user = User::with('roles')->find($userDetails->id);
+            //echo "<pre> users::";
+            //print_r($user);
+            $store = Store::find($user->store_id);
+            Session::put('loggedinAdminId', $userDetails->id);
+            Session::put('profile', $userDetails->profile);
+            Session::put('loggedin_user_id', $user->id);
+            Session::put('login_user_type', $user->user_type);
+            Session::put('merchantid', $store->merchant_id);
+            $roles = $user->roles()->first();
+            $r = Role::find($roles->id);
+            $per = $r->perms()->get()->toArray();
+            
+            $approvalId = Session::get('approval_id');
+            //echo "approval id::".$approvalId;
+            if ($approvalId > 0) {
+                return redirect()->route('admin.vendors.accept');
+            } else {
+                // dd($per[0]);
+                if ($r->name != 'admin') {
+                    $curRoute = @$per[0]['name'];
+                    return redirect()->route($curRoute);
+                } else {
                     return redirect()->route('admin.home.view');
                 }
+            }
 
-
-
-                //if (Auth::user()->user_type == 3) {
-                    //return redirect()->route('admin.home.view');
-                //}
-                //return redirect()->route('admin.home.view');
+            //if (Auth::user()->user_type == 3) {
+            //return redirect()->route('admin.home.view');
+            //}
+            //return redirect()->route('admin.home.view');
             // } else {
             //     Session::flash('invalidUser', 'Invalid Username or Password');
             //     return redirect()->route('adminLogin');
@@ -180,22 +182,44 @@ class LoginController extends Controller
 
     public function admin_edit_profile()
     {
+        $userDetailsId = Session::get('loggedinAdminId');
+        $userDetailsProfile = Session::get('profile');
+        $userId = Session::get('loggedin_user_id');
+        $userType = Session::get('login_user_type');
+        $merchantId = Session::get('merchantid');
+
+        /*echo "user details::".$userDetailsId;
+        echo "<br> user details profile::".$userDetailsProfile;
+        echo "<br> user id::".$userId;
+        echo "<br> user type::".$userType;
+        echo "<br> merchant id::".$merchantId;
+        exit;*/
         //dd("admin_edit_profile");
         $id = Input::get("id");
+        //echo "id::".$id;
         $user = User::find($id);
         $action = route('adminSaveProfile');
         $distributorIdData = [];
-        if(Auth::User()->user_type == 3)
-        {
+        //dd(Auth::User());
+        //if(Auth::User()->user_type == 3)
+        if ($userType == 3) {
+            $userType = 'distributor';
             $storeId = $user->store_id;
-            $distributorIdfromStore = Store::where('id',$storeId)->pluck('merchant_id');
+            $distributorIdfromStore = Store::where('id', $storeId)->pluck('merchant_id');
             $distributorId = $distributorIdfromStore[0];
             $distributorIdData = Vendor::find($distributorId);
+        } else if ($userType == 1) {
+            $userType = 'merchant';
+            $storeId = $user->store_id;
+            $merchantIdfromStore = Store::where('id', $storeId)->pluck('merchant_id');
+            $merchantId = $merchantIdfromStore[0];
+            //echo "merchant id::".$merchantId;
+            $distributorIdData = Merchants::find($merchantId);
         }
-        
+
         $public_path = Config('constants.adminImgUploadPath') . "/";
         //echo Config('constants.adminView');exit;
-        return view(Config('constants.adminView') . '.adminEditProfile', compact('user', 'action', 'public_path','distributorIdData'));
+        return view(Config('constants.adminView') . '.adminEditProfile', compact('user', 'action', 'public_path', 'distributorIdData', 'userType'));
     }
 
     public function admin_save_profile()
@@ -208,43 +232,88 @@ class LoginController extends Controller
         if (!empty(Input::get("telephone"))) {
             $user->telephone = Input::get("telephone");
         }
-        if (!empty(Input::get("password"))) {
-            $check = (Hash::check(Input::get('old_password'), $user->password));
-            if ($check == true) {
-                if (Input::get("password") == Input::get("confirmpwd")) {
-                    $user->password = Hash::make(Input::get('password'));
-                }
-            } else {
-                Session::flash('invaliOldPass', 'Invalid Username or Password');
-                return redirect()->back();
-            }
+
+        /*if (!empty(Input::get("password"))) {
+        $check = (Hash::check(Input::get('old_password'), $user->password));
+        if ($check == true) {
+        if (Input::get("password") == Input::get("confirmpwd")) {
+        $user->password = Hash::make(Input::get('password'));
+        }
+        } else {
+        Session::flash('invaliOldPass', 'Invalid Username or Password');
+        return redirect()->back();
+        }
         }
         if (Input::hasFile('profile')) {
-            $destinationPath = Config('constants.adminImgUploadPath') . "/";
-            $fileName = date("dmYHis") . "." . Input::File('profile')->getClientOriginalExtension();
-            $upload_success = Input::File('profile')->move($destinationPath, $fileName);
-            $user->profile = $fileName;
-        }
+        $destinationPath = Config('constants.adminImgUploadPath') . "/";
+        $fileName = date("dmYHis") . "." . Input::File('profile')->getClientOriginalExtension();
+        $upload_success = Input::File('profile')->move($destinationPath, $fileName);
+        $user->profile = $fileName;
+        }*/
         $user->save();
-        
-        if(Auth::User()->user_type == 3)
+
+        $userDetailsId = Session::get('loggedinAdminId');
+        $userDetailsProfile = Session::get('profile');
+        $userId = Session::get('loggedin_user_id');
+        $userType = Session::get('login_user_type');
+        $merchantId = Session::get('merchantid');
+        $distributorId = Input::get("hdnDistributorId");
+
+        //if(Auth::User()->user_type == 3)
+        if ($userType == 3) //for distributor
         {
-            $distributorId = Input::get("hdnDistributorId");
-            
-            if(!empty($distributorId) && $distributorId > 0)
-            {
+            if (!empty($distributorId) && $distributorId > 0) {
                 $distributorObj = Vendor::find($distributorId);
-                $distributorObj->address_line_1 = Input::get("addressLine1");
-                $distributorObj->address_line_2 = Input::get("addressLine2");
-                $distributorObj->locality = Input::get("locality");
-                $distributorObj->zip = Input::get("pincode");
+                $registerDetails = json_decode($distributorObj->register_details, true);
+
+                $distributorObj->email = Input::get("email_id");
+                $distributorObj->firstname = Input::get("firstname");
+                $distributorObj->lastname = Input::get("lastname");
+                $distributorObj->phone_no = Input::get("telephone");
+                $registerDetails['phone'] = Input::get("telephone");
+                $distributorObj->register_details = json_encode($registerDetails);
+                //$distributorObj->register_details = ['phone' => Input::get("telephone")];
                 $distributorObj->save();
+            }
+        } else if ($userType == 1) //for merchants
+        {
+            if (!empty($distributorId) && $distributorId > 0) {
+                $merchantObj = Merchants::find($distributorId);
+                $registerDetails = json_decode($merchantObj->register_details, true);
+                $merchantObj->email = Input::get("email_id");
+                $merchantObj->firstname = Input::get("firstname");
+                $merchantObj->lastname = Input::get("lastname");
+                $merchantObj->phone = Input::get("telephone");
+                $registerDetails['phone'] = Input::get("telephone");
+                $merchantObj->register_details = json_encode($registerDetails);
+                //$merchantObj->register_details->phone = Input::get("telephone");
+                $merchantObj->save();
             }
         }
 
         $viewname = '';
         $data = 'Your profile updated successfully.';
         return Helper::returnView($viewname, $data, $url = 'admin.dashboard');
+    }
+
+    public function adminCheckCurMobileNumber()
+    {
+        $userId = Session::get('loggedin_user_id');
+        $userType = Session::get('login_user_type');
+        //$hdnUserId = Input::get('hdnUserId');
+        $loggedInMerchantId = Input::get('hdnLoggedInMerchantId');
+        $txtMobileNumber = Input::get('txtMobileNumber');
+        //check mobile number already exist in user table or not
+        $checkMobileNumber = DB::table('users as u')
+            ->where("u.telephone", $txtMobileNumber)
+            ->where("u.id", '!=', $userId)
+            ->get();
+        if (count($checkMobileNumber) > 0) {
+            return 1; //Mobile number exist
+        } else {
+            return 0; //mobile number not exist
+        }
+
     }
 
     public function adminCheckCurPassowrd()

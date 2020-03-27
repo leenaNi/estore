@@ -23,20 +23,26 @@ use Cart;
 class ProductController extends Controller { 
 
     public function index($slug) {
+        //echo "slug::".$slug;
+        //exit;
         $setting = GeneralSetting::where('url_key', 'debug-option')->first();
         $prod = Product::where('url_key', $slug)->first();
 
         if ($setting->status == 0 && is_array($prod) && count($prod) == 0) {
             abort(404);
         }
-        // dd($prod);
-        if ($prod->prod_type == 1 || $prod->prod_type == 5) {
+         //dd($prod);
+         $view = '';
+        if(!empty($prod)) 
+        {
+            if ($prod->prod_type == 1 || $prod->prod_type == 5) {
 
-            $view = $this->simpleProduct($prod->id);
-        } else if ($prod->prod_type == 2) {
-            $view = $this->comboProduct($prod->id);
-        } else if ($prod->prod_type == 3 || $prod->type == 4) {
-            $view = $this->configProduct($prod->id);
+                $view = $this->simpleProduct($prod->id);
+            } else if ($prod->prod_type == 2) {
+                $view = $this->comboProduct($prod->id);
+            } else if ($prod->prod_type == 3 || $prod->type == 4) {
+                $view = $this->configProduct($prod->id);
+            }
         }
         return $view;
     }
@@ -193,12 +199,14 @@ class ProductController extends Controller {
                     } else {
                         $product->wishlist = 0;
                     }
-                    $totstock = Product::where('parent_prod_id',$product->id)->sum('stock');  
-                    if($totstock > 0)
+                    $varientProd = Product::where('parent_prod_id',$product->id)->get();  
+            
+                    if(count($varientProd) > 0)
                     {
                         $startprice = Product::where('parent_prod_id',$product->id)->orderBy('price','asc')->pluck('price');
                         $endprice = Product::where('parent_prod_id',$product->id)->orderBy('price','desc')->pluck('price');
-                        $product->price = $startprice[0].' - '.$endprice[0];
+                        //$product->price = $startprice[0].' - '.$endprice[0];
+                        $product->price = $startprice[0];
                     }
                     $selAttrs = [];
 
@@ -457,7 +465,6 @@ class ProductController extends Controller {
                     $prods = $prods->get();
                 }
                 return Helper::quickAddtoCart($prods);
-                // dd($prods);
             }
 
         }

@@ -36,8 +36,32 @@ class CouponsController extends Controller
             $couponInfo = $couponInfo->paginate(Config('constants.paginateNo'));
             $couponCount = $couponInfo->total();
         }
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $couponCount)
+            {
+                $endIndex = ($couponCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $couponCount)
+            {
+                $endIndex = ($couponCount);
+            }
+        }
         //return view(Config('constants.adminCouponView') . '.index', compact('couponInfo'));
-        $data = ['status' => '1', 'coupons' => $couponInfo, 'couponCount' => $couponCount];
+        $data = ['status' => '1', 'coupons' => $couponInfo, 'couponCount' => $couponCount, 'startIndex' => $startIndex,'endIndex' => $endIndex];
         $viewname = Config('constants.adminCouponView') . '.index';
         return Helper::returnView($viewname, $data);
     }
@@ -82,6 +106,8 @@ class CouponsController extends Controller
         $action = route("admin.coupons.save");
 //        return view(Config('constants.adminCouponView') . '.addEdit', compact('coupon', 'products', 'orders', 'action'));
         $data = ['status' => '1', 'products' => $products, 'action' => $action, 'coupon' => $coupon, 'orders' => $orders, 'userCoupon' => $userCoupon];
+        //echo "<pre>";
+        //print_r($data);
         $viewname = Config('constants.adminCouponView') . '.addEdit';
         return Helper::returnView($viewname, $data);
     }

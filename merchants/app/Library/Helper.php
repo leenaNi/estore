@@ -80,7 +80,25 @@ class Helper {
         }
 
     }
+	
+	public static function getStoreSettings($storePath)
+    {
+        $path = $storePath . "/storeSetting.json";
 
+        $str = file_get_contents($path);
+
+        $settings = json_decode($str, true);
+
+        return $settings;
+    }
+	
+	public static function updateStoreSettings($storePath, $storeData)
+    {
+        $fp = fopen($storePath . '/storeSetting.json', 'w+');
+        fwrite($fp, $storeData);
+        fclose($fp);
+    }
+	
     public static function searchForKey($keyy, $value, $array) {
         foreach ($array as $key => $val) {
             if ($val[$keyy] == $value) {
@@ -501,7 +519,7 @@ class Helper {
             $countries = DB::table('countries')->where("status", 1)->get(["id", "name","iso_code_3"]);
             
         }else{
-            $countries = DB::table('countries')->where("iso_code_3", $country_code)->get(["id", "name","iso_code_3"]);
+            $countries = DB::table('countries')->where("country_code", $country_code)->get(["id", "name","iso_code_3"]);
             
         }
         return $countries;

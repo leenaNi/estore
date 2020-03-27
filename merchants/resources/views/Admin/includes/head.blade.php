@@ -28,7 +28,9 @@
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssPath').'/validationEngine.jquery.css' }}">
 <link rel="icon" type="image/png" href="{{ Config('constants.frontendThemeImagePath').'/favicon.png' }}">
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
-<link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin.css' }}">
+<!-- <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin.css' }}"> -->
+<link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/livvic.css' }}">
+<link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin-vikram.css' }}">
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/livvic-fonts/livvic-fonts.css' }}">
 
 <?php
@@ -127,7 +129,7 @@ Session::put('storelogo', $data->logo);
 </div>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js'></script>
 <style>
-    .skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side,.skin-blue .main-header .logo,.skin-blue .main-header li.user-header{
+    /*.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side,.skin-blue .main-header .logo,.skin-blue .main-header li.user-header{
         background-color: <?php echo "#" . $data->secondary_color . " !important"; ?>;
     }
     .skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a{
@@ -139,7 +141,7 @@ Session::put('storelogo', $data->logo);
     .skin-blue .treeview-menu>li>a:hover{ color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
     .sidebar-menu .treeview-menu, .sidebar-mini.sidebar-collapse .sidebar-menu>li>a>span{
         background-color: <?php echo "#" . $data->secondary_color . " !important"; ?>;
-    }
+    }*/
     /*.main-header, .navbar .navbar-static-top{
         background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
 
@@ -155,4 +157,10 @@ Session::put('storelogo', $data->logo);
     .nav-tabs-custom>.nav-tabs>li.active{border-top-color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
 
     .btn{margin-left:10px;}
+<<<<<<< HEAD
+=======
+    .sidebar-mini.sidebar-collapse .sidebar-menu>li>a, .sidebar-menu .treeview-menu>li>a, .sidebar-mini.sidebar-collapse .sidebar-menu>li:hover>.treeview-menu {
+    background: #fff;
+}
+>>>>>>> a43ec59f31492dd04e1ee62dd87952de46a77655
 </style>
