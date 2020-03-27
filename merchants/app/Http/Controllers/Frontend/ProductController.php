@@ -199,12 +199,14 @@ class ProductController extends Controller {
                     } else {
                         $product->wishlist = 0;
                     }
-                    $totstock = Product::where('parent_prod_id',$product->id)->sum('stock');  
-                    if($totstock > 0)
+                    $varientProd = Product::where('parent_prod_id',$product->id)->get();  
+            
+                    if(count($varientProd) > 0)
                     {
                         $startprice = Product::where('parent_prod_id',$product->id)->orderBy('price','asc')->pluck('price');
                         $endprice = Product::where('parent_prod_id',$product->id)->orderBy('price','desc')->pluck('price');
-                        $product->price = $startprice[0].' - '.$endprice[0];
+                        //$product->price = $startprice[0].' - '.$endprice[0];
+                        $product->price = $startprice[0];
                     }
                     $selAttrs = [];
 
@@ -463,7 +465,6 @@ class ProductController extends Controller {
                     $prods = $prods->get();
                 }
                 return Helper::quickAddtoCart($prods);
-                // dd($prods);
             }
 
         }

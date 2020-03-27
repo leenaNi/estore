@@ -519,7 +519,7 @@ class Helper {
             $countries = DB::table('countries')->where("status", 1)->get(["id", "name","iso_code_3"]);
             
         }else{
-            $countries = DB::table('countries')->where("iso_code_3", $country_code)->get(["id", "name","iso_code_3"]);
+            $countries = DB::table('countries')->where("country_code", $country_code)->get(["id", "name","iso_code_3"]);
             
         }
         return $countries;
