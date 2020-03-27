@@ -276,13 +276,14 @@ WHERE c.cat_id IN ($cats)
             $prd->getPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? $prd->spl_price : $prd->price;
             $prd->actualPF = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? "spl_price" : "price";
             $prd->delPrice = ($prd->spl_price > 0 && $prd->spl_price < $prd->price) ? 1 : 0;
-            $totstock = Product::where('parent_prod_id',$prd->id)->sum('stock');  
+            $varientProd = Product::where('parent_prod_id',$prd->id)->get();  
             
-            if($totstock > 0)
+            if(count($varientProd) > 0)
             {
                 $startprice = Product::where('parent_prod_id',$prd->id)->orderBy('price','asc')->pluck('price');
                 $endprice = Product::where('parent_prod_id',$prd->id)->orderBy('price','desc')->pluck('price');
-                $prd->getPrice = $startprice[0].' - '.$endprice[0];
+                //$prd->getPrice = $startprice[0].' - '.$endprice[0];
+                $prd->getPrice = $startprice[0];
             }
             if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($prd->id)) {
                 $prd->chkwishlist = 1;
