@@ -719,6 +719,9 @@ class Helper {
         $tax_amt = 0;
         $orderAmt = 0;
 
+        //echo "<pre>";
+        //print_r($cart);
+
         foreach ($cart as $k => $c) {
             $getdisc = ($c->options->disc + $c->options->wallet_disc + $c->options->voucher_disc + $c->options->referral_disc + $c->options->user_disc);
             $taxeble_amt = $c->subtotal - $getdisc;
