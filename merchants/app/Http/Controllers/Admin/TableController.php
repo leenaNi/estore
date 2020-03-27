@@ -215,6 +215,29 @@ class TableController extends Controller {
         return Helper::returnView(Config('constants.adminTableView') . '.addItems', $data);
     }
 
+    public function viewitems($id) {
+        
+        $data['order'] = Order::find($id);
+        $data['order']->kots = $data['order']->kots;
+        $data['order']->type = $data['order']->type;
+        $data['categories'] = Category::where("status", 1)->with(['products' => function($q) {
+                        $q->where("status", 1)->where("prod_type", 1);
+                    }, 'categoryName'])->get();
+        $data['tables'] = Table::where("status", 1)
+                ->select(DB::raw("CONCAT(table_no,' - ',table_label) AS table_name"), 'id')
+                ->pluck("table_name", 'id');
+
+        $ordcountries = Country::where("status", 1)->pluck("name", "id")->prepend("Country", "");
+        $ordstates = Zone::where("status", 1)->pluck("name", "id")->prepend("State", "");
+        $data['ordcountries'] = $ordcountries;
+        $data['ordstates'] = $ordstates;
+
+        $data['coupon'] = Coupon::where("status", 1)->where("start_date", "<=", Carbon\Carbon::now())->where("end_date", ">", Carbon\Carbon::now())->pluck("coupon_name", "coupon_code")->prepend("Apply Coupon", "");
+
+        return Helper::returnView(Config('constants.adminTableView') . '.viewItems', $data);
+    }
+
+
     public function saveItems() {
         $kot = new Kot();
         $kot->order_id = Input::get('order_id');
@@ -878,5 +901,45 @@ class TableController extends Controller {
         return $products;
     }
 
+    public function getOrderDetails()
+    {
+        $orderId =Input::get('orderid');
+        $ordersResult = DB::table('orders')
+            ->where('id', $orderId)
+            ->get();
+        
+        $html = '';
+        foreach($ordersResult as $getData)
+        {
+            $storeId = $getData->store_id;
+            $couponAmtUsed = $getData->coupon_amt_used;
+            $payAmount = $getData->pay_amt;
+            //get Store name
+            $storeResult = DB::table('stores')
+                ->where('id', $storeId)
+                ->get();
+
+             foreach($storeResult as $getStoreData)
+             {
+                $storeName = $getStoreData->store_name;
+             }   
+            
+            $html .= '<label>Store Name: <span>'.$storeName.'</span></label></br>';
+            if($couponAmtUsed > 0)
+            {
+                $html .= '<label>Coupon Amount: <span>'.$couponAmtUsed.'</span></label></br>';
+            }
+            else
+            {
+                $html .= '<label>Coupon Amount: <span>-</span></label></br>';
+            }
+            
+            $html .= '<label>Grand Total: <span>'.$payAmount.'</span></label>';
+           
+        }
+
+        return $html;
+
+    }
 
 }
