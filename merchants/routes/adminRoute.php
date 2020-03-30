@@ -243,6 +243,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/get-cart-amount', array('as' => 'admin.getCartAmt', 'uses' => 'TableController@getCartAmt'));
             Route::any('/delete-kot-prods', array('as' => 'admin.order.deleteKotProds', 'uses' => 'TableController@deleteKotProds'));
             Route::post('/change-occupancy-status/{id?}', array('as' => 'admin.tables.changeOccupancyStatus', 'uses' => 'TableController@changeOccupancyStatus'));
+            Route::any('/view-items/{id}', array('as' => 'admin.order.viewitems', 'uses' => 'TableController@viewitems'));
+            Route::any('/get-order-details', array('as' => 'admin.order.getOrderDetails', 'uses' => 'TableController@getOrderDetails'));
         });
 
         Route::group(['prefix' => 'orders', 'middlewareGroups' => ['CheckUser', 'web']], function () {

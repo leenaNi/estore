@@ -1426,7 +1426,7 @@ body * { visibility: hidden; }
       
        
   });
-  console.log($("#tableOrderForm").attr('action'));
+  //console.log("<br>table order firm action::"+$("#tableOrderForm").attr('action'));
    $("input[name='additionalcharge']").val(sThisVal);
   
         $.ajax({
