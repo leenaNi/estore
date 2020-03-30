@@ -72,7 +72,13 @@
         
 </section>
 <section class="content">
-
+    <div class="notification-column">
+        @if(!empty(Session::get('msg')))
+        <div class="alert alert-success" role="alert">
+            {{Session::get('msg')}}
+        </div>
+        @endif
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="box pull-left">

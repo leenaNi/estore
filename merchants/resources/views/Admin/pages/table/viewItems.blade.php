@@ -141,11 +141,53 @@ body * { visibility: hidden; }
 </style>
 @stop
 @section('content')
-
+<?php
+$implodedJoinTablesId = '';
+$joinTableIdString = ''; 
+$tableIdArry = [];
+if($order->join_tables != '')
+{
+    $joinTableIdArry = json_decode($order->join_tables);
+    
+    foreach($joinTableIdArry as $getTableId)
+    {
+        $restaurantTableResult = DB::table('restaurant_tables')
+            ->where('id', $getTableId)
+            //->orderBy('id', 'DESC')
+            ->get();
+            foreach ($restaurantTableResult as $restTble) {
+        
+                $tableNo = $restTble->table_no;
+                array_push($tableIdArry,$tableNo);
+            }
+        
+          
+    
+    }//foreach ends here
+    //echo "<pre>";
+    //print_r($tableIdArry);
+    $implodedJoinTablesId = implode('-', $tableIdArry);
+    $joinTableIdString = '#Table Id ('.$implodedJoinTablesId.')';
+}
+else {
+    $getTableId = $order->table_id;
+    $restaurantTableResult = DB::table('restaurant_tables')
+            ->where('id', $getTableId)
+            //->orderBy('id', 'DESC')
+            ->get();
+            foreach ($restaurantTableResult as $restTble) {
+        
+                $tableNo = $restTble->table_no;
+                array_push($tableIdArry,$tableNo);
+            }
+    $implodedJoinTablesId = implode('-', $tableIdArry);
+    $joinTableIdString = '#Table Id ('.$implodedJoinTablesId.')';
+}
+ ?>
 <section class="content-header">
     <h1>
         View Items
-        <small>{{ $order->type->otype }} #{{ $order->id }} </small>
+        <small>{{ $order->type->otype }} #{{ $order->id }} {{$joinTableIdString}}</small>
     </h1>
 </section>
 

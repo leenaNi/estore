@@ -171,7 +171,8 @@ class TableController extends Controller {
         }
         
         $viewname = '';
-        return Helper::returnView($viewname, $data, $url = 'admin.tables.view');   
+        //return Helper::returnView($viewname, $data, $url = 'admin.tables.view');   
+        return Helper::returnView($viewname, $data, $url = 'admin.restaurantlayout.view');   
     }    
 
     public function orderview() {
@@ -316,6 +317,8 @@ class TableController extends Controller {
         $order->table_id = Input::get('tableid');
         $order->join_tables = json_encode(Input::get('selTables'));
         $order->save();
+
+
         DB::table('restaurant_tables')->whereIn("id", Input::get('selTables'))->update(["ostatus" => 2]);
         $data = ['status' => 1, 'order' => $order, 'redirectUrl' => route('admin.order.additems', ['id' => $order->id])];
         return $data;
@@ -847,9 +850,23 @@ class TableController extends Controller {
         if (Input::get("orderId")) {
             $order = Order::find(Input::get("orderId"));
             if ($order->otype == 1) {
-                $table = Table::find($order->table_id);
-                $table->ostatus = $oStatus;
-                $table->update();
+                if($order->table_id == '' || $order->table_id == 'null')
+                {
+                    $joinTableIdArry = json_decode($order->join_tables); 
+                    foreach($joinTableIdArry as $getTableId)
+                    {
+                       $table = Table::find($getTableId);
+                       $table->ostatus = $oStatus;
+                       $table->update();
+                   
+                    }//foreach ends here
+                }
+                else
+                {
+                    $table = Table::find($order->table_id);
+                    $table->ostatus = $oStatus;
+                    $table->update();
+                }
                 Session::flash("msg", 'Table status updated successfully.');
                 return ['status' => 1, 'msg' => "Table status updated successfully."];
             } else {

@@ -43,7 +43,7 @@
                     @endif
                 </ul>
             </li>
-            <li class="treeview {{ preg_match("/admin.table|admin.restaurantlayout/",Route::currentRouteName()) ? 'active' : '' }}">
+            <li class="treeview {{ preg_match("/admin.table|admin.restaurantlayout|admin.order.viewitems/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-cutlery"></i><span>Tables</span>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -51,7 +51,7 @@
                 <ul class="treeview-menu">
                     <li class="{{ preg_match("/admin.tables/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.tables.view') }}"><i class="fa fa-angle-right"></i> Manage Tables </a></li>
                     <li class="{{ preg_match("/admin.restaurantlayout/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.restaurantlayout.view') }}"><i class="fa fa-angle-right"></i>Restaurant Layout</a></li>
-                    <li class="{{ preg_match("/admin.tableorder/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.tableorder.view') }}"><i class="fa fa-angle-right"></i>Manage Orders</a></li>
+                    <li class="{{ preg_match("/admin.tableorder|admin.order.viewitems/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.tableorder.view') }}"><i class="fa fa-angle-right"></i>Manage Orders</a></li>
                 </ul>
             </li>
             <li class="treeview {{ preg_match("/admin.category|admin.reviews.view|admin.products|admin.attribute.set|admin.tax|admin.attributes|admin.sizechart|admin.raw-material|admin.stock/",Route::currentRouteName()) ? 'active' : '' }}">
