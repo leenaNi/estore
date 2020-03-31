@@ -473,7 +473,129 @@
                                    
                                 </div>
                             </div>
-                            </div></div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="box box-success" >
+                                <div class="box-header dashbox-header with-border bg-green">
+                                    <h3 class="box-title dashbox-title">New Customers</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                    <div class="box-body">
+                                        <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="customers_daterange"  class="form-control customers_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                        </div>
+                                        <div id="NewCustomerChart">
+                                        {!! $Newcustomer_chart->html() !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                         <!--    <div class="col-md-6">
+                                <div class="box box-success" >
+                                <div class="box-header dashbox-header with-border bg-green">
+                                    <h3 class="box-title dashbox-title">Average Order/Bill</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                    <div class="box-body">
+                                        <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="bill_daterange"  class="form-control bill_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                        </div>
+                                        <div id="AvgBillChart">
+                                        {!! $Avgbill_chart->html() !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+
+
+
+
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <br>
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="box box-success" >
+                                <div class="box-header dashbox-header with-border bg-green">
+                                    <h3 class="box-title dashbox-title">Customers Visited</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                    <div class="box-body">
+                                        <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="vcustomers_daterange"  class="form-control vcustomers_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                        </div>
+                                        <div id="CustomerVisitedChart">
+                                        {!! $Customervisited_chart->html() !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="box box-success" >
+                                <div class="box-header dashbox-header with-border bg-green">
+                                    <h3 class="box-title dashbox-title">Customers Not Visited</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                    <div class="box-body">
+                                        <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="nvcustomers_daterange"  class="form-control nvcustomers_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                        </div>
+                                        <div id="CustomernotVisitedChart">
+                                        {!! $Customernotvisited_chart->html() !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+
+                        
+
+
+
+
+
+
                         </div>
             </div>
         </section>
@@ -482,6 +604,10 @@
          {!! Charts::scripts() !!}
 {!! $Sales_chart->script() !!}
 {!! $orders_chart->script() !!}
+{!! $Newcustomer_chart->script() !!}
+{!! $Customernotvisited_chart->script() !!}
+{!! $Customervisited_chart->script() !!}
+{!! $Avgbill_chart->script() !!}
         @section('myscripts')
         <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
@@ -516,6 +642,95 @@
            }
         });
     });
+
+
+    //new customer
+      $('.customers_daterange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'customers-stat',
+           data:{startdate:startdate,enddate:enddate},
+           success:function(data){
+              $("#NewCustomerChart").html(data);
+           }
+        });
+    });
+
+    //customer not visited
+      $('.nvcustomers_daterange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'notvisitedcustomers-stat',
+           data:{startdate:startdate,enddate:enddate},
+           success:function(data){
+              $("#CustomernotVisitedChart").html(data);
+           }
+        });
+    });
+
+
+      //customer  visited
+      $('.vcustomers_daterange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'visitedcustomers-stat',
+           data:{startdate:startdate,enddate:enddate},
+           success:function(data){
+              $("#CustomerVisitedChart").html(data);
+           }
+        });
+    });
+
+
+
+
+
+
 
     $('.datefromto').daterangepicker({
         startDate: start,
