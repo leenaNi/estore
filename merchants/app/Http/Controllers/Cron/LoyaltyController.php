@@ -55,9 +55,9 @@ class LoyaltyController extends Controller {
                                 ->select('id', 'cashback_earned', 'currency_value', 'pay_amt')
                                 ->where('user_id', $ordVal['user_id'])
                                 ->where('loyalty_cron_status', 1)->where("store_id", $this->jsonString['store_id'])->get();
-//                echo "<pre>";
-//                print_r($overall_pay_amt);
-//                echo "</pre>";
+                //                echo "<pre>";
+                //                print_r($overall_pay_amt);
+                //                echo "</pre>";
                 $total_pay_amt = 0;
 
                 foreach ($overall_pay_amt as $add_pay_amt) {
@@ -90,23 +90,20 @@ class LoyaltyController extends Controller {
                             $usercashback->total_purchase_till_now = number_format($total_pay_amt, 2, '.', '');
                             $usercashback->loyalty_group = $loyaltyId;
                             $usercashback->save();
-                        }
-           
-//                echo "<pre>";
-//                print_r($user);
-//                 echo "</pre>";
+                        }           
+                //                echo "<pre>";
+                //                print_r($user);
+                //                 echo "</pre>";
                 echo "Ord Id " . $ordVal['id'] . " -- User ID" . $ordVal['user_id'] . " --- User Cashback" . $user->cashback . " Total purchase till now" . $user->total_purchase_till_now;
                 $orderIdC = Order::find($ordVal['id']);
                 $orderIdC->loyalty_cron_status = 0;
                 $orderIdC->save();
             }
-         $this->checkReferal();
+            $this->checkReferal();
         } else {
            $this->checkReferal();
             exit();
         }
-        
-       
     }
 
     public function checkReferal() {
@@ -128,8 +125,7 @@ class LoyaltyController extends Controller {
                                     ->where('created_at', '<=', date('Y-m-d', strtotime("now -$activate_duration days")))
                                     ->whereIn('order_status', [2, 3])
                                     ->where('ref_flag', '=', 0)->where("store_id", $this->jsonString['store_id'])->get();
-                    $refToAdd = 0;
-                   
+                    $refToAdd = 0;                   
                     if (count($refUsedOrders) > 0) {
                         foreach ($refUsedOrders as $refOds) {
                             $refToAdd += $refOds->user_ref_points;
@@ -153,23 +149,20 @@ class LoyaltyController extends Controller {
             }
         }
     }
-public function getRealTimeCurrency(){
- 
-$setting = Helper::getSettings();
-    $headers[] = 'Content-Type:application/x-www-form-urlencoded';
-    $cur=$setting['currencyId'];
-    $curency= HasCurrency::where("iso_code",$cur)->first()->currency_code;
-    $curCode=$curency->currency_code;
-    $from_Currency = urlencode("INR");
-    $to_Currency = urlencode($curCode);
-     $query =  "{$from_Currency}_{$to_Currency}";
-
-     $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
-     $obj = json_decode($json, true);
-
-  $val = floatval($obj["$query"]);
-  $curency->currency_val=$val;
-  $curency->save();
-
-}
+    public function getRealTimeCurrency()
+    {
+        $setting = Helper::getSettings();
+        $headers[] = 'Content-Type:application/x-www-form-urlencoded';
+        $cur=$setting['currencyId'];
+        $curency= HasCurrency::where("iso_code",$cur)->first()->currency_code;
+        $curCode=$curency->currency_code;
+        $from_Currency = urlencode("INR");
+        $to_Currency = urlencode($curCode);
+        $query =  "{$from_Currency}_{$to_Currency}";
+        $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
+        $obj = json_decode($json, true);
+        $val = floatval($obj["$query"]);
+        $curency->currency_val=$val;
+        $curency->save();
+    }
 }

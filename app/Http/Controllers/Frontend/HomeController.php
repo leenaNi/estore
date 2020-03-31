@@ -119,7 +119,8 @@ class HomeController extends Controller
     public function selectThemes()
     {
         if (empty(Session::get('merchantid'))) {
-            $allinput = Input::all();
+            $allinput = Input::all();            
+            $allinput['is_individual_store'] = 0;
             $storeType = $allinput['roleType'];
             $sendmsg = "Registred successfully.";
             $merchantObj = new Merchant();
@@ -155,6 +156,7 @@ class HomeController extends Controller
         if (empty(Session::get('merchantid'))) {
             $allinput = Input::all();
             $storeType = $allinput['roleType'];
+            $allinput['is_individual_store'] = 0;
             $sendmsg = "Registred successfully.";
             $distributorObj = new Vendor();
             $distributorObj->country = $allinput['country_code'];
