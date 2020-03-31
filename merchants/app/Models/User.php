@@ -43,7 +43,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     public function orders() {
-        return $this->hasMany('App\Models\Order', 'user_id')->whereIn("order_status", [1,2, 3]);
+        //return $this->hasMany('App\Models\Order', 'user_id')->whereIn("order_status", [1,2, 3]);
+        return $this->hasMany('App\Models\Order', 'user_id');
     }
 
     public function loyalty() {

@@ -107,8 +107,8 @@ class ApiCreateStoreController extends Controller
         $allinput = Input::all();
         $storeName = Input::get('store_name');
         $phone = Input::get('phone');
-        $roleType = Input::get('roleType');
-        
+        $roleType = Input::get('roleType');        
+        $allinput['is_individual_store'] = 0;
         if ((!empty($roleType) && in_array($roleType, ['1', '2'])) && !empty($storeName) && !empty($phone)) {
             if (CustomValidator::validatePhone($phone)) {
                 $verifyOTP = $this->verifyOTP();
