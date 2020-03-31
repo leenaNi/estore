@@ -4,10 +4,18 @@
 <!-- <link rel="stylesheet" href="{{ asset('public/Admin/dist/css/tabs-css.css') }}"> -->
 <style>
     .target3 {border: 2px dotted; text-align: center; padding-top: 10px; min-width: 100px; min-height: 100px; cursor: pointer;}
-    .draggable3{margin: 5px;}
+    .draggable3{/*margin: 5px;*/}
     .size1 > .target3 {width: 150px; height: 150px;}
     .size2 .target3{width: 200px; height: 150px;}
     .size3  .target3{width: 150px; height: 150px; border-radius: 50%;}
+
+    .target3.ui-resizable {   
+        margin-bottom: 20px;
+        min-width: 100px;
+        min-height: 100px;
+        /*pointer-events: none;*/
+    }
+    
     .green{background-color: #2ecc71;}
     .red{background-color: #d35400;}
     .yellow{background-color: #f1c40f;}
@@ -226,7 +234,13 @@
                                                     <td id="edit_order_link"><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
                                                     <?php
                                                     }
+                                                    else {
+                                                    ?>
+                                                    <td id="view_complete_order_link"><a href="{{route('admin.order.viewitems', ['id' => $allorder->id]) }}">View</a></td>
+                                                    <?php
+                                                    }
                                                      ?>
+
                                                 </tr>
                                                 @endforeach
 
@@ -296,7 +310,14 @@ var billNew = {
     "cut": {name: "Regenerate Bill", icon: "paste"},
     "paste": {name: "Free Up Table", icon: "delete"},
 }
+/*$(window).on('wheel', function() {
+    return false;
+});*/
 $(document).ready(function () {
+
+    /*$('#target_5').bind("mousewheel", function() {
+        return false;
+    });*/
     //alert("local storage item status::"+localStorage.getItem('orderCompleted') ); // 1
     var orderCompletedStatusVal = localStorage.getItem('orderCompleted');
     //alert("order status completed val::"+orderCompletedStatusVal);

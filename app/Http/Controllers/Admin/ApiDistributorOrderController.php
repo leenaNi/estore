@@ -130,7 +130,7 @@ class ApiDistributorOrderController extends Controller
                             ->where('user_id', $userId)
                             ->update($shippingAddress);
 
-                        return response()->json(["status" => 1, 'shipping_address_id' => $shippingAddressId, 'msg' => 'Shipping Address data updated successfully.']);
+                        return response()->json(["status" => 1, 'shippingAddressId' => $shippingAddressId, 'msg' => 'Shipping Address data updated successfully.']);
                     }
                     else
                     {
@@ -290,6 +290,7 @@ class ApiDistributorOrderController extends Controller
     public function placeOrder()
     {
         $MerchantId = Session::get('merchantId');
+        $shippingAddressId = Input::get('shippingAddressId');
         $DistributorID = 0;
         if (!empty($MerchantId)) {
 
@@ -328,7 +329,7 @@ class ApiDistributorOrderController extends Controller
             $userid = $user->id;
             //$addressid = Input::get('address_id');
             //$userinfo = User::find($userid);
-            $toPay = $this->toPayment($userid);
+            $toPay = $this->toPayment($userid,$shippingAddressId);
             if (!empty($toPay['orderId'])) {
                 $orderS = Order::find($toPay['orderId']);
                 $orderS->created_by = $userid;
@@ -438,10 +439,10 @@ class ApiDistributorOrderController extends Controller
         return json_encode($data);
     }
 
-    public function toPayment($userid)
+    public function toPayment($userid,$shippingAddressId)
     {
         $toPayment = [];
-        $selAdd = DB::table('has_addresses')->where('user_id', $userid)->first();
+        $selAdd = DB::table('has_addresses')->where('id', $shippingAddressId)->first();
 
         $cartContent = Cart::instance("shopping")->content();
         //if (is_null(Session::get('orderId'))) {
