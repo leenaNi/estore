@@ -141,11 +141,39 @@ body * { visibility: hidden; }
 </style>
 @stop
 @section('content')
+<?php
+$implodedJoinTablesId = '';
+$joinTableIdString = ''; 
+if($order->join_tables != '')
+{
+    $joinTableIdArry = json_decode($order->join_tables);
+    $tableIdArry = [];
+    foreach($joinTableIdArry as $getTableId)
+    {
+        $restaurantTableResult = DB::table('restaurant_tables')
+            ->where('id', $getTableId)
+            //->orderBy('id', 'DESC')
+            ->get();
+            foreach ($restaurantTableResult as $restTble) {
+        
+                $tableNo = $restTble->table_no;
+                array_push($tableIdArry,$tableNo);
+            }
+        
+          
+    
+    }//foreach ends here
+    //echo "<pre>";
+    //print_r($tableIdArry);
+    $implodedJoinTablesId = implode('-', $tableIdArry);
+    $joinTableIdString = '#Table Id ('.$implodedJoinTablesId.')';
+}
 
+?>
 <section class="content-header">
     <h1>
         Add/Edit Items
-        <small>{{ $order->type->otype }} #{{ $order->id }} </small>
+        <small>{{ $order->type->otype }} #{{ $order->id }} {{$joinTableIdString}}</small>
     </h1>
 </section>
 
@@ -1423,9 +1451,8 @@ body * { visibility: hidden; }
             if(this.checked){
             sThisVal.push($(this).attr("data-id"));
             }
-      
        
-  });
+        });
   //console.log("<br>table order firm action::"+$("#tableOrderForm").attr('action'));
    $("input[name='additionalcharge']").val(sThisVal);
   
@@ -1481,8 +1508,23 @@ body * { visibility: hidden; }
     //console.log('==' + JSON.stringify(table));
                 $("#printInvoicce").modal("show");
                 $(".invoiceData").html(table);
+                //$('.complete-order').text('Complete Order');
+                changeOccupancyStatus();
             }
             // $("#tableOrderForm").attr("action",route);
+        });
+    }
+    
+    function changeOccupancyStatus() {
+        var orderId = $('input[name=order_id]').val();
+        $.ajax({
+            type: "POST",
+            url: "{{route('admin.tables.changeOccupancyStatus')}}/1",
+            data: {orderId: orderId},
+            cache: false,
+            success: function (data) {
+                // window.location.href = "{{route('admin.tableorder.view')}}";
+            }
         });
     }
     

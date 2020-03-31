@@ -13,6 +13,7 @@
         margin-bottom: 20px;
         min-width: 100px;
         min-height: 100px;
+        /*pointer-events: none;*/
     }
     
     .green{background-color: #2ecc71;}
