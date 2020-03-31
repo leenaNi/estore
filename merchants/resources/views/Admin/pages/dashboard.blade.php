@@ -504,7 +504,7 @@
                                 </div>
                             </div>
 
-                         <!--    <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <div class="box box-success" >
                                 <div class="box-header dashbox-header with-border bg-green">
                                     <h3 class="box-title dashbox-title">Average Order/Bill</h3>

@@ -400,7 +400,7 @@ class PagesController extends Controller
             $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->pluck('user_id')->toArray();
 
             $Customers = DB::table('users')
-            ->whereNotIn('orders.user_id', $userid)
+            ->whereNotIn('id', $userid)
             ->where('user_type', 2)
             ->get();
         }
@@ -441,7 +441,7 @@ class PagesController extends Controller
             $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->pluck('user_id')->toArray();
 
             $Customers = DB::table('users')
-            ->whereIn('orders.user_id', $userid)
+            ->whereIn('id', $userid)
             ->where('user_type', 2)
             ->get();
         }
