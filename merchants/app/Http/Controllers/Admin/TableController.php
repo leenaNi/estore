@@ -259,12 +259,40 @@ class TableController extends Controller {
     }
 
     public function transferKot() {       
+        $getHiddenEditOrderId = Input::get('hdn_order_id');
+        $getHiddenSingleTableId = Input::get('hdn_single_table_id');
+        $getHiddenJoinTableId = Input::get('hdn_join_table_id');
+        
         if (Table::find(Input::get('table_id'))->ostatus == 1) {
            
-            $order = new Order;
+            //$order = new Order;
+            $order = Order::find($getHiddenEditOrderId);
             $order->otype = 1;
             $order->table_id = Input::get('table_id');
-            $order->save();
+            $order->update();
+            //$order->save();
+            
+            //update ostatus 2 to 1 for old table id
+            if($getHiddenSingleTableId != '' || $getHiddenSingleTableId > 0)
+            {
+                $savetable = Table::find($getHiddenSingleTableId);
+                $savetable->ostatus = 1;
+                $savetable->update();
+            }
+            else
+            {
+                $joinTableIdArry = json_decode($getHiddenJoinTableId);
+                $tableIdArry = [];
+                foreach($joinTableIdArry as $getTableId)
+                {
+                    $savetable = Table::find($getTableId);
+                    $savetable->ostatus = 1;
+                    $savetable->update();
+                }//foreach ends here
+            }
+            
+
+            //update ostatus 1 to 2 for new tranfer kot table id
             $savetable = Table::find(Input::get('table_id'));
             $savetable->ostatus = 2;
             $savetable->update();
