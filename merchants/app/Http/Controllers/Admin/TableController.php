@@ -258,19 +258,23 @@ class TableController extends Controller {
 //        return redirect()->route('admin.tableorder.view')->with('message', 'Order placed successfully.');
     }
 
-    public function transferKot() {
+    public function transferKot() {       
         if (Table::find(Input::get('table_id'))->ostatus == 1) {
+           
             $order = new Order;
             $order->otype = 1;
             $order->table_id = Input::get('table_id');
             $order->save();
-            $savetable = Table::find(Input::get('tableid'));
+            $savetable = Table::find(Input::get('table_id'));
             $savetable->ostatus = 2;
             $savetable->update();
         } else {
             $order = Order::where("order_status", 1)->where("table_id", Input::get("table_id"))->orderBy("created_at", "desc")->first();
         }
-        if (count($order) > 0) {
+
+        //if (count($order) > 0) {
+        if (!empty($order)) {
+          
             $kot = Kot::find(Input::get('kot_id'));
             $kot->order_id = $order->id;
             $kot->update();
