@@ -285,10 +285,23 @@ class TableController extends Controller {
     }
 
     public function addNewOrder() {
-
+        $getStoreId = SESSION::get('store_id');
+        $orderStatusResult = DB::table('order_status')
+            ->where('store_id', $getStoreId)
+            ->where('is_default', 1)
+            ->get();
+        $orderStatusId = 0;
+        foreach($orderStatusResult as $getOrderStatatusData)
+        {
+            //Get Processin id
+            $orderStatusId = $getOrderStatatusData->id;
+            $orderStatus = $getOrderStatatusData->order_status;
+        }
+            
         $order = new Order;
         $order->otype = 1;
         $order->table_id = Input::get('tableid');
+        $order->order_status = $orderStatusId;
         $order->save();
         $savetable = Table::find(Input::get('tableid'));
         $savetable->ostatus = 2;
@@ -334,7 +347,11 @@ class TableController extends Controller {
             $kotprods .= '<td colspan="6"><b>KOT #' . $kot->id . '</b>';
 
             if ($order->otype == 1)
-                $kotprods .= '<span class="pull-right transferKOT" data-kotid="' . $kot->id . '" style="cursor:pointer;">Transfer KOT</span>';
+            {
+                if($order->cart == '')
+                    $kotprods .= '<span class="pull-right transferKOT" data-kotid="' . $kot->id . '" style="cursor:pointer;">Transfer KOT</span>';
+            }
+                
 
             $kotprods .='</td>';
             $kotprods .='</tr>';
@@ -347,7 +364,11 @@ class TableController extends Controller {
                 $kotprods .='<td>' . $prd->qty . '</td>';
                 $kotprods .='<td>' . number_format($prd->price, 2) . '</td>';
                 $kotprods .='<td>' . number_format(($prd->price * $prd->qty), 2) . '</td>';
-                $kotprods .='<td><i data-hasprdid="' . $prd->id . '" class="fa fa-trash fa-fw deleteExistingItem" style="color:red;cursor:pointer;"></i></td>';
+                if($order->cart == '')
+                {
+                    $kotprods .='<td><i data-hasprdid="' . $prd->id . '" class="fa fa-trash fa-fw deleteExistingItem" style="color:red;cursor:pointer;"></i></td>';
+                }
+                
                 $kotprods .='</tr>';
 
             }
@@ -731,6 +752,19 @@ class TableController extends Controller {
     public function saveOrder($userId, $orderId, $addressId, $payAmt, $paymentMethod, $additionalCharge) {
         $address = Address::find($addressId);
         //dd($address);
+        $getStoreId = SESSION::get('store_id');
+        $orderStatusResult = DB::table('order_status')
+            ->where('store_id', $getStoreId)
+            ->where('order_status', 'Delivered')
+            ->get();
+        $orderStatusId = 0;
+        foreach($orderStatusResult as $getOrderStatatusData)
+        {
+            //Get Processin id
+            $orderStatusId = $getOrderStatatusData->id;
+            $orderStatus = $getOrderStatatusData->order_status;
+        }
+
         $orders = Order::find($orderId);
         if ($userId) {
             $user = User::find($userId);
@@ -794,6 +828,7 @@ class TableController extends Controller {
         {
             $orderAmt = $subtotal - $discountedAmount;
         }
+        $orders->order_status = $orderStatusId;
         $orders->store_id = $storeId;
         $orders->order_amt = $payAmt;
         $additional_charge_json = AdditionalCharge::ApplyAdditionalChargeOnOrder($payAmt, $additionalCharge);
