@@ -4,10 +4,18 @@
 <!-- <link rel="stylesheet" href="{{ asset('public/Admin/dist/css/tabs-css.css') }}"> -->
 <style>
     .target3 {border: 2px dotted; text-align: center; padding-top: 10px; min-width: 100px; min-height: 100px; cursor: pointer;}
-    .draggable3{margin: 5px;}
+    .draggable3{/*margin: 5px;*/}
     .size1 > .target3 {width: 150px; height: 150px;}
     .size2 .target3{width: 200px; height: 150px;}
     .size3  .target3{width: 150px; height: 150px; border-radius: 50%;}
+
+    .target3.ui-resizable {   
+        margin-bottom: 20px;
+        min-width: 100px;
+        min-height: 100px;
+        /*pointer-events: none;*/
+    }
+    
     .green{background-color: #2ecc71;}
     .red{background-color: #d35400;}
     .yellow{background-color: #f1c40f;}
@@ -138,9 +146,9 @@
                             <!-- tab style -->
                             <div class="clearfix tabs-linearrow">
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a href="#tab-linearrow-one" data-toggle="tab">Dine In Orders</a></li>
-                                    <li><a href="#tab-linearrow-two" data-toggle="tab">Other Orders</a></li>
-                                    <li><a href="#tab-linearrow-three" data-toggle="tab">All Orders</a></li>
+                                    <li id="dine_in_orders" class="active"><a href="#tab-linearrow-one" data-toggle="tab">Dine In Orders</a></li>
+                                    <li id="other_orders"><a href="#tab-linearrow-two" data-toggle="tab">Other Orders</a></li>
+                                    <li id="all_orders"><a href="#tab-linearrow-three" data-toggle="tab">All Orders</a></li>
                                 </ul>
                                 <div class="tab-content pull-left" style="width:100%;">
                                     <div class="tab-pane active" id="tab-linearrow-one">
@@ -219,7 +227,20 @@
                                                     echo $tablesnumbers;                                                    
                                                     ?> </td>
                                                     <td>{{ date("d-M-Y H:i:s",strtotime($allorder->created_at)) }}</td>
-                                                    <td><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+                                                    <?php
+                                                    if($allorder->cart == '')
+                                                    {
+                                                    ?>
+                                                    <td id="edit_order_link"><a href="{{route('admin.order.additems', ['id' => $allorder->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+                                                    <?php
+                                                    }
+                                                    else {
+                                                    ?>
+                                                    <td id="view_complete_order_link"><a href="{{route('admin.order.viewitems', ['id' => $allorder->id]) }}">View</a></td>
+                                                    <?php
+                                                    }
+                                                     ?>
+
                                                 </tr>
                                                 @endforeach
 
@@ -289,7 +310,29 @@ var billNew = {
     "cut": {name: "Regenerate Bill", icon: "paste"},
     "paste": {name: "Free Up Table", icon: "delete"},
 }
+/*$(window).on('wheel', function() {
+    return false;
+});*/
 $(document).ready(function () {
+
+    /*$('#target_5').bind("mousewheel", function() {
+        return false;
+    });*/
+    //alert("local storage item status::"+localStorage.getItem('orderCompleted') ); // 1
+    var orderCompletedStatusVal = localStorage.getItem('orderCompleted');
+    //alert("order status completed val::"+orderCompletedStatusVal);
+    if(orderCompletedStatusVal == 1)
+    {
+        localStorage.setItem('orderCompleted', 0);
+        //active li of All orders
+        $("#dine_in_orders").removeClass('active');
+        $("#tab-linearrow-one").removeClass('active');
+        $("#all_orders").addClass('active');
+        $("#tab-linearrow-three").addClass('active');
+        $("#edit_order_link").hide();
+        localStorage.removeItem(orderCompleted);//remove localstorage
+    }
+
     setTableLayout();
     function setTableLayout() {
         var tableLayoutDbArray = <?php echo $tables;?>;

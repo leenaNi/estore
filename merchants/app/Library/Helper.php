@@ -519,7 +519,7 @@ class Helper {
             $countries = DB::table('countries')->where("status", 1)->get(["id", "name","iso_code_3"]);
             
         }else{
-            $countries = DB::table('countries')->where("iso_code_3", $country_code)->get(["id", "name","iso_code_3"]);
+            $countries = DB::table('countries')->where("country_code", $country_code)->get(["id", "name","iso_code_3"]);
             
         }
         return $countries;
@@ -718,6 +718,9 @@ class Helper {
         $calTax = 0;
         $tax_amt = 0;
         $orderAmt = 0;
+
+        //echo "<pre>";
+        //print_r($cart);
 
         foreach ($cart as $k => $c) {
             $getdisc = ($c->options->disc + $c->options->wallet_disc + $c->options->voucher_disc + $c->options->referral_disc + $c->options->user_disc);

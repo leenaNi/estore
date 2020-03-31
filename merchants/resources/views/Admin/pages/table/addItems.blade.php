@@ -141,11 +141,39 @@ body * { visibility: hidden; }
 </style>
 @stop
 @section('content')
+<?php
+$implodedJoinTablesId = '';
+$joinTableIdString = ''; 
+if($order->join_tables != '')
+{
+    $joinTableIdArry = json_decode($order->join_tables);
+    $tableIdArry = [];
+    foreach($joinTableIdArry as $getTableId)
+    {
+        $restaurantTableResult = DB::table('restaurant_tables')
+            ->where('id', $getTableId)
+            //->orderBy('id', 'DESC')
+            ->get();
+            foreach ($restaurantTableResult as $restTble) {
+        
+                $tableNo = $restTble->table_no;
+                array_push($tableIdArry,$tableNo);
+            }
+        
+          
+    
+    }//foreach ends here
+    //echo "<pre>";
+    //print_r($tableIdArry);
+    $implodedJoinTablesId = implode('-', $tableIdArry);
+    $joinTableIdString = '#Table Id ('.$implodedJoinTablesId.')';
+}
 
+?>
 <section class="content-header">
     <h1>
         Add/Edit Items
-        <small>{{ $order->type->otype }} #{{ $order->id }} </small>
+        <small>{{ $order->type->otype }} #{{ $order->id }} {{$joinTableIdString}}</small>
     </h1>
 </section>
 
@@ -391,20 +419,21 @@ body * { visibility: hidden; }
                     <div class="box-group" id="accordion">
                         <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
                         <div class="panel box box-primary">
-
+                           <?php  //echo "<pre>";
+                                //print_r($categories);?>
                             @foreach($categories as $key =>  $cat)
                             <div class="box-header with-border">
                                 <h6 class="box-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#{{ $cat->url_key }}">
-                                        {{ $cat->categoryName->category }}
+                                       {{ $cat->categoryName->category }}
                                     </a>
                                 </h6>
                             </div>
                             <div id="{{ $cat->url_key }}" class="panel-collapse collapse {{ $key == 0? 'in' : ''}}">
                                 <div class="box-body">
                                     <ul>
-                                        @foreach($cat->products as $prd)
-
+                                          @foreach($cat->products as $prd)
+                                       
                                         <li class="prod" data-prdid="{{$prd->id }}" id="prd-{{$prd->id}}"><b>{{ $prd->product }}</b>
                                             <a href="#"  class="pull-right" ui-toggle-class="" data-toggle="tooltip" title="Add Item"><i class="fa fa-plus fa-fw addItem"></i></a>
                                             <input value="" type="text" placeholder="Remarks"  name="remarks" class="input-mini pull-right remark">
@@ -636,7 +665,7 @@ body * { visibility: hidden; }
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header bord-bot0">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" onClick="redirectOrderListing()" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title text-center">
 
                     </h4>
@@ -874,8 +903,12 @@ body * { visibility: hidden; }
         $.post("{{route('admin.order.getOrderKotProds')}}", {orderid: orderid}, function (existingprods) {
            // alert('dfdfd');
             //console.log(existingprods);
-          calAmt();
+          //calAmt();
             $("table.tableVaglignMiddle tbody").html(existingprods);
+            var getTotalAmount = $("#final_total_amount").val();
+            //alert("total amt::"+getTotalAmount);
+            $(".finalSubTotal").text(getTotalAmount);
+            $(".payAmount").html(getTotalAmount);
         });
     }
 
@@ -886,10 +919,13 @@ body * { visibility: hidden; }
         prodid = $(this).parents('li').attr('data-prdid')
         var prod = $(this).parents('li').find('b').text();
         var remark = $(this).parents('li').find('.remark').val();
+        //alert("remark val::"+remark);
         var qty = $(this).parents('li').find('.qty').val();
         var itemPrice = $(this).parents('li').find('.price').val();
+        //console.log("itemprice::"+itemPrice);
         var totalPrice = itemPrice * qty;
         totalPrice = totalPrice.toFixed(2);
+        //console.log("<br>total price::"+totalPrice);
         trClassName = 'row-' + prodid;
         if ($("table.tableVaglignMiddle").find("tr").hasClass(trClassName)) {
             addQty = $("table.tableVaglignMiddle").find("." + trClassName).find(".qty").val();
@@ -898,7 +934,7 @@ body * { visibility: hidden; }
 
             remarK = addRemark + " " + remark;
             qtY = parseInt(addQty) + parseInt(qty);
-
+            //alert("if remark val::"+remark);
             itemp = addPrice;
             totalItemP = qtY * addPrice;
             totalItemP = totalItemP.toFixed(2);
@@ -914,6 +950,7 @@ body * { visibility: hidden; }
             $("table.tableVaglignMiddle").find("." + trClassName).replaceWith(addrow);
 
         } else {
+            //alert("else remark val::"+remark);
             var row = '<tr class="newRow row-' + prodid + '"><td>' + prod + '</td><td>' + remark + '</td><td>' + qty + '</td>' +
                     '<td>' + parseFloat(itemPrice).toFixed(2) + '<input type="hidden" class="price" name="orderdata[' + prodid + '][price]" value="' + parseFloat(itemPrice).toFixed(2) + '"> </td><td>' + parseFloat(totalPrice).toFixed(2) + '</td>' +
                     '<input type="hidden" class="qty" name="orderdata[' + prodid + '][qty]" value="' + qty + '">' +
@@ -1199,7 +1236,7 @@ body * { visibility: hidden; }
                 if (msg.remove == 1) {
                     $('.coupan-amt').html("<label style='color:red'>Invalid Coupon!</label>");
                 } else {
-                    $('.coupan-amt').html("<label>Coupon Value: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> " + msg.disc.toFixed(2) + "</label>");
+                    $('.coupan-amt').html("<label>Coupon Value: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span id='coupon_value'>" + msg.disc.toFixed(2) + "</span></label>");
                 }
                 $(".total-amount").html("<label>Total(After Discount): <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> " + msg.orderAmount.toFixed(2) + "</label>");
                 getAdditionalcharge();
@@ -1294,7 +1331,19 @@ body * { visibility: hidden; }
                     $(".total-charge").html('Taxes/Additional Charges: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="additionalTotal"> ' + total_amt + '</span><i class="fa pull-right fa-angle-down" aria-hidden="true"></i>');
                 }
 
-                $(".payable-amt").html('<label>Payable Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="payAmount" >' + addi_charge_with_price + '</span></label><input type="hidden" name="payAmount" value="' + total_price + '">');
+                var couponVal = $("#coupon_value").text();
+                var getTotalAmount = $("#final_total_amount").val();
+                var finalAmt = ''
+                if(couponVal != '')
+                {
+                    finalAmt = (getTotalAmount - couponVal);
+                }
+                else
+                {
+                    finalAmt = getTotalAmount;
+                }
+                $(".payable-amt").html('<label>Payable Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="payAmount" >' + finalAmt + '</span></label><input type="hidden" name="payAmount" value="' + finalAmt + '">');
+                //$(".payable-amt").html('<label>Payable Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="payAmount" >' + addi_charge_with_price + '</span></label><input type="hidden" name="payAmount" value="' + total_price + '">');
                 $('input[name="payamt"]').val($('input[name="payAmount"]').val());
                 $('input[name="payamt"]').val($('.payAmount').text());
                 //   alert(parseInt($('.payAmount').text()));
@@ -1402,10 +1451,9 @@ body * { visibility: hidden; }
             if(this.checked){
             sThisVal.push($(this).attr("data-id"));
             }
-      
        
-  });
-  console.log($("#tableOrderForm").attr('action'));
+        });
+  //console.log("<br>table order firm action::"+$("#tableOrderForm").attr('action'));
    $("input[name='additionalcharge']").val(sThisVal);
   
         $.ajax({
@@ -1427,7 +1475,10 @@ body * { visibility: hidden; }
                
                 table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><th class='text-left pl10'>Product </th><th class='text-left'>Price</th><th class='text-left'>Qty </th><th class='text-right'>Total</th>";
                 $.each(jQuery.parseJSON(data.orders.cart), function (cartk, cartv) {
+                    //console.log("cartk ::"+JSON.stringify(cartk));
+                    //console.log("<br> cartv ::"+JSON.stringify(cartv));
                     subtotal=subtotal+parseInt(cartv.subtotal);
+                    //alert("sub total::"+subtotal);
                     userDisc=userDisc+parseInt(cartv.options.user_disc);
                     table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><td class='text-left pl10'>" + cartv.name + "</td><td class='text-left'>" + cartv.price + "</td><td>" + cartv.qty + "</td><td class='text-right'>" + cartv.subtotal + "</td></tr>";
 
@@ -1457,8 +1508,23 @@ body * { visibility: hidden; }
     //console.log('==' + JSON.stringify(table));
                 $("#printInvoicce").modal("show");
                 $(".invoiceData").html(table);
+                //$('.complete-order').text('Complete Order');
+                changeOccupancyStatus();
             }
             // $("#tableOrderForm").attr("action",route);
+        });
+    }
+    
+    function changeOccupancyStatus() {
+        var orderId = $('input[name=order_id]').val();
+        $.ajax({
+            type: "POST",
+            url: "{{route('admin.tables.changeOccupancyStatus')}}/1",
+            data: {orderId: orderId},
+            cache: false,
+            success: function (data) {
+                // window.location.href = "{{route('admin.tableorder.view')}}";
+            }
         });
     }
     
@@ -1473,6 +1539,12 @@ body * { visibility: hidden; }
             x1 = x1.replace(rgx, '$1' + ',' + '$2');
         }
         return x1 + x2;
+    }
+
+    function redirectOrderListing()
+    {
+        localStorage.setItem('orderCompleted', 1);
+        window.location.href = "{{ route('admin.tableorder.view')}}"
     }
     
     function getprint(){

@@ -16,11 +16,11 @@
                     {{ Session::get('message') }}
                 </div>
                 @endif
-                @if(!empty(Session::get('msg')))
+                <!--@if(!empty(Session::get('msg')))
                 <div class="alert alert-success" role="alert">
                     {{Session::get('msg')}}
                 </div>
-                @endif
+                @endif-->
     </div>
     <div class="grid-content">
         <div class="section-main-heading">

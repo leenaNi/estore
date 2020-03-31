@@ -32,6 +32,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "PagesController@index"]);
         Route::post('/order-stat', ["as" => "admin.dashboard.orderStat", "uses" => "PagesController@orderStat"]);
         Route::post('/sales-stat', ["as" => "admin.dashboard.saleStat", "uses" => "PagesController@salesStat"]);
+        //new customer
+        Route::post('/customers-stat', ["as" => "admin.dashboard.customersStat", "uses" => "PagesController@customersStat"]);
+        //customer not visited
+        Route::post('/notvisitedcustomers-stat', ["as" => "admin.dashboard.nvcustomersStat", "uses" => "PagesController@nvcustomersStat"]);
+        //customer visited
+        Route::post('/visitedcustomers-stat', ["as" => "admin.dashboard.vcustomersStat", "uses" => "PagesController@vcustomersStat"]);
         Route::group(['prefix' => 'catalog', 'middlewareGroups' => ['CheckUser', 'web']], function () {
             Route::group(['prefix' => 'category', 'middlewareGroups' => ['web']], function () {
                 Route::get('/', ['as' => 'admin.category.view', 'test' => 'test', 'uses' => 'CategoryController@index']);
@@ -162,6 +168,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::get('/edit', ['as' => 'admin.campaign.edit', 'uses' => 'CampaignController@edit']);
             Route::get('/delete', ['as' => 'admin.campaign.delete', 'uses' => 'CampaignController@delete']);
             Route::post('/sendsms', ['as' => 'admin.campaign.sendsms', 'uses' => 'CampaignController@sendCampaignSMS']);
+            Route::post('/sendbulksms', ['as' => 'admin.campaign.sendbulksms', 'uses' => 'CampaignController@sendCampaignBulkSMS']);
 
             Route::get('/viewemails', ['as' => 'admin.emailcampaign.viewemails', 'uses' => 'CampaignController@viewemails']);
             Route::get('/addemail', ['as' => 'admin.emailcampaign.addemail', 'uses' => 'CampaignController@addEmail']);
@@ -169,6 +176,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::get('/editemail', ['as' => 'admin.emailcampaign.editemail', 'uses' => 'CampaignController@editEmail']);
             Route::get('/deleteemail', ['as' => 'admin.emailcampaign.deleteemail', 'uses' => 'CampaignController@deleteEmail']);
             Route::post('/sendemail', ['as' => 'admin.emailcampaign.sendemail', 'uses' => 'CampaignController@sendCampaignEmail']);
+            Route::post('/sendbulkemail', ['as' => 'admin.emailcampaign.sendbulkemail', 'uses' => 'CampaignController@sendCampaignBulkEmail']);
         });
 
         Route::group(['prefix' => 'coupons', 'middlewareGroups' => ['CheckUser', 'web']], function () {
@@ -241,6 +249,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/get-cart-amount', array('as' => 'admin.getCartAmt', 'uses' => 'TableController@getCartAmt'));
             Route::any('/delete-kot-prods', array('as' => 'admin.order.deleteKotProds', 'uses' => 'TableController@deleteKotProds'));
             Route::post('/change-occupancy-status/{id?}', array('as' => 'admin.tables.changeOccupancyStatus', 'uses' => 'TableController@changeOccupancyStatus'));
+            Route::any('/view-items/{id}', array('as' => 'admin.order.viewitems', 'uses' => 'TableController@viewitems'));
+            Route::any('/get-order-details', array('as' => 'admin.order.getOrderDetails', 'uses' => 'TableController@getOrderDetails'));
         });
 
         Route::group(['prefix' => 'orders', 'middlewareGroups' => ['CheckUser', 'web']], function () {
