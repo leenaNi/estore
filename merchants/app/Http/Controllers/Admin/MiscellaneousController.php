@@ -25,7 +25,7 @@ class MiscellaneousController extends Controller
 
     public function generalSetting()
     {
-        dd(config('app.industry'));
+        // dd(config('app.industry'));
         $name = Input::get('name');
         $status = Input::get('status');
         $industry_id = config('app.industry');
