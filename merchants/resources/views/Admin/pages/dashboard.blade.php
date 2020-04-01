@@ -504,58 +504,7 @@
                                 </div>
                             </div>
 
-                            
-
-
-                             <div class="col-md-6 marginBottom20">
-                            <div class="box box-warning" >
-                                <div class="box-header dashbox-header with-border bg-yellow">
-                                    <h3 class="box-title dashbox-title">Average Order/Bill</h3>
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                <div class="box-body">
-                                    <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id="" name="avgbill_daterange"  class="form-control avgbill_daterange textInput">
-
-                                        <span class="input-group-addon">
-                                            <i class=" ion ion-calendar"></i>
-                                        </span>
-                                    </div>
-                                   <center> <h4>Weekly Average Bill</h4> <canvas id="mybill" width="300" height="300"></canvas>
-                                   <div class="table-responsive">
-                                    <table class="table no-margin">
-
-                                        <tbody>
-
-                                            @foreach($billamount as $billamounts)
-                                            <tr>
-                                          <!--       <td id="billcolor">
-                                                    <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
-                                                </td> -->
-                                                <td>
-                                                    {{$billamounts["customer_name"]}}
-                                                </td>
-                                                <td id="totalbill">
-                                                    Rs. {{$billamounts["total"]}} 
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div> 
-                            </div>
-
-                        </div>
-
-
-
-
-                       
-                        <div class="col-md-6">
+                            <div class="col-md-6">
                             <div class="box box-warning" >
                             <div class="box-header dashbox-header with-border bg-yellow">
                                 <h3 class="box-title dashbox-title">Product Sales</h3>
@@ -587,6 +536,8 @@
                                 </div>
                             </div>
                             </div>
+
+
                         </div>
                         <div class="clearfix"></div>
                         <br>
@@ -673,17 +624,53 @@
                                 </div>
                             </div>
 
-                           
+
+
+                            <div class="col-md-6 marginBottom20">
+                            <div class="box box-warning" >
+                                <div class="box-header dashbox-header with-border bg-yellow">
+                                    <h3 class="box-title dashbox-title">Average Order/Bill</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="avgbill_daterange"  class="form-control avgbill_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                    </div>
+                                   <center> <canvas id="mybill" width="300" height="300"></canvas>
+                                   <div class="table-responsive">
+                                    <table class="table no-margin">
+
+                                        <tbody>
+
+                                            @foreach($billamount as $billamounts)
+                                            <tr>
+                                          <!--       <td id="billcolor">
+                                                    <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
+                                                </td> -->
+                                                <td>
+                                                    {{$billamounts["customer_name"]}}
+                                                </td>
+                                                <td id="totalbill">
+                                                    Rs. {{$billamounts["total"]}} 
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    </div> 
+                                </div>
+
+                            </div>
                         </div>
-
-                        
-
-
-
-
-
-
-                        </div>
+                    </div>
             </div>
         </section>
 
