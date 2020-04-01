@@ -644,6 +644,7 @@
                                             <i class=" ion ion-calendar"></i>
                                         </span>
                                     </div>
+                                    </br>
                                    <center> <canvas id="mybill" width="300" height="300"></canvas>
                                    <div class="table-responsive">
                                     <table class="table no-margin">
