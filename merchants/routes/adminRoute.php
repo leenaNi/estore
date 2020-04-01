@@ -39,6 +39,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::post('/notvisitedcustomers-stat', ["as" => "admin.dashboard.nvcustomersStat", "uses" => "PagesController@nvcustomersStat"]);
         //customer visited
         Route::post('/visitedcustomers-stat', ["as" => "admin.dashboard.vcustomersStat", "uses" => "PagesController@vcustomersStat"]);
+        //avg bill
+        Route::post('/avgbill-stat', ["as" => "admin.dashboard.avgBillStat", "uses" => "PagesController@avgBillStat"]);
+        //customer lost
+        Route::post('/customerslost-stat', ["as" => "admin.dashboard.customerslostStat", "uses" => "PagesController@customerslostStat"]);
+
         Route::group(['prefix' => 'catalog', 'middlewareGroups' => ['CheckUser', 'web']], function () {
             Route::group(['prefix' => 'category', 'middlewareGroups' => ['web']], function () {
                 Route::get('/', ['as' => 'admin.category.view', 'test' => 'test', 'uses' => 'CategoryController@index']);
