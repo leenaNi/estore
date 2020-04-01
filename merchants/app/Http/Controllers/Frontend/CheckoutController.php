@@ -2235,7 +2235,7 @@ foreach ($_POST as $a => $b) {
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => $taxval,
+            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "sub_prod_id" => "", "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => $taxval,
                 'pay_amt' => $payamt, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix']];
             //            $market_place = Helper::generalSetting(35);
             //            if (isset($market_place) && $market_place->status == 1) {
