@@ -85,8 +85,10 @@ class HomeController extends Controller {
        
         $merchantId = Session::get('merchantid');
         $storeId =  Session::get('store_id');
-           $allinput = json_decode(Merchants::find(Session::get('merchantid'))->register_details, true);
-           $storeName = $allinput['store_name'];
+        $store = Store::find($storeId);
+        //    $allinput = json_decode(Merchants::find(Session::get('merchantid'))->register_details, true);
+        //    $storeName = $allinput['store_name'];
+           $storeName = $store->url_key;
            //echo "storeName =::".$storeName;
 
         if(!empty(Input::get('cateId')))
