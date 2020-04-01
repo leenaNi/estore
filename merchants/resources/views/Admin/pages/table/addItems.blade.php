@@ -651,6 +651,9 @@ if($order->join_tables != '')
                 </div>
                 <div class="modal-footer">
                     <input class="btn btn-primary" type="submit" value="Submit">
+                    <input type="hidden" id="hdn_single_table_id" name="hdn_single_table_id" value="{{ $order->table_id }}">
+                    <input type="hidden" id="hdn_join_table_id" name="hdn_join_table_id" value="{{ $order->join_tables }}">
+                    <input type="hidden" id="hdn_order_id" name="hdn_order_id" value="{{ $order->id }}">
                     </form>  
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>

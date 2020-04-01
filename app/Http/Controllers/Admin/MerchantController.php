@@ -4,18 +4,27 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
+use App\Library\CustomValidator;
 use App\Models\Bank;
 use App\Models\Category;
 use App\Models\Currency;
 use App\Models\Document;
 use App\Models\Merchant;
 use App\Models\User;
+use App\Models\Settings;
+use App\Models\Country;
+use App\Models\Store;
+use App\Models\MerchantOrder;
+use App\Models\HasCurrency;
 use Auth;
 use DB;
 use Hash;
 use Illuminate\Support\Facades\Input;
 use Session;
 use Validator;
+use File;
+use JWTAuth;
+use ZipArchive;
 
 class MerchantController extends Controller
 {
@@ -102,12 +111,13 @@ class MerchantController extends Controller
         $merchant = Merchant::findOrNew(Input::get('id'));
         $data = [];
         $data['already_selling'] = [];
+        $data['cat_selected'] = [];
         if ($merchant && Input::get('id')) {
             $resgister_details = json_decode($merchant->register_details);
-            $data['cat_selected'] = $resgister_details->business_type;
-            $data['curr_selected'] = $resgister_details->currency;
-            $data['already_selling'] = ($resgister_details->already_selling);
-            $data['store_version'] = ($resgister_details->store_version);
+            $data['curr_selected'] = $resgister_details->currency_code;
+            $data['cat_selected'] = (@$resgister_details->business_type) ? @$resgister_details->business_type : [];
+            $data['already_selling'] = (@$resgister_details->already_selling) ? @$resgister_details->already_selling : [];
+            $data['store_version'] = (@$resgister_details->store_version);
         }
 
         $cat = Category::where("status", 1)->pluck('category', 'id')->prepend('Choose your Industry *', '');
@@ -120,10 +130,359 @@ class MerchantController extends Controller
         //dd($data);
         return Helper::returnView($viewname, $data);
     }
-
     public function saveUpdate()
     {
+        $allinput = Input::all();
+        $storeName = Input::get('company_name');
+        $phone = Input::get('phone');
+        if (CustomValidator::validatePhone($phone)) {
+            if (empty(Input::get('id'))) {
+            // $storeType = ($allinput['roleType'] == '1') ? 'merchant' : ($allinput['roleType'] == '2') ? 'distributor' : '';
+            $storeType = 'merchant';
+            $settings = Settings::where('bank_id', 0)->first();
+            $country = Country::where("id", $settings->country_id)->get()->first();
+            $currency = Currency::where("id", $settings->currency_id)->get()->first();
+            $settings['country_code'] = $country['country_code'];
+            $settings['country_name'] = $country['name'];
+            $settings['currency_code'] = $currency['id'];
+            $allinput['currency'] = $currency['id'];
+            $allinput['currency_code'] = $currency['id'];
+            $allinput['country_code'] = $country['country_code'];
+            $domainname = str_replace(" ", '-', trim(strtolower($storeName), " "));
+            $checkhttps = (isset($_SERVER['HTTPS']) === false) ? 'http' : 'https';
+            $actualDomain = $checkhttps . "://" . $domainname . "." . str_replace("www", "", $_SERVER['HTTP_HOST']);
+            $actualDomain = str_replace("..", ".", $actualDomain);
+            $allinput['domain_name'] = $domainname;
+            $allinput['store_name'] = $storeName;
+            $newMerchant = '';
+            // Validate Merchant Data
+            $validation = new Merchant();
+            $allinput['company_name'] = $storeName;
+            $validator = Validator::make($allinput, Merchant::rules(), $validation->messages);
+            if ($validator->fails()) {
+                $errMsg = [];
+                $err = $validator->messages()->toArray();
+                foreach ($err as $ek => $ev) {
+                    $errMsg[$ek] = implode(",", $ev);
+                }
+                $data = ["status" => 0, "msg" => $errMsg];
+                return $data;
+            }
+            $getMerchat = new Merchant;
+            $getMerchat->phone = $phone;
+            $getMerchat->password = Hash::make(Input::get('password'));
+            $getMerchat->email = Input::get("email");
+            $getMerchat->firstname = Input::get("firstname");
+            $getMerchat->company_name = $storeName;
+            $getMerchat->country_code = $country['country_code'];
+            // $getMerchat->register_details = json_encode($allinput);
+            $getMerchat->register_details = json_encode(collect($allinput)->except('_token', 'id', 'existing_mid', 'company_name'));
+            $getMerchat->save();
+            $lastInsteredId = $getMerchat->id;
+            if ($lastInsteredId > 0) {
+                $merchantObj1 = Merchant::find($lastInsteredId);
+                $identityCode = Helper::createUniqueIdentityCode($allinput, $lastInsteredId);
+                $merchantObj1->identity_code = $identityCode;
+                $decoded = json_decode($merchantObj1->register_details, true);
+                $decoded['business_type'] = $allinput['business_type'];
+                $json = json_encode($decoded);
+                $merchantObj1->register_details = $json;
+                $merchantObj1->save();
+            }
+            // print_r($getMerchat);
+            $newMerchant = $getMerchat;
+            $store = new Store();
+            $store->store_name = $storeName; // $registerDetails->store_name;
+            $store->url_key = $domainname;
+            $store->store_type = $storeType; // merchant/distributor
+            $store->merchant_id = $lastInsteredId;
+            $store->store_domain = $actualDomain;
+            $store->percent_to_charge = 1.00;
+            $store->expiry_date = date('Y-m-d', strtotime(date("Y-m-d") . " + 365 day"));
+            $store->status = 1;
+            $store->category_id = $allinput['business_type'][0];
+            $merchantPay = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->first();
+            if (isset($merchantPay) && count($merchantPay) > 0) {
+                $store->store_version = 2;
+            } else {
+                $store->store_version = 1;
+            }
+            $store->prefix = $this->getPrefix($domainname);
+            if ($store->save()) {
+                // print_r($store);
+                $storeVersion = $store->store_version;
+                $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $store->store_name, $settings['currency_code'], $newMerchant->phone, $domainname, $storeVersion, $store->expiry_date, $identityCode, $settings['country_code'], $newMerchant);
+                if ($result['status']) {
+                    if($allinput['is_individual_store']) {
+                        $sub = "Login credentials for " . $storeName . ". You can create one or more store using app";
+                        $mailcontent = "Your Username/Login Id - " . $getMerchat->phone . "\n";
+                        $mailcontent .= "Password - " . Input::get('password') . "\n";
+                        Helper::withoutViewSendMail($getMerchat->email, $sub, $mailcontent);
+                    }
+                    $regUser = DB::table('users')->where('store_id', $store->id)->where('user_type', 1)->first(['id', 'telephone', 'store_id', 'prefix', 'country_code']);
+                    $token = JWTAuth::fromUser($regUser);
+                    $user = JWTAuth::toUser($token);
+                    $store = $store; // $getMerchat->getstores;
+                    return response()->json(["status" => 1, 'msg' => 'Saved successfully', 'data' => ['id' => $getMerchat->id, 'user' => $user, 'store' => $store, 'merchant' => $newMerchant]])->header('token', $token);
+                } else {
+                    return response()->json($result);
+                }
+            } else {
+                return response()->json(["status" => 0, 'msg' => 'Something went wrong!']);
+            }
+        } else {
+            $updateArr = ["updated_by" => Session::get('authUserId')];
+            $merchant = Merchant::findOrNew(Input::get('id'));
+            $merchant->fill(Input::all());
+            $all_data = Input::all();
+            // $merchant->register_details = json_encode(collect(Input::all())->except('_token', 'id', 'existing_mid'));
+            $merchant->register_details = json_encode(collect($all_data)->except('_token', 'id', 'existing_mid'));
+            $merchant->save();
+            if (!empty($this->getbankid())) {
+                $hasmer = $merchant->hasMarchants()->withPivot('id', 'bank_id', 'merchant_id', 'added_by', 'updated_by', 'created_at', 'updated_at')->get();
+                if (!empty($hasmer)) {
+                    foreach ($hasmer as $hm) {
+                        $merchant->hasMarchants()->updateExistingPivot($hm->pivot->bank_id, $updateArr);
+                    }
+                }
+            }
+            $result['id'] = $merchant->id;
+            $result['merchant'] = $merchant;
+            $result['docs'] = @$merchant->documents()->get();
+            // $result['status'] = "Saved successfully";
+            $data = ['status' => 1, 'msg' => 'Saved successfully', 'data' => $result];
+        }
+        } else {
+            $data = ["status" => 0, "msg" => "Invalid mobile number"];
+        }
+        return Helper::returnView(null, $data);
+    }
 
+    public function createInstance($storeType, $storeId, $prefix, $urlKey, $storeName, $currency, $phone, $domainname, $storeVersion, $expirydate, $identityCode, $country_code, $newMerchant)
+    {
+        $appId = null;
+        $regDetails = json_decode($newMerchant->register_details, true);
+        // dd($regDetails['is_individual_store']);
+        $catid = 1;
+        ini_set('max_execution_time', 600);
+        $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "' . env('GODADDY_IP') . '", "ttl": 3600}]';
+        $fields = array(
+            'data' => $messagearray,
+        );
+        //building headers for the request
+        $headers = array(
+            'Authorization: sso-key ' . env('GODADDY_KEY'),
+            'Content-Type: application/json',
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, Config('constants.domainURL') . $_SERVER['HTTP_HOST'] . '/records');
+        //setting the method as post
+        // curl_setopt($ch, CURLOPT_POST, true);
+        //adding headers
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+        //disabling ssl support
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        //adding the fields in json format
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $messagearray);
+        //finally executing the curl request
+        $result = curl_exec($ch);
+        if ($result === false) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+        curl_close($ch);
+        //stop Curl
+
+        $contents = File::get(public_path() . "/public/skeleton.sql");
+        $sql = str_replace('tblprfx_', $storeId, $contents);
+        $test = DB::unprepared($sql);
+        if ($test) {
+            $path = base_path() . "/merchants/" . "$domainname";
+            $mk = File::makeDirectory($path, 0777, true, true);
+            if (chmod($path, 0777)) {
+                chmod($path, 0777);
+            }
+            if ($mk) {
+                $file = public_path() . '/public/skeleton.zip';
+                $zip = new ZipArchive;
+                $res = $zip->open($file);
+
+                if ($res == true) {
+                    $zip->extractTo($path);
+                    $zip->close();
+                    $isIndividualStore = $regDetails['is_individual_store'];
+                    $this->replaceFileString($path . "/.env", "%DB_HOST%", env('DB_HOST', ''));
+                    $this->replaceFileString($path . "/.env", "%DB_DATABASE%", env('DB_DATABASE', ''));
+                    $this->replaceFileString($path . "/.env", "%DB_USERNAME%", env('DB_USERNAME', ''));
+                    $this->replaceFileString($path . "/.env", "%DB_PASSWORD%", env('DB_PASSWORD', ''));
+                    $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", "");
+                    $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
+                    $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
+                    $this->replaceFileString($path . "/.env", "%IS_INDIVIDUAL_STORE%", "$isIndividualStore");
+
+                    $insertArr = ["user_type" => 1, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
+                    if ($appId) {
+                        $insertArr["provider_id"] = $appId;
+                    }
+                    if ($country_code) {
+                        $insertArr["country_code"] = "$country_code";
+                    }
+                    $newuserid = DB::table("users")->insertGetId($insertArr);
+                    $insertedProductIdArray = array();
+                    $productsData = DB::table('products')->select(DB::raw("GROUP_CONCAT(id) as product_id"))->where('store_id', $storeId)->get();
+                    $insertedProductId = $productsData[0]->product_id;
+                    $insertedProductIdArray = explode(",", $insertedProductId);
+                    $jsonDataFromFile = File::get(public_path() . "/public/product_category_json.json");
+                    $decodedJsonData = json_decode(trim($jsonDataFromFile), true);
+                    for ($j = 0; $j < count($insertedProductIdArray); $j++) {
+                        $categoryId = $catid;
+                        if ($categoryId != 1) {
+                            $productId = $insertedProductIdArray[$j];
+                            //echo "\ncat >> ".$categoryId." :: product >> ".$productId;
+                            $categoryJsonData = $decodedJsonData[$categoryId];
+                            $productName = $categoryJsonData['product_name'];
+                            //echo "\np name >> ".$productName;
+                            $urlKey = $categoryJsonData['url_key'];
+                            $prodType = $categoryJsonData['prod_type'];
+                            $stock = $categoryJsonData['stock'];
+                            $cur = $categoryJsonData['cur'];
+                            $maxPrice = $categoryJsonData['max_price'];
+                            $minPrice = $categoryJsonData['min_price'];
+                            $purchasePrice = $categoryJsonData['purchase_price'];
+                            $price = $categoryJsonData['price'];
+                            $splPrice = $categoryJsonData['spl_price'];
+                            $sellingPrice = $categoryJsonData['selling_price'];
+                            $categoryFilename = $categoryJsonData['category_filename'];
+                            $altText = $categoryJsonData['alt_text'];
+                            $imageType = $categoryJsonData['image_type'];
+                            $imageMode = $categoryJsonData['image_mode'];
+                            $sortOrder = $categoryJsonData['sort_order'];
+                            $imagePath = $categoryJsonData['image_path'];
+                            DB::table('products')->where([['store_id', $storeId], ['id', $productId]])->update(
+                                ['product' => $productName, 'url_key' => $urlKey, 'prod_type' => $prodType, 'stock' => $stock, 'cur' => $cur, 'max_price' => $maxPrice, 'min_price' => $minPrice, 'purchase_price' => $purchasePrice, 'price' => $price, 'spl_price' => $splPrice, 'selling_price' => $sellingPrice]
+                            );
+                            DB::table('catalog_images')->where('catalog_id', $productId)->delete();
+                            DB::table('catalog_images')->insert(['filename' => $categoryFilename, 'alt_text' => $altText, 'image_type' => $imageType, 'image_mode' => $imageMode, 'catalog_id' => $productId, 'sort_order' => $sortOrder, 'image_path' => $imagePath]);
+                        } // End check if
+                    } // End j loop
+
+                    $json_url = base_path() . "/merchants/" . $domainname . "/storeSetting.json";
+                    $json = file_get_contents($json_url);
+                    $decodeVal = json_decode($json, true);
+                    $decodeVal['industry_id'] = $catid;
+                    $decodeVal['storeName'] = $storeName;
+                    $decodeVal['expiry_date'] = $expirydate;
+                    $decodeVal['store_id'] = $storeId;
+                    $decodeVal['prefix'] = $prefix;
+                    $decodeVal['country_code'] = $country_code;
+                    $newJsonString = json_encode($decodeVal);
+                    $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
+                    fwrite($fp, $newJsonString);
+                    fclose($fp);
+                    if (!empty($catid)) {
+                        Helper::saveDefaultSet($catid, $prefix, $storeId, 'merchant', $regDetails);
+                    }
+                    if (!empty($currency)) {
+                        $decodeVal['currency'] = $currency;
+                        $decodeVal['currency_code'] = @HasCurrency::find($currency)->iso_code;
+                        $currVal = @HasCurrency::find($currency);
+                        if (!empty($currVal)) {
+                            $currJson = json_encode(['name' => $currVal->name, 'iso_code' => $currVal->iso_code]);
+                            DB::table("general_setting")->insert(['name' => 'Default Currency', 'status' => 0, 'details' => $currJson, 'url_key' => 'default-currency', 'type' => 1, 'sort_order' => 10000, 'is_active' => 0, 'is_question' => 0, 'store_id' => $storeId]);
+                        }
+                    }
+                    //Update Email Setting for mandrill and SMTP
+                    $emailSett = array("mandrill", "smtp");
+                    foreach ($emailSett as $email) {
+                        $emaildetails = json_decode(DB::table("general_setting")->where('url_key', $email)->first()->details);
+                        $emaildetails->name = $storeName;
+                        DB::table("general_setting")->where('store_id', $storeId)->where('url_key', $email)->update(["details" => json_encode($emaildetails)]);
+                    }
+                    //End Email Setting Update
+                    $adminRoleId = DB::table('roles')->where('store_id', $storeId)->where('name', 'LIKE', 'admin')->first(['id']);
+                    DB::table("role_user")->insert(["user_id" => @$newuserid, "role_id" => $adminRoleId->id]);
+                    //Check acl setting from general settings
+                    $chkAcl = DB::table("general_setting")->where('store_id', $storeId)->where('url_key', 'acl')->select("status")->first();
+                    if ($chkAcl->status == '1') {
+                        $allPermissions = DB::table("permissions")->select("id")->get();
+                        $permissions = [];
+                        foreach ($allPermissions as $key => $ap) {
+                            $permissions[$key]['permission_id'] = $ap->id;
+                            $permissions[$key]['role_id'] = $adminRoleId->id;
+                        }
+                        $insertPermission = DB::table("permission_role")->insert($permissions);
+                    }
+
+                    if ($phone) {
+                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
+                        Helper::sendsms($phone, $msgOrderSucc, $country_code);
+                        $idcodeMsg = "Your unique identification code is " . $identityCode;
+                        Helper::sendsms($phone, $idcodeMsg, $country_code);
+                    }
+                    // permission_role
+                    if(!$regDetails['is_individual_store']) {
+                        $baseurl = str_replace("\\", "/", base_path());
+                        $domain = 'eStorifi.com'; //$_SERVER['HTTP_HOST'];
+                        $sub = "eStorifi Links for Online Store - " . $storeName;
+                        $mailcontent = "<b>Congratulations  " . $storeName . " has been created successfully!</b>" . "\n\n";
+                        $mailcontent .= "Kindly find the links to view your store:" . "\n";
+                        $mailcontent .= "Store Admin Link: http://" . $domainname . '.' . $domain . "/admin" . "\n";
+                        $mailcontent .= "Online Store Link: http://" . $domainname . '.' . $domain . "\n";
+                        $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n\n";
+                    }
+                    return ['status' => 1, 'msg' => "Extracted Successfully to $path"];
+                } else {
+                    return ['status' => 0, 'msg' => "Error Encountered while extracting the Zip"];
+                }
+            } else {
+                return ['status' => 0, 'msg' => "Access Denied"];
+            }
+        } else {
+            return ['status' => 0, 'msg' => "Error Encountered while processing the SQL"];
+        }
+    }
+    public function getPrefix($storeName)
+    {
+        $newPrefix = substr($storeName, 0, 4) . mt_rand(100000, 999999);
+        $chkPrfix = Store::where("prefix", "=", $newPrefix)->count();
+        if ($chkPrfix > 0) {
+            $this->getPrefix($storeName);
+        } else {
+            return $newPrefix;
+        }
+
+    }
+
+    public function replaceFileString($FilePath, $OldText, $NewText)
+    {
+        $Result = array('status' => 'error', 'message' => '');
+        if (file_exists($FilePath) === true) {
+            if (is_writeable($FilePath)) {
+                try {
+                    $FileContent = file_get_contents($FilePath);
+                    $FileContent = str_replace($OldText, $NewText, $FileContent);
+                    if (file_put_contents($FilePath, $FileContent) > 0) {
+                        $Result["status"] = 'success';
+                    } else {
+                        $Result["message"] = 'Error while writing file';
+                    }
+                } catch (Exception $e) {
+                    $Result["message"] = 'Error : ' . $e;
+                }
+            } else {
+                $Result["message"] = 'File ' . $FilePath . ' is not writable !';
+            }
+        } else {
+            $Result["message"] = 'File ' . $FilePath . ' does not exist !';
+        }
+        return $Result;
+    }
+
+    public function saveUpdate1()
+    {
+        //dd(Input::all());
         $validation = new Merchant();
         $merchant = Merchant::findOrNew(Input::get('id'));
         $business_name = Category::where("id", (int) Input::get('business_type'))->get(['category'])->toArray();
@@ -133,7 +492,6 @@ class MerchantController extends Controller
         } else {
             if (empty(Input::get('id'))) {
                 $password = Hash::make(Input::get('password'));
-
                 //for new merchant
                 $addArr = ['bank_id' => $this->getbankid(), 'added_by' => Session::get('authUserId')];
                 if (empty($chkmerch)) {
@@ -143,11 +501,9 @@ class MerchantController extends Controller
                     $merchant->register_details = json_encode(collect(Input::all())->except('_token', 'id', 'existing_mid'));
                     $merchant->password = $password;
                     $merchant->save();
-
                     if (!empty($this->getbankid())) {
                         $merchant->hasMarchants()->attach($merchant->id, $addArr);
                     }
-
                 } else {
                     //existing merchant gets add
                     $merchant = Merchant::findOrNew($chkmerch->id);
@@ -173,7 +529,6 @@ class MerchantController extends Controller
                 $all_data["business_name"] = $business_name[0]["category"];
                 // $merchant->register_details = json_encode(collect(Input::all())->except('_token', 'id', 'existing_mid'));
                 $merchant->register_details = json_encode(collect($all_data)->except('_token', 'id', 'existing_mid'));
-
                 $merchant->save();
                 if (!empty($this->getbankid())) {
                     $hasmer = $merchant->hasMarchants()->withPivot('id', 'bank_id', 'merchant_id', 'added_by', 'updated_by', 'created_at', 'updated_at')->get();
@@ -301,7 +656,7 @@ class MerchantController extends Controller
                     }
                 }
             }
-//     $set_popup = DB::table($merchant->prefix.'_general_setting')->where('is_question',1)->orderBy('sort_order','DESC')->where('name','<>','set_popup')->where('question_category_id',1)
+            //     $set_popup = DB::table($merchant->prefix.'_general_setting')->where('is_question',1)->orderBy('sort_order','DESC')->where('name','<>','set_popup')->where('question_category_id',1)
             //             ->join($merchant->prefix.'_has_industries',$merchant->prefix.'_has_industries.general_setting_id','=',$merchant->prefix.'_general_setting.id')->get();
         } else {
             $set_popup = [];
@@ -316,7 +671,7 @@ class MerchantController extends Controller
         $marchantId = Input::get("merchantId");
         $settingData = Input::get("questions");
 
-//$settingData = json_decode(json_encode($settingData),true);
+        //$settingData = json_decode(json_encode($settingData),true);
         // dd($settingData);
         // $settingData=[array("id"=>10,'status'=>0),array("id"=>11,'status'=>1)];
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
@@ -355,14 +710,12 @@ class MerchantController extends Controller
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $storePath = base_path() . '/merchants/' . $merchant->url_key;
         $store = Helper::getStoreSettings($storePath)['logo'];
-
         $homePageSlider = DB::table($merchant->prefix . '_has_layouts')->where('layout_id', 1)->whereColumn('updated_at', '>', 'created_at')->count();
         // dd($homePageSlider);
         $homePage3boxs = DB::table($merchant->prefix . '_has_layouts')->where('layout_id', 4)->whereColumn("updated_at", '>', "created_at")->count();
         $categories = DB::table($merchant->prefix . '_categories')->where('status', 1)->where('is_nav', 1)->whereColumn("updated_at", '>', "created_at")->get();
         $products = DB::table($merchant->prefix . '_products')->where('status', 1)->where('is_individual', 1)->get();
         $contact = DB::table($merchant->prefix . '_contacts')->where('status', 1)->get();
-
         $data = ['is_logo' => count($store), 'is_homePageSlider' => $homePageSlider, 'is_category' => count($categories), 'is_product' => count($products), 'is_contact' => count($contact), 'homePage3boxs' => $homePage3boxs];
         $viewname = '';
         return Helper::returnView($viewname, $data);
@@ -377,7 +730,7 @@ class MerchantController extends Controller
         $filePath = $merchant->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/layout/';
         $homePageSlider = DB::table($merchant->prefix . '_has_layouts')->where('layout_id', 1)->orderBy("sort_order", "asc")->get();
         $homePageThreeBoxes = DB::table($merchant->prefix . '_has_layouts')->where('layout_id', 4)->orderBy("sort_order", "asc")->get();
-//   $categories= DB::table($merchant->prefix.'_categories')->where('status',1)->where('is_home',1)->get();
+        //   $categories= DB::table($merchant->prefix.'_categories')->where('status',1)->where('is_home',1)->get();
         //   $products= DB::table($merchant->prefix.'_products')->where('status',1)->where('is_individual',1)->get();
         //   $contact= DB::table($merchant->prefix.'_contacts')->where('status',1)->get();
         $data = ['storeLogo' => $store, 'homePageSlider' => $homePageSlider, 'homePageThreeBoxes' => $homePageThreeBoxes, 'filePath' => $filePath];
@@ -393,7 +746,7 @@ class MerchantController extends Controller
         //$imageData=Input::get("");
         // dd(Input::all());
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-// $data=json_decode($data);
+        // $data=json_decode($data);
         // foreach($data as $data1){
         //     dd($data1->status);
         // }
@@ -404,7 +757,6 @@ class MerchantController extends Controller
             $store = Helper::getStoreSettings($storePath);
             //  dd($store);
             $store['logo'] = $logoImage;
-
             $newSoter = json_encode($store);
             Helper::updateStoreSettings($storePath, $newSoter);
             $data = ["status" => 1, "msg" => "Logo Updated successfully."];
@@ -412,7 +764,6 @@ class MerchantController extends Controller
             $logoImage = json_decode($logoImage);
             foreach ($logoImage as $key => $logoArray) {
                 $layoutdata = [];
-
                 $layoutdata['layout_id'] = 1;
                 $layoutdata['is_active'] = $logoArray->status;
                 $layoutdata['sort_order'] = $logoArray->sort_order;
@@ -425,7 +776,6 @@ class MerchantController extends Controller
                     $datetime = "";
                     $image_parts = explode(";base64,", $logoimageData);
                     $image_type_aux = explode("image/", $image_parts[0]);
-
                     $image_type = $image_type_aux[1];
                     $imgName = 'banner_' . date("YmdHis") . $key . '.' . $image_type;
                     $image_base64 = base64_decode($image_parts[1]);
@@ -446,7 +796,6 @@ class MerchantController extends Controller
             $logoImage = json_decode($logoImage);
             foreach ($logoImage as $key => $logoArray) {
                 $layoutdata = [];
-
                 $layoutdata['layout_id'] = 4;
                 $layoutdata['is_active'] = $logoArray->status;
                 $layoutdata['sort_order'] = $logoArray->sort_order;
@@ -458,7 +807,6 @@ class MerchantController extends Controller
                     $datetime = "";
                     $image_parts = explode(";base64,", $logoimageData);
                     $image_type_aux = explode("image/", $image_parts[0]);
-
                     $image_type = $image_type_aux[1];
                     $imgName = 'three_' . date("YmdHis") . $key . '.' . $image_type;
                     $image_base64 = base64_decode($image_parts[1]);
@@ -538,7 +886,6 @@ class MerchantController extends Controller
         $contactData['phone_no'] = $phone_no;
         $contactData['email'] = $email;
         $contactData['address'] = $address;
-
         $contact = DB::table($merchant->prefix . '_contacts')->where('id', Input::get("id"))->update($contactData);
         $data = [];
         $data['status'] = "success";
@@ -561,10 +908,8 @@ class MerchantController extends Controller
     public function viewStore()
     {
         $marchantId = Input::get("merchantId");
-
         //  $data= $_SERVER['SERVER_NAME'];
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
-
         $viewname = '';
         $data = $_SERVER['SERVER_NAME'] . '/' . $merchant->url_key;
         return Helper::returnView($viewname, $data);
@@ -599,7 +944,6 @@ class MerchantController extends Controller
         $categories['sort_order'] = Input::get("sort_order");
         $categories['url_key'] = strtolower(str_replace(" ", "-", Input::get('category')));
         //$category->url_key = strtolower(str_replace(" ","-",Input::get('category')));
-
         if ($id) {
             $settings = DB::table($merchant->prefix . '_categories')->where('id', $id)->update($categories);
             $category = DB::table($merchant->prefix . '_categories')->where('id', $id)->first();
@@ -656,13 +1000,11 @@ class MerchantController extends Controller
         $prifix = $merchant->prefix;
         $getId = Input::get('id');
         $cat = DB::table($prifix . '_categories')->find($getId);
-
         if ($cat->parent_id == null) {
             $chidCat = DB::table($prifix . '_categories')->where("id", $cat->parent_id)->get();
             if (count($chidCat) > 0) {
                 $data = ['status' => 'error', 'msg' => 'Sorry, Can not delete this root category.'];
             } else {
-
                 DB::table($prifix . '_categories')->delete($cat->id);
                 $data = ['status' => 'success', 'msg' => ' Root category deleted successfully.'];
             }
@@ -679,7 +1021,6 @@ class MerchantController extends Controller
                     }
                 }
                 if ($flag == 0) {
-
                     DB::table($prifix . '_categories')->delete($catupdate->id);
                     $data = ['status' => 'success', 'msg' => 'Category deleted successfully.'];
                 } else {
@@ -688,11 +1029,10 @@ class MerchantController extends Controller
             } else {
                 $productInfo = $this->check_product($catupdate, $prifix);
                 if (count($productInfo) > 0) {
-                    $data = ['status' => 'error', 'msg' => 'Sorry, This category is a part of a product, So remove the product from this category first'];
+                    $data = ["status" => "error", "msg" => "Sorry, This category is a part of a product, So remove the product from this category first"];
                 } else {
                     DB::table($prifix . '_categories')->delete($catupdate->id);
-
-                    $data = ['status' => 'success', 'msg' => 'Category deleted successfully.'];
+                    $data = ["status" => "success", "msg" => "Category deleted successfully."];
                 }
             }
         }
@@ -702,32 +1042,29 @@ class MerchantController extends Controller
     public function check_product($product, $prifix)
     {
         $productInfo = DB::table($prifix . '_products')
-            ->join($prifix . '_categories', $prifix . '_categories.id', '=', $prifix . '_products.id')
+            ->join($prifix . "_categories", $prifix . "_categories.id", "=", $prifix . "_products.id")
             ->get();
-
         return $productInfo;
     }
 
     public function checkExistingUser()
     {
-        $chkEmail = Merchant::where("email", Input::get('email'))->first();
-        if (count($chkEmail) > 0) {
+        $chkEmail = User::where("email", Input::get("email"))->where("user_type", 1)->first();
+        if ($chkEmail != null) {
             return 1;
         } else {
             return 0;
         }
-
     }
 
     public function checkExistingphone()
     {
-        $chkEmail = Merchant::where("phone", Input::get('phone_no'))->first();
-        if (count($chkEmail) > 0) {
+        $chkEmail = User::where("telephone", Input::get("phone_no"))->where("user_type", 1)->first();
+        if ($chkEmail != null) {
             return 1;
         } else {
             return 0;
         }
-
     }
 
     public function updateFeature()
@@ -735,47 +1072,45 @@ class MerchantController extends Controller
         $marchantId = Input::get("merchantId");
         $id = Input::get("id");
         $status = Input::get("status");
-
-        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $merchant = Merchant::find(Input::get("merchantId"))->getstores()->first();
         $featuredata = [];
         if ($id) {
-            $featuredata['status'] = $status;
+            $featuredata["status"] = $status;
             if (!empty(Input::get("details"))) {
-                $featuredata['details'] = Input::get("details");
+                $featuredata["details"] = Input::get("details");
             }
-
-            DB::table($merchant->prefix . '_general_setting')->where('id', $id)->update($featuredata);
-            $feature = DB::table($merchant->prefix . '_general_setting')->find($id);
+            DB::table($merchant->prefix . "_general_setting")->where("id", $id)->update($featuredata);
+            $feature = DB::table($merchant->prefix . "_general_setting")->find($id);
             $general = [];
             $general[strtolower($feature->url_key)] = $feature->status;
-//         foreach ($feature as $key => $value) {
+            //         foreach ($feature as $key => $value) {
             //
             //        }
-            return $data = ['status' => 1, 'msg' => "Feature status change successfully", "feature" => $feature, "general" => $general];
+            return $data = ["status" => 1, "msg" => "Feature status change successfully", "feature" => $feature, "general" => $general];
         } else {
-            return $data = ['status' => 0, 'msg' => "Opps somethings went wromg"];
+            return $data = ["status" => 0, "msg" => "Opps somethings went wromg"];
         }
     }
 
     public function storeInfo()
     {
         $marchantId = Input::get("merchantId");
-        $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
+        $merchant = Merchant::find(Input::get("merchantId"))->getstores()->first();
         $prifix = $merchant->prefix;
         $prifix = $merchant->prefix;
-        $storePath = base_path() . '/merchants/' . $merchant->url_key;
-        $store = Helper::getStoreSettings($storePath)['storeName'];
-        $storeData = DB::table($prifix . '_static_pages')->where("url_key", "contact-us")->first()->contact_details;
+        $storePath = base_path() . "/merchants/" . $merchant->url_key;
+        $store = Helper::getStoreSettings($storePath)["storeName"];
+        $storeData = DB::table($prifix . "_static_pages")->where("url_key", "contact-us")->first()->contact_details;
         $storeData = json_decode($storeData);
-        $data['storeContact'] = $storeData;
-        $data['storeName'] = $store;
+        $data["storeContact"] = $storeData;
+        $data["storeName"] = $store;
         //dd($storeData);
         return $data;
     }
     public function getCourier()
     {
 
-        $couriers = DB::table('couriers')->where("status", "1")->get(["id", "name"]);
+        $couriers = DB::table("couriers")->where("status", "1")->get(["id", "name"]);
         $data['couriers'] = $couriers;
         return $data;
     }

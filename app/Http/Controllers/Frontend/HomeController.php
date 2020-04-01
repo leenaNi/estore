@@ -119,7 +119,8 @@ class HomeController extends Controller
     public function selectThemes()
     {
         if (empty(Session::get('merchantid'))) {
-            $allinput = Input::all();
+            $allinput = Input::all();            
+            $allinput['is_individual_store'] = 0;
             $storeType = $allinput['roleType'];
             $sendmsg = "Registred successfully.";
             $merchantObj = new Merchant();
@@ -155,6 +156,7 @@ class HomeController extends Controller
         if (empty(Session::get('merchantid'))) {
             $allinput = Input::all();
             $storeType = $allinput['roleType'];
+            $allinput['is_individual_store'] = 0;
             $sendmsg = "Registred successfully.";
             $distributorObj = new Vendor();
             $distributorObj->country = $allinput['country_code'];
@@ -281,7 +283,7 @@ class HomeController extends Controller
             $getMerchat = Vendor::find(Session::get('merchantid'));
         }
         $decoded = json_decode($getMerchat->register_details, true);
-        $decoded['business_type'] = ["5"];
+        $decoded['business_type'] = ["17"];
         $json = json_encode($decoded);
         $getMerchat->register_details = $json;
         $getMerchat->save();
@@ -297,7 +299,7 @@ class HomeController extends Controller
         {
             $phoneNo = $getMerchat->phone;
             // $store->template_id = $themeInput->theme_id;
-            $store->category_id = 5;
+            $store->category_id = 17;
             $storeName = $themeInput->store_name;
         } else {
             $phoneNo = $getMerchat->phone_no;
@@ -305,7 +307,7 @@ class HomeController extends Controller
             $storeName = $themeInput->store_name;
             $themeInput->theme_id = 0;
             $store->template_id = 0;
-            $store->category_id = 5;
+            $store->category_id = 17;
         }
         $store->store_domain = $actualDomain;
         $store->percent_to_charge = 1.00;
@@ -373,7 +375,7 @@ class HomeController extends Controller
     {
         //echo "createInstance function storeid >> $storeId ";
         //echo "<br> Cat array >> <pre>";print_r($catid);
-        $catid = 5;
+        $catid = 17;
         ini_set('max_execution_time', 600);
         if ($storeType == 'merchant') {
             $merchantd = Merchant::find(Session::get('merchantid'));
