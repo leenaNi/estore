@@ -54,7 +54,7 @@ class MiscellaneousController extends Controller
             }
         }
         //dd($data);
-        dd($settingData);
+        // dd($settingData);
         return view(Config('constants.adminMiscellaneousGeneralSettingView') . '.index', compact('settingData'));
     }
 
