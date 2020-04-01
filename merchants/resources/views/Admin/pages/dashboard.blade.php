@@ -569,8 +569,8 @@
                             </div>
 
                             <div class="col-md-6">
-                                <div class="box box-success" >
-                                <div class="box-header dashbox-header with-border bg-green">
+                                <div class="box box-warning" >
+                                <div class="box-header dashbox-header with-border bg-yellow">
                                     <h3 class="box-title dashbox-title">Customers Not Visited</h3>
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>

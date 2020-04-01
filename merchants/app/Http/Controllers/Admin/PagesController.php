@@ -292,7 +292,7 @@ class PagesController extends Controller
             ->groupByDay();
 
 
-        $Customerlost_chart = Charts::database($lostcustomer, 'line', 'highcharts')
+        $Customerlost_chart = Charts::database($lostcustomer, 'bar', 'highcharts')
             ->title("Weekly Customers Lost : " . count($lostcustomer))
             ->elementLabel("Total Customers Lost")
             ->dimensions(460, 500)
