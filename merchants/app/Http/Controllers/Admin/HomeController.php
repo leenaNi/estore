@@ -85,8 +85,10 @@ class HomeController extends Controller {
        
         $merchantId = Session::get('merchantid');
         $storeId =  Session::get('store_id');
-           $allinput = json_decode(Merchants::find(Session::get('merchantid'))->register_details, true);
-           $storeName = $allinput['store_name'];
+        $store = Store::find($storeId);
+        //    $allinput = json_decode(Merchants::find(Session::get('merchantid'))->register_details, true);
+        //    $storeName = $allinput['store_name'];
+           $storeName = $store->url_key;
            //echo "storeName =::".$storeName;
 
         if(!empty(Input::get('cateId')))
@@ -101,6 +103,7 @@ class HomeController extends Controller {
 
             //update storesetting json file
             $storePath = base_path() . '/'. $storeName;
+            // $storePath = '';
             $store = Helper::getStoreSettings($storePath);
             $store['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
             $store['themeid'] = $themeid;
@@ -118,12 +121,11 @@ class HomeController extends Controller {
 
             //insert banner and layout data into has_layout table
             $basePath = base_path();
-            $basePathUrl = implode("/", explode('\\', $basePath, -1));
+            $basePathUrl = str_replace('/merchants', '', $basePath); // $basePath; // implode("/", explode('\\', $basePath, -1));
+            // dd($basePathUrl);
             $source = $basePathUrl . '/public/public/admin/themes/';
-            $destination = $basePathUrl . "/merchants/" . strtolower($storeName) . "/public/uploads/layout/";
-           
-            $banner = json_decode((DB::table("themes")->where("id", $themeid)->first()->banner_image), true);
-           
+            $destination = $basePathUrl . "/merchants/" . strtolower($storeName) . "/public/uploads/layout/";           
+            $banner = json_decode((DB::table("themes")->where("id", $themeid)->first()->banner_image), true);           
             if (!empty($banner)) {
                 $homeLayout = DB::table("layout")
                             ->where('url_key', 'LIKE', 'home-page-slider')
