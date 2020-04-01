@@ -2320,7 +2320,13 @@ foreach ($_POST as $a => $b) {
                 if(count($sub_prd_ids) > 0)
                 {
                     $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                } else {
+                    $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
                 }
+                $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ ".$cart->options->eNoOfDaysAllowed." days"));
+                $cart_ids[$cart->rowid]["product_details"] = '';
                 
                 
             } else {
