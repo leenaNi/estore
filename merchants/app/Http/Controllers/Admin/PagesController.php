@@ -226,6 +226,8 @@ class PagesController extends Controller
         $Date_range = $this->getDatesFromRange($start_date,$end_date);
         foreach($Date_range as $date){
             $ordersData = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->get();
+            $onlineOrders = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->where('created_by',0)->get();
+            $walkinOrders = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->where('created_by','!=',0)->get();
             $orderedProds = DB::table('has_products')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->groupBy('prod_id')->get([DB::raw('sum(qty) as quantity')]);
             $prod_qty = 0;
             if(count($orderedProds)>0){
@@ -234,6 +236,8 @@ class PagesController extends Controller
             
             $orderCount[] = count($ordersData);
             $prodCount[] = $prod_qty;
+            $onlineOrdersCount[] = count($onlineOrders);
+            $walkinOrdersCount[] = count($walkinOrders);
         }
         //orders statistics chart
         $orders_chart  = Charts::create('bar', 'highcharts')
@@ -271,6 +275,7 @@ class PagesController extends Controller
             $pay_amt += $prod->pay_amt;
         }
         $prodData = DB::table("products")->where('id',$prodId)->first();
+        //Product Sales chart
         $product_sales_chart = Charts::database($weeklyProdSaleschart, 'bar','highcharts')
             ->title('Weekly Product Sales Rs.'.$pay_amt)
             ->elementLabel("Product Sales")
@@ -278,6 +283,24 @@ class PagesController extends Controller
             ->responsive(false)
             //->groupByDay();
             ->groupByMonth(date('Y'), true);
+
+        //Purchase vs sales
+        //$purchase_inward = DB::table("productwise_inward_transaction")->
+        $purchase_sales_chart = Charts::multi('areaspline', 'highcharts')
+            ->title('Total Purchases : 10')
+            ->colors(['#ff0000', '#ffffff'])
+            ->labels($Date_range)
+            ->dataset('Purchase', [3, 4, 3, 5, 4, 10, 12])
+            ->dataset('Sales',  [1, 3, 4, 3, 3, 5, 4]);
+
+        //Online VS Walk-in
+        $online_walkin_chart = Charts::multi('line', 'highcharts')
+            ->title('Online : '.array_sum($onlineOrdersCount).' &  Walk-in : '.array_sum($walkinOrdersCount))
+            ->elementLabel("Orders")
+            ->colors(['#0873f9', '#e81362'])
+            ->labels($Date_range)
+            ->dataset('Online', $onlineOrdersCount)
+            ->dataset('Walk-in', $walkinOrdersCount);
 
         $Newcustomer_chart = Charts::database($weeklyCustomerchart, 'line', 'highcharts')
             ->title("Weekly New Customers : " . count($weeklyCustomerchart))
@@ -318,7 +341,7 @@ class PagesController extends Controller
             ->groupByDay();
 
 
-        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','Avgbill_chart','billamount','Customerlost_chart','product_sales_chart'));
+        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','Avgbill_chart','billamount','Customerlost_chart','product_sales_chart','purchase_sales_chart','online_walkin_chart'));
         
     }
 

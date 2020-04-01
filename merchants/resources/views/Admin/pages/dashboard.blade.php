@@ -542,6 +542,62 @@
                         <div class="clearfix"></div>
                         <br>
                         <div class="row">
+                            <div class="col-md-6">
+                                <div class="box box-success" >
+                                <div class="box-header dashbox-header with-border bg-green">
+                                    <h3 class="box-title dashbox-title">Purchase vs Sales</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                    <div class="box-body">
+                                        <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="customers_daterange"  class="form-control customers_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                        </div>
+                                        <div id="NewCustomerChart">
+                                        {!! $purchase_sales_chart->html() !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                            <div class="box box-warning" >
+                            <div class="box-header dashbox-header with-border bg-yellow">
+                                <h3 class="box-title dashbox-title">Online vs Walk-in Orders</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                                <div class="box-body">
+                                <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="customers_daterange"  class="form-control customers_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                        </div>
+                                <div id="ProdSalesChart">
+                                     {!! $online_walkin_chart->html() !!}
+                                </div>
+                                   
+                                </div>
+                            </div>
+                            </div>
+
+
+                        </div>
+                        <div class="clearfix"></div>
+                        <br>
+                        <div class="row">
 
                             <div class="col-md-6">
                                 <div class="box box-success" >
@@ -686,6 +742,8 @@
 {!! $Avgbill_chart->script() !!}
 {!! $Customerlost_chart->script() !!}
 {!! $product_sales_chart->script() !!}
+{!! $purchase_sales_chart->script() !!}
+{!! $online_walkin_chart->script() !!}
         @section('myscripts')
         <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
