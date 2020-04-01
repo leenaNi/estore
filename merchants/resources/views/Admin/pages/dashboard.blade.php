@@ -644,6 +644,7 @@
                                             <i class=" ion ion-calendar"></i>
                                         </span>
                                     </div>
+                                    <center><h4 id="billtitle">Weekly Average</h4></center>
                                     </br>
                                    <center> <canvas id="mybill" width="300" height="300"></canvas>
                                    <div class="table-responsive">
@@ -824,6 +825,7 @@ $(".prod-search").autocomplete({
             ];
              var piechartBills = new Chart(ctx2).Pie(dataBill);
               $("#totalbill").html(value);
+              $("#billtitle").html('<h4>Average Between ' + startdate + ' - ' + enddate + '</h4>');
            }
         });
     });
