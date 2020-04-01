@@ -70,15 +70,25 @@ class PagesController extends Controller
          
         $sunday = strtotime(date("Y-m-d",$monday)." +6 days");
         $this_week_sd = date("Y-m-d",$monday);
-        $this_week_ed = date("Y-m-d",$sunday);
+        $this_week_ed = date("Y-m-d",$sunday); 
 
 
-        $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
+
+        $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->pluck('user_id')->toArray();
 
        $lostcustomer = Order::whereBetween('created_at', [$this_week_sd, $this_week_ed])->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
 
 
-        //dd($weeklySaleschart);
+       $orderlastweek = Order::whereBetween('created_at', [$this_week_sd, $this_week_ed])->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
+
+       $date = strtotime("-8 day");
+       $finaldate = date('Y-m-d', $date);
+
+       $orderlasttolastweek = Order::whereDate('created_at', '<=', $finaldate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->pluck('user_id')->toArray();
+
+       $returningcustomer = Order::join('users', 'orders.user_id', '=', 'users.id')->whereRaw("WEEKOFYEAR(orders.created_at) = '" . date('W') . "'")->whereNotIn("orders.user_id", $orderlastweek)->whereIn("orders.user_id", $orderlasttolastweek)->whereIn("orders.user_id", $ordercurrentweek)->where('orders.store_id', $this->jsonString['store_id'])->get(['orders.user_id','orders.created_at','orders.pay_amt', 'users.firstname', 'users.lastname', 'users.email']);
+
+        //dd($returningcustomer);
         $monthlySales = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")
             ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
             ->sum('pay_amt');
@@ -188,6 +198,15 @@ class PagesController extends Controller
             $items[$key]['customer_name'] = $user->firstname . " " . $user->lastname;
             $items[$key]['color'] = '#' . $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
         }
+
+        //returning customer
+        $returncust = [];
+        foreach ($returningcustomer as $key => $user) {
+            $returncust[$key]["total"] = $user->pay_amt;
+            $returncust[$key]['customer_name'] = $user->firstname . " " . $user->lastname;
+            $returncust[$key]['color'] = '#' . $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
+        }
+
 
 
         $bill = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->select(DB::raw('round(AVG(pay_amt),0) as avgamt'))->get();
@@ -300,7 +319,10 @@ class PagesController extends Controller
             ->groupByDay();
 
 
-        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','Avgbill_chart','billamount','Customerlost_chart','product_sales_chart'));
+      
+
+
+        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','Avgbill_chart','billamount','Customerlost_chart','product_sales_chart','returningcustomer','returncust'));
         
     }
 
@@ -515,6 +537,8 @@ class PagesController extends Controller
         return $html;
 
     }
+
+
 
     //new avgbill 
     public function avgBillStat()

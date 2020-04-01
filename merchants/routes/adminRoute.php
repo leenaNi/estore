@@ -43,6 +43,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::post('/avgbill-stat', ["as" => "admin.dashboard.avgBillStat", "uses" => "PagesController@avgBillStat"]);
         //customer lost
         Route::post('/customerslost-stat', ["as" => "admin.dashboard.customerslostStat", "uses" => "PagesController@customerslostStat"]);
+        //returning customers
+        Route::post('/returningcustomers-stat', ["as" => "admin.dashboard.returningcustomersStat", "uses" => "PagesController@returningcustomersStat"]);
 
         Route::group(['prefix' => 'catalog', 'middlewareGroups' => ['CheckUser', 'web']], function () {
             Route::group(['prefix' => 'category', 'middlewareGroups' => ['web']], function () {
