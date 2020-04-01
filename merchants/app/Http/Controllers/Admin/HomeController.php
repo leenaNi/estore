@@ -123,6 +123,7 @@ class HomeController extends Controller {
             $basePath = base_path();
             $basePathUrl = implode("/", explode('\\', $basePath, -1));
             $source = $basePathUrl . '/public/public/admin/themes/';
+            dd($basePathUrl);
             $destination = $basePathUrl . "/merchants/" . strtolower($storeName) . "/public/uploads/layout/";
            
             $banner = json_decode((DB::table("themes")->where("id", $themeid)->first()->banner_image), true);
