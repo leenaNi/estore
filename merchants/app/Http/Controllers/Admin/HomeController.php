@@ -101,6 +101,7 @@ class HomeController extends Controller {
 
             //update storesetting json file
             $storePath = base_path() . '/'. $storeName;
+            $storePath = '';
             $store = Helper::getStoreSettings($storePath);
             $store['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
             $store['themeid'] = $themeid;
