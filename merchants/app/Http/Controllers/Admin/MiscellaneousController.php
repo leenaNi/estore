@@ -2,38 +2,36 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Input;
-use App\Models\Role;
-use App\Models\Miscellaneous;
-use App\Models\GeneralSetting;
-use App\Models\HasCurrency;
-use Hash;
-use Auth;
-use Session;
 use App\Http\Controllers\Controller;
-use App\Models\EmailTemplate;
-use App\Models\Language;
-use App\Models\Zone;
+use App\Library\Helper;
 use App\Models\Country;
-use App\Models\Store;
+use App\Models\EmailTemplate;
+use App\Models\GeneralSetting;
 use App\Models\HasCourier;
+use App\Models\HasCurrency;
+use App\Models\Language;
+use App\Models\Store;
 use App\Models\StoreCharge;
 use App\Models\Theme;
-use App\Library\Helper;
-use Mail;
-use DB;
+use App\Models\Zone;
 use Config;
+use DB;
+use Input;
+use Mail;
+use Session;
 
-class MiscellaneousController extends Controller {
+class MiscellaneousController extends Controller
+{
 
-    public function generalSetting() {
+    public function generalSetting()
+    {
         // dd(config('app.industry'));
         $name = Input::get('name');
         $status = Input::get('status');
         $industry_id = config('app.industry');
         $questionCategory = DB::table('question_category')->get();
         if (!empty(config('app.industry'))) {
-            $settings = GeneralSetting::where('name', '<>', 'set_popup')->orderBy('question_category_id', 'desc')->whereHas('industry', function($que) use($industry_id) {
+            $settings = GeneralSetting::where('name', '<>', 'set_popup')->orderBy('question_category_id', 'desc')->whereHas('industry', function ($que) use ($industry_id) {
                 $que->where("industry_id", $industry_id);
             });
         } else {
@@ -56,33 +54,36 @@ class MiscellaneousController extends Controller {
             }
         }
         //dd($data);
-         dd($settingData);
+        dd($settingData);
         return view(Config('constants.adminMiscellaneousGeneralSettingView') . '.index', compact('settingData'));
     }
 
-    public function generalSettingAdd() {
+    public function generalSettingAdd()
+    {
         $settings = new GeneralSetting();
         $action = route("admin.generalSetting.save");
         return view(Config('constants.adminMiscellaneousGeneralSettingView') . '.addEdit', compact('settings', 'action'));
     }
 
-    public function generalSettingEdit() {
+    public function generalSettingEdit()
+    {
         $settings = GeneralSetting::find(Input::get('id'));
         $action = route("admin.generalSetting.save");
         return view(Config('constants.adminMiscellaneousGeneralSettingView') . '.addEdit', compact('settings', 'action'));
     }
 
-    public function generalSettingSave() {
+    public function generalSettingSave()
+    {
         $save = GeneralSetting::findOrNew(Input::get('id'));
         $save->name = Input::get('name');
         $save->status = Input::get('status');
         $save->save();
 
-
         return redirect()->route('admin.generalSetting.view');
     }
 
-    public function generalSettingSaveDelete() {
+    public function generalSettingSaveDelete()
+    {
         $id = Input::get('id');
         $settings = GeneralSetting::find($id);
         $settings->delete();
@@ -90,19 +91,22 @@ class MiscellaneousController extends Controller {
         return redirect()->back()->with("message", "Deleted Successfully.");
     }
 
-    public function paymentSetting() {
+    public function paymentSetting()
+    {
         $settings = GeneralSetting::where("type", 2)->paginate(Config('constants.paginateNo'));
 
         return view(Config('constants.adminMiscellaneousPaymentSettingView') . '.index', compact('settings'));
     }
 
-    public function paymentSettingEdit() {
+    public function paymentSettingEdit()
+    {
         $settings = GeneralSetting::where('url_key', Input::get('url_key'))->first();
         $action = route("admin.paymentSetting.save");
         return view(Config('constants.adminMiscellaneousPaymentSettingView') . '.addEdit', compact('settings', 'action'));
     }
 
-    public function paymentSettingSave() {
+    public function paymentSettingSave()
+    {
         $save = GeneralSetting::where('url_key', Input::get('url_key'))->first();
         $save->status = Input::get('status');
         $save->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
@@ -119,7 +123,8 @@ class MiscellaneousController extends Controller {
         }
     }
 
-    public function paymentSettingStatus() {
+    public function paymentSettingStatus()
+    {
         $prod = GeneralSetting::where('url_key', Input::get('url_key'))->first();
 
         if ($prod->status == 1) {
@@ -134,53 +139,63 @@ class MiscellaneousController extends Controller {
         return redirect()->route('admin.paymentSetting.view');
     }
 
-    public function advanceSetting() {
+    public function advanceSetting()
+    {
         $settings = GeneralSetting::where("type", 3)->paginate(Config('constants.paginateNo'));
 
         return view(Config('constants.adminMiscellaneousAdvanceSettingView') . '.index', compact('settings'));
     }
 
-    public function domain_success() {
+    public function domain_success()
+    {
         return view(Config('constants.adminMiscellaneousDomains') . '.success');
     }
 
-    public function emailSetting() {
+    public function emailSetting()
+    {
         $settings = GeneralSetting::where("type", 4)->paginate(Config('constants.paginateNo'));
 
         return view(Config('constants.adminMiscellaneousEmailSettingView') . '.index', compact('settings'));
     }
 
-    public function domains() {
-
+    public function domains()
+    {
 
         return view(Config('constants.adminMiscellaneousDomains') . '.index');
     }
 
-    public function emailSettingEdit() {
+    public function emailSettingEdit()
+    {
         $settings = GeneralSetting::where('url_key', Input::get('url_key'))->first();
         $action = route("admin.emailSetting.save");
         return view(Config('constants.adminMiscellaneousEmailSettingView') . '.addEdit', compact('settings', 'action'));
     }
 
-    public function emailSettingSave() {
+    public function emailSettingSave()
+    {
         $save = GeneralSetting::where('url_key', Input::get('url_key'))->first();
         $save->status = Input::get('status');
         $save->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
 
         $save->save();
 
-        if (Input::get('type') == 2)
+        if (Input::get('type') == 2) {
             return redirect()->route('admin.paymentSetting.view');
+        }
 
-        if (Input::get('type') == 3)
+        if (Input::get('type') == 3) {
             return redirect()->route('admin.advanceSetting.view');
+        }
 
-        if (Input::get('type') == 4)
+        if (Input::get('type') == 4) {
             Session::flash("msg", "Email setting updated successfully.");
+        }
+
         return redirect()->route('admin.emailSetting.view');
     }
 
-    public function emailSettingEmailStatus() {
+    public function emailSettingEmailStatus()
+    {
         //dd(Input::get('url_key'));
         $prod = GeneralSetting::where('url_key', Input::get('url_key'))->first();
         //dd($prod);
@@ -197,7 +212,8 @@ class MiscellaneousController extends Controller {
         return redirect()->route('admin.emailSetting.view');
     }
 
-    public function TemplateEmailStatus() {
+    public function TemplateEmailStatus()
+    {
         // dd(Input::get('id'));
         $prod = EmailTemplate::where('id', Input::get('id'))->first();
 
@@ -213,44 +229,42 @@ class MiscellaneousController extends Controller {
         return redirect()->route('admin.templateSetting.view');
     }
 
-    public function templateSetting() {
+    public function templateSetting()
+    {
         $templates = EmailTemplate::paginate(Config('constants.paginateNo'));
         $templatesCount = $templates->total();
 
         $startIndex = 1;
         $getPerPageRecord = Config('constants.paginateNo');
         $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
+        if (!empty($allinput) && !empty(Input::get('page'))) {
             $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+            $startIndex = ((($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex + $getPerPageRecord) - 1);
 
-            if($endIndex > $templatesCount)
-            {
+            if ($endIndex > $templatesCount) {
                 $endIndex = ($templatesCount);
             }
-        }
-        else
-        {
+        } else {
             $startIndex = 1;
             $endIndex = $getPerPageRecord;
-            if($endIndex > $templatesCount)
-            {
+            if ($endIndex > $templatesCount) {
                 $endIndex = ($templatesCount);
             }
         }
-        return view(Config('constants.adminMiscellaneousTemplateSettingView') . '.index', compact('templates','templatesCount','startIndex','endIndex'));
+        return view(Config('constants.adminMiscellaneousTemplateSettingView') . '.index', compact('templates', 'templatesCount', 'startIndex', 'endIndex'));
     }
 
-    public function templateSettingEdit() {
+    public function templateSettingEdit()
+    {
         $id = Input::get('id');
         $templates = EmailTemplate::find($id);
         $action = route("admin.templateSetting.save");
         return view(Config('constants.adminMiscellaneousTemplateSettingView') . '.addEdit', compact('templates', 'action'));
     }
 
-    public function templateSettingSave() {
+    public function templateSettingSave()
+    {
         // dd(Input::all());
         $template = EmailTemplate::findOrNew(Input::get('id'));
         $template->status = Input::get('status');
@@ -265,7 +279,8 @@ class MiscellaneousController extends Controller {
         return redirect()->route('admin.templateSetting.view');
     }
 
-    public function emailSend() {
+    public function emailSend()
+    {
         $mail = EmailTemplate::where('name', 'Register template')->first();
         $title = $mail->subject;
         $content = $mail->content;
@@ -280,7 +295,8 @@ class MiscellaneousController extends Controller {
         return response()->json(['message' => 'Request completed']);
     }
 
-    public function storeSetting() {
+    public function storeSetting()
+    {
         // $settings = GeneralSetting::where("type", 6)->get()->toArray();
 
         $languages = Language::select('id', 'name')->get();
@@ -289,7 +305,7 @@ class MiscellaneousController extends Controller {
         $themedata = Helper::getSettings()['themedata'];
         $themes = [];
         foreach ($themedata as $k => $thed) {
-            $theme_type = Theme::where('id',$thed['id'])->pluck('theme_type');
+            $theme_type = Theme::where('id', $thed['id'])->pluck('theme_type');
             $themes[$thed['category']][$k]['id'] = $thed['id'];
             $themes[$thed['category']][$k]['name'] = $thed['name'];
             $themes[$thed['category']][$k]['theme_type'] = $theme_type[0];
@@ -301,7 +317,8 @@ class MiscellaneousController extends Controller {
         return view(Config('constants.adminMiscellaneousStoreSettingView') . '.index', compact('currency', 'languages', 'themes'));
     }
 
-    function generalStoreAdd() {
+    public function generalStoreAdd()
+    {
         $themes = [];
         $themedata1 = Helper::getSettings()['themedata'];
         foreach ($themedata1 as $td) {
@@ -314,21 +331,21 @@ class MiscellaneousController extends Controller {
         $themeSel = Helper::getSettings()['theme'];
         $themeid = Helper::getSettings()['themeid'];
 //        if (!empty(Input::hasFile('logo_img'))) {
-//
-//            //$logo =base64_encode(Input::file('logo_img'));
-//            $file_tmp = Input::file('logo_img')->getPathName();
-//
-//
-//            $type = pathinfo($file_tmp, PATHINFO_EXTENSION);
-//            $data = file_get_contents($file_tmp);
-//            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-//            //echo "Base64 is ".$base64;
-//
-//
-//            $logo = $base64;
-//        } else {
-//            $logo = Helper::getSettings()['logo'];
-//        }
+        //
+        //            //$logo =base64_encode(Input::file('logo_img'));
+        //            $file_tmp = Input::file('logo_img')->getPathName();
+        //
+        //
+        //            $type = pathinfo($file_tmp, PATHINFO_EXTENSION);
+        //            $data = file_get_contents($file_tmp);
+        //            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        //            //echo "Base64 is ".$base64;
+        //
+        //
+        //            $logo = $base64;
+        //        } else {
+        //            $logo = Helper::getSettings()['logo'];
+        //        }
 
         if (!empty(Input::get('logo_img_url'))) {
             $logo = Input::get('logo_img_url');
@@ -373,7 +390,7 @@ class MiscellaneousController extends Controller {
 
         if (!empty(Input::get('store_version'))) {
             $store_version = Input::get('store_version');
-              $store->store_version =Input::get('store_version');
+            $store->store_version = Input::get('store_version');
         }
 
         if (!empty(Input::get('currency'))) {
@@ -434,7 +451,6 @@ class MiscellaneousController extends Controller {
             $store_configuration['url'] = Input::get('url');
         }
 
-
         $store_configuration['other_meta'] = '';
         if (!empty(Input::get('other_meta'))) {
             $store_configuration['other_meta'] = Input::get('other_meta');
@@ -454,7 +470,7 @@ class MiscellaneousController extends Controller {
         if (!empty(Input::get('logo_img_url'))) {
             $store_configuration['logo_img_url'] = Input::get('logo_img_url');
         }
-        
+
         $store->save();
         $store_configuration['logo'] = $logo;
         $store_configuration['currencyId'] = $currency;
@@ -467,13 +483,15 @@ class MiscellaneousController extends Controller {
         Session::put('storeName', Input::get('store_name'));
     }
 
-    function returnPolicy() {
+    public function returnPolicy()
+    {
         $return = GeneralSetting::where("type", 6)->get();
 
         return view(Config('constants.adminMiscellaneousReturnPolicyView') . '.index', compact('return'));
     }
 
-    public function returnPolicyEdit() {
+    public function returnPolicyEdit()
+    {
         $id = Input::get('id');
         $return = GeneralSetting::find($id);
         // print_r(json_decode($return));
@@ -481,7 +499,8 @@ class MiscellaneousController extends Controller {
         return view(Config('constants.adminMiscellaneousReturnPolicyView') . '.edit', compact('return', 'action'));
     }
 
-    function returnPolicySave() {
+    public function returnPolicySave()
+    {
         $save = GeneralSetting::find(Input::get('id'));
         $save->details = !is_null(Input::get('details')) ? Input::get('details') : 1;
         $save->save();
@@ -490,13 +509,15 @@ class MiscellaneousController extends Controller {
         return redirect()->route('admin.returnPolicy.view');
     }
 
-    public function stockSetting() {
+    public function stockSetting()
+    {
         $getStockLimit = GeneralSetting::where('type', '7')->first();
 
         return view(Config('constants.adminMiscellaneousStockSettingView') . '.index', compact('getStockLimit'));
     }
 
-    public function saveStockLimit() {
+    public function saveStockLimit()
+    {
         $details = '{"stock_limit":"' . Input::get('stock') . '"}';
         $getStockLimit = GeneralSetting::where('type', '7')->first();
         $getStockLimit->details = $details;
@@ -504,7 +525,8 @@ class MiscellaneousController extends Controller {
         return view(Config('constants.adminMiscellaneousStockSettingView') . '.index', compact('getStockLimit'));
     }
 
-    public function changeStatus() {
+    public function changeStatus()
+    {
 
         $general_setting = GeneralSetting::find(Input::get('id'));
         if ($general_setting->url_key == "product-return-days") {
@@ -534,27 +556,26 @@ class MiscellaneousController extends Controller {
                 $general_setting->details = Input::get('loyaltyDay');
             }
 
-
-
-
 //            if ($general_setting->url_key == 'tax') {
-//                if ($general_setting->status == 1) {
-//                   // DB::table('products')->update('is_tax', 0);
-//                   // DB::table('product_has_taxes')->truncate();
-//                }
-//            }
+            //                if ($general_setting->status == 1) {
+            //                   // DB::table('products')->update('is_tax', 0);
+            //                   // DB::table('product_has_taxes')->truncate();
+            //                }
+            //            }
             $general_setting->status = ($general_setting->status == 1) ? 0 : 1;
 
             $general_setting->update();
         }
     }
 
-    public function referralProgram() {
+    public function referralProgram()
+    {
         $settings = GeneralSetting::where('url_key', 'referral')->get();
         return view(Config('constants.adminMiscellaneousReferalView') . '.index', compact('settings'));
     }
 
-    public function editReferral() {
+    public function editReferral()
+    {
         $id = Input::get("id");
         $settings = GeneralSetting::find($id);
         //dd($settings);
@@ -562,7 +583,8 @@ class MiscellaneousController extends Controller {
         return view(Config('constants.adminMiscellaneousReferalView') . '.addEdit', compact('settings', 'action'));
     }
 
-    public function saveReferral() {
+    public function saveReferral()
+    {
         $save = GeneralSetting::where('url_key', Input::get('url_key'))->first();
         $save->status = Input::get('status');
         $save->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
@@ -572,12 +594,14 @@ class MiscellaneousController extends Controller {
         return redirect()->route('admin.referralProgram.view');
     }
 
-    public function bankDetails() {
+    public function bankDetails()
+    {
         $bankDetail = GeneralSetting::where('url_key', 'bank_acc_details')->get();
         return view(Config('constants.adminMiscellaneousBankView') . '.index', compact('bankDetail'));
     }
 
-    public function addEditBankDetails() {
+    public function addEditBankDetails()
+    {
         $id = Input::get("id");
         $bankDetail = GeneralSetting::find($id);
         $accountType[1] = "Saving";
@@ -589,7 +613,8 @@ class MiscellaneousController extends Controller {
         return view(Config('constants.adminMiscellaneousBankView') . '.addEdit', compact('bankDetail', 'action', 'accountType', 'state', 'country'));
     }
 
-    public function updateBankDetails() {
+    public function updateBankDetails()
+    {
         $save = GeneralSetting::where('url_key', Input::get('url_key'))->first();
         $save->status = Input::get('status');
         $save->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
@@ -599,7 +624,8 @@ class MiscellaneousController extends Controller {
         return redirect()->route('admin.bankDetails.view');
     }
 
-    public function assignCourier() {
+    public function assignCourier()
+    {
         $courier = Input::get('courierId');
         $storeId = $this->jsonString['store_id'];
         $has_courire = HasCourier::where("store_id", $storeId)->first();
@@ -621,10 +647,10 @@ class MiscellaneousController extends Controller {
         }
     }
 
-    public function storeVersion() {
+    public function storeVersion()
+    {
         $version = Input::get("version");
         $type = Input::get("pagetype");
-
 
         if ($type == 1) {
             $storeVersion = Helper::getSettings()['store_version'];
@@ -640,12 +666,12 @@ class MiscellaneousController extends Controller {
         } else {
             $charge = StoreCharge::where('store_type', $version)->first()->charge;
 //           if($version ==1){
-//             $charge=360;
-//             
-//         }else if($version ==2){
-//              $charge=720;
-//             
-//         }  
+            //             $charge=360;
+            //
+            //         }else if($version ==2){
+            //              $charge=720;
+            //
+            //         }
             return $charge;
         }
     }
