@@ -504,9 +504,12 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="col-md-6">
-                                <div class="box box-success" >
-                                <div class="box-header dashbox-header with-border bg-green">
+                            
+
+
+                             <div class="col-md-6 marginBottom20">
+                            <div class="box box-warning" >
+                                <div class="box-header dashbox-header with-border bg-yellow">
                                     <h3 class="box-title dashbox-title">Average Order/Bill</h3>
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -514,20 +517,39 @@
                                         <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                     </div>
                                 </div>
-                                    <div class="box-body">
-                                        <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id="" name="bill_daterange"  class="form-control bill_daterange textInput">
+                                <div class="box-body">
+                                    <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="avgbill_daterange"  class="form-control avgbill_daterange textInput">
 
                                         <span class="input-group-addon">
                                             <i class=" ion ion-calendar"></i>
                                         </span>
-                                        </div>
-                                        <div id="AvgBillChart">
-                                        {!! $Avgbill_chart->html() !!}
-                                        </div>
                                     </div>
-                                </div>
-                            </div> -->
+                                   <center> <h4>Weekly Average Bill</h4> <canvas id="mybill" width="300" height="300"></canvas>
+                                   <div class="table-responsive">
+                                    <table class="table no-margin">
+
+                                        <tbody>
+
+                                            @foreach($billamount as $billamounts)
+                                            <tr>
+                                          <!--       <td id="billcolor">
+                                                    <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
+                                                </td> -->
+                                                <td>
+                                                    {{$billamounts["customer_name"]}}
+                                                </td>
+                                                <td id="totalbill">
+                                                    Rs. {{$billamounts["total"]}} 
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div> 
+                            </div>
+
+                        </div>
 
 
 
@@ -589,6 +611,39 @@
                             </div>  
                         </div>
 
+
+                        <div class="clearfix"></div>
+                        <br>
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="box box-success" >
+                                <div class="box-header dashbox-header with-border bg-green">
+                                    <h3 class="box-title dashbox-title">Customers Lost Rate</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                    <div class="box-body">
+                                        <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="customerslost_daterange"  class="form-control customerslost_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                        </div>
+                                        <div id="CustomerLostChart">
+                                        {!! $Customerlost_chart->html() !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                           
+                        </div>
+
                         
 
 
@@ -608,6 +663,7 @@
 {!! $Customernotvisited_chart->script() !!}
 {!! $Customervisited_chart->script() !!}
 {!! $Avgbill_chart->script() !!}
+{!! $Customerlost_chart->script() !!}
         @section('myscripts')
         <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
@@ -671,6 +727,54 @@
         });
     });
 
+    //avg bill range
+      $('.avgbill_daterange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'avgbill-stat',
+           data:{startdate:startdate,enddate:enddate},
+           success:function(data){
+              //console.log(data.billamount[0]['total']);
+              console.log(data);
+              //console.log(data.value);
+              var value = data.value;
+              var color = data.color;
+              var label = data.label;
+              var ctx2 = $("#mybill").get(0).getContext("2d");
+               var dataBill = [
+            
+                
+                {
+                    value: value,
+                    color: color,
+                    label: label,
+                },
+                
+            ];
+             var piechartBills = new Chart(ctx2).Pie(dataBill);
+              $("#totalbill").html(value);
+           }
+        });
+    });
+
+
+
+
     //customer not visited
       $('.nvcustomers_daterange').daterangepicker({
         startDate: start,
@@ -722,6 +826,31 @@
            data:{startdate:startdate,enddate:enddate},
            success:function(data){
               $("#CustomerVisitedChart").html(data);
+           }
+        });
+    }); 
+
+    //customer  lost
+      $('.customerslost_daterange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'customerslost-stat',
+           data:{startdate:startdate,enddate:enddate},
+           success:function(data){
+              $("#CustomerLostChart").html(data);
            }
         });
     });
@@ -896,6 +1025,33 @@
             ?> 
             ];
             var piechartProducts = new Chart(ctx2).Pie(dataProducts);
+
+
+
+            var ctx2 = $("#mybill").get(0).getContext("2d");
+            var dataBill = [
+            <?php 
+               foreach($billamount as $billamounts)
+               {
+                ?>
+                {
+                    value: {{$billamounts['total']}},
+                    color: "{{$billamounts['color']}}",
+
+                    label: "{{$billamounts['customer_name']}}",
+                },
+                <?php 
+            }
+            ?>
+            ];
+            var piechartBills = new Chart(ctx2).Pie(dataBill);
+
+
+
+
+
+
+
         });
     </script>
 
