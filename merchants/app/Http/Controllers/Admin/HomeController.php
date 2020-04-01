@@ -121,13 +121,10 @@ class HomeController extends Controller {
 
             //insert banner and layout data into has_layout table
             $basePath = base_path();
-            $basePathUrl = implode("/", explode('\\', $basePath, -1));
+            $basePathUrl = $basePath; // implode("/", explode('\\', $basePath, -1));
             $source = $basePathUrl . '/public/public/admin/themes/';
-            dd($basePathUrl);
-            $destination = $basePathUrl . "/merchants/" . strtolower($storeName) . "/public/uploads/layout/";
-           
-            $banner = json_decode((DB::table("themes")->where("id", $themeid)->first()->banner_image), true);
-           
+            $destination = $basePathUrl . "/merchants/" . strtolower($storeName) . "/public/uploads/layout/";           
+            $banner = json_decode((DB::table("themes")->where("id", $themeid)->first()->banner_image), true);           
             if (!empty($banner)) {
                 $homeLayout = DB::table("layout")
                             ->where('url_key', 'LIKE', 'home-page-slider')
