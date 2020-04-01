@@ -180,12 +180,10 @@ class Helper
         fclose($fp);
     }
 
-    public static function saveDefaultSet($catid, $prefix, $storeId, $storeType)
+    public static function saveDefaultSet($catid, $prefix, $storeId, $storeType, $regDetails = null)
     {
         $cat = Category::find($catid);
-
         $assignedCategories = json_decode($cat->assigned_categories);
-
         $categories = CategoryMaster::where('status', 1)->whereIn('id', $assignedCategories)->get();
         // $catsave = [];
         $i = 0;
@@ -200,8 +198,11 @@ class Helper
                 $i++;
                 $catsave[$ck]['rgt'] = $i;
                 $catsave[$ck]['depth'] = 0;
-                if ($cv->parent_id !== null) {
-                    $parentID = DB::table('store_categories')->where('category_id', $cv->parent_id)->where('store_id', $storeId)->first()->id;
+                // print_r($cv->parent_id);
+                if ($cv->parent_id !== NULL) {
+                    $parentCat = DB::table('store_categories')->where('category_id', $cv->parent_id)->where('store_id', $storeId)->first();
+                    // dd($parentCat);
+                    $parentID = @$parentCat->id;
                 } else {
                     $parentID = $cv->parent_id;
                 }

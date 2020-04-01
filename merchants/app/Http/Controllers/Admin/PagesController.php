@@ -235,10 +235,33 @@ class PagesController extends Controller
             ->dimensions(460, 500)
             ->responsive(false)
             ->groupByDay();
-        //->groupByMonth(date('Y'), true);
+        
+        //Top Sales Product
+        $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->limit(1)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', 'sub_prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+        if(count($topProducts) > 0){
+            if($topProducts[0]->sub_prod_id != ''){
+                $prodId = $topProducts[0]->sub_prod_id;
+            }else{
+                $prodId = $topProducts[0]->prod_id;
+            }
+        }
+        $weeklyProdSaleschart = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
+            ->where("prod_id", $prodId)->where('store_id', $this->jsonString['store_id'])->get();
+            $qty = 0;$pay_amt=0;
+        foreach($weeklyProdSaleschart as $prod){
+            $qty += $prod->qty;
+            $pay_amt += $prod->pay_amt;
+        }
+        $prodData = DB::table("products")->where('id',$prodId)->first();
+        $product_sales_chart = Charts::database($weeklyProdSaleschart, 'bar','highcharts')
+            ->title('Weekly Product Sales Rs.'.$pay_amt)
+            ->elementLabel("Total Product Sales")
+            ->dimensions(460, 500)
+            ->responsive(false)
+            //->groupByDay();
+            ->groupByMonth(date('Y'), true);
 
-
-        $Newcustomer_chart = Charts::database($weeklyCustomerchart, 'line', 'highcharts')
+        $Newcustomer_chart = Charts::database($weeklyCustomerchart, 'bar', 'highcharts')
             ->title("Weekly New Customers : " . count($weeklyCustomerchart))
             ->elementLabel("Total New Customers")
             ->dimensions(460, 500)
@@ -246,7 +269,7 @@ class PagesController extends Controller
             ->groupByDay(); 
 
 
-        $Customernotvisited_chart = Charts::database($weeklynvCustchart, 'line', 'highcharts')
+        $Customernotvisited_chart = Charts::database($weeklynvCustchart, 'area', 'highcharts')
             ->title("Weekly Not Visited Customers : " . count($weeklynvCustchart))
             ->elementLabel("Total Not Visited Customers")
             ->dimensions(460, 500)
@@ -254,7 +277,7 @@ class PagesController extends Controller
             ->groupByDay(); 
 
 
-        $Customervisited_chart = Charts::database($weeklyvCustchart, 'line', 'highcharts')
+        $Customervisited_chart = Charts::database($weeklyvCustchart, 'area', 'highcharts')
             ->title("Weekly Visited Customers : " . count($weeklyvCustchart))
             ->elementLabel("Total Visited Customers")
             ->dimensions(460, 500)
@@ -277,7 +300,8 @@ class PagesController extends Controller
             ->groupByDay();
 
 
-        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','Avgbill_chart','billamount','Customerlost_chart'));
+        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','Avgbill_chart','billamount','Customerlost_chart','product_sales_chart'));
+        
     }
 
     public function orderStat()
@@ -381,6 +405,48 @@ class PagesController extends Controller
         // $saledata .= ']';
 
         //     return $saledata;
+
+    }
+
+    public function prodSalesStat()
+    {
+        $jsonString = Helper::getSettings();
+        $startdate = Input::get('startdate');
+        $enddate = Input::get('enddate');
+        if ($startdate == $enddate) {
+            $Sales = HasProducts::whereDate('created_at', '=', $startdate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->get();
+        } else {
+            $Sales = HasProducts::whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->get();
+        }
+        $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->limit(1)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', 'sub_prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+        if(count($topProducts) > 0){
+            if($topProducts[0]->sub_prod_id != ''){
+                $prodId = $topProducts[0]->sub_prod_id;
+            }else{
+                $prodId = $topProducts[0]->prod_id;
+            }
+        }
+        $weeklyProdSaleschart = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
+            ->where("prod_id", $prodId)->where('store_id', $this->jsonString['store_id'])->get();
+            $qty = 0;$pay_amt=0;
+        foreach($weeklyProdSaleschart as $prod){
+            $qty += $prod->qty;
+            $pay_amt += $prod->pay_amt;
+        }
+        $prodData = DB::table("products")->where('id',$prodId)->first();
+        $product_sales_chart = Charts::database($weeklyProdSaleschart, 'bar','highcharts')
+            ->title('Weekly Product Sales Rs.'.$pay_amt)
+            ->elementLabel("Total Product Sales")
+            ->dimensions(460, 500)
+            ->responsive(false)
+            ->groupByDay();
+            //->groupByMonth(date('Y'), true);
+        $html = '';
+        $html .= '<div id="ProdSalesChart">';
+        echo $product_sales_chart->html();
+        echo $product_sales_chart->script();
+        $html .= '</div>';
+        return $html;
 
     }
 

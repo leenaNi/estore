@@ -554,8 +554,40 @@
 
 
 
-                        </div>
+                       
+                        <div class="col-md-6">
+                            <div class="box box-warning" >
+                            <div class="box-header dashbox-header with-border bg-yellow">
+                                <h3 class="box-title dashbox-title">Product Sales</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                                <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                    <input type="text" class="form-control prod-search" placeholder="Search Product" />
+                                    </div>
+                                    <div class="col-md-6">
+                                    <div class="input-group date" id="datepickerDemo">
+                                    <input placeholder="Select Date" type="text" id="" name="datefrom"  class="form-control prod_sales_daterange textInput">
 
+                                    <span class="input-group-addon">
+                                        <i class=" ion ion-calendar"></i>
+                                    </span>
+                                </div>
+                                    </div>
+                                </div>
+                                <div id="ProdSalesChart">
+                                     {!! $product_sales_chart->html() !!}
+                                </div>
+                                   
+                                </div>
+                            </div>
+                            </div>
+                        </div>
                         <div class="clearfix"></div>
                         <br>
                         <div class="row">
@@ -664,14 +696,50 @@
 {!! $Customervisited_chart->script() !!}
 {!! $Avgbill_chart->script() !!}
 {!! $Customerlost_chart->script() !!}
+{!! $product_sales_chart->script() !!}
         @section('myscripts')
         <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
-
+$(".prod-search").autocomplete({
+        source: "{{route('admin.offers.searchProduct')}}",
+        minLength: 1,
+        select: function (event, ui) {
+            // getSubprods(ui.item.id, $(this));
+            $(this).attr('data-prdid', ui.item.id);
+            $(this).parent().find('input.prod').val(ui.item.id);
+            $(this).parent().parent().attr('data-prod-id', ui.item.id);
+        }
+});
     $(function () {
 
     var start = moment().subtract(29, 'days');
     var end = moment();
+    
+    $('.prod_sales_daterange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'prod-sales-stat',
+           data:{startdate:startdate,enddate:enddate},
+           success:function(data){
+              $("#ProdSalesChart").html(data);
+           }
+        });
+    });
 
     $('.sales_daterange').daterangepicker({
         startDate: start,

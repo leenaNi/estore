@@ -499,6 +499,13 @@ class OrdersController extends Controller
         } else {
 
             $order = Order::findOrNew(Input::get('id'));
+            $status = DB::table('order_status')->where('id',$order->order_status)->first();
+            if($status->order_status == 'Delivered')
+            {
+                $userdata = DB::table('users')->where('id',$order->user_id)->first();
+                $updateamt = $order->pay_amt + $userdata->total_purchase_till_now;
+                DB::table('users')->where('id',$order->user_id)->update(['total_purchase_till_now'=>$updateamt]);
+            }
             $orderStatus = $order->order_status;
             $updateOrder = $order->fill(Input::except('not_in_use'))->save();
             HasProducts::where("order_id", Input::get('id'))->update(["order_status" => $order->order_status]);

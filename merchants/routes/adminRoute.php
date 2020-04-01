@@ -32,6 +32,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "PagesController@index"]);
         Route::post('/order-stat', ["as" => "admin.dashboard.orderStat", "uses" => "PagesController@orderStat"]);
         Route::post('/sales-stat', ["as" => "admin.dashboard.saleStat", "uses" => "PagesController@salesStat"]);
+        Route::post('/prod-sales-stat', ["as" => "admin.dashboard.saleStat", "uses" => "PagesController@prodSalesStat"]);
         //new customer
         Route::post('/customers-stat', ["as" => "admin.dashboard.customersStat", "uses" => "PagesController@customersStat"]);
         //customer not visited

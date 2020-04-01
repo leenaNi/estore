@@ -258,19 +258,51 @@ class TableController extends Controller {
 //        return redirect()->route('admin.tableorder.view')->with('message', 'Order placed successfully.');
     }
 
-    public function transferKot() {
+    public function transferKot() {       
+        $getHiddenEditOrderId = Input::get('hdn_order_id');
+        $getHiddenSingleTableId = Input::get('hdn_single_table_id');
+        $getHiddenJoinTableId = Input::get('hdn_join_table_id');
+        
         if (Table::find(Input::get('table_id'))->ostatus == 1) {
-            $order = new Order;
+           
+            //$order = new Order;
+            $order = Order::find($getHiddenEditOrderId);
             $order->otype = 1;
             $order->table_id = Input::get('table_id');
-            $order->save();
-            $savetable = Table::find(Input::get('tableid'));
+            $order->update();
+            //$order->save();
+            
+            //update ostatus 2 to 1 for old table id
+            if($getHiddenSingleTableId != '' || $getHiddenSingleTableId > 0)
+            {
+                $savetable = Table::find($getHiddenSingleTableId);
+                $savetable->ostatus = 1;
+                $savetable->update();
+            }
+            else
+            {
+                $joinTableIdArry = json_decode($getHiddenJoinTableId);
+                $tableIdArry = [];
+                foreach($joinTableIdArry as $getTableId)
+                {
+                    $savetable = Table::find($getTableId);
+                    $savetable->ostatus = 1;
+                    $savetable->update();
+                }//foreach ends here
+            }
+            
+
+            //update ostatus 1 to 2 for new tranfer kot table id
+            $savetable = Table::find(Input::get('table_id'));
             $savetable->ostatus = 2;
             $savetable->update();
         } else {
             $order = Order::where("order_status", 1)->where("table_id", Input::get("table_id"))->orderBy("created_at", "desc")->first();
         }
-        if (count($order) > 0) {
+
+        //if (count($order) > 0) {
+        if (!empty($order)) {
+          
             $kot = Kot::find(Input::get('kot_id'));
             $kot->order_id = $order->id;
             $kot->update();
@@ -285,10 +317,23 @@ class TableController extends Controller {
     }
 
     public function addNewOrder() {
-
+        $getStoreId = SESSION::get('store_id');
+        $orderStatusResult = DB::table('order_status')
+            ->where('store_id', $getStoreId)
+            ->where('is_default', 1)
+            ->get();
+        $orderStatusId = 0;
+        foreach($orderStatusResult as $getOrderStatatusData)
+        {
+            //Get Processin id
+            $orderStatusId = $getOrderStatatusData->id;
+            $orderStatus = $getOrderStatatusData->order_status;
+        }
+            
         $order = new Order;
         $order->otype = 1;
         $order->table_id = Input::get('tableid');
+        $order->order_status = $orderStatusId;
         $order->save();
         $savetable = Table::find(Input::get('tableid'));
         $savetable->ostatus = 2;
@@ -334,7 +379,11 @@ class TableController extends Controller {
             $kotprods .= '<td colspan="6"><b>KOT #' . $kot->id . '</b>';
 
             if ($order->otype == 1)
-                $kotprods .= '<span class="pull-right transferKOT" data-kotid="' . $kot->id . '" style="cursor:pointer;">Transfer KOT</span>';
+            {
+                if($order->cart == '')
+                    $kotprods .= '<span class="pull-right transferKOT" data-kotid="' . $kot->id . '" style="cursor:pointer;">Transfer KOT</span>';
+            }
+                
 
             $kotprods .='</td>';
             $kotprods .='</tr>';
@@ -347,7 +396,11 @@ class TableController extends Controller {
                 $kotprods .='<td>' . $prd->qty . '</td>';
                 $kotprods .='<td>' . number_format($prd->price, 2) . '</td>';
                 $kotprods .='<td>' . number_format(($prd->price * $prd->qty), 2) . '</td>';
-                $kotprods .='<td><i data-hasprdid="' . $prd->id . '" class="fa fa-trash fa-fw deleteExistingItem" style="color:red;cursor:pointer;"></i></td>';
+                if($order->cart == '')
+                {
+                    $kotprods .='<td><i data-hasprdid="' . $prd->id . '" class="fa fa-trash fa-fw deleteExistingItem" style="color:red;cursor:pointer;"></i></td>';
+                }
+                
                 $kotprods .='</tr>';
 
             }
@@ -731,6 +784,19 @@ class TableController extends Controller {
     public function saveOrder($userId, $orderId, $addressId, $payAmt, $paymentMethod, $additionalCharge) {
         $address = Address::find($addressId);
         //dd($address);
+        $getStoreId = SESSION::get('store_id');
+        $orderStatusResult = DB::table('order_status')
+            ->where('store_id', $getStoreId)
+            ->where('order_status', 'Delivered')
+            ->get();
+        $orderStatusId = 0;
+        foreach($orderStatusResult as $getOrderStatatusData)
+        {
+            //Get Processin id
+            $orderStatusId = $getOrderStatatusData->id;
+            $orderStatus = $getOrderStatatusData->order_status;
+        }
+
         $orders = Order::find($orderId);
         if ($userId) {
             $user = User::find($userId);
@@ -794,6 +860,7 @@ class TableController extends Controller {
         {
             $orderAmt = $subtotal - $discountedAmount;
         }
+        $orders->order_status = $orderStatusId;
         $orders->store_id = $storeId;
         $orders->order_amt = $payAmt;
         $additional_charge_json = AdditionalCharge::ApplyAdditionalChargeOnOrder($payAmt, $additionalCharge);
