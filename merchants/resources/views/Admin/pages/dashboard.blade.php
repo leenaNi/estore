@@ -521,7 +521,7 @@
                                     </div>
                                     <div class="col-md-6">
                                     <div class="input-group date" id="datepickerDemo">
-                                    <input placeholder="Select Date" type="text" id="" name="datefrom"  class="form-control prod_sales_daterange textInput">
+                                    <input placeholder="Select Date" type="text" id="prod_sales_date" name="datefrom"  class="form-control prod_sales_daterange textInput">
 
                                     <span class="input-group-addon">
                                         <i class=" ion ion-calendar"></i>
@@ -747,16 +747,42 @@
         @section('myscripts')
         <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
+$prod_id = 0;
 $(".prod-search").autocomplete({
         source: "{{route('admin.offers.searchProduct')}}",
         minLength: 1,
         select: function (event, ui) {
-            // getSubprods(ui.item.id, $(this));
+            $prod_id = ui.item.id;
             $(this).attr('data-prdid', ui.item.id);
             $(this).parent().find('input.prod').val(ui.item.id);
             $(this).parent().parent().attr('data-prod-id', ui.item.id);
+            getProdData(ui.item.id);
         }
 });
+function getProdData(prod_id){
+    var ProdSalesdate = $("#prod_sales_date").val();
+    var date_range = ProdSalesdate.split(/-/g);
+    var sdate    = new Date(date_range[0]),
+    yr      = sdate.getFullYear(),
+    month   = sdate.getMonth() < 10 ? '0' + sdate.getMonth() : sdate.getMonth(),
+    day     = sdate.getDate()  < 10 ? '0' + sdate.getDate()  : sdate.getDate(),
+    startdate = yr + '-' + month + '-' + day;
+
+    var edate    = new Date(date_range[1]),
+    eyr      = edate.getFullYear(),
+    emonth   = edate.getMonth() < 10 ? '0' + edate.getMonth() : edate.getMonth(),
+    eday     = edate.getDate()  < 10 ? '0' + edate.getDate()  : edate.getDate(),
+    enddate = eyr + '-' + emonth + '-' + eday;
+  
+    $.ajax({
+           type:'POST',
+           url:'prod-sales-stat',
+           data:{startdate:startdate,enddate:enddate,prod_id:prod_id},
+           success:function(data){
+              $("#ProdSalesChart").html(data);
+           }
+        });
+}
     $(function () {
 
     var start = moment().subtract(29, 'days');
@@ -781,7 +807,7 @@ $(".prod-search").autocomplete({
         $.ajax({
            type:'POST',
            url:'online-vs-walkin-stat',
-           data:{startdate:startdate,enddate:enddate},
+           data:{startdate:startdate,enddate:enddate,prod_id:prod_id},
            success:function(data){
               $("#OnlinevsWalkinChart").html(data);
            }
