@@ -177,8 +177,8 @@ if($order->join_tables != '')
     </h1>
 </section>
 
-<section class="main-content">
-
+<!-- <section class="main-content"> -->
+<!-- 
     <div class="col-md-8 noLeft-padding">
         <div class="grid-content">
             <div class="section-main-heading">
@@ -368,9 +368,9 @@ if($order->join_tables != '')
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
-</section>
+<!-- </section> -->
 <section class="content">
 
     <div class="row">
@@ -591,6 +591,7 @@ if($order->join_tables != '')
                                 <input type="hidden" name="addressId" value="" class="addressId">
                                 <input type="hidden" name="orderId" value="" class="orderId">
                                 <input type="hidden" name="payamt" value="" class="payamt">
+                                <input type="hidden" name="final_total_amount" id="final_total_amount">
                                 <input type="hidden" name="additionalcharge" value="" class="additionalcharge">
 
                                 <div class="form-group">
@@ -861,6 +862,7 @@ if($order->join_tables != '')
         $.post("{{ route('admin.getCartAmt') }}", function (response) {
             carttot = response.cartAmt.toFixed(2);
             $(".finalSubTotal").text(carttot);
+            $("#final_total_amount").text(response.cartAmt);
         });
 
     }
@@ -870,9 +872,7 @@ if($order->join_tables != '')
         $.post("{{ route('admin.orders.getCustomerAdd') }}", {addData: addData}, function (data) {
             $.each(data, function (addk, addv) {
                 $("input[name='" + addk + "']").val("");
-
                 $("input[name='" + addk + "']").val(addv);
-
                 if (addk == 'country_id' || addk == 'zone_id') {
                     $("select[name='" + addk + "']").val("");
                     $("select[name='" + addk + "']").val(addv);
@@ -1335,6 +1335,8 @@ if($order->join_tables != '')
                 }
 
                 var couponVal = $("#coupon_value").text();
+                if(data.total)
+                    $("#final_total_amount").val(data.total);
                 var getTotalAmount = $("#final_total_amount").val();
                 var finalAmt = ''
                 if(couponVal != '')
