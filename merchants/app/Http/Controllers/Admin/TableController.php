@@ -16,6 +16,7 @@ use App\Models\Zone;
 use App\Models\User;
 use App\Models\HasProducts;
 use App\Models\AdditionalCharge;
+use App\Models\OrderStatusHistory;
 use App\Models\Address;
 use App\Models\Loyalty;
 use App\Models\Contact;
