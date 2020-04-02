@@ -181,28 +181,29 @@
                                 <div class="row">
                                     <div class="col-md-12 form-group">
                                         <?php
+                                        function renderNode($node, $category)
+                                        {
+                                            $classStyle = ($category->parent_id == $node->id ? 'checkbox-highlight' : '');
+                                            echo "<li class='tree-item fl_left ps_relative_li'>";
+                                            echo '<div class="checkbox">
+                                                                                                <label   class="i-checks checks-sm text-left ' . $classStyle . '"><input type="checkbox"  name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/><i></i>' . $node->categoryName->category . '</label>
+                                                                                                </div>';
+                                            if ($node->adminChildren()->count() > 0) {
+                                                echo "<ul class='treemap fl_left'>";
+                                                foreach ($node->adminChildren as $child) {
+                                                    renderNode($child, $category);
+                                                }
+                                                echo "</ul>";
+                                            }
+                                            echo "</li>";
+                                        }
 $roots = App\Models\Category::roots()->get();
 echo "<ul id='catTree' class='tree icheck'>";
 foreach ($roots as $root) {
-    // renderNode($root, $category);
+    renderNode($root, $category);
 }
 echo "</ul>";
-function renderNode($node, $category)
-{
-    $classStyle = ($category->parent_id == $node->id ? 'checkbox-highlight' : '');
-    echo "<li class='tree-item fl_left ps_relative_li'>";
-    echo '<div class="checkbox">
-                                                        <label   class="i-checks checks-sm text-left ' . $classStyle . '"><input type="checkbox"  name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/><i></i>' . $node->categoryName->category . '</label>
-                                                        </div>';
-    if ($node->children()->count() > 0) {
-        echo "<ul class='treemap fl_left'>";
-        foreach ($node->children as $child) {
-            renderNode($child, $category);
-        }
-        echo "</ul>";
-    }
-    echo "</li>";
-}
+
 ?>
                                     </div>
                                 </div>
