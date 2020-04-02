@@ -467,6 +467,36 @@ class PagesController extends Controller
 
     }
 
+    public function onlineVsWalkinStat()
+    {
+        $jsonString = Helper::getSettings();
+        $startdate = Input::get('startdate');
+        $enddate = Input::get('enddate');
+        $Date_range = $this->getDatesFromRange($startdate,$enddate);
+
+        foreach($Date_range as $date){
+            $onlineOrders = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->where('created_by',0)->get();
+            $walkinOrders = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->where('created_by','!=',0)->get();
+            $onlineOrdersCount[] = count($onlineOrders);
+            $walkinOrdersCount[] = count($walkinOrders);
+        }
+        $online_walkin_chart = Charts::multi('bar', 'highcharts')
+            ->title('Online : '.array_sum($onlineOrdersCount).' &  Walk-in : '.array_sum($walkinOrdersCount))
+            ->elementLabel("Orders")
+            ->colors(['#0873f9', '#e81362'])
+            ->labels($Date_range)
+            ->dataset('Online', $onlineOrdersCount)
+            ->dataset('Walk-in', $walkinOrdersCount);
+        
+        $html = '';
+        $html .= '<div id="OnlinevsWalkinChart">';
+        echo $online_walkin_chart->html();
+        echo $online_walkin_chart->script();
+        $html .= '</div>';
+        return $html;
+      
+    }
+
     //new customer 
     public function customersStat()
     {

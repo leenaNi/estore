@@ -579,13 +579,13 @@
                             </div>
                                 <div class="box-body">
                                 <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id="" name="customers_daterange"  class="form-control customers_daterange textInput">
+                                        <input placeholder="Select Date" type="text" id="" name="customers_daterange"  class="form-control ovw_daterange textInput">
 
                                         <span class="input-group-addon">
                                             <i class=" ion ion-calendar"></i>
                                         </span>
                                         </div>
-                                <div id="ProdSalesChart">
+                                <div id="OnlinevsWalkinChart">
                                      {!! $online_walkin_chart->html() !!}
                                 </div>
                                    
@@ -762,6 +762,31 @@ $(".prod-search").autocomplete({
     var start = moment().subtract(29, 'days');
     var end = moment();
     
+    $('.ovw_daterange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'online-vs-walkin-stat',
+           data:{startdate:startdate,enddate:enddate},
+           success:function(data){
+              $("#OnlinevsWalkinChart").html(data);
+           }
+        });
+    });
     $('.prod_sales_daterange').daterangepicker({
         startDate: start,
         endDate: end,
