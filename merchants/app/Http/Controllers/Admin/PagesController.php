@@ -611,7 +611,7 @@ class PagesController extends Controller
             $CustomerslostCount[] = count($lostcustomer);
         }
 
-         $Customerlost_chart  = Charts::create('line', 'highcharts')
+         $Customerlost_chart  = Charts::create('bar', 'highcharts')
                     ->title('Total Customers Lost : '.array_sum($CustomerslostCount))
                     ->elementLabel("Customers Lost")
                     ->labels($Date_range)
