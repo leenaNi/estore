@@ -33,6 +33,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::post('/order-stat', ["as" => "admin.dashboard.orderStat", "uses" => "PagesController@orderStat"]);
         Route::post('/sales-stat', ["as" => "admin.dashboard.saleStat", "uses" => "PagesController@salesStat"]);
         Route::post('/prod-sales-stat', ["as" => "admin.dashboard.prodSalesStat", "uses" => "PagesController@prodSalesStat"]);
+        Route::post('/purchase-vs-sales-stat', ["as" => "admin.dashboard.purchaseSalesStat", "uses" => "PagesController@purchaseVsSalesStat"]);
         Route::post('/online-vs-walkin-stat', ["as" => "admin.dashboard.onlineWalkinStat", "uses" => "PagesController@onlineVsWalkinStat"]);
         //new customer
         Route::post('/customers-stat', ["as" => "admin.dashboard.customersStat", "uses" => "PagesController@customersStat"]);
