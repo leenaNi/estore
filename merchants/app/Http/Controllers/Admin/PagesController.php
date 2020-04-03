@@ -243,6 +243,9 @@ class PagesController extends Controller
             //customer not visited
             $weeklynvCust = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->groupBy('id')->get();
 
+            $weeklynvCustcount = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->pluck('id')->toArray();
+            
+
             $monday = strtotime("last monday");
             $monday = date('W', $monday)==date('W') ? $monday-7*86400 : $monday;
              
@@ -345,7 +348,7 @@ class PagesController extends Controller
             ->responsive(false);
             
         $Customernotvisited_chart = Charts::create('area', 'highcharts')
-            ->title("Weekly Not Visited Customers : " . array_sum($nvCustomersCount))
+            ->title("Weekly Not Visited Customers : " . count($weeklynvCustcount))
             ->elementLabel("Not Visited Customers")
             ->dimensions(460, 500)
             ->labels($Date_range)
@@ -693,11 +696,12 @@ class PagesController extends Controller
             $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at', '=', $date)->pluck('user_id')->toArray();
 
             $Customers = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->get();
+            $weeklynvCustcount = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->pluck('id')->toArray();
             $nvisitedCustomersCount[] = count($Customers);
         }
 
           $Customernotvisited_chart = Charts::create('area', 'highcharts')
-            ->title("Total Not Visited Customers : " . array_sum($nvisitedCustomersCount))
+            ->title("Total Not Visited Customers : " . count($weeklynvCustcount))
             ->elementLabel("Not Visited Customers")
             ->labels($Date_range)
             ->values($nvisitedCustomersCount)
