@@ -180,7 +180,7 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'adminEmails' => 'Admin.pages.emails',
         'adminFlagsView' => 'Admin.pages.miscellaneous.flags',
         'adminStaticPageView' => 'Admin.pages.staticpages',
-        'paginateNo' => 3,
+        'paginateNo' => 10,
         'adminContactView' => 'Admin.pages.contact',
         'adminSmsView' => 'Admin.pages.sms_subscription',
         'sizeChartUploadPath' => asset('uploads/sizechart/'),

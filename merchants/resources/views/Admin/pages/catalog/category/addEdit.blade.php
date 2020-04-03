@@ -37,7 +37,6 @@
                 <div class="panel-body">
                     <div class="row">
                     {!! Form::model($category, ['method' => 'post', 'files'=> true, 'url' => $action , 'id'=>'CatF' ]) !!}
-
                     <div class="col-md-12">
                         <div class="box box-solid boxNew">
                             <div class="box-header boxHeaderNew with-border">
@@ -49,7 +48,11 @@
                                         <div class="form-group">
                                             {!! Form::label('category', 'Category Name ',['class'=>'pull-left']) !!}<span class="red-astrik pull-left ml-3"> *</span>
                                             {!! Form::hidden('id',null,["id"=>"cat_category"]) !!}
-                                            {!! Form::text('category', $category->categoryName->category, ["id"=>"category","class"=>'form-control validate[required]', "placeholder"=>'Enter Category Name', "required", "disabled"]) !!}
+                                            @if(env('IS_INDIVIDUAL_STORE'))
+                                            {!! Form::text('category', @$category->categoryName->category, ["id"=>"category","class"=>'form-control validate[required]', "placeholder"=>'Enter Category Name', "required"]) !!}
+                                            @else
+                                            {!! Form::text('category', @$category->categoryName->category, ["id"=>"category","class"=>'form-control validate[required]', "placeholder"=>'Enter Category Name', "required", "disabled"]) !!}
+                                            @endif
                                             <span id="catnameerror"></span>
                                         </div>
                                     </div>
@@ -168,59 +171,51 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- <div class="col-md-12">
+                    @if(env('IS_INDIVIDUAL_STORE'))
+                    <div class="col-md-12">
                         <div class="box box-solid boxNew">
                             <div class="box-header boxHeaderNew with-border">
                                 <h3 class="box-title"> {!! Form::label('parent_id', 'Select Parent Category') !!}</h3>
-                            </div> -->
-                            <!-- <div class="box-body text-center">
+                            </div>
+                            <div class="box-body text-center">
                                 <div class="row">
-                                    <div class="col-md-12 form-group"> -->
-
+                                    <div class="col-md-12 form-group">
                                         <?php
-// $roots = App\Models\Category::roots()->get();
-// echo "<ul id='catTree' class='tree icheck'>";
-// foreach ($roots as $root)
-// //echo $root."||||||".$category;
-// {
-//     renderNode($root, $category);
-// }
+                                        function renderNode($node, $category)
+                                        {
+                                            $classStyle = ($category->parent_id == $node->id ? 'checkbox-highlight' : '');
+                                            echo "<li class='tree-item fl_left ps_relative_li'>";
+                                            echo '<div class="checkbox">
+                                                                                                <label   class="i-checks checks-sm text-left ' . $classStyle . '"><input type="checkbox"  name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/><i></i>' . $node->categoryName->category . '</label>
+                                                                                                </div>';
+                                            if ($node->adminChildren()->count() > 0) {
+                                                echo "<ul class='treemap fl_left'>";
+                                                foreach ($node->adminChildren as $child) {
+                                                    renderNode($child, $category);
+                                                }
+                                                echo "</ul>";
+                                            }
+                                            echo "</li>";
+                                        }
+$roots = App\Models\Category::roots()->get();
+echo "<ul id='catTree' class='tree icheck'>";
+foreach ($roots as $root) {
+    renderNode($root, $category);
+}
+echo "</ul>";
 
-// echo "</ul>";
-
-// function renderNode($node, $category)
-// {
-//     $classStyle = ($category->parent_id == $node->id ? 'checkbox-highlight' : '');
-//     //  echo $classStyle;
-//     // $style=(Input::get("parent_id")  == $node->id? 'checkbox-highligh':'');
-//     echo "<li class='tree-item fl_left ps_relative_li'>";
-//     echo '<div class="checkbox">
-//         <label   class="i-checks checks-sm text-left ' . $classStyle . '"><input type="checkbox"  name="parent_id" value="' . $node->id . '" ' . ($category->parent_id == $node->id ? "checked" : "") . '' . (Input::get("parent_id") == $node->id ? "checked" : "") . '/><i></i>' . $node->categoryName->category . '</label>
-//     </div>';
-//     if ($node->children()->count() > 0) {
-//         echo "<ul class='treemap fl_left'>";
-//         foreach ($node->children as $child) {
-//             renderNode($child, $category);
-//         }
-//         echo "</ul>";
-//     }
-//     echo "</li>";
-// }
 ?>
-                            <!-- </div>
+                                    </div>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
-                    </div>-->
-
-
+                    </div>
+                    @endif
                     <!--model to display size chart -->
                      <button id="trigger_model" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="display: none;">Open Modal</button>
                     <!-- Modal -->
                     <div id="myModal" class="modal fade" role="dialog">
                       <div class="modal-dialog modal-md">
-
                         <!-- Modal content-->
                         <div class="modal-content">
                           <div class="modal-header">
@@ -228,17 +223,14 @@
                             <h4 class="modal-title">Size Chart </h4>
                           </div>
                             <img id="size_chart_image" height="400" width="100%"/>
-
                           <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                           </div>
                         </div>
-
                       </div>
                     </div>
-                      <!--End model to display size chart -->
-<!--                            <input type="hidden" name="parent_id" value="{{ @Input::get('parent_id') }}">-->
-
+                        <!--End model to display size chart -->
+                        <!-- <input type="hidden" name="parent_id" value="{{ @Input::get('parent_id') }}">-->
                     <div class="form-group">
                         <div class="col-sm-10 col-sm-offset-2">
                             {!! Form::hidden('new_prod_cat',!empty(Input::get('new_prod_cat'))?Input::get('new_prod_cat'):null ,['class'=>'new_prod']) !!}
@@ -291,41 +283,35 @@
 @stop
 @section('myscripts')
 <script>
-   $(document).ready(function () {
-         var ids=$("#chart_id").val();
-
-         if(ids==0){
-           $("#chart_button").addClass('disabled');
-         }
-       $('.size_chart_id').change(function(){
-          if($("#chart_id").val()==0){
-               $("#chart_button").addClass('disabled');
-          }else{
-               $("#chart_button").removeClass('disabled');
-          }
-       });
-
-
-    $('#chart_button').click(function(){
-
-     var id=$("#chart_id").val();
-    if(id !=0){
-
-      $.ajax({
-            type: "POST",
-            url: "{!! route('admin.category.sizeChart') !!}",
-            data: {id:id},
-            success: function(msg){
-                var data = msg;
-                 $('#size_chart_image')
-                    .attr('src', "{{$public_path}}/"+data.image);
-                $("#trigger_model").click();
+    $(document).ready(function () {
+        var ids=$("#chart_id").val();
+        if(ids==0){
+            $("#chart_button").addClass('disabled');
+        }
+        $('.size_chart_id').change(function(){
+            if($("#chart_id").val()==0){
+                $("#chart_button").addClass('disabled');
+            }else{
+                $("#chart_button").removeClass('disabled');
             }
         });
-    }
+    $('#chart_button').click(function(){
+        var id=$("#chart_id").val();
+        if(id !=0){
+            $.ajax({
+                type: "POST",
+                url: "{!! route('admin.category.sizeChart') !!}",
+                data: {id:id},
+                success: function(msg){
+                    var data = msg;
+                    $('#size_chart_image')
+                        .attr('src', "{{$public_path}}/"+data.image);
+                    $("#trigger_model").click();
+                }
+            });
+        }
       });
     });
-
     $(".AddMoreImg").click(function () {
         $(".existingDiv").append($(".toClone").html());
     });
@@ -347,55 +333,52 @@
        // }
     });
     $(".saveCatContine").click(function () {
-       // if ($('#category').val() != "") {
-
+        // if ($('#category').val() != "") {
             if("{{Input::get('id')}}" != ''){
                $(".rtUrl").val("{!!route('admin.category.edit',['id'=>Input::get('id')])!!}");
             }else{
                $(".rtUrl").val("{!!route('admin.category.edit')!!}");
             }
-
             $("#CatF").submit();
-      //  } else {
-          //  $('#catnameerror').text('Please enter category name').css({'color': 'red'});
-       // }
+        //  } else {
+            //  $('#catnameerror').text('Please enter category name').css({'color': 'red'});
+        // }
     });
     $(".saveCatNext").click(function () {
-       // if ($('#category').val() != "") {
-          if("{{Input::get('id')}}" != ''){
-            $(".rtUrl").val("{!!route('admin.category.catSeo',['id'=>Input::get('id')])!!}");
-          }else{
-            $(".rtUrl").val("{!!route('admin.category.catSeo')!!}");
-          }
-
-            $("#CatF").submit();
+        // if ($('#category').val() != "") {
+        if("{{Input::get('id')}}" != ''){
+        $(".rtUrl").val("{!!route('admin.category.catSeo',['id'=>Input::get('id')])!!}");
+        } else {
+        $(".rtUrl").val("{!!route('admin.category.catSeo')!!}");
+        }
+        $("#CatF").submit();
         //} else {
-           //  $('#catnameerror').text('Please enter category name').css({'color': 'red'});
-       // }
+        //  $('#catnameerror').text('Please enter category name').css({'color': 'red'});
+        // }
     });
-   $(document).ready(function () {
+    $(document).ready(function () {
         $("#category").keyup(function () {
             var catname = $(this).val();
-        $.ajax({
-            type: "POST",
-            url: "{{ route('admin.category.checkcat') }}",
-            data: {catname: catname},
-            cache: false,
-            success: function (response) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('admin.category.checkcat') }}",
+                data: {catname: catname},
+                cache: false,
+                success: function (response) {
 
-                if (response['status'] == 'success') {
-                    $('#category').val('');
-                    $('#catnameerror').text(response['msg']).css({'color': 'red'});
-                } else
-                    $('#catnameerror').text('');
-            }, error: function (e) {
-                console.log(e.responseText);
-            }
+                    if (response['status'] == 'success') {
+                        $('#category').val('');
+                        $('#catnameerror').text(response['msg']).css({'color': 'red'});
+                    } else
+                        $('#catnameerror').text('');
+                }, error: function (e) {
+                    console.log(e.responseText);
+                }
+            });
         });
-     });
- });
+    });
 
- $("body").delegate('.deleteImage', 'click', function (e) {
+    $("body").delegate('.deleteImage', 'click', function (e) {
             var ele = $(this);
             var imagId = ele.attr("catImgId");
              $.ajax({
@@ -404,19 +387,15 @@
             data: {catImgId: imagId},
             cache: false,
             success: function (response) {
-
                 if (response['status'] == 'success') {
-
                   location.reload();
                 } else{
 
                 }
-
             }, error: function (e) {
                 console.log(e.responseText);
             }
         });
-
     });
 </script>
 @stop

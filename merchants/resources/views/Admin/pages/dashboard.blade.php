@@ -521,7 +521,7 @@
                                     </div>
                                     <div class="col-md-6">
                                     <div class="input-group date" id="datepickerDemo">
-                                    <input placeholder="Select Date" type="text" id="" name="datefrom"  class="form-control prod_sales_daterange textInput">
+                                    <input placeholder="Select Date" type="text" id="prod_sales_date" name="datefrom"  class="form-control prod_sales_daterange textInput">
 
                                     <span class="input-group-addon">
                                         <i class=" ion ion-calendar"></i>
@@ -531,6 +531,62 @@
                                 </div>
                                 <div id="ProdSalesChart">
                                      {!! $product_sales_chart->html() !!}
+                                </div>
+                                   
+                                </div>
+                            </div>
+                            </div>
+
+
+                        </div>
+                        <div class="clearfix"></div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="box box-success" >
+                                <div class="box-header dashbox-header with-border bg-green">
+                                    <h3 class="box-title dashbox-title">Purchase vs Sales</h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                                    <div class="box-body">
+                                        <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="customers_daterange"  class="form-control customers_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                        </div>
+                                        <div id="NewCustomerChart">
+                                        {!! $purchase_sales_chart->html() !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                            <div class="box box-warning" >
+                            <div class="box-header dashbox-header with-border bg-yellow">
+                                <h3 class="box-title dashbox-title">Online vs Walk-in Orders</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                                <div class="box-body">
+                                <div class="input-group date Nform_date" id="datepickerDemo">
+                                        <input placeholder="Select Date" type="text" id="" name="customers_daterange"  class="form-control ovw_daterange textInput">
+
+                                        <span class="input-group-addon">
+                                            <i class=" ion ion-calendar"></i>
+                                        </span>
+                                        </div>
+                                <div id="OnlinevsWalkinChart">
+                                     {!! $online_walkin_chart->html() !!}
                                 </div>
                                    
                                 </div>
@@ -719,27 +775,79 @@
 {!! $Newcustomer_chart->script() !!}
 {!! $Customernotvisited_chart->script() !!}
 {!! $Customervisited_chart->script() !!}
-{!! $Avgbill_chart->script() !!}
 {!! $Customerlost_chart->script() !!}
 {!! $product_sales_chart->script() !!}
+{!! $purchase_sales_chart->script() !!}
+{!! $online_walkin_chart->script() !!}
         @section('myscripts')
         <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
+$prod_id = 0;
 $(".prod-search").autocomplete({
         source: "{{route('admin.offers.searchProduct')}}",
         minLength: 1,
         select: function (event, ui) {
-            // getSubprods(ui.item.id, $(this));
+            $prod_id = ui.item.id;
             $(this).attr('data-prdid', ui.item.id);
             $(this).parent().find('input.prod').val(ui.item.id);
             $(this).parent().parent().attr('data-prod-id', ui.item.id);
+            getProdData(ui.item.id);
         }
 });
+function getProdData(prod_id){
+    var ProdSalesdate = $("#prod_sales_date").val();
+    var date_range = ProdSalesdate.split(/-/g);
+    var sdate    = new Date(date_range[0]),
+    yr      = sdate.getFullYear(),
+    month   = sdate.getMonth() < 10 ? '0' + sdate.getMonth() : sdate.getMonth(),
+    day     = sdate.getDate()  < 10 ? '0' + sdate.getDate()  : sdate.getDate(),
+    startdate = yr + '-' + month + '-' + day;
+
+    var edate    = new Date(date_range[1]),
+    eyr      = edate.getFullYear(),
+    emonth   = edate.getMonth() < 10 ? '0' + edate.getMonth() : edate.getMonth(),
+    eday     = edate.getDate()  < 10 ? '0' + edate.getDate()  : edate.getDate(),
+    enddate = eyr + '-' + emonth + '-' + eday;
+  
+    $.ajax({
+           type:'POST',
+           url:'prod-sales-stat',
+           data:{startdate:startdate,enddate:enddate,prod_id:prod_id},
+           success:function(data){
+              $("#ProdSalesChart").html(data);
+           }
+        });
+}
     $(function () {
 
     var start = moment().subtract(29, 'days');
     var end = moment();
     
+    $('.ovw_daterange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start,end,label) {
+        
+        var startdate = start.format('YYYY-MM-DD');
+        var enddate = end.format('YYYY-MM-DD');
+        
+        $.ajax({
+           type:'POST',
+           url:'online-vs-walkin-stat',
+           data:{startdate:startdate,enddate:enddate,prod_id:prod_id},
+           success:function(data){
+              $("#OnlinevsWalkinChart").html(data);
+           }
+        });
+    });
     $('.prod_sales_daterange').daterangepicker({
         startDate: start,
         endDate: end,
@@ -1154,6 +1262,7 @@ $(".prod-search").autocomplete({
                     color: "{{$item['color']}}",
 
                     label: "{{$item['customer_name']}}",
+                    
                 },
                 <?php 
             }

@@ -440,6 +440,8 @@ class HomeController extends Controller
                     $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", "");
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
+                    $this->replaceFileString($path . "/.env", "%IS_INDIVIDUAL_STORE%", "0");
+                    
                     //Last record
                     $lastUser = DB::table('users')->latest('id')->first();
                     if (isset($lastUser) && !empty($lastUser)) {

@@ -26,7 +26,7 @@
 </section>
 
 <section class="main-content">
-    <div class="notification-column">       
+    <div class="notification-column">
     @if(!empty(Session::get('message')))
     <div  class="alert alert-danger" role="alert">
         {{ Session::get('message') }}
@@ -37,22 +37,29 @@
         {{ Session::get('msg') }}
     </div>
     @endif
-    </div>   
+    </div>
 
 <div class="grid-content">
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
       <div class="filter-section">
-            <div class="col-md-12 noAll-padding">
+            <div class="col-md-9 noAll-padding">
                 <div class="filter-full-section">
                     <div class="form-group col-md-6 noBottomMargin">
                      <div class="input-group">
-                         <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span> 
+                         <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
                         <input type="text" name="catSearch" class="form-control form-control-right-border-radius medium pull-right catSearcH" placeholder="Search Category">
                     </div>
                 </div>
                 </div>
+                </div>
+                <div class="col-md-3 noRight-padding">
+                    <div class="grid-content">
+                        <div class="form-group">
+                            <a class="btn btn-default fullWidth noAll-margin" href="{{ route('admin.category.add')}}">Add New Category</a>
+                        </div>
+                    </div>
                 </div>
                 </div>
                 </div>
@@ -65,7 +72,7 @@
                     <table class="table table-striped table-hover">
                         <?php
 echo "<ul  id='catTree' class='tree icheck catTrEE'>";
-  
+
 foreach ($roots as $root) {
     renderNode($root);
 }
@@ -76,7 +83,7 @@ function renderNode($node)
 {
     echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
     echo '' . $node->categoryName->category . '';
-    echo '<a class="add-new-category" data-catId="' . $node->id . '" data-parentcatId="' . $node->parent_id . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+    echo '<a href="'.route('admin.category.add').'" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
     echo '' . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
                             <!-- <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a> -->
 
@@ -313,7 +320,7 @@ function renderNode($node)
     <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
     {% } %}
     </span>
-    </td> 
+    </td>
     <td>
     <p class="name">
     {% if (file.url) { %}

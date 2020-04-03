@@ -25,7 +25,7 @@ class CategoryController extends Controller
         $categories = $categories->paginate(Config('constants.paginateNo'));
         $roots = Category::roots()->get();
         //dd(DB::getQueryLog()); // Show results of log
-        
+
         //dd($roots);
         //return view(Config('constants.adminCategoryView') . '.index', compact('categories', 'roots'));
 
@@ -62,8 +62,27 @@ class CategoryController extends Controller
     public function save()
     {
         // dd(Input::all());
+        if (env('IS_INDIVIDUAL_STORE')) {
+            if(Input::get('id') == null){
+                DB::table('categories')->INSERT([
+                    'category' => Input::get('category'),
+                    'is_home' => 0,
+                    'is_nav' => Input::get('is_nav'),
+                    'sort_order' => Input::get('sort_order'),
+                    'url_key' => strtolower(str_replace(" ", "-", Input::get('category'))),
+                    'status' => Input::get('status'),
+                    'short_desc' => Input::get('short_desc'),
+                    'store_id' => 0,
+                ]);                
+                $catId = DB::table('categories')->first(['id']);   
+            }         
+        }
+
         $category = Category::findOrNew(Input::get('id'));
         // $category->category = Input::get('category');
+        if (env('IS_INDIVIDUAL_STORE') && Input::get('id') == null) {
+            $category->category_id = @$catId->id;
+        }
         $category->is_home = 0; //Input::get('is_home');
         $category->is_nav = Input::get('is_nav');
         $category->sort_order = Input::get('sort_order');
@@ -72,7 +91,6 @@ class CategoryController extends Controller
         $category->short_desc = Input::get('short_desc');
         $category->store_id = Session::get('store_id');
         //$category->long_desc = Input::get('long_desc');
-
         $catImgs = [];
         $category->images = json_encode($catImgs);
         //Session::flash('msg',"category added succesfully ");
@@ -91,9 +109,8 @@ class CategoryController extends Controller
                 if (!empty(Input::file('images')[$imgK])) {
                     $saveCImh->filename = is_null($fileName) ? $saveCImh->filename : $fileName;
                 }
-
                 $saveCImh->alt_text = Input::get('alt_text')[$imgK];
-//                $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
+                //  $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
                 $saveCImh->catalog_id = $category->id;
                 $saveCImh->image_type = 2;
                 Session::flash('msg', "category added succesfully ");
@@ -113,25 +130,20 @@ class CategoryController extends Controller
                     if (!empty(Input::file('images')[$imgK])) {
                         $saveCImh->filename = is_null($fileName) ? $saveCImh->filename : $fileName;
                     }
-
                     $saveCImh->alt_text = Input::get('alt_text')[$imgK];
-//                    $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
+                    //  $saveCImh->sort_order = Input::get('img_sort_order')[$imgK];
                     $saveCImh->catalog_id = $category->id;
                     $saveCImh->image_type = 2;
                     $saveCImh->save();
                 }
             }
         }
-
-        // if (!empty(Input::get("parent_id"))) {
-        //     $category->makeChildOf(Input::get("parent_id"));
-        // }
-
+        if (!empty(Input::get("parent_id"))) {
+            $category->makeChildOf(Input::get("parent_id"));
+        }
         Session::flash("msg", "Category updated successfully.");
-
         if (is_null(Input::get('id')) || empty(Input::get('id'))) {
             Session::flash("msg", "Category added successfully.");
-
             return redirect()->to(Input::get('return_url') . "?id=" . $category->id);
         } else {
             // Session::flash("msg", "Category added successfully.");
@@ -540,86 +552,80 @@ class CategoryController extends Controller
         return $data = ["status" => "success"];
     }
 
-    public function newCategory(){
-        
-        echo "inbput get parent id::".Input::get('parent_id');
-        if(Input::get('parent_id') && Input::get('parent_id') !='') {
+    public function newCategory()
+    {
+
+        echo "inbput get parent id::" . Input::get('parent_id');
+        if (Input::get('parent_id') && Input::get('parent_id') != '') {
             $parentId = DB::table('store_categories')->where('id', Input::get('parent_id'))->first(['category_id'])->category_id;
         } else {
             $parentId = 0;
         }
 
-        echo "store cate id::".$parentId;
-        
+        echo "store cate id::" . $parentId;
+
         $newCatName = Input::get('category');
         $newCategory = DB::table('temp_categories')->insert([
             "name" => $newCatName,
-            "parent_id" => $parentId, 
-            "user_id" => Session::get('loggedinAdminId'), 
+            "parent_id" => $parentId,
+            "user_id" => Session::get('loggedinAdminId'),
         ]);
 
-        echo "category name::".$newCatName;     
-        
+        echo "category name::" . $newCatName;
+
         //insert category with parent category id into store_category table
         /*$storeCategoryRs = DB::table('store_categories')->insert([
-            "parent_id" => $parentId, 
-            //"category_id" => Session::get('loggedinAdminId'), 
+        "parent_id" => $parentId,
+        //"category_id" => Session::get('loggedinAdminId'),
         ]);*/
 
         // Send mail to admin with hierarchy from parent to child according to the selected category
         $superAdminEmail = DB::table('vswipe_users')->get(['email']);
-        
-        if($parentId > 0)
-        {
+
+        if ($parentId > 0) {
             $categoryArray = array();
-            $categoryData = DB::table('categories')->where('id', $parentId)->get(['id','category','parent_id']);
+            $categoryData = DB::table('categories')->where('id', $parentId)->get(['id', 'category', 'parent_id']);
             $parentCategoryId = $categoryData[0]->parent_id;
             $categoryName = $categoryData[0]->category;
             //dd($parentCategoryId);
 
-            if($parentCategoryId != 0 || $parentCategoryId != NULL)
-            {
+            if ($parentCategoryId != 0 || $parentCategoryId != null) {
 
-                do 
-                {
+                do {
+                    array_push($categoryArray, $categoryName);
+                    $parentCategoryId = $parentCategoryId;
+
+                    $categoryData = DB::table('categories')->where('id', $parentCategoryId)->get(['id', 'category', 'parent_id']);
+                    $parentCategoryId = $categoryData[0]->parent_id;
+                    $categoryName = $categoryData[0]->category;
+                    if ($parentCategoryId == 0) {
                         array_push($categoryArray, $categoryName);
-                        $parentCategoryId = $parentCategoryId;
+                    }
 
-                        $categoryData = DB::table('categories')->where('id', $parentCategoryId)->get(['id','category','parent_id']);
-                        $parentCategoryId = $categoryData[0]->parent_id;
-                        $categoryName = $categoryData[0]->category;
-                        if($parentCategoryId == 0)
-                            array_push($categoryArray, $categoryName);
-                    
-                }
-                while($parentCategoryId > 0);
-            }
-            else
-            {
+                } while ($parentCategoryId > 0);
+            } else {
                 //echo "else";
                 array_push($categoryArray, $categoryName);
                 $parentCategoryId = $parentId;
             }
 
-            $parentToChild = implode(' -> ',array_reverse($categoryArray));
-    
+            $parentToChild = implode(' -> ', array_reverse($categoryArray));
+
             //echo "parent child arry::".$parentToChild;
-            //exit;    
+            //exit;
             $mailcontent = "Please add new category '$newCatName' inside the parent category of $parentToChild";
-        }
-        else
-        {
+        } else {
             $mailcontent = "Please add new parent category '$newCatName'.";
         }
-        
+
         $sub = "New Category Request";
-        if($newCategory){
+        if ($newCategory) {
             if (!empty($superAdminEmail)) {
                 //Helper::withoutViewSendMail($superAdminEmail, $sub, $mailcontent);
             }
             Session::flash("msg", "New category request sent successfully.");
         } else {
-            
+
             Session::flash("message", "Oops, Something went wrong.");
         }
         return redirect()->route('admin.category.view');
