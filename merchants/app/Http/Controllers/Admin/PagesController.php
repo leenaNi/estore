@@ -271,6 +271,11 @@ class PagesController extends Controller
             $weeklyvCustchart = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereIn('id', $userid)->where('user_type', 2)->get();
             //customer not visited
             $weeklynvCust = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->get();
+            //lost customers weekly
+            $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
+
+            $lostcustomer = Order::whereDate('created_at',  $date)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
+
             //purchase vs sales
             $purchaseProds = DB::table('has_products')->whereDate('created_at',$date)->whereIn('id', $productwise_inward)->get([DB::raw('sum(qty) as quantity')]);
             $salesProds1 = DB::table('has_products')
@@ -294,6 +299,7 @@ class PagesController extends Controller
             $newCustomersCount[] = count($Customers);
             $visitedCustomersCount[] = count($weeklyvCustchart);
             $nvCustomersCount[] = count($weeklynvCust);
+            $CustomerslostCount[] = count($lostcustomer);
             $purchases[] = ($purchaseProds[0]->quantity) ? $purchaseProds[0]->quantity : 0;
             $sales[] = ($salesProds[0]->quantity) ? $salesProds[0]->quantity : 0;
         }
@@ -388,10 +394,10 @@ class PagesController extends Controller
 
 
         $Customerlost_chart = Charts::create('bar', 'highcharts')
-            ->title("Weekly Customers Lost : " . array_sum($lostcustomerCount))
+            ->title("Weekly Customers Lost : " . array_sum($CustomerslostCount))
             ->elementLabel("Customers Lost")
             ->labels($Date_range)
-            ->values($lostcustomerCount)
+            ->values($CustomerslostCount)
             ->dimensions(460, 500)
             ->responsive(false);
             
