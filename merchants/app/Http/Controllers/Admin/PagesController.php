@@ -687,30 +687,24 @@ class PagesController extends Controller
         $startdate = Input::get('startdate');
         $enddate = Input::get('enddate');
 
+         $Date_range = $this->getDatesFromRange($startdate,$enddate);
 
-        if ($startdate == $enddate) {
-
-
-            $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at', '=', $startdate)->pluck('user_id')->toArray();
+        foreach($Date_range as $date){
+            $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at', '=', $date)->pluck('user_id')->toArray();
 
             $Customers = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->get();
-
-        } else {
-
-            $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->pluck('user_id')->toArray();
-
-            $Customers = DB::table('users')
-            ->whereNotIn('id', $userid)
-            ->where('user_type', 2)
-            ->get();
+            $nvisitedCustomersCount[] = count($Customers);
         }
 
-        $Customernotvisited_chart = Charts::database($Customers, 'line', 'highcharts')
-            ->title("Total Not Visited Customers : " . count($Customers))
-            ->elementLabel("Not Visite Customers")
+          $Customernotvisited_chart = Charts::create('area', 'highcharts')
+            ->title("Total Not Visited Customers : " . array_sum($nvisitedCustomersCount))
+            ->elementLabel("Not Visited Customers")
+            ->labels($Date_range)
+            ->values($nvisitedCustomersCount)
             ->dimensions(460, 500)
-            ->responsive(false)
-            ->groupByDay();
+            ->responsive(false);
+
+       
         // ->groupByMonth(date('Y'), true);
         $html = '';
         $html .= '<div id="CustomernotVisitedChart">';
