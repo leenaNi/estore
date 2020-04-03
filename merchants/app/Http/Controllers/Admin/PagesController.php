@@ -42,7 +42,7 @@ class PagesController extends Controller
             ->sum('pay_amt');
 
 
-        $weeklyAvgbillchart = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->get();
+        //$weeklyAvgbillchart = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->get();
 
         //dd($weeklyAvgbillchart);
         //lost customer
@@ -51,15 +51,23 @@ class PagesController extends Controller
          
         $sunday = strtotime(date("Y-m-d",$monday)." +6 days");
         $this_week_sd = date("Y-m-d",$monday);
-        $this_week_ed = date("Y-m-d",$sunday);
+        $this_week_ed = date("Y-m-d",$sunday); 
 
 
-        $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
 
-       $lostcustomer = Order::whereBetween('created_at', [$this_week_sd, $this_week_ed])->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
+        $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->pluck('user_id')->toArray();
 
+       
+       $orderlastweek = Order::whereBetween('created_at', [$this_week_sd, $this_week_ed])->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
 
-        //dd($weeklySaleschart);
+       $date = strtotime("-8 day");
+       $finaldate = date('Y-m-d', $date);
+
+       $orderlasttolastweek = Order::whereDate('created_at', '<=', $finaldate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->pluck('user_id')->toArray();
+
+       $returningcustomer = Order::join('users', 'orders.user_id', '=', 'users.id')->whereRaw("WEEKOFYEAR(orders.created_at) = '" . date('W') . "'")->whereNotIn("orders.user_id", $orderlastweek)->whereIn("orders.user_id", $orderlasttolastweek)->whereIn("orders.user_id", $ordercurrentweek)->where('orders.store_id', $this->jsonString['store_id'])->get(['orders.user_id','orders.created_at','orders.pay_amt', 'users.firstname', 'users.lastname', 'users.email']);
+
+        //dd($returningcustomer);
         $monthlySales = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")
             ->whereNotIn("order_status", [0, 4, 6, 10])->where('prefix', $this->jsonString['prefix'])
             ->sum('pay_amt');
@@ -170,6 +178,15 @@ class PagesController extends Controller
             $items[$key]['color'] = '#' . $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
         }
 
+        //returning customer
+        $returncust = [];
+        foreach ($returningcustomer as $key => $user) {
+            $returncust[$key]["total"] = $user->pay_amt;
+            $returncust[$key]['customer_name'] = $user->firstname . " " . $user->lastname;
+            $returncust[$key]['color'] = '#' . $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
+        }
+
+
 
         $bill = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->select(DB::raw('round(AVG(pay_amt),0) as avgamt'))->get();
 
@@ -253,6 +270,7 @@ class PagesController extends Controller
             $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at',$date)->pluck('user_id')->toArray();
             $weeklyvCustchart = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereIn('id', $userid)->where('user_type', 2)->get();
             //customer not visited
+<<<<<<< HEAD
             $weeklynvCust = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->get();
             //purchase vs sales
             $purchaseProds = DB::table('has_products')->whereDate('created_at',$date)->whereIn('id', $productwise_inward)->get([DB::raw('sum(qty) as quantity')]);
@@ -270,6 +288,31 @@ class PagesController extends Controller
             // })
             ->get([DB::raw('sum(qty) as quantity')])->toArray();
             $salesProds = array_merge($salesProds1,$salesProds2);
+=======
+            $weeklynvCust = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->groupBy('id')->get();
+
+            $monday = strtotime("last monday");
+            $monday = date('W', $monday)==date('W') ? $monday-7*86400 : $monday;
+             
+            $sunday = strtotime(date("Y-m-d",$monday)." +6 days");
+            $this_week_sd = date("Y-m-d",$monday);
+            $this_week_ed = date("Y-m-d",$sunday); 
+            $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->pluck('user_id')->toArray();
+            //dd($ordercurrentweek);
+            $lostcustomer = Order::whereBetween('created_at', [$this_week_sd, $this_week_ed])->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
+
+
+
+
+
+
+
+            $prod_qty = 0;
+            if(count($orderedProds)>0){
+                $prod_qty = $orderedProds[0]->quantity;
+            }
+            
+>>>>>>> 5d34c5f1d7e36b65e963fce2f89facf60a1bf660
             $orderCount[] = count($ordersData);
             $prodCount[] = $prod_qty;
             $onlineOrdersCount[] = count($onlineOrders);
@@ -277,8 +320,12 @@ class PagesController extends Controller
             $newCustomersCount[] = count($Customers);
             $visitedCustomersCount[] = count($weeklyvCustchart);
             $nvCustomersCount[] = count($weeklynvCust);
+<<<<<<< HEAD
             $purchases[] = ($purchaseProds[0]->quantity) ? $purchaseProds[0]->quantity : 0;
             $sales[] = ($salesProds[0]->quantity) ? $salesProds[0]->quantity : 0;
+=======
+            $lostcustomerCount[] = count($lostcustomer);
+>>>>>>> 5d34c5f1d7e36b65e963fce2f89facf60a1bf660
         }
         //orders statistics chart
         $orders_chart  = Charts::create('bar', 'highcharts')
@@ -367,25 +414,31 @@ class PagesController extends Controller
             ->labels($Date_range)
             ->values($visitedCustomersCount)
             ->dimensions(460, 500)
+            ->responsive(false); 
+
+
+        $Customerlost_chart = Charts::create('bar', 'highcharts')
+            ->title("Weekly Customers Lost : " . array_sum($lostcustomerCount))
+            ->elementLabel("Customers Lost")
+            ->labels($Date_range)
+            ->values($lostcustomerCount)
+            ->dimensions(460, 500)
             ->responsive(false);
             
-        $Avgbill_chart = Charts::database($weeklyAvgbillchart, 'pie', 'highcharts')
-            ->title("Weekly Average Order/Bill Size : " . count($weeklyAvgbillchart))
-            ->elementLabel("Total Average Order/Bill Size")
-            ->dimensions(460, 500)
-            ->responsive(false)
-            ->groupByDay();
+        // $Avgbill_chart = Charts::database($weeklyAvgbillchart, 'pie', 'highcharts')
+        //     ->title("Weekly Average Order/Bill Size : " . count($weeklyAvgbillchart))
+        //     ->elementLabel("Total Average Order/Bill Size")
+        //     ->dimensions(460, 500)
+        //     ->responsive(false)
+        //     ->groupByDay();
 
 
-        $Customerlost_chart = Charts::database($lostcustomer, 'bar', 'highcharts')
-            ->title("Weekly Customers Lost : " . count($lostcustomer))
-            ->elementLabel("Total Customers Lost")
-            ->dimensions(460, 500)
-            ->responsive(false)
-            ->groupByDay();
+       
+
+      
 
 
-        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','Avgbill_chart','billamount','Customerlost_chart','product_sales_chart','purchase_sales_chart','online_walkin_chart'));
+        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','billamount','Customerlost_chart','product_sales_chart','returningcustomer','returncust','purchase_sales_chart','online_walkin_chart'));
         
     }
 
@@ -656,26 +709,39 @@ class PagesController extends Controller
         $startdate = Input::get('startdate');
         $enddate = Input::get('enddate');
 
+        $Date_range = $this->getDatesFromRange($startdate,$enddate);
 
-        if ($startdate == $enddate) {
-            dd(123);
+        // if ($startdate == $enddate) {
+        //     dd(123);
 
-        } else {
+        // } else {
 
-            $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
+        //     $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
 
 
-             $lostcustomer = Order::whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
+        //      $lostcustomer = Order::whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
 
+        // }
+
+        foreach($Date_range as $date){
+           $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
+
+
+           // $lostcustomer = Order::whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
+            $lostcustomer = Order::whereDate('created_at',  $date)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
+
+            $CustomerslostCount[] = count($lostcustomer);
         }
 
-        $Customerlost_chart = Charts::database($lostcustomer, 'line', 'highcharts')
-            ->title("Total Customers Lost: " . count($lostcustomer))
-            ->elementLabel("Customers Lost")
-            ->dimensions(460, 500)
-            ->responsive(false)
-            ->groupByDay();
-        // ->groupByMonth(date('Y'), true);
+         $Customerlost_chart  = Charts::create('bar', 'highcharts')
+                    ->title('Total Customers Lost : '.array_sum($CustomerslostCount))
+                    ->elementLabel("Customers Lost")
+                    ->labels($Date_range)
+                    ->values($CustomerslostCount)
+                    ->dimensions(460,500)
+                    ->responsive(false);
+
+
         $html = '';
         $html .= '<div id="CustomerLostChart">';
         echo $Customerlost_chart->html();
@@ -684,6 +750,8 @@ class PagesController extends Controller
         return $html;
 
     }
+
+
 
     //new avgbill 
     public function avgBillStat()
@@ -741,30 +809,30 @@ class PagesController extends Controller
         $startdate = Input::get('startdate');
         $enddate = Input::get('enddate');
 
+         $Date_range = $this->getDatesFromRange($startdate,$enddate);
 
-        if ($startdate == $enddate) {
-
-
-            $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at', '=', $startdate)->pluck('user_id')->toArray();
+        foreach($Date_range as $date){
+            $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at', '=', $date)->pluck('user_id')->toArray();
 
             $Customers = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->get();
-
-        } else {
-
-            $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->pluck('user_id')->toArray();
-
-            $Customers = DB::table('users')
-            ->whereNotIn('id', $userid)
-            ->where('user_type', 2)
-            ->get();
+            $nvisitedCustomersCount[] = count($Customers);
         }
 
+<<<<<<< HEAD
         $Customernotvisited_chart = Charts::database($Customers, 'area', 'highcharts')
             ->title("Total Not Visited Customers : " . count($Customers))
             ->elementLabel("Not Visite Customers")
+=======
+          $Customernotvisited_chart = Charts::create('area', 'highcharts')
+            ->title("Total Not Visited Customers : " . array_sum($nvisitedCustomersCount))
+            ->elementLabel("Not Visited Customers")
+            ->labels($Date_range)
+            ->values($nvisitedCustomersCount)
+>>>>>>> 5d34c5f1d7e36b65e963fce2f89facf60a1bf660
             ->dimensions(460, 500)
-            ->responsive(false)
-            ->groupByDay();
+            ->responsive(false);
+
+       
         // ->groupByMonth(date('Y'), true);
         $html = '';
         $html .= '<div id="CustomernotVisitedChart">';

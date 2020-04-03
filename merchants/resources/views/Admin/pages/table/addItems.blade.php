@@ -1302,7 +1302,6 @@ if($order->join_tables != '')
             type: 'POST',
             cache: false,
             success: function (msg) {
-
                 var data = JSON.parse(msg.additionalCharge);
                 // alert(JSON.stringify(msg));
                 $(".addi-charge-list").empty();
@@ -1320,12 +1319,10 @@ if($order->join_tables != '')
                             })
                         }
                         if (i == 'total_amt') {
-
                             total_amt = (v * <?php echo Session::get('currency_val'); ?>).toFixed(2);
                         }
                         if (i == 'total_with_price') {
                             addi_charge_with_price = v;
-
                         }
                         if (i == 'total') {
                             total_price = v;
@@ -1354,7 +1351,6 @@ if($order->join_tables != '')
                 //   alert(parseInt($('.payAmount').text()));
             }
         });
-
     }
 
     // to check is object empty
@@ -1363,7 +1359,6 @@ if($order->join_tables != '')
             if (obj.hasOwnProperty(prop))
                 return false;
         }
-
         return true;
     }
     $(document).ready(function () {
@@ -1383,7 +1378,6 @@ if($order->join_tables != '')
                 $('input[name="payAmount"]').val(parseInt(payamt) - parseInt($(this).val()));
             }
         });
-
     });
 
     $(document).on('change', '.loyaltyCheck', function (e) {
@@ -1392,7 +1386,6 @@ if($order->join_tables != '')
         //   alert(user_id);
         var orderAmt = parseInt($('.payAmount').text());
         if ($(this).is(':checked')) {
-
             $.ajax({
                 url: "{{ route('admin.tables.reqloyalty') }}",
                 type: 'POST',
@@ -1405,7 +1398,6 @@ if($order->join_tables != '')
                     // alert(JSON.stringify(msg));
                 }
             });
-
         } else {
             $.ajax({
                 url: "{{ route('admin.tables.revloyalty') }}",
@@ -1413,7 +1405,6 @@ if($order->join_tables != '')
                 data: {user_id: user_id, orderAmt: orderAmt},
                 cache: false,
                 success: function (msg) {
-
                     // alert(msg)
                     $('.lolytyPoint').text(parseInt(msg));
                     $(".loyaltyCheck").val(parseInt(msg));
@@ -1423,16 +1414,12 @@ if($order->join_tables != '')
                 }
             });
         }
-
     });
 
     function getPaymentMethod() {
-
         if ($(".codChek").is(':checked')) {
             var route = "{{ route('admin.tables.tableCod')}}";
             $("#tableOrderForm").attr("action", route);
-
-
         } else if ($(".payu").is(':checked')) {
             var route = "#";
             $("#tableOrderForm").attr("action", route);
@@ -1442,25 +1429,18 @@ if($order->join_tables != '')
         } else {
             var route = "{{ route('admin.tables.tableCod')}}";
             $("#tableOrderForm").attr("action", route);
-
         }
-
-
-
     }
 
     function placeOrder() {
-      
         var sThisVal=new Array();
         $('input:checkbox.checkboxCheck').each(function () {
             if(this.checked){
             sThisVal.push($(this).attr("data-id"));
-            }
-       
+            }       
         });
-  //console.log("<br>table order firm action::"+$("#tableOrderForm").attr('action'));
-   $("input[name='additionalcharge']").val(sThisVal);
-  
+    //console.log("<br>table order firm action::"+$("#tableOrderForm").attr('action'));
+    $("input[name='additionalcharge']").val(sThisVal);  
         $.ajax({
             type: "POST",
             url: $("#tableOrderForm").attr('action'),
@@ -1469,15 +1449,14 @@ if($order->join_tables != '')
             success: function (data) {
                //console.log(JSON.stringify(data));
         var tableId=data.orders.table_id?data.orders.table_id:'#';
-    var subtotal=0;
-    var userDisc=0;
-    //if(data.contact.address1){
-    if(data.address1){
-               var table = "<div><table id='DivIdToPrint' class='invocieBill-table' style='width: 400px;margin: 0 auto;'>";
-           }else{
-                var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <div class='shop-logo'><img src='{{ Config('constants.adminImgangePath') }}/shop-logos/{{'btown-logo.png'}}' alt='shop-logo'/></div> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.orders.address1+" "+data.orders.address2+" "+data.orders.address3+"</span><br><span class='shopnumber'>"+data.orders.phone_no+"</span></td></tr><tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table No: 329<br>Server: Krista 11:59 AM</td> <td colspan='2' class='text-right'>1 (Packs)<br>Bill No: 4002<br>Date 002/26/14</td></tr>";
-            }
-               
+        var subtotal=0;
+        var userDisc=0;
+        //if(data.contact.address1){
+        if(data.address1){
+            var table = "<div><table id='DivIdToPrint' class='invocieBill-table' style='width: 400px;margin: 0 auto;'>";
+        }else{
+            var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <div class='shop-logo'><img src='{{ Config('constants.adminImgangePath') }}/shop-logos/{{'btown-logo.png'}}' alt='shop-logo'/></div> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.orders.address1+" "+data.orders.address2+" "+data.orders.address3+"</span><br><span class='shopnumber'>"+data.orders.phone_no+"</span></td></tr><tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table No: 329<br>Server: Krista 11:59 AM</td> <td colspan='2' class='text-right'>1 (Packs)<br>Bill No: 4002<br>Date 002/26/14</td></tr>";
+        }               
                 table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><th class='text-left pl10'>Product </th><th class='text-left'>Price</th><th class='text-left'>Qty </th><th class='text-right'>Total</th>";
                 $.each(jQuery.parseJSON(data.orders.cart), function (cartk, cartv) {
                     //console.log("cartk ::"+JSON.stringify(cartk));
@@ -1509,8 +1488,7 @@ if($order->join_tables != '')
                 }
              });
          table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.order_amt+"</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><div class='clearfix' style='width: 400px;margin: 0 auto; text-right'><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20 pull-right' onclick='getprint()'>Print Bill</button></div>";
-              
-    //console.log('==' + JSON.stringify(table));
+         //console.log('==' + JSON.stringify(table));
                 $("#printInvoicce").modal("show");
                 $(".invoiceData").html(table);
                 //$('.complete-order').text('Complete Order');

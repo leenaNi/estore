@@ -107,7 +107,7 @@ class ApiCreateStoreController extends Controller
         $allinput = Input::all();
         $storeName = Input::get('store_name');
         $phone = Input::get('phone');
-        $roleType = Input::get('roleType');        
+        $roleType = Input::get('roleType');
         $allinput['is_individual_store'] = 0;
         if ((!empty($roleType) && in_array($roleType, ['1', '2'])) && !empty($storeName) && !empty($phone)) {
             if (CustomValidator::validatePhone($phone)) {
@@ -392,6 +392,7 @@ class ApiCreateStoreController extends Controller
                     $this->replaceFileString($path . "/.env", "%DB_TABLE_PREFIX%", "");
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
+                    $this->replaceFileString($path . "/.env", "%IS_INDIVIDUAL_STORE%", "0");
 
                     $insertArr = ["user_type" => 1, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
 
@@ -783,7 +784,7 @@ class ApiCreateStoreController extends Controller
                 $smsOutput = Helper::sendsms($mobile, $msgOrderSucc, $country);
                 $smsOutput = explode(' | ', $smsOutput);
                 if ($smsOutput[0] === 'success') {
-					DB::table('user_otp')->where(['phone' => $mobile])->delete();
+                    DB::table('user_otp')->where(['phone' => $mobile])->delete();
                     DB::table('user_otp')->insert(['phone' => $mobile, 'otp' => $otp, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]);
                     $data = ["status" => 1, "msg" => "OTP Successfully send on your phone Number", "otp" => $otp]; //, "otp"=> $otp, 'smsOutput' => $smsOutput
                     return $data;

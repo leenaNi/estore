@@ -649,7 +649,44 @@
                                 </div>
                             </div>  
                         </div>
-
+                        <div class="clearfix"></div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-6 marginBottom20">
+                                <div class="box box-success" >
+                                    <div class="box-header dashbox-header with-border bg-green">
+                                        <h3 class="box-title dashbox-title">Returning Customer</h3>
+                                        <div class="box-tools pull-right">
+                                            <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                            </button>
+                                            <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <center> <canvas id="returningcustCanvas" width="300" height="300"></canvas>  </center>
+                                        <div class="table-responsive">
+                                            <table class="table no-margin">
+                                                <tbody>
+                                                      @foreach($returncust as $item)
+                                                        <tr>
+                                                            <td>
+                                                                <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
+                                                            </td>
+                                                            <td>
+                                                                {{$item["customer_name"]}}
+                                                            </td>
+                                                            <td>
+                                                                Rs. {{$item["total"]}} 
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
 
                         <div class="clearfix"></div>
                         <br>
@@ -684,48 +721,47 @@
 
                             <div class="col-md-6 marginBottom20">
                             <div class="box box-warning" >
-                                <div class="box-header dashbox-header with-border bg-yellow">
-                                    <h3 class="box-title dashbox-title">Average Order/Bill</h3>
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    <div class="box-header dashbox-header with-border bg-yellow">
+                                        <h3 class="box-title dashbox-title">Average Order/Bill</h3>
+                                        <div class="box-tools pull-right">
+                                            <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                            </button>
+                                            <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="box-body">
-                                    <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id="" name="avgbill_daterange"  class="form-control avgbill_daterange textInput">
+                                    <div class="box-body">
+                                        <div class="input-group date Nform_date" id="datepickerDemo">
+                                            <input placeholder="Select Date" type="text" id="" name="avgbill_daterange"  class="form-control avgbill_daterange textInput">
 
-                                        <span class="input-group-addon">
-                                            <i class=" ion ion-calendar"></i>
-                                        </span>
+                                            <span class="input-group-addon">
+                                                <i class=" ion ion-calendar"></i>
+                                            </span>
+                                        </div>
+                                        <center><h4 id="billtitle">Weekly Average</h4></center>
+                                        </br>
+                                       <center> <canvas id="mybill" width="300" height="300"></canvas>
+                                       <div class="table-responsive">
+                                        <table class="table no-margin">
+
+                                            <tbody>
+
+                                                @foreach($billamount as $billamounts)
+                                                <tr>
+                                              <!--       <td id="billcolor">
+                                                        <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
+                                                    </td> -->
+                                                    <td>
+                                                        {{$billamounts["customer_name"]}}
+                                                    </td>
+                                                    <td id="totalbill">
+                                                        Rs. {{$billamounts["total"]}} 
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        </div> 
                                     </div>
-                                    <center><h4 id="billtitle">Weekly Average</h4></center>
-                                    </br>
-                                   <center> <canvas id="mybill" width="300" height="300"></canvas>
-                                   <div class="table-responsive">
-                                    <table class="table no-margin">
-
-                                        <tbody>
-
-                                            @foreach($billamount as $billamounts)
-                                            <tr>
-                                          <!--       <td id="billcolor">
-                                                    <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
-                                                </td> -->
-                                                <td>
-                                                    {{$billamounts["customer_name"]}}
-                                                </td>
-                                                <td id="totalbill">
-                                                    Rs. {{$billamounts["total"]}} 
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                    </div> 
-                                </div>
-
                             </div>
                         </div>
                     </div>
@@ -739,7 +775,6 @@
 {!! $Newcustomer_chart->script() !!}
 {!! $Customernotvisited_chart->script() !!}
 {!! $Customervisited_chart->script() !!}
-{!! $Avgbill_chart->script() !!}
 {!! $Customerlost_chart->script() !!}
 {!! $product_sales_chart->script() !!}
 {!! $purchase_sales_chart->script() !!}
@@ -945,7 +980,7 @@ function getProdData(prod_id){
               var value = data.value;
               var color = data.color;
               var label = data.label;
-              var ctx2 = $("#mybill").get(0).getContext("2d");
+              var ctx3 = $("#mybill").get(0).getContext("2d");
                var dataBill = [
             
                 
@@ -956,7 +991,7 @@ function getProdData(prod_id){
                 },
                 
             ];
-             var piechartBills = new Chart(ctx2).Pie(dataBill);
+             var piechartBills = new Chart(ctx3).Pie(dataBill);
               $("#totalbill").html(value);
               $("#billtitle").html('<h4>Average Between ' + startdate + ' - ' + enddate + '</h4>');
            }
@@ -1026,7 +1061,7 @@ function getProdData(prod_id){
         startDate: start,
         endDate: end,
         ranges: {
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            //'Last 7 Days': [moment().subtract(6, 'days'), moment()],
             'Last 30 Days': [moment().subtract(29, 'days'), moment()],
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
@@ -1045,6 +1080,7 @@ function getProdData(prod_id){
            }
         });
     });
+
 
 
 
@@ -1199,6 +1235,8 @@ function getProdData(prod_id){
 
             ];  
             var piechartCustomers = new Chart(ctx1).Pie(dataCustomers);
+
+
             var ctx2 = $("#productCanvas").get(0).getContext("2d");
             var dataProducts = [
             <?php 
@@ -1219,7 +1257,7 @@ function getProdData(prod_id){
 
 
 
-            var ctx2 = $("#mybill").get(0).getContext("2d");
+            var ctx3 = $("#mybill").get(0).getContext("2d");
             var dataBill = [
             <?php 
                foreach($billamount as $billamounts)
@@ -1235,10 +1273,27 @@ function getProdData(prod_id){
             }
             ?>
             ];
-            var piechartBills = new Chart(ctx2).Pie(dataBill);
+            var piechartBills = new Chart(ctx3).Pie(dataBill);
 
 
+            var ctx4 = $("#returningcustCanvas").get(0).getContext("2d");
+            var dataCustomers = [
+               <?php 
+               foreach($returncust as $item)
+               {
+                ?>
+                {   value: {{$item['total']}},
+                    color: "{{$item['color']}}",
 
+                    label: "{{$item['customer_name']}}",
+
+                },
+                <?php 
+            }
+            ?>
+
+            ];  
+            var piechartrCustomers = new Chart(ctx4).Pie(dataCustomers);
 
 
 
