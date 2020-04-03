@@ -241,7 +241,7 @@ class PagesController extends Controller
             $userid = Order::where('store_id', $this->jsonString['store_id'])->whereDate('created_at',$date)->pluck('user_id')->toArray();
             $weeklyvCustchart = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereIn('id', $userid)->where('user_type', 2)->get();
             //customer not visited
-            $weeklynvCust = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->get();
+            $weeklynvCust = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->groupBy('id')->get();
 
             $monday = strtotime("last monday");
             $monday = date('W', $monday)==date('W') ? $monday-7*86400 : $monday;
