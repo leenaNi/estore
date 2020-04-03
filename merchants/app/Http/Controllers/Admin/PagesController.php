@@ -209,14 +209,43 @@ class PagesController extends Controller
         $end_date = date('Y-m-d', strtotime('next saturday', $start));
         
         $Date_range = $this->getDatesFromRange($start_date,$end_date);
+        $merchantId = Session::get('merchantid');
+        $userId = Session::get('loggedinAdminId');
+       
+        $product_mapping = DB::table("product_mapping")->where('merchant_id',$merchantId)->get();
+        $productwise_inward = DB::table("productwise_inward_transaction")->pluck('has_product_id')->toArray();
+       
+        $hasproduct = DB::table("has_products")->whereIn('id',$productwise_inward)->get();
+        //dd($hasproduct);
+        $prod_id = [];$sub_prod_id=[];
+        foreach($hasproduct as $hprod){
+            if($hprod->sub_prod_id == 0){
+                $merprod = DB::table("product_mapping")->where('distributor_product_id',$hprod->prod_id)->first();
+                
+            }else{
+                $merprod = DB::table("product_mapping")->where('distributor_product_id',$hprod->sub_prod_id)->first();
+            }
+            $prodInfo = DB::table("products")->where('id',$merprod->merchant_product_id)->first();
+            if($prodInfo->parent_prod_id !=0){
+                $sub_prod_id[] = $merprod->merchant_product_id;
+            }else{
+                $prod_id[] = $merprod->merchant_product_id; 
+            }
+            
+        }$prod_ids = array_unique($prod_id);
+        $sub_prod_ids = array_unique($sub_prod_id);
         foreach($Date_range as $date){
             //order statistics
             $ordersData = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->get();
             //online vs walkin 
             $onlineOrders = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->where('created_by',0)->get();
-            $walkinOrders = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->where('created_by','!=',0)->get();
+            $walkinOrders = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->where(['created_by'=>$userId,'order_type'=>0])->get();
             // sales statistics
             $orderedProds = DB::table('has_products')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->groupBy('prod_id')->get([DB::raw('sum(qty) as quantity')]);
+            $prod_qty = 0;
+            if(count($orderedProds)>0){
+                $prod_qty = $orderedProds[0]->quantity;
+            }
             //new custommer
             $Customers = DB::table("users")->whereDate('created_at',$date)
             ->where('user_type', 2)->where('store_id', $this->jsonString['store_id'])->get();
@@ -225,11 +254,22 @@ class PagesController extends Controller
             $weeklyvCustchart = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereIn('id', $userid)->where('user_type', 2)->get();
             //customer not visited
             $weeklynvCust = DB::table('users')->where('store_id', $this->jsonString['store_id'])->whereNotIn('id', $userid)->where('user_type', 2)->get();
-            $prod_qty = 0;
-            if(count($orderedProds)>0){
-                $prod_qty = $orderedProds[0]->quantity;
-            }
-            
+            //purchase vs sales
+            $purchaseProds = DB::table('has_products')->whereDate('created_at',$date)->whereIn('id', $productwise_inward)->get([DB::raw('sum(qty) as quantity')]);
+            $salesProds1 = DB::table('has_products')
+                        ->whereDate('created_at',$date)
+                        ->where('store_id', $this->jsonString['store_id'])
+                        ->whereIn('prod_id', $prod_ids)
+                        ->get([DB::raw('sum(qty) as quantity')])->toArray();
+            $salesProds2 = DB::table('has_products')
+            ->whereDate('created_at',$date)
+            ->where('store_id', $this->jsonString['store_id'])
+            ->whereIn('sub_prod_id', $sub_prod_ids)
+            // ->orWhere(function ($query) {
+            //     $query->whereIn('sub_prod_id', $sub_prod_ids);
+            // })
+            ->get([DB::raw('sum(qty) as quantity')])->toArray();
+            $salesProds = array_merge($salesProds1,$salesProds2);
             $orderCount[] = count($ordersData);
             $prodCount[] = $prod_qty;
             $onlineOrdersCount[] = count($onlineOrders);
@@ -237,6 +277,8 @@ class PagesController extends Controller
             $newCustomersCount[] = count($Customers);
             $visitedCustomersCount[] = count($weeklyvCustchart);
             $nvCustomersCount[] = count($weeklynvCust);
+            $purchases[] = ($purchaseProds[0]->quantity) ? $purchaseProds[0]->quantity : 0;
+            $sales[] = ($salesProds[0]->quantity) ? $salesProds[0]->quantity : 0;
         }
         //orders statistics chart
         $orders_chart  = Charts::create('bar', 'highcharts')
@@ -284,13 +326,14 @@ class PagesController extends Controller
             ->groupByMonth(date('Y'), true);
 
         //Purchase vs sales
-        //$purchase_inward = DB::table("productwise_inward_transaction")->
+        
+        
         $purchase_sales_chart = Charts::multi('areaspline', 'highcharts')
-            ->title('Total Purchases : 10')
-            ->colors(['#ff0000', '#ffffff'])
+            ->title('Purchases : '.array_sum($purchases).' & Sales : '.array_sum($sales))
+            ->colors(['#ff0000', '#8d858e'])
             ->labels($Date_range)
-            ->dataset('Purchase', [3, 4, 3, 5, 4, 10, 12])
-            ->dataset('Sales',  [1, 3, 4, 3, 3, 5, 4]);
+            ->dataset('Purchase', $purchases)
+            ->dataset('Sales',  $sales);
 
         //Online VS Walk-in
         $online_walkin_chart = Charts::multi('bar', 'highcharts')
@@ -478,6 +521,73 @@ class PagesController extends Controller
 
     }
 
+    public function purchaseVsSalesStat()
+    {
+        $jsonString = Helper::getSettings();
+        $startdate = Input::get('startdate');
+        $enddate = Input::get('enddate');
+        $Date_range = $this->getDatesFromRange($startdate,$enddate);
+        $merchantId = Session::get('merchantid');
+        $userId = Session::get('loggedinAdminId');
+       
+        $product_mapping = DB::table("product_mapping")->where('merchant_id',$merchantId)->get();
+        $productwise_inward = DB::table("productwise_inward_transaction")->pluck('has_product_id')->toArray();
+       
+        $hasproduct = DB::table("has_products")->whereIn('id',$productwise_inward)->get();
+        //dd($hasproduct);
+        $prod_id = [];$sub_prod_id=[];
+        foreach($hasproduct as $hprod){
+            if($hprod->sub_prod_id == 0){
+                $merprod = DB::table("product_mapping")->where('distributor_product_id',$hprod->prod_id)->first();
+                
+            }else{
+                $merprod = DB::table("product_mapping")->where('distributor_product_id',$hprod->sub_prod_id)->first();
+            }
+            $prodInfo = DB::table("products")->where('id',$merprod->merchant_product_id)->first();
+            if($prodInfo->parent_prod_id !=0){
+                $sub_prod_id[] = $merprod->merchant_product_id;
+            }else{
+                $prod_id[] = $merprod->merchant_product_id; 
+            }
+            
+        }$prod_ids = array_unique($prod_id);
+        $sub_prod_ids = array_unique($sub_prod_id);
+        foreach($Date_range as $date){
+            //purchase vs sales
+            $purchaseProds = DB::table('has_products')->whereDate('created_at',$date)->whereIn('id', $productwise_inward)->get([DB::raw('sum(qty) as quantity')]);
+            $salesProds1 = DB::table('has_products')
+                        ->whereDate('created_at',$date)
+                        ->where('store_id', $this->jsonString['store_id'])
+                        ->whereIn('prod_id', $prod_ids)
+                        ->get([DB::raw('sum(qty) as quantity')])->toArray();
+            $salesProds2 = DB::table('has_products')
+            ->whereDate('created_at',$date)
+            ->where('store_id', $this->jsonString['store_id'])
+            ->whereIn('sub_prod_id', $sub_prod_ids)
+            // ->orWhere(function ($query) {
+            //     $query->whereIn('sub_prod_id', $sub_prod_ids);
+            // })
+            ->get([DB::raw('sum(qty) as quantity')])->toArray();
+            $salesProds = array_merge($salesProds1,$salesProds2);
+            $purchases[] = ($purchaseProds[0]->quantity) ? $purchaseProds[0]->quantity : 0;
+            $sales[] = ($salesProds[0]->quantity) ? $salesProds[0]->quantity : 0;
+        }
+        $purchase_sales_chart = Charts::multi('areaspline', 'highcharts')
+            ->title('Purchases : '.array_sum($purchases).' & Sales : '.array_sum($sales))
+            ->colors(['#ff0000', '#8d858e'])
+            ->labels($Date_range)
+            ->dataset('Purchase', $purchases)
+            ->dataset('Sales',  $sales);
+        
+        $html = '';
+        $html .= '<div id="PurchSalesChart">';
+        echo $purchase_sales_chart->html();
+        echo $purchase_sales_chart->script();
+        $html .= '</div>';
+        return $html;
+      
+    }
+
     public function onlineVsWalkinStat()
     {
         $jsonString = Helper::getSettings();
@@ -649,7 +759,7 @@ class PagesController extends Controller
             ->get();
         }
 
-        $Customernotvisited_chart = Charts::database($Customers, 'line', 'highcharts')
+        $Customernotvisited_chart = Charts::database($Customers, 'area', 'highcharts')
             ->title("Total Not Visited Customers : " . count($Customers))
             ->elementLabel("Not Visite Customers")
             ->dimensions(460, 500)
