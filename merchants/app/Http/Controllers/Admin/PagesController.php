@@ -587,26 +587,37 @@ class PagesController extends Controller
         $startdate = Input::get('startdate');
         $enddate = Input::get('enddate');
 
+        $Date_range = $this->getDatesFromRange($startdate,$enddate);
 
-        if ($startdate == $enddate) {
-            dd(123);
+        // if ($startdate == $enddate) {
+        //     dd(123);
 
-        } else {
+        // } else {
 
-            $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
+        //     $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
 
 
-             $lostcustomer = Order::whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
+        //      $lostcustomer = Order::whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
 
+        // }
+
+        foreach($Date_range as $date){
+           $ordercurrentweek = Order::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
+
+
+            $lostcustomer = Order::whereDate('created_at', '>=', $startdate)->whereDate('created_at', '<=', $enddate)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
+            $CustomerslostCount[] = count($lostcustomer);
         }
 
-        $Customerlost_chart = Charts::database($lostcustomer, 'line', 'highcharts')
-            ->title("Total Customers Lost: " . count($lostcustomer))
-            ->elementLabel("Customers Lost")
-            ->dimensions(460, 500)
-            ->responsive(false)
-            ->groupByDay();
-        // ->groupByMonth(date('Y'), true);
+         $Customerlost_chart  = Charts::create('line', 'highcharts')
+                    ->title('Total Customers Lost : '.array_sum($CustomerslostCount))
+                    ->elementLabel("Customers Lost")
+                    ->labels($Date_range)
+                    ->values($CustomerslostCount)
+                    ->dimensions(460,500)
+                    ->responsive(false);
+
+
         $html = '';
         $html .= '<div id="CustomerLostChart">';
         echo $Customerlost_chart->html();
