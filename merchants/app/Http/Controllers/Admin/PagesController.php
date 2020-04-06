@@ -268,11 +268,14 @@ class PagesController extends Controller
             if(count($topProducts) > 0){
                 if($topProducts[0]->sub_prod_id != ''){
                     $prodId = $topProducts[0]->sub_prod_id;
+                    $prodtype = 'sub_prod_id';
                 }else{
                     $prodId = $topProducts[0]->prod_id;
+                    $prodtype = 'prod_id';
                 }
+                $product = DB::table("products")->where('id',$prod_id)->first();
                 $ProdSaleschart = HasProducts::whereDate('created_at',$date)
-                ->where("prod_id", $prodId)->where('store_id', $this->jsonString['store_id'])->get([DB::raw('sum(qty) as quantity'),DB::raw('sum(pay_amt) as amount')]);
+                ->where($prodtype, $prodId)->where('store_id', $this->jsonString['store_id'])->get([DB::raw('sum(qty) as quantity'),DB::raw('sum(pay_amt) as amount')]);
                 $qty[] = ($ProdSaleschart[0]->quantity) ? $ProdSaleschart[0]->quantity : 0;
                 $pay_amt[] = ($ProdSaleschart[0]->amount) ? $ProdSaleschart[0]->amount : 0;
              
@@ -353,7 +356,7 @@ class PagesController extends Controller
         $prodData = DB::table("products")->where('id',$prodId)->first();
         //Product Sales chart
         $product_sales_chart = Charts::create('bar','highcharts')
-            ->title('Weekly Product Sales Rs.'.array_sum($pay_amt))
+            ->title('Product : '.$product->product.' & Weekly Sales : Rs.'.array_sum($pay_amt))
             ->elementLabel("Product Sales")
             ->dimensions(460, 500)
             ->labels($Date_range)
@@ -518,17 +521,27 @@ class PagesController extends Controller
             if(count($topProducts) > 0){
                 if($topProducts[0]->sub_prod_id != ''){
                     $prodId = $topProducts[0]->sub_prod_id;
+                    $prodtype = 'sub_prod_id';
                 }else{
                     $prodId = $topProducts[0]->prod_id;
+                    $prodtype = 'prod_id';
                 }
             }
         }else{
+            $product = DB::table("products")->where('id',$prod_id)->first();
+            if($product->parent_prod_id == 0){
+                $prodtype = 'prod_id';
+            }else{
+                $prodtype = 'sub_prod_id';
+            }
+            
             $prodId = $prod_id;
+
         }
         $pay_amt = [];$qty= [];
         foreach($Date_range as $date){
             $ProdSaleschart = HasProducts::whereDate('created_at',$date)
-                ->where("prod_id", $prodId)->where('store_id', $this->jsonString['store_id'])->get([DB::raw('sum(qty) as quantity'),DB::raw('sum(pay_amt) as amount')]);
+                ->where($prodtype, $prodId)->where('store_id', $this->jsonString['store_id'])->get([DB::raw('sum(qty) as quantity'),DB::raw('sum(pay_amt) as amount')]);
                 $qty[] = ($ProdSaleschart[0]->quantity) ? $ProdSaleschart[0]->quantity : 0;
                 $pay_amt[] = ($ProdSaleschart[0]->amount) ? $ProdSaleschart[0]->amount : 0;
         }
