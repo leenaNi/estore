@@ -522,7 +522,7 @@
                                     <div class="col-md-6">
                                     <div class="input-group date" id="datepickerDemo">
                                     <input placeholder="Select Date" type="text" id="prod_sales_date" name="datefrom"  class="form-control prod_sales_daterange textInput">
-
+                                    <input type="hidden" id="prodId" />
                                     <span class="input-group-addon">
                                         <i class=" ion ion-calendar"></i>
                                     </span>
@@ -782,12 +782,13 @@
         @section('myscripts')
         <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
-$prod_id = 0;
+var prod_id = 0;
 $(".prod-search").autocomplete({
         source: "{{route('admin.offers.searchProduct')}}",
         minLength: 1,
         select: function (event, ui) {
-            $prod_id = ui.item.id;
+            var prod_id = ui.item.id;
+            $("#prodId").val(prod_id);
             $(this).attr('data-prdid', ui.item.id);
             $(this).parent().find('input.prod').val(ui.item.id);
             $(this).parent().parent().attr('data-prod-id', ui.item.id);
@@ -887,11 +888,12 @@ function getProdData(prod_id){
         
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+        var prodId = $("#prodId").val();
+          
         $.ajax({
            type:'POST',
            url:'prod-sales-stat',
-           data:{startdate:startdate,enddate:enddate},
+           data:{startdate:startdate,enddate:enddate,prod_id:prodId},
            success:function(data){
               $("#ProdSalesChart").html(data);
            }

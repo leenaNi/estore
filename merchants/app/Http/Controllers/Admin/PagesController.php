@@ -263,6 +263,21 @@ class PagesController extends Controller
             if(count($orderedProds)>0){
                 $prod_qty = $orderedProds[0]->quantity;
             }
+            //Top Sales Product
+            $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->whereDate('created_at',$date)->limit(1)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', 'sub_prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
+            if(count($topProducts) > 0){
+                if($topProducts[0]->sub_prod_id != ''){
+                    $prodId = $topProducts[0]->sub_prod_id;
+                }else{
+                    $prodId = $topProducts[0]->prod_id;
+                }
+                $ProdSaleschart = HasProducts::whereDate('created_at',$date)
+                ->where("prod_id", $prodId)->where('store_id', $this->jsonString['store_id'])->get([DB::raw('sum(qty) as quantity'),DB::raw('sum(pay_amt) as amount')]);
+                $qty[] = ($ProdSaleschart[0]->quantity) ? $ProdSaleschart[0]->quantity : 0;
+                $pay_amt[] = ($ProdSaleschart[0]->amount) ? $ProdSaleschart[0]->amount : 0;
+             
+            }
+            
             //new custommer
             $Customers = DB::table("users")->whereDate('created_at',$date)
             ->where('user_type', 2)->where('store_id', $this->jsonString['store_id'])->get();
@@ -286,11 +301,7 @@ class PagesController extends Controller
             $lostcustomer = Order::whereBetween('created_at', [$this_week_sd, $this_week_ed])->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
 
 
-
-
-
-
-            $lostcustomer = Order::whereDate('created_at',  $date)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
+            // $lostcustomer = Order::whereDate('created_at',  $date)->whereNotIn("user_id", $ordercurrentweek)->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->get();
 
             //purchase vs sales
             $purchaseProds = DB::table('has_products')->whereDate('created_at',$date)->whereIn('id', $productwise_inward)->get([DB::raw('sum(qty) as quantity')]);
@@ -338,31 +349,17 @@ class PagesController extends Controller
             ->responsive(false);
             //->groupByDay();
         
-        //Top Sales Product
-        $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->limit(1)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', 'sub_prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
-        if(count($topProducts) > 0){
-            if($topProducts[0]->sub_prod_id != ''){
-                $prodId = $topProducts[0]->sub_prod_id;
-            }else{
-                $prodId = $topProducts[0]->prod_id;
-            }
-        }
-        $weeklyProdSaleschart = HasProducts::whereRaw("WEEKOFYEAR(created_at) = '" . date('W') . "'")
-            ->where("prod_id", $prodId)->where('store_id', $this->jsonString['store_id'])->get();
-            $qty = 0;$pay_amt=0;
-        foreach($weeklyProdSaleschart as $prod){
-            $qty += $prod->qty;
-            $pay_amt += $prod->pay_amt;
-        }
+        
         $prodData = DB::table("products")->where('id',$prodId)->first();
         //Product Sales chart
-        $product_sales_chart = Charts::database($weeklyProdSaleschart, 'bar','highcharts')
-            ->title('Weekly Product Sales Rs.'.$pay_amt)
+        $product_sales_chart = Charts::create('bar','highcharts')
+            ->title('Weekly Product Sales Rs.'.array_sum($pay_amt))
             ->elementLabel("Product Sales")
             ->dimensions(460, 500)
-            ->responsive(false)
-            //->groupByDay();
-            ->groupByMonth(date('Y'), true);
+            ->labels($Date_range)
+            ->values($qty)
+            ->responsive(false);
+            
 
         //Purchase vs sales
         
@@ -527,21 +524,13 @@ class PagesController extends Controller
             }
         }else{
             $prodId = $prod_id;
-        }$pay_amt = [];$qty= [];
+        }
+        $pay_amt = [];$qty= [];
         foreach($Date_range as $date){
-            $ProdSales = DB::table("has_products")->whereDate('created_at',"'$date'")
+            $ProdSaleschart = HasProducts::whereDate('created_at',$date)
                 ->where("prod_id", $prodId)->where('store_id', $this->jsonString['store_id'])->get([DB::raw('sum(qty) as quantity'),DB::raw('sum(pay_amt) as amount')]);
-                if(count($ProdSales) > 0){
-                   
-                    if(($ProdSales[0]->quantity) && ($ProdSales[0]->quantity != '')){
-                        $qty[] = $ProdSales[0]->quantity;
-                        $pay_amt[] = $ProdSales[0]->amount;
-                    }else{
-                        $qty[] = 0;
-                        $pay_amt[] = 0; 
-                    }
-                }
-                
+                $qty[] = ($ProdSaleschart[0]->quantity) ? $ProdSaleschart[0]->quantity : 0;
+                $pay_amt[] = ($ProdSaleschart[0]->amount) ? $ProdSaleschart[0]->amount : 0;
         }
         
         $product_sales_chart = Charts::create('bar','highcharts')
