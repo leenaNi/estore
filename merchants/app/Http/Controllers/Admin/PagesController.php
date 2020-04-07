@@ -273,7 +273,7 @@ class PagesController extends Controller
                     $prodId = $topProducts[0]->prod_id;
                     $prodtype = 'prod_id';
                 }
-                $product = DB::table("products")->where('id',$prod_id)->first();
+                $product = DB::table("products")->where('id',$prodId)->first();
                 $ProdSaleschart = HasProducts::whereDate('created_at',$date)
                 ->where($prodtype, $prodId)->where('store_id', $this->jsonString['store_id'])->get([DB::raw('sum(qty) as quantity'),DB::raw('sum(pay_amt) as amount')]);
                 $qty[] = ($ProdSaleschart[0]->quantity) ? $ProdSaleschart[0]->quantity : 0;
@@ -352,8 +352,6 @@ class PagesController extends Controller
             ->responsive(false);
             //->groupByDay();
         
-        
-        $prodData = DB::table("products")->where('id',$prodId)->first();
         //Product Sales chart
         $product_sales_chart = Charts::create('bar','highcharts')
             ->title('Product : '.$product->product.' & Weekly Sales : Rs.'.array_sum($pay_amt))
