@@ -264,6 +264,7 @@ class PagesController extends Controller
                 $prod_qty = $orderedProds[0]->quantity;
             }
             //Top Sales Product
+            $qty = []; $pay_amt= [];
             $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->whereDate('created_at',$date)->limit(1)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', 'sub_prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
             if(count($topProducts) > 0){
                 if($topProducts[0]->sub_prod_id != ''){
