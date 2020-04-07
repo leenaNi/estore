@@ -360,7 +360,7 @@ class PagesController extends Controller
             ->elementLabel("Product Sales")
             ->dimensions(460, 500)
             ->labels($Date_range)
-            ->values($qty)
+            ->values([10,20,30])
             ->responsive(false);
             
 
