@@ -65,7 +65,7 @@ class PagesController extends Controller
 
        $orderlasttolastweek = Order::whereDate('created_at', '<=', $finaldate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->pluck('user_id')->toArray();
 
-       $returningcustomer = Order::join('users', 'orders.user_id', '=', 'users.id')->whereRaw("WEEKOFYEAR(orders.created_at) = '" . date('W') . "'")->whereNotIn("orders.user_id", $orderlastweek)->whereIn("orders.user_id", $orderlasttolastweek)->whereIn("orders.user_id", $ordercurrentweek)->where('orders.store_id', $this->jsonString['store_id'])->get(['orders.user_id','orders.created_at','orders.pay_amt', 'users.firstname', 'users.lastname', 'users.email']);
+       $returningcustomer = Order::join('users', 'orders.user_id', '=', 'users.id')->whereRaw("WEEKOFYEAR(orders.created_at) = '" . date('W') . "'")->whereNotIn("orders.user_id", $orderlastweek)->whereIn("orders.user_id", $orderlasttolastweek)->whereIn("orders.user_id", $ordercurrentweek)->where('orders.store_id', $this->jsonString['store_id'])->groupBy('user_id')->get(['orders.user_id','orders.created_at',DB::raw('sum(orders.pay_amt) as pay_amt'), 'users.firstname', 'users.lastname', 'users.email']);
 
         //dd($returningcustomer);
         $monthlySales = Order::whereRaw("MONTH(created_at) = '" . date('m') . "'")

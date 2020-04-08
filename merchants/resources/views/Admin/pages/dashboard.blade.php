@@ -651,45 +651,7 @@
                         </div>
                         <div class="clearfix"></div>
                         <br>
-                        <div class="row">
-                            <div class="col-md-6 marginBottom20">
-                                <div class="box box-success" >
-                                    <div class="box-header dashbox-header with-border bg-green">
-                                        <h3 class="box-title dashbox-title">Returning Customer</h3>
-                                        <div class="box-tools pull-right">
-                                            <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                            </button>
-                                            <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="box-body">
-                                        <center> <canvas id="returningcustCanvas" width="300" height="300"></canvas>  </center>
-                                        <div class="table-responsive">
-                                            <table class="table no-margin">
-                                                <tbody>
-                                                      @foreach($returncust as $item)
-                                                        <tr>
-                                                            <td>
-                                                                <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
-                                                            </td>
-                                                            <td>
-                                                                {{$item["customer_name"]}}
-                                                            </td>
-                                                            <td>
-                                                                Rs. {{$item["total"]}} 
-                                                            </td>
-                                                        </tr>
-                                                        @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>  
-                        </div>
-
-                        <div class="clearfix"></div>
-                        <br>
+                        
                         <div class="row">
 
                             <div class="col-md-6">
@@ -764,7 +726,48 @@
                                     </div>
                             </div>
                         </div>
+                        
                     </div>
+                    <div class="clearfix"></div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-6 marginBottom20">
+                                <div class="box box-success" >
+                                    <div class="box-header dashbox-header with-border bg-green">
+                                        <h3 class="box-title dashbox-title">Returning Customer</h3>
+                                        <div class="box-tools pull-right">
+                                            <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                            </button>
+                                            <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <center> <canvas id="returningcustCanvas" width="300" height="300"></canvas>  </center>
+                                        <div class="table-responsive">
+                                            <table class="table no-margin">
+                                                <tbody>
+                                                      @foreach($returncust as $item)
+                                                        <tr>
+                                                            <td>
+                                                                <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
+                                                            </td>
+                                                            <td>
+                                                                {{$item["customer_name"]}}
+                                                            </td>
+                                                            <td>
+                                                                Rs. {{$item["total"]}} 
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="clearfix"></div>
+                        <br>
             </div>
         </section>
 
