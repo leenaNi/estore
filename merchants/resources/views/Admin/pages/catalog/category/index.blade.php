@@ -26,6 +26,7 @@
 </section>
 
 <section class="main-content">
+
     <div class="notification-column">
     @if(!empty(Session::get('message')))
     <div  class="alert alert-danger" role="alert">
@@ -64,7 +65,21 @@
                 </div>
                 </div>
                 <div class="grid-content">
-        <div class="section-main-heading">
+                <!-- <div class="container"><h2>Example tab 2 (using standard nav-tabs)</h2></div> start tab-->
+<div id="exTab2" class="container">	
+<ul class="nav nav-tabs">
+			<li class="active">
+        <a  href="#1" data-toggle="tab">Categories</a>
+			</li>
+			<li><a href="#2" data-toggle="tab">Master Categories</a>
+			</li>
+			<!-- <li><a href="#3" data-toggle="tab">Solution</a> -->
+			</li>
+		</ul>
+
+			<div class="tab-content ">
+			  <div class="tab-pane active" id="1">
+              <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Categories</h1>
         </div>
       <div class="listing-section">
@@ -113,6 +128,18 @@ function renderNode($node)
 
                 </div>
             </div><!-- /.box -->
+				</div>
+				<div class="tab-pane" id="2">
+          <h3>Notice the gap between the content and tab after applying a background color</h3>
+				</div>
+        <div class="tab-pane" id="3">
+          <h3>add clearfix to tab-content (see the css)</h3>
+				</div>
+			</div>
+  </div>
+<!-- end tab -->
+
+       
         </div><!-- /.col -->
     </div>
     <div class="modal fade" id="new-category" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

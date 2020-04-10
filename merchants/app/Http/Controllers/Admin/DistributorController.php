@@ -31,18 +31,12 @@ class DistributorController extends Controller
         //echo "login user id::".$loggedInUserId."user type::". $loginUserType;
         // get store id
         $userResult = DB::table('users')->where("id", $loggedInUserId)->first();
-        //echo "<pre>";
-        //print_r($userResult);
-        //exit;
         $storeId = $userResult->store_id;
         //echo "store id::".$storeId;
         // Get merchant id from store table
         $storeResult = DB::table('stores')->where("id", $storeId)->first();
         $merchantId = $storeResult->merchant_id;
-            //print query
-        //DB::enableQueryLog(); // Enable query log
-        //echo "merchant id::".$merchantId;
-        //exit;
+        
         $distributorListingResult = DB::table('has_distributors as hd')
         ->select(['hd.merchant_id', 'hd.is_approved', 'd.register_details','hd.updated_at'])
         ->join('distributor as d', 'hd.distributor_id', '=', 'd.id')
@@ -125,7 +119,8 @@ class DistributorController extends Controller
                         if (in_array($merchantbusinessId, $distributorbussinessArray)) {
                             $data = ['status' => 1, 'distributorData' => $distributorResult, 'distributorId' => $distributorResult->id];
                         } else {
-                            $data = ['status' => 0, 'error' => "Industry not matched"];
+                            $data = ['status' => 1, 'distributorData' => $distributorResult, 'distributorId' => $distributorResult->id];
+                            //$data = ['status' => 0, 'error' => "Industry not matched"];
                         }
                     } else {
                         $data = ['status' => 0, 'error' => "Invalid distributor code"];
