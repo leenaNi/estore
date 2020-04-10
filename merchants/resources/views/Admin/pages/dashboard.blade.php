@@ -742,12 +742,27 @@
                                         </div>
                                     </div>
                                     <div class="box-body">
-                                        <center> <canvas id="returningcustCanvas" width="300" height="300"></canvas>  </center>
+                                    <div class="row">
+                                    <div class="col-md-9">
+                                        <select class="form-control" id="filter" onChange="getReturnedCustomer()">
+                                        <option value="Weekly" selected>Weekly</option>
+                                        <option value="Monthly">Monthly</option>
+                                        <option value="Yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <button type="button" onClick="getReturnedCustomerData()" class="btn btn-success">View Data</button>
+                                    </div>
+                                    
+                                        <div id="ReturningCustomerChart">
+                                        {!! $returning_customer_chart->html() !!}
+                                        </div>
+                                        <!-- <center> <canvas id="returningcustCanvas" width="300" height="300"></canvas>  </center> -->
                                         <div class="table-responsive">
                                             <table class="table no-margin">
                                                 <tbody>
                                                       @foreach($returncust as $item)
-                                                        <tr>
+                                                        <!-- <tr>
                                                             <td>
                                                                 <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
                                                             </td>
@@ -757,11 +772,14 @@
                                                             <td>
                                                                 Rs. {{$item["total"]}} 
                                                             </td>
-                                                        </tr>
+                                                        </tr> -->
                                                         @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <form method="post" id="returnCustForm" action="{{ route('admin.returningCustView') }}">
+                                        <input type="hidden" id="custData" name="custData" />
+                                        </form>
                                     </div>
                                 </div>
                             </div>  
@@ -782,10 +800,41 @@
 {!! $product_sales_chart->script() !!}
 {!! $purchase_sales_chart->script() !!}
 {!! $online_walkin_chart->script() !!}
+{!! $returning_customer_chart->script() !!}
         @section('myscripts')
-        <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
+<script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
 var prod_id = 0;
+function getReturnedCustomerData(){
+    var filter = $("#filter").val();
+    $.ajax({
+           type:'GET',
+           url:'returning-cust',
+           data:{filter:filter},
+           success:function(data){
+               console.log(data);
+                var str = JSON.stringify(data);
+                $("#custData").val(str);
+                $( "#returnCustForm" ).submit();
+           }
+        });
+    //window.location.href = "{{ route('admin.returningCust')}}";
+}
+
+function getReturnedCustomer(){
+    var filter = $("#filter").val();
+    var chart = 1;
+    $.ajax({
+           type:'GET',
+           url:'returning-cust',
+           data:{filter:filter,chart:chart},
+           success:function(data){
+               console.log(data);
+               $("#ReturningCustomerChart").html(data);
+           }
+        });
+}
+
 $(".prod-search").autocomplete({
         source: "{{route('admin.offers.searchProduct')}}",
         minLength: 1,
@@ -1281,24 +1330,24 @@ function getProdData(prod_id){
             var piechartBills = new Chart(ctx3).Pie(dataBill);
 
 
-            var ctx4 = $("#returningcustCanvas").get(0).getContext("2d");
-            var dataCustomers = [
-               <?php 
-               foreach($returncust as $item)
-               {
-                ?>
-                {   value: {{$item['total']}},
-                    color: "{{$item['color']}}",
+            // var ctx4 = $("#returningcustCanvas").get(0).getContext("2d");
+            // var dataCustomers = [
+            //    <?php 
+            //    foreach($returncust as $item)
+            //    {
+            //     ?>
+            //     {   value: {{$item['total']}},
+            //         color: "{{$item['color']}}",
 
-                    label: "{{$item['customer_name']}}",
+            //         label: "{{$item['customer_name']}}",
 
-                },
-                <?php 
-            }
-            ?>
+            //     },
+            //     <?php 
+            // }
+            // ?>
 
-            ];  
-            var piechartrCustomers = new Chart(ctx4).Pie(dataCustomers);
+            // ];  
+            // var piechartrCustomers = new Chart(ctx4).Pie(dataCustomers);
 
 
 

@@ -30,6 +30,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::post('/changePopupStatus', ["as" => "admin.home.changePopupStatus", "uses" => "HomeController@changePopupStatus"]);
 
         Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "PagesController@index"]);
+        Route::get('/returning-cust', ["as" => "admin.returningCust", "uses" => "PagesController@getReturningCust"]);
+        Route::post('/returning-cust-view', ["as" => "admin.returningCustView", "uses" => "PagesController@getReturnCustomerView"]);
         Route::post('/order-stat', ["as" => "admin.dashboard.orderStat", "uses" => "PagesController@orderStat"]);
         Route::post('/sales-stat', ["as" => "admin.dashboard.saleStat", "uses" => "PagesController@salesStat"]);
         Route::post('/prod-sales-stat', ["as" => "admin.dashboard.prodSalesStat", "uses" => "PagesController@prodSalesStat"]);

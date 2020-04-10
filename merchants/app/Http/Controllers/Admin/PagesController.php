@@ -13,6 +13,7 @@ use DB;
 use Input;
 use Route;
 use Session;
+use Redirect;
 
 class PagesController extends Controller
 {
@@ -417,16 +418,88 @@ class PagesController extends Controller
             ->dimensions(460, 500)
             ->responsive(false);
             
-        // $Avgbill_chart = Charts::database($weeklyAvgbillchart, 'pie', 'highcharts')
-        //     ->title("Weekly Average Order/Bill Size : " . count($weeklyAvgbillchart))
-        //     ->elementLabel("Total Average Order/Bill Size")
-        //     ->dimensions(460, 500)
-        //     ->responsive(false)
-        //     ->groupByDay();
+        $returning_customer_chart = Charts::create('donut', 'highcharts')
+            ->title("Weekly Returned Customers : " . count($returningcustomer))
+            ->elementLabel("Customers")
+            ->labels(['customers'])
+            ->values([count($returningcustomer)])
+            ->dimensions(460, 500)
+            ->responsive(false); 
 
-
-        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','billamount','Customerlost_chart','product_sales_chart','returningcustomer','returncust','purchase_sales_chart','online_walkin_chart'));
+        return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','billamount','Customerlost_chart','product_sales_chart','returningcustomer','returncust','purchase_sales_chart','online_walkin_chart','returning_customer_chart'));
         
+    }
+
+    function getReturningCust(){
+        $filter = Input::get('filter');
+        $chart = Input::get('chart');
+        if($filter == 'Weekly'){
+            //lost customer
+            $monday = strtotime("last monday");
+            $monday = date('W', $monday)==date('W') ? $monday-7*86400 : $monday;
+            
+            $sunday = strtotime(date("Y-m-d",$monday)." +6 days");
+            $start_date = date("Y-m-d",$monday);
+            $end_date = date("Y-m-d",$sunday); 
+            $date = strtotime("-8 day");
+            $finaldate = date('Y-m-d', $date);
+
+            $currentquery = "WEEKOFYEAR(created_at) = '" . date('W') . "'";
+            $finalquery = "WEEKOFYEAR(orders.created_at) = '" . date('W') . "'";
+            
+        }else if($filter == 'Monthly'){
+            //current month first and last date
+            // $start_date = date('Y-m-01'); // hard-coded '01' for first day
+            // $end_date  = date('Y-m-t'); 
+            $finaldate = date('Y-m-d', strtotime('-1 day', strtotime("first day of previous month")));
+            $start_date = date("Y-n-j", strtotime("first day of previous month"));
+            $end_date = date("Y-n-j", strtotime("last day of previous month"));
+
+            $currentquery = "MONTH(created_at) = '" . date('m') . "' && YEAR(created_at) = '" . date('Y') . "'";
+            $finalquery = "MONTH(orders.created_at) = '" . date('m') . "' && YEAR(orders.created_at) = '" . date('Y') . "'";
+
+        }else if($filter == 'Yearly'){
+            //to get start and end date of previous year
+            $start_date = date("Y-m-d",strtotime("last year January 1st"));
+            $end_date =  date("Y-m-d",strtotime("last year December 31st"));
+            $finaldate = date('Y-m-d', strtotime('-1 day', strtotime("last year January 1st")));
+            $currentquery = "YEAR(created_at) = '" . date('Y') . "'";
+            $finalquery = "YEAR(orders.created_at) = '" . date('Y') . "'";
+        }
+        $currentOrders = Order::whereRaw($currentquery)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->pluck('user_id')->toArray();
+        
+        $lastOrders = Order::whereBetween('created_at', [$start_date, $end_date])->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->pluck('user_id')->toArray();
+
+        $lasttolastOrders = Order::whereDate('created_at', '<=', $finaldate)->whereNotIn("order_status", [0, 4, 6, 10])->where('store_id', $this->jsonString['store_id'])->groupBy('user_id')->pluck('user_id')->toArray();
+
+        $returningcustomer = Order::join('users', 'orders.user_id', '=', 'users.id')->whereRaw($finalquery)->whereNotIn("orders.user_id", $lastOrders)->whereIn("orders.user_id", $lasttolastOrders)->whereIn("orders.user_id", $currentOrders)->where('orders.store_id', $this->jsonString['store_id'])->groupBy('user_id')->get(['orders.user_id','orders.created_at',DB::raw('sum(orders.pay_amt) as pay_amt'), 'users.firstname', 'users.lastname', 'users.email']);
+      
+        if($chart == 1){
+            $returning_customer_chart = Charts::create('donut', 'highcharts')
+            ->title("Returned Customers : " . count($returningcustomer))
+            ->elementLabel("Customers")
+            ->labels(['customers'])
+            ->values([count($returningcustomer)])
+            ->dimensions(460, 500)
+            ->responsive(false);
+
+            $html = '';
+            $html .= '<div id="ReturningCustomerChart">';
+            echo $returning_customer_chart->html();
+            echo $returning_customer_chart->script();
+            $html .= '</div>';
+            return $html;
+        }else{
+            return $returningcustomer;
+        }
+    }
+
+    function getReturnCustomerView(){
+        $customer = Input::get('custData');
+        
+        $returningcustomer = json_decode($customer);
+        //dd($returningcustomer);
+        return view(Config('constants.adminView') . '.returning_cust',compact('returningcustomer'));
     }
 
     function getDatesFromRange($start_date, $end_date, $format = 'Y-m-d') { 
