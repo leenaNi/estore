@@ -22,7 +22,6 @@ class CategoryMasterController extends Controller
 
     public function index()
     {
-
         $categories = CategoryMaster::whereIn("status", [1, 0])->orderBy("id", "asc");
         $categories = $categories->paginate(Config('constants.paginateNo'));
         $roots = CategoryMaster::roots()->get();

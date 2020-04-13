@@ -46,45 +46,35 @@
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Categories</h1>
         </div>
       <div class="listing-section">
-            <div class="col-md-12 noAll-padding">
+      <div class="box-body no-padding">
                     <table class="table table-striped table-hover">
                         <?php
-echo "<ul  id='catTree' class='tree icheck catTrEE'>";
+                        echo "<ul  id='catTree' class='tree icheck catTrEE'>";
+                        foreach ($roots as $root)
+                            renderNode($root);
+                        echo "</ul>";
 
-foreach ($roots as $root) {
-    renderNode($root);
-}
+                        function renderNode($node) {
+                            echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
+                            if($node->adminChildren()->count() > 0){
+                            echo '<b>' . $node->category . '</b><a href="' . route("admin.category.addmastercat", ["cat_id" => $node->id]) . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+                            } else {
+                            echo '' . $node->category . '<a href="' . route("admin.category.addmastercat", ["cat_id" => $node->id]) . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+                            }
+                           ?>
+                           
+                            <?php   
+                                if ($node->adminChildren()->count() > 0) {
+                                        echo "<ul class='treemap fl_left'>";
+                                        foreach ($node->adminChildren as $child)
+                                            renderNode($child);
+                                        // echo $child;
+                                        echo "</ul>";
+                                    }
+                                    echo "</li>";
+                                }
+                            ?> 
 
-echo "</ul>";
-
-function renderNode($node)
-{
-    echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
-    echo '' . $node->categoryName->category . '';
-    echo '<a href="'.route('admin.category.add').'" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
-    echo '' . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
-                            <!-- <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a> -->
-
-
-                            @if ($node->status == '0')
-                                <a href="{{route('admin.category.changeStatus',['id'=> $node->id])}}" class="changCatStatus" onclick="return confirm('Are you sure you  want to enable this category?')" data-toggle="tooltip" title="Disabled"><b><i class="fa fa-times fa-fw"></i></b></a>
-                            @endif
-                            @if($node->status == '1')
-                              <a href="{{route('admin.category.changeStatus',['id' => $node->id]) }}"  class="changCatStatus" onclick="return confirm('Are you sure you want to disable this category?')" data-toggle="tooltip" title="Enabled"><b><i class="fa fa-check fa-fw"></i></b></a>
-                            @endif
-                      <?php if ($node->adminChildren()->count() > 0) {
-        echo "<ul class='treemap fl_left'>";
-        foreach ($node->adminChildren as $child) {
-            renderNode($child);
-        }
-
-        // echo $child;
-        echo "</ul>";
-    }
-
-    echo "</li>";
-}
-?>
                     </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer clearfix">
@@ -97,4 +87,7 @@ function renderNode($node)
     </div>
 </section>
 <?php $public_path = Config('constant.sizeChartImgPath');?>
+@stop
+@section('myscripts')
+
 @stop

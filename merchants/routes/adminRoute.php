@@ -54,11 +54,13 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::group(['prefix' => 'category', 'middlewareGroups' => ['web']], function () {
                 Route::get('/', ['as' => 'admin.category.view', 'test' => 'test', 'uses' => 'CategoryController@index']);
                 Route::get('/add', ['as' => 'admin.category.add', 'uses' => 'CategoryController@add']);
+                Route::get('/add-master', ['as' => 'admin.category.addmastercat', 'uses' => 'CategoryController@addMasterCat']);
                 Route::post('/save', ['as' => 'admin.category.save', 'uses' => 'CategoryController@save']);
                 Route::get('/edit', ['as' => 'admin.category.edit', 'uses' => 'CategoryController@edit']);
                 Route::any('/delete', ['as' => 'admin.category.delete', 'uses' => 'CategoryController@delete']);
                 Route::get('/cat-seo', ['as' => 'admin.category.catSeo', 'uses' => 'CategoryController@catSeo']);
                 Route::post('/cat-seo-save', ['as' => 'admin.category.saveCatSeo', 'uses' => 'CategoryController@saveCatSeo']);
+                Route::get('/master-cat-view', ['as' => 'admin.category.viewMasterCat', 'uses' => 'CategoryController@masterCategory']);
                 Route::any('/sample-category-download', ['as' => 'admin.category.sampleCategoryDownload', 'uses' => 'CategoryController@sampleCategoryDownload']);
                 Route::any('/sample-bulk-download', ['as' => 'admin.category.sampleBulkDownload', 'uses' => 'CategoryController@sampleBulkDownload']);
                 Route::any('/category-bulk-upload', ['as' => 'admin.category.categoryBulkUpload', 'uses' => 'CategoryController@categoryBulkUpload']);

@@ -6,6 +6,7 @@ use App\Classes\UploadHandler;
 use App\Http\Controllers\Controller;
 use App\Library\Helper;
 use App\Models\CatalogImage;
+use App\Models\CategoryMaster;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Sizechart;
@@ -24,19 +25,74 @@ class CategoryController extends Controller
         $categories = Category::whereIn("status", [1, 0])->with('categoryName')->orderBy("id", "asc");
         $categories = $categories->paginate(Config('constants.paginateNo'));
         $roots = Category::roots()->get();
-        //dd(DB::getQueryLog()); // Show results of log
-
-        //dd($roots);
-        //return view(Config('constants.adminCategoryView') . '.index', compact('categories', 'roots'));
 
         $viewname = Config('constants.adminCategoryView') . '.index';
         //echo "<pre>";
         //print_r($categories);
         //exit;
-
-        //dd($categories);
         $data = ['categories' => $categories, 'roots' => $roots];
         return Helper::returnView($viewname, $data);
+    }
+
+    public function masterCategory(){
+        //Master Category
+        $categories = CategoryMaster::whereIn("status", [1, 0])->orderBy("id", "asc");
+        $categories = $categories->paginate(Config('constants.paginateNo'));
+        $roots = CategoryMaster::roots()->get();
+
+        $viewname = Config('constants.adminCategoryView') . '.masterCat';
+        $data = ['categories' => $categories, 'roots' => $roots];
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function addMasterCat(){
+        $cat_id = Input::get('cat_id');
+        $category = DB::table('categories')->where('id',$cat_id)->first();
+        $url_key = $category->url_key;
+        $parent_id = $category->parent_id;
+
+        $userid = Session::get('loggedin_user_id');
+        $storeId = DB::table('users')->where('id',$userid)->pluck('store_id');
+        $cat_exists = DB::table('store_categories')->where(['store_id'=>$storeId[0],'category_id'=>$cat_id])->first();
+        
+        if($cat_exists != null){
+            Session::flash("message", "Category Already Added.");
+        }else{
+            if($parent_id == null){
+                $allcategory = DB::table('categories')->where('parent_id',$cat_id)->orWhere('id',$cat_id)->get();
+                foreach($allcategory as $cat){
+                    $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
+                    $lft = $store_Cat->rgt + 1;
+                    $rgt = $lft + 1;
+                    $depth = 1;
+                    if($cat->parent_id == null){
+                        $depth = 0;
+                    }
+                    $newcategory = DB::table('store_categories')->insert(
+                        ['category_id' => $cat->id, 'is_nav' => 1,'url_key'=>$cat->url_key,'parent_id'=>$cat->parent_id,'lft'=>$lft,'rgt'=>$rgt,'depth'=>$depth,'status'=>0,'store_id'=>$storeId[0]]
+                    );
+                }
+            }else{
+                $parent_exists = DB::table('store_categories')->where(['store_id'=>$storeId[0],'category_id'=>$parent_id])->first();
+                if($parent_exists == null){
+                    $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
+                    $lft = $store_Cat->rgt + 1;
+                    $rgt = $lft + 1;
+                    $insertParentCat = DB::table('store_categories')->insert(
+                        ['category_id' => $parent_id, 'is_nav' => 1,'url_key'=>$url_key,'parent_id'=>null,'lft'=>$lft,'rgt'=>$rgt,'depth'=>0,'status'=>0,'store_id'=>$storeId[0]]
+                    );
+                }
+                    $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
+                    $lft = $store_Cat->rgt + 1;
+                    $rgt = $lft + 1;
+                    $newcategory = DB::table('store_categories')->insert(
+                        ['category_id' => $cat_id, 'is_nav' => 1,'url_key'=>$url_key,'parent_id'=>$parent_id,'lft'=>$lft,'rgt'=>$rgt,'depth'=>1,'status'=>0,'store_id'=>$storeId[0]]
+                    );
+                    
+            }
+            Session::flash("msg", "Category added successfully.");
+        }
+        return $this->index();
     }
 
     public function add()
