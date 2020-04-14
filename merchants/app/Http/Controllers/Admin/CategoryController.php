@@ -59,17 +59,20 @@ class CategoryController extends Controller
             Session::flash("message", "Category Already Added.");
         }else{
             if($parent_id == null){
-                $allcategory = DB::table('categories')->where('parent_id',$cat_id)->orWhere('id',$cat_id)->get();
+                $parentCat = DB::table('categories')->where('id',$cat_id)->first();
+                $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
+                $lft = $store_Cat->rgt + 1;
+                $rgt = $lft + 1;
+                $ParentCatId = DB::table('store_categories')->insertGetId(
+                    ['category_id' => $parentCat->id, 'is_nav' => 1,'url_key'=>$url_key,'parent_id'=>null,'lft'=>$lft,'rgt'=>$rgt,'depth'=>0,'status'=>0,'store_id'=>$storeId[0]]
+                );
+                $allcategory = DB::table('categories')->where('parent_id',$cat_id)->get();
                 foreach($allcategory as $cat){
                     $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
                     $lft = $store_Cat->rgt + 1;
                     $rgt = $lft + 1;
-                    $depth = 1;
-                    if($cat->parent_id == null){
-                        $depth = 0;
-                    }
                     $newcategory = DB::table('store_categories')->insert(
-                        ['category_id' => $cat->id, 'is_nav' => 1,'url_key'=>$cat->url_key,'parent_id'=>$cat->parent_id,'lft'=>$lft,'rgt'=>$rgt,'depth'=>$depth,'status'=>0,'store_id'=>$storeId[0]]
+                        ['category_id' => $cat->id, 'is_nav' => 1,'url_key'=>$cat->url_key,'parent_id'=>$ParentCatId,'lft'=>$lft,'rgt'=>$rgt,'depth'=>1,'status'=>0,'store_id'=>$storeId[0]]
                     );
                 }
             }else{
@@ -78,15 +81,17 @@ class CategoryController extends Controller
                     $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
                     $lft = $store_Cat->rgt + 1;
                     $rgt = $lft + 1;
-                    $insertParentCat = DB::table('store_categories')->insert(
+                    $ParentCatId = DB::table('store_categories')->insertGetId(
                         ['category_id' => $parent_id, 'is_nav' => 1,'url_key'=>$url_key,'parent_id'=>null,'lft'=>$lft,'rgt'=>$rgt,'depth'=>0,'status'=>0,'store_id'=>$storeId[0]]
                     );
+                }else{
+                    $ParentCatId = $parent_exists->id;
                 }
                     $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
                     $lft = $store_Cat->rgt + 1;
                     $rgt = $lft + 1;
                     $newcategory = DB::table('store_categories')->insert(
-                        ['category_id' => $cat_id, 'is_nav' => 1,'url_key'=>$url_key,'parent_id'=>$parent_id,'lft'=>$lft,'rgt'=>$rgt,'depth'=>1,'status'=>0,'store_id'=>$storeId[0]]
+                        ['category_id' => $cat_id, 'is_nav' => 1,'url_key'=>$url_key,'parent_id'=>$ParentCatId,'lft'=>$lft,'rgt'=>$rgt,'depth'=>1,'status'=>0,'store_id'=>$storeId[0]]
                     );
                     
             }

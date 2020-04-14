@@ -30,7 +30,7 @@
     </div>
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" role="tablist">
-            <li class="{{ in_array(Route::currentRouteName(),['admin.category.view']) ? 'active' : '' }}"><a href="{!! route('admin.category.view',['parent_id'=>Input::get('parent_id')]) !!}"  aria-expanded="false">Store Category</a></li>
+            <li class="{{ in_array(Route::currentRouteName(),['admin.category.view']) ? 'active' : '' }}"><a href="{!! route('admin.category.view') !!}"  aria-expanded="false">Store Category</a></li>
            
             <li class="{{ in_array(Route::currentRouteName(),['admin.category.viewMasterCat']) ? 'active' : '' }}"><a href="{!! route('admin.category.viewMasterCat') !!}"      aria-expanded="false">Master Category</a></li>
             
