@@ -316,7 +316,10 @@
                                     <table class="table no-margin">
 
                                         <tbody>
+                                        
+                                        @if(count($items) > 0)
                                             @foreach($items as $item)
+                                            
                                             <tr>
                                                 <td>
                                                     <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
@@ -329,6 +332,7 @@
                                                 </td>
                                             </tr>
                                             @endforeach
+                                        @endif
                                         </tbody>
                                     </table>
                                 </div> 
@@ -709,9 +713,7 @@
 
                                                 @foreach($billamount as $billamounts)
                                                 <tr>
-                                              <!--       <td id="billcolor">
-                                                        <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
-                                                    </td> -->
+                                             
                                                     <td>
                                                         {{$billamounts["customer_name"]}}
                                                     </td>
@@ -761,6 +763,7 @@
                                         <div class="table-responsive">
                                             <table class="table no-margin">
                                                 <tbody>
+                                                @if(count($returncust) > 0)
                                                       @foreach($returncust as $item)
                                                         <!-- <tr>
                                                             <td>
@@ -774,6 +777,7 @@
                                                             </td>
                                                         </tr> -->
                                                         @endforeach
+                                                        @endif
                                                 </tbody>
                                             </table>
                                         </div>
@@ -1274,17 +1278,19 @@ function getProdData(prod_id){
                var ctx1 = $("#mycanvas").get(0).getContext("2d");
                var dataCustomers = [
                <?php 
-               foreach($items as $item)
-               {
-                ?>
+               if(count($items) > 0){
+                foreach($items as $item)
                 {
-                    value: {{$item['total']}},
-                    color: "{{$item['color']}}",
+                    ?>
+                    {
+                        value: {{$item['total']}},
+                        color: "{{$item['color']}}",
 
-                    label: "{{$item['customer_name']}}",
-                },
-                <?php 
-            }
+                        label: "{{$item['customer_name']}}",
+                    },
+                    <?php 
+                    }
+                }
             ?>
 
             ];  
@@ -1328,28 +1334,6 @@ function getProdData(prod_id){
             ?>
             ];
             var piechartBills = new Chart(ctx3).Pie(dataBill);
-
-
-            // var ctx4 = $("#returningcustCanvas").get(0).getContext("2d");
-            // var dataCustomers = [
-            //    <?php 
-            //    foreach($returncust as $item)
-            //    {
-            //     ?>
-            //     {   value: {{$item['total']}},
-            //         color: "{{$item['color']}}",
-
-            //         label: "{{$item['customer_name']}}",
-
-            //     },
-            //     <?php 
-            // }
-            // ?>
-
-            // ];  
-            // var piechartrCustomers = new Chart(ctx4).Pie(dataCustomers);
-
-
 
 
         });

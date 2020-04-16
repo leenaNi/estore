@@ -173,12 +173,13 @@ class PagesController extends Controller
 
         $items = [];
         $products = [];
-        foreach ($topUsers as $key => $user) {
-            $items[$key]["total"] = $user->total_amount;
-            $items[$key]['customer_name'] = $user->firstname . " " . $user->lastname;
-            $items[$key]['color'] = '#' . $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
+        if(count($topUsers) > 0){
+            foreach ($topUsers as $key => $user) {
+                $items[$key]["total"] = $user->total_amount;
+                $items[$key]['customer_name'] = $user->firstname . " " . $user->lastname;
+                $items[$key]['color'] = '#' . $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
+            }
         }
-
         //returning customer
         $returncust = [];
         foreach ($returningcustomer as $key => $user) {
@@ -252,7 +253,7 @@ class PagesController extends Controller
             
         }$prod_ids = array_unique($prod_id);
         $sub_prod_ids = array_unique($sub_prod_id);
-        $qty = []; $pay_amt= [];
+        $qty = []; $pay_amt= [];$product_name = '';
         foreach($Date_range as $date){
             //order statistics
             $ordersData = DB::table('orders')->whereDate('created_at',$date)->where('store_id', $this->jsonString['store_id'])->get();
@@ -277,6 +278,7 @@ class PagesController extends Controller
                     $prodtype = 'prod_id';
                 }
                 $product = DB::table("products")->where('id',$prodId)->first();
+                $product_name = $product->product;
                 $ProdSaleschart = HasProducts::whereDate('created_at',$date)
                 ->where($prodtype, $prodId)->where('store_id', $this->jsonString['store_id'])->get([DB::raw('sum(qty) as quantity'),DB::raw('sum(pay_amt) as amount')]);
                 $qty[] = ($ProdSaleschart[0]->quantity) ? $ProdSaleschart[0]->quantity : 0;
@@ -357,7 +359,7 @@ class PagesController extends Controller
         
         //Product Sales chart
         $product_sales_chart = Charts::create('bar','highcharts')
-            ->title('Product : '.$product->product.' & Weekly Sales : Rs.'.array_sum($pay_amt))
+            ->title('Product : '.$product_name.' & Weekly Sales : Rs.'.array_sum($pay_amt))
             ->elementLabel("Product Sales")
             ->dimensions(460, 500)
             ->labels($Date_range)
@@ -425,7 +427,7 @@ class PagesController extends Controller
             ->values([count($returningcustomer)])
             ->dimensions(460, 500)
             ->responsive(false); 
-
+       
         return view(Config('constants.adminView') . '.dashboard', compact('userCount', 'userThisWeekCount', 'userThisMonthCount', 'userThisYearCount', 'todaysSales', 'weeklySales', 'monthlySales', 'yearlySales', 'totalSales', 'todaysOrders', 'weeklyOrders', 'monthlyOrders', 'yearlyOrders', 'totalOrders', 'topProducts', 'topUsers', 'latestOrders', 'latestUsers', 'latestProducts', 'salesGraph', 'orderGraph', 'items', 'products', 'orders_chart', 'Sales_chart' ,'Newcustomer_chart','Customernotvisited_chart','Customervisited_chart','billamount','Customerlost_chart','product_sales_chart','returningcustomer','returncust','purchase_sales_chart','online_walkin_chart','returning_customer_chart'));
         
     }
