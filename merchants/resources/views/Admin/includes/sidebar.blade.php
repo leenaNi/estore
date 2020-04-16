@@ -262,6 +262,12 @@ $settingsdata = App\Library\Helper::getSettings();
                 </ul>
             </li>
 
+            <li class="{{ Route::currentRouteName() == 'admin.suppliers.view' ? 'active' : '' }}">
+                <a href="{{ route('admin.suppliers.view') }}">
+                    <i class="fa fa-money"></i><span>Suppliers</span> <i class=""></i>
+                </a>
+            </li>
+
             <li class="{{ Route::currentRouteName() == 'admin.payments.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.payments.view') }}">
                     <i class="fa fa-money"></i><span>Settlements</span> <i class=""></i>

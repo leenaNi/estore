@@ -814,6 +814,21 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::get('/export', ['as' => 'admin.payments.export', 'uses' => 'PaymentsController@export']);
     });
 
+
+    //suppliers
+     Route::group(['prefix' => 'suppliers', 'middlewareGroups' => ['CheckUser', 'web']], function () {
+        Route::post('/chk_existing_username', ['as' => 'chk_existing_username', 'uses' => 'SuppliersController@chk_existing_username']);
+        Route::get('/', ['as' => 'admin.suppliers.view', 'uses' => 'SuppliersController@index']);
+        Route::get('/add', ['as' => 'admin.suppliers.add', 'uses' => 'SuppliersController@add']);
+        Route::post('/save', ['as' => 'admin.suppliers.save', 'uses' => 'SuppliersController@save']);
+        Route::get('/edit', ['as' => 'admin.suppliers.edit', 'uses' => 'SuppliersController@edit']);
+        Route::post('/update', ['as' => 'admin.suppliers.update', 'uses' => 'SuppliersController@update']);
+        Route::get('/delete', ['as' => 'admin.suppliers.delete', 'uses' => 'SuppliersController@delete']);
+        Route::any('/export', ['as' => 'admin.suppliers.export', 'uses' => 'SuppliersController@export']);
+        Route::get('/system-change-status', ['as' => 'admin.suppliers.changeStatus', 'uses' => 'SuppliersController@changeStatus']);
+
+    });
+
     Route::group(['prefix' => 'distributor', 'middlewareGroups' => ['CheckUser', 'web']], function () {
         Route::get('/', ['as' => 'admin.distributor.orders.view', 'uses' => 'DistributorOrdersController@index']);
         Route::get('/new', ['as' => 'admin.distributor.orders.new', 'uses' => 'DistributorOrdersController@createOrder']);
