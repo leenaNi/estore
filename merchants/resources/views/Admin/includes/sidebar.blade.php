@@ -166,6 +166,7 @@ $settingsdata = App\Library\Helper::getSettings();
                 </ul>
 
             </li>
+            @if(env('IS_INDIVIDUAL_STORE')==0)
             <li class="treeview {{ preg_match("/admin.distributor.orders|admin.distributor/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-credit-card"></i>
@@ -202,6 +203,7 @@ $settingsdata = App\Library\Helper::getSettings();
 
                 </ul>
             </li>
+            @endif
             <li class="treeview {{ preg_match("/admin.campaign|admin.coupons|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.emailcampaign.viewemails|admin.emailcampaign.addemail|admin.emailcampaign.editemail|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-bullhorn"></i><span>Marketing</span>
@@ -254,20 +256,22 @@ $settingsdata = App\Library\Helper::getSettings();
                     <li class="{{ preg_match("/admin.customers.view/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.customers.view') }}"><i class="fa fa-angle-right"></i>All Customers</a></li>
                     <li class="{{ preg_match("/admin.storecontacts/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.storecontacts.view') }}"><i class="fa fa-angle-right"></i>All Contacts</a></li>
                     @endif
+                    @if(env('IS_INDIVIDUAL_STORE')==0)
                     <li class="{{ Route::currentRouteName() == 'admin.customers.ledger' ? 'active' : '' }}">
                     <a href="{{ route('admin.customers.ledger') }}">
                         <i class="fa fa-user"></i><span>Customer Ledger</span> <i class=""></i>
                     </a>
                     </li>
+                    @endif
                 </ul>
             </li>
-
+            @if(env('IS_INDIVIDUAL_STORE')==0)            
             <li class="{{ Route::currentRouteName() == 'admin.payments.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.payments.view') }}">
                     <i class="fa fa-money"></i><span>Settlements</span> <i class=""></i>
                 </a>
             </li>
-
+            @endif
             {{-- <li class="treeview {{ preg_match("/admin.roles.view|admin.systemusers.view/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-user-plus"></i><span>ACL</span>

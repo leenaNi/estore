@@ -114,7 +114,12 @@ class LoginController extends Controller
                     $curRoute = @$per[0]['name'];
                     return redirect()->route($curRoute);
                 } else {
-                    return redirect()->route('admin.home.view');
+                    if(env('IS_INDIVIDUAL_STORE')) {
+                        return redirect()->route('admin.dashboard');
+                    } else {
+                        return redirect()->route('admin.home.view');
+                    }
+                    //return redirect()->route('admin.home.view');
                 }
             }
 
