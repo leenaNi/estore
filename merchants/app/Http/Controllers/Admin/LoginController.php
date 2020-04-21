@@ -73,12 +73,12 @@ class LoginController extends Controller
     }
 
     public function chk_admin_user()
-    {
+    {   
         //echo "inside fun";
         // DB::enableQueryLog(); // Enable query log
         $input = Input::get("phone");
         $login_type = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
-        $userDetails = User::where('telephone', Input::get("phone"))->whereIn('user_type', [1, 3])->where('store_id', Helper::getSettings()['store_id'])->where("status", 1)->first();
+        $userDetails = User::where('telephone', Input::get("phone"))->whereIn('user_type', [1, 3, 5])->where('store_id', Helper::getSettings()['store_id'])->where("status", 1)->first();
         $userData = [$login_type => Input::get('phone'), 'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
         // $userData = [$login_type => Input::get('phone'),
         //     'password' => Input::get('password'), 'status' => 1, 'store_id' => Helper::getSettings()['store_id']];
@@ -87,10 +87,9 @@ class LoginController extends Controller
         //echo "store id::".Helper::getSettings()['store_id'];
         //echo "<pre> user details::";
         //print_r($userDetails);
-
         if (!empty($userDetails)) {
             //if (Auth::login($userData, true)) {
-            //dd($userData);
+           
             $user = User::with('roles')->find($userDetails->id);
             //echo "<pre> users::";
             //print_r($user);
@@ -114,7 +113,13 @@ class LoginController extends Controller
                     $curRoute = @$per[0]['name'];
                     return redirect()->route($curRoute);
                 } else {
-                    return redirect()->route('admin.home.view');
+                    if(env('IS_INDIVIDUAL_STORE')) {
+                        return redirect()->route('admin.dashboard');
+                    } else {
+                        //return redirect()->route('admin.home.view');
+                        return redirect()->route('admin.dashboard');
+                    }
+                    //return redirect()->route('admin.home.view');
                 }
             }
 

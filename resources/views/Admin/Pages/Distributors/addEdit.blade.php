@@ -22,7 +22,7 @@
 
                             <div class="row"> 
                                 <div class="col-md-8 col-xs-12"> 
-                                    {{ Form::model($distributor, ['route' => ['admin.distributors.saveUpdate', $distributor->id], 'class'=>'form-horizontal merchantGeneral','id'=>'merchantGeneral','method'=>'post','files'=>true]) }}
+                                    {{ Form::model($distributor, ['route' => ['admin.distributors.saveUpdate', $distributor->id], 'class'=>'form-horizontal distributorGeneral','id'=>'distributorGeneral','method'=>'post','files'=>true]) }}
                                     {{ Form::hidden('id',(Input::get('id')?Input::get('id'):''), array('id' => 'id')) }}                                    
                                     {{ Form::hidden('existing_mid',null,['id'=>'existingMid', 'class'=>'exist-merch']) }}
                                     <div class="box-body">                                        
@@ -34,7 +34,7 @@
                                         </div>
                                         <div class="form-group">
                                             {{ Form::label('Phone', 'Mobile *', ['class' => 'col-sm-3 control-label']) }}
-                                            <div class="col-sm-9">                                                
+                                            <div class="col-sm-9">              
                                                 {{Form::text('phone_no', null , ['class'=>'form-control exist-merch telephone','required'=>'true']) }}
                                             </div>
                                         </div>                                        
@@ -43,17 +43,22 @@
                                             <div class="col-sm-9">
                                                 {{Form::email('email',  null, ['class'=>'form-control exist-merch email' ,'required'=>'true']) }}
                                             </div>
-                                        </div>  
+                                        </div> 
                                         <div class="form-group">
-                                            {{ Form::label('Currency', 'Currency ', ['class' => 'col-sm-3 control-label']) }}
+                                            {{ Form::label('store_name', 'Store Name *', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
-                                                <select class="form-control exist-merch" name="currency" required="true">
-                                                    @foreach($curr as $cur)                                                    
-                                                    <option value="{{$cur->id}}" {{ ($cur->id == @$curr_selected) ? "selected='selected'" : ""  }} >{{ $cur->iso_code." -".ucwords(strtolower($cur->name)) }}</option>
-                                                    @endforeach
-                                                </select>
+                                                {{Form::text('company_name', null, ['class'=>'form-control exist-merch' ,'required'=>'true']) }}
                                             </div>
                                         </div> 
+                                        <div class="form-group">
+                                            {{ Form::label('is_individual', 'Is Individual Store? *', ['class' => 'col-sm-3 control-label']) }}
+                                            <div class="col-sm-9">
+                                            <select class="form-control exist-merch" required="true" name="is_individual_store" disabled>
+                                                <option value="1" {{ (@$is_individual_store == 1) ? "selected" : ""  }}>Yes</option>
+                                                <option value="0" {{ (@$is_individual_store == 0) ? "selected" : ""  }} >No</option>
+                                            </select>
+                                            </div>
+                                        </div>
                                         <div class="form-group">
                                             {{ Form::label('Password', 'Password *', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
@@ -132,8 +137,8 @@
                                     </div>
                                     <!-- /.box-body -->
                                     <div class="box-footer">
-                                        {{Form::button('Save & Exit', ['class'=>'btn btn-info pull-right saveExitMerchantGeneral']) }} &nbsp; &nbsp; 
-                                        {{Form::button('Save & Next', ['class'=>'btn btn-info pull-right saveNextMerchantGeneral mr10']) }}
+                                        {{Form::button('Save & Exit', ['class'=>'btn btn-info pull-right saveExitDistributorGeneral']) }} &nbsp; &nbsp; 
+                                        {{Form::button('Save & Next', ['class'=>'btn btn-info pull-right saveNextDistributorGeneral mr10']) }}
                                     </div>
                                     <!-- /.box-footer -->
                                     {{ Form::close() }}
@@ -171,7 +176,7 @@
     }
 
 
-    $("#vendorGeneral").validate({
+    $("#distributorGeneral").validate({
         rules: {
             firstname: {
                 required: true
@@ -220,29 +225,48 @@
             var name = $(element).attr("name");
             var errorDiv = $(element).parent();
             errorDiv.append(error);
+            $(".saveExitDistributorGeneral").attr('disabled', false);
+            $(this).text('Save & Exit');
         }
     });
 
    
 
 
-    $(".saveExitVendorGeneral").click(function () {
-        if ($("#vendorGeneral").valid()) {
+    $(".saveExitDistributorGeneral").click(function () {
+        $(this).text('Submitting..');
+        //$(this).attr('disabled', true);
+        if ($("#distributorGeneral").valid()) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('admin.distributors.saveUpdate') }}",
-                data: $("#vendorGeneral").serialize(),
+                data: $("#distributorGeneral").serialize(),
                 cache: false,
-                success: function (data) {
-                    if(data != 'VsMerchantError'){
-                    window.location.href = "{{ route('admin.distributors.view') }}";
+                success: function (data) {                    
+                    $(this).text('Save & Next');
+                    //$(this).attr('disabled', true);
+                    if (data.status) {
+                        $("input[name='id']").val(data.data.id);
+                        $('.nav-tabs a[href="#doc_2"]').tab('show');
+                        addParamToCurrentURL('id', data.id);
+                    } else {
+                        if(typeof data.msg == 'object') {
+                            res = JSON.parse(data.msg);
+                            $.each(res, function (k, v) {
+                              
+                                var eltype = $('[name="' + k + '"]').prop('tagName').toLowerCase();
+                                var msg = $('<div style="color:red;" class="serverValid">' + v[0] + '</div>');
+                                // console.log(msg);
+                                $(".distributorGeneral " + eltype + "[name='" + k + "']").parent().find("div.serverValid").remove();
+                                $(".distributorGeneral " + eltype + "[name='" + k + "']").parent().append(msg);
+                                 
+                            });
+                        } else {
+                            alert(data.msg);
+                        }
+                    }
                 }
-                else{
-                     //window.location.href = "{{ route('admin.distributors.addEdit') }}";
-                     $(".VsMerchantError").text("Existing merchnat can not be add for Veesw");
-                 }
-             }
-         });
+            });
         }
     });
     

@@ -30,6 +30,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::post('/changePopupStatus', ["as" => "admin.home.changePopupStatus", "uses" => "HomeController@changePopupStatus"]);
 
         Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "PagesController@index"]);
+        Route::get('/returning-cust', ["as" => "admin.returningCust", "uses" => "PagesController@getReturningCust"]);
+        Route::post('/returning-cust-view', ["as" => "admin.returningCustView", "uses" => "PagesController@getReturnCustomerView"]);
         Route::post('/order-stat', ["as" => "admin.dashboard.orderStat", "uses" => "PagesController@orderStat"]);
         Route::post('/sales-stat', ["as" => "admin.dashboard.saleStat", "uses" => "PagesController@salesStat"]);
         Route::post('/prod-sales-stat', ["as" => "admin.dashboard.prodSalesStat", "uses" => "PagesController@prodSalesStat"]);
@@ -52,11 +54,13 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::group(['prefix' => 'category', 'middlewareGroups' => ['web']], function () {
                 Route::get('/', ['as' => 'admin.category.view', 'test' => 'test', 'uses' => 'CategoryController@index']);
                 Route::get('/add', ['as' => 'admin.category.add', 'uses' => 'CategoryController@add']);
+                Route::get('/add-master', ['as' => 'admin.category.addmastercat', 'uses' => 'CategoryController@addMasterCat']);
                 Route::post('/save', ['as' => 'admin.category.save', 'uses' => 'CategoryController@save']);
                 Route::get('/edit', ['as' => 'admin.category.edit', 'uses' => 'CategoryController@edit']);
                 Route::any('/delete', ['as' => 'admin.category.delete', 'uses' => 'CategoryController@delete']);
                 Route::get('/cat-seo', ['as' => 'admin.category.catSeo', 'uses' => 'CategoryController@catSeo']);
                 Route::post('/cat-seo-save', ['as' => 'admin.category.saveCatSeo', 'uses' => 'CategoryController@saveCatSeo']);
+                Route::get('/master-cat-view', ['as' => 'admin.category.viewMasterCat', 'uses' => 'CategoryController@masterCategory']);
                 Route::any('/sample-category-download', ['as' => 'admin.category.sampleCategoryDownload', 'uses' => 'CategoryController@sampleCategoryDownload']);
                 Route::any('/sample-bulk-download', ['as' => 'admin.category.sampleBulkDownload', 'uses' => 'CategoryController@sampleBulkDownload']);
                 Route::any('/category-bulk-upload', ['as' => 'admin.category.categoryBulkUpload', 'uses' => 'CategoryController@categoryBulkUpload']);
@@ -808,6 +812,21 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
         Route::get('/add-new-settlement', ['as' => 'admin.payments.newSettlement', 'uses' => 'PaymentsController@addNewSettlement']);
         Route::post('/settle-payments', ['as' => 'admin.payments.settlePayments', 'uses' => 'PaymentsController@settlePayments']);
         Route::get('/export', ['as' => 'admin.payments.export', 'uses' => 'PaymentsController@export']);
+    });
+
+
+    //suppliers
+     Route::group(['prefix' => 'suppliers', 'middlewareGroups' => ['CheckUser', 'web']], function () {
+        Route::post('/chk_existing_username', ['as' => 'chk_existing_username', 'uses' => 'SuppliersController@chk_existing_username']);
+        Route::get('/', ['as' => 'admin.suppliers.view', 'uses' => 'SuppliersController@index']);
+        Route::get('/add', ['as' => 'admin.suppliers.add', 'uses' => 'SuppliersController@add']);
+        Route::post('/save', ['as' => 'admin.suppliers.save', 'uses' => 'SuppliersController@save']);
+        Route::get('/edit', ['as' => 'admin.suppliers.edit', 'uses' => 'SuppliersController@edit']);
+        Route::post('/update', ['as' => 'admin.suppliers.update', 'uses' => 'SuppliersController@update']);
+        Route::get('/delete', ['as' => 'admin.suppliers.delete', 'uses' => 'SuppliersController@delete']);
+        Route::any('/export', ['as' => 'admin.suppliers.export', 'uses' => 'SuppliersController@export']);
+        Route::get('/system-change-status', ['as' => 'admin.suppliers.changeStatus', 'uses' => 'SuppliersController@changeStatus']);
+
     });
 
     Route::group(['prefix' => 'distributor', 'middlewareGroups' => ['CheckUser', 'web']], function () {

@@ -625,7 +625,11 @@ class Helper
     {
         $storeName = $allinput['store_name'];
         $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
-        $phoneNo = $allinput['phone'];
+        if($allinput['phone_no']){
+            $phoneNo = $allinput['phone_no'];
+        }else{
+            $phoneNo = $allinput['phone'];
+        }
         $randomFourDigit = rand(1000, 9999);
         $indentityCode = substr($storeName, 0, 3) . substr($phoneNo, -3) . $lastInsteredId . $randomFourDigit;
         //dd($indentityCode);

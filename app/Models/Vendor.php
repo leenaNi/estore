@@ -18,7 +18,7 @@ class Vendor extends Model
                 // 'firstname' => 'required',
                 // 'email' => 'email|unique:merchants' . ($id ? ",email,$id" : ''),
                 // 'phone' => 'required|numeric|unique:merchants' . ($id ? ",phone,$id" : '')
-                'phone' => 'required|numeric'
+                'phone_no' => 'required|numeric'
                     ], $merge);
         }
 

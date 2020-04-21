@@ -235,6 +235,12 @@ class MerchantController extends Controller
             $merchant = Merchant::findOrNew(Input::get('id'));
             $merchant->fill(Input::all());
             $all_data = Input::all();
+            $settings = Settings::where('bank_id', 0)->first();
+            $country = Country::where("id", $settings->country_id)->get()->first();
+            $currency = Currency::where("id", $settings->currency_id)->get()->first();
+            $all_data['currency'] = $currency['id'];
+            $all_data['currency_code'] = $currency['id'];
+            $all_data['country_code'] = $country['country_code'];
             // $merchant->register_details = json_encode(collect(Input::all())->except('_token', 'id', 'existing_mid'));
             $merchant->register_details = json_encode(collect($all_data)->except('_token', 'id', 'existing_mid'));
             $merchant->save();
@@ -263,7 +269,8 @@ class MerchantController extends Controller
         $appId = null;
         $regDetails = json_decode($newMerchant->register_details, true);
         // dd($regDetails['is_individual_store']);
-        $catid = 1;
+        $categories = $regDetails['business_type'];
+        //$catid = 1;
         ini_set('max_execution_time', 600);
         $messagearray = '[{"type": "A","name": "' . $domainname . '","data": "' . env('GODADDY_IP') . '", "ttl": 3600}]';
         $fields = array(
@@ -321,14 +328,19 @@ class MerchantController extends Controller
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
                     $this->replaceFileString($path . "/.env", "%IS_INDIVIDUAL_STORE%", "$isIndividualStore");
-
-                    $insertArr = ["user_type" => 1, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
+                    if($storeType == 'merchant'){
+                        $user_type = 1;
+                    }else if($storeType == 'distributor'){
+                        $user_type = 3;
+                    }
+                    $insertArr = ["user_type" => $user_type, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
                     if ($appId) {
                         $insertArr["provider_id"] = $appId;
                     }
                     if ($country_code) {
                         $insertArr["country_code"] = "$country_code";
                     }
+                    
                     $newuserid = DB::table("users")->insertGetId($insertArr);
                     $insertedProductIdArray = array();
                     $productsData = DB::table('products')->select(DB::raw("GROUP_CONCAT(id) as product_id"))->where('store_id', $storeId)->get();
@@ -337,35 +349,41 @@ class MerchantController extends Controller
                     $jsonDataFromFile = File::get(public_path() . "/public/product_category_json.json");
                     $decodedJsonData = json_decode(trim($jsonDataFromFile), true);
                     for ($j = 0; $j < count($insertedProductIdArray); $j++) {
-                        $categoryId = $catid;
-                        if ($categoryId != 1) {
-                            $productId = $insertedProductIdArray[$j];
-                            //echo "\ncat >> ".$categoryId." :: product >> ".$productId;
-                            $categoryJsonData = $decodedJsonData[$categoryId];
-                            $productName = $categoryJsonData['product_name'];
-                            //echo "\np name >> ".$productName;
-                            $urlKey = $categoryJsonData['url_key'];
-                            $prodType = $categoryJsonData['prod_type'];
-                            $stock = $categoryJsonData['stock'];
-                            $cur = $categoryJsonData['cur'];
-                            $maxPrice = $categoryJsonData['max_price'];
-                            $minPrice = $categoryJsonData['min_price'];
-                            $purchasePrice = $categoryJsonData['purchase_price'];
-                            $price = $categoryJsonData['price'];
-                            $splPrice = $categoryJsonData['spl_price'];
-                            $sellingPrice = $categoryJsonData['selling_price'];
-                            $categoryFilename = $categoryJsonData['category_filename'];
-                            $altText = $categoryJsonData['alt_text'];
-                            $imageType = $categoryJsonData['image_type'];
-                            $imageMode = $categoryJsonData['image_mode'];
-                            $sortOrder = $categoryJsonData['sort_order'];
-                            $imagePath = $categoryJsonData['image_path'];
-                            DB::table('products')->where([['store_id', $storeId], ['id', $productId]])->update(
-                                ['product' => $productName, 'url_key' => $urlKey, 'prod_type' => $prodType, 'stock' => $stock, 'cur' => $cur, 'max_price' => $maxPrice, 'min_price' => $minPrice, 'purchase_price' => $purchasePrice, 'price' => $price, 'spl_price' => $splPrice, 'selling_price' => $sellingPrice]
-                            );
-                            DB::table('catalog_images')->where('catalog_id', $productId)->delete();
-                            DB::table('catalog_images')->insert(['filename' => $categoryFilename, 'alt_text' => $altText, 'image_type' => $imageType, 'image_mode' => $imageMode, 'catalog_id' => $productId, 'sort_order' => $sortOrder, 'image_path' => $imagePath]);
-                        } // End check if
+                        foreach($categories as $catid){
+                            if (!empty($catid)) {
+                                Helper::saveDefaultSet($catid, $prefix, $storeId, 'merchant', $regDetails);
+                                //add industry wise sample product
+                                $categoryId = $catid;
+                                if ($categoryId != 1) {
+                                    $productId = $insertedProductIdArray[$j];
+                                    //echo "\ncat >> ".$categoryId." :: product >> ".$productId;
+                                    $categoryJsonData = $decodedJsonData[$categoryId];
+                                    $productName = $categoryJsonData['product_name'];
+                                    //echo "\np name >> ".$productName;
+                                    $urlKey = $categoryJsonData['url_key'];
+                                    $prodType = $categoryJsonData['prod_type'];
+                                    $stock = $categoryJsonData['stock'];
+                                    $cur = $categoryJsonData['cur'];
+                                    $maxPrice = $categoryJsonData['max_price'];
+                                    $minPrice = $categoryJsonData['min_price'];
+                                    $purchasePrice = $categoryJsonData['purchase_price'];
+                                    $price = $categoryJsonData['price'];
+                                    $splPrice = $categoryJsonData['spl_price'];
+                                    $sellingPrice = $categoryJsonData['selling_price'];
+                                    $categoryFilename = $categoryJsonData['category_filename'];
+                                    $altText = $categoryJsonData['alt_text'];
+                                    $imageType = $categoryJsonData['image_type'];
+                                    $imageMode = $categoryJsonData['image_mode'];
+                                    $sortOrder = $categoryJsonData['sort_order'];
+                                    $imagePath = $categoryJsonData['image_path'];
+                                    DB::table('products')->where([['store_id', $storeId], ['id', $productId]])->update(
+                                        ['product' => $productName, 'url_key' => $urlKey, 'prod_type' => $prodType, 'stock' => $stock, 'cur' => $cur, 'max_price' => $maxPrice, 'min_price' => $minPrice, 'purchase_price' => $purchasePrice, 'price' => $price, 'spl_price' => $splPrice, 'selling_price' => $sellingPrice]
+                                    );
+                                    DB::table('catalog_images')->where('catalog_id', $productId)->delete();
+                                    DB::table('catalog_images')->insert(['filename' => $categoryFilename, 'alt_text' => $altText, 'image_type' => $imageType, 'image_mode' => $imageMode, 'catalog_id' => $productId, 'sort_order' => $sortOrder, 'image_path' => $imagePath]);
+                                } // End check if
+                            }
+                        }
                     } // End j loop
 
                     $json_url = base_path() . "/merchants/" . $domainname . "/storeSetting.json";
@@ -381,9 +399,7 @@ class MerchantController extends Controller
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
                     fwrite($fp, $newJsonString);
                     fclose($fp);
-                    if (!empty($catid)) {
-                        Helper::saveDefaultSet($catid, $prefix, $storeId, 'merchant', $regDetails);
-                    }
+                    
                     if (!empty($currency)) {
                         $decodeVal['currency'] = $currency;
                         $decodeVal['currency_code'] = @HasCurrency::find($currency)->iso_code;

@@ -11,31 +11,20 @@ use Hash;
 use Input;
 use Session;
 
-class SystemUsersController extends Controller
+class SuppliersController extends Controller
 {
 
     public function index()
     {
         //dd(base64_decode("YXNkZjEyMzQ="));
-        $loggedInUserId = Session::get('loggedinAdminId');
-        //get user_type id from user table
-        $usersResult = DB::table('users')
-        ->where('id', $loggedInUserId)
-        ->where('status', 1)
-        ->get();
-        if(count($usersResult) > 0)
-        {
-            $userTypeId = $usersResult[0]->user_type;
-        }
         
         $search = !empty(Input::get("empSearch")) ? Input::get("empSearch") : '';
-        //$system_users = User::with('roles')->where('user_type', '1')->where("store_id", Session::get('store_id'))->whereIn('status', [1, 0]);
-        $system_users = User::with('roles')->where('user_type', $userTypeId)->where("store_id", Session::get('store_id'))->whereIn('status', [1, 0]);
+        $suppliers = User::with('roles')->where('user_type', 5)->where("store_id", Session::get('store_id'))->whereIn('status', [1, 0]);
 
         $roles = Role::get(['id', 'name'])->toArray();
         $search_fields = ['firstname', 'lastname', 'email', 'telephone'];
         if (!empty(Input::get('empSearch'))) {
-            $system_users = $system_users->where(function ($query) use ($search_fields, $search) {
+            $suppliers = $suppliers->where(function ($query) use ($search_fields, $search) {
                 foreach ($search_fields as $field) {
                     $query->orWhere($field, "like", "%$search%");
                 }
@@ -43,11 +32,11 @@ class SystemUsersController extends Controller
         }
 
         if (!empty(Input::get('empSearch'))) {
-            $system_users = $system_users->get();
-            $userCount = $system_users->count();
+            $suppliers = $suppliers->get();
+            $userCount = $suppliers->count();
         } else {
-            $system_users = $system_users->paginate(Config('constants.paginateNo'));
-            $userCount = $system_users->total();
+            $suppliers = $suppliers->paginate(Config('constants.paginateNo'));
+            $userCount = $suppliers->total();
         }
 
         $startIndex = 1;
@@ -75,38 +64,29 @@ class SystemUsersController extends Controller
         }
 
 
-        $viewname = Config('constants.adminSystemUsersView') . '.index';
-        $data = ['system_users' => $system_users, 'roles' => $roles, 'userCount' => $userCount, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
+        $viewname = Config('constants.adminSuppliersView') . '.index';
+        $data = ['suppliers' => $suppliers, 'roles' => $roles, 'userCount' => $userCount, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         return Helper::returnView($viewname, $data);
     }
 
     public function add()
     {
         $user = new User();
-        $action = "admin.systemusers.save";
-        $roles = Role::where('name', 'not like', '%supplier%')->get(['id', 'display_name'])->toArray();
+        $action = "admin.suppliers.save";
+        $roles = Role::where('name', 'LIKE', '%supplier%')->get(['id', 'display_name'])->toArray();
         $roles_name = ["" => "Please Select"];
         foreach ($roles as $role) {
             $roles_name[$role['id']] = $role['display_name'];
         }
-        // return view(Config('constants.adminSystemUsersView') . '.addEdit', compact('user', 'action', 'roles_name'));
-        $viewname = Config('constants.adminSystemUsersView') . '.addEdit';
+        $viewname = Config('constants.adminSuppliersView') . '.addEdit';
         $data = ['user' => $user, 'action' => $action, 'roles_name' => $roles_name];
         return Helper::returnView($viewname, $data);
     }
 
     public function save()
-    {
-        $loggedInUserId = Session::get('loggedinAdminId');
-        //get user_type id from user table
-        $usersResult = DB::table('users')
-        ->where('id', $loggedInUserId)
-        ->where('status', 1)
-        ->get();
-        if(count($usersResult) > 0)
-        {
-            $userTypeId = $usersResult[0]->user_type;
-        }
+    {   
+
+     
         
 
         $chk = User::where("email", "=", Input::get('email'))->where("telephone", "=", Input::get('telephone'))->where('user_type', 1)->first();
@@ -125,50 +105,53 @@ class SystemUsersController extends Controller
             $user->password = Hash::make($password);
             $user->password_crpt = base64_encode($password);
             //$user->user_type = 1;
-            $user->user_type = $userTypeId;
+            $user->user_type = 5;
             $user->store_id = Helper::getSettings()['store_id'];
             $user->save();
-            // print_r($user); die;
+
             if (!empty(Input::get('roles'))) {
                 $user->roles()->sync([Input::get('roles')]);
             }
-            // return redirect()->route('admin.systemusers.view');
 
-            Session::flash("usenameSuccess", "System user added sucessfully.");
-            Session::flash("msg", "System user added sucessfully.");
+            Session::flash("usenameSuccess", "Supplier added sucessfully.");
+            Session::flash("msg", "Supplier added sucessfully.");
             $dataEmail = ['password' => $password, 'firstname' => Input::get('firstname')];
-            Helper::sendMyEmail(Config('constants.adminEmails') . '/employee_creation', $dataEmail, 'Employee created -' . Input::get('firstname'), 'support@infiniteit.biz', 'Cartini', Input::get('email'), Input::get('firstname'));
-            $viewname = Config('constants.adminSystemUsersView') . '.index';
-            $data = ['status' => '1', 'user' => $user, 'msg' => 'System user added sucessfully.'];
-            return Helper::returnView($viewname, $data, $url = 'admin.systemusers.view');
+            Helper::sendMyEmail(Config('constants.adminEmails') . '/supplier_creation', $dataEmail, 'Supplier created -' . Input::get('firstname'), 'support@infiniteit.biz', 'JaldiBolo', Input::get('email'), Input::get('firstname'));
+            $viewname = Config('constants.adminSuppliersView') . '.index';
+            $data = ['status' => '1', 'user' => $user, 'msg' => 'Supplier added sucessfully.'];
+            return Helper::returnView($viewname, $data, $url = 'admin.suppliers.view');
         } else {
-            Session::flash("usenameError", "System user already exist.");
-            Session::flash("message", "System user already exist.");
-            $viewname = Config('constants.adminSystemUsersView') . '.index';
-            $data = ['status' => '0', 'msg' => 'System user already exist.'];
-            return Helper::returnView($viewname, $data, $url = 'admin.systemusers.view');
+            Session::flash("usenameError", "Supplier already exist.");
+            Session::flash("message", "Supplier already exist.");
+            $viewname = Config('constants.adminSuppliersView') . '.index';
+            $data = ['status' => '0', 'msg' => 'Supplier already exist.'];
+            return Helper::returnView($viewname, $data, $url = 'admin.suppliers.view');
         }
     }
 
-    public function update()
+    public function edit()
     {
-        $loggedInUserId = Session::get('loggedinAdminId');
-        //get user_type id from user table
-        $usersResult = DB::table('users')
-        ->where('id', $loggedInUserId)
-        ->where('status', 1)
-        ->get();
-        if(count($usersResult) > 0)
-        {
-            $userTypeId = $usersResult[0]->user_type;
+        $user = User::find(Input::get('id'));
+        $roles = Role::where('name', 'LIKE', '%supplier%')->get(['id', 'display_name'])->toArray();
+        // dd($user);
+        $roles_name = ["" => "Please Select"];
+        foreach ($roles as $role) {
+            $roles_name[$role['id']] = $role['display_name'];
         }
+        $user->password_crpt = base64_decode($user->password_crpt);
+        $action = "admin.suppliers.update";
+        $viewname = Config('constants.adminSuppliersView') . '.addEdit';
+        $data = ['user' => $user, 'action' => $action, 'roles_name' => $roles_name];
+        return Helper::returnView($viewname, $data);
+    }
 
+     public function update()
+    {
         $user = User::find(Input::get('id'));
 
         $user->firstname = Input::get('firstname');
         if (Input::get('password_crpt')) {
-            //    dd(Input::get('password'));
-
+            
             $password = Hash::make(Input::get('password_crpt'));
             if ($password != $user->password) {
                 $user->password = $password;
@@ -182,38 +165,16 @@ class SystemUsersController extends Controller
         $user->status = Input::get('status');
         $user->country_code = Input::get('country_code');
         $user->store_id = Helper::getSettings()['store_id'];
-        //$user->user_type = 1;
-        $user->user_type = $userTypeId;
-
+        $user->user_type = 5;
         $user->save();
-//dd(Input::all());
+
         if (!empty(Input::get('roles'))) {
             $user->roles()->sync([Input::get('roles')]);
         }
-
-        //return redirect()->route('admin.systemusers.view');
-        Session::flash("msg", "System user updated sucessfully.");
-        $viewname = Config('constants.adminSystemUsersView') . '.index';
+        Session::flash("msg", "Supplier updated sucessfully.");
+        $viewname = Config('constants.adminSuppliersView') . '.index';
         $data = ['status' => '1', 'msg' => 'Successfully updated'];
-        return Helper::returnView($viewname, $data, $url = 'admin.systemusers.view');
-    }
-
-    public function edit()
-    {
-        $user = User::find(Input::get('id'));
-
-        $user->password_crpt = base64_decode($user->password_crpt);
-        $action = "admin.systemusers.update";
-        $roles = Role::where('name', 'not like', '%supplier%')->get(['id', 'display_name'])->toArray();
-        // dd($user);
-        $roles_name = ["" => "Please Select"];
-        foreach ($roles as $role) {
-            $roles_name[$role['id']] = $role['display_name'];
-        }
-        // return view(Config('constants.adminSystemUsersView') . '.addEdit', compact('user', 'action', 'roles_name'));
-        $viewname = Config('constants.adminSystemUsersView') . '.addEdit';
-        $data = ['user' => $user, 'action' => $action, 'roles_name' => $roles_name];
-        return Helper::returnView($viewname, $data);
+        return Helper::returnView($viewname, $data, $url = 'admin.suppliers.view');
     }
 
     public function chk_existing_username()
@@ -239,8 +200,8 @@ class SystemUsersController extends Controller
             $role = DB::table('role_user')->where("user_id", $user->id)->get();
             if (count($role) > 0) {
                 $user->delete();
-                Session::flash("message", "System user deleted sucessfully.");
-                $data = ['status' => '1', 'msg' => 'System user deleted sucessfully.'];
+                Session::flash("message", "Supplier deleted sucessfully.");
+                $data = ['status' => '1', 'msg' => 'Supplier deleted sucessfully.'];
             } else {
                 Session::flash("message", "Sorry, You can not deleted this user .");
                 $data = ['status' => '0', 'msg' => 'Sorry, You can not deleted this user.'];
@@ -252,9 +213,9 @@ class SystemUsersController extends Controller
         }
 
         //return redirect()->back()->with("message", "User deleted successfully.");
-        $viewname = Config('constants.adminSystemUsersView') . '.index';
+        $viewname = Config('constants.adminSuppliersView') . '.index';
 
-        return Helper::returnView($viewname, $data, $url = 'admin.systemusers.view');
+        return Helper::returnView($viewname, $data, $url = 'admin.suppliers.view');
     }
 
     public function changeStatus()
@@ -263,34 +224,34 @@ class SystemUsersController extends Controller
         $viewname = '';
         if ($getstatus->status == 1) {
             $status = 0;
-            $msg = "System user disabled successfully.";
+            $msg = "Supplier disabled successfully.";
             $getstatus->status = $status;
             $getstatus->update();
-            Session::flash("message", "System user disabled successfully.");
+            Session::flash("message", "Supplier disabled successfully.");
             // return redirect()->back()->with('message', $msg);
-            $data = ['status' => '0', 'msg' => 'System user disabled successfully.'];
+            $data = ['status' => '0', 'msg' => 'Supplier disabled successfully.'];
         } else if ($getstatus->status == 0) {
             $status = 1;
-            $msg = "System user enabled successfully.";
+            $msg = "Supplier enabled successfully.";
             $getstatus->status = $status;
             $getstatus->update();
-            Session::flash("msg", "System user enabled successfully.");
+            Session::flash("msg", "Supplier enabled successfully.");
             // return redirect()->back()->with('msg', $msg);
-            $data = ['status' => '1', 'msg' => 'System user  enabled successfully.'];
+            $data = ['status' => '1', 'msg' => 'Supplier enabled successfully.'];
         }
-        return Helper::returnView($viewname, $data, $url = 'admin.systemusers.view');
+        return Helper::returnView($viewname, $data, $url = 'admin.suppliers.view');
 
     }
     public function export()
     {
-        $user = User::where('user_type', 1)->where('status', 1)->get();
+        $user = User::where('user_type', 5)->where('status', 1)->get();
         $user_data = [];
         array_push($user_data, ['First Name', 'Last Name', 'Mobile', 'Email']);
         foreach ($user as $u) {
             $details = [$u->firstname, $u->lastname, $u->telephone, $u->email];
             array_push($user_data, $details);
         }
-        return Helper::getCsv($user_data, 'systemUser.csv', ',');
+        return Helper::getCsv($user_data, 'supplier.csv', ',');
     }
 
 }

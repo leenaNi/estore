@@ -722,13 +722,14 @@ class OrdersController extends Controller
         $comment = Input::get('comment');
         $orderIds = explode(",", Input::get('OrderIds'));
         $orderStatus = Input::get("status");
+        $order_status = OrderStatus::where('sort_order',$orderStatus)->first();
         $remark = Input::get('remark');
         $notify = is_null(Input::get('notify')) ? 0 : Input::get('notify');
         foreach ($orderIds as $id) {
             if ($id > 0) {
                 // send mail after updating order status
                 $orderUser = Order::find($id);
-                $orderUser->order_status = $orderStatus;
+                $orderUser->order_status = $order_status->id;
                 $orderUser->remark = $remark;
                 $orderUser->update();
                 $statusHistory = ['order_id' => $id, 'status_id' => $orderStatus, 'remark' => $remark, 'notify' => $notify, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
