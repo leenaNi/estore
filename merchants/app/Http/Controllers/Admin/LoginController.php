@@ -51,7 +51,7 @@ class LoginController extends Controller
             Session::put('otp', $otp);
             if ($mobile) {
                 $msgOrderSucc = "Your one time password is. " . $otp . " Team eStorifi";
-                Helper::sendsms($mobile, $msgOrderSucc, $country);
+                // Helper::sendsms($mobile, $msgOrderSucc, $country);
             }
             $data = ["otp" => $otp, "status" => "success", "msg" => "OTP Successfully send on your mobileNumber"];
             return $data;
