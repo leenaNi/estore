@@ -5,11 +5,11 @@
 <script src="{{ Config('constants.adminDistJsPath').'/jquery-ui.multidatespicker.js'}}"></script>
 <script src="{{ Config('constants.adminDistJsPath').'/moment.js' }}"></script>
 <script src="{{ Config('constants.adminDistJsPath').'/chosen.jquery.js' }}"></script>
-<!-- Bootstrap 3.3.5 --><!-- 
+<!-- Bootstrap 3.3.5 --><!--
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>  -->
 <script src="{{  Config('constants.adminBootstrapJsPath').'/bootstrap.min.js' }}"></script>
-<!-- ColorPicker --> 
+<!-- ColorPicker -->
 <script src="{{ Config('constants.adminDistJsPath').'/jscolor.js' }}"></script>
 <!--jquery validater -->
 <script src="{{ Config('constants.adminDistJsPath').'/jquery.validate.min.js' }}"></script>
@@ -54,14 +54,14 @@
    // Replace the <textarea id="editor1"> with a CKEditor
    // instance, using default configuration.
    CKEDITOR.replace('editor1');
-  
+
    //bootstrap WYSIHTML5 - text editor
    $('.textarea').wysihtml5()
  })
 </script>-->
 
 <script type="text/javascript">
-var currentCurrency = parseFloat(<?= Session::get('currency_val'); ?>);
+var currentCurrency = parseFloat(<?=Session::get('currency_val');?>);
 var map = {63: false, 98: false, 121: false, 101: false, 97: false, 112: false, 99: false, 116: false, 117: false, 103: false, 104: false, 111: false, 115: false};
 $(document).keypress(function (e) {
     if ($(e.target).prop("tagName") == 'BODY') {
@@ -226,7 +226,7 @@ $(document).keypress(function (e) {
 // save on click
     save.addEventListener('click', function (e) {
         e.preventDefault();
-        // get result to data uri 
+        // get result to data uri
 
 
 
@@ -341,7 +341,7 @@ $(document).keypress(function (e) {
 //            alert();
             e.preventDefault();
             var vrsn = $('#storeV').val();
-            // window.open('http://192.168.2.47:8025/get-city-pay-renew/{{Crypt::encrypt(Session::get("store_id"))}}', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
+            // window.open('https://192.168.2.47:8025/get-city-pay-renew/{{Crypt::encrypt(Session::get("store_id"))}}', '_blank', 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
 //            window.open('https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn, 'scrollbars=no,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no');
             window.location.href = 'https://veestores.com/get-city-pay-renew/{{Session::get("store_id")}}/' + vrsn;
         });
@@ -388,16 +388,16 @@ $(document).keypress(function (e) {
 
   if (dots.style.display === "none") {
     dots.style.display = "inline";
-    btnText.innerHTML = "<i class='fa fa-caret-down'></i> Advanced Filters"; 
+    btnText.innerHTML = "<i class='fa fa-caret-down'></i> Advanced Filters";
     moreText.style.display = "none";
   } else {
     dots.style.display = "none";
-    btnText.innerHTML = "<i class='fa fa-caret-up'></i> Advanced Filters"; 
+    btnText.innerHTML = "<i class='fa fa-caret-up'></i> Advanced Filters";
     moreText.style.display = "inline";
   }
 }
 
-// File Uploade Placeholder 
+// File Uploade Placeholder
 $(".file-upload-column").on("change", ".file-upload-field", function() {
   $(this)
     .parent(".file-upload-wrapper")
@@ -418,15 +418,15 @@ $( document ).ready(function() {
         $('.equal-height-div-2').css('height', s1 + "px");
     else
         $('.equal-height-div-1').css('height', s2 + "px");
-        
+
 });
 
 
 (function($){
 	$(document).ready(function(){
 		$('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
-			event.preventDefault(); 
-			event.stopPropagation(); 
+			event.preventDefault();
+			event.stopPropagation();
 			$(this).parent().siblings().removeClass('open');
 			$(this).parent().toggleClass('open');
 		});
