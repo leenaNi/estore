@@ -235,6 +235,12 @@ class MerchantController extends Controller
             $merchant = Merchant::findOrNew(Input::get('id'));
             $merchant->fill(Input::all());
             $all_data = Input::all();
+            $settings = Settings::where('bank_id', 0)->first();
+            $country = Country::where("id", $settings->country_id)->get()->first();
+            $currency = Currency::where("id", $settings->currency_id)->get()->first();
+            $all_data['currency'] = $currency['id'];
+            $all_data['currency_code'] = $currency['id'];
+            $all_data['country_code'] = $country['country_code'];
             // $merchant->register_details = json_encode(collect(Input::all())->except('_token', 'id', 'existing_mid'));
             $merchant->register_details = json_encode(collect($all_data)->except('_token', 'id', 'existing_mid'));
             $merchant->save();
@@ -322,14 +328,19 @@ class MerchantController extends Controller
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
                     $this->replaceFileString($path . "/.env", "%IS_INDIVIDUAL_STORE%", "$isIndividualStore");
-
-                    $insertArr = ["user_type" => 1, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
+                    if($storeType == 'merchant'){
+                        $user_type = 1;
+                    }else if($storeType == 'distributor'){
+                        $user_type = 3;
+                    }
+                    $insertArr = ["user_type" => $user_type, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
                     if ($appId) {
                         $insertArr["provider_id"] = $appId;
                     }
                     if ($country_code) {
                         $insertArr["country_code"] = "$country_code";
                     }
+                    
                     $newuserid = DB::table("users")->insertGetId($insertArr);
                     $insertedProductIdArray = array();
                     $productsData = DB::table('products')->select(DB::raw("GROUP_CONCAT(id) as product_id"))->where('store_id', $storeId)->get();
