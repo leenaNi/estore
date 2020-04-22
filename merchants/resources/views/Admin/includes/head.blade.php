@@ -160,10 +160,7 @@ Session::put('storelogo', $data->logo);
     .nav-tabs-custom>.nav-tabs>li.active{border-top-color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
 
     .btn{margin-left:10px;}
-<<<<<<< HEAD
-=======
     .sidebar-mini.sidebar-collapse .sidebar-menu>li>a, .sidebar-menu .treeview-menu>li>a, .sidebar-mini.sidebar-collapse .sidebar-menu>li:hover>.treeview-menu {
     background: #fff;
 }
->>>>>>> a43ec59f31492dd04e1ee62dd87952de46a77655
 </style>

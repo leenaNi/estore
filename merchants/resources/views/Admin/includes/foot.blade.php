@@ -133,9 +133,7 @@ $(document).keypress(function (e) {
         }
     }
     function getCur() {
-        console.log("get currency");
         $.post("{{route('setCurrency')}}", {}, function (response) {
-            console.log("Success Response");
             console.log(response);
             $('.currency-sym').html('').html(response.sym);
             $('.currency-sym-in-braces').html('').html("(" + response.sym + ")");
