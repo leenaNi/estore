@@ -51,7 +51,7 @@ class LoginController extends Controller
             Session::put('otp', $otp);
             if ($mobile) {
                 $msgOrderSucc = "Your one time password is. " . $otp . " Team eStorifi";
-                Helper::sendsms($mobile, $msgOrderSucc, $country);
+                // Helper::sendsms($mobile, $msgOrderSucc, $country);
             }
             $data = ["otp" => $otp, "status" => "success", "msg" => "OTP Successfully send on your mobileNumber"];
             return $data;
@@ -116,7 +116,8 @@ class LoginController extends Controller
                     if(env('IS_INDIVIDUAL_STORE')) {
                         return redirect()->route('admin.dashboard');
                     } else {
-                        return redirect()->route('admin.home.view');
+                        //return redirect()->route('admin.home.view');
+                        return redirect()->route('admin.dashboard');
                     }
                     //return redirect()->route('admin.home.view');
                 }
@@ -221,9 +222,9 @@ class LoginController extends Controller
             $distributorIdData = Merchants::find($merchantId);
         }
 
-        $public_path = Config('constants.adminImgUploadPath') . "/";
+        // $public_path = Config('constants.adminImgUploadPath') . "/";
         //echo Config('constants.adminView');exit;
-        return view(Config('constants.adminView') . '.adminEditProfile', compact('user', 'action', 'public_path', 'distributorIdData', 'userType'));
+        return view(Config('constants.adminView') . '.adminEditProfile', compact('user', 'action', 'distributorIdData', 'userType'));
     }
 
     public function admin_save_profile()

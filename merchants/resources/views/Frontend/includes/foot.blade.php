@@ -5,7 +5,7 @@
 ============================================= -->
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/jquery.js' }}"></script>
 <script src="{{ Config('constants.frontendPublicJsPath').'/jquery.validate.min.js' }}"></script>
-<script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/plugins.js' }}"></script>	
+<script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/plugins.js' }}"></script>
 <!-- Footer Scripts
 ============================================= -->
 <script type="text/javascript" src="{{ Config('constants.frontendPublicJsPath').'/functions.js' }}"></script>
@@ -24,15 +24,15 @@
             </div>
             <form role="form" id="frmUpdateBanner" class="nobottommargin" >
                 <div class="modal-body">
-                    @foreach($layoutPage as $page)                    
+                    @foreach($layoutPage as $page)
                     <div class="row mb-20">
                         <div class="col-md-4 col-sm-6 col-xs-6"><div class="slider-thumb-box"><img src="{{asset(Config('constants.layoutUploadPath')).'/'.$page->image}}" height="50px" width="70px"></div></div>
                         <div class="col-md-4 col-sm-6 col-xs-6">
                             <div class="vert-middle">
                                 <label class="switch text-center">
                                     <input class="switch-input"  name="slider[{{ $page->id }}][status]" id="prodStatus" value="1" type="checkbox"  {{ ($page->is_active == 1) ? 'checked="checked"' : ''  }}  />
-                                    <span class="switch-label"  data-on="Enabled" data-off="Disabled"></span> 
-                                    <span class="switch-handle"></span> 
+                                    <span class="switch-label"  data-on="Enabled" data-off="Disabled"></span>
+                                    <span class="switch-handle"></span>
                                 </label>
                             </div>
                         </div>
@@ -59,28 +59,28 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Add Slider Image</h4>
             </div>
-            <form role="form" id="addSlider" enctype="multipart/form-data"> 
+            <form role="form" id="addSlider" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="col-md-6 col-sm-12 col-xs-12"><div class="form-group">
                             <div class="choosebtnbox text-center">
                                 <input type="file" class="custom-file-input chooselogottext" name="sliderImg" id="sliderImg"  >
                             </div>
                             <span id="error-banner" class="text-danger"></span>
-                        </div></div>      
+                        </div></div>
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="box-2 padd-0">
                             <div class="result-slider padd-0" style="width: 300px; min-height:10px; max-height: 180px;"></div>
                         </div>
-                        <div class="options-slider hide" >                      
+                        <div class="options-slider hide" >
                         </div>
-                    </div> 
-                </div>  
+                    </div>
+                </div>
                 <div class="clearfix"></div>
                 <div class="modal-footer text-center topmargin-sm">
                     <button type="submit" class="btn btn-default" id="saveSlider">Add</button>
                 </div>
             </form>
-        </div>        
+        </div>
     </div>
 </div>
 
@@ -98,15 +98,15 @@
             <div class="modal-body-scroll">
                 <div class="modal-body">
                     <?php
-                    $imgPath = json_decode($newsletterPage->details,true);
-                    $displayHeader = isset($imgPath['displayHeader']) ? $imgPath['displayHeader'] : '' ;
-                    $displayContent = isset($imgPath['displayContent']) ? $imgPath['displayContent'] : '' ;
-                    $img = '';
-                    if(isset($imgPath)){
-                        $img = $imgPath['img_path'];
-                    }
-                    ?>
-                   <img src="{{asset(Config('constants.newletterImgPath')).'/'.$img}}" id="imagepreview" style="width: 1000px; height: 350px;" > 
+$imgPath = json_decode($newsletterPage->details, true);
+$displayHeader = isset($imgPath['displayHeader']) ? $imgPath['displayHeader'] : '';
+$displayContent = isset($imgPath['displayContent']) ? $imgPath['displayContent'] : '';
+$img = '';
+if (isset($imgPath)) {
+    $img = $imgPath['img_path'];
+}
+?>
+                   <img src="{{asset(Config('constants.newletterImgPath')).'/'.$img}}" id="imagepreview" style="width: 1000px; height: 350px;" >
                 </div>
             </div>
             <div>
@@ -122,9 +122,9 @@
                         <span class="input-group-btn">
                             <button class="btn btn-default" id="btn-newssubscribe" type="submit">Subscribe</button>
                         </span>
-                    </div>                    
+                    </div>
                 </form>
-            </div>            
+            </div>
             <div class="modal-footer">
                 <div id="subscriptionNews-success" class="success"></div>
             </div>
@@ -141,7 +141,7 @@
             if (!$('#subscribenews').valid()) {
                 return false;
             }
-            
+
             var email = $('.newsletter-email_home').val();
             console.log("email value " + email);
             var pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -169,7 +169,7 @@
                     }
                 });
             }
-        });        
+        });
         console.log( "window loaded" );
     });
 </script>
@@ -306,7 +306,7 @@ save.addEventListener('click', function (e) {
                 price: {
                     required: true
                 },
-              
+
                 'category[]': {
                     required: true
                 }
@@ -319,7 +319,7 @@ save.addEventListener('click', function (e) {
                 price: {
                     required: "Price is required."
                 },
-               
+
                 'category[]': {
                     required: "Category is required."
                 }
@@ -406,9 +406,9 @@ save.addEventListener('click', function (e) {
             $('.zoomContainer').remove();
         } else {
             $('.zoom-me').elevateZoom();
-            
+
         }
-        
+
 
         $('html body').on('submit', '#frmUpdateBanner', function () {
             var form = $('#frmUpdateBanner');
@@ -570,7 +570,7 @@ save.addEventListener('click', function (e) {
                 }
 
             });
-          
+
             $("#form" + formId).find(".attrSel").each(function () {
                 if ($(this).hasClass("addCartError")) {
                     $(this).removeClass("error");
@@ -592,7 +592,7 @@ save.addEventListener('click', function (e) {
 //                $(".cartDiv").replaceWith(cart_cont[0]);
                     var newCart = result.split("||||||");
                     var cart = $('.shop-cart');
-                 
+
                     var imgtodrag = $("#form" + formId + " img").eq(0);
                     console.log(imgtodrag);
                     if (imgtodrag) {
@@ -741,7 +741,7 @@ save.addEventListener('click', function (e) {
             $('.currency-sym').html('').html(response.sym);
             var currentCurrency = parseFloat(response.curval);
             console.log(currentCurrency);
-<?php if (empty(Session::get('currency_val'))) { ?>
+<?php if (empty(Session::get('currency_val'))) {?>
                 console.log("In IF");
                 $(".priceConvert").each(function (k, v) {
                     var filterNumber = $(this).text().trim();
@@ -765,9 +765,9 @@ save.addEventListener('click', function (e) {
                     $(this).parent().append("<input type='hidden' name='" + getName + "' class='priceConvertTextBoxMain' value='" + getPrice + "' > ");
                     $(this).attr("name", "not_in_use");
                 });
-<?php } else { ?>
+<?php } else {?>
                 console.log("Else If");
-<?php } ?>
+<?php }?>
         });
     }
     //ar maxP =
@@ -801,7 +801,7 @@ save.addEventListener('click', function (e) {
         changeLagauge();
     });
     function changeLagauge() {
-        var lang = <?= $langs ?>;
+        var lang = <?=$langs?>;
         var userLang = 'english';
         // var userLang = localStorage.getItem('language');
         // if(userLang== null){
@@ -1096,7 +1096,7 @@ $(".saveButton").on('click', function (e) {
                  console.log("formdata");
                 $('#productAddPopUp').submit();
 
-            } 
+            }
             else
             {
                 $("#error-product").html("This browser does not support HTML5.");
@@ -1113,24 +1113,24 @@ $(".saveButton").on('click', function (e) {
 </script>
 <script>
    var cw = $('#shop .product a img').width();
-jQuery('#shop .product a img').css({'height':cw+'px'}); 
+jQuery('#shop .product a img').css({'height':cw+'px'});
 
 
  $( document ).ready(function() {
     var pw = $('div#oc-product .owl-stage-outer .owl-stage .owl-item').width();
 jQuery('.boxSizeImage').css({'height':pw+'px'});
 });
-  
 
-$(document).ready(function() { 
-    $('p:empty').remove(); 
-    $('.shortDesc:empty').remove(); 
+
+$(document).ready(function() {
+    $('p:empty').remove();
+    $('.shortDesc:empty').remove();
     });
 </script>
 
 
 <script>
-  
+
 window.fbAsyncInit = function() {
     // FB JavaScript SDK configuration and setup
     FB.init({
@@ -1139,17 +1139,17 @@ window.fbAsyncInit = function() {
       xfbml      : true,  // parse social plugins on this page
       version    : 'v3.3' // use graph api version 2.8
     });
-    
+
     // Check whether the user already logged in
 //    FB.getLoginStatus(function(response) {
 //        if (response.status === 'connected') {
 //            //display user data
-//          
+//
 //            getFbUserData();
 //            fbLogout();
 //        }
 //    });
-    
+
 };
 function fbLogout() {
     FB.logout(function() {
@@ -1197,7 +1197,7 @@ function getFbUserData(){
                        $('#login-error').show();
                         $('#login-error').html('Invalid Email or Password');
                       fbLogout();
-        
+
                  }
             }
         });
@@ -1209,9 +1209,9 @@ function getFbUserData(){
         });
         $("#trackingId").keyup(function(){
             if($("#trackingId").val().length < 12 || ($("#trackingId").val()=='')){
-             $("#trackingId").css('border-color', 'red')   
+             $("#trackingId").css('border-color', 'red')
             }else{
-               $("#trackingId").css('border-color', '')   
+               $("#trackingId").css('border-color', '')
             }
         })
         $(".eurireTraking").on("click", function () {
@@ -1222,23 +1222,23 @@ function getFbUserData(){
                 $("#trackingId").attr("placeholder", "Please enter tracking Id");
                 return false;
             }else{
-                
+
                            $.ajax({
                             url: "{{ route('ecurierTracking')}}",
                             type: 'post',
                             data: {trackingId:trackingId},
-          
+
                             success: function (res) {
                              console.log(JSON.stringify(res.trackdata));
                                $('#trackingDetails').empty();
                                $('.tableVaglignMiddle').removeClass("hide");
                                if(res.status==1){
-                             
-                               var trackData=' <td>'+res.trackdata[0][0]+'</td><td>'+res.trackdata[0][2]+'</td> ';                     
-                              $('#trackingDetails').append(trackData);  
+
+                               var trackData=' <td>'+res.trackdata[0][0]+'</td><td>'+res.trackdata[0][2]+'</td> ';
+                              $('#trackingDetails').append(trackData);
                           }else{
                               var trackData='<td>'+res.trackdata+'</td>';
-                             $('#trackingDetails').append(trackData); 
+                             $('#trackingDetails').append(trackData);
                             }
                             }
                         });

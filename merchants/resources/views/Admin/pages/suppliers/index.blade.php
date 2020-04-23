@@ -21,7 +21,7 @@
         <div  class="alert alert-danger" role="alert">
             {{ Session::get('message') }}
         </div>
-        @endif   
+        @endif
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
@@ -40,7 +40,7 @@
                         <div class='form-group col-md-2 col-sm-3 col-xs-12'>
                             <a href="{{route('admin.suppliers.view')}}" class='fullWidth noAll-margin btn reset-btn noMob-leftmargin'>Reset </a>
                         </div>
-                    </form>   
+                    </form>
                 </div>
             </div>
 
@@ -57,13 +57,13 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>System Users <span class="listing-counter"> {{$startIndex}} - {{$endIndex}} of {{$userCount }} </span> </h1>
+            <h1>Suppliers <span class="listing-counter"> {{$startIndex}} - {{$endIndex}} of {{$userCount }} </span> </h1>
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">
             <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
-                            <tr> 
+                            <tr>
                                 <th class="text-left">Supplier</th>
                                 <th class="text-left">Email Id</th>
                                 <th class="text-left">Mobile No.</th>
@@ -74,7 +74,7 @@
                         </thead>
                         <tbody>
                             @if(count($suppliers) >0 )
-                            @foreach($suppliers as $supplier) 
+                            @foreach($suppliers as $supplier)
                         <td class="text-left">{{$supplier->firstname }} {{$supplier->lastname }}</td>
 
                         <td class="text-left">{{ $supplier->email }}</td>
@@ -96,12 +96,12 @@
                                 <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                     <li><a href="{!! route('admin.suppliers.delete',['id'=>$supplier->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
                                 </ul>
-                            </span>  
+                            </span>
                         </div>
-                        @endif 
+                        @endif
                         </td>
                         </tr>
                         @endforeach
@@ -109,18 +109,18 @@
                         <tr><td colspan="5" class="text-center"> No Record Found.</td></tr>
                         @endif
                         </tbody>
-                    </table> 
+                    </table>
                     <?php
-                    if (empty(Input::get('empSearch'))) {
-                        echo $suppliers->render();
-                    }
-                    ?>  
-             </div> 
-           </div> 
+if (empty(Input::get('empSearch'))) {
+    echo $suppliers->render();
+}
+?>
+             </div>
+           </div>
            </div>
         </div>
 </section>
 <div class="clearfix">
 
 
-@stop 
+@stop

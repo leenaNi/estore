@@ -133,39 +133,6 @@
                         </div>
                     </form>  
 
-                    <!-- <form action="" class="formMul" method="post" >
-                        <input type="hidden" value="" name="OrderIds" />
-                        <select name="orderAction" id="orderAction" class="form-control">
-                            <option value="">Select Bulk Action</option> 
-                            <option value="1">Print Invoice</option> 
-                            <option value="3" >Export</option>
-                            @if($feature['flag'] == 1)
-                            <option value="30" >Flag</option>
-                            @endif
-                            <optgroup label="Courier Services">
-                                <option value="31">E-courier</option>
-                            </optgroup> 
-                            <optgroup label="Update Order Status">
-                                <option value="8">Cancelled</option>
-                                <option value="12" >Delayed</option>
-                                <option value="6" >Delivered</option>
-                                <option value="9">Exchanged</option>
-                                <option value="10">Returned</option>
-                                <option value="20">Partially Shipped</option>
-                                <option value="4" >Processing</option>
-                                <option value="21">Refunded</option>
-                                <option value="5">Shipped</option>
-                                <option value="11">Undelivered</option>
-                            </optgroup>
-                            <optgroup label="Update Payment Status">
-                                <option value="13">Pending</option>
-                                <option value="14">Cancelled</option>
-                                <option value="15">Partially Paid</option>
-                                <option value="16">Paid</option>
-                            </optgroup>
-
-                        </select>
-                    </form> -->
                 </div>
             </div>
 
@@ -175,7 +142,7 @@
 
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Orders  
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Orders
 			<?php
                 if($ordersCount > 0)
                 {
@@ -207,63 +174,63 @@
                                   </button>
                                   <ul name="orderAction" id="orderAction" class="dropdown-menu bulk-action-dropdown-menu" aria-labelledby="dropdownMenu1">
                                     <li role="presentation" class="dropdown-header">Select Bulk Action</li>
-                                    <li><input type="radio" id="1" name="Bulk Action" value="1">
+                                    <li id="1"><input type="radio" id="1" name="Bulk Action" value="1">
                                         <label for="1">Print Invoice</label> 
                                     </li>
-                                    <li><input type="radio" id="3" name="Bulk Action" value="3">
+                                    <li id="3"><input type="radio" id="3" name="Bulk Action" value="3">
                                         <label for="3">Export</label> 
                                     </li> 
                                     @if($feature['flag'] == 1) 
-                                    <li><input type="radio" id="30" name="Bulk Action" value="30">
+                                    <li id="30"><input type="radio" id="30" name="Bulk Action" value="30">
                                         <label for="30">Flag</label> 
                                     </li> 
                                      @endif
                                     <li role="presentation" class="dropdown-header"> Courier Services </li>
-                                    <li><input type="radio" id="31" name="Bulk Action" value="31">
+                                    <li id="31"><input type="radio" id="31" name="Bulk Action" value="31">
                                         <label for="31">E-courier</label> 
                                     </li>  
                                     <li role="presentation" class="dropdown-header"> Update Order Status </li>
-                                     <li><input type="radio" id="8" name="Bulk Action" value="8">
+                                     <li id="8"><input type="radio" id="8" name="Bulk Action" value="8">
                                         <label for="8">Cancelled</label> 
                                     </li>
-                                     <li><input type="radio" id="12" name="Bulk Action" value="12">
+                                     <li id="12"><input type="radio" id="12" name="Bulk Action" value="12">
                                         <label for="12">Delayed</label> 
                                     </li>
-                                     <li><input type="radio" id="6" name="Bulk Action" value="6">
+                                     <li id="6"><input type="radio" id="6" name="Bulk Action" value="6">
                                         <label for="6">Delivered</label> 
                                     </li>
-                                     <li><input type="radio" id="9" name="Bulk Action" value="9">
+                                     <li id="9"><input type="radio" id="9" name="Bulk Action" value="9">
                                         <label for="9">Exchanged</label> 
                                     </li>
-                                     <li><input type="radio" id="10" name="Bulk Action" value="10">
+                                     <li id="10"><input type="radio" id="10" name="Bulk Action" value="10">
                                         <label for="10">Returned</label> 
                                     </li> 
-                                     <li><input type="radio" id="20" name="Bulk Action" value="20">
+                                     <li id="20"><input type="radio" id="20" name="Bulk Action" value="20">
                                         <label for="20">Partially Shipped</label> 
                                     </li> 
-                                     <li><input type="radio" id="4" name="Bulk Action" value="4">
+                                     <li id="4"><input type="radio" id="4" name="Bulk Action" value="4">
                                         <label for="4">Processing</label> 
                                     </li> 
-                                     <li><input type="radio" id="21" name="Bulk Action" value="21">
+                                     <li id="21"><input type="radio" id="21" name="Bulk Action" value="21">
                                         <label for="21">Refunded</label> 
                                     </li> 
-                                     <li><input type="radio" id="5" name="Bulk Action" value="5">
+                                     <li id="5"><input type="radio" id="5" name="Bulk Action" value="5">
                                         <label for="5">Shipped</label> 
                                     </li> 
-                                     <li><input type="radio" id="11" name="Bulk Action" value="11">
+                                     <li id="11"><input type="radio"  name="Bulk Action" value="11">
                                         <label for="11">Undelivered</label> 
                                     </li>   
                                     <li role="presentation" class="dropdown-header"> Update Payment Status </li>
-                                    <li><input type="radio" id="13" name="Bulk Action" value="13">
+                                    <li id="13"><input type="radio" id="13" name="Bulk Action" value="13">
                                         <label for="13">Pending</label> 
                                     </li>
-                                     <li><input type="radio" id="14" name="Bulk Action" value="14">
+                                     <li id="14"><input type="radio" id="14" name="Bulk Action" value="14">
                                         <label for="14">Cancelled</label> 
                                     </li>
-                                     <li><input type="radio" id="15" name="Bulk Action" value="15">
+                                     <li id="15"><input type="radio" id="15" name="Bulk Action" value="15">
                                         <label for="15">Partially Paid</label> 
                                     </li>
-                                     <li><input type="radio" id="16" name="Bulk Action" value="16">
+                                     <li id="16"><input type="radio" id="16" name="Bulk Action" value="16">
                                         <label for="16">Paid</label> 
                                     </li> 
                                   </ul>
@@ -559,18 +526,19 @@ $(document).ready(function() {
             $('#SForm').submit();
         }
     });
-    $("select#orderAction").change(function() {
+
+    $("#orderAction li").click(function() {
+   // $("select#orderAction").change(function() {
         var ids = $(".orderTable input.checkOrderId:checkbox:checked").map(function() {
             return $(this).val();
         }).toArray();
-        console.log(ids);
         if (ids.length == 0) {
             alert('Error! No Order Selected! Please Select Order first.');
             $(this).val('');
             return false;
         }
         $("input[name='OrderIds']").val(ids);
-        if ($(this).val() == 1) {
+        if (this.id == 1) {
             chkInvoice = confirm("Are you sure you want to continue (yes/no)?");
             if (chkInvoice == true) {
 
@@ -580,35 +548,35 @@ $(document).ready(function() {
                 return false;
             }
         }
-        if ($(this).val() == 17) {
+        if (this.id == 17) {
             chkshipRocket = confirm("Are you sure you want to continue (yes/no)?");
             if (chkshipRocket == true) {
                 $(this).parent().attr("action", "");
             } else {
                 return false;
             }
-        } else if ($(this).val() == 2) {
+        } else if (this.id == 2) {
             chkWaybill = confirm("Are you sure you want to continue (yes/no)?");
             if (chkWaybill == true) {
                 $(this).parent().attr("action", "");
             } else {
                 return false;
             }
-        } else if ($(this).val() == 3) {
+        } else if (this.id == 3) {
             expChk = confirm("Are you sure you want to continue (yes/no)?");
             if (expChk == true) {
                 $(this).parent().attr("action", "{{ route('admin.orders.export') }}");
             } else {
                 return false;
             }
-        } else if ($(this).val() == 25) {
+        } else if (this.id == 25) {
             expChk = confirm("Are you sure you want to continue (yes/no)?");
             if (expChk == true) {
                 $(this).parent().attr("action", "");
             } else {
                 return false;
             }
-        } else if ($(this).val() == 4) {
+        } else if (this.id == 4) {
             chkOrderStatus1 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus1 == true) {
                 $(".formMul").removeAttr("target");
@@ -621,7 +589,7 @@ $(document).ready(function() {
             } else {
                 return false;
             }
-        } else if ($(this).val() == 5) {
+        } else if (this.id == 5) {
             chkOrderStatus2 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus2 == true) {
                 $(".formMul").removeAttr("target");
@@ -634,7 +602,7 @@ $(document).ready(function() {
             } else {
                 return false;
             }
-        } else if ($(this).val() == 6) {
+        } else if (this.id == 6) {
             chkOrderStatus3 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus3 == true) {
                 $(".formMul").removeAttr("target");
@@ -647,7 +615,7 @@ $(document).ready(function() {
             } else {
                 return false;
             }
-        } else if ($(this).val() == 8) {
+        } else if (this.id == 8) {
             chkOrderStatus42 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus42 == true) {
                 $(".formMul").removeAttr("target");
@@ -661,7 +629,7 @@ $(document).ready(function() {
             } else {
                 return false;
             }
-        } else if ($(this).val() == 9) {
+        } else if (this.id == 9) {
             chkOrderStatus5 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus5 == true) {
                 $(".formMul").removeAttr("target");
@@ -675,7 +643,7 @@ $(document).ready(function() {
             } else {
                 return false;
             }
-        } else if ($(this).val() == 10) {
+        } else if (this.id == 10) {
             chkOrderStatus6 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus6 == true) {
                 $(".formMul").removeAttr("target");
@@ -689,7 +657,7 @@ $(document).ready(function() {
             } else {
                 return false;
             }
-        } else if ($(this).val() == 11) {
+        } else if (this.id == 11) {
             chkOrderStatus7 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus7 == true) {
                 $(".formMul").removeAttr("target");
@@ -704,7 +672,7 @@ $(document).ready(function() {
                 return false;
             }
 
-        } else if ($(this).val() == 12) {
+        } else if (this.id == 12) {
             chkOrderStatus8 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus8 == true) {
                 $(".formMul").removeAttr("target");
@@ -719,7 +687,7 @@ $(document).ready(function() {
                 return false;
             }
 
-        } else if ($(this).val() == 20) {
+        } else if (this.id == 20) {
             chkOrderStatus9 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus9 == true) {
                 $(".formMul").removeAttr("target");
@@ -733,7 +701,7 @@ $(document).ready(function() {
             } else {
                 return false;
             }
-        } else if ($(this).val() == 21) {
+        } else if (this.id == 21) {
             chkOrderStatus10 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkOrderStatus10 == true) {
                 $(".formMul").removeAttr("target");
@@ -748,35 +716,35 @@ $(document).ready(function() {
                 return false;
             }
 
-        } else if ($(this).val() == 13) {
+        } else if (this.id == 13) {
             chkPaymentStatus1 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkPaymentStatus1 == true) {
                 $(this).parent().attr("action", "{{ route('admin.orders.update.payment') }}?status=1");
             } else {
                 return false;
             }
-        } else if ($(this).val() == 14) {
+        } else if (this.id == 14) {
             chkPaymentStatus2 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkPaymentStatus2 == true) {
                 $(this).parent().attr("action", "{{ route('admin.orders.update.payment') }}?status=2");
             } else {
                 return false;
             }
-        } else if ($(this).val() == 15) {
+        } else if (this.id == 15) {
             chkPaymentStatus3 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkPaymentStatus3 == true) {
                 $(this).parent().attr("action", "{{ route('admin.orders.update.payment') }}?status=3");
             } else {
                 return false;
             }
-        } else if ($(this).val() == 16) {
+        } else if (this.id == 16) {
             chkPaymentStatus4 = confirm("Are you sure you want to continue (yes/no)?");
             if (chkPaymentStatus4 == true) {
                 $(this).parent().attr("action", "{{ route('admin.orders.update.payment') }}?status=4");
             } else {
                 return false;
             }
-        } else if ($(this).val() == 30) {
+        } else if (this.id == 30) {
             chkFlag = confirm("Are you sure you want to continue (yes/no)?");
             if (chkFlag == true) {
                 $(".formMul").removeAttr("target");
@@ -793,10 +761,10 @@ $(document).ready(function() {
             } else {
                 return false;
             }
-        } else if ($(this).val() == "") {
+        } else if (this.id == "") {
             window.location.href = "{{route('admin.orders.view')}}";
             // location.reload();
-        } else if ($(this).val() == 31) {
+        } else if (this.id == 31) {
             checkConfirm = confirm("Are you sure you want to continue (yes/no)?");
             if (checkConfirm) {
                 $(this).parent().attr("action", "{{route('admin.orders.getECourier')}}");
@@ -806,7 +774,7 @@ $(document).ready(function() {
             }
 
         }
-        var Thisval = $(this).val();
+        var Thisval = this.id;
         if (ids.length > 0) {
             if (Thisval != 4 && Thisval != 5 && Thisval != 6 && Thisval != 8 && Thisval != 9 && Thisval != 10 && Thisval != 11 && Thisval != 12 && Thisval != 20 && Thisval != 21 && Thisval != 30 && Thisval != 31) {
                 $(this).parent().submit();
