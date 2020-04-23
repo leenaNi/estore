@@ -710,7 +710,7 @@
                                         <table class="table no-margin">
 
                                             <tbody>
-
+                                            @if(count($billamount)>0)
                                                 @foreach($billamount as $billamounts)
                                                 <tr>
                                              
@@ -722,6 +722,7 @@
                                                     </td>
                                                 </tr>
                                                 @endforeach
+                                            @endif
                                             </tbody>
                                         </table>
                                         </div> 
@@ -816,7 +817,6 @@ function getReturnedCustomerData(){
            url:'returning-cust',
            data:{filter:filter},
            success:function(data){
-               console.log(data);
                 var str = JSON.stringify(data);
                 $("#custData").val(str);
                 $( "#returnCustForm" ).submit();
@@ -833,7 +833,7 @@ function getReturnedCustomer(){
            url:'returning-cust',
            data:{filter:filter,chart:chart},
            success:function(data){
-               console.log(data);
+              
                $("#ReturningCustomerChart").html(data);
            }
         });
@@ -1033,21 +1033,16 @@ function getProdData(prod_id){
            data:{startdate:startdate,enddate:enddate},
            success:function(data){
               //console.log(data.billamount[0]['total']);
-              console.log(data);
-              //console.log(data.value);
               var value = data.value;
               var color = data.color;
               var label = data.label;
               var ctx3 = $("#mybill").get(0).getContext("2d");
                var dataBill = [
-            
-                
                 {
                     value: value,
                     color: color,
                     label: label,
-                },
-                
+                }, 
             ];
              var piechartBills = new Chart(ctx3).Pie(dataBill);
               $("#totalbill").html(value);
@@ -1194,7 +1189,7 @@ function getProdData(prod_id){
                    data: form.serialize(), // serializes the form's elements.
                    success: function(data)
                    {
-                    console.log(data);
+                   
                         // var orderData = [];
                         // for(var k in data) {
                         //     orderData[k] =  data[k].created_at +":"+ data[k].total_order;
@@ -1239,7 +1234,7 @@ function getProdData(prod_id){
                    data: form.serialize(), // serializes the form's elements.
                    success: function(data)
                    {
-                    console.log(data);
+                   
                         // var orderData = [];
                         // for(var k in data) {
                         //     orderData[k] =  data[k].created_at +":"+ data[k].total_order;
@@ -1320,16 +1315,18 @@ function getProdData(prod_id){
             var ctx3 = $("#mybill").get(0).getContext("2d");
             var dataBill = [
             <?php 
+            if(count($billamount) > 0){
                foreach($billamount as $billamounts)
                {
                 ?>
                 {
-                    value: {{$billamounts['total']}},
+                    value: "{{$billamounts['total']}}",
                     color: "{{$billamounts['color']}}",
 
                     label: "{{$billamounts['customer_name']}}",
                 },
                 <?php 
+                }
             }
             ?>
             ];
@@ -1350,51 +1347,7 @@ function getProdData(prod_id){
         $labels .= ']';
         $amount .= ']';
         ?>
-        var areaChartCanvas = $("#areaChart").get(0).getContext("2d");
-        var bareaChartCanvas = $("#bareaChart").get(0).getContext("2d");
-        var barea = $("#bareaChart").get(0).getContext("2d");
-
-        var areaChart = new Chart(areaChartCanvas);
-        var bareaChart = new Chart(bareaChartCanvas);
-        var areaChartData = {
-            labels: <?php echo $labels; ?>,
-            datasets: [
-            {
-                label: "Electronics",
-                fillColor: "rgba(60,141,188,0.9)",
-                strokeColor: "rgba(60,141,188,0.8)",
-                pointColor: "#3b8bba",
-                pointStrokeColor: "rgba(60,141,188,1)",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(60,141,188,1)",
-                data: <?php echo $amount; ?>
-            }
-            ]
-        };
-        var areaChartOptions = {
-        showScale: true, //Boolean - If we should show the scale at all        
-        scaleShowGridLines: true, //Boolean - Whether grid lines are shown across the chart        
-        scaleGridLineColor: "rgba(0,0,0,.05)", //String - Colour of the grid lines        
-        scaleGridLineWidth: 1, //Number - Width of the grid lines        
-        scaleShowHorizontalLines: true, //Boolean - Whether to show horizontal lines (except X axis)        
-        scaleShowVerticalLines: true, //Boolean - Whether to show vertical lines (except Y axis)        
-        bezierCurve: true, //Boolean - Whether the line is curved between points       
-        bezierCurveTension: 0.3, //Number - Tension of the bezier curve between points      
-        pointDot: true, //Boolean - Whether to show a dot for each point      
-        pointDotRadius: 5, //Number - Radius of each point dot in pixels      
-        pointDotStrokeWidth: 1, //Number - Pixel width of point dot stroke       
-        pointHitDetectionRadius: 20, //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-        datasetStroke: true, //Boolean - Whether to show a stroke for datasets      
-        datasetStrokeWidth: 2, //Number - Pixel width of dataset stroke
-        datasetFill: false, //Boolean - Whether to fill the dataset with a color
-        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>", //String - A legend template
-        maintainAspectRatio: true, //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-        responsive: true  //Boolean - whether to make the chart responsive to window resizing
-    };
-    areaChart.Line(areaChartData, areaChartOptions);
-    bareaChart.Line(areaChartData, areaChartOptions);
-
-    ////////////// Order Chart
+       
     <?php
     $orderdata = '[';
     foreach ($orderGraph as $order) {
@@ -1407,70 +1360,9 @@ function getProdData(prod_id){
     
     ?>
 
-    var bar_data = {
-        data: <?php echo $orderdata; ?>,
-        color: "#3c8dbc"
-    };
-
-    var orderBarChart  =  $.plot("#bar-chart", [bar_data], {
-        grid: {
-            borderWidth: 1,
-            borderColor: "#f3f3f3",
-            tickColor: "#f3f3f3"
-        },
-        series: {
-            bars: {
-                show: true,
-                barWidth: 0.5,
-                align: "center"
-            }
-        },
-        xaxis: {
-            mode: "categories",
-            tickLength: 0
-        }
-    });
 
     /* END BAR CHART */
 </script>
-<script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
-    }
-});
-    </script>
+
 
 @stop

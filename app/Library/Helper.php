@@ -625,7 +625,7 @@ class Helper
     {
         $storeName = $allinput['store_name'];
         $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
-        if($allinput['phone_no']){
+        if(array_key_exists('phone_no',$allinput)){
             $phoneNo = $allinput['phone_no'];
         }else{
             $phoneNo = $allinput['phone'];
