@@ -224,7 +224,7 @@
 // if ($user->profile){
 ?>
             // $('#select_image')
-            // .attr('src', "{{ asset($public_path.$user->profile) }}")
+            // .attr('src', "{{ asset(@$public_path.$user->profile) }}")
             // .width(150)
             // .height(200);
             // $("#select_image").show();
