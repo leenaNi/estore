@@ -265,13 +265,13 @@ $settingsdata = App\Library\Helper::getSettings();
                     @endif
                 </ul>
             </li>
-
+            @if(env('IS_SUPPLIER')==1)
             <li class="{{ Route::currentRouteName() == 'admin.suppliers.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.suppliers.view') }}">
                     <i class="fa fa-money"></i><span>Suppliers</span> <i class=""></i>
                 </a>
             </li>
-
+            @endif
             @if(env('IS_INDIVIDUAL_STORE')==0)            
             <li class="{{ Route::currentRouteName() == 'admin.payments.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.payments.view') }}">

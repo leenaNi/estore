@@ -239,8 +239,11 @@
                   <th class="text-center">Stock</th>
                 @endif
                   <th class="text-center">Status</th>
-                @if(Session::get('login_user_type') != 3)
+                @if(Session::get('login_user_type') != 3 && Session::get('login_user_type') != 5)
                   <th class="text-center">Sell On Estorifi Mall</th>
+                @endif
+                 @if(Session::get('login_user_type') == 5)
+                  <th class="text-center">Show On Lisitng Page</th>
                 @endif
                   <th class="text-center">Action</th>
               </tr>
@@ -318,7 +321,7 @@
                 <td class="text-center">{{ $product->stock }}</td>
                 @endif
                 <td class="text-center" id="productStatus_{{$product->id}}"><span class="alertSuccess">{{$statusLabel}}</span></td>
-                @if(Session::get('login_user_type') != 3)
+                @if(Session::get('login_user_type') != 3 && Session::get('login_user_type') != 5)
                 <td class="text-center">
                   @if($product->is_share_on_mall==0)
                   <a prod-id="{{$product->id}}" class="   shareProductToMall" ui-toggle-class="" title="Publish To Mall"> 
@@ -331,8 +334,27 @@
                   @endif
                 </td>
                 @endif
+                @if(Session::get('login_user_type') == 5)
+                 <td class="text-center"> 
+                  @if(@$product->supplierProducts->count()==0)
+                  <a href="{!! route('admin.products.changesupplierStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this product?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn"></i></a>
+                  @else
+                   @foreach(@$product->supplierProducts as $prostatus)
+                    @if($prostatus->status==1)
+                    <a href="{!! route('admin.products.changesupplierStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this product?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn"></i></a>
+                    @elseif($prostatus->status==0)
+                    <a href="{!! route('admin.products.changesupplierStatus',['id'=>$product->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this product?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn"></i></a>
+                    @endif
+                  @endforeach
+
+                  @endif
+
+                  
+                </td>
+                @endif
                 <td class="text-center">
                 <div class="actionCenter">
+                   @if(Session::get('login_user_type') != 5)
                       <span><a class="btn-action-default" href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                       <span class="dropdown">
                           <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -343,6 +365,12 @@
                               <li><a href="javascript:;" id="changeStatusLink_{{$product->id}}" onclick="changeStatus({{$product->id}},{{$product->status}})" ><i class="fa fa-check "></i> {{$linkLabel}}</a></li>
                           </ul>
                       </span>  
+                    @endif
+                   
+                    @if(Session::get('login_user_type') == 5)
+                    <button  title="Edit Price" data-toggle="modal" data-target="#PriceModal" class="btn btn-secondary buyBtn btn-sm supplierprice"  data-id="{{$product->id}}" data-price="{{ $product->price }}" data-supprice={{@$product->supplierProducts[0]->price}} >Edit Price</button>
+                    @endif
+
                   </div>
                  
                   <!--                            @if($barcode == 1)  <a class="" data-id="{{ $product->id }}-{{ $product->prod_type }}" data-toggle="tooltip" title="Print"><i class="fa fa-print fa-fw"></i></a>
@@ -608,6 +636,60 @@
   </div>
 </div>
 <input type="hidden" id="page_type" value="main"/>
+
+
+<!-- Supplier Price Modal -->
+<div id="PriceModal" class="modal fade" role="dialog" style="height:auto;">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" style="background: #FCAF17;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Product Price</h4>
+      </div>
+        <div class="modal-body">
+
+
+                    <form id="prodpricefrm" method="post" action="{{route('admin.products.supplierprodPrice')}}" class="form-horizontal form-label-left mode2">
+                        <input type='hidden' name='_token' value='{{csrf_token()}}' >
+                            <span id="product"></span>
+                            <span id="productprice"></span>
+                            @if(Session::get('loggedinAdminId'))
+                            <input type='hidden' id="userId" name='user_id' value="{{@Session::get('loggedinAdminId')}}" >
+                            @else
+                            <input type='hidden' id="userId" name='user_id' >
+                            @endif
+                             <div class="form-group has-feedback ">
+                                    <label class="col-md-3" for="price">Price: <span style="color:red;">*</span></label>
+                                    <div class="col-md-9">
+                                     <input class="form-control input-sm bidPrice" type="number"  name="price" id="price"  value="" required />
+                                    </div>
+                            </div>
+                            <center><button type="submit" id="checkout" class="btn btn-block bidSubmitBtn btn-success buyBtn btn-md" style="width:130px;">Submit </button></center>
+                        </form>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+<!-- model end -->
+
+
+
+
+
+
+
+
+
+
+
+
 @stop
 @section('myscripts')
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
@@ -716,7 +798,19 @@
   </tr>
     {% } %}
 </script>
+
+
 <script>
+
+  $('.supplierprice').click(function(){
+    var prdid=$(this).data('id');
+    var prdprice=$(this).data('price');
+    var supprice=$(this).data('supprice');
+    $('#price').val(supprice);
+    $("#product").html("<input type='hidden' name='prod_id' value='"+prdid+"' id='prod_id'>");
+    $("#productprice").html("<input type='hidden' name='prod_price' value='"+prdprice+"' id='prod_price'>");
+  })
+
 
   function changeStatus(productId,status)
   {

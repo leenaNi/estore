@@ -59,6 +59,15 @@
                                                 <option value="0" {{ (@$is_individual_store == 0) ? "selected" : ""  }} >No</option>
                                             </select>
                                             </div>
+                                        </div> 
+                                        <div class="form-group">
+                                            {{ Form::label('suppliers', 'Suppliers? *', ['class' => 'col-sm-3 control-label']) }}
+                                            <div class="col-sm-9">
+                                            <select class="form-control exist-merch" required="true" name="suppliers">
+                                                <option value="1" {{ (@$suppliers == 1) ? "selected" : ""  }}>Yes</option>
+                                                <option value="0" {{ (@$suppliers == 0) ? "selected" : ""  }} >No</option>
+                                            </select>
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             {{ Form::label('Password', 'Password *', ['class' => 'col-sm-3 control-label']) }}

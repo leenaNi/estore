@@ -114,7 +114,7 @@ class MerchantController extends Controller
         $data['cat_selected'] = [];
         if ($merchant && Input::get('id')) {
             $resgister_details = json_decode($merchant->register_details);
-            $data['curr_selected'] = $resgister_details->currency_code;
+            $data['curr_selected'] = @$resgister_details->currency_code;
             $data['cat_selected'] = (@$resgister_details->business_type) ? @$resgister_details->business_type : [];
             $data['already_selling'] = (@$resgister_details->already_selling) ? @$resgister_details->already_selling : [];
             $data['store_version'] = (@$resgister_details->store_version);
@@ -131,7 +131,7 @@ class MerchantController extends Controller
         return Helper::returnView($viewname, $data);
     }
     public function saveUpdate()
-    {
+    {   
         $allinput = Input::all();
         $storeName = Input::get('company_name');
         $phone = Input::get('phone');
@@ -262,7 +262,6 @@ class MerchantController extends Controller
     {
         $appId = null;
         $regDetails = json_decode($newMerchant->register_details, true);
-        // dd($regDetails['is_individual_store']);
         $categories = $regDetails['business_type'];
         //$catid = 1;
         ini_set('max_execution_time', 600);
@@ -314,6 +313,7 @@ class MerchantController extends Controller
                     $zip->extractTo($path);
                     $zip->close();
                     $isIndividualStore = $regDetails['is_individual_store'];
+                    $isSuppliers = $regDetails['suppliers'];
                     $this->replaceFileString($path . "/.env", "%DB_HOST%", env('DB_HOST', ''));
                     $this->replaceFileString($path . "/.env", "%DB_DATABASE%", env('DB_DATABASE', ''));
                     $this->replaceFileString($path . "/.env", "%DB_USERNAME%", env('DB_USERNAME', ''));
@@ -322,6 +322,7 @@ class MerchantController extends Controller
                     $this->replaceFileString($path . "/.env", "%STORE_NAME%", "$domainname");
                     $this->replaceFileString($path . "/.env", "%STORE_ID%", "$storeId");
                     $this->replaceFileString($path . "/.env", "%IS_INDIVIDUAL_STORE%", "$isIndividualStore");
+                    $this->replaceFileString($path . "/.env", "%IS_SUPPLIER%", "$isSuppliers");
 
                     $insertArr = ["user_type" => 1, "status" => 1, "telephone" => "$phone", "store_id" => "$storeId", "prefix" => "$prefix"];
                     if ($appId) {

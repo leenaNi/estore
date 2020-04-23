@@ -191,4 +191,8 @@ class Product extends \Eloquent
     {
         return $this->hasMany('App\Models\HasVendors', 'prod_id')->orderBy('sort', 'ASC');
     }
+
+    public function supplierProducts() {
+          return $this->hasMany('App\Models\SupplierProducts', 'store_prod_id');
+    }
 }

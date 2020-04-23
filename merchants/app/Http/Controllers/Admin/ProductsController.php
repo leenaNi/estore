@@ -26,6 +26,7 @@ use App\Models\Store;
 use App\Models\Tax;
 use App\Models\UnitMeasure;
 use App\Models\User;
+use App\Models\SupplierProducts;
 use DB;
 use DNS1D;
 use DNS2D;
@@ -54,14 +55,16 @@ class ProductsController extends Controller
     public function index()
     {
         $userinfo = User::find(Session::get('loggedinAdminId'));
+        // dd($userinfo);
         $storeinfo = Store::find($userinfo->store_id);
         $industryid = $storeinfo->category_id;
+        $userId= $userinfo->id;
         if ($industryid == 0) {
             $cat = DB::table("industries")->where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
             return Helper::returnView(Config('constants.adminProductView') . '.select-industry', compact('cat'));
         }
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
-        $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
+        $products = Product::where('is_individual', '=', '1')->with(['supplierProducts' => function ($q) use ($userId) { return $q->where('supplier_id', '=', $userId); }])->where('prod_type', '<>', 6)->orderBy("id", "desc");
 
         // $categoryA = Category::get(['id', 'category'])->toArray();
         $categoryA = DB::table('store_categories')
@@ -174,7 +177,6 @@ class ProductsController extends Controller
                 $endIndex = ($productCount);
             }
         }
-
         return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets', 'startIndex', 'endIndex'));
     }
 
@@ -2925,7 +2927,7 @@ class ProductsController extends Controller
     public function mallProductUpdate()
     {
         $prodId = Input::get("prodId");
-        $jsonString = Helper::getSettings();
+        $jsonString = Helper::getSettings('store_prod_id', $prod->id);
         $store_id = $jsonString['store_id'];
         $products = Product::find(Input::get("prodId"));
         $products->is_share_on_mall = 0;
@@ -2933,6 +2935,68 @@ class ProductsController extends Controller
         MallProducts::where("store_prod_id", $prodId)->where("store_id", $store_id)->update(["status" => 0]);
         Session::flash('msg', "Product unpublished from mall successfully");
         return $data = ["status" => "1", "msg" => "Product Unpublished from mall successfully", "prod" => $products];
+    }
+
+      public function changesupplierStatus() {
+        $products = Product::where('id',Input::get('id'))->first();
+        $price = $products->selling_price;
+        $prod = SupplierProducts::where('store_prod_id', Input::get('id'))->where('supplier_id',Session::get('loggedinAdminId'))->first();
+        if($prod){
+            if ($prod->status == 1) {
+                $prodStatus = 0;
+                $msg = "Product disabled successfully.";
+                $prod->status = $prodStatus;
+                $prod->update();
+                Session::flash("message", $msg);
+                return redirect()->back()->with('message', $msg);
+            } else if ($prod->status == 0) {
+                $prodStatus = 1;
+                $msg = "Product  enabled successfully.";
+                $prod->status = $prodStatus;
+                $prod->update();
+                Session::flash("msg", $msg);
+                return redirect()->back()->with('msg', $msg);
+            }
+        }else{
+
+            $sproducts = SupplierProducts::Create();
+            $sproducts->supplier_id = Session::get('loggedinAdminId');
+            $sproducts->store_prod_id = Input::get('id');
+            $sproducts->status = 1; 
+            $sproducts->price = $price;
+            $sproducts->save();
+            $msg = "Product  enabled successfully.";
+            Session::flash("msg", $msg);
+            return redirect()->back()->with('msg', $msg);
+
+        }
+    }
+
+    public function supplierprodPrice() {
+
+         $prod = SupplierProducts::where('store_prod_id', Input::get('prod_id'))->where('supplier_id',Session::get('loggedinAdminId'))->first();
+        if($prod){
+
+            $prod->price = Input::get('price');
+            $prod->update();
+            $msg = "Product price updated successfully.";
+            Session::flash("msg", $msg);
+            return redirect()->back()->with('msg', $msg);
+
+        }else{
+
+            $sproducts = SupplierProducts::Create();
+            $sproducts->supplier_id = Session::get('loggedinAdminId');
+            $sproducts->store_prod_id = Input::get('prod_id');
+            $sproducts->status = 0; 
+            $sproducts->price = Input::get('price');
+            $sproducts->save();
+
+            $msg = "Product price updated successfully.";
+            Session::flash("msg", $msg);
+            return redirect()->back()->with('msg', $msg);
+        }
+
     }
 
 }
