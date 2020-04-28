@@ -146,6 +146,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/product-save-upload', ['as' => 'admin.products.prodSaveUpload', 'uses' => 'ProductsController@prodSaveUpload']);
                 Route::any('/sample-bulk-download', ['as' => 'admin.products.sampleBulkDownload', 'uses' => 'ProductsController@sampleBulkDownload']);
                 Route::any('/product-bulk-upload', ['as' => 'admin.products.productBulkUpload', 'uses' => 'ProductsController@productBulkUpload']);
+                Route::any('/supplierproduct-bulk-upload', ['as' => 'admin.products.supplierproductBulkUpload', 'uses' => 'ProductsController@supplierproductBulkUpload']);
                 Route::any('/product-bulk-image-upload', ['as' => 'admin.products.prdBulkImgUpload', 'uses' => 'ProductsController@prdBulkImgUpload']);
                 Route::any('/generate-barcode', ['as' => 'admin.products.generateBarcode', 'uses' => 'ProductsController@generateBarcode']);
                 Route::any('/print-barcode', ['as' => 'admin.products.printBarcode', 'uses' => 'ProductsController@printBarcode']);
@@ -163,6 +164,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/admin-product-mall-category', array('as' => 'admin.product.mall.category', 'uses' => 'ProductsController@getMallCategory'));
                 Route::any('/admin-mall-product-add', array('as' => 'admin.product.mall.product.Add', 'uses' => 'ProductsController@mallProductAdd'));
                 Route::post('/admin-mall-product-update', array('as' => 'admin.product.mall.product.update', 'uses' => 'ProductsController@mallProductUpdate'));
+                Route::get('/change-supplierstatus', ['as' => 'admin.products.changesupplierStatus', 'uses' => 'ProductsController@changesupplierStatus']);
+                Route::any('/updateprodPrice', ['as' => 'admin.products.supplierprodPrice', 'uses' => 'ProductsController@supplierprodPrice']);
             });
         });
 
@@ -856,3 +859,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
     });
     
 });
+
+
+

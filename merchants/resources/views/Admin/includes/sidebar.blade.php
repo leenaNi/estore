@@ -191,7 +191,7 @@ $settingsdata = App\Library\Helper::getSettings();
                     </li>
                 </ul>
             </li>
-            <li class="treeview {{ preg_match("/admin.vendors|admin.requisition/",Route::currentRouteName())? 'active' : ''}}">
+            <!-- <li class="treeview {{ preg_match("/admin.vendors|admin.requisition/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-credit-card"></i>
                     <span>Purchases</span>
@@ -202,7 +202,7 @@ $settingsdata = App\Library\Helper::getSettings();
                     <li class="{{ preg_match("/admin.requisition.view|admin.requisition.add|admin.requisition.edit/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.requisition.view') }}"><i class="fa fa-angle-right"></i>Purchase Orders</a></li>
 
                 </ul>
-            </li>
+            </li> -->
             @endif
             <li class="treeview {{ preg_match("/admin.campaign|admin.coupons|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.emailcampaign.viewemails|admin.emailcampaign.addemail|admin.emailcampaign.editemail|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
@@ -265,13 +265,13 @@ $settingsdata = App\Library\Helper::getSettings();
                     @endif
                 </ul>
             </li>
-
+            @if(env('IS_SUPPLIER')==1)
             <li class="{{ Route::currentRouteName() == 'admin.suppliers.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.suppliers.view') }}">
-                    <i class="fa fa-money"></i><span>Suppliers</span> <i class=""></i>
+                    <i class="fa fa-money"></i><span>Franchise</span> <i class=""></i>
                 </a>
             </li>
-
+            @endif
             @if(env('IS_INDIVIDUAL_STORE')==0)            
             <li class="{{ Route::currentRouteName() == 'admin.payments.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.payments.view') }}">

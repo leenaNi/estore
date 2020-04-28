@@ -26,6 +26,7 @@ use App\Models\Store;
 use App\Models\Tax;
 use App\Models\UnitMeasure;
 use App\Models\User;
+use App\Models\SupplierProducts;
 use DB;
 use DNS1D;
 use DNS2D;
@@ -54,14 +55,16 @@ class ProductsController extends Controller
     public function index()
     {
         $userinfo = User::find(Session::get('loggedinAdminId'));
+        // dd($userinfo);
         $storeinfo = Store::find($userinfo->store_id);
         $industryid = $storeinfo->category_id;
+        $userId= $userinfo->id;
         if ($industryid == 0) {
             $cat = DB::table("industries")->where("status", 1)->pluck('category', 'id')->prepend('Industry *', '');
             return Helper::returnView(Config('constants.adminProductView') . '.select-industry', compact('cat'));
         }
         $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
-        $products = Product::where('is_individual', '=', '1')->where('prod_type', '<>', 6)->orderBy("id", "desc");
+        $products = Product::where('is_individual', '=', '1')->with(['supplierProducts' => function ($q) use ($userId) { return $q->where('supplier_id', '=', $userId); }])->where('prod_type', '<>', 6)->orderBy("id", "desc");
 
         // $categoryA = Category::get(['id', 'category'])->toArray();
         $categoryA = DB::table('store_categories')
@@ -174,7 +177,6 @@ class ProductsController extends Controller
                 $endIndex = ($productCount);
             }
         }
-
         return Helper::returnView(Config('constants.adminProductView') . '.index', compact('products', 'category', 'user', 'barcode', 'rootsS', 'productCount', 'prod_types', 'attr_sets', 'startIndex', 'endIndex'));
     }
 
@@ -1525,10 +1527,12 @@ class ProductsController extends Controller
     }
 
     public function sampleBulkDownload()
-    {
+    {   
+        $userId = Session::get('loggedinAdminId');
         $details = [];
-        $arr = ['id', 'product', 'product_code', 'prod_type', 'images', 'attr_set', 'variants', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
-        $products = Product::where("is_individual", 1)->get(['id', 'product', 'product_code', 'prod_type', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount']);
+        $arr = ['id', 'product', 'product_code', 'prod_type', 'images', 'attr_set', 'variants', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell','supplier_price','supplier_status'];
+        $products = Product::where("is_individual", 1)->with(['supplierProducts' => function ($q) use ($userId) { return $q->where('supplier_id', '=', $userId); }])->get(['id', 'product', 'product_code', 'prod_type', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount']);
+        //dd(@$products->supplierProducts[0]);
         $sampleProds = [];
         array_push($sampleProds, $arr);
         $arrP = [];
@@ -1620,6 +1624,8 @@ class ProductsController extends Controller
                 @$cats,
                 @$relProds,
                 @$upProds,
+                @$prodt->supplierProducts[0]->price,
+                @$prodt->supplierProducts[0]->status,
             ];
             array_push($sampleProds, $details);
         }
@@ -1638,7 +1644,134 @@ class ProductsController extends Controller
         } else {
             echo "Please select file";
         }
+    } 
+    public function supplierproductBulkUpload()
+    {
+        if (Input::hasFile('file')) {
+            $file = Input::file('file');
+            $name = time() . '-' . $file->getClientOriginalName();
+            // $path = public_path() . '/theSoul/uploads/pincodes/';
+            $path = public_path() . '/public/Admin/uploads/products/';
+            $file->move($path, $name);
+            return $this->supproduct_import_csv($path, $name);
+        } else {
+            echo "Please select file";
+        }
     }
+
+
+    public function supproduct_import_csv($path, $filename)
+    {
+        $csv_file = $path . $filename;
+        if (($handle = fopen($csv_file, "r")) !== false) {
+            fgetcsv($handle);
+            $row_id = 1;
+            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                $num = count($data);
+                for ($c = 0; $c < $num; $c++) {
+                    $col[$c] = $data[$c];
+                }
+                $id = trim($col[0], ' ');
+                $store_prod_id = $col[1];
+                $price = $col[2];
+                $status = $col[3];
+                //dd($price);
+                if (!empty($id)) {
+                    //dd($id);
+                    if (strtolower($id) == 'null' || strtolower($id) == '') {
+                       // dd(456);
+                        $updateProd = SupplierProducts::firstOrNew(['store_prod_id' => $store_prod_id]);
+                        
+
+                        if (!empty($price)) {
+                            if (is_numeric($price)) {
+                                
+                                $updateProd->price = $price;
+                            } else {
+                                Session::flash("message", "Product id must be a Integer value for product Id " . $store_prod_id . " and row id " . $row_id);
+                                return redirect()->back();
+                            }
+                        }
+
+                         if (!empty($store_prod_id)) {
+
+                            $product = Product::where('id',$store_prod_id)->get();
+                            if(count($product)!=0){
+                            
+                               $updateProd->store_prod_id = $store_prod_id; 
+                           }else{
+                            Session::flash("message", "Product id not present in product list for product Id " . $store_prod_id . " and row id " . $row_id);
+                                return redirect()->back();
+
+                           }
+
+                        }
+                        if (!empty($price)) {
+                            $updateProd->price = $price;
+                        }
+                        if (!empty($status)) {
+                            $updateProd->status = $status;
+                        }
+
+                      
+                        $updateProd->supplier_id = Session::get('loggedinAdminId');
+                        $updateProd->save();
+
+                    }
+
+                    if (strtolower($id) != 'null') {
+                         //$updateProd = SupplierProducts::findOrNew($id);
+                         $updateProd = SupplierProducts::firstOrNew(['store_prod_id' => $store_prod_id]);
+                         //dd($updateProd);
+                        if (!empty($price)) {
+                            if (is_numeric($price)) {
+                                
+                                $updateProd->price = $price;
+                            } else {
+                                Session::flash("message", "Product id must be a Integer value for product Id " . $store_prod_id . " and row id " . $row_id);
+                                return redirect()->back();
+                            }
+                        }
+                        if (!empty($store_prod_id)) {
+
+                            $product = Product::where('id',$store_prod_id)->get();
+                            if(count($product)!=0){
+                            
+                               $updateProd->store_prod_id = $store_prod_id; 
+                           }else{
+                            Session::flash("message", "Product id not present in product list for product Id " . $store_prod_id . " and row id " . $row_id);
+                                return redirect()->back();
+
+                           }
+
+                        }
+                        if (!empty($price)) {
+                            $updateProd->price = $price;
+                        } 
+                        if (!empty($status)) {
+                            $updateProd->status = $status;
+                        }
+
+                        $updateProd->supplier_id = Session::get('loggedinAdminId');
+                        $updateProd->save();
+                    }
+                    
+                   
+                    
+                }
+                $row_id++;
+            }
+            fclose($handle);
+            Session::flash("msg", "Product uploaded successfully.");
+            return redirect()->back();
+        } else {
+            echo "Error being upload pincodes";
+        }
+    }
+
+
+
+
 
     public function product_import_csv1($path, $filename)
     {
@@ -2925,7 +3058,7 @@ class ProductsController extends Controller
     public function mallProductUpdate()
     {
         $prodId = Input::get("prodId");
-        $jsonString = Helper::getSettings();
+        $jsonString = Helper::getSettings('store_prod_id', $prod->id);
         $store_id = $jsonString['store_id'];
         $products = Product::find(Input::get("prodId"));
         $products->is_share_on_mall = 0;
@@ -2933,6 +3066,68 @@ class ProductsController extends Controller
         MallProducts::where("store_prod_id", $prodId)->where("store_id", $store_id)->update(["status" => 0]);
         Session::flash('msg', "Product unpublished from mall successfully");
         return $data = ["status" => "1", "msg" => "Product Unpublished from mall successfully", "prod" => $products];
+    }
+
+      public function changesupplierStatus() {
+        $products = Product::where('id',Input::get('id'))->first();
+        $price = $products->selling_price;
+        $prod = SupplierProducts::where('store_prod_id', Input::get('id'))->where('supplier_id',Session::get('loggedinAdminId'))->first();
+        if($prod){
+            if ($prod->status == 1) {
+                $prodStatus = 0;
+                $msg = "Product disabled successfully.";
+                $prod->status = $prodStatus;
+                $prod->update();
+                Session::flash("message", $msg);
+                return redirect()->back()->with('message', $msg);
+            } else if ($prod->status == 0) {
+                $prodStatus = 1;
+                $msg = "Product  enabled successfully.";
+                $prod->status = $prodStatus;
+                $prod->update();
+                Session::flash("msg", $msg);
+                return redirect()->back()->with('msg', $msg);
+            }
+        }else{
+
+            $sproducts = SupplierProducts::Create();
+            $sproducts->supplier_id = Session::get('loggedinAdminId');
+            $sproducts->store_prod_id = Input::get('id');
+            $sproducts->status = 1; 
+            $sproducts->price = $price;
+            $sproducts->save();
+            $msg = "Product  enabled successfully.";
+            Session::flash("msg", $msg);
+            return redirect()->back()->with('msg', $msg);
+
+        }
+    }
+
+    public function supplierprodPrice() {
+
+         $prod = SupplierProducts::where('store_prod_id', Input::get('prod_id'))->where('supplier_id',Session::get('loggedinAdminId'))->first();
+        if($prod){
+
+            $prod->price = Input::get('price');
+            $prod->update();
+            $msg = "Product price updated successfully.";
+            Session::flash("msg", $msg);
+            return redirect()->back()->with('msg', $msg);
+
+        }else{
+
+            $sproducts = SupplierProducts::Create();
+            $sproducts->supplier_id = Session::get('loggedinAdminId');
+            $sproducts->store_prod_id = Input::get('prod_id');
+            $sproducts->status = 0; 
+            $sproducts->price = Input::get('price');
+            $sproducts->save();
+
+            $msg = "Product price updated successfully.";
+            Session::flash("msg", $msg);
+            return redirect()->back()->with('msg', $msg);
+        }
+
     }
 
 }

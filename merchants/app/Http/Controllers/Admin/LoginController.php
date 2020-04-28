@@ -222,9 +222,9 @@ class LoginController extends Controller
             $distributorIdData = Merchants::find($merchantId);
         }
 
-        $public_path = Config('constants.adminImgUploadPath') . "/";
+        // $public_path = Config('constants.adminImgUploadPath') . "/";
         //echo Config('constants.adminView');exit;
-        return view(Config('constants.adminView') . '.adminEditProfile', compact('user', 'action', 'public_path', 'distributorIdData', 'userType'));
+        return view(Config('constants.adminView') . '.adminEditProfile', compact('user', 'action', 'distributorIdData', 'userType'));
     }
 
     public function admin_save_profile()
