@@ -2,11 +2,11 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Suppliers ({{$startIndex}} - {{$endIndex}} of {{$userCount}})
+        Franchise ({{$startIndex}} - {{$endIndex}} of {{$userCount}})
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">Suppliers</li>
+        <li class="active">Franchise</li>
     </ol>
 </section>
 
@@ -64,7 +64,7 @@
             <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
-                                <th class="text-left">Supplier</th>
+                                <th class="text-left">Name</th>
                                 <th class="text-left">Email Id</th>
                                 <th class="text-left">Mobile No.</th>
                                 <th class="text-right">Date</th>

@@ -2,11 +2,11 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Suppliers
+    Franchise
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class=""> <a href="{{route('admin.systemusers.view')}} " >Suppliers </a></li>
+        <li class=""> <a href="{{route('admin.systemusers.view')}} " >Franchise </a></li>
         <li class="active">Add/Edit</li>
     </ol>
 </section>
