@@ -934,6 +934,51 @@ class ApiCartController extends Controller
         return $data;
     }
 
+    public function editOfferQty()
+    {
+        $offerId = filter_var(Input::get('offerId'), FILTER_SANITIZE_STRING);
+        $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
+        Cart::instance('shopping')->destroy();
+        if($offerId != null && $quantity != null) {
+            $user = User::where('id', Session::get('authUserId'))->first();
+            $cartData = json_decode($user->cart, true);
+            Cart::instance('shopping')->add($cartData);
+            $cartData = Cart::instance("shopping")->content();
+            foreach($cartData as $cItem){
+                if($cItem->options->offerId && ($cItem->options->offerId == $offerId)){
+                    $rowId = $cItem->rowId;
+                    if($cItem->options->isOfferProduct==0){
+                        Cart::instance('shopping')->update($rowId, ['qty' => $quantity]);
+                    }
+                    
+                    else if($cItem->options->isOfferProduct == 1){
+                        $old_qty = $cItem->options->offer_qty;
+                        $update_qty = $old_qty * $quantity;
+                        Cart::instance('shopping')->update($rowId, ['qty' => $quantity,'options'=>['offer_qty'=>$update_qty]]);
+                    }
+                    //Cart::instance('shopping')->remove($rowId);
+                }
+            }
+            if(Cart::instance("shopping")->count() != 0){
+                $user->cart = json_encode($cartData);
+            } else {
+                $user->cart = '';
+            }
+            $user->update();
+            $data['data']['cart'] = $cartData;
+            $data['data']['total'] = Helper::getOrderTotal($cartData);
+            $data["data"]['cartCount'] = Cart::instance("shopping")->count();
+            $data['status'] = "1";
+            $data['msg'] = "Item removed successfully";
+            return $data;
+        }
+        else {
+            $data['msg'] = 'Mandatory fields are missing.';
+            $data['status'] = 0;
+        }
+        return $data;
+    }
+
     public function delete()
     {
         Cart::instance('shopping')->remove(Input::get("rowid"));
