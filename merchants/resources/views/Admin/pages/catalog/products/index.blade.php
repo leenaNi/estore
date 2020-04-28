@@ -146,7 +146,24 @@
                   </button>
               </a> 
             </div>
-            @endif         
+            @endif  
+            @if(Session::get('login_user_type') == 5)    
+             <div class="form-group">
+            <form action="{{ route('admin.products.supplierproductBulkUpload') }}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <div class="input-group file-upload-column">
+                        <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'up-arrow.svg'}}"></span>
+                        <div class="file-upload-wrapper" data-text="Products Upload"> 
+                            <input type="file" name="file" class="fullWidth form-control form-control-right-border-radius file-upload-field fileUploder file-upload-field" onChange="validateFile(this.value)"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group noAll-margin">
+                    <input type="submit" class="btn sbtn btn-secondary submitBulkUpload fullWidth noAll-margin" value="Upload"/> 
+                </div>
+            </form>   
+          </div> 
+          @else
             <div class="form-group">
             <form action="{{ route('admin.products.productBulkUpload') }}" method="post" enctype="multipart/form-data">
                 <div class="form-group">
@@ -161,7 +178,9 @@
                     <input type="submit" class="btn sbtn btn-secondary submitBulkUpload fullWidth noAll-margin" value="Upload"/> 
                 </div>
             </form>   
-          </div>          
+          </div>
+          @endif  
+           @if(Session::get('login_user_type') != 5)            
             <div class="form-group noAll-margin">
              <form id="fileupload" action="{{ asset(route('admin.products.prdBulkImgUpload')) }}" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
@@ -179,6 +198,7 @@
                 <span class="fileupload-process"></span>
             </form>   
             </div> 
+            @endif
             <!-- <button class="btn btn-default pull-right col-md-12 bulkuploadprod marginBottom15 mobAddnewflagBTN" type="button">Bulk Upload
             </button> --> 
         </div>

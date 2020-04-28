@@ -1527,10 +1527,12 @@ class ProductsController extends Controller
     }
 
     public function sampleBulkDownload()
-    {
+    {   
+        $userId = Session::get('loggedinAdminId');
         $details = [];
-        $arr = ['id', 'product', 'product_code', 'prod_type', 'images', 'attr_set', 'variants', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
-        $products = Product::where("is_individual", 1)->get(['id', 'product', 'product_code', 'prod_type', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount']);
+        $arr = ['id', 'product', 'product_code', 'prod_type', 'images', 'attr_set', 'variants', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell','supplier_price','supplier_status'];
+        $products = Product::where("is_individual", 1)->with(['supplierProducts' => function ($q) use ($userId) { return $q->where('supplier_id', '=', $userId); }])->get(['id', 'product', 'product_code', 'prod_type', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount']);
+        //dd(@$products->supplierProducts[0]);
         $sampleProds = [];
         array_push($sampleProds, $arr);
         $arrP = [];
@@ -1622,6 +1624,8 @@ class ProductsController extends Controller
                 @$cats,
                 @$relProds,
                 @$upProds,
+                @$prodt->supplierProducts[0]->price,
+                @$prodt->supplierProducts[0]->status,
             ];
             array_push($sampleProds, $details);
         }
@@ -1640,7 +1644,134 @@ class ProductsController extends Controller
         } else {
             echo "Please select file";
         }
+    } 
+    public function supplierproductBulkUpload()
+    {
+        if (Input::hasFile('file')) {
+            $file = Input::file('file');
+            $name = time() . '-' . $file->getClientOriginalName();
+            // $path = public_path() . '/theSoul/uploads/pincodes/';
+            $path = public_path() . '/public/Admin/uploads/products/';
+            $file->move($path, $name);
+            return $this->supproduct_import_csv($path, $name);
+        } else {
+            echo "Please select file";
+        }
     }
+
+
+    public function supproduct_import_csv($path, $filename)
+    {
+        $csv_file = $path . $filename;
+        if (($handle = fopen($csv_file, "r")) !== false) {
+            fgetcsv($handle);
+            $row_id = 1;
+            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                $num = count($data);
+                for ($c = 0; $c < $num; $c++) {
+                    $col[$c] = $data[$c];
+                }
+                $id = trim($col[0], ' ');
+                $store_prod_id = $col[1];
+                $price = $col[2];
+                $status = $col[3];
+                //dd($price);
+                if (!empty($id)) {
+                    //dd($id);
+                    if (strtolower($id) == 'null' || strtolower($id) == '') {
+                       // dd(456);
+                        $updateProd = SupplierProducts::firstOrNew(['store_prod_id' => $store_prod_id]);
+                        
+
+                        if (!empty($price)) {
+                            if (is_numeric($price)) {
+                                
+                                $updateProd->price = $price;
+                            } else {
+                                Session::flash("message", "Product id must be a Integer value for product Id " . $store_prod_id . " and row id " . $row_id);
+                                return redirect()->back();
+                            }
+                        }
+
+                         if (!empty($store_prod_id)) {
+
+                            $product = Product::where('id',$store_prod_id)->get();
+                            if(count($product)!=0){
+                            
+                               $updateProd->store_prod_id = $store_prod_id; 
+                           }else{
+                            Session::flash("message", "Product id not present in product list for product Id " . $store_prod_id . " and row id " . $row_id);
+                                return redirect()->back();
+
+                           }
+
+                        }
+                        if (!empty($price)) {
+                            $updateProd->price = $price;
+                        }
+                        if (!empty($status)) {
+                            $updateProd->status = $status;
+                        }
+
+                      
+                        $updateProd->supplier_id = Session::get('loggedinAdminId');
+                        $updateProd->save();
+
+                    }
+
+                    if (strtolower($id) != 'null') {
+                         //$updateProd = SupplierProducts::findOrNew($id);
+                         $updateProd = SupplierProducts::firstOrNew(['store_prod_id' => $store_prod_id]);
+                         //dd($updateProd);
+                        if (!empty($price)) {
+                            if (is_numeric($price)) {
+                                
+                                $updateProd->price = $price;
+                            } else {
+                                Session::flash("message", "Product id must be a Integer value for product Id " . $store_prod_id . " and row id " . $row_id);
+                                return redirect()->back();
+                            }
+                        }
+                        if (!empty($store_prod_id)) {
+
+                            $product = Product::where('id',$store_prod_id)->get();
+                            if(count($product)!=0){
+                            
+                               $updateProd->store_prod_id = $store_prod_id; 
+                           }else{
+                            Session::flash("message", "Product id not present in product list for product Id " . $store_prod_id . " and row id " . $row_id);
+                                return redirect()->back();
+
+                           }
+
+                        }
+                        if (!empty($price)) {
+                            $updateProd->price = $price;
+                        } 
+                        if (!empty($status)) {
+                            $updateProd->status = $status;
+                        }
+
+                        $updateProd->supplier_id = Session::get('loggedinAdminId');
+                        $updateProd->save();
+                    }
+                    
+                   
+                    
+                }
+                $row_id++;
+            }
+            fclose($handle);
+            Session::flash("msg", "Product uploaded successfully.");
+            return redirect()->back();
+        } else {
+            echo "Error being upload pincodes";
+        }
+    }
+
+
+
+
 
     public function product_import_csv1($path, $filename)
     {
