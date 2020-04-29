@@ -938,7 +938,7 @@ class ApiCartController extends Controller
     {
         $offerId = filter_var(Input::get('offerId'), FILTER_SANITIZE_STRING);
         $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
-        Cart::instance('shopping')->destroy();
+        //Cart::instance('shopping')->destroy();
         if($offerId != null && $quantity != null) {
             $user = User::where('id', Session::get('authUserId'))->first();
             $cartData = json_decode($user->cart, true);
@@ -946,18 +946,26 @@ class ApiCartController extends Controller
             $cartData = Cart::instance("shopping")->content();
             foreach($cartData as $cItem){
                 if($cItem->options->offerId && ($cItem->options->offerId == $offerId)){
-                    $offerData = DB::table('offers_products')->where(['prod_id'=>$cItem->id,'offer_id'=>$offerId])->first();
                     $rowId = $cItem->rowId;
-                    if($cItem->options->isOfferProduct==0){
-                        Cart::instance('shopping')->update($rowId, ['qty' => $offerData->qty*$quantity]);
+                    if($quantity == 0){
+                        Cart::instance('shopping')->remove($rowId);
+                        $data['msg'] = "Item removed successfully";
+                    }else{
+                        $offerData = DB::table('offers_products')->where(['prod_id'=>$cItem->id,'offer_id'=>$offerId])->first();
+                        $product = DB::table('products')->where('id',$cItem->id)->first();
+                        $offer_qty = $offerData->qty * $quantity;
+                        $offer_disc_amt = $product->spl_price * $offer_qty;
+                        
+                        if($cItem->options->isOfferProduct==0){
+                            Cart::instance('shopping')->update($rowId, ['qty' => $offer_qty]);
+                        }
+                        else if($cItem->options->isOfferProduct == 1){
+                            $item = Cart::get($rowId);
+                            $option = $item->options->merge(['offer_qty'=>$offer_qty,'offer_disc_amt'=>$offer_disc_amt]);
+                            Cart::instance('shopping')->update($rowId, ['qty' => $offer_qty,'options'=>$option]);
+                        }
+                        $data['msg'] = "Item Added successfully";
                     }
-                    
-                    else if($cItem->options->isOfferProduct == 1){
-                        $old_qty = $cItem->options->offer_qty;
-                        $update_qty = $old_qty * $quantity;
-                        Cart::instance('shopping')->update($rowId, ['qty' => $offerData->qty*$quantity,'options'=>['offer_qty'=>$update_qty]]);
-                    }
-                    //Cart::instance('shopping')->remove($rowId);
                 }
             }
             if(Cart::instance("shopping")->count() != 0){
@@ -970,7 +978,7 @@ class ApiCartController extends Controller
             $data['data']['total'] = Helper::getOrderTotal($cartData);
             $data["data"]['cartCount'] = Cart::instance("shopping")->count();
             $data['status'] = "1";
-            $data['msg'] = "Item removed successfully";
+            
             return $data;
         }
         else {
