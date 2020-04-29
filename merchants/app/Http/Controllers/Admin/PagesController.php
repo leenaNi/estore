@@ -391,7 +391,7 @@ class PagesController extends Controller
             ->values($nvCustomersCount)
             ->responsive(false);
 
-        $Customervisited_chart = Charts::create('donut', 'highcharts')
+        $Customervisited_chart = Charts::create('bar', 'highcharts')
             ->title("Weekly Visited Customers : " . array_sum($visitedCustomersCount))
             ->elementLabel("Visited Customers")
             ->labels($Date_range)
@@ -464,7 +464,7 @@ class PagesController extends Controller
         $returningcustomer = Order::join('users', 'orders.user_id', '=', 'users.id')->whereRaw($finalquery)->whereNotIn("orders.user_id", $lastOrders)->whereIn("orders.user_id", $lasttolastOrders)->whereIn("orders.user_id", $currentOrders)->where('orders.store_id', $this->jsonString['store_id'])->groupBy('user_id')->get(['orders.user_id','orders.created_at',DB::raw('sum(orders.pay_amt) as pay_amt'), 'users.firstname', 'users.lastname', 'users.email']);
       
         if($chart == 1){
-            $returning_customer_chart = Charts::create('donut', 'highcharts')
+            $returning_customer_chart = Charts::create('line', 'highcharts')
             ->title("Returned Customers : " . count($returningcustomer))
             ->elementLabel("Customers")
             ->labels(['customers'])
@@ -897,7 +897,7 @@ class PagesController extends Controller
             $visitedCustomersCount[] = count($visitedCust);
         }
 
-        $Customervisited_chart = Charts::create('donut', 'highcharts')
+        $Customervisited_chart = Charts::create('line', 'highcharts')
             ->title("Total Visited Customers : " . array_sum($visitedCustomersCount))
             ->elementLabel("Visited Customers")
             ->labels($Date_range)

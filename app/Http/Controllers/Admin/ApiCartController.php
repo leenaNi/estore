@@ -946,15 +946,16 @@ class ApiCartController extends Controller
             $cartData = Cart::instance("shopping")->content();
             foreach($cartData as $cItem){
                 if($cItem->options->offerId && ($cItem->options->offerId == $offerId)){
+                    $offerData = DB::table('offers_products')->where(['prod_id'=>$cItem->id,'offer_id'=>$offerId])->first();
                     $rowId = $cItem->rowId;
                     if($cItem->options->isOfferProduct==0){
-                        Cart::instance('shopping')->update($rowId, ['qty' => $quantity]);
+                        Cart::instance('shopping')->update($rowId, ['qty' => $offerData->qty*$quantity]);
                     }
                     
                     else if($cItem->options->isOfferProduct == 1){
                         $old_qty = $cItem->options->offer_qty;
                         $update_qty = $old_qty * $quantity;
-                        Cart::instance('shopping')->update($rowId, ['qty' => $quantity,'options'=>['offer_qty'=>$update_qty]]);
+                        Cart::instance('shopping')->update($rowId, ['qty' => $offerData->qty*$quantity,'options'=>['offer_qty'=>$update_qty]]);
                     }
                     //Cart::instance('shopping')->remove($rowId);
                 }
