@@ -18,7 +18,7 @@
                         <div class="alert alert-danger"> {{ Session::get('storeadded') }}</div>
                         @endif
                             <h3>Create your online store in just 5 mins</h3>
-                            <span>No technical skills required. An all-in-one E-commerce platform.</span>
+                            <span>No technical skills required. All-in-one E-commerce platform.</span>
                         </div>
                         <div class="line" style="margin: 20px 0 20px;"></div>
 <!--                        <div class="col_half bottommargin-xs">
@@ -66,7 +66,7 @@
 
         <div id="features-list"></div>
         <div class="container clearfix nobottommargin">
-            <div class="row clearfix disp-flex">
+            <div class="row clearfix">
 
                 <div class="col-lg-5 col-md-5 col-sm-6">
                     <h2 class="marginBottom10">Highlights</h2>
@@ -96,7 +96,7 @@
 
                 <div class="col-lg-7  col-md-7 col-sm-6">
 
-                    <div style="position: relative; bottom:-80px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
+                    <div style="position: relative;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fmobile.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="400" alt="iPad">
                     </div>
@@ -119,7 +119,7 @@
                             <a href="#"><i class="i-alt noborder icon-shopping-cart"></i></a>
                         </div>
                      
-                        <h3>Create an online store <br/>in just 5 minutes<span class="subtitle">Set Up a business name, buy a domain, and create an online brand for free.</span></h3>
+                        <h3>Create an online store in just 5 minutes<span class="subtitle">Create your online<br>store in just few minutes</span></h3>
                     </div>
                 </div>
  
@@ -130,7 +130,7 @@
                         <div class="fbox-icon">
                             <a href="#"><i class="i-alt noborder icon-cloud-upload"></i></a>
                         </div>
-                        <h3>Sell everything, <br/>everywhere!<span class="subtitle">Use a single platform to sell products to anyone, anywhere - your ecommerce store, marketplaces, social media and in-person with point of sale.</span></h3>
+                        <h3>Upload<span class="subtitle">Upload your <br/>store &amp; products information</span></h3>
                     </div>
                 </div>
 
@@ -139,7 +139,7 @@
                         <div class="fbox-icon">
                             <a href="#"><i class="i-alt noborder icon-thumbs-up2"></i></a>
                         </div>
-                        <h3>Get live business insights <br/>and Market smarter<span class="subtitle">Take the guesstimation out of marketing campaigns with built-in tools that help you create, execute, and analyze SMS and email campaigns.</span></h3>
+                        <h3>Sell<span class="subtitle">Sit back and<br>start selling online</span></h3>
                     </div>
                 </div>
 

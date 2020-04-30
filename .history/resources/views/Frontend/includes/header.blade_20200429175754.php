@@ -11,8 +11,8 @@
             <!-- Logo
             ============================================= -->
             <div id="logo">
-                <a href="/" class="standard-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/eStorifi.svg') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/eStorifi.svg') }}" alt="eStorifi"></a>
-                <a href="/" class="retina-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/eStorifi.svg') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/eStorifi.svg') }}" alt="eStorifi"></a>
+                <a href="/" class="standard-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}" alt="eStorifi"></a>
+                <a href="/" class="retina-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}" alt="eStorifi"></a>
             </div><!-- #logo end -->
 
             <!-- Primary Navigation
@@ -21,7 +21,7 @@
 
                 <ul>
                     <li><a href="/"><div>Home</div></a></li>
-                    <!-- <li><a href="{{ route('about') }}" class="smooth-me"><div>About</div></a></li> -->
+                    <li><a href="{{ route('about') }}" class="smooth-me"><div>About</div></a></li>
                     <li><a href="/features" class="smooth-me"><div>Features</div></a></li>
                     <li><a href="/pricing" class="smooth-me"><div>Pricing</div></a></li>
                     

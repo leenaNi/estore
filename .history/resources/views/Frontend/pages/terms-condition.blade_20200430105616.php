@@ -223,11 +223,8 @@ You agree not to post, distribute, transmit or otherwise make available any data
 Grievance Officer <br/>
 ESTORIFI, <br/>
 Grievance Redressal Officer, <br/>
-<!-- <strong>Mumbai</strong><br> -->
-C/504, Neelkanth Business Park, Near Vidyavihar Station, <br/>
-Vidyavihar West, Mumbai 400086.<br>
-<!-- 8th Floor, Haque Tower, IA - 28/8 – D,<br/>
-Mohakhali, C/A Dhaka 1212<br/> -->
+8th Floor, Haque Tower, IA - 28/8 – D,<br/>
+Mohakhali, C/A Dhaka 1212<br/>
 Ph: +91-9773303885
 </p>
 					<p>We request you to please provide the following information in your complaint:<br/>

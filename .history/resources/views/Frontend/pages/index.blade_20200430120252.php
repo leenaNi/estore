@@ -96,7 +96,7 @@
 
                 <div class="col-lg-7  col-md-7 col-sm-6">
 
-                    <div style="position: relative; bottom:-80px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
+                    <div style="position: relative;" class="ohidden" data-height-lg="470" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fmobile.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="400" alt="iPad">
                     </div>

@@ -1056,7 +1056,7 @@ class HomeController extends Controller {
 
             $emailData = ['name' => $firstname, 'email' => $useremail, 'telephone' => $telephone, 'messages' => $message];
             Mail::send('Frontend.emails.contactEmail', $emailData, function ($m) use ($useremail, $firstname) {
-                $m->to("pravin@infiniteit.biz", $firstname)->subject('eStorifi Contact form!');
+                $m->to("gautam.udani@infiniteit.biz", $firstname)->subject('eStorifi Contact form!');
             });
             return 1;
         } else {
@@ -1145,7 +1145,7 @@ class HomeController extends Controller {
             $firstname = $userDetails->firstname;
             $emailData = ['name' => $firstname, 'newlink' => $linktosend];
             Mail::send('Frontend.emails.forgotPassEmail', $emailData, function ($m) use ($email, $firstname) {
-                $m->to('madhuri@infiniteit.biz', $firstname)->subject('Forgot password');
+                $m->to($email, $firstname)->subject('Forgot password');
                 //$m->cc('madhuri@infiniteit.biz');
             });
         } else if ($login_type == 'phone') {

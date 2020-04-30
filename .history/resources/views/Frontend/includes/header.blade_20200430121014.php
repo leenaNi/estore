@@ -11,8 +11,8 @@
             <!-- Logo
             ============================================= -->
             <div id="logo">
-                <a href="/" class="standard-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/eStorifi.svg') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/eStorifi.svg') }}" alt="eStorifi"></a>
-                <a href="/" class="retina-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/eStorifi.svg') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/eStorifi.svg') }}" alt="eStorifi"></a>
+                <a href="/" class="standard-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}" alt="eStorifi"></a>
+                <a href="/" class="retina-logo" data-dark-logo="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}" alt="eStorifi"></a>
             </div><!-- #logo end -->
 
             <!-- Primary Navigation
