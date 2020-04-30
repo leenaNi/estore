@@ -13,7 +13,7 @@
 </section>
 <!-- Main content -->
 <section>
-    <div class="panel-body">   
+    <div class="panel-body">
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
@@ -161,7 +161,7 @@
                                         <td>{{ @$order["order_id"] }}</td>
                                         <td>{{ ucfirst(@$order["first_name"]) }} {{ @$order["last_name"] }} </td>
                                         <td>{{ @$order["phone_no"] }}</td>
-                                        <td>{{ @$order["order_status"] }}</td>  
+                                        <td>{{ @$order["order_status"] }}</td>
                                         <td>{{ @$order["payment_status"] }}</td>
                                         <td>{{ @$order["payment_method"] }}</td>
                                         <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';         ?><span class="currency-sym"></span> {{ @$order["total_amount"] }} </td>
@@ -286,7 +286,7 @@
                                                             {{@$product["product_name"]->product}}
                                                         </td>
                                                         <td>
-                                                         Rs. {{ number_format((@$product["product_name"]->price* Session::get('currency_val')), 2, '.', '')}} 
+                                                         Rs. {{ number_format((@$product["product_name"]->price* Session::get('currency_val')), 2, '.', '')}}
                                                      </td>
                                                      <td class="pull-left">
                                                         {{$product["quantity"]}}
@@ -311,15 +311,15 @@
                                 </div>
                                 <div class="box-body">
                                    <center>  <canvas id="mycanvas" width="300" height="300"></canvas>
-                                   </canvas> 
+                                   </canvas>
                                    <div class="table-responsive">
                                     <table class="table no-margin">
 
                                         <tbody>
-                                        
+
                                         @if(count($items) > 0)
                                             @foreach($items as $item)
-                                            
+
                                             <tr>
                                                 <td>
                                                     <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
@@ -328,14 +328,14 @@
                                                     {{$item["customer_name"]}}
                                                 </td>
                                                 <td>
-                                                    Rs. {{$item["total"]}} 
+                                                    Rs. {{$item["total"]}}
                                                 </td>
                                             </tr>
                                             @endforeach
                                         @endif
                                         </tbody>
                                     </table>
-                                </div> 
+                                </div>
                             </div>
 
                         </div>
@@ -474,7 +474,7 @@
                                 <div id="ordersChart">
                                      {!! $orders_chart->html() !!}
                                 </div>
-                                   
+
                                 </div>
                             </div>
                             </div>
@@ -536,7 +536,7 @@
                                 <div id="ProdSalesChart">
                                      {!! $product_sales_chart->html() !!}
                                 </div>
-                                   
+
                                 </div>
                             </div>
                             </div>
@@ -592,7 +592,7 @@
                                 <div id="OnlinevsWalkinChart">
                                      {!! $online_walkin_chart->html() !!}
                                 </div>
-                                   
+
                                 </div>
                             </div>
                             </div>
@@ -651,9 +651,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
-                        <div class="clearfix"></div>
+                      <div class="clearfix"></div>
                         <br>
                         
                         <div class="row">
@@ -713,25 +713,25 @@
                                             @if(count($billamount)>0)
                                                 @foreach($billamount as $billamounts)
                                                 <tr>
-                                             
+
                                                     <td>
                                                         {{$billamounts["customer_name"]}}
                                                     </td>
                                                     <td id="totalbill">
-                                                        Rs. {{$billamounts["total"]}} 
+                                                        Rs. {{$billamounts["total"]}}
                                                     </td>
                                                 </tr>
                                                 @endforeach
                                             @endif
                                             </tbody>
                                         </table>
-                                        </div> 
+                                        </div>
                                     </div>
                             </div>
                         </div>
                         
                     </div>
-                    <div class="clearfix"></div>
+                        <div class="clearfix"></div>
                         <br>
                         <div class="row">
                             <div class="col-md-6 marginBottom20">
@@ -753,10 +753,10 @@
                                         <option value="Yearly">Yearly</option>
                                         </select>
                                     </div>
-                                    
+
                                     <button type="button" onClick="getReturnedCustomerData()" class="btn btn-success">View Data</button>
                                     </div>
-                                    
+
                                         <div id="ReturningCustomerChart">
                                         {!! $returning_customer_chart->html() !!}
                                         </div>
@@ -774,7 +774,7 @@
                                                                 {{$item["customer_name"]}}
                                                             </td>
                                                             <td>
-                                                                Rs. {{$item["total"]}} 
+                                                                Rs. {{$item["total"]}}
                                                             </td>
                                                         </tr> -->
                                                         @endforeach
@@ -787,7 +787,7 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
                         <div class="clearfix"></div>
                         <br>
@@ -833,7 +833,7 @@ function getReturnedCustomer(){
            url:'returning-cust',
            data:{filter:filter,chart:chart},
            success:function(data){
-              
+
                $("#ReturningCustomerChart").html(data);
            }
         });
@@ -865,7 +865,7 @@ function getProdData(prod_id){
     emonth   = edate.getMonth() < 10 ? '0' + edate.getMonth() : edate.getMonth(),
     eday     = edate.getDate()  < 10 ? '0' + edate.getDate()  : edate.getDate(),
     enddate = eyr + '-' + emonth + '-' + eday;
-  
+
     $.ajax({
            type:'POST',
            url:'prod-sales-stat',
@@ -891,10 +891,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+
         $.ajax({
            type:'POST',
            url:'purchase-vs-sales-stat',
@@ -916,10 +916,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+
         $.ajax({
            type:'POST',
            url:'online-vs-walkin-stat',
@@ -941,11 +941,11 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
         var prodId = $("#prodId").val();
-          
+
         $.ajax({
            type:'POST',
            url:'prod-sales-stat',
@@ -968,10 +968,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+
         $.ajax({
            type:'POST',
            url:'sales-stat',
@@ -996,10 +996,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+
         $.ajax({
            type:'POST',
            url:'customers-stat',
@@ -1023,10 +1023,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+
         $.ajax({
            type:'POST',
            url:'avgbill-stat',
@@ -1042,7 +1042,7 @@ function getProdData(prod_id){
                     value: value,
                     color: color,
                     label: label,
-                }, 
+                },
             ];
              var piechartBills = new Chart(ctx3).Pie(dataBill);
               $("#totalbill").html(value);
@@ -1067,10 +1067,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+
         $.ajax({
            type:'POST',
            url:'notvisitedcustomers-stat',
@@ -1095,10 +1095,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+
         $.ajax({
            type:'POST',
            url:'visitedcustomers-stat',
@@ -1107,7 +1107,7 @@ function getProdData(prod_id){
               $("#CustomerVisitedChart").html(data);
            }
         });
-    }); 
+    });
 
     //customer  lost
       $('.customerslost_daterange').daterangepicker({
@@ -1120,10 +1120,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+
         $.ajax({
            type:'POST',
            url:'customerslost-stat',
@@ -1153,10 +1153,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-        
+
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-        
+
         $.ajax({
            type:'POST',
            url:'order-stat',
@@ -1178,7 +1178,7 @@ function getProdData(prod_id){
 </script>
         <script>
             $(document).ready(function(){
-             
+
                $('.OrderDate').blur(function (){
                      var form = $('#orderForm');
                      var url = form.attr('action');
@@ -1189,7 +1189,7 @@ function getProdData(prod_id){
                    data: form.serialize(), // serializes the form's elements.
                    success: function(data)
                    {
-                   
+
                         // var orderData = [];
                         // for(var k in data) {
                         //     orderData[k] =  data[k].created_at +":"+ data[k].total_order;
@@ -1198,7 +1198,7 @@ function getProdData(prod_id){
                             data: data,
                             color: "#3c8dbc"
                         };
-                
+
                         $.plot("#bar-chart", [bar_data], {
                             grid: {
                                 borderWidth: 1,
@@ -1234,7 +1234,7 @@ function getProdData(prod_id){
                    data: form.serialize(), // serializes the form's elements.
                    success: function(data)
                    {
-                   
+
                         // var orderData = [];
                         // for(var k in data) {
                         //     orderData[k] =  data[k].created_at +":"+ data[k].total_order;
@@ -1272,41 +1272,39 @@ function getProdData(prod_id){
 
                var ctx1 = $("#mycanvas").get(0).getContext("2d");
                var dataCustomers = [
-               <?php 
-               if(count($items) > 0){
-                foreach($items as $item)
-                {
-                    ?>
+               <?php
+if (count($items) > 0) {
+    foreach ($items as $item) {
+        ?>
                     {
                         value: {{$item['total']}},
                         color: "{{$item['color']}}",
 
                         label: "{{$item['customer_name']}}",
                     },
-                    <?php 
-                    }
-                }
-            ?>
+                    <?php
+}
+}
+?>
 
-            ];  
+            ];
             var piechartCustomers = new Chart(ctx1).Pie(dataCustomers);
 
 
             var ctx2 = $("#productCanvas").get(0).getContext("2d");
             var dataProducts = [
-            <?php 
-            foreach($products as $product)
-            {
-                ?>
+            <?php
+foreach ($products as $product) {
+    ?>
                 {
                     value: {{$product['quantity']}},
                     color: "{{$product['color']}}",
 
                     label: "{{@$product["product_name"]->product}}",
-                },  
-                <?php 
-            }
-            ?> 
+                },
+                <?php
+}
+?>
             ];
             var piechartProducts = new Chart(ctx2).Pie(dataProducts);
 
@@ -1314,21 +1312,20 @@ function getProdData(prod_id){
 
             var ctx3 = $("#mybill").get(0).getContext("2d");
             var dataBill = [
-            <?php 
-            if(count($billamount) > 0){
-               foreach($billamount as $billamounts)
-               {
-                ?>
+            <?php
+if (count($billamount) > 0) {
+    foreach ($billamount as $billamounts) {
+        ?>
                 {
                     value: "{{$billamounts['total']}}",
                     color: "{{$billamounts['color']}}",
 
                     label: "{{$billamounts['customer_name']}}",
                 },
-                <?php 
-                }
-            }
-            ?>
+                <?php
+}
+}
+?>
             ];
             var piechartBills = new Chart(ctx3).Pie(dataBill);
 
@@ -1338,27 +1335,27 @@ function getProdData(prod_id){
 
     <script>
         <?php
-        $labels = '[';
-        $amount = '[';
-        foreach ($salesGraph as $sale) {
-            $labels .= '"' . date('d M', strtotime($sale['created_at'])) . '",';
-            $amount .= '"' . $sale['total_amount'] . '",';
-        }
-        $labels .= ']';
-        $amount .= ']';
-        ?>
-       
+$labels = '[';
+$amount = '[';
+foreach ($salesGraph as $sale) {
+    $labels .= '"' . date('d M', strtotime($sale['created_at'])) . '",';
+    $amount .= '"' . $sale['total_amount'] . '",';
+}
+$labels .= ']';
+$amount .= ']';
+?>
+
     <?php
-    $orderdata = '[';
-    foreach ($orderGraph as $order) {
+$orderdata = '[';
+foreach ($orderGraph as $order) {
 
-        //echo date('d M', strtotime($order['created_at'])) . ',' . $order['total_order'];
-         $orderdata .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
+    //echo date('d M', strtotime($order['created_at'])) . ',' . $order['total_order'];
+    $orderdata .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
 
-    }
-    $orderdata .= ']';
-    
-    ?>
+}
+$orderdata .= ']';
+
+?>
 
 
     /* END BAR CHART */

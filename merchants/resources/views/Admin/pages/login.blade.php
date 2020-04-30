@@ -18,11 +18,11 @@
                 <div class="clearfix"></div>
                 <form action="{{ route('check_admin_user') }}" method="post" id="adminLogin">
                     <div class="form-group has-feedback">
-                        <input type="text" class="form-control" name="phone" placeholder="Mobile" id="phone">
+                        <input type="text" class="form-control" name="phone" placeholder="Mobile" id="phone" tabindex="1">
                         <span class="glyphicon glyphicon-earphone form-control-feedback"></span><p id="phone_re_validate"></p>
                     </div>
                     {{-- <div class="form-group has-feedback" style="display:block" id="otpdiv">
-                        <input type="number" class="form-control" name="otp" id="otp" placeholder="Enter OTP" required="true">
+                        <input type="number" class="form-control" name="otp" id="otp" placeholder="Enter OTP" required="true" tabindex="2">
                         <span class="glyphicon glyphicon-lock form-control-feedback" id="otper"></span><p id="otperr"></p>
                     </div> --}}
                     <div class="form-group has-feedback" style="display:none" id="otpdiv">
@@ -33,10 +33,10 @@
                                     <div class="form-group">
                                         <label for="">Type in your OTP</label>
                                         <div class="input-group input-otp-group">
-                                            <input tabindex="6" type="tel" class="form-control col" id="otp1" data-next="otp2" placeholder="">
-                                            <input tabindex="7" type="tel" class="form-control col" id="otp2" data-next="otp3" data-previous="otp1" placeholder="">
-                                            <input tabindex="8" type="tel" class="form-control col" id="otp3" data-next="otp4" data-previous="otp2" placeholder="">
-                                            <input tabindex="9" type="tel" class="form-control col" id="otp4" data-previous="otp3" placeholder="">
+                                            <input tabindex="3" type="tel" class="form-control col" id="otp1" data-next="otp2" placeholder="">
+                                            <input tabindex="4" type="tel" class="form-control col" id="otp2" data-next="otp3" data-previous="otp1" placeholder="">
+                                            <input tabindex="5" type="tel" class="form-control col" id="otp3" data-next="otp4" data-previous="otp2" placeholder="">
+                                            <input tabindex="6" type="tel" class="form-control col" id="otp4" data-previous="otp3" placeholder="">
                                         </div>
                                         <span class="error otperr" id="otperr"></span>
                                     </div>
@@ -87,7 +87,7 @@ $("#phone").keyup(function(event) {
         $("#sendotp").click();
     }
 });
-
+$('input#phone').focus();
 $('.digit-group').find('input').each(function() {
     $("#otperr").hide();
 	$(this).attr('maxlength', 1);
@@ -134,6 +134,7 @@ $("#sendotp").click(function()
                         console.log('@@@@' + response);
                         if (response['status'] == 'success') {
                             $("#otpdiv").show();
+                            $('input#otp1').focus();
                             $("#loginbtn").show();
                             $("#sendotp").hide();
                             $("#phone").hide();
