@@ -1,6 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
-<section id="slider" class="full-screen dark newStoreSlider" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/static.jpg') }}') center center no-repeat; background-size: cover" style="height:820px !important;">
+<section id="slider" class="full-screen dark newStoreSlider" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/static-new.jpg') }}') center center no-repeat; background-size: cover" style="height:820px !important;">
 
     <div class="">
 
