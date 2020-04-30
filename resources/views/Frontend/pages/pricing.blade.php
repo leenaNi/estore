@@ -1,6 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
-<section id="page-title" class="page-title-parallax page-title-center" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/static.jpg') }}') 0px; padding: 103px 0;">
+<section id="page-title" class="page-title-parallax page-title-center pricing-bg-title" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/pricing-bg.jpg') }}') 0px; padding: 103px 0;">
 
 	<div class="container clearfix">
 				<h2 class="white-text bottommargin-xs" data-animate="fadeInUp">Pricing that puts you first</h2>
@@ -15,7 +15,7 @@
 				<div class="container clearfix">
 				<div class="table-responsive">
 
-						<table class="table table-hover table-bordered table-comparison nobottommargin">
+						<table class="table table-hover table-bordered table-comparison nobottommargin pricing-comp-table">
 						  <thead>
 							<tr>
 							  <th>&nbsp;</th>

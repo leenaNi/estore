@@ -17,7 +17,7 @@
                                @if(Session::get('storeadded'))
                         <div class="alert alert-danger"> {{ Session::get('storeadded') }}</div>
                         @endif
-                            <h3>Create your online store in just 5 mins</h3>
+                            <h3>Create your online store in just 5 mins!</h3>
                             <span>No technical skills required. An all-in-one E-commerce platform.</span>
                         </div>
                         <div class="line" style="margin: 20px 0 20px;"></div>
@@ -79,24 +79,22 @@
 
 
                     <ul class="iconlist iconlist-large iconlist-color">
-                        <li><i class="icon-ok-sign"></i> Ready to use beautiful themes for 20+ category of businesses</li>
-                        <li><i class="icon-ok-sign"></i> Payment ready shop </li>
-                        <li><i class="icon-ok-sign"></i> Free hosting </li>
-                        <li><i class="icon-ok-sign"></i> In-built SEO </li>
-                        <li><i class="icon-ok-sign"></i> Customer management </li>
-                        <li><i class="icon-ok-sign"></i> Coupons/discount management </li>
-                        <li><i class="icon-ok-sign"></i> Loyalty program</li>
+                        <li><i class="icon-ok-sign"></i> Ready to use beautiful themes for 20+ business categories</li>
+                        <li><i class="icon-ok-sign"></i> Start accepting online payments  </li>
+                        <li><i class="icon-ok-sign"></i> In-built SEO</li>
+                        <li><i class="icon-ok-sign"></i> Customer management to get ensure highest customer satisfaction index</li>
+                        <li><i class="icon-ok-sign"></i> Coupons & discount management to woo more customers </li>
+                        <li><i class="icon-ok-sign"></i> Loyalty program to reward returning customers</li>
                         <li><i class="icon-ok-sign"></i> Mobile responsive</li>
-                        <li><i class="icon-ok-sign"></i> Inventory management</li>
-                        <li><i class="icon-ok-sign"></i> Reports</li>
-                        <li><i class="icon-ok-sign"></i> One page checkout</li>
+                        <li><i class="icon-ok-sign"></i> Inventory management to keep a track of your stocks</li>
+                        <li><i class="icon-ok-sign"></i> Reports to analyse your stores performance</li>
                     </ul>
                     <div class="featuresListButton"><a href="/features" class="btn theme-btn nomargin">View Complete Features List</a></div>
                 </div>
 
                 <div class="col-lg-7  col-md-7 col-sm-6">
 
-                    <div style="position: relative; bottom:-80px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
+                    <div style="position: relative; bottom:-10px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fmobile.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="400" alt="iPad">
                     </div>
@@ -110,27 +108,27 @@
 
         <div class="clearfix"></div>
         <div id="howitwork"></div>
-        <div class="section notopmargin pd100topbottom">
+        <div class="section notopmargin pd100topbottom mob-pd50topbottom">
             <div class="container clearfix">
 
-                <div class="col_one_third nobottommargin">
+                <div class="col_one_third nobottommargin mob-mb-30">
                     <div class="feature-box fbox-center fbox-light fbox-effect nobottomborder">
                         <div class="fbox-icon">
                             <a href="#"><i class="i-alt noborder icon-shopping-cart"></i></a>
                         </div>
                      
-                        <h3>Create an online store <br/>in just 5 minutes<span class="subtitle">Set Up a business name, buy a domain, and create an online brand for free.</span></h3>
+                        <h3>Create an online store <br/>in just 5 minutes<span class="subtitle hidden-mobile">Set Up a business name, buy a domain, and create an online brand for free.</span></h3>
                     </div>
                 </div>
  
                  
 
-                <div class="col_one_third nobottommargin">
+                <div class="col_one_third nobottommargin mob-mb-30">
                     <div class="feature-box fbox-center fbox-light fbox-effect nobottomborder">
                         <div class="fbox-icon">
                             <a href="#"><i class="i-alt noborder icon-cloud-upload"></i></a>
                         </div>
-                        <h3>Sell everything, <br/>everywhere!<span class="subtitle">Use a single platform to sell products to anyone, anywhere - your ecommerce store, marketplaces, social media and in-person with point of sale.</span></h3>
+                        <h3>Sell everything, <br/>everywhere!<span class="subtitle hidden-mobile">Use a single platform to sell products to anyone, anywhere - your ecommerce store, marketplaces, social media and in-person with point of sale.</span></h3>
                     </div>
                 </div>
 
@@ -139,7 +137,7 @@
                         <div class="fbox-icon">
                             <a href="#"><i class="i-alt noborder icon-thumbs-up2"></i></a>
                         </div>
-                        <h3>Get live business insights <br/>and Market smarter<span class="subtitle">Take the guesstimation out of marketing campaigns with built-in tools that help you create, execute, and analyze SMS and email campaigns.</span></h3>
+                        <h3>Get live business insights <br/>and Market smarter<span class="subtitle hidden-mobile">Take the guesstimation out of marketing campaigns with built-in tools that help you create, execute, and analyze SMS and email campaigns.</span></h3>
                     </div>
                 </div>
 
@@ -165,7 +163,7 @@
 
                                 <div class="col-lg-6 col-xs-12 sameheight">
 
-                                    <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="370" data-height-xxs="370">
+                                    <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="260" data-height-xxs="260">
                                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme1.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                                     </div>
 
@@ -181,7 +179,7 @@
 
                                 <div class="col-lg-6 col-xs-12 sameheight">
 
-                                    <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="370" data-height-xxs="370">
+                                    <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="260" data-height-xxs="260">
                                         <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme2.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                                     </div>
 
@@ -200,7 +198,7 @@
                 </div>
             </div>
         </div>
-        <div class="section parallax dark topmargin-sm nobottommargin" style="background-image: url('{{ asset(Config('constants.frontendPublicImgPath').'/home-testi-bg.jpg') }}'); padding: 100px 0;" data-stellar-background-ratio="0.4">
+        <div class="section parallax dark topmargin-sm nobottommargin" style="background-image: url('{{ asset(Config('constants.frontendPublicImgPath').'/home-testi-bg.jpg') }}'); padding: 50px 0;" data-stellar-background-ratio="0.4">
 
             <div class="heading-block center">
                 <h2>What Merchants Say?</h2>

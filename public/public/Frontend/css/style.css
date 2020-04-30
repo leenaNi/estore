@@ -602,8 +602,18 @@ select.sel-lang {
 .copyright-social a {
     margin: 0px 10px;
 }
+.copyright-links {
+    color: #aaa;
+}
+div#loginPOPUP .modal-sm {
+    width: 350px;
+}
+div#loginPOPUP .modal-body {
+    position: relative;
+    padding: 15px 20px;
+}
 .dark .copyright-links a {
-    color: #fff !important;}
+    color: #aaa !important;}
 p.error.storeErr {
     margin-bottom: 0;
     font-weight: bold;
@@ -2697,7 +2707,7 @@ body:not(.device-sm):not(.device-xs):not(.device-xxs) #header.transparent-header
 	transition: height .4s ease, opacity .3s ease;
 }
 #logo img {
-    max-width: 220px;
+    max-width: 180px;
 }
 
 #header.sticky-style-2 { height: 161px; }
@@ -2763,11 +2773,11 @@ body.top-search-open #top-account { opacity: 0; }
 
 #header.sticky-header:not(.static-sticky),
 #header.sticky-header:not(.static-sticky) #header-wrap,
-#header.sticky-header:not(.static-sticky):not(.sticky-style-2):not(.sticky-style-3) #logo img { height: 60px; }
+#header.sticky-header:not(.static-sticky):not(.sticky-style-2):not(.sticky-style-3) #logo img { height: 70px; }
 
 #header.sticky-header:not(.static-sticky) #primary-menu > ul > li > a {
-	padding-top: 19px;
-	padding-bottom: 19px;
+	padding-top: 25px;
+	padding-bottom: 25px;
 }
 
 #header.sticky-header:not(.static-sticky).sticky-style-2,
@@ -14378,4 +14388,28 @@ body:not(.no-transition) #wrapper,
 }
 .featuresListButton {
     margin-bottom: 30px;
+}
+.feature-bg-title {
+    position: relative;
+}
+.feature-bg-title:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0,0,0,0.3);
+}
+.pricing-bg-title {
+    position: relative;
+}
+.pricing-bg-title:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0,0,0,0.3);
 }
