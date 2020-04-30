@@ -14370,9 +14370,3 @@ body:not(.no-transition) #wrapper,
 	padding:0!important
 }
 
-.disp-flex{
-	display: flex;
-}
-.featuresListButton {
-    margin-bottom: 30px;
-}

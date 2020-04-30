@@ -21,7 +21,7 @@
 
                 <ul>
                     <li><a href="/"><div>Home</div></a></li>
-                    <!-- <li><a href="{{ route('about') }}" class="smooth-me"><div>About</div></a></li> -->
+                    <li><a href="{{ route('about') }}" class="smooth-me"><div>About</div></a></li>
                     <li><a href="/features" class="smooth-me"><div>Features</div></a></li>
                     <li><a href="/pricing" class="smooth-me"><div>Pricing</div></a></li>
                     

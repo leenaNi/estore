@@ -69,11 +69,9 @@
 					<p>Redressal Mechanism: Any complaints, abuse or concerns with regards to content and or comment or breach of these terms shall be immediately informed to the designated Grievance Officer as mentioned below via in writing or through email signed with the electronic signature to <a href="mailto:info@estorifi.com" target="_blank">info@estorifi.com</a>  to Mr. Chintan Lad ("Grievance Officer").<br/>Chain Fintech Solutions Ltd,<br/>
 Chintan Lad, <br/>
 Grievance Redressal Officer, <br/>
-<!-- 8th Floor, <br/>
+8th Floor, <br/>
 Haque Tower, IA - 28/8 – D, <br/>
-Mohakhali, C/A Dhaka 1212<br/> -->
-C/504, Neelkanth Business Park, Near Vidyavihar Station, <br/>
-Vidyavihar West, Mumbai 400086.<br>
+Mohakhali, C/A Dhaka 1212<br/>
 Ph: +91-9773303885
 </p>
 <p class="nobottommargin">We request you to please provide the following information in your complaint:-</p>

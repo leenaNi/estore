@@ -49,20 +49,19 @@
             <!-- Sidebar
             ============================================= -->
             <div class="sidebar col_last nobottommargin">
-                <!-- <address>
+                <address>
                     <strong>Dhaka</strong><br>
                     AZ Consultant Ltd.<br/>
                     House# 373 (2nd Floor), Road# 28,
                     Mohakhali DOHS, Dhaka-1212, Bangladesh.
-                    8th Floor, Haque Tower, IA - 28/8 – D, Mohakhali, C/A Dhaka 1212<br>
-                </address> -->
+                    <!-- 8th Floor, Haque Tower, IA - 28/8 – D, Mohakhali, C/A Dhaka 1212<br> -->
+                </address>
                 <address>
                     <strong>Mumbai</strong><br>
                     C/504, Neelkanth Business Park, Near Vidyavihar Station, 
                     Vidyavihar West, Mumbai 400086.<br>
                 </address>
-                <abbr><strong>Email:</strong></abbr> gautam.udani@infiniteit.biz
-                <!-- info@estorifi.com  -->
+                <abbr><strong>Email:</strong></abbr> info@estorifi.com 
               <!--   <div class="widget noborder notoppadding">
                     <a href="https://www.facebook.com/VeestoresGlobal/" target="_blank" class="social-icon si-small si-dark si-facebook">
                         <i class="icon-facebook"></i>
