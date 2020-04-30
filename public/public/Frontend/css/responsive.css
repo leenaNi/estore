@@ -360,7 +360,7 @@
 
 	#logo {
 		display: block;
-		height: 100px;
+		height: 80px;
 		float: none;
 		margin: 0 auto 0 !important;
 		max-width: none;
@@ -369,8 +369,12 @@
 		padding: 0 !important;
 	}
 
-	#logo a.standard-logo { display: inline-block; }
-
+	#logo a.standard-logo { display: block !important; }
+	#logo img {
+		max-width: 200px;
+		margin: 0 auto 0 auto;
+		padding-top: 15px;
+	}
 	#primary-menu {
 		display: block;
 		float: none;
@@ -379,7 +383,7 @@
 	#primary-menu-trigger {
 		opacity: 1;
 		pointer-events: auto;
-		top: 25px;
+		top: 15px;
 		margin-top: 0;
 		left: 0;
 		z-index: 1;
