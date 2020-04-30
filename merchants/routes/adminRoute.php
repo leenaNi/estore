@@ -778,6 +778,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/changeStatus', ['as' => 'admin.courier.changeStatus', 'uses' => 'CourierController@changeStatus']);
         });
 
+        Route::group(['prefix' => 'cart-value', 'middlewareGroups' => ['CheckUser', 'web']], function () {
+            Route::get('/', ['as' => 'admin.cartvalue.view', 'uses' => 'CartvalueController@index']);
+            Route::get('/add', ['as' => 'admin.cartvalue.add', 'uses' => 'CartvalueController@add']);
+            Route::post('/save', ['as' => 'admin.cartvalue.save', 'uses' => 'CartvalueController@save']);
+            Route::post('/update', ['as' => 'admin.cartvalue.update', 'uses' => 'CartvalueController@update']);
+            Route::get('/edit', ['as' => 'admin.cartvalue.edit', 'uses' => 'CartvalueController@edit']);
+        });
+
         Route::group(['prefix' => 'marketing', 'middlewareGroups' => ['CheckUser', 'web']], function () {
             Route::get('/emails', ['as' => 'admin.marketing.emails', 'uses' => 'MarketingEmailsController@emails']);
             Route::get('/add-group', ['as' => 'admin.marketing.addGroup', 'uses' => 'MarketingEmailsController@addGroup']);
