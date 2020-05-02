@@ -42,12 +42,12 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.additional-charges.view/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.additional-charges.view') }}"><i class="fa fa-angle-right"></i>Additional Charges</a></li>
                     @endif
-                    @if($feature['courier'] == 1)
+        <!--             @if($feature['courier'] == 1)
                       <li class="{{ preg_match("/admin.courier/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.courier.view') }}"><i class="fa fa-angle-right"></i>Courier Service</a></li>
                     @endif
                     @if($feature['min-cart-value-rule'] == 1)
                       <li class="{{ preg_match("/admin.cartvalue/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.cartvalue.view') }}"><i class="fa fa-angle-right"></i>Minimum Cart Value</a></li>
-                    @endif
+                    @endif -->
                 </ul>
             </li>
             <?php
