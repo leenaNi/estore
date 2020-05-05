@@ -42,14 +42,14 @@
                                 </span>
                             </div>
                         </div> -->
-                        <div class="clearfix"></div>
-                        <div class="clearfix"></div>
-                        <div class="form-group col-md-2">
-                            <input type="submit" name="submit" class="form-control btn btn-primary" value="Search" style="margin-left:0px">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <a href="{{route('admin.payments.newSettlement')}}" class="form-control medium btn reset-btn" style="margin-left:0px">Reset</a>
-                        </div>
+                        <!-- <div class="clearfix"></div> -->
+                       
+                        <a href="{{route('admin.payments.newSettlement')}}">
+                        <button type="button" class="btn reset-btn noMob-leftmargin pull-right" value="reset">Reset
+                        </button>
+                        </a>  
+                        <button type="submit" name="search" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Search"> Filter
+                        </button>  
                     </form>
                 </div>
                 <div class="box-header col-md-3">
