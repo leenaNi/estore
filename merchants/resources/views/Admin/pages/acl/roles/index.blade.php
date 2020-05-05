@@ -27,7 +27,7 @@
         <div class="section-main-heading">
             <h1 class="lineHeight-30">Roles
             <span>
-            <a href="{!! route('admin.roles.add') !!}" class="btn btn-default pull-right col-md-3" target="_" type="button">Add New Role</a></span></h1>
+            <a href="{!! route('admin.roles.add') !!}" class="btn btn-listing-heading pull-right noAll-margin" target="_" type="button">Add New Role</a></span></h1>
         </div>
         <div class="listing-section">
             <table class="table table-striped table-hover tableVaglignMiddle">
@@ -49,7 +49,7 @@
                                 <td class="text-right">{{ date('d-M-Y',strtotime($role->created_at)) }}</td>
                                 <td class="text-center">
                                     <div class="actionCenter">
-                                        <span><a class="btn-action-default" href="{{ route('admin.roles.edit',['id' => $role->id ])  }}">Edit</a></span> 
+                                        <span><a class="btn-action-default" href="{{ route('admin.roles.edit',['id' => $role->id ])  }}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                         <span class="dropdown">
                                             <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <span class="caret"></span>
