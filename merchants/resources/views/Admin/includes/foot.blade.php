@@ -409,14 +409,51 @@ $(".file-upload-column").on("change", ".file-upload-field", function() {
 
 // manage 2 div same height
 $( document ).ready(function() {
-    var s1 = $('.equal-height-div-1').height();
-    var s2 = $('.equal-height-div-2').height();
+    // var s1 = $('.equal-height-div-1').height();
+    // var s2 = $('.equal-height-div-2').height();
 
-    if (s1 > s2)
-        $('.equal-height-div-2').css('height', s1 + "px");
-    else
-        $('.equal-height-div-1').css('height', s2 + "px");
+    // if (s1 > s2)
+    //     $('.equal-height-div-2').css('height', s1 + "px");
+    // else
+    //     $('.equal-height-div-1').css('height', s2 + "px");
+        
 
+});
+var matchHeight = function () {
+	
+	function init() {
+		eventListeners();
+		matchHeight();
+	}
+	
+	function eventListeners(){
+		$(window).on('resize', function() {
+			matchHeight();
+		});
+	}
+	
+	function matchHeight(){
+		var groupName = $('[data-match-height]');
+		var groupHeights = [];
+		
+		groupName.css('min-height', 'auto');
+		
+		groupName.each(function() {
+			groupHeights.push($(this).outerHeight());
+		});
+		
+		var maxHeight = Math.max.apply(null, groupHeights);
+		groupName.css('min-height', maxHeight);
+	};
+	
+	return {
+		init: init
+	};
+	
+} ();
+
+$(document).ready(function() {
+	matchHeight.init();
 });
 
 
