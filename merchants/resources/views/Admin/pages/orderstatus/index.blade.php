@@ -43,8 +43,8 @@
                     </div>  
                     </div>
                     <div class="form-group col-md-4 noBottomMargin"> 
-                        <a href="{{route('admin.order_status.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right" >Reset</button></a>
-                        <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Filter"> 
+                        <a href="{{route('admin.order_status.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right mn-w100" >Reset</button></a>
+                        <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-sm mn-w100" value="Filter"> 
                     </div>
                 </form>
             </div>
@@ -66,7 +66,7 @@
                     <th class="text-center">Sort Order</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Is Default</th>
-                    <th class="text-center">Action</th>
+                    <th class="text-center mn-w120">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -106,7 +106,7 @@
                     <td class="text-center">{{$status->sort_order}}</td>
                     <td class="text-center" id="orderStatus_{{$status->id}}"><span class="alertSuccess">{{$statusLabel}}</span></td>
                     <td class="text-center isDefaultCls" id="orderStatusIsDefault_{{$status->id}}">{{$isDefaultVal}}</td>
-                    <td class="text-center">
+                    <td class="text-center mn-w120">
                          @if($status->id !=1) 
                          <div class="actionCenter"> 
                             <span><a class="btn-action-default" href="{!! route('admin.order_status.edit',['id'=>$status->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span>  

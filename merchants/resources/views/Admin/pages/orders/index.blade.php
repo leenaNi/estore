@@ -32,7 +32,7 @@
     </div>
 
     <div class="col-md-9 noLeft-padding">
-    <div class="grid-content">
+    <div class="grid-content" data-match-height="groupName">
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
@@ -97,8 +97,8 @@
                         <span onclick="myFunction()" id="advanced-filter-Btn"><i class="fa fa-caret-down" aria-hidden="true"></i> Advanced Filters</span>
                     </div>
                     <div class="form-group col-md-6 noBottomMargin"> 
-                        <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right">Reset</button></a> 
-                        <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg"> Filter</button> 
+                        <a href="{{route('admin.orders.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right mn-w120">Reset</button></a> 
+                        <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-sm mn-w120"> Filter</button> 
                     </div>
                     {!! Form::close() !!}
                 </div>
@@ -107,7 +107,7 @@
     </div>
 
     <div class="col-md-3 noRight-padding">
-    <div class="grid-content">
+    <div class="grid-content" data-match-height="groupName">
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
         </div>
@@ -170,7 +170,7 @@
                                 <input type="hidden" value="" name="OrderIds" />
                                 <span class="dropdown">
                                   <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                                    <span class="caret"></span>
+                                  <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                   </button>
                                   <ul name="orderAction" id="orderAction" class="dropdown-menu bulk-action-dropdown-menu" aria-labelledby="dropdownMenu1">
                                     <li role="presentation" class="dropdown-header">Select Bulk Action</li>
@@ -248,7 +248,7 @@
                             @if($feature['courier-services'] == 1)
                             <!-- <th>Courier Service</th>-->
                             @endif
-                            <th class="text-center">Action</th>
+                            <th class="text-center mn-w100">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -307,7 +307,7 @@
                             @if($feature['courier-services'] == 1)
 <!--                                   <td>{{ ($order->courier != 0)?$order->getcourier['name']:'-' }}</td>-->
                             @endif
-                            <td class="text-center">  
+                            <td class="text-center mn-w100">  
                             <div class="actionCenter">
                                 <span><a class="btn-action-default" href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                 <span class="dropdown">
