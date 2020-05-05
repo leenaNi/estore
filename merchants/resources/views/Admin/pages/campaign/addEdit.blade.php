@@ -51,8 +51,8 @@
                                         {!! Form::hidden('id',null) !!}
                                        
                                         <input type="hidden" name="return_url" value="{{ Route::currentRouteName()=='admin.campaign.add' ? 'active' : '' }}" />                                    
-                                        {!! Form::text('title',null, ["class"=>'form-control validate[required] ' ,"placeholder"=>'Message Title']) !!}
-                                        <div id="coupon_name_re_validate" style="color:red;"></div>
+                                        {!! Form::text('title',null, ["class"=>'form-control' ,"placeholder"=>'Message Title']) !!}
+                                        <div id="title_validate" style="color:red;"></div>
                                     </div>                                    
                                 </div>
                                 </div>
@@ -60,9 +60,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         {!! Form::label('content', 'Message Content ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::textarea('content',null, ["id"=>"msg_content","rows"=>5,"class"=>'form-control validate[required]' ,"placeholder"=>'Message Content']) !!}
+                                        {!! Form::textarea('content',null, ["id"=>"msg_content","rows"=>5,"class"=>'form-control' ,"placeholder"=>'Message Content']) !!}
                                         <span id="error_msg"></span>
-                                        <div id="coupon_code_re_validate" style="color:red;"></div>
+                                        <div id="content_validate" style="color:red;"></div>
                                     </div>
                                 </div>
                                 </div>
@@ -71,7 +71,7 @@
                                     <div class="col-sm-12">
                                         <input type="submit" value="Save as draft" class="btn btn-primary pull-right mobFloatLeft noMob-leftmargin" >
                                         <button type="button" class="btn btn-primary pull-right mobFloatLeft noMob-leftmargin" data-toggle="modal" data-target="#sendSmsModal">Send Test SMS </button>
-                                        <input type="button" onclick="sendBulkSms()" value="Send Bulk SMS" class="btn btn-primary pull-right mobFloatLeft noMob-leftmargin" >
+                                        <input type="button" onclick="sendBulkSms()" value="Send Bulk SMS" class="btn btn-primary pull-right mobFloatLeft noMob-leftmargin">
                                     </div>
                                 </div>
                                 </form>
@@ -118,7 +118,7 @@
     function sendSms()
     {
         var contactno = $("#contactno").val();
-        var title = $("#msg_title").val();
+        var title = $("#title").val();
         var content = $("#msg_content").val();
           // alert(contactno);
             $.ajax({
@@ -136,13 +136,24 @@
                 }
             });
     }
-
+    $("#title").keyup(function(){
+        $("#title_validate").text('');
+    });
+    $("#msg_content").keyup(function(){
+        $("#content_validate").text('');
+    });
     function sendBulkSms()
     {
-        var title = $("#msg_title").val();
+        var title = $("#title").val();
         var content = $("#msg_content").val();
-          // alert(contactno);
-            $.ajax({
+        if(title == '' || content == ''){
+            if(title == '')
+            $("#title_validate").text('This field is required');
+            if(content == '')
+            $("#content_validate").text('This field is required');
+        }else{
+            if (confirm('Send Message to all Customers ?')) {
+                $.ajax({
                 type: "POST",
                 url: "{{ route('admin.campaign.sendbulksms') }}",
                 data: {title:title,content:content},
@@ -156,6 +167,8 @@
                     console.log(e.responseText);
                 }
             });
+            }
+        }
     }
 
     $("#fromdatepicker").datepicker({dateFormat: 'yy-mm-dd'});

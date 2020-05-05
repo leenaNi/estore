@@ -112,11 +112,11 @@ if (Input::get('custSearch') && !empty(Input::get('custSearch'))) {
                 </div>
                 <div class="row">
                     <div class="col-md-3 pull-right">
-                    @if(count($userPayments) > 0 ){
+                    @if(count($userPayments) > 0 )
                         <div class="form-group ">
                             <button type="button" class="btn btn-primary settle-payment" >Settle Payments</button>
                         </div>
-                    }
+                    @endif
                     </div>
                 </div>
                 </form>
