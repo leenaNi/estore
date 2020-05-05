@@ -34,12 +34,32 @@ use Mail;
 use Route;
 use Session;
 use stdClass;
+use Redirect;
 
 class CheckoutController extends Controller
 {
 
     public function index()
     {
+        
+        $cartvalue = Session::get('cart');
+        $sum = 0;
+        foreach($cartvalue['shopping'] as $value){
+
+            $price = $value->price*$value->qty;
+            $sum = $sum + $price;
+
+        }
+        $totalcart_value =  $sum;
+        $is_mincart = GeneralSetting::where('url_key', 'min-cart-value-rule')->where("status", 1)->first();
+        $details = json_decode($is_mincart->details, true);
+        $charges= $details['charges'];
+        if($charges){
+            if ($charges > $totalcart_value) {
+                Session::flash('message', "Minimum cart value should be ".$charges." Rs.");
+                return Redirect::back();
+            } 
+        }
         $checkGuestCheckoutEnabled = GeneralSetting::where("url_key", "guest-checkout")->where("status", 1)->get();
 
         Session::forget("discAmt");
