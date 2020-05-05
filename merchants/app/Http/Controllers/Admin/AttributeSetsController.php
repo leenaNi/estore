@@ -108,19 +108,25 @@ class AttributeSetsController extends Controller {
 
     public function changeStatus() {
         $attr = AttributeSet::find(Input::get('id'));
-        if ($attr->status == 1) {
-            $attrStatus = 0;
-            $msg = "Variant set disabled successfully.";
-            $attr->status = $attrStatus;
-            $attr->update();
-            return redirect()->back()->with('message', $msg);
-        } else if ($attr->status == 0) {
-            $attrStatus = 1;
-            $msg = "Variant set enabled successfully.";
-            $attr->status = $attrStatus;
-            $attr->update();
-            return redirect()->back()->with('msg', $msg);
+        if (!empty(Input::get('id'))) {
+            if ($attr->status == 1) {
+                $attrStatus = 0;
+                $msg = "Variant set disabled successfully.";
+                $attr->status = $attrStatus;
+                $attr->update();
+                Session::flash("message", $msg);
+            } else if ($attr->status == 0) {
+                $attrStatus = 1;
+                $msg = "Variant set enabled successfully.";
+                $attr->status = $attrStatus;
+                $attr->update();
+                Session::flash("msg", $msg);
+            }
+            $data = ['status' => '1', 'msg' => $msg];
+        } else {
+            $data = ['status' => '0', 'msg' => 'There is somthing wrong.'];
         }
+        return $data;
     }
 
 }
