@@ -89,7 +89,7 @@
                         <td class="text-center">
                         @if($system_user->id!=1)
                         <div class="actionCenter">
-                            <span><a class="btn-action-default" href="{!! route('admin.systemusers.edit',['id'=>$system_user->id]) !!}">Edit</a></span> 
+                            <span><a class="btn-action-default" href="{!! route('admin.systemusers.edit',['id'=>$system_user->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                             <span class="dropdown">
                                 <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
