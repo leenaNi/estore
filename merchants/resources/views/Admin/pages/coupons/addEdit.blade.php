@@ -187,7 +187,7 @@ if (!empty($userCoupon)) {
                                                 <?php
 foreach ($arr as $a) {
         ?>
-                                                    <div><?php echo $a['email']; ?><input type='hidden' name='uid[]' value='<?php echo trim($a['id']); ?>' ><a href='#' class='pull-right remove-rag'  ><i class='fa fa-trash'></i></a></div>
+                                                    <div><?php echo $a->email; ?><input type='hidden' name='uid[]' value='<?php echo trim($a->id); ?>' ><a href='#' class='pull-right remove-rag'  ><i class='fa fa-trash'></i></a></div>
                                                     <?php
 }
     ?>
