@@ -278,7 +278,7 @@ $settingsdata = App\Library\Helper::getSettings();
                     @endif
                 </ul>
             </li>
-            @if(env('IS_SUPPLIER')==1)
+            @if(env('IS_SUPPLIER')==1 && Session::get('store_id') != '15')
             <li class="{{ Route::currentRouteName() == 'admin.suppliers.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.suppliers.view') }}">
                     <i class="fa fa-money"></i><span>Vendors</span> <i class=""></i>
