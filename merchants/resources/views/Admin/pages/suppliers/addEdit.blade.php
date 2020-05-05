@@ -2,11 +2,11 @@
 @section('content')
 <section class="content-header">
     <h1>
-    Franchise
+    Vendors
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class=""> <a href="{{route('admin.systemusers.view')}} " >Franchise </a></li>
+        <li class=""> <a href="{{route('admin.systemusers.view')}} " >Vendors </a></li>
         <li class="active">Add/Edit</li>
     </ol>
 </section>
@@ -87,7 +87,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 {!! Form::submit('Submit',["class" => "noLeftMargin btn btn-primary SustemUserSubmit pull-right"]) !!}
-                                {!! Form::close() !!} 
+                                {!! Form::close() !!}
                             </div>
                         </div>
                         </div>
@@ -104,16 +104,16 @@
 @section("myscripts")
 <script>
 //    function beforeCall(form, options){
-//			if (console) 
+//			if (console)
 //			console.log("Right before the AJAX form validation call");
 //			return true;
 //		}
-//            
+//
 //		// Called once the server replies to the ajax form validation request
 //		function ajaxValidationCallback(status, form, json, options){
-//			if (console) 
+//			if (console)
 //			console.log(status);
-//                
+//
 //			if (status === true) {
 //				alert("the form is valid!");
 //				// uncomment these lines to submit the form to form.action
@@ -134,14 +134,14 @@
           if($("#showpass").is(':checked')){
               $('.pass').prop({type:"text"});
           }else {
-                $('.pass').prop({type:"password"});  
+                $('.pass').prop({type:"password"});
           }
-     
+
       //  alert("pass");
-      });  
-    
+      });
+
      $('.checkEmail').blur(function () {
-        
+
         var email = $(this).val();
         $.ajax({
             type: 'POST',
@@ -160,27 +160,27 @@
                 console.log(e.responseText);
             }
         });
-    }); 
-       
-   
-        
+    });
+
+
+
         $(".checkPhone").blur(function(){
              $('.phone_error').empty();
             var phone = $(this).val();
          var phoneno = /^\d{10}$/;
-             if((phone.match(phoneno)))  
-             {  
-                return true;  
-              }  
-             else  
-              {  
-            
-              $('.phone_error').append('<p> Please enter 10 digit mobile number </p>'); 
-              return false;  
+             if((phone.match(phoneno)))
+             {
+                return true;
+              }
+             else
+              {
+
+              $('.phone_error').append('<p> Please enter 10 digit mobile number </p>');
+              return false;
               }
        });
-        
-//      
+
+//
         $(".checkPhone").blur(function(){
           var phone = $(this).val();
         $.ajax({

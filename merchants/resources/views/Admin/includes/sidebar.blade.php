@@ -42,12 +42,12 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.additional-charges.view/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.additional-charges.view') }}"><i class="fa fa-angle-right"></i>Additional Charges</a></li>
                     @endif
-        <!--             @if($feature['courier'] == 1)
+                    @if($feature['courier'] == 1)
                       <li class="{{ preg_match("/admin.courier/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.courier.view') }}"><i class="fa fa-angle-right"></i>Courier Service</a></li>
                     @endif
                     @if($feature['min-cart-value-rule'] == 1)
                       <li class="{{ preg_match("/admin.cartvalue/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.cartvalue.view') }}"><i class="fa fa-angle-right"></i>Minimum Cart Value</a></li>
-                    @endif -->
+                    @endif
                 </ul>
             </li>
             <?php
@@ -137,7 +137,7 @@ $settingsdata = App\Library\Helper::getSettings();
                 <ul class="treeview-menu">
                 <li class="treeview {{ preg_match("/admin.sales.byorder|admin.sales.byproduct|admin.sales.bycategory|admin.sales.byattribute|admin.sales.bycustomer/",Route::currentRouteName()) ? 'active' : '' }}">
                 <a href="">
-                <i class="fa fa-area-chart"></i> <span>Analytics</span>
+                <span>Analytics</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
@@ -179,26 +179,26 @@ $settingsdata = App\Library\Helper::getSettings();
             @if(env('IS_INDIVIDUAL_STORE')==0)
             <li class="treeview {{ preg_match("/admin.distributor.orders|admin.distributor/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
-                    <i class="fa fa-credit-card"></i>
+                    <i class="fa fa-truck"></i>
                     <span>Distributors</span>
                     <i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li class="{{ preg_match('/admin.distributor.orders.view/',Route::currentRouteName())? 'active' : ''}}">
                         <a href="{{ route('admin.distributor.orders.view') }}">
-                        <i class="fa fa-shopping-bag" aria-hidden="true"></i><span> Distributor Order</span> <i class=""></i>
+                        <span> Distributor Order</span> <i class=""></i>
                         </a>
                     </li>
                     <li class="{{ preg_match('/admin.distributor.orders.inwardList/',Route::currentRouteName())? 'active' : ''}}">
                         <a href="{{ route('admin.distributor.orders.inwardList') }}">
-                        <i class="fa fa-money" aria-hidden="true"></i></i><span> Inward transaction</span> <i class=""></i>
+                        <span> Inward transaction</span> <i class=""></i>
                         </a>
                     </li>
-                    <li class="{{ preg_match('/admin.distributor.addDistributor/',Route::currentRouteName())? 'active' : ''}}">
+                    <!-- <li class="{{ preg_match('/admin.distributor.addDistributor/',Route::currentRouteName())? 'active' : ''}}">
                         <a href="{{ route('admin.distributor.addDistributor') }}">
                             <i class="fa fa-bar-chart"></i><span> Add Distributor</span> <i class=""></i>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             <!-- <li class="treeview {{ preg_match("/admin.vendors|admin.requisition/",Route::currentRouteName())? 'active' : ''}}">
@@ -269,7 +269,7 @@ $settingsdata = App\Library\Helper::getSettings();
                     @if(env('IS_INDIVIDUAL_STORE')==0)
                     <li class="{{ Route::currentRouteName() == 'admin.customers.ledger' ? 'active' : '' }}">
                     <a href="{{ route('admin.customers.ledger') }}">
-                        <i class="fa fa-user"></i><span>Customer Ledger</span> <i class=""></i>
+                    <i class="fa fa-angle-right"></i><span>Customer Ledger</span>
                     </a>
                     </li>
                     @endif
@@ -278,11 +278,11 @@ $settingsdata = App\Library\Helper::getSettings();
             @if(env('IS_SUPPLIER')==1)
             <li class="{{ Route::currentRouteName() == 'admin.suppliers.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.suppliers.view') }}">
-                    <i class="fa fa-money"></i><span>Franchise</span> <i class=""></i>
+                    <i class="fa fa-money"></i><span>Vendors</span> <i class=""></i>
                 </a>
             </li>
             @endif
-            @if(env('IS_INDIVIDUAL_STORE')==0)            
+            @if(env('IS_INDIVIDUAL_STORE')==0)
             <li class="{{ Route::currentRouteName() == 'admin.payments.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.payments.view') }}">
                     <i class="fa fa-money"></i><span>Settlements</span> <i class=""></i>
