@@ -48,8 +48,8 @@
                         </div> 
                         </div>
                         <div class="form-group noBottom-margin col-md-4 noBottom-margin">  
-                            <a href="{{ route('admin.report.ordersIndex')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset </a>
-                            <button type="submit" name="submit" vlaue='Filter' class='btn btn-primary noAll-margin pull-right marginRight-lg'>Filter</button> 
+                            <a href="{{ route('admin.report.ordersIndex')}}" class="btn reset-btn noMob-leftmargin pull-right mn-w100">Reset </a>
+                            <button type="submit" name="submit" vlaue='Filter' class='btn btn-primary noAll-margin pull-right marginRight-sm mn-w100'>Filter</button> 
                         </div>
                     </form>
                 </div>

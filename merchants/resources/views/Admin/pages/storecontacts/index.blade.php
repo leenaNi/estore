@@ -81,11 +81,11 @@ select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transfo
                             </div>
                         </div>
                         <div class="clearfix"></div>
-                        <div class="form-group col-md-2 noBottom-margin">
-                            <input type="submit" name="submit" class="fullWidth noAll-margin btn btn-primary" value="Search">
-                        </div>
-                        <div class="form-group col-md-2 noBottom-margin">
-                            <a  href="{{route('admin.storecontacts.view')}}" class="fullWidth noAll-margin medium btn reset-btn">Reset</a>
+                        <div class="form-group col-md-4 noBottom-margin">
+                            <div class="search-resetsubmit">
+                                <input type="submit" name="submit" class="btn btn-primary mn-w100 no-leftmargin" value="Search">
+                                <a  href="{{route('admin.storecontacts.view')}}" class="medium btn reset-btn mn-w100 no-leftmargin">Reset</a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -161,7 +161,7 @@ select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transfo
                             <th class="text-right">Anniversary Date</th>
                             <th class="text-right">Birth Date</th>
                             <th class="text-right">Created Date</th>
-                            <th class="text-center">Action</th>
+                            <th class="text-center mn-w100">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -177,7 +177,7 @@ select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transfo
                             <td class="text-right">{{ $stcon->birthDate=='0000-00-00 00:00:00'? '':date("d-M-Y",strtotime($stcon->anniversary)) }}</td>
                             <td class="text-right">{{ $stcon->birthDate=='0000-00-00 00:00:00'? '':date("d-M-Y",strtotime($stcon->birthDate)) }}</td>
                             <td class="text-right">{{ date("d-M-Y",strtotime($stcon->created_at)) }}</td>
-                            <td class="text-center">
+                            <td class="text-center mn-w100">
                                 <div class="actionCenter">
                                     <span><a class="btn-action-default" href="{!! route('admin.storecontacts.edit',['id'=>$stcon->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                     <span class="dropdown">
@@ -193,7 +193,7 @@ select.form-control{ padding: 7px!important;}.fnt14{font-size: 14px;text-transfo
                         </tr>
                         @endforeach
                         @else
-                        <tr><td colspan=8> No Record Found.</td></tr>
+                        <tr><td colspan=8 class="text-center"> No Record Found.</td></tr>
                         @endif
                         
                     </tbody>

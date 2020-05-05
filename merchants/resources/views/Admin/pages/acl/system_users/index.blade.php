@@ -34,11 +34,11 @@
                         <div class="form-group col-md-8 col-sm-6 col-xs-12">
                             <input type="text" name="empSearch" value="{{ !empty(Input::get('empSearch')) ? Input::get('empSearch') : '' }}" class="form-control medium pull-right catSearcH" placeholder="Search User">
                         </div>
-                        <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                            <input type="submit" name="submit" value="Search" class="fullWidth noAll-margin btn btn-primary noMob-leftmargin">
-                        </div>
-                        <div class='form-group col-md-2 col-sm-3 col-xs-12'>
-                            <a href="{{route('admin.systemusers.view')}}" class='fullWidth noAll-margin btn reset-btn noMob-leftmargin'>Reset </a>
+                        <div class="form-group col-md-4 col-sm-6 col-xs-12">
+                            <div class="search-resetsubmit">
+                                <input type="submit" name="submit" value="Search" class="btn btn-primary noMob-leftmargin noLeftMargin mn-w100">
+                                <a href="{{route('admin.systemusers.view')}}" class='btn reset-btn noMob-leftmargin noLeftMargin mn-w100'>Reset </a>
+                            </div>
                         </div>
                     </form>   
                 </div>
@@ -68,7 +68,7 @@
                                 <th class="text-left">Email Id</th>
                                 <th class="text-right">Date</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Actions</th>
+                                <th class="text-center mn-w100">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -86,7 +86,7 @@
                             @endif
 
 
-                        <td class="text-center">
+                        <td class="text-center mn-w100">
                         @if($system_user->id!=1)
                         <div class="actionCenter">
                             <span><a class="btn-action-default" href="{!! route('admin.systemusers.edit',['id'=>$system_user->id]) !!}">Edit</a></span> 

@@ -26,11 +26,11 @@
                             {{ Form::select('status',['' => 'Select Status','1' => 'Yes', '0'=> 'No'],Input::get('status'),['class' => 'form-control']) }}
 
                         </div>
-                       <div class="form-group col-md-2 col-sm-12 col-xs-12">
-                               <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Search</button>
+                       <div class="form-group col-md-3 col-sm-12 col-xs-12">
+                            <div class="search-resetsubmit"> 
+                               <button type="submit" class="btn btn-primary form-control no-leftmargin mn-w100"> Search</button>
+                                <a href="{{ route('admin.generalSetting.view')}}" class="reset-btn btn btn-block noMob-leftmargin mn-w100">Reset </a>
                             </div>
-                        <div class="from-group col-md-2 col-sm-12 col-xs-12">
-                            <a href="{{ route('admin.generalSetting.view')}}" class="reset-btn btn btn-block noMob-leftmargin">Reset </a>
                         </div>
                     </form>
 

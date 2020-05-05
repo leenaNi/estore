@@ -42,8 +42,8 @@
                         </div>
                         </div>
                         <div class="form-group col-md-4 col-sm-3 col-xs-12 noBottom-margin">
-                            <a href="{{ route('admin.coupons.view')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset </a>
-                            <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg"> Filter</button> 
+                            <a href="{{ route('admin.coupons.view')}}" class="btn reset-btn noMob-leftmargin pull-right mn-w100">Reset </a>
+                            <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-sm mn-w100"> Filter</button> 
                         </div>
                     </form>
                 </div>
@@ -79,7 +79,7 @@
                             <th class="text-right">Start Date</th>
                             <th class="text-right">End Date</th> 
                             <th class="text-center">Status</th>
-                            <th class="text-center">Action </th>
+                            <th class="text-center mn-w100">Action </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -123,7 +123,7 @@
                                 <td class="text-right">{{date('d-M-Y', strtotime($coupon->end_date))}}</td> 
                                 <td class="text-center" id="couponStatus_{{$coupon->id}}"><span class="alertSuccess">{{$statusLabel}}</span></td>
                               
-                                <td class="text-center">
+                                <td class="text-center mn-w100">
                                     <div class="actionCenter"> 
                                         <span><a class="btn-action-default" href="{{route('admin.coupons.edit',['id'=>$coupon->id])}}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                         <span class="dropdown">

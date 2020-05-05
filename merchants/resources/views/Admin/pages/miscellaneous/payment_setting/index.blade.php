@@ -37,7 +37,7 @@
 <!--                               <th>Sr.</th>-->
                                 <th>Payment Method</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
 
                             </tr>
                         </thead>
@@ -51,7 +51,7 @@
                                     <i class="fa fa-{{ $set->status == 1 ? 'check' : 'times' }} btn btn-plen" ></i>
                                     </a></td>
 
-                                <td>
+                                <td class="text-center mn-w100">
                                     <a href="{!! route('admin.paymentSetting.edit',['url_key'=>$set->url_key]) !!}" data-toggle="tooltip" title="Configure" ui-toggle-class=""><i class="fa fa-cog btnNo-margn-padd" aria-hidden="true"></i></a>
                                 </td>
                             </tr>

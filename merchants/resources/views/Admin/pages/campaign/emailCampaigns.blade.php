@@ -30,11 +30,11 @@
                         <div class="form-group col-md-8 col-sm-6 col-xs-12">
                             <input type="text" name="couponSearch"  class="form-control medium pull-right " placeholder="Email Title">
                         </div>
-                        <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Search</button>
-                        </div>
-                        <div class="from-group col-md-2 col-sm-3 col-xs-12">
-                            <a href="{{ route('admin.coupons.view')}}" class="form-control btn reset-btn noMob-leftmargin">Reset </a>
+                        <div class="form-group col-md-4 col-sm-3 col-xs-12">
+                            <div class="search-resetsubmit">
+                                <button type="submit" class="btn btn-primary form-control noMob-leftmargin mn-w100 noLeftMargin"> Search</button>
+                                <a href="{{ route('admin.coupons.view')}}" class="medium btn btn-block  reset-btn mn-w100">Reset </a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -52,7 +52,7 @@
                                 <th>Title</th>
                                 <th>Subject</th>
                                 <th>Status</th>
-                                <th>Action </th>
+                                <th class="text-center mn-w100">Action </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,7 +62,7 @@
                                     <td>{{$email->title}}</td>
                                     <td>{{$email->subject}}</td>
                                     <td>{{$email->status==2?'Draft':''}}</td>
-                                    <td>
+                                    <td class="text-center mn-w100">
                                         <a href="{{route('admin.emailcampaign.editemail',['id'=>$email->id])}}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btnNo-margn-padd"></i></a> 
                                         <a href="{!! route('admin.emailcampaign.deleteemail',['id'=>$email->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this email?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a>
 
@@ -71,7 +71,7 @@
                                 @endforeach
                             <?php } else { ?>
                                 <tr>
-                                    <td colspan="5">No Record Found.</td>
+                                    <td colspan="5" class="text-center">No Record Found.</td>
                                 </tr>
                             <?php } ?>      
                         </tbody>

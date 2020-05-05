@@ -45,7 +45,7 @@
                                
                                 <th>Image</th>
                                 <th> Status</th>
-                                  <th>Action</th>
+                                  <th class="text-center mn-w100">Action</th>
                                 
                             </tr>
                         </thead>
@@ -61,7 +61,7 @@
                                   <a href="{{route('admin.dynamic-layout.changeStatus',['id'=>$page->id])}}" data-toggle="tooltip" title="Disabled" onclick="return confirm('Are you sure you want to enable {{$page->name}}?')"><i class="fa fa-times btn btn-plen btnNo-margn-padd"></i></a>
                                  @endif
                                  </td>
-                            <td>   <a href="{{route('admin.dynamic-layout.edit',['id'=>$page->id])}}" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn btn-plen btnNo-margn-padd"></i></a></td>   
+                            <td class="text-center mn-w100">   <a href="{{route('admin.dynamic-layout.edit',['id'=>$page->id])}}" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn btn-plen btnNo-margn-padd"></i></a></td>   
                               
                         </tr>
                         @endforeach

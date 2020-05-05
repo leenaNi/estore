@@ -40,7 +40,7 @@
                                 <th>Image</th>
                                 <th>Sort Order</th>
                                 <th> Status</th>
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,7 +60,7 @@
                                 <a href="{!! route('admin.dynamicLayout.changeStatus',['id'=>$lout->id]) !!}" data-toggle="tooltip" title="Disabled"  onclick="return confirm('Are you sure you want to enable this layout?')"><i class="fa fa-times btn btn-plen"></i></a>
                                 @endif
                                 </td>
-                                <td>
+                                <td class="text-center mn-w100">
                                    
                                     <a href="{!! route('admin.dynamicLayout.edit',['id'=>$lout->id]) !!}"  ui-toggle-class="" data-toggle='tooltip' title='Edit'><i class='fa fa-pencil-square-o btn btn-plen btnNo-margn-padd'></i></a>
                               <a href="{!! route('admin.dynamicLayout.delete',['id'=>$lout->id]) !!}"  ui-toggle-class="" data-toggle='tooltip' title='Delete'><i class='fa fa-trash'></i></a>

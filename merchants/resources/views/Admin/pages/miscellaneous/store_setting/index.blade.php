@@ -259,7 +259,7 @@ if (isset($data->expiry_date)) {
                             {{-- Country and pincode changes required ends--}}
 
                             <div class="form-group">
-                                <input type="submit" value="Save" id="saveLogo1" class="btn noLeftMargin btn-primary pull-left">
+                                <input type="submit" value="Save" id="saveLogo1" class="btn noLeftMargin btn-primary pull-left mn-w100">
                             </div>
                         </form>
                     </div><!-- /.col -->

@@ -65,8 +65,8 @@
                     </div> 
 
                     <div class="form-group col-md-4 noBottom-margin">
-                        <a  href="{{route('admin.customers.view')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset</a>
-                        <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Filter"> 
+                        <a  href="{{route('admin.customers.view')}}" class="btn reset-btn noMob-leftmargin pull-right mn-w100">Reset</a>
+                        <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-sm mn-w100" value="Filter"> 
                     </div>
                 </form> 
                 </div>
@@ -103,7 +103,7 @@
                             <th class="text-right">Loyalty Point</th>
                             @endif
                             <th class="text-center">Status</th>
-                            <th class="text-center">Action</th>
+                            <th class="text-center mn-w100">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -133,7 +133,7 @@
                                 <a class="alertDanger" title="Disabled">Disabled</a>
                                 @endif
                             </td>
-                            <td class="text-center">
+                            <td class="text-center mn-w100">
 
                                 <div class="actionCenter">
                                     <span><a class="btn-action-default" href="{!! route('admin.customers.edit',['id'=>$customer->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 

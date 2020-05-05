@@ -53,11 +53,11 @@ ini_set('display_errors', 'On');
                         </div>
                         <div class="clearfix"></div>
                         <div class="clearfix"></div>
-                        <div class="form-group col-md-2">
-                            <input type="submit" name="submit" class="form-control btn btn-primary" value="Search" style="margin-left:0px">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <a href="{{route('admin.payments.view')}}" class="form-control medium btn reset-btn" style="margin-left:0px">Reset</a>
+                        <div class="form-group col-md-4">
+                            <div class="search-resetsubmit">
+                                <input type="submit" name="submit" class="form-control btn btn-primary noLeftMargin mn-w100" value="Search">
+                                <a href="{{route('admin.payments.view')}}" class="form-control medium btn reset-btn noLeftMargin mn-w100">Reset</a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -82,7 +82,7 @@ ini_set('display_errors', 'On');
                                 <th>Order Id</th>
                                 <th class="text-right">Payable Amount</th>
                                 <th class="text-right">Paid Amount</th>
-                                <th>Actions</th>
+                                <th class="text-center mn-w100">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -96,7 +96,7 @@ ini_set('display_errors', 'On');
                                 <td>{{$userPayment->order_id}}</td>
                                 <td class="text-right""><span class="currency-sym"></span>{{number_format(($userPayment->pay_amt  * Session::get('currency_val')), 2)}}</td>
                                 <td class="text-right"><span class="currency-sym"></span>{{number_format(($userPayment->amt_paid  * Session::get('currency_val')), 2)}}</td>
-                                <td>
+                                <td class="text-center mn-w100">
                                     <a class="view-payments" data-useremail="{{@$userPayment->email}}" data-username="{{@$userPayment->name}}" data-orderId="{{$userPayment->orderId}}" data-toggle="tooltip" title="View Details"><i class="fa fa-eye btn-plen btn"></i></a>
                                 </td>
                             </tr>
@@ -111,7 +111,7 @@ ini_set('display_errors', 'On');
                                 <th colspan="1" class="text-right"><span class="currency-sym"></span>{{number_format(((@$totalCreditAmount->total_credit - @$totalPaid->total_paid) * Session::get('currency_val')), 2)}}</th>
                             </tr>
                             @else
-                            <tr><td colspan=4> No Record Found.</td></tr>
+                            <tr><td colspan=4 class="text-center"> No Record Found.</td></tr>
                             @endif
                         </tbody>
                     </table>

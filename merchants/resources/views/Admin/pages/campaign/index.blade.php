@@ -30,10 +30,10 @@
                             <input type="text" name="smsSearch"  class="form-control medium pull-right " placeholder="Message Title">
                         </div>
                         <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Search</button>
-                        </div>
-                        <div class="from-group col-md-2 col-sm-3 col-xs-12">
-                            <a href="{{ route('admin.coupons.view')}}" class="form-control btn reset-btn noMob-leftmargin">Reset </a>
+                            <div class="search-resetsubmit">
+                                <button type="submit" class="btn btn-primary form-control noMob-leftmargin mn-w100 no-leftmargin marginRight-sm"> Search</button>
+                                <a href="{{ route('admin.coupons.view')}}" class="btn reset-btn noMob-leftmargin pull-right mn-w100 no-leftmargin">Reset </a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -51,7 +51,7 @@
                                 <th>Message Title</th>
                                 <th>Message Content</th>
                                 <th>Status</th>
-                                <th>Action </th>
+                                <th class="text-center mn-w100">Action </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,7 +61,7 @@
                                     <td>{{$message->title}}</td>
                                     <td>{{$message->content}}</td>
                                     <td>{{$message->status==2?'Draft':''}}</td>
-                                    <td>
+                                    <td class="text-center mn-w100">
                                         <a href="{{route('admin.campaign.edit',['id'=>$message->id])}}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btnNo-margn-padd"></i></a> 
                                         <a href="{!! route('admin.campaign.delete',['id'=>$message->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this message?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a>
 
@@ -70,7 +70,7 @@
                                 @endforeach
                             <?php } else { ?>
                                 <tr>
-                                    <td colspan="5">No Record Found.</td>
+                                    <td colspan="5" class="text-center">No Record Found.</td>
                                 </tr>
                             <?php } ?>      
                         </tbody>

@@ -48,8 +48,8 @@
                             </div>
                             </div>
                             <div class="form-group col-md-4 col-sm-4 col-xs-12 noBottom-margin">
-                            <a  href="{{route('admin.loyalty.view')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset</a>
-                            <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Filter"> 
+                            <a  href="{{route('admin.loyalty.view')}}" class="btn reset-btn noMob-leftmargin pull-right mn-w100">Reset</a>
+                            <input type="submit" name="submit" class="btn btn-primary noAll-margin pull-right marginRight-sm mn-w100" value="Filter"> 
                         </div>
                     </form>
                 </div>
@@ -80,7 +80,7 @@
                             <th class="text-right">Maximum Order Amount</th>
                             <th class="text-center">Cashback Percent</th>
                             <th class="text-center"> Status</th>
-                            <th class="text-center">Action</th>
+                            <th class="text-center mn-w100">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,7 +97,7 @@
                                 @elseif($lyt->status==0)
                                 <a href="{!! route('admin.loyalty.changeStatus',['id'=>$lyt->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this loyalty?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn btnNo-margn-padd"></i></a>
                                 @endif</td>
-                            <td class="text-center">
+                            <td class="text-center mn-w100">
                                 <div class="actionCenter">
                                     <span><a class="btn-action-default edit" href="{{  route('admin.loyalty.edit',['id'=>$lyt->id]) }}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
                                     <span class="dropdown">

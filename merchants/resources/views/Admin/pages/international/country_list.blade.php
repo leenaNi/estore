@@ -47,7 +47,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                            <input type="submit" name="search" class="btn btn-primary form-control noMob-leftmargin" value="Search">
+                            <input type="submit" name="search" class="btn btn-primary form-control noMob-leftmargin mn-w100" value="Search">
                             </form>
                         </div>
 
@@ -67,7 +67,7 @@
                                 <!--                                <th>id</th>-->
                                 <th>Name</th>
                                 <th>Country Status</th>
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,7 +85,7 @@
                                 </td>
 
 
-                                <td>
+                                <td class="text-center mn-w100">
                                     <a href="{!! route('admin.country.edit',['id'=>$countryVal->id]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn btn-plen btnNo-margn-padd"></i></a>
                                     <a href="{!! route('admin.country.delete',['id'=>$countryVal->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this country?')" data-toggle="tooltip" title="Delete"><fa class="fa fa-trash"></i>
                                     </a></td>

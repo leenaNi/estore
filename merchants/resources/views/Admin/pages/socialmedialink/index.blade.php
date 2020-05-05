@@ -66,7 +66,7 @@
                                 <!--<th>Image</th>-->
                                 <th>Sort Order</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,14 +90,14 @@
                                     <a href="{!! route('admin.socialmedialink.changeStatus',['id'=>$link->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this link?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn btnNo-margn-padd"></i></a>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-center mn-w100">
                                     <a href="{!! route('admin.socialmedialink.edit',['id'=>$link->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
                                     <!--<a href="{!! route('admin.socialmedialink.delete',['id'=>$link->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this link?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i>-->
                                     </td>
                                 </tr>
                                 @endforeach
                                 @else
-                                <tr><td colspan=3>No Record Found.</td></tr>
+                                <tr><td colspan=3 class="text-center">No Record Found.</td></tr>
                                 @endif
                             </tbody>
                         </table>

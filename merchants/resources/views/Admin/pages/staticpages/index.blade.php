@@ -54,7 +54,7 @@
                                 <th>Show in Menu</th>
 <!--                                <th>Created At</th>-->
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,7 +73,7 @@
                                     <a href="{!! route('admin.staticpages.changeStatus',['id'=>$page->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this online page?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn"></i></a>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-center mn-w100">
                                     <a href="{!! route('admin.staticpages.edit',['id'=>$page->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
 
                                    <!--  <a href="{!! route('admin.staticpages.delete',['id'=>$page->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this online page?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i> -->
@@ -81,7 +81,7 @@
                                 </tr>
                                 @endforeach
                                 @else
-                                <tr><td colspan=6>No Record Found.</td></tr>
+                                <tr><td colspan=6 class="text-center">No Record Found.</td></tr>
                                 @endif
                             </tbody>
                         </table>

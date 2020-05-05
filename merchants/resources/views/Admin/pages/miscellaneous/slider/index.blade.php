@@ -48,7 +48,7 @@
                             <th>Image</th>
                             <th>Sort Order</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th class="text-center mn-w100">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,7 +66,7 @@
                                 @elseif($slider->is_active==0)
                                 <a href="{!! route('admin.slider.changestatus',['id'=>$slider->id]) !!}" data-toggle="tooltip" title="Disabled" onclick="return confirm('Are you sure you want to enable this slider?')"><i class="fa fa-times"></i></a>
                                 @endif</td>
-                            <td>
+                            <td class="text-center mn-w100">
 
                                 <a href="{!! route('admin.slider.edit',['id'=>$slider->id]) !!}" data-toggle="tooltip" title="Edit"   ><i class="fa fa-pencil-square-o btn btn-penel btnNo-margn-padd"></i></a>
                                

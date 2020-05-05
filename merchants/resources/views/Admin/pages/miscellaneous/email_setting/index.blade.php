@@ -33,7 +33,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,7 +52,7 @@
                                     </a>
                                     <?php } ?>
                                 </td>
-                                <td>
+                                <td class="text-center mn-w100">
                                     
                                     <a href="{!! route('admin.emailSetting.edit',['url_key'=>$set->url_key]) !!}" data-toggle="tooltip" title="Configure" ui-toggle-class=""><i class="fa fa-cog" aria-hidden="true"></i></a>
                                 </td>
