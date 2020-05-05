@@ -508,7 +508,7 @@ foreach ($comboProds as $combP) {
             $csub[$getSub->id] = $prodSize1;
         }
         ?>
-                                            <!-- {{ Form::select("cartdata[".$i."][".$prd->id."][subprd][]", $csub, $prd->sub_prod_id,['class'=>'form-control subComboProd selPrdVar']) }} -->
+                                            
                                             <?php
 }
 }
