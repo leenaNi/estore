@@ -13,6 +13,8 @@
 </section>
 <section class="main-content">
  <div class="notification-column">
+    <div class="alert alert-danger" role="alert" id="errorMsgDiv" style="display: none;"></div>
+    <div class="alert alert-success" role="alert" id="successMsgDiv" style="display: none;"></div> 
     @if(!empty(Session::get('message')))
     <div class="alert alert-danger" role="alert">
         {{ Session::get('message') }}
@@ -69,32 +71,31 @@
                     <tr>
                         <!--                <th>id</th>-->
                         <th class="text-left">Variant Set Name</th>
-                        <th class="text-right">Date</th>
+                        <th class="text-right">Created Date</th>
                         <th class="text-center"> Status</th>
                         <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                                        @if(count($attrSets) > 0)
-                                        @foreach($attrSets as $attrSet)
-                                        
+                @if(count($attrSets) > 0)
+                @foreach($attrSets as $attrSet)
+                <?php 
+                if($attrSet->status==1)
+                  {
+                      $statusLabel = 'Active';
+                      $linkLabel = 'Mark as Inactive';
+                  }
+                  else
+                  {
+                      $statusLabel = 'Inactive';
+                      $linkLabel = 'Mark as Active';
+                  }
+              ?>           
                     <tr>
                         <!--                <td>{{$attrSet->id }}</td>-->
                         <td class="text-left">{{$attrSet->attr_set }}</td>
-                        <td class="text-right">{{ date("d M ,y",strtotime($attrSet->created_at)) }}</td>
-                        <td class="text-center">
-                            <?php if ($attrSet->status == 1) { ?>
-                            <a href="{!! route('admin.attribute.set.changeStatus',['id'=>$attrSet->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this variant set?')" data-toggle="tooltip" title='Enabled'>
-                                <i class="fa fa-check"></i>
-                            </a>
-                            <br>
-                                <?php } elseif ($attrSet->status == 0) { ?>
-                                <a href="{!! route('admin.attribute.set.changeStatus',['id'=>$attrSet->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this variant set?')" data-toggle="tooltip" title='Disabled'>
-                                    <i class="fa fa-times"></i>
-                                </a>
-                                <br>
-                                    <?php } ?>
-                                </td>
+                        <td class="text-right">{{ date("d-M-Y",strtotime($attrSet->created_at)) }}</td>
+                        <td class="text-center" id="VariantSetStatus_{{$attrSet->id}}"><span class="alertSuccess">{{$statusLabel}}</span></td>
                                 <td  class="text-center">
 
                                 <div class="actionCenter">
@@ -105,6 +106,7 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
                                             <li><a href="{!! route('admin.attribute.set.delete',['id'=>$attrSet->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
+                                            <li><a href="javascript:;" id="changeStatusLink_{{$attrSet->id}}" onclick="changeStatus({{$attrSet->id}},{{$attrSet->status}})" ><i class="fa fa-check "></i> {{$linkLabel}}</a></li>
                                         </ul>
                                     </span>  
                                 </div> 
@@ -149,6 +151,49 @@
             }
         });
     });
+function changeStatus(attrSetId,status)
+{
+      if(status == 1)
+          var msg = 'Are you sure you want to inactive this Variant Set?';
+      else
+          var msg = 'Are you sure you want to active this variant set?';
+
+      if (confirm(msg)) {
+          $.ajax({
+              type: "GET",
+              url: "{{ route('admin.attribute.set.changeStatus') }}",
+              data: {id: attrSetId},
+              cache: false,
+              success: function(response) {
+                  console.log("done");
+                  
+                  if(response['status'] == 1)
+                  {
+                      if(status == 1)
+                      {
+                          $("#changeStatusLink_"+attrSetId).html('Mark as Active');
+                          $("#VariantSetStatus_"+attrSetId).html("Inactive");
+                          $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                          $("#changeStatusLink_"+attrSetId).attr("onclick","changeStatus("+attrSetId+",0)");
+                      }
+                      else
+                      {
+                          $("#VariantSetStatus_"+attrSetId).html("Active");
+                          $("#changeStatusLink_"+attrSetId).html('Mark as Inactive');
+                          $("#successMsgDiv").html(response['msg']).show().fadeOut(4000);
+                          $("#changeStatusLink_"+attrSetId).attr("onclick","changeStatus("+attrSetId+",1)");
+                      }
+                  }
+                  else
+                  {
+                      $("#errorMsgDiv").html(response['msg']).show().fadeOut(4000);
+                  }
+                  //$(window).scrollTop(0);
+                  $("html, body").animate({ scrollTop: 0 }, "slow");
+              }
+          });
+      }
+} 
 </script>
 
 @stop

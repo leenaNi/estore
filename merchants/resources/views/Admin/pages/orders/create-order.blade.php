@@ -219,7 +219,7 @@ exit;*/
                                             {{ Form::select("cartData[prod_id][sub_prod_id]",[],null,['class'=>'form-control subprodid validate[required]','style'=>"display:none;"]) }}
                                         </td>
                                         <td width="20%">
-                                            <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span>
+                                            <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span><span class="prdStock"></span
                                         </td>
                                         <td width="20%">
                                             <span class='offer_name'>-</span>
@@ -420,6 +420,7 @@ exit;*/
                                     </td>
                                     <td width="20%" >
                                         <span class='prodQty' style="display:none"><input type="number" min="1" value="1" name='cartData[prod_id][qty]' class='qty form-control'></span>
+                                        <span class="prdStock"></span
                                     </td>
                                     <td width="20%">
                                         <span class='offer_name'>-</span>
@@ -574,6 +575,7 @@ var prodoffer = 0;
                     prodSel.parent().parent().find('.prodUnitPrice').text(price.unitPrice);
                     prodSel.parent().parent().find('.prodDiscount').text(price.offer);
                     prodSel.parent().parent().find('.prodPrice').text(price.price);
+                    
                     if(typeof price.offerName === 'undefined')
                     {
                         prodSel.parent().parent().find('.offer_name').text('-');
@@ -592,9 +594,7 @@ var prodoffer = 0;
                     else
                     {
                         prodSel.parent().parent().find('.qty').text(price.offerQty);
-                    }
-                    
-                    
+                    }                    
                     $(".subtotal").text(price.price);
                     $(".finalAmt").text(price.price);
                     $("#amountallSubtotal").text(price.price);
@@ -994,7 +994,15 @@ var prodoffer = 0;
                 $(".subtotal").text(price.price);
                 $(".finalAmt").text(price.price);
                 prod.parent().parent().find('.prodDiscount').text(price.offer);
-               
+                var pqty = prodSel.parent().parent().find('.qty').val();
+                var pstock = price.stock;
+                if(pqty > pstock){
+                    prodSel.parent().parent().find('.prdStock').text('Avalilabe Stock : '+price.stock).css('color', 'red');
+                    var pqty = prodSel.parent().parent().find('.qty').val('');
+                }else{
+                    prodSel.parent().parent().find('.prdStock').text('');
+                }
+                
                 <?php if ($feature['tax'] == 1) {?>
                 qtty.parents("td").next().next().find('.taxAmt').text((price.tax));
                 <?php }?>

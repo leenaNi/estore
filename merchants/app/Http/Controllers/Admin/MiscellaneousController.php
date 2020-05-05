@@ -31,6 +31,7 @@ class MiscellaneousController extends Controller
         $industry_id = config('app.industry');
         $questionCategory = DB::table('question_category')->get();
         if (!empty(config('app.industry'))) {
+
             $settings = GeneralSetting::where('name', '<>', 'set_popup')->orderBy('question_category_id', 'desc')->whereHas('industry', function ($que) use ($industry_id) {
                 $que->where("industry_id", $industry_id);
             });
@@ -54,7 +55,7 @@ class MiscellaneousController extends Controller
             }
         }
         //dd($data);
-        // dd($settingData);
+         //dd($settingData);
         return view(Config('constants.adminMiscellaneousGeneralSettingView') . '.index', compact('settingData'));
     }
 

@@ -191,6 +191,10 @@ if ($isstock == 1) {
                 </div><!-- .cal-shipping -->
             </div>
             <div class="clearfix"></div>
+            @if (Session::has('message'))
+               <div class="alert alert-danger">{{ Session::get('message') }}</div>
+            @endif
+            <div class="clearfix"></div>
             <div class="col-md-12 col-sm-12 col-xs-12">
 
                 <div class="cart-actions clearfix">

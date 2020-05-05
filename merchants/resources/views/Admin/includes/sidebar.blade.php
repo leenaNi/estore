@@ -42,6 +42,12 @@ $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-produ
                     <li class="{{ preg_match("/admin.additional-charges.view/",Route::currentRouteName()) ? 'active' : '' }}">
                         <a  href="{{ route('admin.additional-charges.view') }}"><i class="fa fa-angle-right"></i>Additional Charges</a></li>
                     @endif
+                    @if($feature['courier'] == 1)
+                      <li class="{{ preg_match("/admin.courier/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.courier.view') }}"><i class="fa fa-angle-right"></i>Courier Service</a></li>
+                    @endif
+                    @if($feature['min-cart-value-rule'] == 1)
+                      <li class="{{ preg_match("/admin.cartvalue/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.cartvalue.view') }}"><i class="fa fa-angle-right"></i>Minimum Cart Value</a></li>
+                    @endif
                 </ul>
             </li>
             <?php
@@ -86,9 +92,13 @@ $settingsdata = App\Library\Helper::getSettings();
                     <li class="{{ preg_match("/admin.category/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.category.view') }}"><i class="fa fa-angle-right"></i>Categories</a></li>
 
                     @if($settingStatus['products-with-variants'] == 1)
-
-                    <li class="{{ preg_match("/admin.attribute.set/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.attribute.set.view') }}"><i class="fa fa-angle-right"></i>Variant Sets</a></li>
-                    <li class="{{ preg_match("/admin.attributes/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.attributes.view') }}"><i class="fa fa-angle-right"></i>Attributes</a></li>
+                    <li class="{{ preg_match("/admin.attribute/",Route::currentRouteName()) ? 'active' : '' }}"">
+                        <a href="#"><i class="fa fa-angle-right"></i>Variants</a>
+                        <ul class="treeview-menu">
+                            <li class="{{ preg_match("/admin.attribute.set/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.attribute.set.view') }}"><i class="fa fa-angle-right"></i>Variant Sets</a></li>
+                            <li class="{{ preg_match("/admin.attributes/",Route::currentRouteName()) ? 'active' : '' }}"><a href="{{ route('admin.attributes.view') }}"><i class="fa fa-angle-right"></i>Attributes</a></li>
+                        </ul>
+                    </li>
                     @endif
 
                     @if($feature['stock'] == 1)
@@ -354,9 +364,9 @@ $settingsdata = App\Library\Helper::getSettings();
 
                     <li class="{{ preg_match("/admin.generalSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.generalSetting.view') }}"><i class="fa fa-angle-right"></i>Feature Activation</a></li>
                                         <li class="{{ preg_match("/admin.paymentSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.paymentSetting.view') }}"><i class="fa fa-angle-right"></i>Payment Gateway</a></li>
-<!--                @if($feature['courier-services'] == 1)
+             <!--    @if($feature['courier-services'] == 1)
                     <li class="{{ preg_match("/admin.courier/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.courier.view') }}"><i class="fa fa-angle-right"></i>Courier Services</a></li>
-                    @endif-->
+                    @endif -->
                        <li class="{{ preg_match("/admin.bankDetails/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.bankDetails.view') }}"><i class="fa fa-angle-right"></i>Bank Details </a></li>
                       @if($feature['email-facility'] == 1)
                     <li class="{{ preg_match("/admin.emailSetting/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.emailSetting.view') }}"><i class="fa fa-angle-right"></i>Email Gateway</a></li>
