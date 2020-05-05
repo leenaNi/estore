@@ -128,9 +128,9 @@
                             <td class="text-right"><span class="currency-sym"> </span> {{ number_format((@$customer->userCashback->cashback * Session::get('currency_val')), 2) }}</td>
                             @endif
                             <td class="text-center">@if($customer->status==1)
-                                <a class="alertSuccess"  title="Enabled">Enabled</a>
+                                <span class="alertSuccess"  title="Enabled">Enabled</span>
                                 @elseif($customer->status==0)
-                                <a class="alertDanger" title="Disabled">Disabled</a>
+                                <span class="alertDanger" title="Disabled">Disabled</span>
                                 @endif
                             </td>
                             <td class="text-center mn-w100">
