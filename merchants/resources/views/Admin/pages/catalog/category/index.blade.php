@@ -61,7 +61,7 @@ function renderNode($node)
 {
     echo "<li class='tree-item fl_left ps_relative_li" . ($node->status == '0' ? 'text-muted' : '') . "'>";
     echo '' . $node->categoryName->category . '';
-    echo '<a href="'.route('admin.category.add').'" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
+    echo '<a class="add-new-category" data-catId="' . $node->id . '" data-parentcatId="' . $node->parent_id . '" style="color:green;" data-toggle="tooltip" title="Add New"><i class="fa fa-plus fa-fw"></i></a>';
     echo '' . '<a href="' . route("admin.category.edit", ["id" => $node->id]) . '" style="color:green;" class="addCat" data-toggle="tooltip" title="Edit"><b> <i class="fa fa-pencil fa-fw"></i> </b></a>' ?>
                             <!-- <a href="{{ route('admin.category.delete', ['id' => $node->id])}}" style="color:green;" onclick="return confirm('Are you sure  you want to delete this category?')" data-toggle="tooltip" title="Delete"><b><i class="fa fa-trash fa-fw"></i></b></a> -->
 
@@ -95,6 +95,84 @@ function renderNode($node)
             </div>
         </div>
     </div>
+    <div class="modal fade" id="new-category" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Request for new category</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('admin.category.newCategory')}}" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input class="form-control" name="category" style="border:1px solid #ddd !important" required />
+                                    <input type="hidden" class="form-control" name="parent_id" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-primary" type="submit" >Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class='clearfix'></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+@stop
 <?php $public_path = Config('constant.sizeChartImgPath');?>
+@section('myscripts')
+
+<script>
+$(".bulkuploadprod").click(function () {
+    $(".template-download").hide();
+    $("#bulkCategory").modal("show");
+});
+
+$('.add-new-category').click(function() {
+    var catId = $(this).attr('data-catId');
+    $('input[name="parent_id"]').val(catId);
+    $('#new-category').modal('show');
+});
+
+$(".catSearcH").keyup(function () {
+    searchString = $(this).val();
+    $(".catTrEE").find("li").each(function () {
+        str = $(this).text();
+        if (str.toLowerCase().indexOf(searchString) >= 0) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+});
+
+$(".delCat").click(function () {
+    var nid = $(this).attr('data-nid');
+alert("hhh")
+    var chkdel = confirm('Are you sure want to delete this categoy?');
+    if (chkdel === true)
+    {
+        $.ajax({
+            type: "POST",
+            url: "{{route('admin.category.delete')}}",
+            data: {id: nid},
+            cache: false,
+            success: function (data) {
+                // window.location.assign("{{route('admin.category.view')}}");
+            }
+        });
+    }
+
+});
+
+</script>
 @stop

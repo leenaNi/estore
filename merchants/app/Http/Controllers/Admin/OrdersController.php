@@ -2054,6 +2054,7 @@ class OrdersController extends Controller
             $tax_type = $pprod->parentproduct->is_tax;
             $tax_rate = $pprod->parentproduct->totalTaxRate();
         }
+        $stock = $pprod->stock;
         $total = array();
         $sub_total = $qty * $price;
         if ($this->feature['tax'] == 1) {
@@ -2137,6 +2138,14 @@ class OrdersController extends Controller
         $total['subtotal'] = $cart_amt['sub_total'];
         $total['orderAmount'] = $cart_amt['total'] * Session::get('currency_val');
         $total['unitPrice'] = number_format((float) $price * Session::get('currency_val'), 2, '.', '');
+        if($qty > $stock){
+            $total['price'] = 0;
+            $total['cart'] = Cart::instance('shopping')->content()->toArray();
+            $total['subtotal'] = 0;
+            $total['orderAmount'] = 0;
+            $total['unitPrice'] = 0;
+        }
+        $total['stock'] = $stock;
        
 
         /*
