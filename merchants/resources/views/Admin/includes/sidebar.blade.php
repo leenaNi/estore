@@ -278,7 +278,7 @@ $settingsdata = App\Library\Helper::getSettings();
             @if(env('IS_SUPPLIER')==1)
             <li class="{{ Route::currentRouteName() == 'admin.suppliers.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.suppliers.view') }}">
-                    <i class="fa fa-money"></i><span>Franchise</span> <i class=""></i>
+                    <i class="fa fa-money"></i><span>Vendors</span> <i class=""></i>
                 </a>
             </li>
             @endif

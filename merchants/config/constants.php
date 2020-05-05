@@ -104,7 +104,6 @@ if (env('PROJECT_TYPE') == 'cartini') {
         // 'adminDistCssTempPath' => asset('css'),
         'adminDistributorView' => 'Admin.pages.add_distributor',
     ];
-
 } else {
     $adminConstants = [
         'storeName' => 'Cartini',
@@ -230,10 +229,8 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'frontviewEmailTemplatesPath' => 'Frontend/emails/',
         'frontendPublicCSSPath' => asset('public/Frontend/css/'),
         'frontendStaticPageView' => 'Frontend.pages.staticpages',
-
         'frontendThemeCssPath' => asset('public/Frontend/css/'),
         'frontendThemeCssCommonPath' => asset('public/Frontend/css/common/'),
-
         'frontendThemeJsPath' => asset('public/Frontend/js/'),
         'frontendThemeImagePath' => asset('public/Frontend/images/'),
         'frontendStaticpage' => 'public/Admin/uploads/staticpage/',
@@ -253,14 +250,13 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'frontviewEmailTemplatesPath' => 'Frontend/emails/',
         'frontendPublicCSSPath' => 'https://d2102t1lty3x1n.cloudfront.net/Frontend/css',
         'frontendStaticPageView' => 'Frontend.pages.staticpages',
-
         'frontendThemeCssPath' => 'https://d2102t1lty3x1n.cloudfront.net/Frontend/css',
         'frontendThemeCssCommonPath' => 'https://d2102t1lty3x1n.cloudfront.net/Frontend/css/common',
-
         'frontendThemeJsPath' => 'https://d2102t1lty3x1n.cloudfront.net/Frontend/js',
         'frontendThemeImagePath' => 'https://d2102t1lty3x1n.cloudfront.net/Frontend/images',
         'frontendStaticpage' => 'uploads/staticpage/',
     ];
 
 }
-return array_merge($frontendConstants, $adminConstants);
+return array_merge($frontendConstants, $adminConstants); 
+// return  ['adminStorePath' => storage_path() . '/'];

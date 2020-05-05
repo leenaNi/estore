@@ -2,11 +2,11 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Franchise ({{$startIndex}} - {{$endIndex}} of {{$userCount}})
+        Vendors ({{$startIndex}} - {{$endIndex}} of {{$userCount}})
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">Franchise</li>
+        <li class="active">Vendors</li>
     </ol>
 </section>
 
@@ -57,7 +57,7 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1>Suppliers <span class="listing-counter"> {{$startIndex}} - {{$endIndex}} of {{$userCount }} </span> </h1>
+            <h1>Vendors <span class="listing-counter"> {{$startIndex}} - {{$endIndex}} of {{$userCount }} </span> </h1>
         </div>
         <div class="listing-section">
             <div class="table-responsive overflowVisible no-padding">

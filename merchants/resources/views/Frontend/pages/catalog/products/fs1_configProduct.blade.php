@@ -2,10 +2,10 @@
 @section('title',$product->metaTitle)
 @section('og-title',$product->metaDesc)
 @section('meta-description',$product->metaTitle)
-<?php $imgUrl = $product->prodImage; ?>
+<?php $imgUrl = $product->prodImage;?>
 @section('og:image', $imgUrl)
 @section('content')
-@php 
+@php
 use App\Models\User;
 use App\Models\CustomerReview;
 @endphp
@@ -75,7 +75,7 @@ use App\Models\CustomerReview;
 .rating label input:focus:not(:checked) ~ .icon:last-child {
   color: #000;
   text-shadow: 0 0 5px #09f;
-}   
+}
 </style>
 <div  ng-controller="configProductController">
     <form id="form[[product.id]]" action="{{ route('addToCart')}}">
@@ -83,7 +83,7 @@ use App\Models\CustomerReview;
         <section id="content">
             <input type="hidden" value="{{Request::url()}}" class="fbShareUrl" />
             <input type="hidden" value="[[product.images[0].img]]" class="fbShareImg" />
-           
+
             <input type="hidden" value="[[product.product]]" class="fbShareTitle" />
             <div class="content-wrap">
                 <div class="container clearfix">
@@ -94,14 +94,14 @@ use App\Models\CustomerReview;
                                 <!-- Product Single - Gallery=========================================== -->
                                 <div class="product-image">
                                     <div class="fslider" data-pagi="false" data-autoplay="false" data-arrows="false" data-thumbs="true">
-                                        <div class="flexslider" ng-if="product.images.length > 0">                                           
-                                            <div class="slider-wrap"  data-lightbox="gallery" style="width:100% !important;">                                               
-                                                <div class="slide" ng-repeat="(key,prdimg) in product.images"   data-thumb="[[prdimg.img]]">                                                    
+                                        <div class="flexslider" ng-if="product.images.length > 0">
+                                            <div class="slider-wrap"  data-lightbox="gallery" style="width:100% !important;">
+                                                <div class="slide" ng-repeat="(key,prdimg) in product.images"   data-thumb="[[prdimg.img]]">
                                                     <a href="[[prdimg.img]]" title="[[product.title]]" data-lightbox="gallery-item"><img src="[[prdimg.img]]" alt="[[product.product]]" class="zoom-me zoom-me1 [[(key==0)?'fimg':'']]" data-zoom-image="[[prdimg.img]]"> </a>
-                                                </div>                                               
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="flexslider" ng-if="product.images.length == 0">                                          
+                                        <div class="flexslider" ng-if="product.images.length == 0">
                                             <div class="slider-wrap"  data-lightbox="gallery" style="width:100% !important;">
                                                 <div class="slide" data-thumb="{{ asset(Config('constants.defaultImgPath').'default-product.jpg')}}" >
                                                     <a href="javascript:void(0);" title="default Img" data-lightbox="gallery-item">
@@ -116,18 +116,18 @@ use App\Models\CustomerReview;
                                 <div class="clearfix"></div>
                             </div>
                             <div class="col_last col_half product-desc">
-                                <h1 class="product_title">[[product.product]]</h1>                
+                                <h1 class="product_title">[[product.product]]</h1>
                                 <div class="product-rating" ng-show="product.product_code != ''">
                                     <p>PRODUCT CODE: [[product.product_code]]</p>
-                                </div>   
-                                                       
-                                <div class="product-price prodDetailPrice" ng-show="product.spl_price > 0"> 
+                                </div>
+
+                                <div class="product-price prodDetailPrice" ng-show="product.spl_price > 0">
                                     <del><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</del> <span class="currency-sym"></span>
-                                    <ins class="mrp_price"> [[product.spl_price * currencyVal |number :2 ]]</ins>
+                                    <!-- <ins class="mrp_price"> [[product.spl_price * currencyVal |number :2 ]]</ins> -->
                                     <ins class=""> [[product.spl_price]]</ins>
                                     <input type="hidden" name="price" value="[[product.spl_price]]" class="parent_price">
                                 </div>
-                                <div class="product-price prodDetailPrice" ng-show="product.spl_price == 0"> 
+                                <div class="product-price prodDetailPrice" ng-show="product.spl_price == 0">
                                 <ins class=""><span class="currency-sym"></span> [[product.price]]</ins>
                                     <!-- <ins class="mrp_price"><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</ins> -->
                                 </div>
@@ -153,10 +153,10 @@ use App\Models\CustomerReview;
                                     <input type="button" value="-" class="minus">
                                     @if($isstock==1)
                                     <input type="number" step="1" name="quantity" id="quantity" value="1"  max="[[(product.is_stock == 1)?product.stock:'1000000000']]" class="qty" min="1" onkeypress="return isNumber(event);" style="text-align: center;" />
-                                    @else 
+                                    @else
                                     <input type="number" step="1" name="quantity" id="quantity" value="1"  max="1000000000" class="qty" min="1" onkeypress="return isNumber(event);" style="text-align: center;" />
-                                    @endif                                  
-                                    <input type="button" value="+" class="plus"> 
+                                    @endif
+                                    <input type="button" value="+" class="plus">
                                 </div>
                                 <input type='hidden' name='prod_id' value='[[product.id]]' data-parentid = "[[product.id]]">
                                 <input type='hidden' name='prod_type' value='[[product.prod_type]]'>
@@ -168,8 +168,8 @@ use App\Models\CustomerReview;
                                 <div class="clear"></div>
                                 <div class="line"></div>
                                 <!-- Product Single - Short Description  ============================================= -->
-                                <div class="shortDesc" ng-show="product.short_desc!=''">[[product.short_desc | removeHTMLTags]]</div>            
-                                @php 
+                                <div class="shortDesc" ng-show="product.short_desc!=''">[[product.short_desc | removeHTMLTags]]</div>
+                                @php
                             $publishReviews = CustomerReview::where(['product_id'=>$product->id,'publish'=>1])->orderBy('id','desc')->get();
                              if(count($publishReviews)>0)
                              {
@@ -182,7 +182,7 @@ use App\Models\CustomerReview;
                             <div><h4>Reviews({{count($publishReviews)}} reviews, {{$ratings}} <i class="fa fa-star" aria-hidden="true"></i>)</h4>
                                @if(count($CustomerReviews)>0)
                                @foreach($CustomerReviews as $review)
-                               @php 
+                               @php
                                $user = User::find($review->user_id);
                                @endphp
 
@@ -202,7 +202,7 @@ use App\Models\CustomerReview;
     <input type="radio" name="stars{{$review->id}}" disabled="" value="3" {{$review->rating==3?'checked':''}} />
     <span class="icon">★</span>
     <span class="icon">★</span>
-    <span class="icon">★</span>   
+    <span class="icon">★</span>
   </label>
   <label>
     <input type="radio" name="stars{{$review->id}}" disabled="" value="4" {{$review->rating==4?'checked':''}} />
@@ -222,7 +222,7 @@ use App\Models\CustomerReview;
 </div>
                                <span>{{$review->description}}</span><br><br>
                                @endforeach
-                            @if(count($publishReviews)>2) 
+                            @if(count($publishReviews)>2)
                             <a href="{{ route('home')}}/reviews/{{$review->product_id}}"><u>View All Reviews</u></a>
                             @endif
                             @else
@@ -231,11 +231,11 @@ use App\Models\CustomerReview;
                             </div><br>
                                 <!-- AddToAny BEGIN -->
                                 <div class="shareSociIconBox">
-                                <strong>Share:</strong> 
+                                <strong>Share:</strong>
                                 <?php
-                                $social['url'] = Request::url();
-                                print_r(App\Library\Helper::socialShareIcon($social));
-                                ?>
+$social['url'] = Request::url();
+print_r(App\Library\Helper::socialShareIcon($social));
+?>
                                 </div>
                                 <!-- AddToAny END -->
                                 <!-- Product Single - Share End -->
@@ -249,17 +249,17 @@ use App\Models\CustomerReview;
                                     </ul>
                                     <div class="tab-container">
                                         <div class="tab-content tabBox clearfix" id="tabs-1">
-                                            <div ng-bind-html="product.long_desc | toTrust"></div>                                     
+                                            <div ng-bind-html="product.long_desc | toTrust"></div>
                                         </div>
                                         <!-- <div class="tab-content tabBox clearfix" id="tabs-2">
-                                            <div ng-bind-html="product.add_desc | toTrust"></div> 
+                                            <div ng-bind-html="product.add_desc | toTrust"></div>
                                         </div> -->
                                     </div>
                                 </div>
                             </div>
                             @endif
                         </div>
-                    </div>                   
+                    </div>
                     @if($is_rel_prod->status)
                     <div class="clear"></div>
           <div class="line"></div>
@@ -267,7 +267,7 @@ use App\Models\CustomerReview;
                     <div class="col_full bottommargin" >
                         <h4>Related Products</h4>
                         <div id="oc-product"  class="owl-carousel product-carousel carousel-widget" data-margin="30" data-pagi="false" data-autoplay="5000" data-items-xxs="1" data-items-sm="2" data-items-md="3" data-items-lg="4">
-                            @foreach($product->relatedproducts()->with('catalogimgs')->get() as $relProduct)                       
+                            @foreach($product->relatedproducts()->with('catalogimgs')->get() as $relProduct)
                             <div class="oc-item">
                                 <div class="product clearfix mobwidth100  relatedProduct" >
                                     <div class="product-image">
@@ -278,13 +278,13 @@ use App\Models\CustomerReview;
                                     <div class="product-desc">
                                         <div class="product-title">
                                             <h3><a href="">{{$relProduct->product}}</a></h3> </div>
-                                        <div class="product-price"> 
+                                        <div class="product-price">
                                             @if($relProduct->spl_price >0 && $relProduct->price > $relProduct->spl_price)
                                             <del><span class="currency-sym"></span>  {{number_format(@$relProduct->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relProduct->spl_price * Session::get('currency_val'), 2, '.', '')}} </ins>
-                                            @else 
+                                            @else
                                             <ins><span class="currency-sym"></span>  {{number_format(@$relProduct->price * Session::get('currency_val'), 2, '.', '')}}</ins>
                                             @endif
-                                        </div>                                     
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -310,13 +310,13 @@ use App\Models\CustomerReview;
                                     <div class="product-desc">
                                         <div class="product-title">
                                             <h3><a href="{{route('home').'/'.$upSellProduct->url_key}}">{{$upSellProduct->product}}</a></h3> </div>
-                                        <div class="product-price"> 
+                                        <div class="product-price">
                                             @if($upSellProduct->spl_price >0 && $upSellProduct->price >$upSellProduct->spl_price)
                                             <del><span class="currency-sym"></span>  {{number_format(@$upSellProduct->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span>  {{number_format(@$upSellProduct->price * Session::get('currency_val'), 2, '.', '')}}</ins>
-                                            @else 
+                                            @else
                                             <ins><span class="currency-sym"></span>  {{number_format(@$upSellProduct->price * Session::get('currency_val'), 2, '.', '')}}</ins>
                                             @endif
-                                        </div>                                      
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -327,14 +327,14 @@ use App\Models\CustomerReview;
                     @endif
                 </div>
         </section>
-    </form>    
+    </form>
 </div>
 @stop
 @section('myscripts')
 <script>
     $(document).ready(function () {
-        $('head').append('<meta property="og:image" content="<?= $product->prodImage ?>" /> ');
-   
+        $('head').append('<meta property="og:image" content="<?=$product->prodImage?>" /> ');
+
    $( "div" ).delegate( "select", "change", function() {
    $(".optError").remove();
 });
@@ -380,7 +380,7 @@ use App\Models\CustomerReview;
         if (minvalue != currentVal)
             $('#quantity').val(parseInt(currentVal) - 1);
     });
-    
-    
+
+
 </script>
 @stop
