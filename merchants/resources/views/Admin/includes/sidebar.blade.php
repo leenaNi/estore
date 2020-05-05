@@ -1,5 +1,6 @@
 <?php
 $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
+$referralid = App\Models\GeneralSetting::where('url_key', 'referral')->first();
 ?>
 
 <aside class="main-sidebar">
@@ -232,7 +233,9 @@ $settingsdata = App\Library\Helper::getSettings();
 
                     <?php if (array_key_exists('referral', $feature)) {?>
                         @if($feature['referral']==1)
-                        <li class="{{ preg_match("/admin.referralProgram/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.referralProgram.view') }}"><i class="fa fa-angle-right"></i>Referral Program</a></li>
+                       <!--  <li class="{{ preg_match("/admin.referralProgram/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.referralProgram.view') }}"><i class="fa fa-angle-right"></i>Referral Program</a></li>
+                        -->
+                         <li class="{{ preg_match("/admin.referralProgram/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{!! route('admin.referralProgram.editReferral',['id'=>$referralid->id])!!}"><i class="fa fa-angle-right"></i>Referral Program</a></li>
                         @endif
                         @if($feature['notification']==1)
                         <li class="{{ preg_match("/admin.home/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.home.newsletter') }}"><i class="fa fa-angle-right"></i>Newsletters</a></li>

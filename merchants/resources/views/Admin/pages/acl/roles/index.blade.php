@@ -26,8 +26,8 @@
     <div class="grid-content">
         <div class="section-main-heading">
             <h1 class="lineHeight-30" style="min-width: 300px;">Roles
-            <span class="pull-right">
-            <a href="{!! route('admin.roles.add') !!}" class="btn btn-primary" target="_" type="button">Add New Role</a></span></h1>
+            <span>
+            <a href="{!! route('admin.roles.add') !!}" class="btn btn-listing-heading pull-right noAll-margin" target="_" type="button">Add New Role</a></span></h1>
         </div>
         <div class="listing-section">
             <table class="table table-striped table-hover tableVaglignMiddle">
@@ -48,20 +48,17 @@
                                 <td class="text-left" style="width: 300px">{{ $role->description }}</td>
                                 <td class="text-right">{{ date('d-M-Y',strtotime($role->created_at)) }}</td>
                                 <td class="text-center mn-w100">
-                                <div class="actionCenter">
-                   
-                      <span><a class="btn-action-default" href="{{ route('admin.roles.edit',['id' => $role->id ])  }}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
-                      <span class="dropdown">
-                          <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
-                          </button>
-                          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
-                              <li><a href="{{ route('admin.roles.delete',['id' => $role->id ])  }}"><i class="fa fa-trash "></i> Delete</a></li>
-                          </ul>
-                      </span>  
-                   
-
-                  </div> 
+                                    <div class="actionCenter">
+                                        <span><a class="btn-action-default" href="{{ route('admin.roles.edit',['id' => $role->id ])  }}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
+                                        <span class="dropdown">
+                                            <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+                                                <li><a href="{{ route('admin.roles.delete',['id' => $role->id ])  }}"><i class="fa fa-trash "></i> Delete</a></li>
+                                            </ul>
+                                        </span>  
+                                    </div> 
                                 </td>
 
                             </tr>
