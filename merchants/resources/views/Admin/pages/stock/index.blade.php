@@ -60,6 +60,7 @@
                         <tr> 
                             <th class="text-center">Image</th>
                             <th class="text-left">@sortablelink ('product', 'Product')</th> 
+                            <th class="text-left">Stock</th>
                             <th class="text-right">@sortablelink ('selling_price', 'Price')</th>
                             <th class="text-center">Action</th>
                         </tr>
@@ -70,6 +71,7 @@
                         <tr> 
                             <td class="text-center"><img src="{{@$product->prodImage }}" class="admin-profile-picture" /></td>
                             <td class="text-left">{{$product->product }}</td> 
+                            <td class="text-left">{{$product->stock }}</td> 
                             <td class="text-right"><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?><span class="priceConvert">{{$product->selling_price }}</span></td>
                             <td class="text-center">
                                <div class="actionCenter">
