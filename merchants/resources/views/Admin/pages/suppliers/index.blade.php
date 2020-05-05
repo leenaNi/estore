@@ -47,7 +47,7 @@
             <div class="col-md-3 noAll-padding displayFlex">
                 <div class="filter-right-section">
                     <div class="clearfix">
-                        <a href="{!! route('admin.suppliers.add') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN marginBottom15" target="_" type="button">Add New Supplier</a>
+                        <a href="{!! route('admin.suppliers.add') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN marginBottom15" target="_" type="button">Add New Vendor</a>
                         <div class="clearfix"></div>
                         <a href="{!! route('admin.suppliers.export') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" target="_" type="button">Export</a>
                     </div>
@@ -91,7 +91,7 @@
                         <td class="text-center">
                         @if($supplier->id!=1)
                         <div class="actionCenter">
-                            <span><a class="btn-action-default" href="{!! route('admin.suppliers.edit',['id'=>$supplier->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span>  
+                            <span><a class="btn-action-default" href="{!! route('admin.suppliers.edit',['id'=>$supplier->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span>
                             <span class="dropdown">
                                 <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
