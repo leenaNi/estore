@@ -64,11 +64,11 @@ ini_set('display_errors', 'On');
                 <div class="box-header col-md-3">
                     <a href="{{ route('admin.payments.newSettlement') }}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" >Add new settlement</a>
                 </div>
-                <div class="box-header col-md-3">
+                <!-- <div class="box-header col-md-3">
                     <form action="{!! route('admin.payments.export') !!}" target="_" method="post">
                         <button class="btn btn-default pull-right col-md-12 mobAddnewflagBTN"  type="submit">Export</button>
                     </form>
-                </div>
+                </div> -->
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
                 <div class="box-body table-responsive no-padding">

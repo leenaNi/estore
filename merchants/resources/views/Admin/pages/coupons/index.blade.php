@@ -70,7 +70,7 @@
                 <table class="table table-striped table-hover tableVaglignMiddle">
                     <thead>
                         <tr> 
-                            <th class="text-center">Image</th>
+                           <!--  <th class="text-center">Image</th> -->
                             <th class="text-left">Name</th>
                             <th class="text-center">Code</th>
                             <th class="text-center">Type</th>
@@ -98,13 +98,13 @@
                             }
                             ?>
                             <tr> 
-                                <td class="text-center"><img class="img-responsive img-thumbnail admin-profile-picture" src="{{($coupon->coupon_image)?asset('public/Admin/uploads/coupons/').'/'.$coupon->coupon_image:Config('constants.defaultImgPath').'/no-image.jpg' }}" /></td>
+                                <!-- <td class="text-center"><img class="img-responsive img-thumbnail admin-profile-picture" src="{{($coupon->coupon_image)?asset('public/Admin/uploads/coupons/').'/'.$coupon->coupon_image:Config('constants.defaultImgPath').'/no-image.jpg' }}" /></td> -->
                                 <td class="text-left">{{$coupon->coupon_name}}</td>
                                 <td class="text-center">{{$coupon->coupon_code}}</td>
                                 <td class="text-center">{{$coupon->discount_type==2?'Fixed':'Percentage'}}</td>
                                 <td class="text-right">
                                     @if($coupon->discount_type == '1')
-                                    %  {{$coupon->coupon_value}}
+                                      {{$coupon->coupon_value}} %
                                     @else
                                  <span class="currency-sym"></span>   <span class="priceConvert">{{$coupon->coupon_value}}</span>
                                     @endif

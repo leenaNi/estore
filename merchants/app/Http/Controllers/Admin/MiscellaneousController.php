@@ -19,6 +19,7 @@ use DB;
 use Input;
 use Mail;
 use Session;
+use Redirect;
 
 class MiscellaneousController extends Controller
 {
@@ -587,12 +588,14 @@ class MiscellaneousController extends Controller
     public function saveReferral()
     {
         $save = GeneralSetting::where('url_key', Input::get('url_key'))->first();
-        $save->status = Input::get('status');
+        //$save->status = Input::get('status');
+        $save->status = 1;
         $save->details = !is_null(Input::get('details')) ? json_encode(Input::get('details')) : '';
         $save->save();
         Session::flash("aletC", '1');
         Session::flash("message", "Refrral program updated successfully.");
-        return redirect()->route('admin.referralProgram.view');
+        return Redirect::back();
+        //return redirect()->route('admin.referralProgram.view');
     }
 
     public function bankDetails()
