@@ -42,7 +42,7 @@
         @endif 
         </div> 
   <div class="col-md-9 noLeft-padding">
-    <div class="grid-content">
+    <div class="grid-content" data-match-height="groupName">
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
         </div>
@@ -117,10 +117,10 @@
                 </div>
                 <div class="form-group col-md-6 noBottomMargin"> 
                     <a href="{{route('admin.products.view')}}">
-                        <button type="button" class="btn reset-btn noMob-leftmargin pull-right" value="reset">Reset
+                        <button type="button" class="btn reset-btn noMob-leftmargin pull-right mn-w100" value="reset">Reset
                         </button>
                     </a>  
-                    <button type="submit" name="search" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Search"> Filter
+                    <button type="submit" name="search" class="btn btn-primary noAll-margin pull-right marginRight-sm mn-w100" value="Search"> Filter
                     </button>  
                 </div>
                 {!! Form::close() !!}
@@ -130,7 +130,7 @@
   </div> 
  
     <div class="col-md-3 noRight-padding">
-    <div class="grid-content">
+    <div class="grid-content" data-match-height="groupName">
         <div class="section-main-heading">
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
         </div>
@@ -253,7 +253,7 @@
                 @endif
                 <th width="35%" class="text-left">@sortablelink ('product', 'Product')</th>
                 <th class="text-left">Categories</th>
-                <th class="text-right">@sortablelink ('price', 'Price') </th>
+                <th class="text-right mn-w100">@sortablelink ('price', 'Price') </th>
                 <th class="text-left">Product Type</th>
                 @if($settingStatus['stock'] == 1)
                   <th class="text-center">Stock</th>
@@ -265,7 +265,7 @@
                  @if(Session::get('login_user_type') == 5)
                   <th class="text-center">Show On Lisitng Page</th>
                 @endif
-                  <th class="text-center">Action</th>
+                  <th class="text-center mn-w100">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -320,7 +320,7 @@
                       }
                     ?>
                   </td>
-                  <td class="text-right">
+                  <td class="text-right mn-w100">
                     @if( $product->spl_price <= 0.00 )
                       <?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> 
                       <span class=""> {{ $product->price }} </span>
@@ -372,7 +372,7 @@
                   
                 </td>
                 @endif
-                <td class="text-center">
+                <td class="text-center  mn-w100">
                 <div class="actionCenter">
                    @if(Session::get('login_user_type') != 5)
                       <span><a class="btn-action-default" href="{!! route('admin.products.general.info',['id'=>$product->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 

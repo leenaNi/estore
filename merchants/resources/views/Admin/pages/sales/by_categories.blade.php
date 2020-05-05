@@ -33,12 +33,11 @@
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Category"/>
                         </div> 
-                        <div class="form-group col-md-2 col-sm-6 col-xs-12 noAllpadding">
-                            <input type="submit" name="submit" class="form-control btn btn-primary mobAddnewflagBTN" value="Search">
-                        </div>
-                        <div class="form-group col-md-2 col-sm-6 col-xs-12 noBottomMargin">
-                            <a href="{{route('admin.sales.bycategory')}}" class="medium btn btn-block reset-btn noLeftMargin">Reset </a>
-                            
+                        <div class="form-group col-md-4 col-sm-6 col-xs-12">
+                            <div class="search-resetsubmit">
+                                <input type="submit" name="submit" class="form-control btn btn-primary mobAddnewflagBTN mn-w100 no-leftmargin" value="Search">
+                                <a href="{{route('admin.sales.bycategory')}}" class="medium btn btn-block reset-btn noLeftMargin mn-w100">Reset </a>
+                            </div>   
                     </div>
                     </form>  
                 </div>
@@ -97,7 +96,7 @@
                             </tr>
                             @endforeach
                             @else
-                           <tr><td colspan=6> No Record Found.</td></tr>
+                           <tr><td colspan=6 class="text-center"> No Record Found.</td></tr>
                             @endif
                         </tbody>
                     </table>

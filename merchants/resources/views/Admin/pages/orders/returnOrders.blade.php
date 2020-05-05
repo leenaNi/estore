@@ -61,8 +61,8 @@
                     </div> 
                     <div class="form-group col-md-4 noBottomMargin"> 
                         <a href="{{route('admin.orders.OrderReturn')}}">
-                        <button type="button" class="btn reset-btn noMob-leftmargin pull-right">Reset</button></a> 
-                        <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg"> Filter</button> 
+                        <button type="button" class="btn reset-btn noMob-leftmargin pull-right mn-w120">Reset</button></a> 
+                        <button type="submit" class="btn btn-primary noAll-margin pull-right mn-w120 marginRight-sm"> Filter</button> 
                     </div>
                     {!! Form::close() !!}
                 </div>
@@ -87,7 +87,7 @@
                             <!-- <th>Order Status</th>-->
                             <th class="text-center">Returns Status</th>
                             <th class="text-right">Return Request Date</th>
-                            <th class="text-center">Action</th>
+                            <th class="text-center mn-w100">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,7 +107,7 @@
                             <td class="text-right">{{ date('d-M-Y',strtotime($r['created_at'])) }}
                             <div class="clearfix"></div>
                                 <span class="list-light-color list-small-font">8:30 PM</span></td>
-                            <td class="text-center">
+                            <td class="text-center mn-w100">
                                 <div class="actionCenter">
                                     <span>
                                         <a href="{{route('admin.orders.editreturn',['id' => $r['id']])}}"  class="btn-action-default"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a>

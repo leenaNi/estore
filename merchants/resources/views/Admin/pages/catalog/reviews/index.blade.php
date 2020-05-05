@@ -55,8 +55,8 @@ use App\Models\Order;
                     </div>
                     <div class="clearfix"></div>
                     <div class="form-group col-md-12 noBottom-margin"> 
-                          <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right">Reset</button></a> 
-                          <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg" style="margin-left: 0px;"> Filter</button> 
+                          <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right mn-w100">Reset</button></a> 
+                          <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-sm mn-w100" style="margin-left: 0px;"> Filter</button> 
                     </div>
                     {!! Form::close() !!}
 </div>
@@ -77,7 +77,7 @@ use App\Models\Order;
                       <th class="text-right">Order Date</th>
                       <th class="text-right">Review Date</th>
                       <th class="text-center">Status</th>
-                      <th class="text-center">Action </th>
+                      <th class="text-center mn-w120">Action </th>
                   </tr>
               </thead>
               <tbody>
@@ -102,7 +102,7 @@ use App\Models\Order;
                       <td class="text-right">{{date("d-M-Y",strtotime($review->created_at))}}</td>
                       <td class="text-center"><span>{{$status}}</span></td>
                       <td>
-                         <td class="text-center">
+                         <td class="text-center mn-w120">
                         <div class="actionCenter">
                         <span><a class="btn-action-default" href="getReviewData('{{$review->id}}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span>
                         </div> 
