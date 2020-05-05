@@ -72,7 +72,7 @@ class CouponsController extends Controller
         $coupon->created_by = Session::get('loggedinAdminId');
         $coupon->updated_by = Session::get('loggedinAdminId');
         $products = Product::all();
-        $userCoupon = DB::table("coupons_users")->get()->toArray();
+        $userCoupon = DB::table("coupons_users")->join('users', 'coupons_users.user_id', '=', 'users.id')->get()->toArray();
         $action = route("admin.coupons.save");
         //return view(Config('constants.adminCouponView') . '.addEdit', compact('coupon', 'products', 'action'));
         $data = ['status' => '1', 'products' => $products, 'action' => $action, 'coupon' => $coupon, 'userCoupon' => $userCoupon];
