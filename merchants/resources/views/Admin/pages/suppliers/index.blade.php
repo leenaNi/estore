@@ -94,7 +94,7 @@
                             <span><a class="btn-action-default" href="{!! route('admin.suppliers.edit',['id'=>$supplier->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span>
                             <span class="dropdown">
                                 <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
+                                <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                     <li><a href="{!! route('admin.suppliers.delete',['id'=>$supplier->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>

@@ -236,7 +236,7 @@
                     <div> 
                      <span class="dropdown">
                         <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                          <span class="caret"></span>
+                          <<img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                         </button>
                         <ul id="bulk_action" class="dropdown-menu bulk-action-dropdown-menu" aria-labelledby="dropdownMenu1">
                           <li role="presentation" class="dropdown-header">Select Bulk Action</li>
