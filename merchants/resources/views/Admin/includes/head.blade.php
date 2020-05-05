@@ -162,5 +162,6 @@ Session::put('storelogo', $data->logo);
     .btn{margin-left:10px;}
     .sidebar-mini.sidebar-collapse .sidebar-menu>li>a, .sidebar-menu .treeview-menu>li>a, .sidebar-mini.sidebar-collapse .sidebar-menu>li:hover>.treeview-menu {
     background: #fff;
+    .ui-menu .ui-menu-item { list-style-image: none !important; }
 }
 </style>
