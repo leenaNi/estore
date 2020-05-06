@@ -310,16 +310,16 @@ exit;*/
                                 <!-- Start voucher refferel Cashback Discount -->
                                 <div class="summry_col">
                                     @if($feature['loyalty'] == 1)
-                                    <h3>
+                                    <!-- <h3>
                                         <span class="pull-left summry_title">Current Reward Points</span>&nbsp;&nbsp;
                                         <span class="currency-sym"></span>&nbsp;
                                         <span class="rwd_pont curRewPointsOld">0</span>
                                         <span class="pull-right rwd_pont curRewPointsNew" style="display:none;"></span>
-                                    </h3>
+                                    </h3> -->
                                     <ul class="adminListing">
-                                        <li><div class="cashbackAmt"><input id="checkbox1"  class="requireCashback" type="checkbox" name="requireCashback" value="1" ><label for="checkbox1"><span></span>Apply Reward Points <p><a href="" target="_blank" class="blue_text">Check Reward Points</a></p></label>
+                                        <!-- <li><div class="cashbackAmt"><input id="checkbox1"  class="requireCashback" type="checkbox" name="requireCashback" value="1" ><label for="checkbox1"><span></span>Apply Reward Points <p><a href="" target="_blank" class="blue_text">Check Reward Points</a></p></label>
                                                 <p class="cashbackMsg" style="display:none;" ></p></div>
-                                        </li>
+                                        </li> -->
                                         @endif
                                         <div>
                                             <div>
@@ -355,7 +355,7 @@ exit;*/
                                                 </li>
                                                 @endif
                                                 @if($feature['referral'] == 1)
-                                                <li>
+                                                <!-- <li>
                                                     <div class="form-group">
                                                         <label for="email" class="col-md-12 noMobilePadding">REFERRAL</label>
                                                         <p class="col-md-8 noMobilePadding"><input name="require_referal" type="text" class="form-control requireReferal cartinput" placeholder="Enter Referral Code"></p>
@@ -365,7 +365,7 @@ exit;*/
                                                             <p class="referalMsg" style="display:none;color:red;font-size:13px;margin-top:15px" ></p>
                                                         </div>
                                                     </div>
-                                                </li>
+                                                </li> -->
                                                 @endif
                                             </div>
                                         </div>
