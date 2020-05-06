@@ -10,6 +10,7 @@
         <li class="active">SMS Campaign</li>
     </ol>
 </section>
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">
@@ -29,12 +30,13 @@
                         <div class="form-group col-md-8 col-sm-6 col-xs-12">
                             <input type="text" name="smsSearch"  class="form-control medium pull-right " placeholder="Message Title">
                         </div>
-                        <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                            <div class="search-resetsubmit">
-                                <button type="submit" class="btn btn-primary form-control noMob-leftmargin mn-w100 no-leftmargin marginRight-sm"> Search</button>
-                                <a href="{{ route('admin.coupons.view')}}" class="btn reset-btn noMob-leftmargin pull-right mn-w100 no-leftmargin">Reset </a>
-                            </div>
-                        </div>
+                        <a href="{{ route('admin.campaign.view')}}">
+                        <button type="button" class="btn reset-btn noMob-leftmargin pull-right" value="reset">Reset
+                        </button>
+                        </a>  
+                        <button type="submit" name="search" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Search"> Filter
+                        </button>  
+                        
                     </form>
                 </div>
                 <div class="box-header col-md-3 col-sm-12 col-xs-12">
@@ -51,7 +53,7 @@
                                 <th>Message Title</th>
                                 <th>Message Content</th>
                                 <th>Status</th>
-                                <th class="text-center mn-w100">Action </th>
+                                <th>Action </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,7 +63,7 @@
                                     <td>{{$message->title}}</td>
                                     <td>{{$message->content}}</td>
                                     <td>{{$message->status==2?'Draft':''}}</td>
-                                    <td class="text-center mn-w100">
+                                    <td>
                                         <a href="{{route('admin.campaign.edit',['id'=>$message->id])}}" class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btnNo-margn-padd"></i></a> 
                                         <a href="{!! route('admin.campaign.delete',['id'=>$message->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this message?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></a>
 
@@ -70,7 +72,7 @@
                                 @endforeach
                             <?php } else { ?>
                                 <tr>
-                                    <td colspan="5" class="text-center">No Record Found.</td>
+                                    <td colspan="5">No Record Found.</td>
                                 </tr>
                             <?php } ?>      
                         </tbody>

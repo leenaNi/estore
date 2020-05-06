@@ -51,12 +51,10 @@ ini_set('display_errors', 'On');
                                 </span>
                             </div>
                         </div>
-                        <div class="clearfix"></div>
-                        <div class="clearfix"></div>
                         <div class="form-group col-md-4">
                             <div class="search-resetsubmit">
-                                <input type="submit" name="submit" class="form-control btn btn-primary noLeftMargin mn-w100" value="Search">
-                                <a href="{{route('admin.payments.view')}}" class="form-control medium btn reset-btn noLeftMargin mn-w100">Reset</a>
+                                <input type="submit" name="submit" class=" btn btn-default noLeftMargin mn-w100" value="Search">
+                                <a href="{{route('admin.payments.view')}}" class="btn reset-btn noLeftMargin mn-w100">Reset</a>
                             </div>
                         </div>
                     </form>

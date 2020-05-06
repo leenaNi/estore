@@ -18,11 +18,11 @@
 <section class='content'>
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" role="tablist">
-            @if(!empty(Input::get("id")))
-            <li class="{{ in_array(Route::currentRouteName(),['admin.category.edit']) ? 'active' : '' }}"><a href="{!! route('admin.category.edit',['id'=>Input::get('id')]) !!}"  aria-expanded="false">Category Add/Edit</a></li>
+            @if(!empty(Input::get("id")) && in_array(Route::currentRouteName(),['admin.category.edit']))
+            <li class="{{ in_array(Route::currentRouteName(),['admin.category.edit']) ? 'active' : '' }}"><a href="{!! route('admin.category.edit',['id'=>Input::get('id')]) !!}"  aria-expanded="false">Category Edit</a></li>
             @endif
             @if(in_array(Route::currentRouteName(),['admin.category.add']))
-            <li class="{{ in_array(Route::currentRouteName(),['admin.category.add']) ? 'active' : '' }}"><a href="{!! route('admin.category.add',['parent_id'=>Input::get('parent_id')]) !!}"  aria-expanded="false">Category Add/Edit</a></li>
+            <li class="{{ in_array(Route::currentRouteName(),['admin.category.add']) ? 'active' : '' }}"><a href="{!! route('admin.category.add',['parent_id'=>Input::get('parent_id')]) !!}"  aria-expanded="false">Category Add</a></li>
             @endif
             @if($feature['sco'] == 1)
             <li class="{{ in_array(Route::currentRouteName(),['admin.category.catSeo']) ? 'active' : '' }}"><a href="{!! (Input::get('id'))?route('admin.category.catSeo',['id'=>Input::get('id')]):'#' !!}"      aria-expanded="false">SEO</a></li>
@@ -237,7 +237,7 @@ echo "</ul>";
                             {!! Form::hidden('return_url',null,['class'=>'rtUrl']) !!}
                             <div class="form-group col-sm-12 ">
                                 {!! Form::button('Save & Exit',["class" => "btn btn-primary pull-right saveCatExit mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
-                                {!! Form::button('Save & Continue',["class" => "btn btn-primary pull-right saveCatContine mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
+                                {!! Form::button('Save',["class" => "btn btn-primary pull-right saveCatContine mobileSpecialfullBTN", "style"=>"margin:left:10px"]) !!}
                                 @if($feature['sco']==1)
                                 {!! Form::button('Save & Next',["class" => "btn btn-primary pull-right saveCatNext mobileSpecialfullBTN $storeViesion", "style"=>"margin:left:10px"]) !!}
                            @endif

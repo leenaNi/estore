@@ -190,7 +190,7 @@ $("#htmlOut").html($("#content").val());
         var title = $("input[name=title]").val();
         var subject = $("input[name=subject]").val();
         var content = $("textarea[name=content]").val();
-       
+        if (confirm('Send Email to all Customers ?')) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('admin.emailcampaign.sendbulkemail') }}",
@@ -205,6 +205,7 @@ $("#htmlOut").html($("#content").val());
                     console.log(e.responseText);
                 }
             });
+        }
     }
  
 </script>

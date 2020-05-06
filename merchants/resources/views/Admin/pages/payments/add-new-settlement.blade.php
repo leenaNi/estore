@@ -42,18 +42,18 @@
                                 </span>
                             </div>
                         </div> -->
-                        <div class="clearfix"></div>
-                        <div class="clearfix"></div>
-                        <div class="form-group col-md-2">
-                            <input type="submit" name="submit" class="form-control btn btn-primary" value="Search" style="margin-left:0px">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <a href="{{route('admin.payments.newSettlement')}}" class="form-control medium btn reset-btn" style="margin-left:0px">Reset</a>
-                        </div>
+                        <!-- <div class="clearfix"></div> -->
+
+                        <a href="{{route('admin.payments.newSettlement')}}">
+                        <button type="button" class="btn reset-btn noMob-leftmargin pull-right" value="reset">Reset
+                        </button>
+                        </a>
+                        <button type="submit" name="search" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Search"> Search
+                        </button>
                     </form>
                 </div>
                 <div class="box-header col-md-3">
-                    <a href="{!! route('admin.payments.export') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" >Add new settlement</a>
+                    <!-- <a href="{!! route('admin.payments.export') !!}" class="btn btn-default pull-right col-md-12 mobAddnewflagBTN" >Add new settlement</a> -->
                 </div>
                 <div class="clearfix"></div>
                 <div class="dividerhr"></div>
@@ -112,9 +112,11 @@ if (Input::get('custSearch') && !empty(Input::get('custSearch'))) {
                 </div>
                 <div class="row">
                     <div class="col-md-3 pull-right">
+                    @if(count($userPayments) > 0 )
                         <div class="form-group ">
                             <button type="button" class="btn btn-primary settle-payment" >Settle Payments</button>
                         </div>
+                    @endif
                     </div>
                 </div>
                 </form>
