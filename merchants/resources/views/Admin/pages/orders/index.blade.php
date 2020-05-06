@@ -160,8 +160,87 @@
                 <table class="table orderTable table-striped table-hover tableVaglignMiddle">
                     <thead>
                         <tr>
-                            <th class="text-center">
-                                <label class="custom-checkbox">
+                            <th class="text-center mn-w80">
+                                <div class="custom-checkbox-box">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="masterCheck" value="00"/>
+                                        <span class="checkmark"></span>
+                                    </label>
+
+                                    <div class="drp-arrow"> 
+                                        <form action="" class="formMul" method="post" >
+                                            <input type="hidden" value="" name="OrderIds" />
+                                            <span class="dropdown">
+                                                <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul name="orderAction" id="orderAction" class="dropdown-menu bulk-action-dropdown-menu order-bulk-menu " aria-labelledby="dropdownMenu1">
+                                                    <li role="presentation" class="dropdown-header">Select Bulk Action</li>
+                                                    <li id="1"><input type="radio" id="1" name="Bulk Action" value="1">
+                                                        <label for="1">Print Invoice</label> 
+                                                    </li>
+                                                    <li id="3"><input type="radio" id="3" name="Bulk Action" value="3">
+                                                        <label for="3">Export</label> 
+                                                    </li> 
+                                                    @if($feature['flag'] == 1) 
+                                                    <li id="30"><input type="radio" id="30" name="Bulk Action" value="30">
+                                                        <label for="30">Flag</label> 
+                                                    </li> 
+                                                    @endif
+                                                    <li role="presentation" class="dropdown-header"> Courier Services </li>
+                                                    <li id="31"><input type="radio" id="31" name="Bulk Action" value="31">
+                                                        <label for="31">E-courier</label> 
+                                                    </li>  
+                                                    <li role="presentation" class="dropdown-header"> Update Order Status </li>
+                                                    <li id="8"><input type="radio" id="8" name="Bulk Action" value="8">
+                                                        <label for="8">Cancelled</label> 
+                                                    </li>
+                                                    <li id="12"><input type="radio" id="12" name="Bulk Action" value="12">
+                                                        <label for="12">Delayed</label> 
+                                                    </li>
+                                                    <li id="6"><input type="radio" id="6" name="Bulk Action" value="6">
+                                                        <label for="6">Delivered</label> 
+                                                    </li>
+                                                    <li id="9"><input type="radio" id="9" name="Bulk Action" value="9">
+                                                        <label for="9">Exchanged</label> 
+                                                    </li>
+                                                    <li id="10"><input type="radio" id="10" name="Bulk Action" value="10">
+                                                        <label for="10">Returned</label> 
+                                                    </li> 
+                                                    <li id="20"><input type="radio" id="20" name="Bulk Action" value="20">
+                                                        <label for="20">Partially Shipped</label> 
+                                                    </li> 
+                                                    <li id="4"><input type="radio" id="4" name="Bulk Action" value="4">
+                                                        <label for="4">Processing</label> 
+                                                    </li> 
+                                                    <li id="21"><input type="radio" id="21" name="Bulk Action" value="21">
+                                                        <label for="21">Refunded</label> 
+                                                    </li> 
+                                                    <li id="5"><input type="radio" id="5" name="Bulk Action" value="5">
+                                                        <label for="5">Shipped</label> 
+                                                    </li> 
+                                                    <li id="11"><input type="radio"  name="Bulk Action" value="11">
+                                                        <label for="11">Undelivered</label> 
+                                                    </li>   
+                                                    <li role="presentation" class="dropdown-header"> Update Payment Status </li>
+                                                    <li id="13"><input type="radio" id="13" name="Bulk Action" value="13">
+                                                        <label for="13">Pending</label> 
+                                                    </li>
+                                                    <li id="14"><input type="radio" id="14" name="Bulk Action" value="14">
+                                                        <label for="14">Cancelled</label> 
+                                                    </li>
+                                                    <li id="15"><input type="radio" id="15" name="Bulk Action" value="15">
+                                                        <label for="15">Partially Paid</label> 
+                                                    </li>
+                                                    <li id="16"><input type="radio" id="16" name="Bulk Action" value="16">
+                                                        <label for="16">Paid</label> 
+                                                    </li> 
+                                                </ul>
+                                            </span>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- <label class="custom-checkbox">
                                    <input type="checkbox" id="checkAll" />
                                   <span class="checkmark"></span>
                                 </label>
@@ -235,7 +314,7 @@
                                     </li> 
                                   </ul>
                                 </span>  
-                            </form>
+                            </form> -->
 
                             </th>
                             <th class="text-right">@sortablelink ('id', 'Order Id')</th>
@@ -256,7 +335,7 @@
                         @foreach($orders as $order)
                      
                         <tr>
-                            <td class="text-center">
+                            <td class="text-left pl-14">
                                 <!-- <input type="checkbox" name="orderId[]" class="checkOrderId" value="{{ $order->id }}" /> -->
 
                                 <label class="custom-checkbox">

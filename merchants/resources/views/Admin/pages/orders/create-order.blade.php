@@ -246,34 +246,47 @@ exit;*/
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tr>
-                                    <td>
-                                        <select name='payment_mode' class="form-control paymode validate[required]">
-                                            <option value="">Select Payment Mode</option>
-                                            @foreach($paymentMethods as $paymentMethod)
-                                                @if ($paymentMethod->name == 'Cash')
-                                                    <option selected value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
-                                                @else
-                                                    <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
+                                <tr style="border-bottom: 1px solid #f4f4f4;">
+                                    <td colspan="2">
+                                        <div class="pay-method">
+                                            <label>Pay By</label>
+                                            <select name='payment_mode' class="form-control paymode validate[required]">
+                                                <option value="">Select Payment Mode</option>
+                                                @foreach($paymentMethods as $paymentMethod)
+                                                    @if ($paymentMethod->name == 'Cash')
+                                                        <option selected value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                    @else
+                                                        <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </td>
                                     <td><span class="store-credit hide"><input type="text" onblur="updateRemainigAmount()" name='pay_amt' class='form-control validate_decimal' max="1" value="0" />
                                     </span></td>
                                     <td><span class="store-credit hide"><b>Remaining Amount:</b> <span class="" id="remaining-amt">0</span></span></td>
-                                    <td> Subtotal: <b><span class="subtotal">0</span></b></td>
-                                    <td></td>
+                                    
+                                    <td>&nbsp;</td>
+                                    <td colspan="2"> Subtotal: <b><span class="subtotal"><span class="currency-sym"></span> 0</span></b></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
                                 </tr>
                                 <tr id="validate_credit_amt" style="display: none">
                                     <td></td>
                                     <td><span style="color: red">Amount should be less than payable amount</span></td>
                                     <td></td><td></td>
                                 </tr>
-                                <tr>
-                                    <td colspan="1"><label><input type="checkbox" value="1" class="form-inline" name="order_status" />is Delivered</label></td>
+                                <tr style="border-bottom: 1px solid #f4f4f4;">
+                                    <td colspan="1">
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox" id="checkAll" />
+                                            <span class="checkmark"></span>
+                                        </label>
+                                        <span class="cc-text">is Delivered</span>
+                                    <!-- <label><input type="checkbox" value="1" class="form-inline" name="order_status" />is Delivered</label> -->
+                                </td>
                                     <td colspan="2">{{ Form::textarea("remarks",null,['class'=>'form-control remark','rows'=>"1",'cols'=>"50","Placeholder"=>'Remarks (If any)']) }}</td>
-                                    <td colspan="2"></td>
+                                    <td colspan="6"></td>
                                 </tr>
                             </table>
                             <!---- START Coupon Section --->
