@@ -252,6 +252,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{dd($orders)}}
                         @if(count($orders) >0 )
                         @foreach($orders as $order)
                      
