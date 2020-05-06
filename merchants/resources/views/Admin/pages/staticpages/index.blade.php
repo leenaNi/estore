@@ -89,7 +89,7 @@ if ($page->status == 1) {
                                         <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                            <li><a href="{!! route('admin.staticpages.edit',['id'=>$page->id]) !!}"><i class="fa fa-pencil-square-o"></i> Edit</a></li>
+                                            <!-- <li><a href="{!! route('admin.staticpages.edit',['id'=>$page->id]) !!}"><i class="fa fa-pencil-square-o"></i> Edit</a></li> -->
                                             @if($page->status==1)
                                             <li><a href="{!! route('admin.staticpages.changeStatus',['id'=>$page->id]) !!}" onclick="return confirm('Are you sure you want to disable this online page?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
                                             @elseif($page->status==0)
