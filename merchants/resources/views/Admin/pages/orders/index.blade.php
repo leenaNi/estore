@@ -349,7 +349,14 @@
                                 <div class="clearfix"></div>
                                 <span class="list-light-color list-small-font">10:53:12 AM</span>
                             </td>
-                            <td class="text-left"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">{{ @$order->users->firstname }} {{ @$order->users->lastname }} </a><div class="clearfix"></div>
+                            <td class="text-left"><a href="{!! route('admin.orders.edit',['id'=>$order->id]) !!}">
+                                @if(@$order->users->firstname !='' ){{ @$order->users->firstname }} {{ @$order->users->lastname }} 
+                                @elseif(@$order->first_name !='')
+                                {{ @$order->first_name }} {{ @$order->last_name }} 
+                                @else 
+                                -
+                                @endif
+                            </a><div class="clearfix"></div>
                                 <span class="list-light-color list-small-font">{{ @$order->users->telephone }}</span>
                             </td> 
 <td class="text-center"><span class="alertWarning" style="background-color: {{@$order->orderstatus['color']}}">{{ @$order->orderstatus['order_status']  }}</span></td>

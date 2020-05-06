@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\Sluggable;
+// use Cviebrock\EloquentSluggable\Sluggable;
 
 class Store extends Model {
 
-    use Sluggable;
+    // use Sluggable;
 
     protected $table = 'stores';
     protected $fillable = [
@@ -18,13 +18,13 @@ class Store extends Model {
         return $this->hasMany('App\Models\Document', 'parent_id');
     }
 
-    public function sluggable() {
-        return [
-            'url_key' => [
-                'source' => 'store_name'
-            ]
-        ];
-    }
+    // public function sluggable() {
+    //     return [
+    //         'url_key' => [
+    //             'source' => 'store_name'
+    //         ]
+    //     ];
+    // }
 
     public function getmerchant() {
         return $this->belongsTo('App\Models\Merchant', 'merchant_id');

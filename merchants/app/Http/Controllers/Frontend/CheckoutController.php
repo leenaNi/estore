@@ -52,6 +52,7 @@ class CheckoutController extends Controller
         }
         $totalcart_value =  $sum;
         $is_mincart = GeneralSetting::where('url_key', 'min-cart-value-rule')->where("status", 1)->first();
+        if($is_mincart){
         $details = json_decode($is_mincart->details, true);
         $charges= $details['charges'];
         if($charges){
@@ -59,6 +60,7 @@ class CheckoutController extends Controller
                 Session::flash('message', "Minimum cart value should be ".$charges." Rs.");
                 return Redirect::back();
             } 
+        }
         }
         $checkGuestCheckoutEnabled = GeneralSetting::where("url_key", "guest-checkout")->where("status", 1)->get();
 

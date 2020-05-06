@@ -43,13 +43,13 @@
                             </div>
                         </div> -->
                         <!-- <div class="clearfix"></div> -->
-                       
+
                         <a href="{{route('admin.payments.newSettlement')}}">
                         <button type="button" class="btn reset-btn noMob-leftmargin pull-right" value="reset">Reset
                         </button>
-                        </a>  
-                        <button type="submit" name="search" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Search"> Filter
-                        </button>  
+                        </a>
+                        <button type="submit" name="search" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Search"> Search
+                        </button>
                     </form>
                 </div>
                 <div class="box-header col-md-3">
