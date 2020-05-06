@@ -55,7 +55,7 @@
                              <td><img src="{{asset(Config('constants.layoutUploadPath')).'/'.$page->image}}" height="50px" width="70px"></td>
                              <td>
                              <?php
-if ($page->status == 1) {
+if ($page->is_active == 1) {
     $statusLabel = 'Active';
     $linkLabel = 'Mark as Inactive';
 } else {
@@ -83,9 +83,9 @@ if ($page->status == 1) {
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                             <!-- <li><a href="{!! route('admin.staticpages.edit',['id'=>$page->id]) !!}"><i class="fa fa-pencil-square-o"></i> Edit</a></li> -->
-                                            @if($page->status==1)
+                                            @if($page->is_active==1)
                                             <li><a href="{{route('admin.dynamic-layout.changeStatus',['id'=>$page->id])}}" onclick="return confirm('Are you sure you want to disable this {{$page->name}}?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
-                                            @elseif($page->status==0)
+                                            @elseif($page->is_active==0)
                                             <li><a href="{{route('admin.dynamic-layout.changeStatus',['id'=>$page->id])}}" onclick="return confirm('Are you sure you want to enable this {{$page->name}}?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
                                             @endif
                                         </ul>
