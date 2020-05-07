@@ -137,7 +137,7 @@
         <div class="filter-section equal-height-div-2">
           <div class="filter-right-section">  
           <div class="form-group">
-            <a class="btn btn-default fullWidth noAll-margin" href="{{ route('admin.products.sampleProductDownload')}}">Sample Products</a>
+            <a class="btn btn-default fullWidth noAll-margin" href="{{ route('admin.products.sampleProductDownload')}}">Sample Product</a>
             </div>           
             <div class="form-group">
             <a class="btn btn-default fullWidth noAll-margin" href="{{ route('admin.products.sampleBulkDownload')}}">Download Products</a>
