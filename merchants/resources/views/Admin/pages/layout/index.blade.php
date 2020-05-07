@@ -53,15 +53,45 @@
                         <tr>
                             <td>{{$page->name}}</td>   
                              <td><img src="{{asset(Config('constants.layoutUploadPath')).'/'.$page->image}}" height="50px" width="70px"></td>
-                            
-                             <td>@if($page->is_active ==1)  
+                             <td>
+                             <?php
+if ($page->is_active == 1) {
+    $statusLabel = 'Active';
+    $linkLabel = 'Mark as Inactive';
+} else {
+    $statusLabel = 'Inactive';
+    $linkLabel = 'Mark as Active';
+}
+?>
+<span class="alertSuccess">{{$statusLabel}}</span>
+                                 <!-- @if($page->is_active ==1)  
                                    <a href="{{route('admin.dynamic-layout.changeStatus',['id'=>$page->id])}}" onclick="return confirm('Are you sure you want to disable {{$page->name}}?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn btn-plen btnNo-margn-padd"></i></a>
                                  @endif
                                  @if($page->is_active ==0)  
                                   <a href="{{route('admin.dynamic-layout.changeStatus',['id'=>$page->id])}}" data-toggle="tooltip" title="Disabled" onclick="return confirm('Are you sure you want to enable {{$page->name}}?')"><i class="fa fa-times btn btn-plen btnNo-margn-padd"></i></a>
                                  @endif
-                                 </td>
-                            <td class="text-center mn-w100">   <a href="{{route('admin.dynamic-layout.edit',['id'=>$page->id])}}" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn btn-plen btnNo-margn-padd"></i></a></td>   
+                                 </td> -->
+                            <td class="text-center mn-w100">
+                                <!-- <a href="{{route('admin.dynamic-layout.edit',['id'=>$page->id])}}" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o btn btn-plen btnNo-margn-padd"></i></a> -->
+                                <div class="actionCenter">
+                                    <span>
+                                    <a class="btn-action-default" href="{{route('admin.dynamic-layout.edit',['id'=>$page->id])}}" ><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a>
+                                    </span>
+                                    <span class="dropdown">
+                                        <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                            <!-- <li><a href="{!! route('admin.staticpages.edit',['id'=>$page->id]) !!}"><i class="fa fa-pencil-square-o"></i> Edit</a></li> -->
+                                            @if($page->is_active==1)
+                                            <li><a href="{{route('admin.dynamic-layout.changeStatus',['id'=>$page->id])}}" onclick="return confirm('Are you sure you want to disable this {{$page->name}}?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                                            @elseif($page->is_active==0)
+                                            <li><a href="{{route('admin.dynamic-layout.changeStatus',['id'=>$page->id])}}" onclick="return confirm('Are you sure you want to enable this {{$page->name}}?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                                            @endif
+                                        </ul>
+                                    </span>
+                                </div>
+                            </td>
                               
                         </tr>
                         @endforeach

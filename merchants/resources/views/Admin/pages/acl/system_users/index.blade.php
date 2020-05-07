@@ -21,7 +21,7 @@
         <div  class="alert alert-danger" role="alert">
             {{ Session::get('message') }}
         </div>
-        @endif   
+        @endif
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
@@ -40,7 +40,7 @@
                                 <a href="{{route('admin.systemusers.view')}}" class='btn reset-btn noMob-leftmargin noLeftMargin mn-w100'>Reset </a>
                             </div>
                         </div>
-                    </form>   
+                    </form>
                 </div>
             </div>
 
@@ -63,7 +63,7 @@
             <div class="table-responsive overflowVisible no-padding">
             <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
-                            <tr> 
+                            <tr>
                                 <th class="text-left">System User</th>
                                 <th class="text-left">Email Id</th>
                                 <th class="text-right">Date</th>
@@ -73,33 +73,40 @@
                         </thead>
                         <tbody>
                             @if(count($system_users) >0 )
-                            @foreach($system_users as $system_user) 
+                            @foreach($system_users as $system_user)
                         <td class="text-left">{{$system_user->firstname }} {{$system_user->lastname }}</td>
 
                         <td class="text-left">{{ $system_user->email }}</td>
                         <td class="text-right">{{ date("d-M-Y",strtotime($system_user->created_at)) }}</td>
-                        <td class="text-center">
-                            @if($system_user->status==1)
-                            <a href="{!! route('admin.systemusers.changeStatus',['id'=>$system_user->id]) !!}"  onclick="return confirm('Are you sure you want to disable this user?')" data-toggle='tooltip' title='Enabled' ><i class="fa fa-check btn-plen btn"></i></a>
-                            @elseif($system_user->status==0)
-                            <a href="{!! route('admin.systemusers.changeStatus',['id'=>$system_user->id]) !!}"  onclick="return confirm('Are you sure you want to enable this user?')" data-toggle="tooltip" title="Disabled"> <i class="fa fa-times btn-plen btn"></i></a>
-                            @endif
-
-
+                        <?php
+if ($system_user->status == 1) {
+    $statusLabel = 'Active';
+    $linkLabel = 'Mark as Inactive';
+} else {
+    $statusLabel = 'Inactive';
+    $linkLabel = 'Mark as Active';
+}
+?>
+                        <td class="text-center"><span class="alertSuccess">{{$statusLabel}}</span></td>
                         <td class="text-center mn-w100">
                         @if($system_user->id!=1)
                         <div class="actionCenter">
-                            <span><a class="btn-action-default" href="{!! route('admin.systemusers.edit',['id'=>$system_user->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span> 
+                            <span><a class="btn-action-default" href="{!! route('admin.systemusers.edit',['id'=>$system_user->id]) !!}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span>
                             <span class="dropdown">
                                 <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                     <li><a href="{!! route('admin.systemusers.delete',['id'=>$system_user->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
+                                    @if($system_user->status==1)
+                            <li><a href="{!! route('admin.systemusers.changeStatus',['id'=>$system_user->id]) !!}"  onclick="return confirm('Are you sure you want to disable this user?')" data-toggle='tooltip' title='Enabled' ><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                            @elseif($system_user->status==0)
+                            <li><a href="{!! route('admin.systemusers.changeStatus',['id'=>$system_user->id]) !!}"  onclick="return confirm('Are you sure you want to enable this user?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                            @endif
                                 </ul>
-                            </span>  
+                            </span>
                         </div>
-                        @endif 
+                        @endif
                         </td>
                         </tr>
                         @endforeach
@@ -107,18 +114,18 @@
                         <tr><td colspan="5" class="text-center"> No Record Found.</td></tr>
                         @endif
                         </tbody>
-                    </table> 
+                    </table>
                     <?php
-                    if (empty(Input::get('empSearch'))) {
-                        echo $system_users->render();
-                    }
-                    ?>  
-             </div> 
-           </div> 
+if (empty(Input::get('empSearch'))) {
+    echo $system_users->render();
+}
+?>
+             </div>
+           </div>
            </div>
         </div>
 </section>
 <div class="clearfix">
 
 
-@stop 
+@stop

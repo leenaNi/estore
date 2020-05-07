@@ -1526,7 +1526,7 @@ class ProductsController extends Controller
         Session::flash("delDownloadableProd", "Deleted Successfully.");
     }
 
-    public function sampleBulkDownload()
+    public function sampleBulkDownload1()
     {   
         $userId = Session::get('loggedinAdminId');
         $details = [];
@@ -1632,6 +1632,129 @@ class ProductsController extends Controller
         return Helper::getCsv($sampleProds, 'products_data.csv', ',');
     }
 
+    public function sampleBulkDownload()
+    {   
+        $userId = Session::get('loggedinAdminId');
+        $details = [];
+        $arr = ['id', 'product', 'barcode', 'prod_type', 'images', 'variant_set', 'attributes', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
+        $products = Product::where(["is_individual"=> 1,"store_id"=>Session::get('store_id')])->with(['supplierProducts' => function ($q) use ($userId) { return $q->where('supplier_id', '=', $userId); }])->get(['id', 'product', 'barcode', 'prod_type', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc',  'is_shipped_international', 'is_referal_discount']);
+        //dd(@$products->supplierProducts[0]);
+        $sampleProds = [];
+        array_push($sampleProds, $arr);
+        $arrP = [];
+        $i = 0;
+        foreach ($products as $prodt) {
+            $catids = [];
+            $colors = '';
+            $catName = '';
+            $attrSet = AttributeSet::where(["id" => $prodt->attr_set])->first(['attr_set']);
+            if (!empty($prodt->categories()->get(['cat_id'])->toArray())) {
+                foreach ($prodt->categories()->get(['cat_id']) as $catid) {
+                    $catName = DB::table('store_categories')->join('categories', 'categories.id', '=', 'store_categories.category_id')->select('categories.category')->where('store_categories.id', $catid->cat_id)->first();
+                    array_push($catids, $catName->category);
+                }
+                $cats = implode(",", $catids);
+            } else {
+                $cats = "";
+            }
+
+            if (!empty($prodt->tagNames())) {
+                $tags = implode(",", $prodt->tagNames());
+            } else {
+                $tags = "";
+            }
+
+            $rel = [];
+            if (!empty($prodt->relatedproducts()->get(['prod_id'])->toArray())) {
+                foreach ($prodt->relatedproducts()->get(['prod_id']) as $relids) {
+                    array_push($rel, $relids->prod_id);
+                }
+                $relProds = implode(",", $rel);
+            } else {
+                $relProds = "";
+            }
+            $upsel = [];
+            if (!empty($prodt->upsellproducts()->get(['prod_id'])->toArray())) {
+                foreach ($prodt->upsellproducts()->get(['prod_id']) as $upids) {
+                    array_push($upsel, $upids->prod_id);
+                }
+                $upProds = implode(",", $upsel);
+            } else {
+                $upProds = "";
+            }
+            $imgs = [];
+            if (!empty($prodt->catalogimgs()->get()->toArray())) {
+                foreach ($prodt->catalogimgs()->get() as $prdimg) {
+                    array_push($imgs, $prdimg->filename);
+                }
+
+                $allimgs = implode(",", $imgs);
+            } else {
+                $allimgs = "";
+            }
+            $details = [
+                $prodt->id,
+                $prodt->product,
+                $prodt->barcode,
+                $prodt->prod_type,
+                $allimgs,
+                @$attrSet->attr_set,
+                '',
+                $prodt->is_avail,
+                $prodt->is_listing,
+                $prodt->stock,
+                $prodt->price,
+                $prodt->spl_price,
+                $prodt->sort_order,
+                $prodt->is_cod,
+                $prodt->url_key,
+                $prodt->short_desc,
+                $prodt->long_desc,
+                $prodt->add_desc,
+                $prodt->meta_title,
+                $prodt->meta_keys,
+                $prodt->meta_desc,
+                $prodt->is_shipped_international,
+                $prodt->is_referal_discount,
+                @$tags,
+                @$cats,
+                @$relProds,
+                @$upProds,
+               
+            ];
+            array_push($sampleProds, $details);
+        }
+        return Helper::getCsv($sampleProds, 'products_data.csv', ',');
+    }
+
+    public function sampleProductDownload()
+    {   
+        $userId = Session::get('loggedinAdminId');
+        $details = [];
+        $arr = ['id', 'product', 'barcode', 'prod_type', 'images', 'variant_set', 'attributes', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
+        $sampleProds = [];
+        array_push($sampleProds, $arr);
+        $attr = "size=>30,color=>blue|
+        size=>40,color=>black|
+        size=>20,color=>brown";
+        $details = ['Enter null to add new prod
+        Enter prod id for update prod', 'Product Name', 'barcode', '1->simple prod,3->config prod', 'prodPic.jpg', 'Prod variant set name
+        Eg: footwear,grocery', $attr, 'Enter 1 if true', 'Enter 1 if true', 'Enter product stock
+        For variant prod stock 
+        Will seperated by |
+        Eg: 20|100|20', 'Enter product price
+        For variant prod price 
+        Will seperated by |
+        Eg: 300|450|890', 'Enter product selling price
+        For variant prod selling price 
+        Will seperated by |
+        Eg: 20|100|20', 'product sort
+        Order', 'Enter 1 if true', 'Prod url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'Enter 1 if true', 'Enter 1 if true', 'tags', 'Enter product category
+        Eg: Fashion,Grains', 'enter related Prod ID', 'upsell'];
+        array_push($sampleProds, $details);
+        return Helper::getCsv($sampleProds, 'sample_data.csv', ',');
+    }
+
     public function productBulkUpload()
     {
         if (Input::hasFile('file')) {
@@ -1640,7 +1763,7 @@ class ProductsController extends Controller
             // $path = public_path() . '/theSoul/uploads/pincodes/';
             $path = public_path() . '/public/Admin/uploads/products/';
             $file->move($path, $name);
-            return $this->product_import_csv1($path, $name);
+            return $this->product_import_csv($path, $name);
         } else {
             echo "Please select file";
         }
@@ -1769,11 +1892,7 @@ class ProductsController extends Controller
         }
     }
 
-
-
-
-
-    public function product_import_csv1($path, $filename)
+    public function product_import_csv($path, $filename)
     {
         $csv_file = $path . $filename;
         if (($handle = fopen($csv_file, "r")) !== false) {
@@ -1814,8 +1933,9 @@ class ProductsController extends Controller
                 $categories = $col[27];
                 $related = $col[28];
                 $upsell = $col[29];
+               
                 if (!empty($id)) {
-                    //dd($id);
+                   
                     if (strtolower($id) == 'null') {
                         $updateProd = Product::firstOrNew(array('id' => $id));
                         if (!empty($product)) {
@@ -1942,45 +2062,59 @@ class ProductsController extends Controller
                         $updateProd->store_id = Session::get('store_id');
                         $updateProd->save();
 
-                        if (!empty($attributes) && $prodT == '3') {
-
+                        if (!empty($attributes) && $prodT == 3) {
                             $attrs_array = explode("|", $attributes);
-                            foreach ($attrs_array as $key => $att_ids) {
-                                $attrs = explode(",", $att_ids);
-                                $newConfigProduct = Product::create(['product' => $updateProd->product . ' - Variant - ', 'is_avail' => $is_avail, 'stock' => $stock, 'is_stock' => 1, 'parent_prod_id' => $updateProd->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $updateProd->attr_set, 'price' => $price]);
-
-                                $attributes = AttributeSet::find($newConfigProduct->attributeset['id'])->attributes;
-
-                                $newConfigProduct->attributes()->sync($attributes);
-                                $name = $updateProd->product . ' - Variant ( ';
-
-                                foreach ($attrs as $op => $value) {
-                                    $opt = explode("=>", $value);
-                                    $p_attr = Attribute::where([strtolower('attr') => $opt[0], 'store_id' => Session::get('store_id')])->first();
-                                    $attr_val = AttributeValue::where([strtolower('option_name') => $opt[1], 'attr_id' => $p_attr->id])->first();
-                                    $opt[0] = $p_attr->id;
-                                    $opt[1] = $attr_val->id;
-
-                                    $optionName = AttributeValue::find($opt[1])->option_name;
-                                    $name .= "$optionName, ";
-                                    DB::update(DB::raw("update has_options set attr_val = '" . $opt[1] . "' where attr_id = " . $opt[0] . " and prod_id = " . $newConfigProduct->id));
+                            if(!empty($attrs_array)){
+                                $i = 0;
+                                $variantStock = explode("|",$stock);
+                                $variantPrice = explode("|",$price);
+                                foreach ($attrs_array as $key => $att_ids) {
+                                    $attrs = explode(",", $att_ids);
+                                    $newConfigProduct = Product::create(['product' => $updateProd->product . ' - Variant - ', 'is_avail' => $is_avail, 'stock' => $variantStock[$i], 'is_stock' => 1, 'parent_prod_id' => $updateProd->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $updateProd->attr_set, 'price' => $variantPrice[$i]]);
+    
+                                    $attributes = AttributeSet::find($newConfigProduct->attributeset['id'])->attributes;
+    
+                                    $newConfigProduct->attributes()->sync($attributes);
+                                    $name = $updateProd->product . ' - Variant ( ';
+    
+                                    foreach ($attrs as $op => $value) {
+                                        $opt = explode("=>", $value);
+                                        $p_attr = Attribute::where([strtolower('attr') => $opt[0], 'store_id' => Session::get('store_id')])->first();
+                                        $attr_val = AttributeValue::where([strtolower('option_name') =>$opt[1], 'attr_id' => $p_attr->id])->first();
+                                        //check attribute value exists or not
+                                        if ($attr_val != null) {
+                                            $opt[0] = $p_attr->id;
+                                            $opt[1] = $attr_val->id;
+    
+                                            $optionName = AttributeValue::find($opt[1])->option_name;
+                                            $name .= "$optionName, ";
+                                            DB::update(DB::raw("update has_options set attr_val = '" . $opt[1] . "' where attr_id = " . $opt[0] . " and prod_id = " . $newConfigProduct->id));
+                                        } else {
+                                            Session::flash("message", "Given Attribute Option Value " . $opt[1] . " does not exist in " . $row_id . " product record.");
+                                            return redirect()->back();
+                                        }
+                                    }
+                                    $name = rtrim($name, ", ");
+                                    $name .= " )";
+                                    $newConfigProduct->barcode = $barcode;
+                                    $newConfigProduct->product = $name;
+    
+                                    if ($spl_price > 0 && $spl_price < $price) {
+                                        $newConfigProduct->selling_price = $spl_price;
+                                    } else {
+                                        $newConfigProduct->selling_price = $price;
+                                    }
+                                    if (!empty($spl_price)) {
+                                        $newConfigProduct->spl_price = $spl_price;
+                                    }
+    
+                                    $newConfigProduct->store_id = Session::get('store_id');
+                                    $newConfigProduct->update();
+                                    $i++;
                                 }
-                                $name = rtrim($name, ", ");
-                                $name .= " )";
-                                $newConfigProduct->barcode = $barcode;
-                                $newConfigProduct->product = $name;
-
-                                if ($spl_price > 0 && $spl_price < $price) {
-                                    $newConfigProduct->selling_price = $spl_price;
-                                } else {
-                                    $newConfigProduct->selling_price = $price;
-                                }
-                                if (!empty($spl_price)) {
-                                    $newConfigProduct->spl_price = $spl_price;
-                                }
-
-                                $newConfigProduct->store_id = Session::get('store_id');
-                                $newConfigProduct->update();
+                            }else{
+                                Session::flash("message", "Attributes coloumn is empty at " . $row_id . " product record.");
+                                return redirect()->back();
                             }
                         }
                     }
@@ -2103,42 +2237,63 @@ class ProductsController extends Controller
                         $updateProd->is_stock = 1;
                         $updateProd->store_id = Session::get('store_id');
                         $updateProd->save();
-                        if (!empty($attributes) && $prodT == '3') {
+                        if (!empty($attributes) && $prodT == 3) {
                             $del_subproducts = @Product::find($updateProd->id)->subproducts()->delete();
                             $count = @Product::find($updateProd->id)->subproducts()->count();
                             $attrs_array = explode("|", $attributes);
-                            //$at = array();
-                            foreach ($attrs_array as $key => $att_ids) {
-                                $attrs = explode(",", $att_ids);
-                                $newConfigProduct = Product::create(['product' => $updateProd->product . ' - Variant - ' . $count, 'is_avail' => $is_avail, 'stock' => $stock, 'is_stock' => 1, 'parent_prod_id' => $updateProd->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $updateProd->attr_set, 'price' => $price]);
-                                $attributes = AttributeSet::find($newConfigProduct->attributeset['id'])->attributes;
-                                $newConfigProduct->attributes()->sync($attributes);
-                                $name = $updateProd->product . ' - Variant ( ';
-                                foreach ($attrs as $op => $value) {
-                                    $opt = explode("=>", $value);
-                                    $p_attr = Attribute::where([strtolower('attr') => $opt[0], 'store_id' => Session::get('store_id')])->first();
-                                    $attr_val = AttributeValue::where([strtolower('option_name') => $opt[1], 'attr_id' => $p_attr->id])->first();
-                                    $opt[0] = $p_attr->id;
-                                    $opt[1] = $attr_val->id;
-                                    $optionName = AttributeValue::find($opt[1])->option_name;
-                                    $name .= "$optionName, ";
-                                    DB::update(DB::raw("update has_options set attr_val = '" . $opt[1] . "' where attr_id = " . $opt[0] . " and prod_id = " . $newConfigProduct->id));
+                            if(!empty($attrs_array)){
+                                $i = 0;
+                                $variantStock = explode("|",$stock);
+                                $variantPrice = explode("|",$price);
+                                foreach ($attrs_array as $key => $att_ids) {
+                                    $attrs = explode(",", $att_ids);
+                                    $newConfigProduct = Product::create(['product' => $updateProd->product . ' - Variant - ', 'is_avail' => $is_avail, 'stock' => $variantStock[$i], 'is_stock' => 1, 'parent_prod_id' => $updateProd->id, 'is_individual' => 0, 'prod_type' => 1, 'attr_set' => $updateProd->attr_set, 'price' => $variantPrice[$i]]);
+    
+                                    $attributes = AttributeSet::find($newConfigProduct->attributeset['id'])->attributes;
+    
+                                    $newConfigProduct->attributes()->sync($attributes);
+                                    $name = $updateProd->product . ' - Variant ( ';
+    
+                                    foreach ($attrs as $op => $value) {
+                                        $opt = explode("=>", $value);
+                                        $p_attr = Attribute::where([strtolower('attr') => $opt[0], 'store_id' => Session::get('store_id')])->first();
+                                        $attr_val = AttributeValue::where([strtolower('option_name') =>$opt[1], 'attr_id' => $p_attr->id])->first();
+                                        //check attribute value exists or not
+                                        if ($attr_val != null) {
+                                            $opt[0] = $p_attr->id;
+                                            $opt[1] = $attr_val->id;
+    
+                                            $optionName = AttributeValue::find($opt[1])->option_name;
+                                            $name .= "$optionName, ";
+                                            DB::update(DB::raw("update has_options set attr_val = '" . $opt[1] . "' where attr_id = " . $opt[0] . " and prod_id = " . $newConfigProduct->id));
+                                        } else {
+                                            Session::flash("message", "Given Attribute Option Value " . $opt[1] . " does not exist in " . $row_id . " product record.");
+                                            return redirect()->back();
+                                        }
+                                    }
+                                    $name = rtrim($name, ", ");
+                                    $name .= " )";
+                                    $newConfigProduct->barcode = $barcode;
+                                    $newConfigProduct->product = $name;
+    
+                                    if ($spl_price > 0 && $spl_price < $price) {
+                                        $newConfigProduct->selling_price = $spl_price;
+                                    } else {
+                                        $newConfigProduct->selling_price = $price;
+                                    }
+                                    if (!empty($spl_price)) {
+                                        $newConfigProduct->spl_price = $spl_price;
+                                    }
+    
+                                    $newConfigProduct->store_id = Session::get('store_id');
+                                    $newConfigProduct->update();
+                                    $i++;
                                 }
-                                $name = rtrim($name, ", ");
-                                $name .= " )";
-                                $newConfigProduct->barcode = $barcode;
-                                $newConfigProduct->product = $name;
-                                if ($spl_price > 0 && $spl_price < $price) {
-                                    $newConfigProduct->selling_price = $spl_price;
-                                } else {
-                                    $newConfigProduct->selling_price = $price;
-                                }
-                                if (!empty($spl_price)) {
-                                    $newConfigProduct->spl_price = $spl_price;
-                                }
-                                $newConfigProduct->store_id = Session::get('store_id');
-                                $newConfigProduct->update();
+                            }else{
+                                Session::flash("message", "Attributes coloumn is empty at " . $row_id . " product record.");
+                                return redirect()->back();
                             }
+                            
                         }
                     }
                     $categoryids = explode(",", $categories);
@@ -2196,333 +2351,6 @@ class ProductsController extends Controller
         } else {
             echo "Error being upload pincodes";
         }
-    }
-
-    private function product_import_csv($path, $filename)
-    {
-        $arr = ['id', 'product', 'prod_type', 'images', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'meta_robot', 'canonical', 'og_title', 'og_desc', 'og_image', 'twitter_url', 'twitter_title', 'twitter_desc', 'twitter_image', 'og_url', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
-        $csv_file = $path . $filename;
-        if (($handle = fopen($csv_file, "r")) !== false) {
-            $intersect = array_intersect($arr, fgetcsv($handle));
-            if (count($arr) != count($intersect)) {
-                echo "Column miss match plaese check your Excel sheet";
-                exit;
-            }
-
-            $row_id = 1;
-            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                $num = count($data);
-                for ($c = 0; $c < $num; $c++) {
-                    $col[$c] = $data[$c];
-                }
-                $id = $col[0];
-                $product = $col[1];
-                $prodT = $col[2];
-                $prdimgs = $col[3];
-                $attr_set = $col[4];
-                $is_avail = $col[5];
-                $is_listing = $col[6];
-                $stock = $col[7];
-                $price = $col[8];
-                $spl_price = $col[9];
-                $sort_order = $col[10];
-                $is_cod = $col[11];
-                $url_key = $col[12];
-                $short_desc = $col[13];
-                $long_desc = $col[14];
-                $add_desc = $col[15];
-                $meta_title = $col[16];
-                $meta_key = $col[17];
-                $meta_desc = $col[18];
-                $meta_robot = $col[19];
-                $canonical = $col[20];
-                $og_title = $col[21];
-                $og_desc = $col[22];
-                $og_image = $col[23];
-                $twitter_url = $col[24];
-                $twitter_title = $col[25];
-                $twitter_desc = $col[26];
-                $twitter_image = $col[27];
-                $og_url = $col[28];
-                $is_shipped_inter = $col[29];
-                $is_referal_discount = $col[30];
-                $tags = $col[31];
-                $categories = $col[32];
-                $related = $col[33];
-                $upsell = $col[34];
-                if (!empty($id)) {
-                    $updateProd = Product::firstOrNew(array('id' => $id));
-                    if (!empty($product)) {
-                        $updateProd->product = $product;
-                    }
-
-                    if (!empty($prodT)) {
-                        if (is_numeric($prodT)) {
-                            $prodtype_id = ProductType::whereIn('type_id', [1, 2, 3])->pluck("type_id")->toArray();
-                            // dd($prodtype_id);
-                            if (in_array($prodT, $prodtype_id)) {
-                                $updateProd->prod_type = $prodT;
-                            } else {
-                                Session::flash("message", "Product type " . $prodT . " not allowed for product Name " . $product . " and row id " . $row_id);
-                                return redirect()->back();
-                            }
-                        } else {
-                            Session::flash("message", "Product type must be a Integer value for product Name " . $product . " and row id " . $row_id);
-                            return redirect()->back();
-                        }
-                    }
-
-                    if (!empty($is_avail)) {
-                        $updateProd->is_avail = $is_avail;
-                    }
-
-                    if (!empty($is_listing)) {
-                        $updateProd->is_listing = $is_listing;
-                    }
-
-                    if (!empty($stock)) {
-                        $updateProd->stock = $stock;
-                    }
-
-                    if (!empty($price)) {
-                        $updateProd->price = $price;
-                    }
-
-                    if ($spl_price > 0 && $spl_price < $price) {
-                        $selling_price = $spl_price;
-                    } else {
-                        $selling_price = $price;
-                    }
-
-                    if (!empty($spl_price)) {
-                        $updateProd->spl_price = $spl_price;
-                    }
-
-                    if (!empty($selling_price)) {
-                        $updateProd->selling_price = $selling_price;
-                    }
-
-                    if (!empty($sort_order)) {
-                        $updateProd->sort_order = $sort_order;
-                    }
-
-                    if (!empty($attr_set)) {
-                        if (is_numeric($attr_set)) {
-
-                        } else {
-                            Session::flash("message", "Product Attibute set  must be a Integer value for product Name " . $product . " in " . $row_id . " product record.");
-                            return redirect()->back();
-                        }
-                    }
-
-                    if (!empty($is_cod)) {
-                        $updateProd->is_cod = $is_cod;
-                    }
-
-                    if (!empty($url_key)) {
-                        $updateProd->url_key = $url_key;
-                    }
-
-                    if (!empty($short_desc)) {
-                        $updateProd->short_desc = $short_desc;
-                    }
-
-                    if (!empty($long_desc)) {
-                        $updateProd->long_desc = $long_desc;
-                    }
-
-                    if (!empty($add_desc)) {
-                        $updateProd->add_desc = $add_desc;
-                    }
-
-                    if (!empty($meta_title)) {
-                        $updateProd->meta_title = $meta_title;
-                    }
-
-                    $updateProd->is_individual = 1;
-
-                    if (!empty($meta_key)) {
-                        $updateProd->meta_keys = $meta_key;
-                    }
-
-                    if (!empty($meta_desc)) {
-                        $updateProd->meta_desc = $meta_desc;
-                    }
-
-                    if (!empty($meta_robot)) {
-                        $updateProd->meta_robot = $meta_robot;
-                    }
-
-                    if (!empty($canonical)) {
-                        $updateProd->canonical = $canonical;
-                    }
-
-                    if (!empty($og_title)) {
-                        $updateProd->og_title = $og_title;
-                    }
-
-                    if (!empty($og_desc)) {
-                        $updateProd->og_desc = $og_desc;
-                    }
-
-                    if (!empty($og_image)) {
-                        $updateProd->og_image = $og_image;
-                    }
-
-                    if (!empty($twitter_url)) {
-                        $updateProd->twitter_url = $twitter_url;
-                    }
-
-                    if (!empty($twitter_title)) {
-                        $updateProd->twitter_title = $twitter_title;
-                    }
-
-                    if (!empty($twitter_desc)) {
-                        $updateProd->twitter_desc = $twitter_desc;
-                    }
-
-                    if (!empty($twitter_image)) {
-                        $updateProd->twitter_image = $twitter_image;
-                    }
-
-                    if (!empty($og_url)) {
-                        $updateProd->og_url = $og_url;
-                    }
-
-                    if (!empty($is_shipped_inter)) {
-                        $updateProd->is_shipped_international = $is_shipped_inter;
-                    }
-
-                    if (!empty($is_referal_discount)) {
-                        $updateProd->is_referal_discount = $is_referal_discount;
-                    }
-                    $updateProd->store_id = Session::get('store_id');
-                    // $updateProd->save();
-
-                    if ($id == 'NULL' || $id == 'null') {
-                        $updateProd->attr_set = $attr_set;
-                        $updateProd->save();
-
-                        if ($updateProd->prod_type != 3) {
-                            if ($updateProd->prod_type == 1) {
-                                $defaultAttributeSet = AttributeSet::first();
-                                if ($defaultAttributeSet->id != $updateProd->attr_set) {
-                                    Session::flash("message", "Variant set value " . $attr_set . " not allowd for product Name " . $product . " in " . $row_id . " product record");
-                                    $updateProd->delete();
-                                    return redirect()->back();
-                                }
-                            } else {
-                                $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes;
-                                // dd($attributes);
-                                if (count($attributes) == 0) {
-                                    Session::flash("message", "There is no Attribute Found in database with id value " . $attr_set . " product Name " . $product . " in " . $row_id . " product record");
-                                    $updateProd->delete();
-                                    return redirect()->back();
-                                }
-                                if (!empty($attributes)) {
-                                    $updateProd->attributes()->sync($attributes);
-                                } else {
-                                    $updateProd->attributes()->detach();
-                                }
-
-                            }
-                        } else {
-                            $chkAttr = AttributeSet::find($updateProd->attributeset['id']);
-                            // dd($chkAttr);
-                            if ($chkAttr == null) {
-                                Session::flash("message", "There is no Variant set found in database with id value " . $attr_set . " for product name " . $product . " in  " . $row_id . " product record.");
-                                $updateProd->delete();
-                                return redirect()->back();
-                            } else {
-                                $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes()->where('is_filterable', "=", "0")->get();
-                                //  dd($attributes);
-                                if (!empty($attributes)) {
-                                    $updateProd->attributes()->sync($attributes);
-                                } else {
-                                    Session::flash("message", "There is no Attribute found in database with id value " . $attr_set . " for product name " . $product . " in " . $row_id . " product records.");
-                                    $updateProd->delete();
-                                    return redirect()->back();
-                                }
-                            }
-
-                            //                            $attributes = AttributeSet::find($updateProd->attributeset['id'])->attributes()->where('is_filterable', "=", "0")->get();
-                            //                            if (!empty($attributes))
-                            //                                $updateProd->attributes()->sync($attributes);
-                        }
-                    }
-                    $updateProd->update();
-                    $tagsArr = explode(",", $tags);
-
-                    if (!empty($tags)) {
-                        $updateProd->retag($tags);
-                    }
-
-                    $categoryids = explode(",", $categories);
-
-                    if (!empty($categories)) {
-                        foreach ($categoryids as $categoryid) {
-                            // $category = Category::where(DB::raw(strtolower('category')), $categoryid)->first();
-                            $category = DB::table('store_categories')
-                                ->join('categories', 'categories.id', '=', 'store_categories.category_id')
-                                ->where('categories.' . DB::raw(strtolower('category')), $categoryid)->select('store_categories.id')->first();
-                            if ($category && $category != null) {
-                                $cat_id[] = $category->id;
-                            } else {
-                                Session::flash("message", "Given category " . $categoryid . " does not exist for product name " . $product . " in " . $row_id . " product record.");
-                                // $updateProd->delete();
-                                return redirect()->back();
-                            }
-                        }
-                        // dd($updateProd);
-                        $updateProd->categories()->detach();
-                        $updateProd->categories()->attach($cat_id);
-                    } else {
-                        Session::flash("message", "Category name can't be blank for product name " . $product . " in " . $row_id . " product record.");
-                        $updateProd->delete();
-                        return redirect()->back();
-                    }
-                    $relatedProdIds = explode(",", $related);
-
-                    if (!empty($related)) {
-                        $updateProd->relatedproducts()->detach();
-                        $updateProd->relatedproducts()->attach($relatedProdIds);
-                    }
-
-                    $upsellProdIds = explode(",", $upsell);
-
-                    if (!empty($upsell)) {
-                        $updateProd->relatedproducts()->detach();
-                        $updateProd->upsellproducts()->attach($upsellProdIds);
-                    }
-
-                    $prdimgsData = explode(",", $prdimgs);
-                    if (!empty($prdimgsData) && $prdimgsData != '') {
-                        $getimgs = [];
-                        foreach ($prdimgsData as $fileNm) {
-                            if ($fileNm != '') {
-                                $newImg = new CatalogImage(['filename' => $fileNm, 'image_type' => 1, 'image_mode' => 1, 'catalog_id' => $updateProd->id]);
-                                array_push($getimgs, $newImg);
-                            }
-                        }
-                        if (!empty($getimgs)) {
-                            $updateProd->catalogimgs()->delete();
-                            $updateProd->catalogimgs()->saveMany($getimgs);
-                        }
-                    }
-                } else {
-                    Session::flash("message", "Plese Insert Product Id value NULL for product " . $product . "and row id " . $row_id);
-                    //echo "Error being upload pincodes";
-                    return redirect()->back();
-                }
-                $row_id++;
-            }
-            fclose($handle);
-            Session::flash("msg", "Product uploaded successfully.");
-            return redirect()->back();
-        } else {
-            echo "Error being upload pincodes";
-        }
-        // echo "File data successfully imported to database!!";
     }
 
     public function prdBulkImgUpload()

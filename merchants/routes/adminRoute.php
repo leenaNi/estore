@@ -145,6 +145,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                 Route::post('/del-product-upload', ['as' => 'admin.products.prodUploadDel', 'uses' => 'ProductsController@prodUploadDel']);
                 Route::post('/product-save-upload', ['as' => 'admin.products.prodSaveUpload', 'uses' => 'ProductsController@prodSaveUpload']);
                 Route::any('/sample-bulk-download', ['as' => 'admin.products.sampleBulkDownload', 'uses' => 'ProductsController@sampleBulkDownload']);
+                Route::any('/sample-product-download', ['as' => 'admin.products.sampleProductDownload', 'uses' => 'ProductsController@sampleProductDownload']);
                 Route::any('/product-bulk-upload', ['as' => 'admin.products.productBulkUpload', 'uses' => 'ProductsController@productBulkUpload']);
                 Route::any('/supplierproduct-bulk-upload', ['as' => 'admin.products.supplierproductBulkUpload', 'uses' => 'ProductsController@supplierproductBulkUpload']);
                 Route::any('/product-bulk-image-upload', ['as' => 'admin.products.prdBulkImgUpload', 'uses' => 'ProductsController@prdBulkImgUpload']);
