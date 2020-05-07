@@ -275,10 +275,14 @@ $(".saveImgExit, .saveImgContine, .saveImgNext").on('click', function (e) {
               
         //console.log(cropper);
         var fileUpload = $(this)[0];
+        var imageExt = fileUpload.value.split('.');
+        var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp"];
         if($(this).val() != ''){
             //Check whether the file is valid Image.
-            var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
-            if (regex.test(fileUpload.value.toLowerCase())) {
+
+            //var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+            //if (regex.test(fileUpload.value.toLowerCase())) {
+            if ($.inArray(imageExt[1], validImageTypes) == true || $.inArray(imageExt[1], validImageTypes) != -1) {
                 //console.log("inside regex");
                 //Check whether HTML5 is supported.
                 if (typeof (fileUpload.files) != "undefined") {

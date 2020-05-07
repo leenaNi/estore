@@ -242,8 +242,13 @@ class MerchantController extends Controller
             $all_data['currency_code'] = $currency['id'];
             $all_data['country_code'] = $country['country_code'];
             // $merchant->register_details = json_encode(collect(Input::all())->except('_token', 'id', 'existing_mid'));
+            $merchant->company_name = Input::get('company_name');
             $merchant->register_details = json_encode(collect($all_data)->except('_token', 'id', 'existing_mid'));
             $merchant->save();
+
+
+            $store = Store::where('merchant_id', Input::get('id'))->update(array('store_name' => Input::get('company_name')));
+
             if (!empty($this->getbankid())) {
                 $hasmer = $merchant->hasMarchants()->withPivot('id', 'bank_id', 'merchant_id', 'added_by', 'updated_by', 'created_at', 'updated_at')->get();
                 if (!empty($hasmer)) {
