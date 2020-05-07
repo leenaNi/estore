@@ -1366,9 +1366,13 @@
     else
     {
       var fileUpload = $("#chooseImg")[0];
+      var imageExt = fileUpload.value.split('.');
+      var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp"];
       //Check whether the file is valid Image.
-      var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
-      if (regex.test(fileUpload.value.toLowerCase())) {
+
+      //var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.png|.gif)$");
+      //if (regex.test(fileUpload.value.toLowerCase())) {
+      if ($.inArray(imageExt[1], validImageTypes) == true || $.inArray(imageExt[1], validImageTypes) != -1) {
         //Check whether HTML5 is supported.
         if (typeof (fileUpload.files) != "undefined") {
           $("#error-product").html("");

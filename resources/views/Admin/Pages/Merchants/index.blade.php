@@ -75,7 +75,9 @@
                            <!--  <td>{{ $merchant->firstname." ".$merchant->lastname }}</td>-->
                             <td>{{ ($merchant->email != '')?  $merchant->email: '-'}}</td>
                             <td>{{ $merchant->phone }}</td>
-                            <td>{{ !empty(json_decode($merchant->register_details)->store_name) ? json_decode($merchant->register_details)->store_name : " " }}</td>
+                            <td>
+                                {{ $merchant->company_name }}
+                                <!-- {{ !empty(json_decode($merchant->register_details)->store_name) ? json_decode($merchant->register_details)->store_name : " " }} --></td>
                             <td>
                                 <?php
                                 $business_name = App\Models\Category::whereIn("id", json_decode($merchant->register_details)->business_type)->get(['category']);
