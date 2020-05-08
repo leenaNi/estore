@@ -183,7 +183,7 @@ $('#saveSlider').on('click', function (e) {
         var fileUpload = $("#sliderImg")[0];
         //Check whether the file is valid Image.
         var imageExt = fileUpload.value.split('.');
-        var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp"];
+        var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp","svg"];
 
        // var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
         //if (regex.test(fileUpload.value.toLowerCase())) {

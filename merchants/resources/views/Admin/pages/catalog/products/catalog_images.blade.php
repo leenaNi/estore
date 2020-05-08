@@ -276,7 +276,7 @@ $(".saveImgExit, .saveImgContine, .saveImgNext").on('click', function (e) {
         //console.log(cropper);
         var fileUpload = $(this)[0];
         var imageExt = fileUpload.value.split('.');
-        var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp"];
+        var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp","svg"];
         if($(this).val() != ''){
             //Check whether the file is valid Image.
 
