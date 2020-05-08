@@ -82,6 +82,7 @@ if ($page->is_active == 1) {
                                         <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                             <li><a href="{!! route('admin.dynamic-layout.delete',['id'=>$page->id]) !!}"><i class="fa fa-trash "></i> Delete</a></li>
                                             <!-- <li><a href="{!! route('admin.staticpages.edit',['id'=>$page->id]) !!}"><i class="fa fa-pencil-square-o"></i> Edit</a></li> -->
                                             @if($page->is_active==1)
                                             <li><a href="{{route('admin.dynamic-layout.changeStatus',['id'=>$page->id])}}" onclick="return confirm('Are you sure you want to disable this {{$page->name}}?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>

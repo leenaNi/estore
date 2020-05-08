@@ -174,6 +174,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
             Route::any('/add-Edit', array('as' => 'admin.dynamic-layout.addEdit', 'uses' => 'DyLayoutController@addEdit'));
             Route::any('/save', array('as' => 'admin.dynamic-layout.save', 'uses' => 'DyLayoutController@saveUpdate'));
             Route::any('/edit', array('as' => 'admin.dynamic-layout.edit', 'uses' => 'DyLayoutController@edit'));
+            Route::any('/delete', array('as' => 'admin.dynamic-layout.delete', 'uses' => 'DyLayoutController@delete'));
             Route::any('/saveEdit', array('as' => 'admin.dynamic-layout.saveEdit', 'uses' => 'DyLayoutController@saveEdit'));
             Route::any('/change_status', array('as' => 'admin.dynamic-layout.changeStatus', 'uses' => 'DyLayoutController@changeStatus'));
             Route::any('/{slug}', array('as' => 'admin.dynamic-layout.view', 'uses' => 'DyLayoutController@index'));
