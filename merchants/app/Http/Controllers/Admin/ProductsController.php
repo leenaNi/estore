@@ -1731,7 +1731,7 @@ class ProductsController extends Controller
     {   
         $userId = Session::get('loggedinAdminId');
         $details = [];
-        $arr = ['id', 'product', 'barcode', 'prod_type', 'images', 'variant_set', 'attributes', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod','lenght','width','height','weight', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
+        $arr = ['id', 'product', 'barcode', 'prod_type', 'images', 'variant_set', 'attributes', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod','lenght','width','height','weight', 'url_key', 'short_desc', 'long_desc', 'meta_title', 'meta_keys', 'meta_desc', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
         $sampleProds = [];
         array_push($sampleProds, $arr);
         $attr = "size=>30,color=>blue|
@@ -1749,7 +1749,7 @@ class ProductsController extends Controller
         For variant prod selling price 
         Will seperated by |
         Eg: 20|100|20', 'product sort
-        Order','Enter 1 if true','Enter Prod length','Enter Prod width','Enter Prod height','Enter Prod weight', 'Prod url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'Enter 1 if true', 'Enter 1 if true', 'tags', 'Enter product category
+        Order','Enter 1 if true','Enter Prod length','Enter Prod width','Enter Prod height','Enter Prod weight', 'Prod url_key', 'short_desc', 'long_desc', 'meta_title', 'meta_keys', 'meta_desc', 'Enter 1 if true', 'Enter 1 if true', 'tags', 'Enter product category
         Eg: Fashion,Grains', 'enter related Prod ID', 'upsell'];
         array_push($sampleProds, $details);
         return Helper::getCsv($sampleProds, 'sample_data.csv', ',');
@@ -1933,7 +1933,7 @@ class ProductsController extends Controller
                 $categories = $col[27];
                 $related = $col[28];
                 $upsell = $col[29];
-               
+                
                 if (!empty($id)) {
                    
                     if (strtolower($id) == 'null') {
@@ -2302,7 +2302,7 @@ class ProductsController extends Controller
                         foreach ($categoryids as $categoryid) {
                             $category = DB::table('store_categories')
                                 ->join('categories', 'categories.id', '=', 'store_categories.category_id')
-                                ->where('categories.' . DB::raw(strtolower('category')), $categoryid)->select('store_categories.id')->first();
+                                ->where('categories.' . DB::raw(strtolower('category')), $categoryid)->where('store_categories.store_id',Session::get('store_id'))->select('store_categories.id')->first();
                             if ($category && $category != null) {
                                 $cat_id[] = $category->id;
                             } else {
