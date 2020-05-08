@@ -1636,8 +1636,8 @@ class ProductsController extends Controller
     {   
         $userId = Session::get('loggedinAdminId');
         $details = [];
-        $arr = ['id', 'product', 'barcode', 'prod_type', 'images', 'variant_set', 'attributes', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
-        $products = Product::where(["is_individual"=> 1,"store_id"=>Session::get('store_id')])->with(['supplierProducts' => function ($q) use ($userId) { return $q->where('supplier_id', '=', $userId); }])->get(['id', 'product', 'barcode', 'prod_type', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'add_desc', 'meta_title', 'meta_keys', 'meta_desc',  'is_shipped_international', 'is_referal_discount']);
+        $arr = ['id', 'product', 'barcode', 'prod_type', 'images', 'variant_set', 'attributes', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'meta_title', 'meta_keys', 'meta_desc', 'is_shipped_international', 'is_referal_discount', 'tags', 'categories', 'related', 'upsell'];
+        $products = Product::where(["is_individual"=> 1,"store_id"=>Session::get('store_id')])->with(['supplierProducts' => function ($q) use ($userId) { return $q->where('supplier_id', '=', $userId); }])->get(['id', 'product', 'barcode', 'prod_type', 'attr_set', 'is_avail', 'is_listing', 'stock', 'price', 'spl_price', 'sort_order', 'is_cod', 'url_key', 'short_desc', 'long_desc', 'meta_title', 'meta_keys', 'meta_desc',  'is_shipped_international', 'is_referal_discount']);
         //dd(@$products->supplierProducts[0]);
         $sampleProds = [];
         array_push($sampleProds, $arr);
@@ -1648,6 +1648,17 @@ class ProductsController extends Controller
             $colors = '';
             $catName = '';
             $attrSet = AttributeSet::where(["id" => $prodt->attr_set])->first(['attr_set']);
+            $html = '';
+            if($prodt->prod_type==3){
+                $attributes = DB::table('has_attributes')->where('attr_set',$prodt->attr_set)->get();
+                if(count($attributes) > 0){
+                    foreach($attributes as $val){
+                        $attr_name = DB::table('attributes')->where('id',$val->attr_id)->pluck('attr');
+                        $attr_values = DB::table('attribute_values')->where('attr_id',$val->attr_id)->pluck('option_name');
+                        $html .= $attr_name[0].'=> '.$attr_values.'|';
+                    }
+                }
+            }
             if (!empty($prodt->categories()->get(['cat_id'])->toArray())) {
                 foreach ($prodt->categories()->get(['cat_id']) as $catid) {
                     $catName = DB::table('store_categories')->join('categories', 'categories.id', '=', 'store_categories.category_id')->select('categories.category')->where('store_categories.id', $catid->cat_id)->first();
@@ -1699,7 +1710,7 @@ class ProductsController extends Controller
                 $prodt->prod_type,
                 $allimgs,
                 @$attrSet->attr_set,
-                '',
+                $html,
                 $prodt->is_avail,
                 $prodt->is_listing,
                 $prodt->stock,
@@ -1710,7 +1721,6 @@ class ProductsController extends Controller
                 $prodt->url_key,
                 $prodt->short_desc,
                 $prodt->long_desc,
-                $prodt->add_desc,
                 $prodt->meta_title,
                 $prodt->meta_keys,
                 $prodt->meta_desc,
