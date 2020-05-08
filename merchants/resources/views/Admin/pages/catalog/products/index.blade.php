@@ -1370,7 +1370,7 @@
     {
       var fileUpload = $("#chooseImg")[0];
       var imageExt = fileUpload.value.split('.');
-      var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp"];
+      var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp","svg"];
       //Check whether the file is valid Image.
 
       //var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.png|.gif)$");
