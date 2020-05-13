@@ -19,7 +19,12 @@ Route::get('/', function () {
 Route::group(['namespace' => 'Admin'], function () {
     //API->Sales route
     Route::group(['prefix' => 'Sales'], function () {
+        
         Route::get('/getproductbybarcode', array('as' => 'admin.sales.getproduct', 'uses' => 'API\Sales\ApiCartController@getProductByBarcode'));
+        Route::group(['prefix' => 'cart'], function () {
+            Route::get('/', array('as' => 'admin.sales.viewcart', 'uses' => 'API\Sales\ApiCartController@index'));
+            Route::post('/add', array('as' => 'admin.sales.add', 'uses' => 'API\Sales\ApiCartController@add'));
+        });
     });
 
 
