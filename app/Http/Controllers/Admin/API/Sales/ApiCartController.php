@@ -109,16 +109,16 @@ class ApiCartController extends Controller
     public function index()
     {
         $user = User::where('id', Session::get('authUserId'))->first();
-        if ($user->cart != '') {
-            Cart::instance('sales_cart')->destroy();
-            $cartData = json_decode($user->cart, true);
+        if ($user->sales_cart != '') {
+            Cart::instance('sales_shopping')->destroy();
+            $cartData = json_decode($user->sales_cart, true);
             if($cartData != '' && !empty($cartData))
-                Cart::instance('sales_cart')->add($cartData);
+                Cart::instance('sales_shopping')->add($cartData);
         }
-        $cartData = Cart::instance("sales_cart")->content();
+        $cartData = Cart::instance("sales_shopping")->content();
         $data['cart']['data'] = $cartData;
         $data['total'] = Helper::getOrderTotal($cartData);
-        $data["ccnt"] = Cart::instance("sales_cart")->count();
+        $data["ccnt"] = Cart::instance("sales_shopping")->count();
         $data['status'] = "1";
         $data['msg'] = "";
         return $data;
@@ -137,11 +137,11 @@ class ApiCartController extends Controller
             $user = User::where('id', Session::get('authUserId'))->first();
             //Check if forcefully add item from other distributor
             if (Input::get('force_add') && Input::get('force_add') == 1) {
-                Cart::instance('shopping')->destroy();
+                Cart::instance('sales_shopping')->destroy();
             } else {
-                if ($user->cart != '') {
-                    $cartData = json_decode($user->cart, true);
-                    Cart::instance('shopping')->add($cartData);
+                if ($user->sales_cart != '') {
+                    $cartData = json_decode($user->sales_cart, true);
+                    Cart::instance('sales_shopping')->add($cartData);
                 }
                 $checkStoreExists = Helper::checkStoreExists($product->store_id);
                 if ($checkStoreExists['isExist']) {
@@ -191,17 +191,17 @@ class ApiCartController extends Controller
                 $data['msg'] = $msg;
             } else {
                 //return $msg;
-                $cartData = Cart::instance("shopping")->content();
+                $cartData = Cart::instance("sales_shopping")->content();
                 //dd(Session::get('authUserId'));
-                if(Cart::instance("shopping")->count() != 0){
-                    $user->cart = json_encode($cartData);
+                if(Cart::instance("sales_shopping")->count() != 0){
+                    $user->sales_cart = json_encode($cartData);
                 } else {
-                    $user->cart = '';
+                    $user->sales_cart = '';
                 }
                 $user->update();
                 $data['data']['cart'] = $cartData;
                 $data['data']['total'] = Helper::getOrderTotal($cartData);
-                $data["data"]['cartCount'] = Cart::instance("shopping")->count();
+                $data["data"]['cartCount'] = Cart::instance("sales_shopping")->count();
                 $data['status'] = "1";
                 $data['msg'] = "";
             }
@@ -252,7 +252,7 @@ class ApiCartController extends Controller
 
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
             //if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
-                $searchExist = Helper::searchExistingCart($prod_id);
+                $searchExist = Helper::searchExistingSalesCart($prod_id);
 
                 $optionsData = ["image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'store_name'=>$store_name, 'prefix' => $prefix,
                 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
@@ -260,16 +260,16 @@ class ApiCartController extends Controller
                 "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt];
 
                 if (!$searchExist["isExist"]) {
-                    Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
+                    Cart::instance('sales_shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                         "options" => $optionsData]);
                 } else {
-                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
+                    Cart::instance('sales_shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
                 }
             // } else {
             //     return 1;
             // }
         } else {
-            $searchExist = Helper::searchExistingCart($prod_id);
+            $searchExist = Helper::searchExistingSalesCart($prod_id);
             
             $optionsData = ["image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'store_name'=>$store_name, 'prefix' => $prefix,
                 'cats' => $cats, 'stock' => $product->stock, 'is_stock' => $product->is_stock,
@@ -277,11 +277,11 @@ class ApiCartController extends Controller
                 "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, 'tax_type' => $type, 'taxes' => $sum, 'tax_amt' => $tax_amt];
 
                 if (!$searchExist["isExist"]) {
-                    Cart::instance('shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
+                    Cart::instance('sales_shopping')->add(["id" => $prod_id, "name" => $pname, "qty" => $quantity, "price" => $price,
                         "options" => $optionsData]);
                 } else {
                    
-                    Cart::instance('shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
+                    Cart::instance('sales_shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
                 }
         }
         

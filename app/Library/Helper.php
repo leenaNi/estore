@@ -657,6 +657,26 @@ class Helper
         return ["isExist" => $isExist];
     }
 
+    public static function searchExistingSalesCart($prod_id)
+    {
+        $cartContent = Cart::instance("sales_shopping")->content()->toArray();
+        $isExist = 0;
+        foreach ($cartContent as $key => $cartItem) {
+            if (array_key_exists("sub_prod", $cartItem['options'])) {
+                $isExist = ($cartItem['options']['sub_prod'] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                }
+            } else {
+                $isExist = ($cartItem["id"] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                }
+            }
+        }
+        return ["isExist" => $isExist];
+    }
+
     public static function checkStoreExists($storeId)
     {
         $cartContent = Cart::instance("shopping")->content()->toArray();
