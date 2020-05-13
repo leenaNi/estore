@@ -677,6 +677,16 @@ class Helper
         return ["isExist" => $isExist];
     }
 
+    public static function checkStock($prod_id, $quantity){
+        $product = DB::table('products')->where('id',$prod_id)->first();
+        $stock = $product->stock;
+        if((int)$stock >= $quantity){
+            return "In Stock";
+        }else{
+            return "Not In Stock";
+        }
+    }
+
     public static function checkStoreExists($storeId)
     {
         $cartContent = Cart::instance("shopping")->content()->toArray();

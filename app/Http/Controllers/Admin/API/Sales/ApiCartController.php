@@ -251,7 +251,7 @@ class ApiCartController extends Controller
         $is_stockable = DB::table('general_setting')->where('store_id', $product->store_id)->where('url_key', 'stock')->first();
 
         if ($product->is_stock == 1 && $is_stockable->status == 1) {
-            //if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
+            if (Helper::checkStock($prod_id, $quantity) == "In Stock") {
                 $searchExist = Helper::searchExistingSalesCart($prod_id);
 
                 $optionsData = ["image" => $images, "image_with_path" => $imagPath, "is_cod" => $product->is_cod, 'url' => $product->url_key, 'store_id' => $store_id, 'store_name'=>$store_name, 'prefix' => $prefix,
@@ -265,9 +265,9 @@ class ApiCartController extends Controller
                 } else {
                     Cart::instance('sales_shopping')->update($searchExist["rowId"], ['qty' => $quantity,"options" => $optionsData]);
                 }
-            // } else {
-            //     return 1;
-            // }
+            } else {
+                return 1;
+            }
         } else {
             $searchExist = Helper::searchExistingSalesCart($prod_id);
             
