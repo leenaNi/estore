@@ -17,6 +17,13 @@ Route::get('/', function () {
 });
 
 Route::group(['namespace' => 'Admin'], function () {
+    //API->Sales route
+    Route::group(['prefix' => 'Sales'], function () {
+        Route::get('/getproductbybarcode', array('as' => 'admin.sales.getproduct', 'uses' => 'API\Sales\ApiCartController@getProductByBarcode'));
+    });
+
+
+    //Sales route
     Route::post('/send-otp', ["as" => "admin.merchant.sendotp", "uses" => "ApiMerchantController@sendOtp"]);
     Route::post('/verify-otp', ["as" => "admin.merchant.verifyotp", "uses" => "ApiMerchantController@verifyOTP"]);
     Route::post('/merchant-login', ["as" => "admin.merchant.login", "uses" => "ApiMerchantController@merchantLogin"]);
@@ -294,3 +301,5 @@ Route::group(['namespace' => 'Admin'], function () {
         });
     });
 });
+
+

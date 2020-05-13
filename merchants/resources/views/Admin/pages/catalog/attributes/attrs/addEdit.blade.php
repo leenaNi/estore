@@ -40,14 +40,6 @@
                             <div class="multiselectholder">
                             {!! Form::select('attr_set[]',$attrSets , $attrSetsSelected, ["class"=>'form-control validate[required]', "multiple", "style"=>'padding:24px 10px!important',"id"=>"attrSetSelect"] ) !!}
                        
-                                <!-- <select id="attrSetSelect" multiple="multiple">
-                                    <option value="cheese">Cheese</option>
-                                    <option value="tomatoes">Tomatoes</option>
-                                    <option value="mozarella">Mozzarella</option>
-                                    <option value="mushrooms">Mushrooms</option>
-                                    <option value="pepperoni">Pepperoni</option>
-                                    <option value="onions">Onions</option>
-                                </select> -->
                             </div>
                         </div>
                     </div>
@@ -107,6 +99,20 @@
                             <div class="col-sm-9 col-md-9  attrOptn">
                                 @if(isset($attrs->attr_type))
                                 @if(count($attrs->attributeoptions) > 0)
+                                <div class="row form-group">
+                                    <div class="col-sm-3">
+                                    {!! Form::label('opname', 'Option Name') !!}
+                                    </div>
+                                    <div class="col-sm-3">
+                                    {!! Form::label('opvalue', 'Option Value') !!}
+                                    </div>
+                                    <div class="col-sm-3">
+                                    {!! Form::label('opstatus', 'Option Status') !!}
+                                    </div>
+                                    <div class="col-sm-3">
+                                    {!! Form::label('opsort', 'Sort Order') !!}
+                                    </div>
+                                </div>
                                 @foreach($attrs->attributeoptions as $opt)
                                 <div class="row form-group">
                                     <div class="col-sm-3">
@@ -116,7 +122,7 @@
                                         {!! Form::text('option_value[]',$opt->option_value, ["class"=>'form-control validate[required]' ,"placeholder"=>'Enter Option Value']) !!}
                                     </div>
                                     <div class="col-sm-3">
-                                        {!! Form::select('is_active[]',["0" => "No", "1" => "Yes"],$opt->is_active,["class"=>'form-control'],"required") !!}
+                                        {!! Form::select('is_active[]',["0" => "Inactive", "1" => "Active"],$opt->is_active,["class"=>'form-control'],"required") !!}
                                     </div>
                                     <div class="col-sm-2">
                                         {!! Form::text('sort_order[]',$opt->sort_order, ["class"=>'form-control validate[required,custom[number]]' ,"placeholder"=>'Enter Sort Order']) !!}
@@ -131,15 +137,19 @@
                                 
                              <div class="row form-group">
                                 <div class="col-sm-3">
+                                {!! Form::label('opname', 'Option Name') !!}
                                     {!! Form::text('option_name[]',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Enter Option Name']) !!}
                                 </div>
                                 <div class="col-sm-3">
+                                {!! Form::label('opvalue', 'Option Value') !!}
                                     {!! Form::text('option_value[]',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Enter Option Value']) !!}
                                 </div>
                                 <div class="col-sm-3">
-                                    {!! Form::select('is_active[]',[ "1" => "Yes", "0" => "No"],null,["class"=>'form-control'],"required") !!}
+                                {!! Form::label('opstatus', 'Option Status') !!}
+                                    {!! Form::select('is_active[]',[ "1" => "Active", "0" => "Inactive"],null,["class"=>'form-control'],"required") !!}
                                 </div>
                                 <div class="col-sm-2">
+                                {!! Form::label('opsort', 'Sort Order') !!}
                                     {!! Form::text('sort_order[]',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Enter Sort Order']) !!}
                                 </div>
 
