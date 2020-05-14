@@ -116,9 +116,9 @@ class ApiCartController extends Controller
                 Cart::instance('sales_shopping')->add($cartData);
         }
         $cartData = Cart::instance("sales_shopping")->content();
-        $data['cart']['data'] = $cartData;
-        $data['total'] = Helper::getOrderTotal($cartData);
-        $data["ccnt"] = Cart::instance("sales_shopping")->count();
+        $data['data']['cart'] = $cartData;
+        $data['data']['total'] = Helper::getOrderTotal($cartData);
+        $data['data']["cartCount"] = Cart::instance("sales_shopping")->count();
         $data['status'] = "1";
         $data['msg'] = "";
         return $data;
@@ -135,23 +135,12 @@ class ApiCartController extends Controller
             $sub_prod = filter_var(Input::get('sub_prod'), FILTER_SANITIZE_STRING);
             $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
             $user = User::where('id', Session::get('authUserId'))->first();
-            //Check if forcefully add item from other distributor
-            if (Input::get('force_add') && Input::get('force_add') == 1) {
-                Cart::instance('sales_shopping')->destroy();
-            } else {
-                if ($user->sales_cart != '') {
-                    $cartData = json_decode($user->sales_cart, true);
-                    Cart::instance('sales_shopping')->add($cartData);
-                }
-                $checkStoreExists = Helper::checkStoreExists($product->store_id);
-                if ($checkStoreExists['isExist']) {
-                    $existingStore = $checkStoreExists['existingStore'];
-                    $newStore = Store::where('id', $product->store_id)->first(['id', 'store_name']);
-                    $data['status'] = "1";
-                    $data['msg'] = 'Your cart contains items from ' . $existingStore->store_name . '. Do you want to discard the selection and add items from ' . $newStore->store_name . '?';
-                    return $data;
-                }
+           
+            if ($user->sales_cart != '') {
+                $cartData = json_decode($user->sales_cart, true);
+                Cart::instance('sales_shopping')->add($cartData);
             }
+        }
             
             switch ($prod_type) {
                 case 1:
