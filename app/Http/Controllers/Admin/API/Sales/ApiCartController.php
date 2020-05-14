@@ -135,12 +135,10 @@ class ApiCartController extends Controller
             $sub_prod = filter_var(Input::get('sub_prod'), FILTER_SANITIZE_STRING);
             $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
             $user = User::where('id', Session::get('authUserId'))->first();
-           
             if ($user->sales_cart != '') {
                 $cartData = json_decode($user->sales_cart, true);
                 Cart::instance('sales_shopping')->add($cartData);
             }
-        }
             
             switch ($prod_type) {
                 case 1:
