@@ -214,9 +214,14 @@ class ApiCartController extends Controller
                 if($cItem->id == $prod_id){
                     if($cItem->options->sub_prod && ($cItem->options->sub_prod == $sub_prod)){
                         $rowId = $cItem->rowid;
-                        
+                        if($rowId==null){
+                            $rowId = $cItem->rowId;
+                        }
                     }else{
                         $rowId = $cItem->rowid;
+                        if($rowId==null){
+                            $rowId = $cItem->rowId;
+                        }
                     }
                     Cart::instance('sales_shopping')->remove($rowId);
                 }
