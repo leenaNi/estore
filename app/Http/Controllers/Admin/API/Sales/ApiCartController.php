@@ -190,11 +190,93 @@ class ApiCartController extends Controller
                 $data['data']['total'] = Helper::getOrderTotal($cartData);
                 $data["data"]['cartCount'] = Cart::instance("sales_shopping")->count();
                 $data['status'] = "1";
-                $data['msg'] = "";
+                $data['msg'] = "Item added successfully";
             }
         } else {
             $data['status'] = "0";
             $data['msg'] = "Invalid product";
+        }
+        return $data;
+    }
+
+    public function edit()
+    {
+        $quantity = filter_var(Input::get('quantity'), FILTER_SANITIZE_STRING);
+        $prod_id = filter_var(Input::get('prod_id'), FILTER_SANITIZE_STRING);
+        $sub_prod = filter_var(Input::get('sub_prod'), FILTER_SANITIZE_STRING);
+        
+        if($quantity == 0) {
+            $user = User::where('id', Session::get('authUserId'))->first();
+            $cartData = json_decode($user->sales_cart, true);
+            Cart::instance('sales_shopping')->add($cartData);
+            $cartData = Cart::instance("sales_shopping")->content();
+            foreach($cartData as $cItem){
+                if($cItem->id == $prod_id){
+                    if($cItem->options->sub_prod && ($cItem->options->sub_prod == $sub_prod)){
+                        $rowId = $cItem->rowid;
+                        
+                    }else{
+                        $rowId = $cItem->rowid;
+                    }
+                    Cart::instance('sales_shopping')->remove($rowId);
+                }
+            }
+            if(Cart::instance("sales_shopping")->count() != 0){
+                $user->sales_cart = json_encode($cartData);
+            } else {
+                $user->sales_cart = '';
+            }
+            $user->update();
+            $data['data']['cart'] = $cartData;
+            $data['data']['total'] = Helper::getOrderTotal($cartData);
+            $data["data"]['cartCount'] = Cart::instance("sales_shopping")->count();
+            $data['status'] = "1";
+            $data['msg'] = "Item removed successfully";
+            return $data;
+        }
+        if(!empty($prod_id) && !empty($quantity)) {
+            $user = User::where('id', Session::get('authUserId'))->first();
+            $cartData = json_decode($user->sales_cart, true);
+            
+            Cart::instance('sales_shopping')->add($cartData);
+            $cartData = Cart::instance("sales_shopping")->content();
+          
+            foreach($cartData as $cItem){
+                if($cItem->id == $prod_id){
+                    if($cItem->options->sub_prod && ($cItem->options->sub_prod == $sub_prod)){
+                        $rowId = $cItem->rowid;
+                    }else{
+                        $rowId = $cItem->rowid;
+                    }
+                }
+            }
+            $cart = Cart::instance('sales_shopping')->update($rowId, ['qty' => $quantity]);
+            
+            $amt = Helper::calAmtWithTax();
+            $cartInstance = Cart::instance('sales_shopping')->get("$rowId");          
+            $tax = $cartInstance->options->tax_amt;
+            $sub_total = $cartInstance->subtotal;
+            $total = Cart::total();
+            if ($cartInstance->options->tax_type == 2) {
+                $sub_total = $cartInstance->subtotal + $tax;
+                $total = Cart::total() + $tax;
+            }
+            $cartData = Cart::instance("sales_shopping")->content();
+            $user->sales_cart = json_encode($cartData);
+            $user->update();
+            $data['data']['cart'] = $cartData;
+            $data['data']['total'] = Helper::getOrderTotal($cartData);
+            // $data['data']['subtotal'] = $sub_total;
+            // $data['data']['finaltotal'] = $amt['total'];
+            // $data['data']['total'] = $amt['total'];
+            // $data['data']['tax'] = $cartInstance->options->tax_amt;
+            $data['data']['cartCount'] = Cart::instance("sales_shopping")->count();
+            $data['status'] = "1";
+            $data['msg'] = 'Item quantity updated successfully';
+            Session::put("pay_amt", $amt['total']);
+        } else {
+            $data['msg'] = 'Mandatory fields are missing.';
+            $data['status'] = 0;
         }
         return $data;
     }

@@ -24,7 +24,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('/getproductbybarcode', array('as' => 'admin.sales.getproduct', 'uses' => 'API\Sales\ApiCartController@getProductByBarcode'));
             Route::group(['prefix' => 'cart'], function () {
                 Route::get('/', array('as' => 'admin.sales.viewcart', 'uses' => 'API\Sales\ApiCartController@index'));
-                Route::post('/add', array('as' => 'admin.sales.add', 'uses' => 'API\Sales\ApiCartController@add'));
+                Route::post('/add', array('as' => 'admin.sales.addtocart', 'uses' => 'API\Sales\ApiCartController@add'));
+                Route::post('/edit', array('as' => 'admin.sales.editcart', 'uses' => 'API\Sales\ApiCartController@edit'));
             });
         });
     });
