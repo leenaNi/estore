@@ -73,26 +73,6 @@ class ApiCartController extends Controller
             $data['min_order_quantity'] = $productResult->min_order_quantity;
             $data['is_share_on_mall'] = $productResult->is_share_on_mall;
 
-            //get offers count
-            //DB::enableQueryLog(); // Enable query log
-            $offersIdCountResult = DB::table('offers')
-                ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
-                ->select(DB::raw('count(offers.id) as offer_count'))
-            //->where('offers.store_id',$storeId)
-                ->where('offers.status',1)
-                ->where('offers_products.prod_id',$productResult->id)
-                ->where('offers_products.type', 1)
-                //->groupBy('offers_products.offer_id')
-                ->get();
-            //dd(DB::getQueryLog()); // Show results of log
-
-            $offerCount = 0;$totalOfferOfAllProduct=0;
-            if (count($offersIdCountResult) > 0) {
-                $offerCount = $offersIdCountResult[0]->offer_count;
-                $totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
-            }
-            
-            $data['offers_count'] = $offerCount;
             if ($data) {
                 return response()->json(["status" => 1, 'data' => $data]);
             } else {
@@ -119,7 +99,7 @@ class ApiCartController extends Controller
         $data['data']['cart'] = $cartData;
         $data['data']['total'] = Helper::getOrderTotal($cartData);
         $data['data']["cartCount"] = Cart::instance("sales_shopping")->count();
-        $data['status'] = "1";
+        $data['status'] = 1;
         $data['msg'] = "";
         return $data;
     }
@@ -174,7 +154,7 @@ class ApiCartController extends Controller
             
             if ($msg == 1) {
                 $data['data']['cart'] = null;
-                $data['status'] = "0";
+                $data['status'] = 0;
                 $data['msg'] = $msg;
             } else {
                 //return $msg;
@@ -189,11 +169,11 @@ class ApiCartController extends Controller
                 $data['data']['cart'] = $cartData;
                 $data['data']['total'] = Helper::getOrderTotal($cartData);
                 $data["data"]['cartCount'] = Cart::instance("sales_shopping")->count();
-                $data['status'] = "1";
+                $data['status'] = 1;
                 $data['msg'] = "Item added successfully";
             }
         } else {
-            $data['status'] = "0";
+            $data['status'] = 0;
             $data['msg'] = "Invalid product";
         }
         return $data;
@@ -235,7 +215,7 @@ class ApiCartController extends Controller
             $data['data']['cart'] = $cartData;
             $data['data']['total'] = Helper::getOrderTotal($cartData);
             $data["data"]['cartCount'] = Cart::instance("sales_shopping")->count();
-            $data['status'] = "1";
+            $data['status'] = 1;
             $data['msg'] = "Item removed successfully";
             return $data;
         }
@@ -282,7 +262,7 @@ class ApiCartController extends Controller
             // $data['data']['total'] = $amt['total'];
             // $data['data']['tax'] = $cartInstance->options->tax_amt;
             $data['data']['cartCount'] = Cart::instance("sales_shopping")->count();
-            $data['status'] = "1";
+            $data['status'] = 1;
             $data['msg'] = 'Item quantity updated successfully';
             Session::put("pay_amt", $amt['total']);
         } else {

@@ -27,6 +27,11 @@ Route::group(['namespace' => 'Admin'], function () {
                 Route::post('/add', array('as' => 'admin.sales.addtocart', 'uses' => 'API\Sales\ApiCartController@add'));
                 Route::post('/edit', array('as' => 'admin.sales.editcart', 'uses' => 'API\Sales\ApiCartController@edit'));
             });
+            //Customer routes
+            Route::group(['prefix' => 'customer'], function () {
+                Route::get('/', array('as' => 'admin.sales.customers', 'uses' => 'API\Sales\ApiCustomerController@index'));
+                Route::post('/add', array('as' => 'admin.sales.addcust', 'uses' => 'API\Sales\ApiCustomerController@add'));
+            });
         });
     });
 
