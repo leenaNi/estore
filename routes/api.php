@@ -31,6 +31,11 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::group(['prefix' => 'customer'], function () {
                 Route::get('/', array('as' => 'admin.sales.customers', 'uses' => 'API\Sales\ApiCustomerController@index'));
                 Route::post('/add-edit', array('as' => 'admin.sales.addeditcust', 'uses' => 'API\Sales\ApiCustomerController@addEdit'));
+                Route::post('/add-edit-address', array('as' => 'admin.sales.addeditshippingaddr', 'uses' => 'API\Sales\ApiCustomerController@addEditShippingAddress'));
+            });
+            //sales order routes
+            Route::group(['prefix' => 'order'], function () {
+                Route::post('/place-order', array('as' => 'admin.sales.placeorder', 'uses' => 'API\Sales\ApiOrderController@placeOrder'));
             });
         });
     });
