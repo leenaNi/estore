@@ -30,7 +30,7 @@ Route::group(['namespace' => 'Admin'], function () {
             //Customer routes
             Route::group(['prefix' => 'customer'], function () {
                 Route::get('/', array('as' => 'admin.sales.customers', 'uses' => 'API\Sales\ApiCustomerController@index'));
-                Route::post('/add', array('as' => 'admin.sales.addcust', 'uses' => 'API\Sales\ApiCustomerController@add'));
+                Route::post('/add-edit', array('as' => 'admin.sales.addeditcust', 'uses' => 'API\Sales\ApiCustomerController@addEdit'));
             });
         });
     });

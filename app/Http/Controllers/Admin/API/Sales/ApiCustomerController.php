@@ -34,28 +34,43 @@ class ApiCustomerController extends Controller
         }
     }
 
-    public function add(){
+    public function addEdit(){
         $userData = DB::table('users')->where('id',Session::get('authUserId'))->first();
+        $id = Input::get('id');
         $fisrtname = Input::get('firstname');
         $lastname = Input::get('lastname');
         $mobile = Input::get('mobile');
         $email = Input::get('email');
-        if($mobile != null || $firstname != null){
-            $data = [
-                'firstname' => $fisrtname,
-                'lastname' => $lastname,
-                'telephone' => $mobile,
-                'email' => $email,
-                'status' => 1,
-                'prefix' => $userData->prefix,
-                'store_id' => $userData->store_id,
-                'country_code' => $userData->country_code
-            ];
-            DB::table('users')->insert($data);
+        $data = [
+            'firstname' => $fisrtname,
+            'lastname' => $lastname,
+            'telephone' => $mobile,
+            'email' => $email,
+            'status' => 1,
+            'prefix' => $userData->prefix,
+            'store_id' => $userData->store_id,
+            'country_code' => $userData->country_code
+        ];
+        if($id != null){
+            DB::table('users')->where('id',$id)->update($data);
             $custdata = DB::table('users')->latest('id')->first();
-            return response()->json(["data"=>$custdata,"status" => 1, 'msg' => 'New Customer added successfully']);
+                return response()->json(["data"=>$custdata,"status" => 1, 'msg' => 'Customer updated successfully']);
         }else{
-            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+            if($mobile != null || $firstname != null){
+                $custexist = DB::table('users')->where('telephone',$mobile)->first();
+                if($custexist == null){
+                    DB::table('users')->insert($data);
+                    $custdata = DB::table('users')->latest('id')->first();
+                    return response()->json(["data"=>$custdata,"status" => 1, 'msg' => 'New Customer added successfully']);
+                }else{
+                    return response()->json(["status" => 0, 'msg' => 'Mobile number already exist']);
+                }
+            }else{
+                return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+            }
         }
+        
     }
+
+
 }
