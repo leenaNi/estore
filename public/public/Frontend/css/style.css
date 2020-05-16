@@ -14413,3 +14413,6 @@ body:not(.no-transition) #wrapper,
     top: 0;
     background: rgba(0,0,0,0.3);
 }
+.mb-10{
+	margin-bottom: 10px;
+}
