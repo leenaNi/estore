@@ -72,7 +72,7 @@ if (isset($data->expiry_date)) {
                             <div class="form-group row">
                                 <div class="col-md-6" >
                                     <label>Logo (170px W X 100px H)</label>
-                                    <input type="file"  name="logo_img" id="logoF1" class="form-control">
+                                    <input type="file"  name="logo_img" id="logoF1" class="form-control ss-choose">
                                 </div>
                                 <div class="col-md-6" >
                                     <img src="{{ $data->logo }}" height="100" width="150" id="image_upload_preview" />           

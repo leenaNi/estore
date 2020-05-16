@@ -219,7 +219,7 @@ exit;*/
                                             {{ Form::select("cartData[prod_id][sub_prod_id]",[],null,['class'=>'form-control subprodid validate[required]','style'=>"display:none;"]) }}
                                         </td>
                                         <td width="20%">
-                                            <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span><span class="prdStock"></span
+                                            <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span><span class="prdStock"></span>
                                         </td>
                                         <td width="20%">
                                             <span class='offer_name'>-</span>

@@ -407,7 +407,7 @@ $settingsdata = App\Library\Helper::getSettings();
         </li>
            <li class="{{ Route::currentRouteName() == 'admin.home.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.home.view') }}">
-                    <i class="fa fa-question-circle"></i><span>Help</span> <i class=""></i>
+                    <i class="fa fa-question-circle"></i><span>Set Up</span> <i class=""></i>
                 </a>
             </li>
 

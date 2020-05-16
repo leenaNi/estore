@@ -160,7 +160,7 @@
                 <table class="table orderTable table-striped table-hover tableVaglignMiddle">
                     <thead>
                         <tr>
-                            <th class="text-center mn-w80">
+                            <th class="text-center mn-w60">
                                 <div class="custom-checkbox-box">
                                     <label class="custom-checkbox">
                                         <input type="checkbox" id="masterCheck" value="00"/>
