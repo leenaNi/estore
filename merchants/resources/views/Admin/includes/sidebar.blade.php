@@ -195,11 +195,11 @@ $settingsdata = App\Library\Helper::getSettings();
                         <span> Inward transaction</span> <i class=""></i>
                         </a>
                     </li>
-                    <!-- <li class="{{ preg_match('/admin.distributor.addDistributor/',Route::currentRouteName())? 'active' : ''}}">
+                    <li class="{{ preg_match('/admin.distributor.addDistributor/',Route::currentRouteName())? 'active' : ''}}">
                         <a href="{{ route('admin.distributor.addDistributor') }}">
-                            <i class="fa fa-bar-chart"></i><span> Add Distributor</span> <i class=""></i>
+                          <span>Distributors</span> <i class=""></i>
                         </a>
-                    </li> -->
+                    </li>
                 </ul>
             </li>
             <!-- <li class="treeview {{ preg_match("/admin.vendors|admin.requisition/",Route::currentRouteName())? 'active' : ''}}">
@@ -407,7 +407,7 @@ $settingsdata = App\Library\Helper::getSettings();
         </li>
            <li class="{{ Route::currentRouteName() == 'admin.home.view' ? 'active' : '' }}">
                 <a href="{{ route('admin.home.view') }}">
-                    <i class="fa fa-question-circle"></i><span>Help</span> <i class=""></i>
+                    <i class="fa fa-question-circle"></i><span>Set Up</span> <i class=""></i>
                 </a>
             </li>
 

@@ -27,7 +27,7 @@
                 </div>
                 @endif
                 <div class="clearfix"></div>
-                <div class="box-header box-tools filter-box col-md-12 noBorder">
+                <div class="box-header box-tools filter-box col-md-12 noBorder no-bottom-padding">
                     <form method="get" action=" " id="searchForm">
                         <div class="form-group col-md-5 col-sm-4 col-xs-12">
                             <select name="country" id="country" class="form-control medium">
@@ -58,7 +58,7 @@
                 <div class="clearfix"></div>
 
                 
-                <div class="dividerhr"></div>
+                <div class="dividerhr-seprator"></div>
 
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-striped table-hover tableVaglignMiddle">

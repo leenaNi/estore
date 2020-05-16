@@ -21,9 +21,9 @@
                 <form role="form" method="POST" action="{{$action}}" enctype="multipart/form-data" class="form-horizontal" id="Edit-form">
                     <div class="box-body">
                         <input type="hidden" name="id" value="{{$user->id}}" >
-                        <div class="form-group">
+                        <div class="form-group disp-flex">
 
-                            <label for="firstnam" class="col-sm-4 control-label">First Name</label><span class="red-astrik"> *</span>
+                            <label for="firstnam" class="col-sm-4 control-label">First Name <span class="red-astrik"> *</span></label>
                             <div class="col-sm-8">
 
                                 <input type="text" class="form-control validate[required]" name="firstname"  value="{{$user->firstname}}" >
@@ -31,7 +31,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group disp-flex">
                             <label for="lastname" class="col-sm-4 control-label">Last Name</label>
                             <div class="col-sm-8">
 
@@ -39,16 +39,16 @@
 
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="email" class="col-sm-4 control-label">Email</label><span class="red-astrik"> *</span>
+                        <div class="form-group disp-flex">
+                            <label for="email" class="col-sm-4 control-label">Email <span class="red-astrik"> *</span></label>
                             <div class="col-sm-8">
 
                                 <input type="email" class="form-control" name="email_id" value="{{$user->email}}" >
 
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="telephone" class="col-sm-4 control-label">Mobile</label><span class="red-astrik"> *</span>
+                        <div class="form-group disp-flex">
+                            <label for="telephone" class="col-sm-4 control-label">Mobile <span class="red-astrik"> *</span></label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control  validate[required,custom[phone]]" id="mobile_number" name="telephone"  value="{{$user->telephone}}" onBlur="checkUniqueMobileNum()">
                             </div>

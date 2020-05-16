@@ -230,28 +230,54 @@
             <thead>
               <tr>
                 @if($barcode == 1)   
-                  <th width="5%" class="text-center">
-                    <label class="custom-checkbox">
-                      <input type="checkbox" id="masterCheck" value="00"/>
-                      <span class="checkmark"></span>
-                    </label>
+                  <th class="text-center mn-w80">
+                    <div class="custom-checkbox-box">
+                      <label class="custom-checkbox">
+                        <input type="checkbox" id="masterCheck" value="00"/>
+                        <span class="checkmark"></span>
+                      </label>
 
-                    <div> 
-                     <span class="dropdown">
-                        <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                          <<img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
-                        </button>
-                        <ul id="bulk_action" class="dropdown-menu bulk-action-dropdown-menu" aria-labelledby="dropdownMenu1">
-                          <li role="presentation" class="dropdown-header">Select Bulk Action</li>
-                          <li><input type="radio" id="export" name="Bulk Action" value="export">
-                              <label for="export">Export</label> 
-                          </li>
-                          <li><input type="radio" id="remove" name="Bulk Action" value="remove">
-                              <label for="remove">Delete</label> 
-                          </li> 
-                        </ul>
-                      </span>
+                      <div class="drp-arrow"> 
+                      <span class="dropdown">
+                          <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+                            <span class="caret"></span>
+                          </button>
+                          <ul id="bulk_action" class="dropdown-menu bulk-action-dropdown-menu product-bulk-menu" aria-labelledby="dropdownMenu1">
+                            <li role="presentation" class="dropdown-header">Select Bulk Action</li>
+                            <li><input type="radio" id="export" name="Bulk Action" value="export">
+                                <label for="export">Export</label> 
+                            </li>
+                            <li><input type="radio" id="remove" name="Bulk Action" value="remove">
+                                <label for="remove">Delete</label> 
+                            </li> 
+                          </ul>
+                        </span>
+                      </div>
                     </div>
+                    
+                    <!-- <div class="custom-checkbox-box">
+                      <label class="custom-checkbox">
+                        <input type="checkbox" id="masterCheck" value="00"/>
+                        <span class="checkmark"></span>
+                      </label>
+
+                      <div class="drp-arrow"> 
+                      <span class="dropdown">
+                          <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+                            <i class="fa fa-chevron-down"></i>
+                          </button>
+                          <ul id="bulk_action" class="dropdown-menu bulk-action-dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li role="presentation" class="dropdown-header">Select Bulk Action</li>
+                            <li><input type="radio" id="export" name="Bulk Action" value="export">
+                                <label for="export">Export</label> 
+                            </li>
+                            <li><input type="radio" id="remove" name="Bulk Action" value="remove">
+                                <label for="remove">Delete</label> 
+                            </li> 
+                          </ul>
+                        </span>
+                      </div>
+                    </div> -->
                   </th>  
                 @endif
                 <th width="35%" class="text-left">@sortablelink ('product', 'Product')</th>
@@ -287,7 +313,7 @@
                   }
               ?>
               <tr> @if($barcode == 1)  
-                <td class="text-center">
+                <td class="text-left pl-14">
                     <label class="custom-checkbox">
                     <input type="checkbox" class="singleCheck" name="singleCheck[]" value="{{ $product->id }}-{{ $product->prod_type }}"/>
                     <span class="checkmark"></span>

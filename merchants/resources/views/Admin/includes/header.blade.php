@@ -101,7 +101,7 @@ if ($dayused < 30) {
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="{{route('adminEditProfile',['id'=>(Session::get('loggedinAdminId'))])}}"> <i class="fa fa-user-circle-o" aria-hidden="true"></i> Edit Profile</a></li>
-                                <li><a href="#" data-toggle="modal" data-target="#shortcut-popup"><i class="fa fa-keyboard-o" aria-hidden="true"></i> Keyboard Shortcuts</a></li>
+                                <!-- <li><a href="#" data-toggle="modal" data-target="#shortcut-popup"><i class="fa fa-keyboard-o" aria-hidden="true"></i> Keyboard Shortcuts</a></li> -->
                                 <li><a href="{{ route('adminLogout') }}"> <i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
                                 <!-- User image -->
                                 <!-- <li class="user-header" style="background: #FFFFFF!important;">
