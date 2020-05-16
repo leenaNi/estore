@@ -11,7 +11,7 @@
 <script language="javascript">
 $(document).ready(function(e) {
 try {
-$("body select").msDropDown();
+$("body select#country_code").msDropDown();
 } catch(e) {
 alert(e.message);
 }

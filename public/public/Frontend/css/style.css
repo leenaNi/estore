@@ -2196,11 +2196,11 @@ button {
 }
 
 .form-fields .input-group,
-.form-fields input {
+.form-fields input,.form-fields select {
     border-radius: 5px;
 }
 
-.form-fields input {
+.form-fields input,.form-fields select {
     font-family: 'livvicmedium';
     color: #3f566f;
     font-size: 14px;

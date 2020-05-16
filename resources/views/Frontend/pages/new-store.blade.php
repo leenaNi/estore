@@ -29,7 +29,7 @@
 								<div class="">
 									<div class="scroller-y">
 										<div class="form-group clearfix">
-											<label>Business Name </label>
+											<label>Business Name</label>
 											<div class="input-group">
 												<input tabindex="1" type="text" class="form-control" name="store_name" id="store_name" onBlur="checkStorename(this.value)" placeholder="Business Name">
 												<span>
@@ -40,6 +40,22 @@
 											</div>
 											<span class="error" style="display:none" id="business_name_err">Business name can not be blank</span>
 										</div>
+										<div class="form-group clearfix">
+											<label for="">Industry</label>
+											 <div class="input-group">
+						                        {{ Form::select('business_type',$cat,null,['class'=>'form-control','required'=>'true','id'=>'select_indusrty']) }}
+
+
+						                        <span>
+													<img id="successindustry" src="{{ asset('public/Frontend/images/success-tick.svg')}}" alt="success"/ class="success-tick hidden">
+													<img id="errorindustry" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success"/ class="error-mark hidden">
+												</span>
+						                    </div>
+						                    <span class="error" style="display:none" id="industry_err">Industry name can not be blank</span>
+					                	</div>
+
+
+
 										<div class="form-group clearfix">
 											<label for="">Mobile Number</label>
 											<div class="mob-num-ctcode">
@@ -226,22 +242,39 @@ $('.digit-group').find('input').each(function() {
 });
 
 $("#nextstep").click(function(){
-    if($("input[name=store_name]").val() == '' && $("input[name=phone]").val() == '')
+    if($("input[name=store_name]").val() == '' && $("input[name=phone]").val() == '' && $("#select_indusrty").val() == '' )
     {
         $("#business_name_err").show();$("#errorimg").show();
         $("#mobileno_err").show();$("#mobemsg").show();
+        $("#industry_err").show();$("#errorindustry").show();
+        
     }  
     else if($("input[name=store_name]").val() == ''){
         $("#business_name_err").show();
         $("#mobileno_err").hide();
+        $("#industry_err").hide();
     }
     else if($("input[name=phone]").val() == ''){
         $("#mobileno_err").show();
         $("#business_name_err").hide();
+        $("#industry_err").hide();
     }
+    else if($("#select_indusrty").val() == ''){
+       $("#industry_err").show();
+       $("#mobileno_err").hide();
+       $("#business_name_err").hide();
+        
+    }
+    // else if($("#select_indusrty").val() != ''){
+      
+    //     $("#errorindustry").hide();
+    //     $("#successindustry").show();
+        
+    // }
     else{
         $("#business_name_err").hide();
         $("#mobileno_err").hide();
+        $("#industry_err").hide();
         $("#step2").show();
         $("#step1").hide();
         var country=$('#country_code').val();

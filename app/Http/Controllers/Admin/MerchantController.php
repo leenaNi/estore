@@ -315,6 +315,7 @@ class MerchantController extends Controller
             if (chmod($path, 0777)) {
                 chmod($path, 0777);
             }
+            //dd($mk);
             if ($mk) {
                 $file = public_path() . '/public/skeleton.zip';
                 $zip = new ZipArchive;

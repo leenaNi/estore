@@ -14,6 +14,7 @@ use App\Models\Settings;
 use App\Models\Store;
 use App\Models\User;
 use App\Models\Vendor;
+use App\Models\StoreTheme;
 use Auth;
 use Crypt;
 use DB;
@@ -117,9 +118,12 @@ class HomeController extends Controller
     }
 
     public function selectThemes()
-    {
+    {   
+        $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
+       // dd(Session::get('merchantid'));
         if (empty(Session::get('merchantid'))) {
-            $allinput = Input::all();            
+            $allinput = Input::all();
+            $cats = Category::where("status", 1)->where('id',$allinput['business_type'])->get();
             $allinput['is_individual_store'] = 0;
             $storeType = $allinput['roleType'];
             $sendmsg = "Registred successfully.";
@@ -138,16 +142,21 @@ class HomeController extends Controller
             }
             Session::put('merchantid', $lastInsteredId);
             Session::put('storename', $allinput['store_name']);
+            Session::put('industry_type', $allinput['business_type']);
             Session::put('merchantstorecount', 0);
 
         } else {
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
+            $cats = Category::where("status", 1)->where('id',$allinput['business_type'])->get();
             $checkStote = Merchant::find(Session::get('merchantid'))->getstores()->count();
             Session::put('merchantstorecount', $checkStote);
         }
         $data['themeInput'] = json_encode($allinput);
-        //$viewname = Config('constants.frontendView') . ".select-themes";
-        $viewname = Config('constants.frontendView') . ".wait-process";
+        $data['cats'] = $cats;
+        $data['themeIds'] = $themeIds;
+        $data['allinput'] = $allinput;
+        $viewname = Config('constants.frontendView') . ".select-themes";
+        //$viewname = Config('constants.frontendView') . ".wait-process";
         return Helper::returnView($viewname, $data);
     }
 
@@ -180,7 +189,8 @@ class HomeController extends Controller
 
         } else {
             $allinput = json_decode(Vendor::find(Session::get('merchantid'))->register_details, true);
-            $checkStote = Vendor::find(Session::get('merchantid'))->getstores()->count();
+            //$checkStote = Vendor::find(Session::get('merchantid'))->getstores()->count();
+            $checkStote = Vendor::find(Session::get('merchantid'))->count();
             Session::put('merchantstorecount', $checkStote);
         }
         $data['themeInput'] = json_encode($allinput);
@@ -263,8 +273,9 @@ class HomeController extends Controller
     }
 
     public function congrats()
-    {
-        //dd((object) Input::get('themeInput'));
+    {   
+       
+       //dd(Input::get('themeInput'));
         $themeInput = (object) Input::get('themeInput');
         $storename = str_replace(" ", '-', trim(strtolower($themeInput->domain_name), " "));
         $domainname = $this->availDomain($storename);
@@ -275,7 +286,10 @@ class HomeController extends Controller
         // if (!empty($themeInput->email)) {
         //     // $this->confirmMail($themeInput);
         // }
-        $storeType = $themeInput->roleType;
+        //$storeType = $themeInput->roleType;
+
+        $themeInput->storeType = $themeInput->roleType;
+        $storeType = $themeInput->storeType;
         //echo "session :: ".Session::get('merchantid');exit;
         if ($storeType == 'merchant') {
             $getMerchat = Merchant::find(Session::get('merchantid'));
@@ -283,7 +297,8 @@ class HomeController extends Controller
             $getMerchat = Vendor::find(Session::get('merchantid'));
         }
         $decoded = json_decode($getMerchat->register_details, true);
-        $decoded['business_type'] = ["17"];
+        //$decoded['business_type'] = ["17"];
+        $decoded['business_type'] = $decoded['business_type'];
         $json = json_encode($decoded);
         $getMerchat->register_details = $json;
         $getMerchat->save();
@@ -298,16 +313,18 @@ class HomeController extends Controller
         if ($storeType == 'merchant') //Theme selection is available only for merchants
         {
             $phoneNo = $getMerchat->phone;
-            // $store->template_id = $themeInput->theme_id;
-            $store->category_id = 17;
-            $storeName = $themeInput->store_name;
+            $store->template_id = $themeInput->theme_id;
+            //$store->category_id = 17;
+            $store->category_id = $decoded['business_type'];
+            $storeName = $themeInput->storename;
         } else {
             $phoneNo = $getMerchat->phone_no;
             //$themeInput->cat_id = $themeInput->business_type;
-            $storeName = $themeInput->store_name;
+            $themeInput->storename = @$themeInput->store_name;
+            $storeName = $themeInput->storename;
             $themeInput->theme_id = 0;
             $store->template_id = 0;
-            $store->category_id = 17;
+            $store->category_id = $decoded['business_type'];
         }
         $store->store_domain = $actualDomain;
         $store->percent_to_charge = 1.00;
@@ -345,7 +362,7 @@ class HomeController extends Controller
             //dd("teme id >> ".$themeInput->theme_id);
             if (empty($themeInput->id)) {
                 //dd((object) Input::get('themeInput')." :: ".$storeType);
-                $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $password, $storeName, $themeInput->currency_code, $phoneNo, $domainname, $storeVersion, $store->expiry_date, $identityCode);
+                $result = $this->createInstance($storeType, $store->id, $store->prefix, $store->url_key, $password, $storeName, $themeInput->currency_code, $phoneNo, $domainname, $storeVersion, $store->expiry_date, $identityCode, $themeInput->theme_id);
                 // dd($result);
             }
         }
@@ -371,11 +388,12 @@ class HomeController extends Controller
         // }
     }
 
-    public function createInstance($storeType, $storeId, $prefix, $urlKey, $merchantPassword, $storeName, $currency, $phone, $domainname, $storeVersion, $expirydate, $identityCode)
+    public function createInstance($storeType, $storeId, $prefix, $urlKey, $merchantPassword, $storeName, $currency, $phone, $domainname, $storeVersion, $expirydate, $identityCode ,$themeid)
     {
         //echo "createInstance function storeid >> $storeId ";
         //echo "<br> Cat array >> <pre>";print_r($catid);
-        $catid = 17;
+        //$catid = 17;
+        $catid = Session::get('industry_type');
         ini_set('max_execution_time', 600);
         if ($storeType == 'merchant') {
             $merchantd = Merchant::find(Session::get('merchantid'));
@@ -480,7 +498,7 @@ class HomeController extends Controller
                         if ($categoryId != 1) {
                             $productId = $insertedProductIdArray[$j];
                             //echo "\ncat >> ".$categoryId." :: product >> ".$productId;
-
+                            dd($decodedJsonData);
                             $categoryJsonData = $decodedJsonData[$categoryId];
                             $productName = $categoryJsonData['product_name'];
                             //echo "\np name >> ".$productName;
@@ -519,6 +537,16 @@ class HomeController extends Controller
                     $decodeVal['prefix'] = $prefix;
                     $decodeVal['country_code'] = $country_code;
 
+
+                    if (!empty($themeid)) {
+                        $themedata = DB::select("SELECT t.id,c.category,t.theme_category as name,t.image from themes t left join categories c on t.cat_id=c.id where t.cat_id = " . $catid . " order by c.category");
+                        $decodeVal['theme'] = strtolower(StoreTheme::find($themeid)->theme_category);
+                        $decodeVal['themeid'] = $themeid;
+                        $decodeVal['themedata'] = $themedata;
+                        $decodeVal['currencyId'] = @HasCurrency::find($currency)->iso_code;
+                        $decodeVal['store_version'] = @$storeVersion;
+                    }
+
                     $newJsonString = json_encode($decodeVal);
 
                     $fp = fopen(base_path() . "/merchants/" . $domainname . '/storeSetting.json', 'w+');
@@ -528,10 +556,14 @@ class HomeController extends Controller
                     if (!empty($catid)) {
                         Helper::saveDefaultSet($catid, $prefix, $storeId, $storeType);
                     }
+                    if((!empty($themeid)) && ($themeid!=0)){
+                        $this->selectThemesdata($storeId,$themeid,$catid, $domainname);
+                    }
+
 
                     if (!empty($currency)) {
                         $decodeVal['currency'] = $currency;
-                        $decodeVal['currency_code'] = HasCurrency::find($currency)->iso_code;
+                        //$decodeVal['currency_code'] = HasCurrency::find($currency)->iso_code;
                         $currVal = HasCurrency::find($currency);
                         if (!empty($currVal)) {
                             $currJson = json_encode(['name' => $currVal->name, 'iso_code' => $currVal->iso_code]);
@@ -644,7 +676,8 @@ class HomeController extends Controller
     }
 
     public function waitProcess()
-    {
+    {   
+
         $dataW = [];
         $themeInput = Input::all();
         $dataW['themeInput'] = json_encode($themeInput);
@@ -1178,5 +1211,59 @@ class HomeController extends Controller
         } else {
             return $data = ["status" => "fail", "msg" => "Mobile No. Already Exists"];
         }
+    }
+
+    public function selectThemesdata($storeId,$themeid,$catid, $domainname){
+
+        $banner = json_decode((StoreTheme::where("id", $themeid)->first()->banner_image), true);
+
+       
+                    // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
+                    if (!empty($banner)) {
+                         $homeLayout = DB::table("layout")
+                            ->where('url_key', 'LIKE', 'home-page-slider')
+                            ->where('store_id', $storeId)
+                            ->where('is_del', 0)
+                            ->first();
+                        foreach ($banner as $image) {
+                            $homePageSlider = [];
+                            $file = $image['banner'];
+                            //$homePageSlider['layout_id'] = 1;
+                            $homePageSlider['layout_id'] =  $homeLayout->id;
+                            $homePageSlider['name'] = $image['banner_text'];
+                            $homePageSlider['is_active'] = $image['banner_status'];
+                            $homePageSlider['image'] = $image['banner'];
+                            $homePageSlider['sort_order'] = $image['sort_order'];
+                            $source = public_path() . '/public/admin/themes/';
+                            $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                            copy($source . $file, $destination . $file);
+                            DB::table("has_layouts")->insert($homePageSlider);
+                        }
+                    }
+                    $threeBoxes = json_decode((Category::where("id", $catid)->first()->threebox_image), true);
+
+                    // $threeBoxes = json_decode((StoreTheme::where("id", $themeid)->first()->threebox_image), true);
+                    if (!empty($threeBoxes)) {
+
+                         $boxLayout = DB::table("layout")
+                            ->where('url_key', 'LIKE', 'home-page-3-boxes')
+                            ->where('store_id', $storeId)
+                            ->where('is_del', 0)
+                            ->first();
+
+                        foreach ($threeBoxes as $image) {
+                            $homePageSlider = [];
+                            $file = $image['banner'];
+                            $homePageSlider['layout_id'] = $boxLayout->id;
+                            $homePageSlider['name'] = $image['banner_text'];
+                            $homePageSlider['is_active'] = $image['banner_status'];
+                            $homePageSlider['image'] = $image['banner'];
+                            $homePageSlider['sort_order'] = $image['sort_order'];
+                            $source = public_path() . '/public/admin/themes/';
+                            $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                            copy($source . $file, $destination . $file);
+                            DB::table("has_layouts")->insert($homePageSlider);
+                        }
+                    }
     }
 }

@@ -54,12 +54,10 @@
                                 <div class="center-text" >
                                     <h3 class="nobottommargin white-text">{{$theme->category['category']."".$themeK}} - {{$theme->theme_type==1?'Starter':'Advanced'}}</h3>
                                     @if(!empty(Session::get('merchantid')))
-                                    <input type="hidden" name="storeType" value="{{$allinput['storeType']}}">
+                                    <input type="hidden" name="storeType" value="{{$allinput['roleType']}}">
                                     <input type="hidden" name="storename" value="{{Session::get('storename')}}">
-                                    <input type="hidden" name="firstname" value="{{$allinput['firstname']}}">
-                                    <input type="hidden" name="email" value="{{$allinput['email']}}">
-                                    <input type="hidden" name="telephone" value="{{$allinput['phone']}}">
-                                    <input type="hidden" name="store_version" value="{{$allinput['store_version']}}">
+                                    <input type="hidden" name="currency_code" value="{{$allinput['country_code']}}">
+                                   
                                     @if(!empty($allinput['password']))
                                     <input type="hidden" name="password" value="{{$allinput['password']}}">
                                     @endif
@@ -67,11 +65,11 @@
                                     <input type="hidden" name="provider_id" value="{{$allinput['provider_id']}}">
                                     @endif
                                     <input type="hidden" name="business_type" value="{{$allinput['business_type'][0]}}">
-                                    <input type="hidden" name="already_selling" value="{{json_encode($allinput['already_selling'])}}">
+                                   
                                     <input type="hidden" name="theme_id" value="{{$theme->id}}">
                                     <input type="hidden" name="cat_id" value="{{$c->id}}">
                                     <input type="hidden" name="domain_name" value="{{$allinput['domain_name']}}">
-                                    <input type="hidden" name="currency" value="{{$allinput['currency']}}">
+                                   
                                     @endif
                                     <a type="button" href="{{ asset('themes/'.strtolower($theme->name)."_home.php") }}?theme={{strtolower($theme->name)}}" target="_blank" class="btn btn-block marginauto btn-trans-whiteborder">View Demo</a>
                                     @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
