@@ -51,12 +51,13 @@ exit;*/
             <div class="msg"></div>
             <div class="nav-tabs-custom orderContent">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#customer-details" data-toggle="tab" aria-expanded="true">Customer Details</a></li>
+                    <li class="active"><a href="#product-details" data-toggle="tab" aria-expanded="true">Product Details</a></li>
+                    <li class=""><a href="#customer-details" data-toggle="tab" aria-expanded="true">Customer Details</a></li>
                     <li class=""><a href="#shipping-address" data-toggle="tab" aria-expanded="true">Shipping Address</a></li>
-                    <li class=""><a href="#product-details" data-toggle="tab" aria-expanded="true">Product Details</a></li>
+                    
                 </ul>
                 <div  class="tab-content" >
-                    <div class="tab-pane active" id="customer-details">
+                    <div class="tab-pane" id="customer-details">
                         <div class="panel-body noMobilePadding">
                             {{ Form::open(['id'=>'custInfo','class'=>'custInfo']) }}
                             <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -90,96 +91,7 @@ exit;*/
                             <div class="line line-dashed b-b line-lg pull-in" ></div>
 
                             {{ Form::hidden("customer_id",null,['class'=>'inpt']) }}
-
-                            <div class="form-group col-sm-12 noallMargin noallpadding">
-                                <div class="custdata pull-right" style="display: none;">
-                                    {!! Form::button('Next<i class="fa fa-spinner"></i>',["class" => "btn btn-primary custDetailsNext"]) !!}
-                                </div>
-                                <button class="btn btn-black cancelBtn pull-right">Cancel</button>
-                            </div>
-                            {{ Form::close() }}
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="shipping-address">
-                        <div class="panel-body">
-                            <div  class="col-md-6 noallMargin noallpadding">
-                                {!! Form::open(['id'=>'custAddForm']) !!}
-                                <div class="row form-group">
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('First Name', 'First Name ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::text('firstname',null, ["class"=>'form-control inptAdd validate[required]', 'placeholder'=>'First Name']) !!}
-                                    </div>
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('Last Name', 'Last Name',['class'=>'control-label']) !!}
-                                        {!! Form::text('lastname',null, ["class"=>'form-control inptAdd','placeholder'=>'Last Name']) !!}
-                                    </div>
-                                </div>
-                                <div class="line line-dashed b-b line-lg pull-in"></div>
-                                <div class="row form-group">
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('Address Line 1', 'Address Line 1 ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::text('address1',null, ["class"=>'form-control inptAdd validate[required]','placeholder'=>'Address Line 1']) !!}
-                                    </div>
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('Address Line 2', 'Address Line 2  ',['class'=>'control-label']) !!}
-                                        {!! Form::text('address2',null, ["class"=>'form-control inptAdd','placeholder'=>'Address Line 2']) !!}
-                                    </div>
-                                </div>
-                                <div class="line line-dashed b-b line-lg pull-in"></div>
-                                <div class="row form-group">
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('Address Line 3', 'Address Line 3',['class'=>'control-label']) !!}
-                                        {!! Form::text('address3',null, ["class"=>'form-control','placeholder'=>'Address Line 3']) !!}
-                                    </div>
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('City', 'City ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::text('city',null,["class"=>'form-control inptAdd validate[required]', 'placeholder'=>'City']) !!}
-                                    </div>
-                                </div>
-                                <div class="line line-dashed b-b line-lg pull-in"></div>
-                                <div class="row form-group">
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('Pin Code', 'Pin Code ',['class'=>'control-label']) !!}
-                                        {!! Form::text('postcode',null,["class"=>'form-control inptAdd','placeholder'=>'Pin Code']) !!}
-                                    </div>
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('Country', 'Country ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::select('country_id',$ordcountries,null ,["class"=>'form-control country inptAdd validate[required]']) !!}      </div>
-
-                                </div>
-                                <div class="line line-dashed b-b line-lg pull-in"></div>
-                                <div class="row form-group">
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('State', 'State/Zone ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::select('zone_id',$ordstates,null ,["class"=>'form-control inptAdd validate[required]', 'id'=>'state','placeholder'=>'Select State']) !!}
-
-                                    </div>
-
-                                    <div class="col-md-6 mob-marBottom15">
-                                        {!! Form::label('Telephone', 'Mobile Number ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                        {!! Form::text('phone_no',null,["class"=>'form-control inptAdd validate[required,custom[phone]]','placeholder'=>'Mobile Number']) !!}
-                                    </div>
-                                </div>
-                                <div class="line line-dashed b-b line-lg pull-in"></div>
-                                <div class="form-group noallMargin noallpadding">
-                                    <button class="btn btn-black addBack noLeftMargin">Back</button>
-                                    <button class="btn btn-black cancelBtn">Cancel</button>
-                                    <button type="button" class="btn btn-warning skipAddress"> Skip</button>
-                                    {!! Form::submit('Next',["class" => "btn btn-primary NextAdd"]) !!}
-                                </div>
-                                {{ Form::hidden('address_id',null) }}
-                                {{ Form::hidden('user_id',null) }}
-                                {{ Form::hidden('cashback_hidden',null) }}
-                                {{ Form::close() }}
-                            </div>
-                            <div  class="col-md-6 addressDiv pull-right"> </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="product-details">
-                        <address class="pull-left col-md-6" class="shippedAdd">
-
-                        </address>
-                        <div class="row">
+                            <div class="row">
                             <div class="col-md-12">
                                 <div class="">
                                     <h4><b>Customer Credit<small>(Till Date)</small>: </b> 
@@ -188,109 +100,8 @@ exit;*/
                                 </div>
                             </div>
                         </div>
-                        <div class="pull-right">
-                            <button  class="btn sbtn btn-primary margin addCourse ">Add New Product</button>
-                        </div>
-                        <div class="panel-body">
-                            {{ Form::open(['method'=>'post','route'=>'admin.orders.saveCartData','id'=>'prodDetailsForm']) }}
-                            {{ Form::hidden('addressid',null) }}
-                            {{ Form::hidden('userid',null) }}
-                            <table class="table table-striped tableVaglignMiddle table-hover prodTable">
-                                <thead>
-                                <th width="30%">Product</th>
-                                <th width="20%">Variant</th>
-                                <th width="20%">Quantity </th>
-                                <th width="20%">Offer Name </th>
-                                <th width="20%">Offer Quantity </th>
-                                <th width="20%">Unit Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
-                                <th width="20%">Discount </th>
-                                <th width="20%">Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
-                                @if($feature['tax']==1)
-                                <th width="20%">Tax ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
-                                @endif
-                                <th width="5%">Action</th>
-                                </thead>
-                                <tbody class="newRow">
-                                    <tr>
-                                        <td width="30%">
-                                            <input type="text" class="form-control prodSearch validate[required]" placeholder="Search Product" name="prod_search" >
-                                        </td >
-                                        <td width="20%">
-                                            {{ Form::select("cartData[prod_id][sub_prod_id]",[],null,['class'=>'form-control subprodid validate[required]','style'=>"display:none;"]) }}
-                                        </td>
-                                        <td width="20%">
-                                            <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span><span class="prdStock"></span>
-                                        </td>
-                                        <td width="20%">
-                                            <span class='offer_name'>-</span>
-                                        </td>
-                                        <td width="20%">
-                                            <span class='qty'>-</span>
-                                        </td>
-                                        <td width="20%">
-                                            <span class='prodUnitPrice'>0</span>
-                                        </td>
-                                        <td width="20%">
-                                            <span class='prodDiscount'>0</span>
-                                        </td>
-                                        <td width="20%">
-                                            <span class='prodPrice'>0</span>
-                                        </td>
-                                        @if($feature['tax']==1)
-                                        <td width="20%">
-                                            <span class='taxAmt'>0</span>
-                                        </td>
-                                        @endif
-                                        <td width='5%' class="text-center">
-                                            <span class="delRow" data-toggle="tooltip" title="Delete" data-original-title="Remove"><i class="fa fa-trash fa-fw"></i></a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tr style="border-bottom: 1px solid #f4f4f4;">
-                                    <td colspan="2">
-                                        <div class="pay-method">
-                                            <label>Pay By</label>
-                                            <select name='payment_mode' class="form-control paymode validate[required]">
-                                                <option value="">Select Payment Mode</option>
-                                                @foreach($paymentMethods as $paymentMethod)
-                                                    @if ($paymentMethod->name == 'Cash')
-                                                        <option selected value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
-                                                    @else
-                                                        <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td><span class="store-credit hide"><input type="text" onblur="updateRemainigAmount()" name='pay_amt' class='form-control validate_decimal' max="1" value="0" />
-                                    </span></td>
-                                    <td><span class="store-credit hide"><b>Remaining Amount:</b> <span class="" id="remaining-amt">0</span></span></td>
-                                    
-                                    <td>&nbsp;</td>
-                                    <td colspan="2"> Subtotal: <b><span class="subtotal"><span class="currency-sym"></span> 0</span></b></td>
-                                    <td>&nbsp;</td>
-                                    <td>&nbsp;</td>
-                                </tr>
-                                <tr id="validate_credit_amt" style="display: none">
-                                    <td></td>
-                                    <td><span style="color: red">Amount should be less than payable amount</span></td>
-                                    <td></td><td></td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #f4f4f4;">
-                                    <td colspan="1">
-                                        <label class="custom-checkbox">
-                                            <input type="checkbox" id="checkAll" />
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <span class="cc-text">is Delivered</span>
-                                    <!-- <label><input type="checkbox" value="1" class="form-inline" name="order_status" />is Delivered</label> -->
-                                </td>
-                                    <td colspan="2">{{ Form::textarea("remarks",null,['class'=>'form-control remark','rows'=>"1",'cols'=>"50","Placeholder"=>'Remarks (If any)']) }}</td>
-                                    <td colspan="6"></td>
-                                </tr>
-                            </table>
-                            <!---- START Coupon Section --->
-                            <div class="col-md-6 noLeftpadding">
+                        <!---- START Coupon Section --->
+                        <div class="col-md-6 noLeftpadding">
                                 <div class="cal-shipping  mar-bot15">
                                     @if($feature['coupon'] == 1)
                                     <h4 class="heading-title">Apply Coupon</h4>
@@ -416,9 +227,208 @@ exit;*/
                                 </table>
                             </div>
                             <!--- END Billing Info --->
+                            <div class="form-group col-sm-12 noallMargin noallpadding">
+                                <div class="custdata pull-right">
+                                <button class="btn btn-black custBack mobileSpecialfullBTN">Back</button>
+                                {!! Form::button('Next<i class="fa fa-spinner"></i>',["class" => "btn btn-primary custDetailsNext"]) !!}
+                                    
+                                <!-- <button class="btn btn-black cancelBtn pull-right">Cancel</button> -->
+                                {!! Form::button('Place Order <i class="fa fa-spinner placeorderSpinner" aria-hidden="true"></i>',["class" => "btn btn-primary custplaceOrder mobileSpecialfullBTN"]) !!}
+                                </div>
+                                
+                            </div>
+                            {{ Form::close() }}
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="shipping-address">
+                        <div class="panel-body">
+                            <div  class="col-md-6 noallMargin noallpadding">
+                                {!! Form::open(['id'=>'custAddForm']) !!}
+                                <div class="row form-group">
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('First Name', 'First Name ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                                        {!! Form::text('firstname',null, ["class"=>'form-control inptAdd validate[required]', 'placeholder'=>'First Name']) !!}
+                                    </div>
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('Last Name', 'Last Name',['class'=>'control-label']) !!}
+                                        {!! Form::text('lastname',null, ["class"=>'form-control inptAdd','placeholder'=>'Last Name']) !!}
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="row form-group">
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('Address Line 1', 'Address Line 1 ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                                        {!! Form::text('address1',null, ["class"=>'form-control inptAdd validate[required]','placeholder'=>'Address Line 1']) !!}
+                                    </div>
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('Address Line 2', 'Address Line 2  ',['class'=>'control-label']) !!}
+                                        {!! Form::text('address2',null, ["class"=>'form-control inptAdd','placeholder'=>'Address Line 2']) !!}
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="row form-group">
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('Address Line 3', 'Address Line 3',['class'=>'control-label']) !!}
+                                        {!! Form::text('address3',null, ["class"=>'form-control','placeholder'=>'Address Line 3']) !!}
+                                    </div>
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('City', 'City ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                                        {!! Form::text('city',null,["class"=>'form-control inptAdd validate[required]', 'placeholder'=>'City']) !!}
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="row form-group">
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('Pin Code', 'Pin Code ',['class'=>'control-label']) !!}
+                                        {!! Form::text('postcode',null,["class"=>'form-control inptAdd','placeholder'=>'Pin Code']) !!}
+                                    </div>
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('Country', 'Country ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                                        {!! Form::select('country_id',$ordcountries,null ,["class"=>'form-control country inptAdd validate[required]']) !!}      </div>
+
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="row form-group">
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('State', 'State/Zone ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                                        {!! Form::select('zone_id',$ordstates,null ,["class"=>'form-control inptAdd validate[required]', 'id'=>'state','placeholder'=>'Select State']) !!}
+
+                                    </div>
+
+                                    <div class="col-md-6 mob-marBottom15">
+                                        {!! Form::label('Telephone', 'Mobile Number ',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
+                                        {!! Form::text('phone_no',null,["class"=>'form-control inptAdd validate[required,custom[phone]]','placeholder'=>'Mobile Number']) !!}
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group noallMargin noallpadding">
+                                    <button class="btn btn-black addBack noLeftMargin">Back</button>
+                                    <button class="btn btn-black cancelBtn">Cancel</button>
+                                    <!-- <button type="button" class="btn btn-warning skipAddress"> Skip</button> -->
+                                    {!! Form::button('Place Order <i class="fa fa-spinner placeorderSpinner" aria-hidden="true"></i>',["class" => "btn btn-primary placeOrder mobileSpecialfullBTN"]) !!}
+                                    <!-- {!! Form::submit('Next',["class" => "btn btn-primary NextAdd"]) !!} -->
+                                </div>
+                                {{ Form::hidden('address_id',null) }}
+                                {{ Form::hidden('user_id',null) }}
+                                {{ Form::hidden('cashback_hidden',null) }}
+                                {{ Form::close() }}
+                            </div>
+                            <div  class="col-md-6 addressDiv pull-right"> </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane active" id="product-details">
+                        <address class="pull-left col-md-6" class="shippedAdd">
+
+                        </address>
+                        
+                        <div class="pull-right">
+                            <button  class="btn sbtn btn-primary margin addCourse ">Add New Product</button>
+                        </div>
+                        <div class="panel-body">
+                            {{ Form::open(['method'=>'post','route'=>'admin.orders.saveCartData','id'=>'prodDetailsForm']) }}
+                            {{ Form::hidden('addressid',null) }}
+                            {{ Form::hidden('userid',null) }}
+                            <table class="table table-striped tableVaglignMiddle table-hover prodTable">
+                                <thead>
+                                <th width="30%">Product</th>
+                                <th width="20%">Variant</th>
+                                <th width="20%">Quantity </th>
+                                <th width="20%">Offer Name </th>
+                                <th width="20%">Offer Quantity </th>
+                                <th width="20%">Unit Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
+                                <th width="20%">Discount </th>
+                                <th width="20%">Price ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
+                                @if($feature['tax']==1)
+                                <th width="20%">Tax ({{htmlspecialchars_decode(Session::get('currency_symbol'))}})</th>
+                                @endif
+                                <th width="5%">Action</th>
+                                </thead>
+                                <tbody class="newRow">
+                                    <tr>
+                                        <td width="30%">
+                                            <input type="text" class="form-control prodSearch validate[required]" placeholder="Search Product" name="prod_search" >
+                                        </td >
+                                        <td width="20%">
+                                            {{ Form::select("cartData[prod_id][sub_prod_id]",[],null,['class'=>'form-control subprodid validate[required]','style'=>"display:none;"]) }}
+                                        </td>
+                                        <td width="20%">
+                                            <span class='prodQty' style="display:none"><input type="number" name='cartData[prod_id][qty] validate[required]' class='qty form-control' min="1" value="1"></span><span class="prdStock"></span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='offer_name'>-</span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='qty'>-</span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='prodUnitPrice'>0</span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='prodDiscount'>0</span>
+                                        </td>
+                                        <td width="20%">
+                                            <span class='prodPrice'>0</span>
+                                        </td>
+                                        @if($feature['tax']==1)
+                                        <td width="20%">
+                                            <span class='taxAmt'>0</span>
+                                        </td>
+                                        @endif
+                                        <td width='5%' class="text-center">
+                                            <span class="delRow" data-toggle="tooltip" title="Delete" data-original-title="Remove"><i class="fa fa-trash fa-fw"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tr style="border-bottom: 1px solid #f4f4f4;">
+                                    <td colspan="2">
+                                        <div class="pay-method">
+                                            <label>Pay By</label>
+                                            <select name='payment_mode' class="form-control paymode validate[required]">
+                                                <option value="">Select Payment Mode</option>
+                                                @foreach($paymentMethods as $paymentMethod)
+                                                    @if ($paymentMethod->name == 'Cash')
+                                                        <option selected value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                    @else
+                                                        <option value="{{ $paymentMethod->id }}">{{ $paymentMethod->name }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td><span class="store-credit hide"><input type="text" onblur="updateRemainigAmount()" name='pay_amt' class='form-control validate_decimal' max="1" value="0" />
+                                    </span></td>
+                                    <td><span class="store-credit hide"><b>Remaining Amount:</b> <span class="" id="remaining-amt">0</span></span></td>
+                                    
+                                    <td>&nbsp;</td>
+                                    <td colspan="2"> Subtotal: <b><span class="subtotal"><span class="currency-sym"></span> 0</span></b></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr id="validate_credit_amt" style="display: none">
+                                    <td></td>
+                                    <td><span style="color: red">Amount should be less than payable amount</span></td>
+                                    <td></td><td></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #f4f4f4;">
+                                    <td colspan="1">
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox" id="checkAll" />
+                                            <span class="checkmark"></span>
+                                        </label>
+                                        <span class="cc-text">is Delivered</span>
+                                    <!-- <label><input type="checkbox" value="1" class="form-inline" name="order_status" />is Delivered</label> -->
+                                </td>
+                                    <td colspan="2">{{ Form::textarea("remarks",null,['class'=>'form-control remark','rows'=>"1",'cols'=>"50","Placeholder"=>'Remarks (If any)']) }}</td>
+                                    <td colspan="6"></td>
+                                </tr>
+                            </table>
+                            
                             <div class="form-group text-right col-sm-12 noallMargin noAllpadding">
-                                <button class="btn btn-black placeOrderBack mobileSpecialfullBTN">Back</button>
-                                <button class="btn btn-black cancelBtn mobileSpecialfullBTN">Cancel</button> {!! Form::button('Place Order <i class="fa fa-spinner placeorderSpinner" aria-hidden="true"></i>',["class" => "btn btn-primary placeOrder mobileSpecialfullBTN"]) !!}
+                                <div class="custdata pull-right">
+                                    {!! Form::button('Next<i class="fa fa-spinner"></i>',["class" => "btn btn-primary prodNext"]) !!}
+                                </div>
+                                
+                                <button class="btn btn-black cancelBtn mobileSpecialfullBTN">Cancel</button> 
                             </div>
                             {{ Form::close() }}
                         </div>
@@ -771,6 +781,34 @@ var prodoffer = 0;
         });
     });
 
+    $(".prodNext").on("click", function (e) {
+        var rowCount = $(".newRow").find('tr');
+        if ($('.prodSearch').val() == '') {
+            $('input[name=prod_search]').blur();
+            $('input[name=prod_search]').focus();
+            return false;
+        }
+        $(".product-empty").remove();
+       
+        if (rowCount.length <= 0) {
+            $(".prodTable tbody.newRow").append('<tr class="product-empty" style="color:red"><th colspan="4">Please select at least one product </th></tr>');
+            return false;
+        }
+        $.each($(".prodTable .prodPrice"), function () {
+            if ($(this).text() == 0) {
+                $(this).parent().parent().addClass("trError");
+                $(".finalAmt").text('0.00');
+            } else {
+                $(this).parent().parent().removeClass("trError");
+            }
+        });
+        
+        $('.nav-tabs a[href="#customer-details"]').tab('show');
+        $('.nav-tabs a[href="#shipping-address"]').removeAttr('data-toggle')
+        $('.nav-tabs a[href="#product-details"]').removeAttr('data-toggle');
+        $('.nav-tabs a[href="#customer-details"]').tab('show');
+
+    });
 
     $(".NextAdd").on("click", function (e) {
         var valid = $("#custAddForm").validationEngine('validate');
@@ -893,25 +931,84 @@ var prodoffer = 0;
     });
 
     $(".placeOrder").on("click", function () {
-        var rowCount = $(".newRow").find('tr');
-        if ($('.prodSearch').val() == '') {
-            $('input[name=prod_search]').blur();
-            $('input[name=prod_search]').focus();
-        }
-        $(".product-empty").remove();
-
-        if (rowCount.length <= 0) {
-            $(".prodTable tbody.newRow").append('<tr class="product-empty" style="color:red"><th colspan="4">Please select at least one product </th></tr>');
-            return false;
-        }
-        $.each($(".prodTable .prodPrice"), function () {
-            if ($(this).text() == 0) {
-                $(this).parent().parent().addClass("trError");
-                $(".finalAmt").text('0.00');
-            } else {
-                $(this).parent().parent().removeClass("trError");
+        
+        chk = 0;
+        $.each($(".prodTable tr"), function () {
+            if ($(this).hasClass('trError')) {
+                chk = 1;
             }
         });
+        var rows = $(".newRow").find('tr');
+        var prod = [];
+        jQuery.each(rows, function (i, item) {
+            if ($(item).attr('data-ppid') != "") {
+                var prod_id = $(this).find('.prodSearch').attr('data-prdid');
+                var subprodid = $(this).find('.subprodid').val();
+                var qty = $(this).find('.qty').val();
+                var prodPrice = $(this).find('.prodPrice').text();
+                var data = {prod_id: prod_id, subprodid: subprodid, qty: qty, prodPrice: prodPrice};
+                prod.push(data);
+            }
+        });
+        var address_id = $("input[name=address_id]").val();
+        var user_id = $("input[name=user_id]").val();
+        var payment_mode = $(".paymode").val();
+        var pay_amt = $("input[name=pay_amt]").val();
+        var order_status = ($("input[name=order_status]").is(":checked"))? 1: 0;
+        var remark = $(".remark").val();
+        var post_data = {mycart: prod, pay_amt: pay_amt, order_status: order_status, payment_mode: payment_mode, remark: remark, user_id: user_id, address_id: address_id};
+        if (chk == 0) {
+            $(".placeorderSpinner").show();
+            $.post("{{ route('admin.orders.saveCartData') }}", post_data, function (res) {
+                $(".placeorderSpinner").hide();
+                if (res == 1)
+                    $("#invalidCoursePopUp").modal('show');
+                if (res == 2)
+                    $("#alreadyAdeedCoursePopUp").modal('show');
+                if (res.status == 3) {
+                    if($("input[name=order_status]").is(":checked")){
+                        updateOrderStatus(res.orderId);
+                    }
+                    $(".orderContent").hide();
+                    $(".msg").addClass("alert alert-success").text("Order Placed successfully.");
+                } else if (res.status == 4) {
+                    $(".msg").addClass("alert alert-danger").text("Error being place order. Please try again.");
+                }
+            });
+        }
+    });
+
+    $(".custplaceOrder").on("click", function () {
+        //add cust
+        $("input[name='address_id']").val('');
+        var valid = $("#custInfo").validationEngine('validate');
+        //  if ($("#custInfo").valid()) {
+        if (valid) {
+            $(".fa-spinner").show();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('admin.orders.getCustomerData') }}",
+                data: $(".custInfo").serialize(),
+                cache: false,
+                success: function (data) {
+                    $(".fa-spinner").hide();
+                    $("input[name='customer_id']").val(data.id);
+                    $("input[name='user_id']").val(data.id);
+                    $("input[name='firstname']").val(data.firstname);
+                    $("input[name='lastname']").val(data.lastname);
+                    $("input[name='phone_no']").val(data.telephone);
+                    $(".curRewPointsOld").text(data.cashback);
+                    $("input[name='cashback_hidden']").val(data.cashback);
+                    address = data.addresses;
+                    addDiv = "";
+                    
+                }
+            });
+        } else {
+            $("#custInfo").validationEngine();
+        }
+        //end
+       
         chk = 0;
         $.each($(".prodTable tr"), function () {
             if ($(this).hasClass('trError')) {
@@ -969,7 +1066,12 @@ var prodoffer = 0;
         $('.nav-tabs a[href="#shipping-address"]').removeAttr('data-toggle');
         $('.nav-tabs a[href="#product-details"]').removeAttr('data-toggle');
     });
-
+    $(".custBack").on("click", function (e) {
+        e.preventDefault();
+        $('.nav-tabs a[href="#product-details"]').tab('show');
+        $('.nav-tabs a[href="#customer-details"]').removeAttr('data-toggle');
+        $('.nav-tabs a[href="#shipping-address"]').removeAttr('data-toggle');
+    });
     $(".placeOrderBack").on("click", function (e) {
         e.preventDefault();
         $('.nav-tabs a[href="#shipping-address"]').tab('show');

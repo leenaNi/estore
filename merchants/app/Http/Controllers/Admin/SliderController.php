@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 class SliderController extends Controller {
 
     public function index() {
+        dd(123);
         $allSiders = Slider::all();
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['title'];

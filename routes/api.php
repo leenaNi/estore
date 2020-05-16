@@ -17,6 +17,31 @@ Route::get('/', function () {
 });
 
 Route::group(['namespace' => 'Admin'], function () {
+    //API->Sales route
+    Route::group(['middleware' => ['jwt-auth', 'sessions']], function () {
+        Route::group(['prefix' => 'Sales'], function () {
+            
+            Route::get('/getproductbybarcode', array('as' => 'admin.sales.getproduct', 'uses' => 'API\Sales\ApiCartController@getProductByBarcode'));
+            Route::group(['prefix' => 'cart'], function () {
+                Route::get('/', array('as' => 'admin.sales.viewcart', 'uses' => 'API\Sales\ApiCartController@index'));
+                Route::post('/add', array('as' => 'admin.sales.addtocart', 'uses' => 'API\Sales\ApiCartController@add'));
+                Route::post('/edit', array('as' => 'admin.sales.editcart', 'uses' => 'API\Sales\ApiCartController@edit'));
+            });
+            //Customer routes
+            Route::group(['prefix' => 'customer'], function () {
+                Route::get('/', array('as' => 'admin.sales.customers', 'uses' => 'API\Sales\ApiCustomerController@index'));
+                Route::post('/add-edit', array('as' => 'admin.sales.addeditcust', 'uses' => 'API\Sales\ApiCustomerController@addEdit'));
+                Route::post('/add-edit-address', array('as' => 'admin.sales.addeditshippingaddr', 'uses' => 'API\Sales\ApiCustomerController@addEditShippingAddress'));
+            });
+            //sales order routes
+            Route::group(['prefix' => 'order'], function () {
+                Route::post('/place-order', array('as' => 'admin.sales.placeorder', 'uses' => 'API\Sales\ApiOrderController@placeOrder'));
+            });
+        });
+    });
+
+
+    //Sales route
     Route::post('/send-otp', ["as" => "admin.merchant.sendotp", "uses" => "ApiMerchantController@sendOtp"]);
     Route::post('/verify-otp', ["as" => "admin.merchant.verifyotp", "uses" => "ApiMerchantController@verifyOTP"]);
     Route::post('/merchant-login', ["as" => "admin.merchant.login", "uses" => "ApiMerchantController@merchantLogin"]);
@@ -294,3 +319,5 @@ Route::group(['namespace' => 'Admin'], function () {
         });
     });
 });
+
+

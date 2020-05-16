@@ -135,7 +135,10 @@
             <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Import & Export</h1>
         </div>
         <div class="filter-section equal-height-div-2">
-          <div class="filter-right-section">            
+          <div class="filter-right-section">  
+          <div class="form-group">
+            <a class="btn btn-default fullWidth noAll-margin" href="{{ route('admin.products.sampleProductDownload')}}">Sample Product</a>
+            </div>           
             <div class="form-group">
             <a class="btn btn-default fullWidth noAll-margin" href="{{ route('admin.products.sampleBulkDownload')}}">Download Products</a>
             </div>  
@@ -1392,9 +1395,13 @@
     else
     {
       var fileUpload = $("#chooseImg")[0];
+      var imageExt = fileUpload.value.split('.');
+      var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp","svg"];
       //Check whether the file is valid Image.
-      var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
-      if (regex.test(fileUpload.value.toLowerCase())) {
+
+      //var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.png|.gif)$");
+      //if (regex.test(fileUpload.value.toLowerCase())) {
+      if ($.inArray(imageExt[1], validImageTypes) == true || $.inArray(imageExt[1], validImageTypes) != -1) {
         //Check whether HTML5 is supported.
         if (typeof (fileUpload.files) != "undefined") {
           $("#error-product").html("");

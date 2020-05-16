@@ -6,11 +6,11 @@
 @section('content')
 <section class="content-header">
     <h1>
-        All Merchants
+        All Customers
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Merchants</a></li>
-        <li class="active">All Merchants</li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Customers</a></li>
+        <li class="active">All Customers</li>
     </ol>
 </section>
 <section class="main-content">
@@ -75,7 +75,7 @@
     </div>
     <div class="grid-content">
         <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Merchants
+            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> All Customers
                 <?php
 if ($customerCount > 0) {
     ?>
