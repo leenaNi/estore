@@ -58,7 +58,7 @@
                                     <input type="hidden" name="roleType" value="{{$allinput['roleType']}}">
                                     <input type="hidden" name="storename" value="{{Session::get('storename')}}">
                                     <input type="hidden" name="store_name" value="{{Session::get('storename')}}">
-                                    <input type="hidden" name="currency_code" value="{{$allinput['country_code']}}">
+                                    <input type="hidden" name="currency_code" value="{{$allinput['currency_code']}}">
                                    
                                     @if(!empty($allinput['password']))
                                     <input type="hidden" name="password" value="{{$allinput['password']}}">

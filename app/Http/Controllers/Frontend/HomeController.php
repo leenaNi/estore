@@ -562,7 +562,8 @@ class HomeController extends Controller
 
                     if (!empty($currency)) {
                         $decodeVal['currency'] = $currency;
-                        //$decodeVal['currency_code'] = HasCurrency::find($currency)->iso_code;
+                       $decodeVal['currency_code'] = HasCurrency::find($currency)->iso_code;
+
                         $currVal = HasCurrency::find($currency);
                         if (!empty($currVal)) {
                             $currJson = json_encode(['name' => $currVal->name, 'iso_code' => $currVal->iso_code]);
