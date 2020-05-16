@@ -41,7 +41,7 @@
 							</tr>
 							<tr>
 							  <td>Customize Store Admin Colors</td>
-							  <td><i class="icon-remove"></i></td>
+							  <td><i class="icon-ok"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
@@ -66,12 +66,7 @@
 							</tr>
 							<tr>
 							  <td>Order Flagging</td>
-							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
-							</tr>
-							<tr>
-							  <td>Barcode System / System Generated Barcode Mechanism</td>
-							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
@@ -80,13 +75,18 @@
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
-							  <td>Testimonials</td>
+							  <td>Newsletter</td>
+							  <td><i class="icon-ok"></i></td>
+							  <td><i class="icon-ok"></i></td>
+							</tr>
+							<tr>
+							  <td>Barcode System / System Generated Barcode Mechanism</td>
 							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
-							  <td>Newsletter</td>
-							  <td><i class="icon-ok"></i></td>
+							  <td>Testimonials</td>
+							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
@@ -96,12 +96,12 @@
 							</tr>
 							<tr>
 							  <td>Save customer as contacts from Mobile App</td>
-							  <td><i class="icon-ok"></i></td>
+							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
 							  <td>Help Store Assistant</td>
-							  <td><i class="icon-ok"></i></td>
+							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>

@@ -31,7 +31,8 @@
                         </div>
                         @else
                         <div class="col_full text-center bottommargin-xs noMobBottomMargin">
-                            <input class="btn theme-btn nomargin getVeestore"  value="Get Started" type="submit" style="" data-toggle="modal" data-target="#getstartModal">
+                            <a href="/new-store" class="btn theme-btn nomargin getVeestore">Get Started</a> 
+                            <!-- <input class="btn theme-btn nomargin getVeestore"  value="Get Started" type="submit" style="" data-toggle="modal" data-target="#getstartModal"> -->
                         </div>
                         @endif
                         <div class="clearfix"></div>
