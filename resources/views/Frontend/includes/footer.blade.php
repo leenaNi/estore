@@ -52,7 +52,7 @@
                 <div class="modal-body">
                     <div class="logErr nobg"></div>
                      <div class="errorMessage alert-danger bottommargin-xs"></div>
-                    <form id="veestoreLoginForm" class="veeLoginF" method="post" >
+                    <form id="veestoreLoginForm" class="veeLoginF mb-10" method="post" >
                         <div class="input-group" id="top-login-username">
                             <span class="input-group-addon"><i class="icon-phone"></i></span>
                             <input type="text" name="mobile_email" class="form-control" placeholder="Mobile / Email" required="true">
@@ -68,11 +68,11 @@
                         <div class="clearfix bottommargin-xs"></div>
                         <button class="btn theme-btn btn-block veestoreLoginBtn" type="button">Login</button>
                     </form>
-                    <div class="text-center marginBottom20">
-                        <!--               <a href="{{ route('login',['provider'=>'facebook']) }}"  class="col-md-12 col-sm-6 col-xs-12" style="margin-bottom:11px;">-->
+                    <!-- <div class="text-center marginBottom20">
+                                      <a href="{{ route('login',['provider'=>'facebook']) }}"  class="col-md-12 col-sm-6 col-xs-12" style="margin-bottom:11px;">
                         <a class="btn btn-block btn-social btn-facebook" onclick="fbLog()" id="fbLink" class="fb_login_btn">
                             <span class="icon-facebook"></span> Login with Facebook</a>
-                    </div>
+                    </div> -->
 
 
                 </div>

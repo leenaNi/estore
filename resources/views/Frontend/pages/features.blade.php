@@ -79,7 +79,7 @@
                 </div>
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
-                        <h4>30+ Theme Designs</h4>
+                        <h4>50+ Theme Designs</h4>
                         <p>Choose from designs that have been developed for various industry needs.</p>
                     </div>
                 </div>
