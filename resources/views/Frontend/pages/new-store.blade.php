@@ -71,7 +71,7 @@
 														<img id="mobemsg" src="{{ asset('public/Frontend/images/wrong-input.svg')}}" alt="success" class="error-mark hidden">
 													</span>
 												</div>
-											</div>										
+											</div>
 											<span class="error" style="display:none" id="mobileno_err">Mobile No. can not be blank</span>
 										</div>
 										<div class="form-group clearfix">
@@ -100,7 +100,7 @@
 									</div>
 									</div>
 										<div class="form-group text-center">
-											<p>By registering with us, you accept our <a href="#">Terms & Conditions.</a></p>
+											<p>By registering with us, you accept our <a target="_blank" href="https://estorifi.com/terms-condition">Terms & Conditions.</a></p>
 										</div>
 										<div class="form-group text-center mb-0">
 											<button tabindex="4" type="button" class="theme-btn dark-theme-btn full-width-btn" id="nextstep">Next</button>
@@ -174,7 +174,7 @@ function checkStorename(storename){
 		$("#business_name_err").hide();  $("#errorimg").hide();
 		$("#successimg").show();
 	}
-	
+
 	// $.ajax({
     //         type: 'POST',
     //         url: "{{route('checkStorename')}}",
@@ -208,7 +208,7 @@ function checkPhone(mobile){
 					$("#mobemsg").show();
 					$("#successimg").hide();
 					$("#mobsmsg").hide();$("#mobNumber").val('');
-                } 
+                }
             },
             error: function (e) {
                 console.log(e.responseText);
@@ -219,14 +219,14 @@ function checkPhone(mobile){
 $('.digit-group').find('input').each(function() {
 	$(this).attr('maxlength', 1);
 	$(this).on('keyup', function(e) {
-		var parent = $($(this).parent().parent().parent().parent().parent());		
+		var parent = $($(this).parent().parent().parent().parent().parent());
 		if(e.keyCode === 8 || e.keyCode === 37) {
-			var prev = parent.find('input#' + $(this).data('previous'));			
+			var prev = parent.find('input#' + $(this).data('previous'));
 			if(prev.length) {
 				$(prev).select();
 			}
 		} else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
-			var next = parent.find('input#' + $(this).data('next'));			
+			var next = parent.find('input#' + $(this).data('next'));
 			if(next.length) {
 				$(next).select();
 			} else {
@@ -247,8 +247,8 @@ $("#nextstep").click(function(){
         $("#business_name_err").show();$("#errorimg").show();
         $("#mobileno_err").show();$("#mobemsg").show();
         $("#industry_err").show();$("#errorindustry").show();
-        
-    }  
+
+    }
     else if($("input[name=store_name]").val() == ''){
         $("#business_name_err").show();
         $("#mobileno_err").hide();
@@ -263,13 +263,13 @@ $("#nextstep").click(function(){
        $("#industry_err").show();
        $("#mobileno_err").hide();
        $("#business_name_err").hide();
-        
+
     }
     // else if($("#select_indusrty").val() != ''){
-      
+
     //     $("#errorindustry").hide();
     //     $("#successindustry").show();
-        
+
     // }
     else{
         $("#business_name_err").hide();
