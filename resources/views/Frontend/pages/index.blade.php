@@ -81,12 +81,13 @@
 
                     <ul class="iconlist iconlist-large iconlist-color">
                         <li><i class="icon-ok-sign"></i> Ready to use beautiful themes for 20+ business categories</li>
+                        <li><i class="icon-ok-sign"></i> Customer Ordering App</li>
                         <li><i class="icon-ok-sign"></i> Start accepting online payments  </li>
                         <li><i class="icon-ok-sign"></i> In-built SEO</li>
                         <li><i class="icon-ok-sign"></i> Customer management to get ensure highest customer satisfaction index</li>
                         <li><i class="icon-ok-sign"></i> Coupons & discount management to woo more customers </li>
                         <li><i class="icon-ok-sign"></i> Loyalty program to reward returning customers</li>
-                        <li><i class="icon-ok-sign"></i> Mobile responsive</li>
+                        <li><i class="icon-ok-sign"></i> Business App</li>
                         <li><i class="icon-ok-sign"></i> Inventory management to keep a track of your stocks</li>
                         <li><i class="icon-ok-sign"></i> Reports to analyse your stores performance</li>
                     </ul>
@@ -171,7 +172,7 @@
                                 </div>
                                 <div class="col-lg-6 col-xs-12 sameheight">
                                     <div class="heading-block content-vertica-middle">
-                                        <h3>Wide varaities of custom themes to choose from</h3>
+                                        <h3>Wide varieties of custom themes to choose from</h3>
                                         <a href="{{route('selectThemes')}}" class="button button-border button-rounded topmargin-sm">View Samples</a>
                                     </div>
                                 </div>
