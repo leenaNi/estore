@@ -186,6 +186,7 @@ class HomeController extends Controller
             Session::put('merchantid', $lastInsteredId);
             Session::put('storename', $allinput['store_name']);
             Session::put('merchantstorecount', 0);
+            Session::put('industry_type', $allinput['business_type']);
 
         } else {
             $allinput = json_decode(Vendor::find(Session::get('merchantid'))->register_details, true);
@@ -288,8 +289,7 @@ class HomeController extends Controller
         // }
         //$storeType = $themeInput->roleType;
 
-        $themeInput->storeType = $themeInput->roleType;
-        $storeType = $themeInput->storeType;
+        $storeType = $themeInput->roleType;
         //echo "session :: ".Session::get('merchantid');exit;
         if ($storeType == 'merchant') {
             $getMerchat = Merchant::find(Session::get('merchantid'));
@@ -320,8 +320,8 @@ class HomeController extends Controller
         } else {
             $phoneNo = $getMerchat->phone_no;
             //$themeInput->cat_id = $themeInput->business_type;
-            $themeInput->storename = @$themeInput->store_name;
-            $storeName = $themeInput->storename;
+            //$themeInput->storename = @$themeInput->store_name;
+            $storeName = $themeInput->store_name;
             $themeInput->theme_id = 0;
             $store->template_id = 0;
             $store->category_id = $decoded['business_type'];
@@ -498,7 +498,6 @@ class HomeController extends Controller
                         if ($categoryId != 1) {
                             $productId = $insertedProductIdArray[$j];
                             //echo "\ncat >> ".$categoryId." :: product >> ".$productId;
-                            dd($decodedJsonData);
                             $categoryJsonData = $decodedJsonData[$categoryId];
                             $productName = $categoryJsonData['product_name'];
                             //echo "\np name >> ".$productName;

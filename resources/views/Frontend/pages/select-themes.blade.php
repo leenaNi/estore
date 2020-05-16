@@ -55,7 +55,9 @@
                                     <h3 class="nobottommargin white-text">{{$theme->category['category']."".$themeK}} - {{$theme->theme_type==1?'Starter':'Advanced'}}</h3>
                                     @if(!empty(Session::get('merchantid')))
                                     <input type="hidden" name="storeType" value="{{$allinput['roleType']}}">
+                                    <input type="hidden" name="roleType" value="{{$allinput['roleType']}}">
                                     <input type="hidden" name="storename" value="{{Session::get('storename')}}">
+                                    <input type="hidden" name="store_name" value="{{Session::get('storename')}}">
                                     <input type="hidden" name="currency_code" value="{{$allinput['country_code']}}">
                                    
                                     @if(!empty($allinput['password']))
