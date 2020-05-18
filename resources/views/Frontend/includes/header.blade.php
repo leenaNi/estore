@@ -6,14 +6,17 @@
     	<div class="logo float-left">
         <!-- Uncomment below if you prefer to use an image logo -->
 	        <!-- <h1 class="text-light"><a href="#intro" class="scrollto"><span>eStorifi</span></a></h1> -->
-	        <a href="#header" class="scrollto"><img src="{{ asset('public/Frontend/images/logo.svg')}}" alt="eStorifi" class="img-fluid"></a>
+	        <a href="#header" class="scrollto"><img src="{{ asset('public/Frontend/images/eStorifi.svg')}}" alt="eStorifi" class="img-fluid"></a>
 	     </div>
 
       	<nav class="main-nav float-right d-none d-lg-block">
         <ul>
-         	<li class="active"><a href="#intro">Home</a></li>
-          	<li><a href="#about">About</a></li>
-          	<li class="drop-down"><a href="#">Merchants</a>
+         	<li class="active"><a href="https://www.estorifi.com/">Home</a></li>
+			  <li><a href="https://www.estorifi.com/features">Features</a></li>
+			  <li><a href="https://www.estorifi.com/pricing">Pricing</a></li>
+			  <li><a href="https://www.estorifi.com/select-themes">Themes</a></li>
+			  <li><a href="#about">Login</a></li>
+          	<!-- <li class="drop-down"><a href="#">Merchants</a>
 		        <ul>
 		           	<li><a href="#">Drop Down 1</a></li>
 		            <li class="drop-down"><a href="#">Drop Down 2</a>
@@ -58,13 +61,13 @@
             	</ul>
           	</li>
 			  @if(Session::get('merchantid'))
-                     <!-- <li><a href="{{ route('veestoreMyaccount') }}" ><div>My Account</div></a></li> -->
+                     <li><a href="{{ route('veestoreMyaccount') }}" ><div>My Account</div></a></li> 
                         @if(Session::get('merchantstorecount') <=0)
                     <li><a href="{{ route('veestoresLogout') }}" ><div>Logout</div></a></li>
                         @endif
                     @else 
                     <li class="loginLink"><a href="#" data-toggle="modal" data-target=".loginpop" data-backdrop="static" data-keyboard="false"><div>Login</div></a></li>
-                    @endif
+                    @endif -->
         </ul>
 	  </nav><!-- .main-nav -->
 	  <div class="clearfix"></div>

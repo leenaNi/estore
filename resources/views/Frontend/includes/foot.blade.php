@@ -19,6 +19,7 @@ alert(e.message);
 </script>
   
   <script>
+	
     jQuery(document).ready(function($) {
         		"use strict";
         		//  TESTIMONIALS CAROUSEL HOOK
