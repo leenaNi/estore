@@ -148,7 +148,7 @@ h6 {
 #header {
     /* height: 110px;
     */
-    /* transition: all 0.5s;
+    transition: all 0.5s;
     z-index: 997;
     transition: all 0.5s;
     padding: 20px 0;
@@ -158,16 +158,7 @@ h6 {
     right: 0;
     transition: all 0.5s;
     z-index: 997;
-    background: #fff; */
-    position: relative;
-    background: rgba(255,255,255,0.8);
-    border-bottom: none;
-    z-index: 199;
-    height: 80px;
-    -webkit-transition: height .4s ease, opacity .3s ease;
-    -o-transition: height .4s ease, opacity .3s ease;
-    transition: height .4s ease, opacity .3s ease;
-    padding: 20px 0px;
+    background: #fff;
 }
 
 #header.header-scrolled,
@@ -198,15 +189,15 @@ h6 {
     color: #413e66;
     text-decoration: none;
 }
-
-#header .logo img {
-    padding: 0;
-    /* margin: 7px 0;
-    max-height: 26px; */
-}
 .logo {
     width: 180px;
 }
+#header .logo img {
+    padding: 0;
+    margin: 0px 0;
+    max-height: 36px;
+}
+
 .main-pages {
     margin-top: 60px;
 }
@@ -328,19 +319,14 @@ hr.header-divider {
     display: block;
     position: relative;
     color: #444;
-    padding: 12px 15px;
+    padding: 10px 15px;
     transition: 0.3s;
     font-size: 13px;
     font-family: 'livvicmedium';
     text-transform: uppercase;
    
 }
-.sticky-header {
-    position: fixed !important;
-    width: 100%;
-    height: 80px !important;
-    background: #fff !important;
-}
+
 .main-nav a:hover,
 .main-nav .active>a,
 .main-nav li:hover>a {
@@ -828,9 +814,7 @@ hr.header-divider {
     overflow: hidden;
     margin-bottom: 30px;
 }
-article.portfolio-item:hover .portfolio-overlay {
-    opacity: 1;
-}
+
 #portfolio .portfolio-item .portfolio-wrap {
     overflow: hidden;
     position: relative;
@@ -1490,6 +1474,7 @@ article.portfolio-item:hover .portfolio-overlay {
 #footer .credits {
     text-align: center;
     font-size: 14px;
+    padding-top: 4px;
     color: #aaa;
     letter-spacing: 0;
     font-family: 'livvicregular';
@@ -1500,7 +1485,7 @@ article.portfolio-item:hover .portfolio-overlay {
 }
 
 #footer .credits a:hover {
-    color: #aaa;
+    color: #fafafa;
 }
 
 
@@ -1691,8 +1676,8 @@ article.portfolio-item:hover .portfolio-overlay {
         border-bottom-left-radius: 0 !important;
         padding: 30px 30px;
         text-align: center;
-    }
-    .description-content .logo {
+    } 
+    .description-content .logo { 
         max-width: 100px;
         margin: 0 auto 20px auto !important;
     }
@@ -1882,13 +1867,13 @@ article.portfolio-item:hover .portfolio-overlay {
 
 .dark-theme-btn {
     color: #fff !important;
-    background-image: linear-gradient(to right, #ed6804, #ed6804);
+    background-image: linear-gradient(to right, #65b7eb, #289ce5);
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05);
 }
 
 .border-theme-btn {
-    border: 1px solid #ed6804;
-    color: #ed6804 !important;
+    border: 1px solid #359bdb;
+    color: #359bdb !important;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05);
     ;
 }
@@ -2024,7 +2009,7 @@ section.steps-section {
 
 .steps-section:before {
     content: '';
-    background-image: linear-gradient(to right, #ed6804 0%, #ed6804 100%);
+    background-image: linear-gradient(to right, #5eb5ee 0%, #1b9be8 100%);
     height: 40%;
     position: absolute;
     left: 0;
@@ -2093,8 +2078,7 @@ section.steps-section {
 }
 
 .description-content .logo {
-    /* margin-bottom: 20px; */
-    margin: 0 auto 20px auto;
+    margin-bottom: 20px;
 }
 
 .description-content .logo img {
@@ -2179,7 +2163,7 @@ section.steps-section {
 }
 
 .role-radio-group input[type=radio]:checked+label>span {
-    color: #ed6804;
+    color: #359bdb;
 }
 
 .role-radio-group input[type=radio]:checked+label {
