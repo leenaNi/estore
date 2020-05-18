@@ -2009,7 +2009,7 @@ section.steps-section {
 
 .steps-section:before {
     content: '';
-    background-image: linear-gradient(to right, #5eb5ee 0%, #1b9be8 100%);
+    background-image: linear-gradient(to right, #ed6804c4, #ed6804);
     height: 40%;
     position: absolute;
     left: 0;
