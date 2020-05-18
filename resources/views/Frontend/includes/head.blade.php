@@ -13,6 +13,7 @@
 
   <!-- livvic-fonts Fonts -->
   <link href="{{ asset('public/Frontend/css/livvic-fonts/livvic-fonts.css')}}" rel="stylesheet">
+  <!-- <link href="{{ asset('public/Frontend/css/googlefonts.css')}}" rel="stylesheet"> -->
 
   <!-- Bootstrap CSS File -->
   <link href="{{ asset('public/Frontend/css/bootstrap.min.css')}}" rel="stylesheet">

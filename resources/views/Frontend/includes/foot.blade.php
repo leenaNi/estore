@@ -19,6 +19,14 @@ alert(e.message);
 </script>
   
   <script>
+	  $(window).scroll(function() {
+if ($(this).scrollTop() > 1){  
+    $('header').addClass("sticky-header");
+  }
+  else{
+    $('header').removeClass("sticky-header");
+  }
+});
     jQuery(document).ready(function($) {
         		"use strict";
         		//  TESTIMONIALS CAROUSEL HOOK
