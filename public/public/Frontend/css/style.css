@@ -2298,11 +2298,11 @@ button {
 /*internet explorer scrollbalken*/
 
 body {
-    scrollbar-base-color: #5eb5ee;
-    scrollbar-base-color: #5eb5ee;
-    scrollbar-3dlight-color: #5eb5ee;
-    scrollbar-highlight-color: #5eb5ee;
-    scrollbar-track-color: #5eb5ee;
+    scrollbar-base-color: #ed6804;
+    scrollbar-base-color: #ed6804;
+    scrollbar-3dlight-color: #ed6804;
+    scrollbar-highlight-color: #ed6804;
+    scrollbar-track-color: #ed6804;
     scrollbar-arrow-color: black;
     scrollbar-shadow-color: #C0C0C0;
     scrollbar-dark-shadow-color: #C0C0C0;
@@ -2311,19 +2311,19 @@ body {
 @-moz-document url-prefix(http: //),url-prefix(https://) {
 scrollbar {
     -moz-appearance: none !important;
-    background: #5eb5ee !important;
+    background: #ed6804 !important;
     padding: 10px;
 }
 
 thumb, scrollbarbutton {
     -moz-appearance: none !important;
-    background-color: #5eb5ee!important;
+    background-color: #ed6804!important;
     padding: 10px;
 }
 
 thumb:hover, scrollbarbutton:hover {
     -moz-appearance: none !important;
-    background-color: #5eb5ee !important;
+    background-color: #ed6804 !important;
 }
 
 scrollbarbutton {
@@ -2365,7 +2365,7 @@ scrollbar[orient="vertical"] {
     padding: 10px;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: #5eb5ee;
+    background-color: #ed6804;
     border: solid whiteSmoke 1px;
     width: 10px;
     height: 10px;
