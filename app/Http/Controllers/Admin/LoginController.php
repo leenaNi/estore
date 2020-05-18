@@ -181,7 +181,7 @@ class LoginController extends Controller {
 
 
 
-        $stores_name = [];
+        $store_name = [];
         foreach ($stores as $val) {
             $store_name[$val->id] = $val->store_name;
         }
