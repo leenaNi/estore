@@ -15,6 +15,6 @@
 
 	<!-- Document Title
 	============================================= -->
-	<title>Veestore</title>
+	<title>Estorifi</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
