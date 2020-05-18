@@ -261,7 +261,7 @@ section.banner-img-bg img {
 }
 
 .link {
-    color: #359bdb !important;
+    color: #ed6804 !important;
 }
 
 hr.header-divider {
@@ -281,7 +281,7 @@ hr.header-divider {
     color: #fff;
     background: #ed6804;
     color: #fff;
-    background-image: linear-gradient(to right, #65b7eb, #289ce5);
+    background-image: linear-gradient(to right, #ed6804c4, #ed6804);
     letter-spacing: 0;
 }
 
@@ -1867,13 +1867,13 @@ hr.header-divider {
 
 .dark-theme-btn {
     color: #fff !important;
-    background-image: linear-gradient(to right, #65b7eb, #289ce5);
+    background-image: linear-gradient(to right, #ed6804c4, #ed6804);
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05);
 }
 
 .border-theme-btn {
-    border: 1px solid #359bdb;
-    color: #359bdb !important;
+    border: 1px solid #ed6804;
+    color: #ed6804 !important;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05);
     ;
 }
@@ -2009,7 +2009,7 @@ section.steps-section {
 
 .steps-section:before {
     content: '';
-    background-image: linear-gradient(to right, #5eb5ee 0%, #1b9be8 100%);
+    background-image: linear-gradient(to right, #ed6804c4, #ed6804);
     height: 40%;
     position: absolute;
     left: 0;
@@ -2078,11 +2078,11 @@ section.steps-section {
 }
 
 .description-content .logo {
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto !important;
 }
 
 .description-content .logo img {
-    max-width: 100px;
+    max-width: 140px;
 }
 
 .description-content .title h3 {
@@ -2163,7 +2163,7 @@ section.steps-section {
 }
 
 .role-radio-group input[type=radio]:checked+label>span {
-    color: #359bdb;
+    color: #ed6804;
 }
 
 .role-radio-group input[type=radio]:checked+label {
@@ -2258,7 +2258,7 @@ button {
 }
 
 .description-content .link {
-    color: #359bdb !important;
+    color: #ed6804 !important;
     margin-top: 15px;
     font-family: 'livvicmedium';
     font-size: 16px;
@@ -2649,7 +2649,7 @@ section.settingup-section {
     background-color: #e6e6e6 !important;
 }
 .progress-holder h2 {
-    color: #359bdb;
+    color: #ed6804;
     font-family: 'livvicsemibold';
 }
 section.settingup-section h1 {
@@ -2719,7 +2719,7 @@ img.changeno-arrow {
     margin: 30px 0px !important;
 }
 #mobno {
-    color: #359bdb;
+    color: #ed6804;
     font-weight: 600;
 }
 .setup-onlinestore-box .setup-box {
