@@ -117,7 +117,7 @@
 
 						<div class="col_half col_last tright">
 							<div class="fright clearfix">
-								Powered by <a href="http://www.veestores.com/" target="_blank">Veestores</a>.
+								Powered by <a href="http://www.estorifi.com/" target="_blank">Estorifi</a>.
 						</div>
 					</div>
 
