@@ -4,7 +4,7 @@
     @if(Route::currentRouteName() != 'newstore' && Route::currentRouteName() != 'waitProcess' && Route::currentRouteName() != 'getcongrats')
         @if(Route::currentRouteName() == 'selectThemes')
             @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
-                @include('Frontend.includes.head')
+                @include('Frontend.includes.head-estorifi')
             @else            
                 @include('Frontend.includes.head-estorifi')
             @endif 
@@ -53,7 +53,7 @@
                 @if(Route::currentRouteName() != 'newstore' && Route::currentRouteName() != 'waitProcess' && Route::currentRouteName() != 'getcongrats')
                     @if(Route::currentRouteName() == 'selectThemes')
                         @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
-                            @include('Frontend.includes.foot')
+                            @include('Frontend.includes.foot-estorifi')
                         @else            
                             @include('Frontend.includes.foot-estorifi')
                         @endif

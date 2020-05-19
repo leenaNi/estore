@@ -18,7 +18,7 @@
 <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
 <script src="{{ asset(Config('constants.AdminDistJsPath').'jquery.validate.min.js') }}"></script>
-<script>
+<script type="text/javascript">
     jQuery(window).load(function() {
         // will first fade out the loading animation
     	// jQuery("#status").fadeOut();
@@ -28,7 +28,8 @@
 	});
     $('#modal-content').on('shown.bs.modal', function() {
     $("#errorMessage").text(" ");
-})
+	});
+});
 window.fbAsyncInit = function() {
     // FB JavaScript SDK configuration and setup
     FB.init({
@@ -39,14 +40,14 @@ window.fbAsyncInit = function() {
     });
 
     // Check whether the user already logged in
-//    FB.getLoginStatus(function(response) {
-//        if (response.status === 'connected') {
-//            //display user data
-//
-//            getFbUserData();
-//            fbLogout();
-//        }
-//    });
+	//    FB.getLoginStatus(function(response) {
+	//        if (response.status === 'connected') {
+	//            //display user data
+	//
+	//            getFbUserData();
+	//            fbLogout();
+	//        }
+	//    });
 
 };
 function fbLogout() {
@@ -154,19 +155,8 @@ function getFbLoginUserData(){
    });
 }
 
-</script>
-
-<script>
-
-jQuery(".bt-switch").bootstrapSwitch();
-$('.selectsplitter').selectsplitter();
-
-</script>
-
-<script>
-
-
-
+	jQuery(".bt-switch").bootstrapSwitch();
+	$('.selectsplitter').selectsplitter();
     var $ = jQuery;
     jQuery(document).ready(function () {
 
@@ -222,7 +212,7 @@ $('.selectsplitter').selectsplitter();
 
     jQuery.validator.addMethod("emailPhonevalidate", function (telephone, element) {
         telephone = telephone.replace(/\s+/g, "");
-// var telephone1=this.optional(element) || telephone.length > 9 &&  telephone.match(/^[\d\-\+\s/\,]+$/);
+		// var telephone1=this.optional(element) || telephone.length > 9 &&  telephone.match(/^[\d\-\+\s/\,]+$/);
         if (this.optional(element) || telephone.length > 9 && telephone.match(/^[\d\-\+\s/\,]+$/)) {
             return this.optional(element) || telephone.length > 9 && telephone.match(/^[\d\-\+\s/\,]+$/);
         } else {
@@ -232,12 +222,6 @@ $('.selectsplitter').selectsplitter();
 
 
     }, "Please specify a valid Email/Mobile");
-
-
-//   jQuery.validator.addMethod("ggm", function (mobile_email, element) {
-//
-//           return false;
-//       }, "valid Email/Mobile");
 
     $(".veestoreLoginBtn").on("click", function () {
         $(".logErr").removeClass("alert-danger");
@@ -266,7 +250,6 @@ $('.selectsplitter').selectsplitter();
         }
     });
 
-
     $("#veestoreLoginForm").validate({
         rules: {
             mobile_email: {
@@ -289,8 +272,6 @@ $('.selectsplitter').selectsplitter();
             errorDiv.after(error);
         }
     });
-
-
 
     $(".forgotPassLink").on("click", function () {
         $("#loginPOPUP").modal("hide");
@@ -316,30 +297,6 @@ $('.selectsplitter').selectsplitter();
         }
     });
 
-
-</script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106944065-9"></script>
-<script>
- window.dataLayer = window.dataLayer || [];
- function gtag(){dataLayer.push(arguments);}
- gtag('js', new Date());
-
- gtag('config', 'UA-106944065-9');
-</script>
-
-<!--Start of Zendesk Chat Script-->
-<!-- <script type="text/javascript">
-window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
-d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
-_.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute("charset","utf-8");
-$.src="https://v2.zopim.com/?5pJbEGEoZtWR1KmVOcuBvtRB6XLX6qKI";z.t=+new Date;$.
-type="text/javascript";e.parentNode.insertBefore($,e)})(document,"script");
-</script> -->
-<!--End of Zendesk Chat Script-->
-
-
-<script>
     grecaptcha.ready(function () {
         grecaptcha.execute("{{env('GOOGLE_RECAPTCHA_KEY')}}", { action: 'contact' }).then(function (token) {
             var recaptchaResponse = document.getElementById('recaptchaResponse');

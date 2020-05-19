@@ -1131,7 +1131,7 @@ class HomeController extends Controller
         $emailData = ['name' => $firstname, 'email' => $useremail];
         Mail::send('Frontend.emails.resetForgotPwdEmail', $emailData, function ($m) use ($useremail, $firstname) {
             $m->to($useremail, $firstname)->subject('Your password changed!');
-            //$m->cc('madhuri@infiniteit.biz');
+            $m->cc('leena@infiniteit.biz');
         });
         session()->flash('pwdResetMsg', 'Password reset successfully!');
 
@@ -1150,16 +1150,14 @@ class HomeController extends Controller
             return redirect()->back();
             exit();
         }
-
         $linktosend = $_SERVER['HTTP_HOST'] . "/reset-new-pwd/" . Crypt::encrypt($userDetails->email);
         if ($login_type == 'email') {
-
             $email = $userDetails->email;
             $firstname = $userDetails->firstname;
             $emailData = ['name' => $firstname, 'newlink' => $linktosend];
             Mail::send('Frontend.emails.forgotPassEmail', $emailData, function ($m) use ($email, $firstname) {
-                $m->to('madhuri@infiniteit.biz', $firstname)->subject('Forgot password');
-                //$m->cc('madhuri@infiniteit.biz');
+                $m->to('leena@infiniteit.biz', $firstname)->subject('Forgot password');
+                $m->cc('leena@infiniteit.biz');
             });
         } else if ($login_type == 'phone') {
             $msgOrderSucc = "Click on the link to reset your password. " . $linktosend . "Happy Learning! Team eStorifi";
@@ -1177,8 +1175,7 @@ class HomeController extends Controller
             $msgOrderSucc = "Your one time password is. " . $otp . " Team eStorifi";
             Helper::sendsms($mobile, $msgOrderSucc, $country);
         }
-        $data = ["status" => "success", "msg" => "OTP Successfully send on your mobileNumber", "otp" => $otp];
-
+        $data = ["status" => "success", "msg" => "OTP Successfully send on given number", "otp" => $otp];
         return $data;
     }
 
@@ -1222,54 +1219,51 @@ class HomeController extends Controller
     public function selectThemesdata($storeId,$themeid,$catid, $domainname){
 
         $banner = json_decode((StoreTheme::where("id", $themeid)->first()->banner_image), true);
+        // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
+        if (!empty($banner)) {
+                $homeLayout = DB::table("layout")
+                ->where('url_key', 'LIKE', 'home-page-slider')
+                ->where('store_id', $storeId)
+                ->where('is_del', 0)
+                ->first();
+            foreach ($banner as $image) {
+                $homePageSlider = [];
+                $file = $image['banner'];
+                //$homePageSlider['layout_id'] = 1;
+                $homePageSlider['layout_id'] =  $homeLayout->id;
+                $homePageSlider['name'] = $image['banner_text'];
+                $homePageSlider['is_active'] = $image['banner_status'];
+                $homePageSlider['image'] = $image['banner'];
+                $homePageSlider['sort_order'] = $image['sort_order'];
+                $source = public_path() . '/public/admin/themes/';
+                $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                copy($source . $file, $destination . $file);
+                DB::table("has_layouts")->insert($homePageSlider);
+            }
+        }
+        $threeBoxes = json_decode((Category::where("id", $catid)->first()->threebox_image), true);
+        // $threeBoxes = json_decode((StoreTheme::where("id", $themeid)->first()->threebox_image), true);
+        if (!empty($threeBoxes)) {
 
-       
-                    // $banner = json_decode((Category::where("id", $catid)->first()->banner_image), true);
-                    if (!empty($banner)) {
-                         $homeLayout = DB::table("layout")
-                            ->where('url_key', 'LIKE', 'home-page-slider')
-                            ->where('store_id', $storeId)
-                            ->where('is_del', 0)
-                            ->first();
-                        foreach ($banner as $image) {
-                            $homePageSlider = [];
-                            $file = $image['banner'];
-                            //$homePageSlider['layout_id'] = 1;
-                            $homePageSlider['layout_id'] =  $homeLayout->id;
-                            $homePageSlider['name'] = $image['banner_text'];
-                            $homePageSlider['is_active'] = $image['banner_status'];
-                            $homePageSlider['image'] = $image['banner'];
-                            $homePageSlider['sort_order'] = $image['sort_order'];
-                            $source = public_path() . '/public/admin/themes/';
-                            $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                            copy($source . $file, $destination . $file);
-                            DB::table("has_layouts")->insert($homePageSlider);
-                        }
-                    }
-                    $threeBoxes = json_decode((Category::where("id", $catid)->first()->threebox_image), true);
+                $boxLayout = DB::table("layout")
+                ->where('url_key', 'LIKE', 'home-page-3-boxes')
+                ->where('store_id', $storeId)
+                ->where('is_del', 0)
+                ->first();
 
-                    // $threeBoxes = json_decode((StoreTheme::where("id", $themeid)->first()->threebox_image), true);
-                    if (!empty($threeBoxes)) {
-
-                         $boxLayout = DB::table("layout")
-                            ->where('url_key', 'LIKE', 'home-page-3-boxes')
-                            ->where('store_id', $storeId)
-                            ->where('is_del', 0)
-                            ->first();
-
-                        foreach ($threeBoxes as $image) {
-                            $homePageSlider = [];
-                            $file = $image['banner'];
-                            $homePageSlider['layout_id'] = $boxLayout->id;
-                            $homePageSlider['name'] = $image['banner_text'];
-                            $homePageSlider['is_active'] = $image['banner_status'];
-                            $homePageSlider['image'] = $image['banner'];
-                            $homePageSlider['sort_order'] = $image['sort_order'];
-                            $source = public_path() . '/public/admin/themes/';
-                            $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
-                            copy($source . $file, $destination . $file);
-                            DB::table("has_layouts")->insert($homePageSlider);
-                        }
-                    }
+            foreach ($threeBoxes as $image) {
+                $homePageSlider = [];
+                $file = $image['banner'];
+                $homePageSlider['layout_id'] = $boxLayout->id;
+                $homePageSlider['name'] = $image['banner_text'];
+                $homePageSlider['is_active'] = $image['banner_status'];
+                $homePageSlider['image'] = $image['banner'];
+                $homePageSlider['sort_order'] = $image['sort_order'];
+                $source = public_path() . '/public/admin/themes/';
+                $destination = base_path() . "/merchants/" . $domainname . "/public/uploads/layout/";
+                copy($source . $file, $destination . $file);
+                DB::table("has_layouts")->insert($homePageSlider);
+            }
+        }
     }
 }
