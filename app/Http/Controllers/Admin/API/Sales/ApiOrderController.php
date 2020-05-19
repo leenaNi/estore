@@ -22,6 +22,17 @@ use stdClass;
 
 class ApiOrderController extends Controller
 {
+    public function index(){
+        $MerchantId = Session::get('merchantId');
+        $store = DB::table('stores')->where(['store_type'=>'merchant','merchant_id'=>$MerchantId])->first();
+        $orders = DB::table('orders')->where('store_id',$store->id)->orderBy('id','desc')->get();
+        if(count($orders) > 0){
+            return ['status' => 1, 'msg' => 'All Orders', 'data' => $orders]; 
+        }else{
+            return ['status' => 0, 'msg' => 'No Order Found', 'data' => $orders]; 
+        }
+    }
+
     public function placeOrder()
     {
         $MerchantId = Session::get('merchantId');
@@ -315,21 +326,11 @@ class ApiOrderController extends Controller
             $zone = 1476;
         }
 
-        // $toPayment['address'] = $selAdd;
-        // $toPayment['address']['countryname'] = ($countryname) ? $countryname : '';
-        // $toPayment['address']['statename'] = ($zone) ? $zone : '';
-        // $toPayment['address']['countryIsoCode'] = ($countryIsoCode) ? $countryIsoCode : '';
         $cart_amt = Helper::calAmtWithTax();
         $toPayment['finalAmt'] = $cart_amt['total']; //Session::get('currency_val')
         $toPayment['payamt'] = $cart_amt['total']; //Session::get('currency_val')
         $toPayment['orderId'] = $order->id;
-        // $toPayment['email'] = User::find($userid)->email;
-        // $toPayment['retUrl'] = route('response') . "?DR={DR}";
-        // $toPayment['ebsStatus'] = DB::table('general_setting')->where('url_key', 'ebs')->first()->status;
-        // $toPayment['payUmoneyStatus'] = DB::table('general_setting')->where('url_key', 'pay-u-money')->first()->status;
-        // $toPayment['citrusPayStatus'] = DB::table('general_setting')->where('url_key', 'citrus')->first()->status;
-
-        // $toPayment['commentDesc'] = $order->description;
+      
         $dtails = json_decode(DB::table('general_setting')->where('url_key', 'ebs')->first()->details);
         foreach ($dtails as $detk => $detv) {
             if ($detk == "mode") {
@@ -345,15 +346,7 @@ class ApiOrderController extends Controller
             }
 
         }
-        // $toPayment['ebsMode'] = @$mode;
-        // $toPayment['ebsKey'] = @$ebskey;
-        // $toPayment['ebsAccountId'] = @$account_id;
-        // if (Session::get('pay_amt') > 0) {
-        //     $toPayment['frmAction'] = route('order_cash_on_delivery');
-        // } else {
-        //     $toPayment['frmAction'] = route('order_cash_on_delivery');
-        // }
-
+     
         $ad_charge = $this->ApplyAdditionalCharge($cart_amt['total']);
         $ad_charge = json_decode($ad_charge, true);
         $toPayment['additional_charge'] = $ad_charge;
@@ -642,9 +635,5 @@ class ApiOrderController extends Controller
             //  $order->products()->attach($cart->rowid, $cart_ids[$cart->rowid]);
         }
         DB::table('has_products')->insert($cart_ids);
-        // print_r($cart_ids);
-        // dd(Cart::instance('shopping')->content());
-        // dd($cart_ids);
-        //  $this->orderSuccess();
     }
 }
