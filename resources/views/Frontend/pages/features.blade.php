@@ -1,6 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
-<section id="page-title" class="page-title-parallax page-title-center" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/static.jpg') }}') 0px; padding: 103px 0;">
+<section id="page-title" class="page-title-parallax page-title-center feature-bg-title" style="background: url('{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/features-bg.jpg') }}') 0px; padding: 103px 0;">
     <div class="container clearfix">
         <h2 class="white-text bottommargin-xs" data-animate="fadeInUp">Get all the features that you really need to sell online</h2>
         <span class="white-text" data-animate="fadeInUp" data-delay="300">The complete ecommerce ecosystem designed to make a difference</span>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="col_one_fourth marginBottom15 mobMarginbottom15">
                     <div class="feautreBox">
-                        <h4>30+ Theme Designs</h4>
+                        <h4>50+ Theme Designs</h4>
                         <p>Choose from designs that have been developed for various industry needs.</p>
                     </div>
                 </div>

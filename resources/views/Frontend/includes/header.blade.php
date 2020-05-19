@@ -11,11 +11,11 @@
 
       	<nav class="main-nav float-right d-none d-lg-block">
         <ul>
-         	<li class="active"><a href="https://www.estorifi.com/">Home</a></li>
-			  <li><a href="https://www.estorifi.com/features">Features</a></li>
-			  <li><a href="https://www.estorifi.com/pricing">Pricing</a></li>
-			  <li><a href="https://www.estorifi.com/select-themes">Themes</a></li>
-			  <li><a href="#about">Login</a></li>
+         	<li class="{{(Route::currentRouteName() == 'home')? 'active': ''}}"><a href="https://www.estorifi.com/">Home</a></li>
+			  <li class="{{(Route::currentRouteName() == 'features')? 'active': ''}}"><a href="https://www.estorifi.com/features">Features</a></li>
+			  <li class="{{(Route::currentRouteName() == 'pricing')? 'active': ''}}"><a href="https://www.estorifi.com/pricing">Pricing</a></li>
+			  <li class="{{(Route::currentRouteName() == 'selectThemes')? 'active': ''}}"><a href="https://www.estorifi.com/select-themes">Themes</a></li>
+			  <li ><a href="#about">Login</a></li>
           	<!-- <li class="drop-down"><a href="#">Merchants</a>
 		        <ul>
 		           	<li><a href="#">Drop Down 1</a></li>

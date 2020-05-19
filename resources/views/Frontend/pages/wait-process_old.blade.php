@@ -34,7 +34,7 @@ body, #wrapper, #content {
             <p>Do not hit refresh or browser back button or close this window. This process and creation of primary domain might take some time. Please be patient.</p>
         </div>
         <div class="divcenter text-center">
-        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/pageLoader1.gif') }}" alt="Process..." class="img-responsive"> 
+        <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/pageLoader1.gif') }}" alt="Process..." class="img-responsive"> 
         </div>
 
         </div>

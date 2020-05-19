@@ -3,7 +3,7 @@
 <meta name="keywords" content="eStorifi, Ecommerce, Theme, Payment Ready Shop, Free Hosting, In-Built SEO, Customer Management, Coupons/Discount Management, Mobile Responsive, Inventory Management, Reports, One Page Checkout"/>
 <meta name="description" content="Beautiful and professional themes for your online store, The best E-Commerce Platform that helps you to Sell Online."/>
 <meta name="og:title" content="eStorifi"/>
-<meta name="og:image" content="{{ asset(Config('constants.frontendPublicImgPath').'/logo2.png') }}"/>
+<meta name="og:image" content="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/logo2.png') }}"/>
 <meta name="og:description" content="Beautiful and professional themes for your online store, The best E-Commerce Platform that helps you to Sell Online."/>
 <!-- Stylesheets
 ============================================= -->
@@ -27,7 +27,7 @@
 <!-- Document Title 
 ============================================= -->
 <title>eStorifi | Create your Online Store today!</title>
-<link rel="icon" type="image/png" href="{{ asset(Config('constants.frontendPublicImgPath').'/favicon.png') }}">
+<link rel="icon" type="image/png" href="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/favicon.png') }}">
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120933546-1"></script>
 <script src="https://www.google.com/recaptcha/api.js?render={{env('GOOGLE_RECAPTCHA_KEY')}}" async defer></script>

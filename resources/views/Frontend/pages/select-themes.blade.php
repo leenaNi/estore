@@ -1,9 +1,9 @@
 @extends('Frontend.layouts.default')
 @section('content')
-<link rel="stylesheet" href="{{Config('constants.frontendPublicCSSPath').'/style-select-theme.css' }}">
+<!-- <link rel="stylesheet" href="{{Config('constants.frontendPublicCSSPath').'/style-select-theme.css' }}"> -->
 <!-- Page Title
                        ============================================= -->
-<section id="page-title" class=" page-title-center" data-stellar-background-ratio="0.3">
+<section id="page-title" class="page-title-center {{((!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0))? 'p50':''}}" data-stellar-background-ratio="0.3">
     @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
     <div class="container clearfix">
         <h1 class="">Welcome to the Estorifi family</h1>
@@ -90,13 +90,13 @@
     </div>
 </section>
 @stop
-<!-- <script>
+ <script>
       $(window).scroll(function() {
-if ($(this).scrollTop() > 1){  
-    $('header').addClass("sticky-header");
-  }
-  else{
-    $('header').removeClass("sticky-header");
-  }
-});
-</script> -->
+        if ($(this).scrollTop() > 1){  
+            ($('header'))? $('header').addClass("sticky-header"): '';
+        }
+        else{
+            ($('header'))? $('header').removeClass("sticky-header"): '';
+        }
+        });
+</script> 

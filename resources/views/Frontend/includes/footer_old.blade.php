@@ -8,7 +8,7 @@
             ============================================= -->
             <div class="footer-widgets-wrap clearfix text-center">
                 <!-- <div class="footer-androidappbox text-center bottommargin-sm">
-                    <a href="{{ asset(Config('constants.frontendPublicImgPath').'/veestores-merchant-app.apk') }}" target="_blank"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/androidapp.png') }}" alt="Image"></a>
+                    <a href="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/veestores-merchant-app.apk') }}" target="_blank"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/androidapp.png') }}" alt="Image"></a>
                 </div> -->
               <!--   <div class="copyright-social bottommargin-xs">
                     <a href="https://www.facebook.com/VeestoresGlobal/" target="_blank" class="social-icon-footer" style="color: #fff;">

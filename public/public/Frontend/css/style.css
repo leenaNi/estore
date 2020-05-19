@@ -67,7 +67,7 @@ h6 {
 
 /* Prelaoder */
 
-#preloader {
+/* #preloader {
     position: fixed;
     top: 0;
     left: 0;
@@ -112,9 +112,43 @@ h6 {
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
     }
+} */
+
+
+
+
+#preloader  {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+   height: 100%;
+   background: #fff;
 }
 
+#status  {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background-image: url("../images/loader.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: -100px 0 0 -100px;
+}
+.preloader,
+.preloader2,
+.form-process {
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: url("images/preloader.gif") center center no-repeat #FFF;
+}
 
+.preloader2 { background-color: transparent; }
 /*-------------------------------------------------------------- # Top Bar --------------------------------------------------------------*/
 
 #topbar {
