@@ -121,6 +121,12 @@ class HomeController extends Controller
     {   
         $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
        // dd(Session::get('merchantid'));
+       if (empty(Input::get('store_name')) && empty(Session::get('merchantid'))) {
+            $cats = Category::where("status", 1)->get();
+            $data = ['cats' => $cats, 'themeIds' => $themeIds];
+            $viewname = Config('constants.frontendView') . ".select-themes";
+            return Helper::returnView($viewname, $data);
+        }
         if (empty(Session::get('merchantid'))) {
             $allinput = Input::all();
             $cats = Category::where("status", 1)->where('id',$allinput['business_type'])->get();

@@ -12,7 +12,7 @@
 						<div class="col-md-12 description">
 							<div class="description-content">
 								<div class="logo">
-									<img src="{{ asset('public/Frontend/images/logo.svg')}}">
+									<img src="{{ asset('public/Frontend/images/eStorifi.svg')}}">
 								</div>
 								<div class="title">
 									<h3>Create Account</h3>
@@ -120,7 +120,7 @@
 						<div class="col-md-12 description otp-description">
 							<div class="description-content">
 								<div class="logo">
-									<img src="{{ asset('public/Frontend/images/logo.svg')}}">
+									<img src="{{ asset('public/Frontend/images/eStorifi.svg')}}">
 								</div>
 								<div class="title">
 									<h3>Verify OTP</h3>
