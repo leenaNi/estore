@@ -41,25 +41,27 @@ class CampaignController extends Controller
     	$msg = $content;
     	$country_code = '+91';
     	Helper::sendsms($contactno, $msg, $country_code);
-        return 'SMS send successfully';
-    }
+    	$msg = urlencode($msg);
+    	//dd($msg);
 
-    public function sendCampaignBulkSMS()
-    {
-    	$title = Input::get('title');
-    	$content = Input::get('content');
-    	$msg = $content;
-        $country_code = '+91';
-        $store_id = Session::get('store_id');
-        $users = DB::table("users")->where("store_id",$store_id)->get();
-        foreach($users as $user)
-        {
-            $contactno = $user->telephone;
-            if(!empty($contactno)){
-                Helper::sendsms($contactno, $msg, $country_code);
-            }
-        }
-    	
+		$urlto = "http://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage&send_to=+91{mobile}&msg={message}&msg_type=TEXT&userid=2000164017&auth_scheme=plain&password=GClWepNxL&mask=APPRCH&v=1.1&format=text";
+        // if($country=='+880'){
+        //   $urlto =  "http://api.boom-cast.com/boomcast/WebFramework/boomCastWebService/externalApiSendTextMessage.php?masking=NOMASK&userName=IFC&password=6d38103103bb45de1c77e7eece818b1c&MsgType=TEXT&receiver=$mobile&message=$msg";   
+        // }else
+        // {
+        //     $urlto = "http://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage&send_to=$mobile&msg=$msg&msg_type=TEXT&userid=2000164017&auth_scheme=plain&password=GClWepNxL&v=1.1&format=text";
+        // }
+                $ch = curl_init();
+// set URL and other appropriate options
+                curl_setopt($ch, CURLOPT_URL, $urlto);
+                //curl_setopt($ch, CURLOPT_HEADER, 0);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+// grab URL and pass it to the browser
+                $output = curl_exec($ch);
+                print_r($output);
+// close cURL resource, and free up system resources
+                curl_close($ch);
+        //return $output;
         return 'SMS send successfully';
     }
 
@@ -69,24 +71,7 @@ class CampaignController extends Controller
         $content = Input::get('content');
         $email_id = Input::get('email');
         $data = ['email_template' => $content];
-        Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, '');
-    }
-
-    public function sendCampaignBulkEmail() {
-        $subject = Input::get('subject');
-        $title = Input::get('title');
-        $content = Input::get('content');
-        $data = ['email_template' => $content];
-        $store_id = Session::get('store_id');
-        $users = DB::table("users")->where("store_id",$store_id)->get();
-        foreach($users as $user)
-        {
-            $email_id = $user->email;
-            if(!empty($email_id)){
-                Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, '');
-            }
-        }
-        
+        Helper::sendMyEmail(Config('constants.adminEmails') . '.email_by_remplate', $data, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $email_id, 'Anita');
     }
 
     public function addEmail() {

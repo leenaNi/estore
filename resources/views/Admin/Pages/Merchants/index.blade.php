@@ -62,34 +62,19 @@
                           <!--  <th>Owned By</th>--> 
                             <th>Email ID</th>
                             <th>Mobile</th>
-                            <th>Store Name</th>
                             <th>Industry</th>
                             <!--<th>Bank</th>--> 
                             <th>Created Date</th>
                             <th>Actions</th>
                         </tr>
-                        @if(count($merchants) > 0)
                         @foreach($merchants as $merchant)
                         <tr>
 <!--                            <td>{{ $merchant->id }}</td>-->
                             <td>{{ $merchant->firstname." ".$merchant->lastname }}</td>
                            <!--  <td>{{ $merchant->firstname." ".$merchant->lastname }}</td>-->
-                            <td>{{ ($merchant->email != '')?  $merchant->email: '-'}}</td>
+                            <td>{{ $merchant->email }}</td>
                             <td>{{ $merchant->phone }}</td>
-                            <td>
-                                {{ $merchant->company_name }}
-                                <!-- {{ !empty(json_decode($merchant->register_details)->store_name) ? json_decode($merchant->register_details)->store_name : " " }} --></td>
-                            <td>
-                                <?php
-                                $business_name = App\Models\Category::whereIn("id", json_decode($merchant->register_details)->business_type)->get(['category']);
-                                // dd(count($business_name));
-                                foreach($business_name as $businessKey => $business) {
-                                    echo $business->category;
-                                    echo (count($business_name)-1 > $businessKey)? ', ': '';
-                                }
-                                //{{--- !empty(json_decode($merchant->register_details)->business_type) ? json_decode($merchant->register_details)->store_name : " " ---}}
-                                ?>
-                            </td>
+                            <td>{{ !empty(json_decode($merchant->register_details)->business_name) ? json_decode($merchant->register_details)->business_name : " " }}</td>
                             <!--<td><?php
                                 //$banks = '';
                                 //print_r($merchant->hasMarchants()->get());
@@ -105,7 +90,6 @@
                             </td>
                         </tr>
                         @endforeach
-                        @endif
                     </table>
                     <?php
                     $arguments = [];

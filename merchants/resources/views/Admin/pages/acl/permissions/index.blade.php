@@ -32,7 +32,7 @@
                 <td>{{ $permission->description }}</td>
                 <td>{{ $permission->created_at }}</td>
                 <td>
-                    <a href="" class="label label-success active" ui-toggle-class=""><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a>
+                    <a href="" class="label label-success active" ui-toggle-class="">Edit</a>
                 </td>
             </tr>
             @endforeach

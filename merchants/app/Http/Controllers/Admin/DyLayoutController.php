@@ -129,17 +129,4 @@ class DyLayoutController extends Controller {
         }
     }
 
-    public function delete(){
-       $banner = HasLayout::find(Input::get('id'));
-       $banner->delete();
-
-       if($banner){
-
-          return redirect()->back()->with('msg', 'Slider deleted successfully.');
-        } else {
-            return redirect()->back()->with('message', 'Sorry something went wrong.');
-        }
-
-    }
-
 }

@@ -25,33 +25,7 @@ class AttributeSetsController extends Controller {
         
       //  $attrSets = $attrSets->paginate(Config('constants.paginateNo'));
       //  dd($attrSets);
-
-        $startIndex = 1;
-        $getPerPageRecord = Config('constants.paginateNo');
-        $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
-            $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
-
-            if($endIndex > $attrCount)
-            {
-                $endIndex = ($attrCount);
-            }
-        }
-        else
-        {
-            $startIndex = 1;
-            $endIndex = $getPerPageRecord;
-            if($endIndex > $attrCount)
-            {
-                $endIndex = ($attrCount);
-            }
-        }
-
-
-        return view(Config('constants.adminAttrSetView') . '.index', compact('attrSets','attrCount','startIndex','endIndex'));
+        return view(Config('constants.adminAttrSetView') . '.index', compact('attrSets','attrCount'));
     }
 
     public function add() {
@@ -107,25 +81,19 @@ class AttributeSetsController extends Controller {
 
     public function changeStatus() {
         $attr = AttributeSet::find(Input::get('id'));
-        if (!empty(Input::get('id'))) {
-            if ($attr->status == 1) {
-                $attrStatus = 0;
-                $msg = "Variant set disabled successfully.";
-                $attr->status = $attrStatus;
-                $attr->update();
-                Session::flash("message", $msg);
-            } else if ($attr->status == 0) {
-                $attrStatus = 1;
-                $msg = "Variant set enabled successfully.";
-                $attr->status = $attrStatus;
-                $attr->update();
-                Session::flash("msg", $msg);
-            }
-            $data = ['status' => '1', 'msg' => $msg];
-        } else {
-            $data = ['status' => '0', 'msg' => 'There is somthing wrong.'];
+        if ($attr->status == 1) {
+            $attrStatus = 0;
+            $msg = "Variant set disabled successfully.";
+            $attr->status = $attrStatus;
+            $attr->update();
+            return redirect()->back()->with('message', $msg);
+        } else if ($attr->status == 0) {
+            $attrStatus = 1;
+            $msg = "Variant set enabled successfully.";
+            $attr->status = $attrStatus;
+            $attr->update();
+            return redirect()->back()->with('msg', $msg);
         }
-        return $data;
     }
 
 }

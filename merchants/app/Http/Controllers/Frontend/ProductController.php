@@ -23,26 +23,20 @@ use Cart;
 class ProductController extends Controller { 
 
     public function index($slug) {
-        //echo "slug::".$slug;
-        //exit;
         $setting = GeneralSetting::where('url_key', 'debug-option')->first();
         $prod = Product::where('url_key', $slug)->first();
 
         if ($setting->status == 0 && is_array($prod) && count($prod) == 0) {
             abort(404);
         }
-         //dd($prod);
-         $view = '';
-        if(!empty($prod)) 
-        {
-            if ($prod->prod_type == 1 || $prod->prod_type == 5) {
+        // dd($prod);
+        if ($prod->prod_type == 1 || $prod->prod_type == 5) {
 
-                $view = $this->simpleProduct($prod->id);
-            } else if ($prod->prod_type == 2) {
-                $view = $this->comboProduct($prod->id);
-            } else if ($prod->prod_type == 3 || $prod->type == 4) {
-                $view = $this->configProduct($prod->id);
-            }
+            $view = $this->simpleProduct($prod->id);
+        } else if ($prod->prod_type == 2) {
+            $view = $this->comboProduct($prod->id);
+        } else if ($prod->prod_type == 3 || $prod->type == 4) {
+            $view = $this->configProduct($prod->id);
         }
         return $view;
     }
@@ -104,7 +98,7 @@ class ProductController extends Controller {
         $CustomerReviews = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->orderBy('id','desc')->take(2)->get();
         $totalRatings = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->sum('rating');
         // return $product;
-        $product->prodImage = @Config('constants.productImgPath') .'/'. @$product->catalogimgs()->first()->filename;
+        $product->prodImage = @Config('constants.productImgPath') .'/'. $product->catalogimgs()->first()->filename;
         if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
             $product->wishlist = 1;
         } else {
@@ -119,7 +113,7 @@ class ProductController extends Controller {
 
         $product->related = $product->relatedproducts()->where("status", 1)->get();
         $product->upsellproduct = $product->upsellproducts()->where("status", 1)->get();
-        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | eStorifi " : @$product->meta_title;
+        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | Cartini " : @$product->meta_title;
         $product->metaDesc = @$product->meta_desc == "" ? @$product->product : @$product->meta_desc;
         $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
@@ -134,7 +128,7 @@ class ProductController extends Controller {
         $is_rel_prod = GeneralSetting::where('url_key', 'related-products')->first();
         $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
         $product = Product::find($prodid);
-        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | eStorifi " : @$product->meta_title;
+        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | Cartini " : @$product->meta_title;
         $product->metaDesc = @$product->meta_desc == "" ? @$product->product : @$product->meta_desc;
         $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
 
@@ -145,7 +139,6 @@ class ProductController extends Controller {
         } else {
             $product->wishlist = 0;
         }
-        
         $nattrs = AttributeSet::find($product->attributeset['id'])->attributes()->where("is_filterable", "=", 1)->get()->toArray();
         $data = ['product' => $product, 'nattrs' => $nattrs, 'is_desc' => $is_desc, 'is_rel_prod' => $is_rel_prod, 'is_like_prod' => $is_like_prod];
 
@@ -161,10 +154,7 @@ class ProductController extends Controller {
                 $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
             }
         }
-        $CustomerReviews = CustomerReview::where(['product_id'=>$prodid,'publish'=>1])->orderBy('id','desc')->take(2)->get();
-        $totalRatings = CustomerReview::where(['product_id'=>$prodid,'publish'=>1])->sum('rating');
-        $data['CustomerReviews'] = $CustomerReviews;
-        $data['totalRatings'] = $totalRatings;
+
         $data['selAttrs'] = $selAttrs;
         $data['product'] = $product;
         $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
@@ -198,15 +188,6 @@ class ProductController extends Controller {
                         $product->wishlist = 1;
                     } else {
                         $product->wishlist = 0;
-                    }
-                    $varientProd = Product::where('parent_prod_id',$product->id)->get();  
-            
-                    if(count($varientProd) > 0)
-                    {
-                        $startprice = Product::where('parent_prod_id',$product->id)->orderBy('price','asc')->pluck('price');
-                        $endprice = Product::where('parent_prod_id',$product->id)->orderBy('price','desc')->pluck('price');
-                        //$product->price = $startprice[0].' - '.$endprice[0];
-                        $product->price = $startprice[0];
                     }
                     $selAttrs = [];
 
@@ -264,40 +245,51 @@ class ProductController extends Controller {
                 }
             }
 
-    public function comboProduct($pId) {
-        $is_desc = GeneralSetting::where('url_key', 'des')->first();
-        $is_rel_prod = GeneralSetting::where('url_key', 'related-products')->first();
-        $is_like_prod = GeneralSetting::where('url_key', 'like-product')->first();
-        $product = Product::find($pId);
-        $CustomerReviews = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->orderBy('id','desc')->take(2)->get();
-        $totalRatings = CustomerReview::where(['product_id'=>$pId,'publish'=>1])->sum('rating');
-        // return $product;
-        $product->prodImage = @Config('constants.productImgPath') .'/'. @$product->catalogimgs()->first()->filename;
-        if (User::find(Session::get('loggedin_user_id')) && User::find(Session::get('loggedin_user_id'))->wishlist->contains($product->id)) {
-            $product->wishlist = 1;
-        } else {
-            $product->wishlist = 0;
-        }
-        $product->images = $product->catalogimgs()->get();
-        foreach ($product->images as $prdimgs) {
-            $prdimgs->img = @Config('constants.productImgPath') .'/'. $prdimgs->filename;
-        }
-        
-        $nattrs = AttributeSet::find($product->attributeset['id'])->attributes()->where("is_filterable", "=", 0)->get();
+//    public function comboProduct($pId) {
+//        $product = Product::find($pId);
+//        $options = [];
+//        $extraprice = [];
+//        $combos = [];
+//        /* Loop through The Products in the Combo */
+//        foreach ($product->comboproducts as $combo) {
+//            $combos[$combo->id] = ['name' => $combo->product, 'url_key' => $combo->url_key];
+//            if ($combo->prod_type == 3) {
+//                $options[$combo->id] = [];
+//                $extraprice[$combo->id] = [];
+//                /* Loop through The Attributes belonging to the Attribute Set of the Current Product */
+//                $attrs = AttributeSet::find($combo->attributeset['id'])->attributes()->where("is_filterable", "=", 1)->get()->toArray();
+//                foreach ($attrs as $attr) {
+//                    $options[$combo->id][$attr['attr']] = [];
+//                    $attrvals = explode("\n", $attr['attr_values']);
+//                    /* Loop through The Attributes Values */
+//                    foreach ($attrvals as $attrval) {
+//                        $options[$combo->id][$attr['attr']]["options"][trim($attrval)] = [];
+//                        $prods = Attribute::find($attr['id'])->products()->where("parent_prod_id", "=", $combo->id)->wherePivot('attr_val', 'like', trim($attrval) . "%")->get();
+//                        /* Loop through The Products Having Same Value */
+//                        if (!$prods->isEmpty()) {
+//                            foreach ($prods as $pid) {
+//                                $options[$combo->id][$attr['attr']]["options"][trim($attrval)]["products"][] = $pid->id;
+//                                if (!array_key_exists($pid->id, $extraprice)) {
+//                                    $extraprice[$combo->id][$pid->id] = $pid->price;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        $product->prodImage = asset(Config('constants.productImgPath') . $product->catalogimgs()->first()->filename);
+//        $data = ['combos' => $combos, 'product' => $product];
+//        $viewname = Config('constants.frontendCatlogProducts') . '.comboProduct';
+//        return Helper::returnView($viewname, $data);
+//    }
 
-        $product->related = $product->relatedproducts()->where("status", 1)->get();
-        $product->upsellproduct = $product->upsellproducts()->where("status", 1)->get();
-        $product->metaTitle = @$product->meta_title == "" ? @$product->product . " | eStorifi " : @$product->meta_title;
-        $product->metaDesc = @$product->meta_desc == "" ? @$product->product : @$product->meta_desc;
-        $product->metaKeys = @$product->meta_keys == "" ? @$product->product : @$product->meta_keys;
-        $currencySetting = new \App\Http\Controllers\Frontend\HomeController();
-        $data['curData'] = $currencySetting->setCurrency();
-        $data = ['product' => $product, 'nattrs' => $nattrs, 'is_desc' => $is_desc, 'is_rel_prod' => $is_rel_prod, 'is_like_prod' => $is_like_prod,'CustomerReviews'=>$CustomerReviews,'totalRatings'=>$totalRatings];
-        $viewname = Config('constants.frontendCatlogProducts') . '.comboProduct';
-        return Helper::returnView($viewname, $data, null, 1);
-                // $viewname = Config('constants.frontendCatlogProducts') . '.comboProduct';
-                // return Helper::returnView($viewname, $data);
-    }
+
+            public function comboProduct($pId) {
+                $data = [];
+                $viewname = Config('constants.frontendCatlogProducts') . '.comboProduct';
+                return Helper::returnView($viewname, $data);
+            }
 
             public function getComboProd() {
                 $prod = Product::where('url_key', Input::get('slug'))->first();
@@ -494,6 +486,7 @@ class ProductController extends Controller {
                     $prods = $prods->get();
                 }
                 return Helper::quickAddtoCart($prods);
+                // dd($prods);
             }
 
         }

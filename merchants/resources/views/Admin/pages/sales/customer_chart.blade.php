@@ -28,12 +28,15 @@
                                      <input type="date" name="to_date" value="{{ !empty(Input::get('to_date'))?Input::get('to_date'):'' }}"  class="form-control toDate col-md-3" placeholder="To Date" autocomplete="off" id="">
                         </div>
                         
-                        <div class="form-group col-md-4 col-sm-6 col-xs-12">
-                            <label>&nbsp;</label>
-                            <div class="search-resetsubmit">
-                                <input type="submit" name="submit" class="btn btn-primary form-control noMob-leftmargin mn-w100" value="Search">
-                                <a  href="{{route('admin.sales.bycustomer')}}" class="medium btn btn-block noLeftMargin reset-btn mn-w100">Reset</a>
-                            </div>
+                        <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                            <br>
+                            <br>
+                            <input type="submit" name="submit" class="btn btn-primary form-control noMob-leftmargin" value="Search">
+                        </div>
+                            <div class="form-group col-md-2 col-sm-6 col-xs-12 noMobBottomMargin">
+                                <br>
+                                <br>
+                         <a  href="{{route('admin.sales.bycustomer')}}" class="medium btn btn-block noLeftMargin reset-btn">Reset</a>
                         </div>
                     </form> 
                 </div>

@@ -2,14 +2,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        By Orders <?php
-        if($orderCount > 0)
-        {
-        ?>
-            ({{$startIndex}}-{{$endIndex}} of {{$orderCount }}) </span> </h1> 
-        <?php
-        }
-        ?>  
+        By Orders ({{$orderCount }})
         <small></small>
     </h1>
     <ol class="breadcrumb">
@@ -30,11 +23,11 @@
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <input type="text" name="to_date" value="{{ @Input::get('to_date') }}"   required="true"  class="form-control toDate col-md-3" placeholder="To Date" autocomplete="off" id="">
                         </div>
-                        <div class="form-group col-md-4 col-sm-6 col-xs-12">
-                            <div class="search-resetsubmit">
-                                <input type="submit" name="submit" class="form-control btn btn-primary noMob-leftmargin mn-w100 no-leftmargin" value="Submit">
-                                <a  href="{{route('admin.sales.byorder')}}" class="medium btn btn-block reset-btn mn-w100" style="margin-left:0px">Reset</a>
-                            </div>
+                        <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                            <input type="submit" name="submit" class="form-control btn btn-primary noMob-leftmargin" value="Submit">
+                        </div>
+                         <div class="form-group col-md-2 col-sm-6 col-xs-12 noBottomMargin">
+                         <a  href="{{route('admin.sales.byorder')}}" class="medium btn btn-block reset-btn" style="margin-left:0px">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -78,7 +71,7 @@
                             </tr>
                             @endforeach
                             @else
-                           <tr><td colspan=6 class="text-center"> No Record Found.</td></tr>
+                           <tr><td colspan=6> No Record Found.</td></tr>
                             @endif
                         </tbody>
                     </table>

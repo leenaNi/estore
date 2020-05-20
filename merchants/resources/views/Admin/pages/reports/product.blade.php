@@ -2,85 +2,78 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Products Sales Report 
+        Products Report
+        <small></small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i>Reports</a></li>
-        <li class="active">Products Sales Report</li>
+        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
+        <li class="active">Products Report</li>
     </ol>
 </section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
 
-<section class="main-content"> 
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
-        </div>
-        <div class="filter-section displayFlex">
-            <div class="col-md-12 noAll-padding displayFlex">
-                <div class="filter-left-section"> 
-                     <form method="get" action=" " id="searchForm">
-                        <input type="hidden" name="attrSetCatalog"> 
-                        <div class="form-group noBottom-margin col-md-4 col-sm-4 col-xs-12">
-                            <div class="input-group">
-                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
-                            <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control form-control-right-border-radius medium" placeholder="Product Name">
+                <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12">              
+                    <form method="get" action=" " id="searchForm">
+                        <input type="hidden" name="attrSetCatalog">
+                        <div class="form-group col-md-8 col-sm-6 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control medium" placeholder="Product Name">
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                {!! Form::select('category',$categrs,Input::get('category'), ["class"=>'form-control filter_type', "placeholder"=>"Category"]) !!}
+                            </div>
                         </div>
-                        </div> 
-                        <div class="form-group noBottom-margin col-md-4 col-sm-4 col-xs-12">
-                            {!! Form::select('category',$categrs,Input::get('category'), ["class"=>'form-control filter_type', "placeholder"=>"Category"]) !!}
-                        </div> 
-                        <div class="form-group noBottom-margin col-md-4 col-sm-4 col-xs-12">
-                            <a href="{{ route('admin.report.productIndex')}}" class="btn reset-btn noMob-leftmargin pull-right mn-w100">Reset </a>
-                            <button type="submit" name="submit" vlaue='Filter' class='btn btn-primary noAll-margin pull-right marginRight-sm mn-w100'>Filter</button>
+                        <div class="form-group col-md-2 col-sm-3 col-xs-12">
+                            <input type="submit" name="submit" vlaue='Submit' class='form-control btn btn-primary noMob-leftmargin'>
+                        </div>
+                        <div class="from-group col-md-2 col-sm-3 col-xs-12">
+                            <a href="{{ route('admin.report.productIndex')}}" class="form-control btn reset-btn noMob-leftmargin">Reset </a>
                         </div>
                     </form>
                 </div>
-            </div> 
-        </div>
-    </div>
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Products Sales Report </h1>            
-            <a href="{!! route('admin.report.productIndexExport') !!}" class="btn btn-listing-heading pull-right noAll-margin" target="_">Export</a>
-        </div>
-        <div class="listing-section">
-            <div class="table-responsive overflowVisible no-padding">
-                <table class="table orderTable table-striped table-hover tableVaglignMiddle">
-                    <thead>
-                        <tr>
-                            <th class="text-left">Product Name</th>
-                            <th class="text-left">Category Name</th>
-                            <th class="text-center">Quantity Sold</th>
-                            <th class="text-right">Total Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (count($prods)>0)
-                            @foreach($prods as $pr)
-                            <tr>
-                                <td class="text-left">{{ $pr->product }}</td>
-                                <td class="text-left">{{ $pr->category  }}</td>
-                                <td class="text-center">
-                                    <a class="label label-default prod-data" data-name="{{$pr->product}}" id="productId">{{ $pr->tot_qty }}</a>
-                                </td>
-                                <td class="text-right">{{ $pr->sales }}</td>
-                            </tr>
-                            @endforeach
-                        @else
-                            <tr><td colspan="4" class="text-center"> No Data Found </td></tr>
-                        @endif
+                <div class="box-header col-md-3 col-sm-12 col-xs-12">
+                    <a href="{!! route('admin.report.productIndexExport') !!}" class="btn btn-primary pull-left" target="_" type="button">Export</a>
+                </div> 
 
-                    </tbody>
-                </table>
-                {{ $prods->links() }}
+                <div class="dividerhr"></div>
+                <div style="clear: both"></div>
+                <div class="box-body table-responsive no-padding">
+                    <table class="table orderTable table-striped table-hover tableVaglignMiddle">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Category Name</th>
+                                <th>Quantity</th>
+                                <th>Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (count($prods)>0)
+                                @foreach($prods as $pr)
+                                <tr>
+                                    <td>{{ $pr->product }}</td>
+                                    <td>{{ $pr->category  }}</td>
+                                    <td>
+                                        <a class="label label-default prod-data" data-name="{{$pr->product}}" id="productId">{{ $pr->tot_qty }}</a>
+                                    </td>
+                                    <td>{{ $pr->sales }}</td>
+                                </tr>
+                                @endforeach
+                            @else
+                                <tr><td colspan=10> No Data Found </td></tr>
+                            @endif
+
+                        </tbody>
+                    </table>
+                    {{ $prods->links() }}
+                </div>
             </div>
         </div>
     </div>
-
-</section>
-
-
- 
+</div>
   <!-- The Modal -->
   <div class="modal" id="myModal">
     <div class="modal-dialog">
@@ -118,8 +111,7 @@
       </div>
     </div>
   </div>
-</div>
-<div class="clearfix"></div>
+</section>
 @stop
 @section('myscripts')
 <script>

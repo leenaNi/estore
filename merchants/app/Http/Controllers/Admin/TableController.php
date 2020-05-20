@@ -20,12 +20,10 @@ use App\Models\Product;
 use App\Models\Table;
 use App\Models\TableStatus;
 use App\Models\User;
-use App\Models\HasProducts;
-use App\Models\AdditionalCharge;
-use App\Models\OrderStatusHistory;
-use App\Models\Address;
-use App\Models\Loyalty;
-use App\Models\Contact;
+use App\Models\Zone;
+use Carbon;
+use Cart;
+use DB;
 use Input;
 use Session;
 
@@ -59,9 +57,6 @@ class TableController extends Controller
         $table->chairs = Input::get("chairs");
         $table->table_label = Input::get("table_label");
         $table->table_type = Input::get("table_type");
-        $table->ostatus = 1;//occupancy status 1 means green color 
-        $table->store_id = Session::get("store_id");
-
         $table->status = Input::get("status");
         $table->ostatus = 1;
         if (empty(Input::get('id'))) {
@@ -179,29 +174,6 @@ class TableController extends Controller
         }
         
         $viewname = '';
-        //return Helper::returnView($viewname, $data, $url = 'admin.tables.view');   
-        return Helper::returnView($viewname, $data, $url = 'admin.restaurantlayout.view');   
-    }    
-
-    public function orderview() {
-        //$tables = Table::with('tablestatus')->get();
-        $tables = Table::all();
-        $otypes = OrderType::where('id', "!=", 1)->get();
-        $otherorders = Order::whereNotIn("otype", [1, 0])->orderBy("created_at", "desc")->paginate(100);
-        $allorders = Order::where("otype", "!=", 0)->orderBy("created_at", "desc")->paginate(100);
-
-            }
-            $flagVal = 1;
-        }
-        
-        
-        if($flagVal == 1)
-        {
-            $data = ['status' => "1", "message" => "Table updated successfully."];
-            Session::flash("msg", "Table Layout updated successfully.");
-        }
-        
-        $viewname = '';
         return Helper::returnView($viewname, $data, $url = 'admin.tables.view');   
     }   
 
@@ -231,9 +203,9 @@ class TableController extends Controller
         $data['order'] = Order::find($id);
         $data['order']->kots = $data['order']->kots;
         $data['order']->type = $data['order']->type;
-        $data['categories'] = Category::where("status", 1)->with(['products' => function($q) {
-                        $q->where("status", 1)->where("prod_type", 1);
-                    }, 'categoryName'])->get();
+        $data['categories'] = Category::where("status", 1)->with(['products' => function ($q) {
+            $q->where("status", 1)->where("prod_type", 1);
+        }])->get();
         $data['tables'] = Table::where("status", 1)
             ->select(DB::raw("CONCAT(table_no,' - ',table_label) AS table_name"), 'id')
             ->pluck("table_name", 'id');
@@ -247,30 +219,8 @@ class TableController extends Controller
         return Helper::returnView(Config('constants.adminTableView') . '.addItems', $data);
     }
 
-    public function viewitems($id) {
-        
-        $data['order'] = Order::find($id);
-        $data['order']->kots = $data['order']->kots;
-        $data['order']->type = $data['order']->type;
-        $data['categories'] = Category::where("status", 1)->with(['products' => function($q) {
-                        $q->where("status", 1)->where("prod_type", 1);
-                    }, 'categoryName'])->get();
-        $data['tables'] = Table::where("status", 1)
-                ->select(DB::raw("CONCAT(table_no,' - ',table_label) AS table_name"), 'id')
-                ->pluck("table_name", 'id');
-
-        $ordcountries = Country::where("status", 1)->pluck("name", "id")->prepend("Country", "");
-        $ordstates = Zone::where("status", 1)->pluck("name", "id")->prepend("State", "");
-        $data['ordcountries'] = $ordcountries;
-        $data['ordstates'] = $ordstates;
-
-        $data['coupon'] = Coupon::where("status", 1)->where("start_date", "<=", Carbon\Carbon::now())->where("end_date", ">", Carbon\Carbon::now())->pluck("coupon_name", "coupon_code")->prepend("Apply Coupon", "");
-
-        return Helper::returnView(Config('constants.adminTableView') . '.viewItems', $data);
-    }
-
-
-    public function saveItems() {
+    public function saveItems()
+    {
         $kot = new Kot();
         $kot->order_id = Input::get('order_id');
         $kot->save();
@@ -290,51 +240,20 @@ class TableController extends Controller
         // return redirect()->route('admin.tableorder.view')->with('message', 'Order placed successfully.');
     }
 
-    public function transferKot() {       
-        $getHiddenEditOrderId = Input::get('hdn_order_id');
-        $getHiddenSingleTableId = Input::get('hdn_single_table_id');
-        $getHiddenJoinTableId = Input::get('hdn_join_table_id');
-        
+    public function transferKot()
+    {
         if (Table::find(Input::get('table_id'))->ostatus == 1) {
-           
-            //$order = new Order;
-            $order = Order::find($getHiddenEditOrderId);
+            $order = new Order;
             $order->otype = 1;
             $order->table_id = Input::get('table_id');
-            $order->update();
-            //$order->save();
-            
-            //update ostatus 2 to 1 for old table id
-            if($getHiddenSingleTableId != '' || $getHiddenSingleTableId > 0)
-            {
-                $savetable = Table::find($getHiddenSingleTableId);
-                $savetable->ostatus = 1;
-                $savetable->update();
-            }
-            else
-            {
-                $joinTableIdArry = json_decode($getHiddenJoinTableId);
-                $tableIdArry = [];
-                foreach($joinTableIdArry as $getTableId)
-                {
-                    $savetable = Table::find($getTableId);
-                    $savetable->ostatus = 1;
-                    $savetable->update();
-                }//foreach ends here
-            }
-            
-
-            //update ostatus 1 to 2 for new tranfer kot table id
-            $savetable = Table::find(Input::get('table_id'));
+            $order->save();
+            $savetable = Table::find(Input::get('tableid'));
             $savetable->ostatus = 2;
             $savetable->update();
         } else {
             $order = Order::where("order_status", 1)->where("table_id", Input::get("table_id"))->orderBy("created_at", "desc")->first();
         }
-
-        //if (count($order) > 0) {
-        if (!empty($order)) {
-          
+        if (count($order) > 0) {
             $kot = Kot::find(Input::get('kot_id'));
             $kot->order_id = $order->id;
             $kot->update();
@@ -348,24 +267,11 @@ class TableController extends Controller
         return redirect()->route('admin.order.additems', ['id' => $order->id]);
     }
 
-    public function addNewOrder() {
-        $getStoreId = SESSION::get('store_id');
-        $orderStatusResult = DB::table('order_status')
-            ->where('store_id', $getStoreId)
-            ->where('is_default', 1)
-            ->get();
-        $orderStatusId = 0;
-        foreach($orderStatusResult as $getOrderStatatusData)
-        {
-            //Get Processin id
-            $orderStatusId = $getOrderStatatusData->id;
-            $orderStatus = $getOrderStatatusData->order_status;
-        }
-            
+    public function addNewOrder()
+    {
         $order = new Order;
         $order->otype = 1;
         $order->table_id = Input::get('tableid');
-        $order->order_status = $orderStatusId;
         $order->save();
         $savetable = Table::find(Input::get('tableid'));
         $savetable->ostatus = 2;
@@ -394,8 +300,6 @@ class TableController extends Controller
         $order->table_id = Input::get('tableid');
         $order->join_tables = json_encode(Input::get('selTables'));
         $order->save();
-
-
         DB::table('restaurant_tables')->whereIn("id", Input::get('selTables'))->update(["ostatus" => 2]);
         $data = ['status' => 1, 'order' => $order, 'redirectUrl' => route('admin.order.additems', ['id' => $order->id])];
         return $data;
@@ -406,36 +310,23 @@ class TableController extends Controller
         Cart::instance("shopping")->destroy();
         $order = Order::find(Input::get('orderid'));
         $kotprods = "";
-        $totalOrderAmount = 0;
         foreach ($order->kots as $kot) {
             $kotprods .= '<tr class="green" data-otype="' . $order->otype . '">';
             $kotprods .= '<td colspan="6"><b>KOT #' . $kot->id . '</b>';
-
-            if ($order->otype == 1)
-            {
-                if($order->cart == '')
-                    $kotprods .= '<span class="pull-right transferKOT" data-kotid="' . $kot->id . '" style="cursor:pointer;">Transfer KOT</span>';
+            if ($order->otype == 1) {
+                $kotprods .= '<span class="pull-right transferKOT" data-kotid="' . $kot->id . '" style="cursor:pointer;">Transfer KOT</span>';
             }
-                
-
-            $kotprods .='</td>';
-            $kotprods .='</tr>';
-            
+            $kotprods .= '</td>';
+            $kotprods .= '</tr>';
             foreach ($kot->products as $prd) {
-                $totalOrderAmount += ($prd->price * $prd->qty);
-                $kotprods .='<tr>';
-                $kotprods .='<td>' . $prd->product->product . '</td>';
-                $kotprods .='<td>' . $prd->product_details . '</td>';
-                $kotprods .='<td>' . $prd->qty . '</td>';
-                $kotprods .='<td>' . number_format($prd->price, 2) . '</td>';
-                $kotprods .='<td>' . number_format(($prd->price * $prd->qty), 2) . '</td>';
-                if($order->cart == '')
-                {
-                    $kotprods .='<td><i data-hasprdid="' . $prd->id . '" class="fa fa-trash fa-fw deleteExistingItem" style="color:red;cursor:pointer;"></i></td>';
-                }
-                
-                $kotprods .='</tr>';
-
+                $kotprods .= '<tr>';
+                $kotprods .= '<td>' . $prd->product->product . '</td>';
+                $kotprods .= '<td>' . $prd->product_details . '</td>';
+                $kotprods .= '<td>' . $prd->qty . '</td>';
+                $kotprods .= '<td>' . number_format($prd->price, 2) . '</td>';
+                $kotprods .= '<td>' . number_format(($prd->price * $prd->qty), 2) . '</td>';
+                $kotprods .= '<td><i data-hasprdid="' . $prd->id . '" class="fa fa-trash fa-fw deleteExistingItem" style="color:red;cursor:pointer;"></i></td>';
+                $kotprods .= '</tr>';
             }
             if (!empty($kot->products)) {
                 foreach ($kot->products as $prd) {
@@ -444,11 +335,8 @@ class TableController extends Controller
                     $addCart = app('App\Http\Controllers\Frontend\CartController')->addCartData($getProd->prod_type, $getProd->id, $prd->sub_prod_id, $prd->qty);
                 }
             }
-
         }
-        $kotprods .='<tr class="green"><td colspan="6"><b>New KOT #</b></td></tr>';
-        $kotprods .='<input type="hidden" id="final_total_amount" value="'.$totalOrderAmount.'">';
-
+        $kotprods .= '<tr class="green"><td colspan="6"><b>New KOT #</b></td></tr>';
         return $kotprods;
     }
 
@@ -819,8 +707,7 @@ class TableController extends Controller
         $addressId = input::get('addressId');
         $paymentMethod = 1;
         $data = $this->saveOrder($userId, $orderId, $addressId, $payAmt, $paymentMethod, $additionalCharge);
-        //echo "<pre> data::";
-        //print_r($data);
+        // $this->changeOccupancyStatus($orderId);
         return $data;
     }
 
@@ -828,19 +715,6 @@ class TableController extends Controller
     {
         $address = Address::find($addressId);
         //dd($address);
-        $getStoreId = SESSION::get('store_id');
-        $orderStatusResult = DB::table('order_status')
-            ->where('store_id', $getStoreId)
-            ->where('order_status', 'Delivered')
-            ->get();
-        $orderStatusId = 0;
-        foreach($orderStatusResult as $getOrderStatatusData)
-        {
-            //Get Processin id
-            $orderStatusId = $getOrderStatatusData->id;
-            $orderStatus = $getOrderStatatusData->order_status;
-        }
-
         $orders = Order::find($orderId);
         if ($userId) {
             $user = User::find($userId);
@@ -864,51 +738,8 @@ class TableController extends Controller
         // dd($cart_data['total']);
         $cartAmount = $cart_data['total'];
         //  dd($cartAmount);
-
-        $cartContent = Cart::instance('shopping')->content()->toArray();
-        $discountedAmount = 0;
-        if (!empty($cartContent)) {
-            foreach ($cartContent as $product) {
-                $productId = $product['id'];
-                $rowId = $product['rowid'];
-                $discountedAmount = $product['options']['discountedAmount'];
-                $storeId = $product['options']['store_id'];
-
-                //echo "<br> product id::".$productId;
-                //get ordered product from has_product table
-                $hasProductsResult = DB::table('has_products')
-                ->where('order_id', $orderId)
-                ->where('prod_id', $productId)
-                ->get();
-                //echo "<pre>";
-                //print_r($hasProductsResult);
-                $productQty = 0;
-                $productPrice= 0;
-                $i=0;
-                foreach($hasProductsResult as $getData)
-                {
-                $productQty += $getData->qty;
-                $productPrice += $getData->price;
-
-                $i++;
-                }
-                //echo "<br> product qty::".$productQty;
-                //echo "<br>product price::".$productPrice;
-                $subtotal = ($productQty * $productPrice);
-                $cart = Cart::instance('shopping')->update($rowId, ['qty' => $productQty, 'price' => $productPrice, 'subtotal' => $subtotal]);
-                //exit;
-            }//foreach ends here
-        }
-        $orderAmt = $subtotal;
-        if($discountedAmount > 0)
-        {
-            $orderAmt = $subtotal - $discountedAmount;
-        }
-        $orders->order_status = $orderStatusId;
-        $orders->store_id = $storeId;
-        $orders->order_amt = $payAmt;
-        $additional_charge_json = AdditionalCharge::ApplyAdditionalChargeOnOrder($payAmt, $additionalCharge);
-
+        $orders->order_amt = $cartAmount;
+        $additional_charge_json = AdditionalCharge::ApplyAdditionalChargeOnOrder($cartAmount, $additionalCharge);
         $orders->additional_charge = $additional_charge_json ? $additional_charge_json : 0;
         //return $additional_charge_json;
         $orders->payment_method = $paymentMethod;
@@ -953,7 +784,6 @@ class TableController extends Controller
         $contact = Contact::where('status', 1)->orderBy('id', 'desc')->take(1)->first();
         $storeName = Helper::getSettings()['storeName'];
         $data = ['orders' => $orders, 'contact' => $contact, 'storeName' => $storeName];
-
         return $data;
     }
 
@@ -962,23 +792,9 @@ class TableController extends Controller
         if (Input::get("orderId")) {
             $order = Order::find(Input::get("orderId"));
             if ($order->otype == 1) {
-                if($order->table_id == '' || $order->table_id == 'null')
-                {
-                    $joinTableIdArry = json_decode($order->join_tables); 
-                    foreach($joinTableIdArry as $getTableId)
-                    {
-                       $table = Table::find($getTableId);
-                       $table->ostatus = $oStatus;
-                       $table->update();
-                   
-                    }//foreach ends here
-                }
-                else
-                {
-                    $table = Table::find($order->table_id);
-                    $table->ostatus = $oStatus;
-                    $table->update();
-                }
+                $table = Table::find($order->table_id);
+                $table->ostatus = $oStatus;
+                $table->update();
                 Session::flash("msg", 'Table status updated successfully.');
                 return ['status' => 1, 'msg' => "Table status updated successfully."];
             } else {
@@ -1028,47 +844,6 @@ class TableController extends Controller
         // }
 
         return $products;
-    }
-
-    public function getOrderDetails()
-    {
-        $orderId =Input::get('orderid');
-        $ordersResult = DB::table('orders')
-            ->where('id', $orderId)
-            ->get();
-        
-        $html = '';
-        foreach($ordersResult as $getData)
-        {
-            $storeId = $getData->store_id;
-            $couponAmtUsed = $getData->coupon_amt_used;
-            $payAmount = $getData->pay_amt;
-            //get Store name
-            $storeResult = DB::table('stores')
-                ->where('id', $storeId)
-                ->get();
-
-             foreach($storeResult as $getStoreData)
-             {
-                $storeName = $getStoreData->store_name;
-             }   
-            
-            $html .= '<label>Store Name: <span>'.$storeName.'</span></label></br>';
-            if($couponAmtUsed > 0)
-            {
-                $html .= '<label>Coupon Amount: <span>'.$couponAmtUsed.'</span></label></br>';
-            }
-            else
-            {
-                $html .= '<label>Coupon Amount: <span>-</span></label></br>';
-            }
-            
-            $html .= '<label>Grand Total: <span>'.$payAmount.'</span></label>';
-           
-        }
-
-        return $html;
-
     }
 
 }

@@ -105,7 +105,7 @@ foreach ($menu as $ca) {
                 <div class="modal-body">
                     <div class="managecatbox">
                         @foreach($getAllCategories as $mn)
-                        <div><label class="custom-check">{{$mn->categoryName->category}}<input class="catCheck" type="checkbox"  <?= in_array($mn->id, $selcats) ? 'checked' : '' ?> name="manage_categories[{{$mn->id}}]" value="{{$mn->status}}"><span class="checkmark-custom"></span>
+                        <div><label class="custom-check">{{$mn->category}}<input class="catCheck" type="checkbox"  <?= in_array($mn->id, $selcats) ? 'checked' : '' ?> name="manage_categories[{{$mn->id}}]" value="{{$mn->status}}"><span class="checkmark-custom"></span>
                             </label></div>
                         @endforeach
                     </div> 

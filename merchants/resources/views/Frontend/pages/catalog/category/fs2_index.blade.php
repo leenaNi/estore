@@ -96,10 +96,7 @@
                         </div>
                         <div class="product-desc product-desc-transparent" style="margin-bottom: -20px;">
                             <div class="product-title"><h3><a href="{{ route('home')}}/[[prd.url_key]]">[[prd.product]]</a></h3></div>
-                            <div class="product-price"><del ng-show="prd.delPrice == 1"> <span class="currency-sym"></span> <span class="priceConvert">[[ prd.price * currencyVal | number : 2 ]]</span></del>
-                            <ins> <span class="currency-sym"></span> <span class="">[[ prd.getPrice ]]</span></ins>
-                            <!-- <ins><span class="currency-sym"></span>[[ prd.getPrice *currencyVal | number : 2 ]]</ins> -->
-                            </div>
+                            <div class="product-price"><del ng-show="prd.delPrice == 1"> <span class="currency-sym"></span> <span class="priceConvert">[[ prd.price * currencyVal | number : 2 ]]</span></del> <ins><span class="currency-sym"></span>[[ prd.getPrice *currencyVal | number : 2 ]]</ins></div>
                         </div>
                             <div>
                                 [[prd.reviews]] reviews , [[prd.ratings]]<i class="fa fa-star" aria-hidden="true"></i>
@@ -108,24 +105,16 @@
                                 <form id="form[[prd.id]]" action="{{ route('addToCart') }}">
                                 <input type="hidden" name='prod_id' value='[[prd.id]]'>
                                 <input type="hidden" name='quantity' value='1'>
-                                <input type="hidden" name='prod_type' value='[[prd.prod_type]]'> 
-                                <div ng-if="prd.prod_type==1">
+                                <input type="hidden" name='prod_type' value='[[prd.prod_type]]'>    
                                 <input type="button"  form-id='[[prd.id]]' value="Add to cart" class="add-to-cart button nomargin addToCartB addToCart mobMB15 button-grey full-width-btn">
-                                </div>
-                                <div ng-if="prd.prod_type!=1">
-                                <input type="button"  id="pvariant" ng-click="setProUrlkey(prd.url_key, prd.id)" value="Add to configure" class="button nomargin button-grey full-width-btn">
-
-                                </div>
-                                
                                 </form>
                             </div>
                         <!-- <div class="add-to-cart-btn">
                             <a  href="{{ route('home')}}/[[prd.url_key]]" class="button button-grey full-width-btn"><span>View Detail</span></a>
                         </div> -->
-
                     </div>
-        
-                    <div class="clearfix"></div>
+                    
+<div class="clearfix"></div>
                     <div class="text-center col-md-12">
                         <a href="#" class="button button-large button-dark  topmargin-sm" ng-if="nextpageurl != null"  ng-click="load($event, nextpageurl)">Load More</a>
                         <!--<a href="#" class="button button-large button-dark  topmargin-sm">Load More</a>--> 
@@ -139,9 +128,7 @@
             </div>
     </section>
 </div>
-<div id="addProduct" ng-controller="configProductController" class="modal fade" role="dialog">
-@include('Frontend.pages.catalog.products.product_quickView')
-</div>
+
 @stop
 
 @section("myscripts")
@@ -186,15 +173,5 @@
                             //   $("#max_price").val(maxp);
                             //};
                         });
-
-
-function getVariant()
-{
-    $("#addProduct").modal('show');
-   // alert('sdsdsd');
-   <?php
-    
-    ?>
-}
 </script>
 @stop

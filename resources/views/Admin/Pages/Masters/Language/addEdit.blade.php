@@ -31,7 +31,7 @@
                     <div class="form-group">
                         {{ Form::label('Status *', 'Status *', ['class' => 'col-sm-3 control-label']) }}
                         <div class="col-sm-6 col-xs-12">
-                            {{Form::select('status',[''=>'Please Select Status','1'=>'Enabled','0'=>'Disabled'] ,['class'=>'form-control']) }}
+                            {{Form::select('status',[''=>'Please Select Status','1'=>'Enabled','0'=>'Disabled'],null ,['class'=>'form-control']) }}
                         </div>
                     </div>
 

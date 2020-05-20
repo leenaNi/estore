@@ -1,5 +1,4 @@
 @extends('Admin.layouts.default')
-
 @section('mystyles')
 	<style>
 		html, body {

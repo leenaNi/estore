@@ -15,6 +15,6 @@
 
 	<!-- Document Title
 	============================================= -->
-	<title>eStorifi</title>
+	<title>Estorifi</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>

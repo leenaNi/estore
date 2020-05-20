@@ -65,32 +65,7 @@ class SalesController extends Controller {
       // dd($orders);
        // $order = DB::select(DB::raw("SELECT count(*) as order_count,sum(pay_amt) as sales, id ,$select from ".DB::getTablePrefix()."orders $where  $groupby order by sales desc"));
        //  $orderCount=count($order);
-       
-       $startIndex = 1;
-        $getPerPageRecord = Config('constants.paginateNo');
-        $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
-            $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
-
-            if($endIndex > $orderCount)
-            {
-                $endIndex = ($orderCount);
-            }
-        }
-        else
-        {
-            $startIndex = 1;
-            $endIndex = $getPerPageRecord;
-            if($endIndex > $orderCount)
-            {
-                $endIndex = ($orderCount);
-            }
-        }
-
-       return view(Config('constants.saleView') . '.by_order', compact('order' ,'orderCount', 'startIndex', 'endIndex'));
+        return view(Config('constants.saleView') . '.by_order', compact('order' ,'orderCount'));
     }
 
     public function products() {
@@ -133,46 +108,16 @@ class SalesController extends Controller {
             $prods = $prods->where('p.status',1)->paginate(Config('constants.paginateNo'));
              $prodCount=$prods->total();
         }
-
-        $startIndex = 1;
-        $getPerPageRecord = Config('constants.paginateNo');
-        $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
-            $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
-
-            if($endIndex > $prodCount)
-            {
-                $endIndex = ($prodCount);
-            }
-        }
-        else
-        {
-            $startIndex = 1;
-            $endIndex = $getPerPageRecord;
-            if($endIndex > $prodCount)
-            {
-                $endIndex = ($prodCount);
-            }
-        }
-        return view(Config('constants.saleView') . '.by_products', compact('prods','prodCount', 'startIndex', 'endIndex'));
+        return view(Config('constants.saleView') . '.by_products', compact('prods','prodCount'));
     }
 
     public function categories() {
        $storeId=$this->jsonString['store_id'];
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
-        $search_fields = ['short_desc', 'long_desc'];
-        // $categories = Category::orderBy('category')->where("status",1);
-        $categories = Category::where("status",1);
-        $categories = $categories->with(['children', 'categoryName' => function($query) use($search) {
-            $query->orderBy('category');
-            if($search!=''){
-                $query->orWhere('category', "like", "%$search%");
-            }
-        }])->where('is_nav',1)
-        ->where(function($query) use($search_fields, $search) {
+        $search_fields = ['category', 'short_desc', 'long_desc'];
+        $categories = Category::orderBy('category')->where("status",1);
+
+        $categories = $categories->with('children')->where('is_nav',1)->where(function($query) use($search_fields, $search) {
          // where("status", '1')->where('id', 1)->with('children.cat_tax')
             foreach ($search_fields as $field) {
                 $query->orWhere($field, "like", "%$search%");
@@ -188,31 +133,7 @@ class SalesController extends Controller {
             $categoryCount=$categories->total();
         }
 
-        $startIndex = 1;
-        $getPerPageRecord = Config('constants.paginateNo');
-        $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
-            $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
-
-            if($endIndex > $categoryCount)
-            {
-                $endIndex = ($categoryCount);
-            }
-        }
-        else
-        {
-            $startIndex = 1;
-            $endIndex = $getPerPageRecord;
-            if($endIndex > $categoryCount)
-            {
-                $endIndex = ($categoryCount);
-            }
-        }
-
-        return view(Config('constants.saleView') . '.by_categories', compact('categories','categoryCount','storeId','startIndex','endIndex'));
+        return view(Config('constants.saleView') . '.by_categories', compact('categories','categoryCount','storeId'));
     }
 
     public function attributes() {
@@ -257,31 +178,7 @@ class SalesController extends Controller {
             }
         }
 
-        $startIndex = 1;
-        $getPerPageRecord = Config('constants.paginateNo');
-        $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
-            $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
-
-            if($endIndex > $prodCount)
-            {
-                $endIndex = ($prodCount);
-            }
-        }
-        else
-        {
-            $startIndex = 1;
-            $endIndex = $getPerPageRecord;
-            if($endIndex > $prodCount)
-            {
-                $endIndex = ($prodCount);
-            }
-        }
-
-        return view(Config('constants.saleView') . '.by_attributes', compact('prods','prodCount','startIndex','endIndex'));
+        return view(Config('constants.saleView') . '.by_attributes', compact('prods','prodCount'));
     }
 
     function convert_to_csv($input_array, $output_file_name, $delimiter) {
@@ -488,7 +385,17 @@ class SalesController extends Controller {
 
     public function bycustomer() {
 
-        $users=User::with("userCashback")->where('user_type',2)->where('store_id',Session::get('store_id'));
+//       $where = ['user_type' => '2'];
+//        if (!empty(Input::get('search_name'))) {
+//            $where['users.firstname'] = Input::get('search_name');
+//        }
+//        if (!empty(Input::get('search_email'))) {
+//           $where['users.email'] = Input::get('search_email');
+//        }
+//        if (!empty(Input::get('search_number'))) {
+//            $where['users.telephone'] = Input::get('search_number');
+//        }
+        $users=User::with("userCashback")->where('user_type',2);
          if (!empty(Input::get('search_name'))) {
              $uname=Input::get('search_name');
              $users=$users->where('firstname',"like","$uname%");
@@ -499,6 +406,7 @@ class SalesController extends Controller {
           if (!empty(Input::get('search_number'))) {
              $users=$users->where('telephone',Input::get('search_number'));
         }
+      //  $users = User::where($where)->select('id', 'firstname', 'lastname', 'email', 'telephone', 'total_purchase_till_now', 'cashback','user_type')->orderBy("id", "desc"); 
         if(!empty(Input::get("dataSearch"))){
             
             $users=$users->get();
@@ -507,31 +415,7 @@ class SalesController extends Controller {
            $users=$users->paginate(Config("constants.paginateNo"));
            $userCount=$users->total();
         }
-
-        $startIndex = 1;
-        $getPerPageRecord = Config('constants.paginateNo');
-        $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
-            $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
-
-            if($endIndex > $userCount)
-            {
-                $endIndex = ($userCount);
-            }
-        }
-        else
-        {
-            $startIndex = 1;
-            $endIndex = $getPerPageRecord;
-            if($endIndex > $userCount)
-            {
-                $endIndex = ($userCount);
-            }
-        }
-        return view(Config('constants.saleView') . '.by_customer', compact('users','userCount','startIndex','endIndex'));
+        return view(Config('constants.saleView') . '.by_customer', compact('users','userCount'));
     }
 
 //customer chart view 

@@ -1,6 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
-<section id="slider" class="full-screen dark" style="background: url({{ asset(Config('constants.frontendPublicEstorifiImgPath').'/static.jpg') }}) center center no-repeat; background-size: cover">
+<section id="slider" class="full-screen dark" style="background: url({{ asset(Config('constants.frontendPublicImgPath').'/static.jpg') }}) center center no-repeat; background-size: cover">
 
     <div class="">
 

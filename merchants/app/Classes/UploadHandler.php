@@ -351,7 +351,7 @@ class UploadHandler {
     function get_config_bytes($val) {
         $val = trim($val);
         $last = strtolower($val[strlen($val) - 1]);
-        $val = substr_replace($val, "", -1);
+        $size = substr($val, 0, -1);
         switch ($last) {
             case 'g':
                 $size *= 1024;
@@ -1188,12 +1188,10 @@ class UploadHandler {
 
     public function generate_response($content, $print_response = true) {
         $this->response = $content;
-        return json_encode($content);
         if ($print_response) {
             $json = json_encode($content);
             $redirect = stripslashes($this->get_post_param('redirect'));
-            // if ($redirect && preg_match($this->options['redirect_allow_target'], $redirect)) {
-            if ($redirect) {
+            if ($redirect && preg_match($this->options['redirect_allow_target'], $redirect)) {
                 $this->header('Location: ' . sprintf($redirect, rawurlencode($json)));
                 return;
             }

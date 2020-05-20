@@ -3,103 +3,96 @@
 
 <section class="content-header">
     <h1>
-        Products 
+        Products ({{$productCount }})
         <small></small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Catalog</a></li>
-        <li class="active">Inventory <i class="fa fa-dashboard"></i></li>
+        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
         <li class="active">Running Sort</li>
     </ol>
 </section>
 
-<section class="main-content">
-    <div class="notification-column">       
-        @if(!empty(Session::get('message')))
-        <div class="alert alert-danger" role="alert">
-            {{ Session::get('message') }}
-        </div>
-        @endif
-        @if(!empty(Session::get('msg')))
-        <div class="alert alert-success" role="alert">
-            {{Session::get('msg')}}
-        </div>
-        @endif
-    </div>
-
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
-        </div>
-        <div class="filter-section">
-            <div class="col-md-12 no-padding">
-                <div class="filter-full-section">
-                    <form method="get" action=" " id="searchForm">
-                       <div class="form-group col-md-8 col-sm-6 col-xs-12 noBottom-margin">
-                        <div class="input-group">
-                            <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
-                        <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control form-control-right-border-radius medium" placeholder="Search Product">
-                        </div>
-                        </div>
-                        <div class="from-group col-md-4 col-sm-3 col-xs-12 mob-marBottom15 noBottom-margin">
-                        <a href="{{route('admin.stock.runningShort')}}" class="btn reset-btn noMob-leftmargin pull-right">Reset </a>
-                            <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-lg"> Filter</button> 
-                    </div>
-                </form>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                @if(!empty(Session::get('message')))
+                <div class="alert alert-danger" role="alert">
+                    {{ Session::get('message') }}
                 </div>
-            </div>
-        </div>
+                @endif
+                @if(!empty(Session::get('msg')))
+                <div class="alert alert-success" role="alert">
+                    {{Session::get('msg')}}
+                </div>
+                @endif
+                <div class="box-header box-tools filter-box col-md-9 col-sm-12 col-xs-12 noBorder">               
+                      
+                    <form method="get" action=" " id="searchForm">
+                       <div class="form-group col-md-4 col-sm-6 col-xs-12">
+                        <input type="text" value="{{ !empty(Input::get('product_name'))?Input::get('product_name'):'' }}" name="product_name" aria-controls="editable-sample" class="form-control medium" placeholder="Search Product">
+                    </div>
+                    <div class="from-group col-md-2 col-sm-3 col-xs-12 mob-marBottom15">
+                        <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Search</button>
+                   </div>
+                   <div class="form-group col-md-2 col-sm-3 col-xs-12 mob-marBottom15">
+                    <a href="{{route('admin.stock.runningShort')}}" class="btn btn-default form-control noMob-leftmargin">Reset </a>
+                </div>
+            </form>
+                       
+                </div>
+            <div class="clearfix"></div>
+                <div class="dividerhr"></div>
+                
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <!--@if($barcode == 1)   <th><input type="checkbox" id="masterCheck" value="00"/></th>  @endif -->
+<!--                                <th>@sortablelink ('id', 'Sr No')</th>-->
+                                <th>Image</th>
+                                <th>@sortablelink ('product', 'Product')</th>
+                                <!--<th>@sortablelink ('stock', 'Stock')</th>-->
+                                <th>@sortablelink ('selling_price', 'Price')</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             @if(count($products) >0)
+
+                            @foreach($products as $product)
+                            <tr>
+<!--                                <td>{{$product->id }}</td>-->
+                                <td><img src="{{@$product->prodImage }}" class="admin-profile-picture" /></td>
+                                <td>{{$product->product }}</td>
+                                <!--<td><b>{{$product->stock }}</b></td>-->
+                                <td><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">  {{$product->selling_price }}</span></td>
+                                <td>
+                                    <a data-prodId="{{$product->prod_type}}" data-toggle="tooltip" title="Update Stock" data-prod-name="{{$product->prod_type==3?$product->subproduct:$product}}" class="active update-stock"><i class="fa fa-stack-overflow" aria-hidden="true"></i></a>
+                                </td>
+                            </tr>
+                            @endforeach
+                            @else
+                           <tr><td colspan=6> No Record Found.</td></tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div><!-- /.box-body -->
+                <div class="box-footer clearfix">
+
+                   <?php
+                    $args = [];
+                    if(empty(Input::get("product_name"))){
+                      echo $products->links();  
+                    }
+                 
+                    ?>
+
+                </div>
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+
     </div>
-
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Products <span class="listing-counter">{{$productCount }} </span> </h1>
-        </div>
-        <div class="listing-section">
-            <div class="table-responsive overflowVisible no-padding">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr> 
-                            <th class="text-center">Image</th>
-                            <th class="text-left">@sortablelink ('product', 'Product')</th> 
-                            <th class="text-right">@sortablelink ('selling_price', 'Price')</th>
-                            <th class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                         @if(count($products) >0)
-
-                        @foreach($products as $product)
-                        <tr> 
-                            <td class="text-center"><img src="{{@$product->prodImage }}" class="admin-profile-picture" /></td>
-                            <td class="text-left">{{$product->product }}</td> 
-                            <td class="text-right"><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">  {{$product->selling_price }}</span></td>
-                            <td class="text-center">
-                                <div class="actionCenter">
-                                    <span>
-                                        <a class="btn-action-default active update-stock cursorPointer" data-prodId="{{$product->prod_type}}" data-prod-name="{{$product->prod_type==3?$product->subproduct:$product}}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a>
-                                    </span>
-                                </div> 
-                            </td>
-                        </tr>
-                        @endforeach
-                        @else
-                       <tr><td colspan="4" class="text-center"> No Record Found.</td></tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-            <?php
-            $args = [];
-            if(empty(Input::get("product_name"))){
-              echo $products->links();  
-            }         
-            ?>
-        </div>
-    </div>
-
-</section>
- 
     <!-- Modal --> 
       <div class="modal fade" id="update-stock-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-md">
@@ -123,9 +116,9 @@
                 </form>
             </div>
         </div>
-    </div> 
+    </div>
+</section>
 <input type="hidden" id="page_type" value="main"/>
-<div class="clearfix"></div>
 @stop
 @section('myscripts')
 <script>

@@ -31,13 +31,11 @@ class RawMaterialController extends Controller {
 
 	  $barcode = GeneralSetting::where('url_key', 'barcode')->get()->toArray()[0]['status'];
         $products = Product::where('prod_type',6);
-        // $categoryA = Category::get(['id', 'category'])->toArray();
-        $categoryA = DB::table('store_categories')->join('categories', 'categories.id', '=', 'store_categories.category_id')->get(['store_categories.id', 'categories.category']);
-        // dd($categoryA);
-        $rootsS = Category::roots()->get();
+        $categoryA = Category::get(['id', 'category'])->toArray();
+         $rootsS = Category::roots()->get();
         $category = [];
         foreach ($categoryA as $val) {
-            $category[$val->id] = $val->category;
+            $category[$val['id']] = $val['category'];
         }
         $userA = User::get(['id', 'firstname', 'lastname'])->toArray();
         $user = [];

@@ -38,10 +38,15 @@ class VswipeRolesController extends Controller {
     public function addEdit() {
         ini_set('max_execution_time', -1);
         $per = $permissions = VswipePermission::pluck('display_name')->toArray();
+
         $newRoutes = [];
+
+
         $i = 0;
         foreach (Route::getRoutes() as $value) {
+
             if (strpos($value->getPrefix(), "admin") !== false) {
+
                 $displayName = ucwords(strtolower(str_replace(".", " ", str_replace("admin.", "", $value->getName()))));
               //  echo $displayName . "<br/>";
                 if (!in_array($displayName, $per)) {

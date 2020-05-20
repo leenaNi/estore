@@ -34,10 +34,6 @@
                         {{Form::select('currency_id',$selCurr ,null, ['class'=>'form-control','required'=>'true']) }}
                     </div>
                     <div class="form-group">
-                        <label>Country:</label>
-                        {{Form::select('country_id',$selCountry ,null, ['class'=>'form-control','required'=>'true']) }}
-                    </div>
-                    <div class="form-group">
                         <label>Preferred Language:</label>
                         {{Form::select('language_id',$selLang ,null, ['class'=>'form-control','required'=>'true']) }}
                     </div>
