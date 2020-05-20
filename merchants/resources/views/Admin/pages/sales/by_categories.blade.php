@@ -2,14 +2,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        By Categories <?php
-        if($categoryCount > 0)
-        {
-        ?>
-            ({{$startIndex}}-{{$endIndex}} of {{$categoryCount }}) </span> </h1> 
-        <?php
-        }
-        ?>
+        By Categories ({{$categoryCount }})
         <small></small>
     </h1>
     <ol class="breadcrumb">
@@ -33,11 +26,12 @@
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Category"/>
                         </div> 
-                        <div class="form-group col-md-4 col-sm-6 col-xs-12">
-                            <div class="search-resetsubmit">
-                                <input type="submit" name="submit" class="form-control btn btn-primary mobAddnewflagBTN mn-w100 no-leftmargin" value="Search">
-                                <a href="{{route('admin.sales.bycategory')}}" class="medium btn btn-block reset-btn noLeftMargin mn-w100">Reset </a>
-                            </div>   
+                        <div class="form-group col-md-2 col-sm-6 col-xs-12 noAllpadding">
+                            <input type="submit" name="submit" class="form-control btn btn-primary mobAddnewflagBTN" value="Search">
+                        </div>
+                        <div class="form-group col-md-2 col-sm-6 col-xs-12 noBottomMargin">
+                            <a href="{{route('admin.sales.bycategory')}}" class="medium btn btn-block reset-btn noLeftMargin">Reset </a>
+                            
                     </div>
                     </form>  
                 </div>
@@ -90,13 +84,13 @@
 
                             <tr>
 <!--                                <td>{{ $cat->id }}</td>-->
-                                <td>{{ $cat->categoryName->category }}</td>
+                                <td>{{ $cat->category }}</td>
                                 <td>{{ $orderCnt }}</td>
                                 <td><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';  ?> <span class="priceConvert"> {{number_format($totSales,2)}}</span></td>
                             </tr>
                             @endforeach
                             @else
-                           <tr><td colspan=6 class="text-center"> No Record Found.</td></tr>
+                           <tr><td colspan=6> No Record Found.</td></tr>
                             @endif
                         </tbody>
                     </table>

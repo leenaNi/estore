@@ -1,4 +1,5 @@
 <?php
+
 Route::group(['namespace' => 'Admin'], function () {
     Route::get('/', ["as" => "admin.login", "uses" => "LoginController@login"]);
     Route::get('/logout', ["as" => "admin.merchant.logout", "uses" => "LoginController@merchantLogout"]);
@@ -8,8 +9,6 @@ Route::group(['namespace' => 'Admin'], function () {
 
     Route::group(['middleware' => ['auth:merchant-users-web-guard']], function () {
         Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "LoginController@dashboard"]);
-        Route::get('/getOrderDateWise', ["as" => "admin.getOrderDateWise", "uses" => "LoginController@getOrderDateWise"]);
-        Route::get('/getSalesDateWise', ["as" => "admin.getSalesDateWise", "uses" => "LoginController@getSalesDateWise"]);
         Route::group(['prefix' => 'merchants'], function () {
             Route::get('/', ["as" => "admin.merchants.view", "uses" => "MerchantController@index"]);
             Route::any('/add-edit', ["as" => "admin.merchants.addEdit", "uses" => "MerchantController@addEdit"]);

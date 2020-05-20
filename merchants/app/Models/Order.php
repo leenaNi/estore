@@ -60,6 +60,7 @@ class Order extends Model {
     }
 
     public function orderstatus() {
+
         return $this->belongsTo("App\Models\OrderStatus", "order_status");
     }
 
@@ -113,14 +114,8 @@ class Order extends Model {
     public function getcourier(){
         return $this->belongsTo('App\Models\Courier','courier');
     }
-    public function coupon() {
-    return $this->belongsTo('App\Models\Coupon', 'coupon_used');
-    }
-    public function store() {
-    return $this->belongsTo('App\Models\Store', 'store_id');
-    }
-    public function distributorOrderstatus() {
-        return $this->belongsTo("App\Models\DistributorOrderStatus", "order_status");
-    }
+       public function coupon() {
+        return $this->belongsTo('App\Models\Coupon', 'coupon_used');
+       }
 
 }

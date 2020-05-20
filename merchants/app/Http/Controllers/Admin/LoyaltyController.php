@@ -31,34 +31,9 @@ class LoyaltyController extends Controller {
             $loyalty = $loyalty->paginate(Config('constants.paginateNo'));
             $loyaltyCount=$loyalty->total();
         }
-
-        $startIndex = 1;
-        $getPerPageRecord = Config('constants.paginateNo');
-        $allinput = Input::all();
-        if(!empty($allinput) && !empty(Input::get('page')))
-        {
-            $getPageNumber = $allinput['page'];
-            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
-            $endIndex = (($startIndex+$getPerPageRecord) - 1);
-
-            if($endIndex > $loyaltyCount)
-            {
-                $endIndex = ($loyaltyCount);
-            }
-        }
-        else
-        {
-            $startIndex = 1;
-            $endIndex = $getPerPageRecord;
-            if($endIndex > $loyaltyCount)
-            {
-                $endIndex = ($loyaltyCount);
-            }
-        }
-
         //return view(Config('constants.loyaltyView') . '.index', compact('loyalty'));
         $viewname = Config('constants.loyaltyView') . '.index';
-        $data = ['loyalty' => $loyalty ,'loyaltyCount' =>$loyaltyCount, 'startIndex' => $startIndex,'endIndex' => $endIndex];
+        $data = ['loyalty' => $loyalty ,'loyaltyCount' =>$loyaltyCount];
         return Helper::returnView($viewname, $data);
     }
 

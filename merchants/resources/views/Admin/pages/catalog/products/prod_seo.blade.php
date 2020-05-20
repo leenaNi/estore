@@ -29,21 +29,19 @@
                     {!! Form::model($prod, ['method' => 'post', 'files' => true, 'url' => $action ,'id'=>'seoProdF' , 'files'=>true ]) !!}
                     {!! Form::hidden('updated_by', Auth::id()) !!}
                     {!! Form::hidden('id',null) !!}
-                    <?php $cat=$prod->categories->pluck("category")->toArray();
-                    $img=asset(config('constants.productImgPath')).'/'.$prod->catalogimgs->first()->filename;
-                  
-                    $catName=implode(",",$cat);
-                 $social_link= $_SERVER['HTTP_HOST'].'/'.$prod->url_key;
-                    ?>
                     <div class="row">
-                    
                     <div class="col-md-4">
                         <div class="form-group">
                             {!! Form::label('meta_title', 'Meta Title',['class'=>'control-label']) !!}
                             {!! Form::text('meta_title',$prod->meta_tittle?$prod->meta_tittle:$prod->product, ["class"=>'form-control' ,"placeholder"=>'Enter Meta Title']) !!}
                         </div>
                     </div>
-                       
+                        <?php $cat=$prod->categories->pluck("category")->toArray();
+                        $img=asset(config('constants.productImgPath')).'/'.$prod->catalogimgs->first()->filename;
+                      
+                        $catName=implode(",",$cat);
+                     $social_link= $_SERVER['HTTP_HOST'].'/'.$prod->url_key;
+                        ?>
                     <div class="col-md-4">
                         <div class="form-group">
                             {!! Form::label('meta_keys', 'Meta Keywords',['class'=>'control-label']) !!}
@@ -71,7 +69,7 @@
                             {!! Form::text('canonical',null,["class"=>'form-control',"placeholder"=>"Enter Canonical "]) !!}
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4">
                         <div class="form-group">
                             {!! Form::label('og_title', 'Social Shared  Title',['class'=>'control-label']) !!}

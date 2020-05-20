@@ -13,7 +13,7 @@
 </section>
 <!-- Main content -->
 <section>
-    <div class="panel-body">
+    <div class="panel-body">   
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
@@ -148,6 +148,7 @@
                                     <tr>
                                         <th>Order Id</th>
                                         <th>Name</th>
+                                        <th>Email</th>
                                         <th>Mobile</th>
                                         <th>Order Status</th>
                                         <th>Payment Status</th>
@@ -159,9 +160,18 @@
                                     @foreach($latestOrders as $order)
                                     <tr>
                                         <td>{{ @$order["order_id"] }}</td>
-                                        <td>{{ ucfirst(@$order["first_name"]) }} {{ @$order["last_name"] }} </td>
-                                        <td>{{ @$order["phone_no"] }}</td>
-                                        <td>{{ @$order["order_status"] }}</td>
+                                        <td>
+                                        @if($order["first_name"] != '') {{  ucfirst(@$order["first_name"]) }} {{ @$order["last_name"] }}
+                                        @else 
+                                        -
+                                        @endif
+                                        </td>
+                                        <td>
+                                        @if($order["email"] != '') {{ @$order["email"] }} @else 
+                                        -
+                                        @endif </td>
+                                        <td>@if($order["phone_no"] != '') {{ @$order["phone_no"] }} @else - @endif</td>
+                                        <td>{{ @$order["order_status"] }}</td>  
                                         <td>{{ @$order["payment_status"] }}</td>
                                         <td>{{ @$order["payment_method"] }}</td>
                                         <td><?php //echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : '';         ?><span class="currency-sym"></span> {{ @$order["total_amount"] }} </td>
@@ -283,10 +293,10 @@
                                                             <div style="width: 20px; height: 20px; background-color: {{$product["color"]}}"></div>
                                                         </td>
                                                         <td>
-                                                            {{@$product["product_name"]->product}}
+                                                            {{$product["product_name"]->product}}
                                                         </td>
                                                         <td>
-                                                         Rs. {{ number_format((@$product["product_name"]->price* Session::get('currency_val')), 2, '.', '')}}
+                                                         Rs. {{ number_format((@$product["product_name"]->price* Session::get('currency_val')), 2, '.', '')}} 
                                                      </td>
                                                      <td class="pull-left">
                                                         {{$product["quantity"]}}
@@ -311,15 +321,12 @@
                                 </div>
                                 <div class="box-body">
                                    <center>  <canvas id="mycanvas" width="300" height="300"></canvas>
-                                   </canvas>
+                                   </canvas> 
                                    <div class="table-responsive">
                                     <table class="table no-margin">
 
                                         <tbody>
-
-                                        @if(count($items) > 0)
                                             @foreach($items as $item)
-
                                             <tr>
                                                 <td>
                                                     <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
@@ -328,14 +335,13 @@
                                                     {{$item["customer_name"]}}
                                                 </td>
                                                 <td>
-                                                    Rs. {{$item["total"]}}
+                                                    Rs. {{$item["total"]}} 
                                                 </td>
                                             </tr>
                                             @endforeach
-                                        @endif
                                         </tbody>
                                     </table>
-                                </div>
+                                </div> 
                             </div>
 
                         </div>
@@ -474,323 +480,11 @@
                                 <div id="ordersChart">
                                      {!! $orders_chart->html() !!}
                                 </div>
-
+                                   
                                 </div>
                             </div>
-                            </div>
+                            </div></div>
                         </div>
-
-                        <div class="clearfix"></div>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="box box-success" >
-                                <div class="box-header dashbox-header with-border bg-green">
-                                    <h3 class="box-title dashbox-title">New Customers</h3>
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                    <div class="box-body">
-                                        <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id="" name="customers_daterange"  class="form-control customers_daterange textInput">
-
-                                        <span class="input-group-addon">
-                                            <i class=" ion ion-calendar"></i>
-                                        </span>
-                                        </div>
-                                        <div id="NewCustomerChart">
-                                        {!! $Newcustomer_chart->html() !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                            <div class="box box-warning" >
-                            <div class="box-header dashbox-header with-border bg-yellow">
-                                <h3 class="box-title dashbox-title">Product Sales</h3>
-                                <div class="box-tools pull-right">
-                                    <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                    </button>
-                                    <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                                <div class="box-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                    <input type="text" class="form-control prod-search" placeholder="Search Product" />
-                                    </div>
-                                    <div class="col-md-6">
-                                    <div class="input-group date" id="datepickerDemo">
-                                    <input placeholder="Select Date" type="text" id="prod_sales_date" name="datefrom"  class="form-control prod_sales_daterange textInput">
-                                    <input type="hidden" id="prodId" />
-                                    <span class="input-group-addon">
-                                        <i class=" ion ion-calendar"></i>
-                                    </span>
-                                </div>
-                                    </div>
-                                </div>
-                                <div id="ProdSalesChart">
-                                     {!! $product_sales_chart->html() !!}
-                                </div>
-
-                                </div>
-                            </div>
-                            </div>
-
-
-                        </div>
-                        <div class="clearfix"></div>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="box box-success" >
-                                <div class="box-header dashbox-header with-border bg-green">
-                                    <h3 class="box-title dashbox-title">Purchase vs Sales</h3>
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                    <div class="box-body">
-                                        <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id=""   class="form-control purch_sales_daterange textInput">
-
-                                        <span class="input-group-addon">
-                                            <i class=" ion ion-calendar"></i>
-                                        </span>
-                                        </div>
-                                        <div id="PurchSalesChart">
-                                        {!! $purchase_sales_chart->html() !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                            <div class="box box-warning" >
-                            <div class="box-header dashbox-header with-border bg-yellow">
-                                <h3 class="box-title dashbox-title">Online vs Walk-in Orders</h3>
-                                <div class="box-tools pull-right">
-                                    <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                    </button>
-                                    <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                                <div class="box-body">
-                                <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id=""  class="form-control ovw_daterange textInput">
-
-                                        <span class="input-group-addon">
-                                            <i class=" ion ion-calendar"></i>
-                                        </span>
-                                        </div>
-                                <div id="OnlinevsWalkinChart">
-                                     {!! $online_walkin_chart->html() !!}
-                                </div>
-
-                                </div>
-                            </div>
-                            </div>
-
-
-                        </div>
-                        <div class="clearfix"></div>
-                        <br>
-                        <div class="row">
-
-                            <div class="col-md-6">
-                                <div class="box box-success" >
-                                <div class="box-header dashbox-header with-border bg-green">
-                                    <h3 class="box-title dashbox-title">Customers Visited</h3>
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                    <div class="box-body">
-                                        <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id="" name="vcustomers_daterange"  class="form-control vcustomers_daterange textInput">
-
-                                        <span class="input-group-addon">
-                                            <i class=" ion ion-calendar"></i>
-                                        </span>
-                                        </div>
-                                        <div id="CustomerVisitedChart">
-                                        {!! $Customervisited_chart->html() !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="box box-warning" >
-                                <div class="box-header dashbox-header with-border bg-yellow">
-                                    <h3 class="box-title dashbox-title">Customers Not Visited</h3>
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                    <div class="box-body">
-                                        <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id="" name="nvcustomers_daterange"  class="form-control nvcustomers_daterange textInput">
-
-                                        <span class="input-group-addon">
-                                            <i class=" ion ion-calendar"></i>
-                                        </span>
-                                        </div>
-                                        <div id="CustomernotVisitedChart">
-                                        {!! $Customernotvisited_chart->html() !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                      <div class="clearfix"></div>
-                        <br>
-                        
-                        <div class="row">
-
-                            <div class="col-md-6">
-                                <div class="box box-success" >
-                                <div class="box-header dashbox-header with-border bg-green">
-                                    <h3 class="box-title dashbox-title">Customers Lost Rate</h3>
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                    <div class="box-body">
-                                        <div class="input-group date Nform_date" id="datepickerDemo">
-                                        <input placeholder="Select Date" type="text" id="" name="customerslost_daterange"  class="form-control customerslost_daterange textInput">
-
-                                        <span class="input-group-addon">
-                                            <i class=" ion ion-calendar"></i>
-                                        </span>
-                                        </div>
-                                        <div id="CustomerLostChart">
-                                        {!! $Customerlost_chart->html() !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="col-md-6 marginBottom20">
-                            <div class="box box-warning" >
-                                    <div class="box-header dashbox-header with-border bg-yellow">
-                                        <h3 class="box-title dashbox-title">Average Order/Bill</h3>
-                                        <div class="box-tools pull-right">
-                                            <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                            </button>
-                                            <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="box-body">
-                                        <div class="input-group date Nform_date" id="datepickerDemo">
-                                            <input placeholder="Select Date" type="text" id="" name="avgbill_daterange"  class="form-control avgbill_daterange textInput">
-
-                                            <span class="input-group-addon">
-                                                <i class=" ion ion-calendar"></i>
-                                            </span>
-                                        </div>
-                                        <center><h4 id="billtitle">Weekly Average</h4></center>
-                                        </br>
-                                       <center> <canvas id="mybill" width="300" height="300"></canvas>
-                                       <div class="table-responsive">
-                                        <table class="table no-margin">
-
-                                            <tbody>
-                                            @if(count($billamount)>0)
-                                                @foreach($billamount as $billamounts)
-                                                <tr>
-
-                                                    <td>
-                                                        {{$billamounts["customer_name"]}}
-                                                    </td>
-                                                    <td id="totalbill">
-                                                        Rs. {{$billamounts["total"]}}
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            @endif
-                                            </tbody>
-                                        </table>
-                                        </div>
-                                    </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                        <div class="clearfix"></div>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-6 marginBottom20">
-                                <div class="box box-success" >
-                                    <div class="box-header dashbox-header with-border bg-green">
-                                        <h3 class="box-title dashbox-title">Returning Customer</h3>
-                                        <div class="box-tools pull-right">
-                                            <button type="button" class="btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                            </button>
-                                            <button type="button" class="btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="box-body">
-                                    <div class="row">
-                                    <div class="col-md-9">
-                                        <select class="form-control" id="filter" onChange="getReturnedCustomer()">
-                                        <option value="Weekly" selected>Weekly</option>
-                                        <option value="Monthly">Monthly</option>
-                                        <option value="Yearly">Yearly</option>
-                                        </select>
-                                    </div>
-
-                                    <button type="button" onClick="getReturnedCustomerData()" class="btn btn-success">View Data</button>
-                                    </div>
-
-                                        <div id="ReturningCustomerChart">
-                                        {!! $returning_customer_chart->html() !!}
-                                        </div>
-                                        <!-- <center> <canvas id="returningcustCanvas" width="300" height="300"></canvas>  </center> -->
-                                        <div class="table-responsive">
-                                            <table class="table no-margin">
-                                                <tbody>
-                                                @if(count($returncust) > 0)
-                                                      @foreach($returncust as $item)
-                                                        <!-- <tr>
-                                                            <td>
-                                                                <div style="width: 20px; height: 20px; background-color: {{$item["color"]}}"></div>
-                                                            </td>
-                                                            <td>
-                                                                {{$item["customer_name"]}}
-                                                            </td>
-                                                            <td>
-                                                                Rs. {{$item["total"]}}
-                                                            </td>
-                                                        </tr> -->
-                                                        @endforeach
-                                                        @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <form method="post" id="returnCustForm" action="{{ route('admin.returningCustView') }}">
-                                        <input type="hidden" id="custData" name="custData" />
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <br>
             </div>
         </section>
 
@@ -798,163 +492,14 @@
          {!! Charts::scripts() !!}
 {!! $Sales_chart->script() !!}
 {!! $orders_chart->script() !!}
-{!! $Newcustomer_chart->script() !!}
-{!! $Customernotvisited_chart->script() !!}
-{!! $Customervisited_chart->script() !!}
-{!! $Customerlost_chart->script() !!}
-{!! $product_sales_chart->script() !!}
-{!! $purchase_sales_chart->script() !!}
-{!! $online_walkin_chart->script() !!}
-{!! $returning_customer_chart->script() !!}
         @section('myscripts')
-<script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
+        <script src="{{  Config('constants.adminPlugins').'/daterangepicker/daterangepicker.js' }}"></script>
 <script type="text/javascript">
-var prod_id = 0;
-function getReturnedCustomerData(){
-    var filter = $("#filter").val();
-    $.ajax({
-           type:'GET',
-           url:'returning-cust',
-           data:{filter:filter},
-           success:function(data){
-                var str = JSON.stringify(data);
-                $("#custData").val(str);
-                $( "#returnCustForm" ).submit();
-           }
-        });
-    //window.location.href = "{{ route('admin.returningCust')}}";
-}
 
-function getReturnedCustomer(){
-    var filter = $("#filter").val();
-    var chart = 1;
-    $.ajax({
-           type:'GET',
-           url:'returning-cust',
-           data:{filter:filter,chart:chart},
-           success:function(data){
-
-               $("#ReturningCustomerChart").html(data);
-           }
-        });
-}
-
-$(".prod-search").autocomplete({
-        source: "{{route('admin.offers.searchProduct')}}",
-        minLength: 1,
-        select: function (event, ui) {
-            var prod_id = ui.item.id;
-            $("#prodId").val(prod_id);
-            $(this).attr('data-prdid', ui.item.id);
-            $(this).parent().find('input.prod').val(ui.item.id);
-            $(this).parent().parent().attr('data-prod-id', ui.item.id);
-            getProdData(ui.item.id);
-        }
-});
-function getProdData(prod_id){
-    var ProdSalesdate = $("#prod_sales_date").val();
-    var date_range = ProdSalesdate.split(/-/g);
-    var sdate    = new Date(date_range[0]),
-    yr      = sdate.getFullYear(),
-    month   = sdate.getMonth() < 10 ? '0' + sdate.getMonth() : sdate.getMonth(),
-    day     = sdate.getDate()  < 10 ? '0' + sdate.getDate()  : sdate.getDate(),
-    startdate = yr + '-' + month + '-' + day;
-
-    var edate    = new Date(date_range[1]),
-    eyr      = edate.getFullYear(),
-    emonth   = edate.getMonth() < 10 ? '0' + edate.getMonth() : edate.getMonth(),
-    eday     = edate.getDate()  < 10 ? '0' + edate.getDate()  : edate.getDate(),
-    enddate = eyr + '-' + emonth + '-' + eday;
-
-    $.ajax({
-           type:'POST',
-           url:'prod-sales-stat',
-           data:{startdate:startdate,enddate:enddate,prod_id:prod_id},
-           success:function(data){
-              $("#ProdSalesChart").html(data);
-           }
-        });
-}
     $(function () {
 
     var start = moment().subtract(29, 'days');
     var end = moment();
-    $('.purch_sales_daterange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, function (start,end,label) {
-
-        var startdate = start.format('YYYY-MM-DD');
-        var enddate = end.format('YYYY-MM-DD');
-
-        $.ajax({
-           type:'POST',
-           url:'purchase-vs-sales-stat',
-           data:{startdate:startdate,enddate:enddate},
-           success:function(data){
-              $("#PurchSalesChart").html(data);
-           }
-        });
-    });
-    $('.ovw_daterange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, function (start,end,label) {
-
-        var startdate = start.format('YYYY-MM-DD');
-        var enddate = end.format('YYYY-MM-DD');
-
-        $.ajax({
-           type:'POST',
-           url:'online-vs-walkin-stat',
-           data:{startdate:startdate,enddate:enddate},
-           success:function(data){
-              $("#OnlinevsWalkinChart").html(data);
-           }
-        });
-    });
-    $('.prod_sales_daterange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, function (start,end,label) {
-
-        var startdate = start.format('YYYY-MM-DD');
-        var enddate = end.format('YYYY-MM-DD');
-        var prodId = $("#prodId").val();
-
-        $.ajax({
-           type:'POST',
-           url:'prod-sales-stat',
-           data:{startdate:startdate,enddate:enddate,prod_id:prodId},
-           success:function(data){
-              $("#ProdSalesChart").html(data);
-           }
-        });
-    });
 
     $('.sales_daterange').daterangepicker({
         startDate: start,
@@ -968,10 +513,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-
+        
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-
+        
         $.ajax({
            type:'POST',
            url:'sales-stat',
@@ -981,165 +526,6 @@ function getProdData(prod_id){
            }
         });
     });
-
-
-    //new customer
-      $('.customers_daterange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, function (start,end,label) {
-
-        var startdate = start.format('YYYY-MM-DD');
-        var enddate = end.format('YYYY-MM-DD');
-
-        $.ajax({
-           type:'POST',
-           url:'customers-stat',
-           data:{startdate:startdate,enddate:enddate},
-           success:function(data){
-              $("#NewCustomerChart").html(data);
-           }
-        });
-    });
-
-    //avg bill range
-      $('.avgbill_daterange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-            //'Today': [moment(), moment()],
-            //'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, function (start,end,label) {
-
-        var startdate = start.format('YYYY-MM-DD');
-        var enddate = end.format('YYYY-MM-DD');
-
-        $.ajax({
-           type:'POST',
-           url:'avgbill-stat',
-           data:{startdate:startdate,enddate:enddate},
-           success:function(data){
-              //console.log(data.billamount[0]['total']);
-              var value = data.value;
-              var color = data.color;
-              var label = data.label;
-              var ctx3 = $("#mybill").get(0).getContext("2d");
-               var dataBill = [
-                {
-                    value: value,
-                    color: color,
-                    label: label,
-                },
-            ];
-             var piechartBills = new Chart(ctx3).Pie(dataBill);
-              $("#totalbill").html(value);
-              $("#billtitle").html('<h4>Average Between ' + startdate + ' - ' + enddate + '</h4>');
-           }
-        });
-    });
-
-
-
-
-    //customer not visited
-      $('.nvcustomers_daterange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, function (start,end,label) {
-
-        var startdate = start.format('YYYY-MM-DD');
-        var enddate = end.format('YYYY-MM-DD');
-
-        $.ajax({
-           type:'POST',
-           url:'notvisitedcustomers-stat',
-           data:{startdate:startdate,enddate:enddate},
-           success:function(data){
-              $("#CustomernotVisitedChart").html(data);
-           }
-        });
-    });
-
-
-      //customer  visited
-      $('.vcustomers_daterange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, function (start,end,label) {
-
-        var startdate = start.format('YYYY-MM-DD');
-        var enddate = end.format('YYYY-MM-DD');
-
-        $.ajax({
-           type:'POST',
-           url:'visitedcustomers-stat',
-           data:{startdate:startdate,enddate:enddate},
-           success:function(data){
-              $("#CustomerVisitedChart").html(data);
-           }
-        });
-    });
-
-    //customer  lost
-      $('.customerslost_daterange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-            //'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, function (start,end,label) {
-
-        var startdate = start.format('YYYY-MM-DD');
-        var enddate = end.format('YYYY-MM-DD');
-
-        $.ajax({
-           type:'POST',
-           url:'customerslost-stat',
-           data:{startdate:startdate,enddate:enddate},
-           success:function(data){
-              $("#CustomerLostChart").html(data);
-           }
-        });
-    });
-
-
-
-
-
-
-
 
     $('.datefromto').daterangepicker({
         startDate: start,
@@ -1153,10 +539,10 @@ function getProdData(prod_id){
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, function (start,end,label) {
-
+        
         var startdate = start.format('YYYY-MM-DD');
         var enddate = end.format('YYYY-MM-DD');
-
+        
         $.ajax({
            type:'POST',
            url:'order-stat',
@@ -1178,7 +564,7 @@ function getProdData(prod_id){
 </script>
         <script>
             $(document).ready(function(){
-
+             
                $('.OrderDate').blur(function (){
                      var form = $('#orderForm');
                      var url = form.attr('action');
@@ -1189,7 +575,7 @@ function getProdData(prod_id){
                    data: form.serialize(), // serializes the form's elements.
                    success: function(data)
                    {
-
+                    console.log(data);
                         // var orderData = [];
                         // for(var k in data) {
                         //     orderData[k] =  data[k].created_at +":"+ data[k].total_order;
@@ -1198,7 +584,7 @@ function getProdData(prod_id){
                             data: data,
                             color: "#3c8dbc"
                         };
-
+                
                         $.plot("#bar-chart", [bar_data], {
                             grid: {
                                 borderWidth: 1,
@@ -1234,7 +620,7 @@ function getProdData(prod_id){
                    data: form.serialize(), // serializes the form's elements.
                    success: function(data)
                    {
-
+                    console.log(data);
                         // var orderData = [];
                         // for(var k in data) {
                         //     orderData[k] =  data[k].created_at +":"+ data[k].total_order;
@@ -1272,94 +658,174 @@ function getProdData(prod_id){
 
                var ctx1 = $("#mycanvas").get(0).getContext("2d");
                var dataCustomers = [
-               <?php
-if (count($items) > 0) {
-    foreach ($items as $item) {
-        ?>
-                    {
-                        value: {{$item['total']}},
-                        color: "{{$item['color']}}",
+               <?php 
+               foreach($items as $item)
+               {
+                ?>
+                {
+                    value: {{$item['total']}},
+                    color: "{{$item['color']}}",
 
-                        label: "{{$item['customer_name']}}",
-                    },
-                    <?php
-}
-}
-?>
+                    label: "{{$item['customer_name']}}",
+                },
+                <?php 
+            }
+            ?>
 
-            ];
+            ];  
             var piechartCustomers = new Chart(ctx1).Pie(dataCustomers);
-
-
             var ctx2 = $("#productCanvas").get(0).getContext("2d");
             var dataProducts = [
-            <?php
-foreach ($products as $product) {
-    ?>
+            <?php 
+            foreach($products as $product)
+            {
+                ?>
                 {
                     value: {{$product['quantity']}},
                     color: "{{$product['color']}}",
 
-                    label: "{{@$product["product_name"]->product}}",
-                },
-                <?php
-}
-?>
+                    label: "{{$product["product_name"]->product}}",
+                },  
+                <?php 
+            }
+            ?> 
             ];
             var piechartProducts = new Chart(ctx2).Pie(dataProducts);
-
-
-
-            var ctx3 = $("#mybill").get(0).getContext("2d");
-            var dataBill = [
-            <?php
-if (count($billamount) > 0) {
-    foreach ($billamount as $billamounts) {
-        ?>
-                {
-                    value: "{{$billamounts['total']}}",
-                    color: "{{$billamounts['color']}}",
-
-                    label: "{{$billamounts['customer_name']}}",
-                },
-                <?php
-}
-}
-?>
-            ];
-            var piechartBills = new Chart(ctx3).Pie(dataBill);
-
-
         });
     </script>
 
     <script>
         <?php
-$labels = '[';
-$amount = '[';
-foreach ($salesGraph as $sale) {
-    $labels .= '"' . date('d M', strtotime($sale['created_at'])) . '",';
-    $amount .= '"' . $sale['total_amount'] . '",';
-}
-$labels .= ']';
-$amount .= ']';
-?>
+        $labels = '[';
+        $amount = '[';
+        foreach ($salesGraph as $sale) {
+            $labels .= '"' . date('d M', strtotime($sale['created_at'])) . '",';
+            $amount .= '"' . $sale['total_amount'] . '",';
+        }
+        $labels .= ']';
+        $amount .= ']';
+        ?>
+        var areaChartCanvas = $("#areaChart").get(0).getContext("2d");
+        var bareaChartCanvas = $("#bareaChart").get(0).getContext("2d");
+        var barea = $("#bareaChart").get(0).getContext("2d");
 
+        var areaChart = new Chart(areaChartCanvas);
+        var bareaChart = new Chart(bareaChartCanvas);
+        var areaChartData = {
+            labels: <?php echo $labels; ?>,
+            datasets: [
+            {
+                label: "Electronics",
+                fillColor: "rgba(60,141,188,0.9)",
+                strokeColor: "rgba(60,141,188,0.8)",
+                pointColor: "#3b8bba",
+                pointStrokeColor: "rgba(60,141,188,1)",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(60,141,188,1)",
+                data: <?php echo $amount; ?>
+            }
+            ]
+        };
+        var areaChartOptions = {
+        showScale: true, //Boolean - If we should show the scale at all        
+        scaleShowGridLines: true, //Boolean - Whether grid lines are shown across the chart        
+        scaleGridLineColor: "rgba(0,0,0,.05)", //String - Colour of the grid lines        
+        scaleGridLineWidth: 1, //Number - Width of the grid lines        
+        scaleShowHorizontalLines: true, //Boolean - Whether to show horizontal lines (except X axis)        
+        scaleShowVerticalLines: true, //Boolean - Whether to show vertical lines (except Y axis)        
+        bezierCurve: true, //Boolean - Whether the line is curved between points       
+        bezierCurveTension: 0.3, //Number - Tension of the bezier curve between points      
+        pointDot: true, //Boolean - Whether to show a dot for each point      
+        pointDotRadius: 5, //Number - Radius of each point dot in pixels      
+        pointDotStrokeWidth: 1, //Number - Pixel width of point dot stroke       
+        pointHitDetectionRadius: 20, //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+        datasetStroke: true, //Boolean - Whether to show a stroke for datasets      
+        datasetStrokeWidth: 2, //Number - Pixel width of dataset stroke
+        datasetFill: false, //Boolean - Whether to fill the dataset with a color
+        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>", //String - A legend template
+        maintainAspectRatio: true, //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+        responsive: true  //Boolean - whether to make the chart responsive to window resizing
+    };
+    areaChart.Line(areaChartData, areaChartOptions);
+    bareaChart.Line(areaChartData, areaChartOptions);
+
+    ////////////// Order Chart
     <?php
-$orderdata = '[';
-foreach ($orderGraph as $order) {
+    $orderdata = '[';
+    foreach ($orderGraph as $order) {
 
-    //echo date('d M', strtotime($order['created_at'])) . ',' . $order['total_order'];
-    $orderdata .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
+        //echo date('d M', strtotime($order['created_at'])) . ',' . $order['total_order'];
+         $orderdata .= '["' . date('d M', strtotime($order['created_at'])) . '",' . $order['total_order'] . '],';
 
-}
-$orderdata .= ']';
+    }
+    $orderdata .= ']';
+    
+    ?>
 
-?>
+    var bar_data = {
+        data: <?php echo $orderdata; ?>,
+        color: "#3c8dbc"
+    };
 
+    var orderBarChart  =  $.plot("#bar-chart", [bar_data], {
+        grid: {
+            borderWidth: 1,
+            borderColor: "#f3f3f3",
+            tickColor: "#f3f3f3"
+        },
+        series: {
+            bars: {
+                show: true,
+                barWidth: 0.5,
+                align: "center"
+            }
+        },
+        xaxis: {
+            mode: "categories",
+            tickLength: 0
+        }
+    });
 
     /* END BAR CHART */
 </script>
-
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+    </script>
 
 @stop

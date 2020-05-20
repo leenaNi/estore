@@ -160,7 +160,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         Zizaco\Entrust\EntrustServiceProvider::class,
         'Tymon\JWTAuth\Providers\JWTAuthServiceProvider',
-        Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class
     ],
     /*
       |--------------------------------------------------------------------------
@@ -212,7 +211,6 @@ return [
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
         'JWTAuth' => 'Tymon\JWTAuth\Facades\JWTAuth',
         'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
-        'Cart' => Gloudemans\Shoppingcart\Facades\Cart::class,
        
     ],
 ];

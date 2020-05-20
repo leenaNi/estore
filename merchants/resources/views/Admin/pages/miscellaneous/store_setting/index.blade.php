@@ -30,18 +30,9 @@
 
 <?php
 $jsonString = App\Library\Helper::getSettings();
- //dd($jsonString);
 $data = (object) $jsonString;
-//$country_code = (int)explode("+", $data->country_code)[1]; 
-$country_code =  $data->country_code; 
-
-if($country_code != '')
-{
-    $country = DB::table('countries')->where("country_code", $country_code)->get(["id", "name","iso_code_3"]);
-}else{
-    $country = DB::table('countries')->where("status", 1)->get(["id", "name","iso_code_3"]);
-}
-//$country = App\Library\Helper::getCountry($country_code);
+$country_code = (int)explode("+", $data->country_code)[1]; 
+$country = App\Library\Helper::getCountry($country_code);
     // echo "<pre>";print_r($country);die;
 ?>
 
@@ -72,7 +63,7 @@ if (isset($data->expiry_date)) {
                             <div class="form-group row">
                                 <div class="col-md-6" >
                                     <label>Logo (170px W X 100px H)</label>
-                                    <input type="file"  name="logo_img" id="logoF1" class="form-control ss-choose">
+                                    <input type="file"  name="logo_img" id="logoF1" class="form-control">
                                 </div>
                                 <div class="col-md-6" >
                                     <img src="{{ $data->logo }}" height="100" width="150" id="image_upload_preview" />           
@@ -187,7 +178,6 @@ if (isset($data->expiry_date)) {
 
 
                             {{--- seo starts --}}
-                            @if(Session::get('login_user_type') != 3)
                             <div class="form-group row">
                                 <div class="col-sm-6">
                                     {!! Form::label('meta_title', 'Meta Title',['class'=>'control-label']) !!}
@@ -208,14 +198,11 @@ if (isset($data->expiry_date)) {
                                     {!! Form::text('meta_robot',isset($data->meta_robot) ? $data->meta_robot : '',["class"=>'form-control',"placeholder"=>"Enter Meta Robots"]) !!}
                                 </div>
                             </div>
-                            @endif
                             <div class="form-group row">
-                                @if(Session::get('login_user_type') != 3)
                                 <div class="col-sm-6">
                                     {!! Form::label('canonical', 'Canonical',['class'=>'control-label']) !!}
                                     {!! Form::text('canonical',isset($data->canonical) ? $data->canonical : '',["class"=>'form-control',"placeholder"=>"Enter Meta Canonical"]) !!}
                                 </div>
-                                @endif
                                 <div class="col-sm-6">
                                     {!! Form::label('Social Shared Title', 'Social Shared Title',['class'=>'control-label']) !!}
                                     {!! Form::text('title',isset($data->title) ? $data->title : '',["class"=>'form-control',"placeholder"=>"Enter Social Shared Title"]) !!}
@@ -259,7 +246,7 @@ if (isset($data->expiry_date)) {
                             {{-- Country and pincode changes required ends--}}
 
                             <div class="form-group">
-                                <input type="submit" value="Save" id="saveLogo1" class="btn noLeftMargin btn-primary pull-left mn-w100">
+                                <input type="submit" value="Save" id="saveLogo1" class="btn noLeftMargin btn-primary pull-left">
                             </div>
                         </form>
                     </div><!-- /.col -->

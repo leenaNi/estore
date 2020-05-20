@@ -3,14 +3,7 @@
 
 <section class="content-header">
     <h1>
-        Social Media Links <?php
-        if($smlinkCount > 0)
-        {
-        ?>
-        ({{$startIndex}}-{{$endIndex}} of {{$smlinkCount }})
-        <?php
-        }
-        ?>
+        Social Media Links ({{$smlinkCount }})
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -66,7 +59,7 @@
                                 <!--<th>Image</th>-->
                                 <th>Sort Order</th>
                                 <th>Status</th>
-                                <th class="text-center mn-w100">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -84,44 +77,20 @@
                                 <!--<td><img src="{{ asset($public_path.$link->image) }}" class="img-responsive img-thumbnail" style="width: 50px;height: 50px;"></td>-->
                                 <td>{{($link->sort_order)}}</td>
                                 <td>
-                                <?php
-if ($link->status == 1) {
-    $statusLabel = 'Active';
-    $linkLabel = 'Mark as Inactive';
-} else {
-    $statusLabel = 'Inactive';
-    $linkLabel = 'Mark as Active';
-}
-?>
-<span class="alertSuccess">{{$statusLabel}}</span>
+                                    @if($link->status==1)
+                                    <a href="{!! route('admin.socialmedialink.changeStatus',['id'=>$link->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this link?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn btnNo-margn-padd"></i></a>
+                                    @elseif($link->status==0)
+                                    <a href="{!! route('admin.socialmedialink.changeStatus',['id'=>$link->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this link?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn btnNo-margn-padd"></i></a>
+                                    @endif
                                 </td>
-                                <td class="text-center mn-w100">
-                                    <!-- <a href="{!! route('admin.socialmedialink.edit',['id'=>$link->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a> -->
+                                <td>
+                                    <a href="{!! route('admin.socialmedialink.edit',['id'=>$link->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
                                     <!--<a href="{!! route('admin.socialmedialink.delete',['id'=>$link->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this link?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i>-->
-                                    
-                                    <div class="actionCenter">
-                                    <span>
-                                    <a class="btn-action-default" href="{!! route('admin.socialmedialink.edit',['id'=>$link->id]) !!}" ><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a>
-                                    </span>
-                                    <span class="dropdown">
-                                        <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                            <li><a href="{!! route('admin.staticpages.edit',['id'=>$link->id]) !!}"><i class="fa fa-pencil-square-o"></i> Edit</a></li>
-                                            @if($link->status==1)
-                                            <li><a href="{!! route('admin.staticpages.changeStatus',['id'=>$link->id]) !!}" onclick="return confirm('Are you sure you want to disable this link?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
-                                            @elseif($link->status==0)
-                                            <li><a href="{!! route('admin.staticpages.changeStatus',['id'=>$link->id]) !!}" onclick="return confirm('Are you sure you want to enable this link?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
-                                            @endif
-                                        </ul>
-                                    </span>
-                                </div>
-                                </td>
+                                    </td>
                                 </tr>
                                 @endforeach
                                 @else
-                                <tr><td colspan=3 class="text-center">No Record Found.</td></tr>
+                                <tr><td colspan=3>No Record Found.</td></tr>
                                 @endif
                             </tbody>
                         </table>

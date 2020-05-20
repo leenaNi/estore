@@ -3,14 +3,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        By Customers <?php
-        if($userCount > 0)
-        {
-        ?>
-            ({{$startIndex}}-{{$endIndex}} of {{$userCount }}) </span> </h1> 
-        <?php
-        }
-        ?>
+        By Customers ({{$userCount}})
         <small></small>
     </h1>
     <ol class="breadcrumb">
@@ -34,11 +27,11 @@
                          <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <input type="text" value="{{ !empty(Input::get('search_number')) ? Input::get('search_number') : '' }}" name="search_number" aria-controls="editable-sample" class="form-control medium" placeholder="Mobile"/>
                         </div>
-                        <div class="form-group col-md-4 col-sm-6 col-xs-12">
-                            <div class="search-resetsubmit">
-                                <input type="submit" name="submit" class="btn btn-primary form-control noMob-leftmargin mn-w100 no-leftmargin" value="Search">
-                                <a  href="{{route('admin.sales.bycustomer')}}" class="medium btn btn-block noLeftMargin reset-btn mn-w100">Reset</a>
-                            </div>
+                        <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                            <input type="submit" name="submit" class="btn btn-primary form-control noMob-leftmargin" value="Search">
+                        </div>
+                            <div class="form-group col-md-2 col-sm-6 col-xs-12 noMobBottomMargin">
+                         <a  href="{{route('admin.sales.bycustomer')}}" class="medium btn btn-block noLeftMargin reset-btn">Reset</a>
                         </div>
                     </form> 
                 </div>
@@ -64,7 +57,7 @@
                                 <th>Mobile</th>
                                 <th>Total Purchase</th>
                                 <th>Cashback</th>
-                                <th class="text-center mn-w100">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,12 +72,12 @@
                                 <td>{{ $user->telephone }}</td>
                                 <td><?php echo  !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">{{ number_format(@$user->userCashback->total_purchase_till_now,2) }}</span></td>
                                 <td><?php echo !empty(Session::get('currency_symbol')) ? Session::get('currency_symbol') : ''; ?> <span class="priceConvert">{{ number_format(@$user->userCashback->cashback,2)}}</span></td>
-                                <td class="text-center mn-w100"><a href="{{ URL::route('admin.sales.orderByCustomer',['id' => $user->id]) }}"  data-toggle="tooltip" title="View"><i class="fa fa-eye btn btn-penel btnNo-margn-padd"></i></a></td>
+                                <td><a href="{{ URL::route('admin.sales.orderByCustomer',['id' => $user->id]) }}"  data-toggle="tooltip" title="View"><i class="fa fa-eye btn btn-penel btnNo-margn-padd"></i></a></td>
                             </tr>
                             <?php //$i++ ?>
                             @endforeach
                               @else
-                           <tr><td colspan=6 class="text-center"> No Record Found.</td></tr>
+                           <tr><td colspan=6> No Record Found.</td></tr>
                             @endif
                             
                         </tbody>

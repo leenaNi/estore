@@ -1,19 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US" ng-app="app">
     <head>
-    @if(Route::currentRouteName() != 'newstore' && Route::currentRouteName() != 'waitProcess' && Route::currentRouteName() != 'getcongrats')
-        @if(Route::currentRouteName() == 'selectThemes')
-            @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
-                @include('Frontend.includes.head-estorifi')
-            @else            
-                @include('Frontend.includes.head-estorifi')
-            @endif 
-        @else
-            @include('Frontend.includes.head-estorifi')     
-        @endif
-    @else
         @include('Frontend.includes.head')
-    @endif
         @yield('mystyles')
     </head>
     <body>
@@ -23,48 +11,15 @@
         <div class="">
             <div id="wrapper" class="shop">
                 <div class="w1">
-                @if(Route::currentRouteName() != 'newstore' && Route::currentRouteName() != 'waitProcess' && Route::currentRouteName() != 'getcongrats')
-                    @if(Route::currentRouteName() == 'selectThemes')
-                        @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
-
-                        @else
-                            @include('Frontend.includes.header-estorifi')
-                        @endif
-                    @else
-                        @include('Frontend.includes.header-estorifi')
-                    @endif
-                @else
-                @endif
-
-                @yield('content')
-                @if(Route::currentRouteName() != 'newstore' && Route::currentRouteName() != 'waitProcess' && Route::currentRouteName() != 'getcongrats')
-                    @if(Route::currentRouteName() == 'selectThemes')
-                        @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
-
-                        @else
-                            @include('Frontend.includes.footer-estorifi')
-                        @endif
-                    @else
-                        @include('Frontend.includes.footer-estorifi')    
-                    @endif
-                @else    
+                    @include('Frontend.includes.header')
                     
-                @endif
-                @if(Route::currentRouteName() != 'newstore' && Route::currentRouteName() != 'waitProcess' && Route::currentRouteName() != 'getcongrats')
-                    @if(Route::currentRouteName() == 'selectThemes')
-                        @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
-                            @include('Frontend.includes.foot-estorifi')
-                        @else            
-                            @include('Frontend.includes.foot-estorifi')
-                        @endif
-                    @else
-                        @include('Frontend.includes.foot-estorifi')      
-                    @endif
-                @else
+                    @yield('content')
+                    
+                    @include('Frontend.includes.footer')
+                    
                     @include('Frontend.includes.foot')
-                @endif
-
-                @yield('myscripts')
+                    
+                    @yield('myscripts')
                 </div>
             </div>
         </div>

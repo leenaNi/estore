@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box">
-                <div class="box-header box-tools filter-box noBorder no-bottom-padding">
+                <div class="box-header box-tools filter-box noBorder">
                     <form action="{{ route('admin.generalSetting.view') }}" method="get" >
                         <input type="hidden" name="dataSearch" value="dataSearch"/>
                         <div class="form-group col-md-4  col-sm-6 col-xs-12">
@@ -26,11 +26,11 @@
                             {{ Form::select('status',['' => 'Select Status','1' => 'Yes', '0'=> 'No'],Input::get('status'),['class' => 'form-control']) }}
 
                         </div>
-                       <div class="form-group col-md-3 col-sm-12 col-xs-12">
-                            <div class="search-resetsubmit"> 
-                               <button type="submit" class="btn btn-primary form-control no-leftmargin mn-w100"> Search</button>
-                                <a href="{{ route('admin.generalSetting.view')}}" class="reset-btn btn btn-block noMob-leftmargin mn-w100">Reset </a>
+                       <div class="form-group col-md-2 col-sm-12 col-xs-12">
+                               <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Search</button>
                             </div>
+                        <div class="from-group col-md-2 col-sm-12 col-xs-12">
+                            <a href="{{ route('admin.generalSetting.view')}}" class="reset-btn btn btn-block noMob-leftmargin">Reset </a>
                         </div>
                     </form>
 
@@ -41,14 +41,13 @@
                     {{ Session::get('message') }}
                 </div>
                 @endif
-                <div class="dividerhr-seprator"></div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-striped table-hover tableVaglignMiddle">
                         <thead>
                             <tr>
 <!--                                <th>URL key</th>-->
-                                <th class="no-top-padding">Feature</th>
-                                <th class="no-top-padding" style="text-align:center">Status</th>
+                                <th>Feature</th>
+                                <th style="text-align:center">Status</th>
                                 <!-- <th>Action</th> -->
 
                             </tr>

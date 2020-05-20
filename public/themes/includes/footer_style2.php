@@ -85,7 +85,7 @@
 				<div class="container clearfix">
 
 					<div class="col_full text-center nobottommargin">
-					Copyright © <?php echo date("Y"); ?>. <a href="#">Your Store Name</a>. Powered by <a href="http://www.estorifi.com/" target="_blank">eStorifi</a>.
+					Copyright © <?php echo date("Y"); ?>. <a href="#">Your Store Name</a>. Powered by <a href="http://www.estorifi.com/" target="_blank">Estorifi</a>.
 						<div class="clearfix"></div>					
 					</div>
 

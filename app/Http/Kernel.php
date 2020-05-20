@@ -4,8 +4,7 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
-class Kernel extends HttpKernel
-{
+class Kernel extends HttpKernel {
 
     /**
      * The application's global HTTP middleware stack.
@@ -29,18 +28,13 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            //  \App\Http\Middleware\VerifyCsrfToken::class,
+         //  \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
         'api' => [
             'throttle:60,1',
             'bindings',
-            \Illuminate\Session\Middleware\StartSession::class,
-            \App\Http\Middleware\EncryptCookies::class,
         ],
-        'sessions' => [
-            \Illuminate\Session\Middleware\StartSession::class,
-        ]
     ];
 
     /**
@@ -60,10 +54,10 @@ class Kernel extends HttpKernel
         'role' => \Zizaco\Entrust\Middleware\EntrustRole::class,
         'permission' => \Zizaco\Entrust\Middleware\EntrustPermission::class,
         'ability' => \Zizaco\Entrust\Middleware\EntrustAbility::class,
-        'CheckUser' => \App\Http\Middleware\CheckUser::class,
-        // 'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-        // 'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
-        'jwt-auth' => \App\Http\Middleware\authJWT::class,
+         'CheckUser' => \App\Http\Middleware\CheckUser::class,
+//        'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+//        'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
+         'jwt-auth' => \App\Http\Middleware\authJWT::class,
     ];
 
 }

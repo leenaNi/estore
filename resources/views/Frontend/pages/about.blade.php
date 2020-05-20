@@ -5,10 +5,10 @@
 
     <!-- Page Title
 		============================================= -->
-		<section id="page-title" class="page-title-parallax page-title-center" style="background: url('{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/about-bg.jpg') }}') 0px; padding: 40px 0;">
+		<section id="page-title" class="page-title-parallax page-title-center" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/about-bg.jpg') }}') 0px; padding: 40px 0;">
 
 <div class="container clearfix">
-<img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/about-image.png') }}" alt="Offline to Online">
+<img src="{{ asset(Config('constants.frontendPublicImgPath').'/about-image.png') }}" alt="Offline to Online">
 <h3 class="white-text topmargin-xs bottommargin-xs" data-animate="fadeInUp">Give a digital dimension to your physical store</h3>
 	<!--<span class="white-text" data-animate="fadeInUp" data-delay="300">We are trying to expedite the process by providing superior technology and online assistance.</span> -->
 </div>
@@ -89,7 +89,7 @@ APIs</h5>
 					<div class="container clearfix">
 
 						<div class="col_half nobottommargin">
-							<img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/offer.jpg') }}" alt="Men" class="nobottommargin">
+							<img src="{{ asset(Config('constants.frontendPublicImgPath').'/offer.jpg') }}" alt="Men" class="nobottommargin">
 						</div>
 
 						<div class="col_half subscribe-widget nobottommargin col_last">

@@ -7,7 +7,7 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('/', ["as" => "admin.login", "uses" => "LoginController@login"]);
     Route::get('/logout', ["as" => "admin.vswipe.logout", "uses" => "LoginController@vswipeLogout"]);
     Route::any('/forgot-password', ["as" => "adminForgotPassword", "uses" => "LoginController@forgotPassword"]);
-    Route::any('/forgot-password-check', ["as" => "adminChkForgotPasswordEmail", "uses" => "LoginController@chkForgotPasswordEmail"]);
+     Route::any('/forgot-password-check', ["as" => "adminChkForgotPasswordEmail", "uses" => "LoginController@chkForgotPasswordEmail"]);
     Route::any('/reset-password/{link?}', ["as" => "adminResetPassword", "uses" => "LoginController@adminResetNewPassword"]);
     Route::any('/save-resetPwd', ["as" => "adminSaveResetPwd", "uses" => "LoginController@adminSaveResetPwd"]);
     
@@ -17,7 +17,7 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::get('/dashboard', ["as" => "admin.dashboard", "uses" => "LoginController@dashboard"]);
         Route::get('/getOrderDateWise', ["as" => "admin.getOrderDateWise", "uses" => "LoginController@getOrderDateWise"]);
         Route::get('/getSalesDateWise', ["as" => "admin.getSalesDateWise", "uses" => "LoginController@getSalesDateWise"]);
-        
+
         Route::group(['prefix' => 'merchants'], function () {
             Route::get('/', ["as" => "admin.merchants.view", "uses" => "MerchantController@index"]);
             Route::any('/add-edit', ["as" => "admin.merchants.addEdit", "uses" => "MerchantController@addEdit"]);
@@ -31,15 +31,21 @@ Route::group(['namespace' => 'Admin'], function () {
             
         });
 
-        Route::group(['prefix' => 'distributors'], function () {
-            //dd("inside group");
-            Route::get('/', ["as" => "admin.distributors.view", "uses" => "DistributorController@index"]);
-            Route::any('/add-edit', ["as" => "admin.distributors.addEdit", "uses" => "DistributorController@addEdit"]);
-            Route::post('/save-update', ["as" => "admin.distributors.saveUpdate", "uses" => "DistributorController@saveUpdate"]);
+        
+         Route::group(['prefix' => 'vendors'], function () {
+            Route::get('/', ["as" => "admin.vendors.view", "uses" => "VendorController@index"]);
+            Route::any('/add-edit', ["as" => "admin.vendors.addEdit", "uses" => "VendorController@addEdit"]);
+            Route::post('/save-update', ["as" => "admin.vendors.saveUpdate", "uses" => "VendorController@saveUpdate"]);
+            Route::any('/save-update-documents', ["as" => "admin.vendors.saveUpdateDocuments", "uses" => "VendorController@saveUpdateDocuments"]);
+            Route::any('/delete-document', ["as" => "admin.vendors.deleteDocument", "uses" => "VendorController@deleteDocument"]);
+            Route::any('/merchant-autocomplete', ["as" => "admin.vendors.merchantAutocomplete", "uses" => "VendorController@merchantAutocomplete"]);
+            Route::post('/check-existing-merchant', ["as" => "admin.vendors.checkExistingMerchant", "uses" => "VendorController@checkExistingMerchant"]);
         });
 
 
-        Route::group(['prefix' => 'stores'], function () {        
+        
+
+        Route::group(['prefix' => 'stores'], function () {
             Route::get('/', ["as" => "admin.stores.view", "uses" => "StoreController@index"]);
             Route::any('/check-store', ['as' => 'checkStoreAdmin', 'uses' => 'StoreController@checkStore']);
             Route::any('/add-edit', ["as" => "admin.stores.addEdit", "uses" => "StoreController@addEdit"]);
@@ -73,9 +79,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::any('/by-date-get-monthly', ["as" => "admin.analytics.byDateGetMonthly", "uses" => "AnalyticController@byDateGetMonthly"]);
             Route::any('/by-category-export', ["as" => "admin.analytics.byCategoryExport", "uses" => "AnalyticController@byCategoryExport"]);
 
-                
+            
         });
-
         Route::group(['prefix' => 'systemusers'], function () {
             Route::group(['prefix' => 'roles'], function() {
                 Route::get('/', ['as' => 'admin.systemusers.roles.view', 'uses' => 'VswipeRolesController@index']);
@@ -100,8 +105,6 @@ Route::group(['namespace' => 'Admin'], function () {
                 Route::any('/add-category', ["as" => "admin.masters.addCategory", "uses" => "CategoryController@addCategory"]);
                 Route::any('/add-attributeSet', ["as" => "admin.masters.addAttributeSet", "uses" => "CategoryController@addAttributeSet"]);
                 Route::any('/add-attribute', ["as" => "admin.masters.addAttribute", "uses" => "CategoryController@addAttribute"]);
-                Route::any('/edit', ["as" => "admin.masters.matsterCategories", "uses" => "CategoryController@matsterCategories"]);
-                Route::any('/update-master-categories', ["as" => "admin.master.category.update", "uses" => "CategoryController@updateMasterCategories"]);
             });
             Route::group(['prefix' => 'language'], function () {
                 Route::get('/', ["as" => "admin.masters.language.view", "uses" => "LanguageController@index"]);
@@ -115,42 +118,14 @@ Route::group(['namespace' => 'Admin'], function () {
                 Route::post('/delete', ["as" => "admin.masters.translation.delete", "uses" => "TranslationController@delete"]);
             });
             
-            Route::group(['prefix' => 'themes'], function () {
+              Route::group(['prefix' => 'themes'], function () {
                 Route::get('/', ["as" => "admin.masters.themes.view", "uses" => "StoreThemesController@index"]);
                 Route::any('/add-edit', ["as" => "admin.masters.themes.addEdit", "uses" => "StoreThemesController@addEdit"]);
                 Route::post('/save-update', ["as" => "admin.masters.themes.saveUpdate", "uses" => "StoreThemesController@saveUpdate"]);
                 Route::post('/change-status', ["as" => "admin.masters.themes.changeStatus", "uses" => "StoreThemesController@changeStatus"]);
                 Route::get('/delete-banner', ["as" => "admin.masters.themes.deleteBanner", "uses" => "StoreThemesController@deleteBanner"]);
             });
-
-            Route::group(['prefix' => 'company'], function () {
-                Route::get('/', ["as" => "admin.masters.company.view", "uses" => "CompanyController@index"]);
-                Route::any('/add-edit', ["as" => "admin.masters.company.addEdit", "uses" => "CompanyController@addEditCompany"]);
-                Route::post('/save-update', ["as" => "admin.masters.company.saveUpdate", "uses" => "CompanyController@saveCompany"]);
-            });
-
-            Route::group(['prefix' => 'brand'], function () {
-                Route::get('/', ["as" => "admin.masters.brand.view", "uses" => "BrandController@index"]);
-                Route::any('/add-edit', ["as" => "admin.masters.brand.addEdit", "uses" => "BrandController@addEditBrand"]);
-                Route::post('/save-update', ["as" => "admin.masters.brand.saveUpdate", "uses" => "BrandController@saveBrand"]);
-                Route::get('/delete-brand', ["as" => "admin.masters.brand.deleteBrand", "uses" => "BrandController@deleteBrand"]);
-            });
-
-            Route::group(['prefix' => 'country'], function () {
-                Route::get('/', ["as" => "admin.masters.country.view", "uses" => "CountryController@index"]);
-                Route::any('/add-edit', ["as" => "admin.masters.country.addEdit", "uses" => "CountryController@addEditCountry"]);
-                Route::post('/save-update', ["as" => "admin.masters.country.saveUpdate", "uses" => "CountryController@saveUpdate"]);
-                Route::any('/change-status', ["as" => "admin.masters.country.changeStatus", "uses" => "CountryController@changeStatus"]);
-            });
-
-            Route::group(['prefix' => 'currency'], function () {
-                Route::get('/', ["as" => "admin.masters.currency.view", "uses" => "CurrencyController@index"]);
-                Route::any('/add-edit', ["as" => "admin.masters.currency.addEdit", "uses" => "CurrencyController@addEditCountry"]);
-                Route::post('/save-update', ["as" => "admin.masters.currency.saveUpdate", "uses" => "CurrencyController@saveUpdate"]);
-                Route::any('/change-status', ["as" => "admin.masters.currency.changeStatus", "uses" => "CurrencyController@changeStatus"]);
-            });
         });
-
         Route::group(['prefix' => 'settings'], function () {
             Route::get('/', ["as" => "admin.settings.view", "uses" => "SettingsController@index"]);
             Route::post('/', ["as" => "admin.settings.update", "uses" => "SettingsController@update"]);
@@ -209,26 +184,6 @@ Route::group(['namespace' => 'Admin'], function () {
         });
         Route::group(['prefix' => 'set-cron'], function() {
             Route::get('/get-update-sales', ['as' => 'admin.setCron.getDashboard', 'uses' => 'SetCronController@updateSales']);
-        });
-
-        Route::group(['prefix' => 'category'], function () {
-            Route::get('/', ['as' => 'admin.category.view', 'test' => 'test', 'uses' => 'CategoryMasterController@index']);
-            Route::get('/add', ['as' => 'admin.category.add', 'uses' => 'CategoryMasterController@add']);
-            Route::post('/save', ['as' => 'admin.category.save', 'uses' => 'CategoryMasterController@save']);
-            Route::get('/edit', ['as' => 'admin.category.edit', 'uses' => 'CategoryMasterController@edit']);
-            Route::any('/delete', ['as' => 'admin.category.delete', 'uses' => 'CategoryMasterController@delete']);
-            Route::get('/cat-seo', ['as' => 'admin.category.catSeo', 'uses' => 'CategoryMasterController@catSeo']);
-            Route::post('/cat-seo-save', ['as' => 'admin.category.saveCatSeo', 'uses' => 'CategoryMasterController@saveCatSeo']);
-            Route::any('/sample-category-download', ['as' => 'admin.category.sampleCategoryDownload', 'uses' => 'CategoryMasterController@sampleCategoryDownload']);
-            Route::any('/sample-bulk-download', ['as' => 'admin.category.sampleBulkDownload', 'uses' => 'CategoryMasterController@sampleBulkDownload']);
-            Route::any('/category-bulk-upload', ['as' => 'admin.category.categoryBulkUpload', 'uses' => 'CategoryMasterController@categoryBulkUpload']);
-            Route::any('/category-bulk-image-upload', ['as' => 'admin.category.catBulkImgUpload', 'uses' => 'CategoryMasterController@catBulkImgUpload']);
-            Route::any('/category-check', ['as' => 'admin.category.checkcat', 'uses' => 'CategoryMasterController@checkCatName']);
-            Route::any('/change-status', ['as' => 'admin.category.changeStatus', 'uses' => 'CategoryMasterController@changeStatus']);
-            Route::any('/category-img-delete', ['as' => 'admin.category.catImgDelete', 'uses' => 'CategoryMasterController@catImgDelete']);
-            Route::any('/size-chart', ['as' => 'admin.category.sizeChart', 'uses' => 'CategoryMasterController@sizeChart']);
-            Route::any('/requested-categories', ['as' => 'admin.category.categoriesRequested', 'uses' => 'CategoryMasterController@categoriesRequested']);
-            Route::any('/approve-category', ['as' => 'admin.category.approve', 'uses' => 'CategoryMasterController@approveCategory']);
         });
     });
 });

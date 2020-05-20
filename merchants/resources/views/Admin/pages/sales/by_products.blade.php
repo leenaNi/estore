@@ -3,15 +3,8 @@
 
 <section class="content-header">
     <h1>
-        By Products <?php
-        if($prodCount > 0)
-        {
-        ?>
-           <span> ({{$startIndex}}-{{$endIndex}} of {{$prodCount }}) </span> 
-        <?php
-        }
-        ?>  
-        </h1>  <small></small>
+        By Products ({{$prodCount }})
+        <small></small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashnoard</a></li>
@@ -35,11 +28,11 @@
                             <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Product"/>
                         </div>
 
-                        <div class="form-group col-md-4  col-sm-6 col-xs-12">
-                            <div class="search-resetsubmit">
-                                <input type="submit" name="submit" class="form-control btn btn-primary mobAddnewflagBTN mn-w100  no-leftmargin" value="Search">
-                                <a  href="{{route('admin.sales.byproduct')}}" class="medium btn btn-block reset-btn mn-w100" style="margin-left:0px">Reset</a>
-                            </div>
+                        <div class="form-group col-md-2  col-sm-6 col-xs-12 noAllpadding">
+                            <input type="submit" name="submit" class="form-control btn btn-primary mobAddnewflagBTN" value="Search">
+                        </div>
+                        <div class="form-group col-md-2 noBottomMargin col-sm-6 col-xs-12">
+                            <a  href="{{route('admin.sales.byproduct')}}" class="medium btn btn-block reset-btn" style="margin-left:0px">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -105,7 +98,7 @@
                             </tr>
                             @endforeach
                             @else
-                            <tr><td colspan=6 class="text-center"> No Record Found.</td></tr>
+                            <tr><td colspan=6> No Record Found.</td></tr>
                             @endif
                         </tbody>
                     </table>

@@ -11,6 +11,8 @@
     </div>
 </section>
 <div id="content" class="site-content single-product">
+
+
     <div class="container">
         @if(!empty($cart->toArray()))
         <form class="cart-form" action="#">
@@ -41,43 +43,43 @@
                                 <span style="cursor: pointer;" data-rowid='{{ $item->rowid }}'  class="remove removeCartItem"><i class="icon-line2-trash"></i></span>
                             </td>
                             <?php
-?>
+                            ?>
                             <td class="cartProductName" valign="top">
                                 <div class="CPN-Box">
                                 <div class="CPN-BoxLeft">
                                     <a href="{{ route('home')}}/{{$item->options->url}}">
-                                <?php if ($item->options->image != "") {?>
+                                <?php if ($item->options->image != "") { ?>
                                     <img src="{{ config('constants.productImgPath').'/'.$item->options->image }}" class="cart-prodimg"/>
-                                <?php } else {?>
+                                <?php } else { ?>
                                     <img src="{{ (Config('constants.defaultImgPath').'/default-product.jpg') }}" class="cart-prodimg"/>
-                                <?php }?>
+                                <?php } ?>
                                     </a>
                                 </div>
                                 <div class="CPN-BoxRight">
                                     <div><a href="{{ route('home')}}/{{$item->options->url}}">{{ $item->name }}</a>
                                 <div class="clearfix"></div></div>
                                 <?php
-if ($item->options->CatType != '') {
-    echo "(" . $item->options->CatType . ")";
-}
-?>
+                                if ($item->options->CatType != '') {
+                                    echo "(" . $item->options->CatType . ")";
+                                }
+                                ?>
                                 <div class="cart-quanitiy">
                                     <?php
-if ($item->options->options) {
-    foreach ($item->options->options as $key => $value) {
-        echo @App\Models\AttributeValue::find($value)->option_name . " ";
-    }
-}
-if ($item->options->options) {
-    foreach ($item->options->options as $key => $value) {
-        if (!empty($value->options)) {
-            foreach ($value->options as $opt => $optval) {
-                echo @App\Models\AttributeValue::find($optval)->option_name . " ";
-            }
-        }
-    }
-}
-?>
+                                    if ($item->options->options) {
+                                        foreach ($item->options->options as $key => $value) {
+                                            echo @App\Models\AttributeValue::find($value)->option_name . " ";
+                                        }
+                                    }
+                                    if ($item->options->options) {
+                                        foreach ($item->options->options as $key => $value) {
+                                            if (!empty($value->options)) {
+                                                foreach ($value->options as $opt => $optval) {
+                                                    echo @App\Models\AttributeValue::find($optval)->option_name . " ";
+                                                }
+                                            }
+                                        }
+                                    }
+                                    ?>
                                 </div>
                                 </div>
                                 </div>
@@ -87,18 +89,18 @@ if ($item->options->options) {
                                 @if($item->options->tax_type == 2)
                                 <small>{Excl. of Tax)</small>
                                 @elseif($item->options->tax_type == 1)
-                                <small>(Inc. of Tax)</small>
+                                <small>(Inc. of Tax)</small> 
                                 @endif
                                 @endif
                             </td>
                             <td class="cartQuantityBox-td">
                                 <?php
-if ($isstock == 1) {
-    $max = $item->options->is_stock != 0 ? $item->options->stock : '1000000';
-} else {
-    $max = '1000000';
-}
-?>
+                                if ($isstock == 1) {
+                                    $max = $item->options->is_stock != 0 ? $item->options->stock : '1000000';
+                                } else {
+                                    $max = '1000000';
+                                }
+                                ?>
 
                                 <div class="quantity cart-quantity-box">
                                     <input type="button" value="-" class="minus" field="quantity">
@@ -132,7 +134,7 @@ if ($isstock == 1) {
                             </td> -->
                             @endif
                             <td>
-                                <?php $subTotalAmt = ($item->options->tax_type == 2) ? $item->subtotal + $item->options->tax_amt : $item->subtotal;?>
+                                <?php $subTotalAmt = ($item->options->tax_type == 2 ) ? $item->subtotal + $item->options->tax_amt : $item->subtotal; ?>
                                 <span data-pid="{{$item->options->sub_prod}}"  class="get_do subtotal{{$item->rowid}}">{{ number_format($subTotalAmt * Session::get('currency_val'), 2, '.', '')}}</span>
                             </td>
 
@@ -149,7 +151,7 @@ if ($isstock == 1) {
                     <h4 class="heading-title">HAVE A COUPON?</h4>
                     <form class="checkout_coupon" method="post">
                         <div class="cart-input">
-                            <input name="coupon_code" class="userCouponCode sm-form-control" id="" value="" placeholder="Enter Coupon Code "  type="text">
+                            <input name="coupon_code" class="userCouponCode sm-form-control" id="" value="" placeholder="Enter Coupon Code "  type="text"> 
                         </div>
                         <div class="">
                             <input class="button applycoupenbtn bold default" name="apply_coupon" id="couponApply" value="Apply Coupon" type="submit">
@@ -190,10 +192,6 @@ if ($isstock == 1) {
                     </table>
                 </div><!-- .cal-shipping -->
             </div>
-            <div class="clearfix"></div>
-            @if (Session::has('message'))
-               <div class="alert alert-danger">{{ Session::get('message') }}</div>
-            @endif
             <div class="clearfix"></div>
             <div class="col-md-12 col-sm-12 col-xs-12">
 
@@ -465,10 +463,10 @@ if ($isstock == 1) {
         });
     });
     var chkcouponapplied = "";
-<?php if (!empty(Session::get('usedCouponId'))) {?>
+<?php if (!empty(Session::get('usedCouponId'))) { ?>
         var chkcouponapplied = <?php echo Session::get('usedCouponId'); ?>;
         var copCode = <?php echo "'" . Session::get('usedCouponCode') . "'"; ?>;
-<?php }?>
+<?php } ?>
     if (chkcouponapplied) {
         $("#couponApply").attr("disabled", "disabled");
         $(".userCouponCode").attr("disabled", "disabled");

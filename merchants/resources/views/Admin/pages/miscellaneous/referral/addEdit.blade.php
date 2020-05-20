@@ -19,15 +19,9 @@
         <div class="col-md-12">
             <div class="box">   
                 <div class="box-body">
-                     @if(!empty(Session::get('message')))
-                    <div class="alert {{(Session::get('aletC')== 1)?'alert-success':'alert-danger'}}" role="alert">
-                        {{Session::get('message')}}
-                    </div>
-                      @endif
-                  
                     {!! Form::model($settings, ['method' => 'post', 'files'=> true, 'url' => $action ]) !!}
                     {!! Form::hidden('url_key',null) !!}
-<!-- 
+
                     <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('Name', 'Name',['class'=>'control-label']) !!}
@@ -43,7 +37,7 @@
                        
                          
                         </div>
-                    </div> -->
+                    </div>
                     <div class="clearfix"></div>
                     <input type="hidden" name="type" value="{{ (Input::get('type'))?Input::get('type'):2 }}">
                     @if(!empty($settings->details))

@@ -3,123 +3,184 @@
 @php 
 use App\Models\User;
 use App\Models\Order;
-@endphp 
+@endphp
+<style type="text/css">
+      .rating {
+  /*display: inline-block;*/
+  position: relative;
+  height: 50px;
+  line-height: 50px;
+  font-size: 50px;
+}
+
+.rating label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  cursor: pointer;
+}
+
+.rating label:last-child {
+  position: static;
+}
+
+.rating label:nth-child(1) {
+  z-index: 5;
+}
+
+.rating label:nth-child(2) {
+  z-index: 4;
+}
+
+.rating label:nth-child(3) {
+  z-index: 3;
+}
+
+.rating label:nth-child(4) {
+  z-index: 2;
+}
+
+.rating label:nth-child(5) {
+  z-index: 1;
+}
+
+.rating label input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.rating label .icon {
+  float: left;
+  color: transparent;
+  font-size: xx-large;
+}
+
+.rating label:last-child .icon {
+  color: #000;
+}
+
+.rating:not(:hover) label input:checked ~ .icon,
+.rating:hover label:hover input ~ .icon {
+  color: #09f;
+}
+
+.rating label input:focus:not(:checked) ~ .icon:last-child {
+  color: #000;
+  text-shadow: 0 0 5px #09f;
+}   
+</style>
 <section class="content-header">   
     <h1>
        Customer Reviews
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Catalog </a></li>
+        <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
         <li class="active">Reviews</li>
     </ol>
 </section>
 
-<section class="main-content">
-    <div class="notification-column">
-       @if(!empty(Session::get('message')))
-        <div class="alert alert-danger" role="alert">
-            {{ Session::get('message') }}
-        </div>
-        @endif
-        @if(!empty(Session::get('msg')))
-        <div class="alert alert-success" role="alert">
-            {{Session::get('msg')}}
-        </div>
-        @endif
-    </div>
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> Filters</h1>
-        </div>
-      <div class="filter-section displayFlex">
-         <div class="col-md-12 noAll-padding displayFlex">
-           <div class="filter-full-section">
-                {!! Form::open(['method' => 'get', 'route' => 'admin.reviews.view' , 'id' => 'searchForm' ]) !!}
-                    <div class="form-group col-md-4">
-                      <div class="input-group">
-                         <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span> 
-                          {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control  form-control-right-border-radius', "placeholder"=>"Order Id"]) !!}
-                        </div>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                @if(!empty(Session::get('message')))
+                <div class="alert alert-danger" role="alert">
+                    {{ Session::get('message') }}
+                </div>
+                @endif
+                @if(!empty(Session::get('msg')))
+                <div class="alert alert-success" role="alert">
+                    {{Session::get('msg')}}
+                </div>
+                @endif
+                
+
+                <div class="box-header box-tools filter-box col-md-6 noBorder rightBorder">
+                    {!! Form::open(['method' => 'get', 'route' => 'admin.reviews.view' , 'id' => 'searchForm' ]) !!}
+                    <div class="form-group col-md-6">
+                        {!! Form::text('order_ids',Input::get('order_ids'), ["class"=>'form-control', "placeholder"=>"Order Id"]) !!}
                     </div>
-                    <div class="form-group col-md-4">
-                      <div class="input-group">
-                        <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
-                        {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control  form-control-right-border-radius', "placeholder"=>"Order No. From"]) !!}
-                        </div>
+                    <div class="form-group col-md-6">
+                        {!! Form::text('order_number_from',Input::get('order_number_from'), ["class"=>'form-control ', "placeholder"=>"Order No. From"]) !!}
                     </div>
-                    <div class="form-group col-md-4">
-                      <div class="input-group">
-                        <span class="input-group-addon  lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
-                        {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control  form-control-right-border-radius', "placeholder"=>"Order No. To"]) !!}
-                      </div>
+                    <div class="form-group col-md-6">
+                        {!! Form::text('order_number_to',Input::get('order_number_to'), ["class"=>'form-control ', "placeholder"=>"Order No. To"]) !!}
                     </div>
                     <div class="clearfix"></div>
-                    <div class="form-group col-md-12 noBottom-margin"> 
-                          <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn noMob-leftmargin pull-right mn-w100">Reset</button></a> 
-                          <button type="submit" class="btn btn-primary noAll-margin pull-right marginRight-sm mn-w100" style="margin-left: 0px;"> Filter</button> 
+                    <div class="form-group col-md-4 noBottomMargin">
+                        <div class=" button-filter-search col-md-6 col-xs-12 no-padding mob-marBottom15">
+                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Filter</button>
+                        </div>
+                        <div class=" button-filter col-md-5 col-xs-12 no-padding noBottomMargin">
+                            <a href="{{route('admin.reviews.view')}}"><button type="button" class="btn reset-btn form-control noMob-leftmargin">Reset</button></a>
+                        </div>
                     </div>
                     {!! Form::close() !!}
-</div>
-         </div>
-      </div>
-    </div>
-    <div class="grid-content">
-        <div class="section-main-heading">
-            <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'receipt-2.svg'}}"> Customer Reviews</h1>
+                </div>
+
+
+                <div class="clearfix"></div>
+                <div class="dividerhr"></div>             
+                <div class="clearfix"></div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped table-hover tableVaglignMiddle">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>OrderID</th>
+                                <th>Order Date</th>
+                                <th>Review Date</th>
+                                <th>Status</th>
+                                <th>Action </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (count($CustomerReviews) > 0) {
+                             ?>
+                                @foreach ($CustomerReviews as $review)
+                                <?php  
+                                    $userdata = User::find($review->user_id); 
+                                    $orderdata = Order::find($review->order_id); 
+                                    if($review->publish==1)
+                                        $status = 'Published';
+                                    elseif($review->publish==2)
+                                        $status = 'Rejected';
+                                    else
+                                        $status = 'Not Published';
+                                ?>
+                                <tr>
+                                <td>{{$userdata->firstname}} {{$userdata->lastname}}</td>
+                                <td width="30%">{{$review->product}}</td>
+                                <td>{{$review->order_id}}</td>
+                                <td>{{date("d-M-Y",strtotime($orderdata->created_at))}}</td>
+                                <td>{{date("d-M-Y",strtotime($review->created_at))}}</td>
+                                <td><span>{{$status}}</span></td>
+                                <td>
+                                    <button  class="btn sbtn btn-primary" data-toggle="tooltip" onclick="getReviewData('{{$review->id}}');" 
+                                     title="View Review" data-original-title="Edit"><i class="fa fa-eye"></i></button>
+                                </td>
+                                </tr>
+                                @endforeach
+                            <?php } else { ?>
+                                <tr>
+                                    <td colspan="5">No Record Found.</td>
+                                </tr>
+                            <?php } ?>      
+                        </tbody>
+                    </table>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer clearfix">
+                   
+
+                </div>
+            </div>
         </div>
-      <div class="listing-section">
-      <table class="table table-striped table-hover tableVaglignMiddle">
-              <thead>
-                  <tr>
-                      <th class="text-left">Customer</th>
-                      <th class="text-left">Product</th>
-                      <th class="text-right">Order ID</th>
-                      <th class="text-right">Order Date</th>
-                      <th class="text-right">Review Date</th>
-                      <th class="text-center">Status</th>
-                      <th class="text-center mn-w120">Action </th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <?php if (count($CustomerReviews) > 0) {
-                   ?>
-                      @foreach ($CustomerReviews as $review)
-                      <?php  
-                          $userdata = User::find($review->user_id); 
-                          $orderdata = Order::find($review->order_id); 
-                          if($review->publish==1)
-                              $status = 'Published';
-                          elseif($review->publish==2)
-                              $status = 'Rejected';
-                          else
-                              $status = 'Not Published';
-                      ?>
-                      <tr>
-                      <td class="text-left">{{$userdata->firstname}} {{$userdata->lastname}}</td>
-                      <td class="text-left" width="30%">{{$review->product}}</td>
-                      <td class="text-right">{{$review->order_id}}</td>
-                      <td>{{date("d-M-Y",strtotime($orderdata->created_at))}}</td>
-                      <td class="text-right">{{date("d-M-Y",strtotime($review->created_at))}}</td>
-                      <td class="text-center"><span>{{$status}}</span></td>
-                      <td>
-                         <td class="text-center mn-w120">
-                        <div class="actionCenter">
-                        <span><a class="btn-action-default" href="getReviewData('{{$review->id}}"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a></span>
-                        </div> 
-                      </td>
-                      </tr>
-                      @endforeach
-                      
-                  <?php } else { ?>
-                      <tr>
-                          <td colspan="6" class="text-center">No Record Found.</td>
-                      </tr>
-                  <?php } ?>      
-              </tbody>
-          </table> 
-      </div>
     </div>
-  </div>
 </section>
 <div class="modal fade" id="reviewModal" role="dialog">
     <div class="modal-dialog">

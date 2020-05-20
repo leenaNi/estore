@@ -98,7 +98,7 @@
                                         <input type="submit" value="Save as draft" class="btn btn-primary pull-right mobFloatLeft noMob-leftmargin" >
                                         @if(!empty($emailCampaign->title))
                                         <button type="button" class="btn btn-primary pull-right mobFloatLeft noMob-leftmargin" data-toggle="modal" data-target="#sendEmailModal">Send Test Email </button>
-                                        <input type="button" onclick="sendBulkEmails()" value="Send Bulk Email" class="btn btn-primary pull-right mobFloatLeft noMob-leftmargin" >
+                                        <input type="button" value="Send Bulk Email" class="btn btn-primary pull-right mobFloatLeft noMob-leftmargin" >
                                         @endif
                                     </div>
                                 </div>
@@ -185,28 +185,6 @@ $("#htmlOut").html($("#content").val());
             });
     }
 
-    function sendBulkEmails()
-    {
-        var title = $("input[name=title]").val();
-        var subject = $("input[name=subject]").val();
-        var content = $("textarea[name=content]").val();
-        if (confirm('Send Email to all Customers ?')) {
-            $.ajax({
-                type: "POST",
-                url: "{{ route('admin.emailcampaign.sendbulkemail') }}",
-                data: {subject: subject,title:title,content:content},
-                cache: false,
-                success: function (response) {
-                    //$('#sendEmailModal').modal('toggle');
-                    $("#successmsg").show();
-                    $("#successmsg").html('Email Send Successfully');
-                   
-                }, error: function (e) {
-                    console.log(e.responseText);
-                }
-            });
-        }
-    }
  
 </script>
 

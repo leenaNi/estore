@@ -103,7 +103,6 @@ use App\Models\CustomerReview;
 
                                 <del ng-show="prd.delPrice == 1"><span class="currency-sym"></span> <span class="priceConvert">[[ prd.price  * currencyVal | number : 2 ]]</span></del>
                                 <ins> <span class="currency-sym"></span> <span class="amount priceConvert">[[ prd.getPrice  * currencyVal | number : 2 ]]</span></ins>
-                                <!-- <ins> <span class="currency-sym"></span> <span class="">[[ prd.getPrice ]]</span></ins> -->
                             </div>
                             <div>
                                 

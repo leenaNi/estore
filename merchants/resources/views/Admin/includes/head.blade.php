@@ -6,7 +6,7 @@
 <!-- Bootstrap 3.3.5 -->
 <link rel="stylesheet" href="{{ Config('constants.adminBootstrapCssPath').'/bootstrap.min.css' }}">
 <!-- Font Awesome -->
-<link rel="stylesheet" href="{{ Config('constants.adminDistCssPath').'/font-awesome.min.css' }}">
+<link rel="stylesheet" href="{{ Config('constants.adminDistCssPath').'/font-awesome.min.css' }}"><!-- <link rel="stylesheet" href="{{ asset('public/Admin/dist/css/sanfrancisco-font.css') }}"> -->
 <!-- Ionicons -->
 <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 <!-- jvectormap -->
@@ -28,11 +28,6 @@
 <link rel="stylesheet" href="{{ Config('constants.adminDistCssPath').'/validationEngine.jquery.css' }}">
 <link rel="icon" type="image/png" href="{{ Config('constants.frontendThemeImagePath').'/favicon.png' }}">
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
-<!-- <link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin.css' }}"> -->
-<link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/livvic.css' }}">
-<link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/custom-admin-vikram.css' }}">
-<link rel="stylesheet" href="{{ Config('constants.adminDistCssTempPath').'/livvic-fonts/livvic-fonts.css' }}">
-
 <?php
 $jsonString = App\Library\Helper::getSettings();
 
@@ -44,26 +39,27 @@ Session::put('storelogo', $data->logo);
     <div class="modal-dialog">
 
         <!-- Modal content-->
-        <div class="modal-content">
+        <div class="modal-content">    
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Choose Logo (170px W X 100px H)</h4>
             </div>
-            <div class="modal-body">
-                <form role="form" id="store_save"  enctype="multipart/form-data" class="cls_logo">
+            <div class="modal-body">        
+                <form role="form" id="store_save"  enctype="multipart/form-data" class="cls_logo">   
                     <div class="col-md-12 col-sm-12 col-xs-12 mobilepopup-chooselogo"><div class="form-group">
                             <div class="choosebtnbox text-center">
                                 <input type="file" class="custom-file-input chooselogottext" id="logoF" name="logo_img" >
-                            </div>
+                            </div><!-- 
+                  <input type="file" class="form-control" id="logoF" name="logo_img" class="form-control" /> -->
                             <span id="error-logo" class="text-danger"></span>
-                        </div></div>
+                        </div></div>      
                     <div class="col-md-10 col-sm-12 col-xs-12 mobilepopup-chooselogo">
                         <div class="box-2 padd-0" >
                             <div class="result padd-0" style="width: 300px; min-height:10px; max-height: 180px;"></div>
                         </div>
-                        <div class="options hide">
+                        <div class="options hide">                      
                         </div>
-                    </div>
+                    </div>    
                     <div class="text-center col-md-12 topmargin-sm mobilepopup-chooselogo">
                         <button type="submit" id="saveLogo" class="btn btn-default btn-success"> Upload</button>
                     </div>
@@ -80,11 +76,8 @@ Session::put('storelogo', $data->logo);
                 <div class='clearfix'></div>
             </div>
         </div>
-    </div>
-</div>
-
-
-
+    </div> 
+</div>  
 <div id="renewModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
@@ -132,7 +125,7 @@ Session::put('storelogo', $data->logo);
 </div>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js'></script>
 <style>
-    /*.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side,.skin-blue .main-header .logo,.skin-blue .main-header li.user-header{
+    .skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side,.skin-blue .main-header .logo,.skin-blue .main-header li.user-header{
         background-color: <?php echo "#" . $data->secondary_color . " !important"; ?>;
     }
     .skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a{
@@ -144,8 +137,8 @@ Session::put('storelogo', $data->logo);
     .skin-blue .treeview-menu>li>a:hover{ color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
     .sidebar-menu .treeview-menu, .sidebar-mini.sidebar-collapse .sidebar-menu>li>a>span{
         background-color: <?php echo "#" . $data->secondary_color . " !important"; ?>;
-    }*/
-    /*.main-header, .navbar .navbar-static-top{
+    }
+    .main-header, .navbar .navbar-static-top{
         background-color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
 
     .btn-primary, .btn-default{
@@ -153,14 +146,14 @@ Session::put('storelogo', $data->logo);
 
     .reset-btn, .btn-black{
         background-color: <?php echo "#" . @$data->sbtn_color . " !important"; ?>; color: #fff!important;}
-    .form-control:focus{border-color: <?php echo "#" . $data->primary_color . " !important"; ?>;;}*/
-
     .pagination>.active>span { background-color: <?php echo "#" . $data->btn_color . " !important"; ?>;
                                border-color: <?php echo "#" . $data->btn_color . " !important"; ?>;}
     .nav-tabs-custom>.nav-tabs>li.active{border-top-color: <?php echo "#" . $data->primary_color . " !important"; ?>;}
+    .form-control:focus{border-color: <?php echo "#" . $data->primary_color . " !important"; ?>;;}
 
-    .btn{margin-left:10px;}
-    .sidebar-mini.sidebar-collapse .sidebar-menu>li>a, .sidebar-menu .treeview-menu>li>a, .sidebar-mini.sidebar-collapse .sidebar-menu>li:hover>.treeview-menu {
-    background: #fff;}
-    .ui-menu .ui-menu-item { list-style-image: none !important; }
+</style>
+<style>
+    .btn{
+        margin-left:10px;
+    }
 </style>

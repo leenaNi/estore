@@ -5,7 +5,7 @@
 
 				<div class="col_half nobottommargin">
 
-					<p class="nobottommargin"><strong>Call:</strong> 1234567890 | <strong>Email:</strong> yourstore@estorifi.com </p>
+					<p class="nobottommargin"><strong>Call:</strong> 1234567890 | <strong>Email:</strong> yourstore@veestores.com </p>
 
 				</div>
 
