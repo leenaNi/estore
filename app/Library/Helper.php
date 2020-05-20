@@ -2,12 +2,14 @@
 
 namespace App\Library;
 
-use Mail;
-use Validator;
-use Illuminate\Support\Facades\Input;
-use App\Models\Settings;
-use App\Models\Currency;
 use App\Models\Category;
+use App\Models\CategoryMaster;
+use App\Models\Currency;
+use App\Models\GeneralSetting;
+use App\Models\Settings;
+use App\Models\Store;
+use App\Models\User;
+use Cart;
 use DB;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +19,10 @@ use View;
 
 class Helper {
 
-    public static function returnView($viewname, $data, $redirectTo = null) {
+    public static function returnView($viewname, $data, $redirectTo = null)
+    {
+        //echo "<pre>";print_r($data);
+        //dd($data);
         if (isset($_REQUEST['responseType'])) {
             if ($_REQUEST['responseType'] == 'json') {
                 return $data;
@@ -48,32 +53,30 @@ class Helper {
             return 1;
         }
     }
-    
-       public static function sendsms($mobile = null, $msg = null,$country = null) {
+
+    public static function sendsms($mobile = null, $msg = null, $country = null, $isOtp = 0)
+    {
         $mobile = $mobile;
-        if($mobile){
-        $msg = $msg;
-        $msg = urlencode($msg);
+        if ($mobile) {
+            $msg = $msg;
+            $msg = urlencode($msg);
 
-       if($country=='+880'){
-          $urlto =  "http://api.boom-cast.com/boomcast/WebFramework/boomCastWebService/externalApiSendTextMessage.php?masking=NOMASK&userName=IFC&password=6d38103103bb45de1c77e7eece818b1c&MsgType=TEXT&receiver=$mobile&message=$msg";   
-        }else
-        {
-            $urlto = "http://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage&send_to=$mobile&msg=$msg&msg_type=TEXT&userid=2000164017&auth_scheme=plain&password=GClWepNxL&v=1.1&format=text";
-        }
-        $ch = curl_init();
-// set URL and other appropriate options
-        curl_setopt($ch, CURLOPT_URL, $urlto);
-        //curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-// grab URL and pass it to the browser
-        $output = curl_exec($ch);
-        
-       // print_r($output);
-
-// close cURL resource, and free up system resources
-        curl_close($ch);
-        //return $output;
+            if ($country == '+880') {
+                $urlto = "http://api.boom-cast.com/boomcast/WebFramework/boomCastWebService/externalApiSendTextMessage.php?masking=NOMASK&userName=IFC&password=6d38103103bb45de1c77e7eece818b1c&MsgType=TEXT&receiver=$mobile&message=$msg";
+            } else {
+                $urlto = "http://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage&send_to=$mobile&msg=$msg&msg_type=TEXT&userid=2000164017&auth_scheme=plain&password=GClWepNxL&v=1.1&format=text";
+            }
+            $ch = curl_init();
+            // set URL and other appropriate options
+            curl_setopt($ch, CURLOPT_URL, $urlto);
+            //curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            // grab URL and pass it to the browser
+            $output = curl_exec($ch);
+            // print_r($output);
+            // close cURL resource, and free up system resources
+            curl_close($ch);
+            return $output;
         }
     }
 
@@ -137,7 +140,8 @@ class Helper {
             Session::put('bankid', Auth::guard('bank-users-web-guard')->user()->bank_id);
         } else if (Auth::guard('merchant-users-web-guard')->check() !== false) {
             Session::put('authUserId', Auth::guard('merchant-users-web-guard')->user()->id);
-            Session::put('authUserData', Auth::guard('merchant-users-web-guard')->user()->first());
+            Session::put('merchantId', Store::where('id', Auth::guard('merchant-users-web-guard')->user()->store_id)->where('store_type', 'merchant')->first()->merchant_id);
+            Session::put('authUserData', User::find(Auth::guard('merchant-users-web-guard')->user()->id));
         }
     }
 
@@ -166,26 +170,40 @@ class Helper {
         fclose($fp);
     }
 
-    public static function saveDefaultSet($catid, $prefix) {
+    public static function saveDefaultSet($catid, $prefix, $storeId, $storeType, $regDetails = null)
+    {
         $cat = Category::find($catid);
-        $categories = json_decode($cat->categories);
-        $catsave = [];
+        $assignedCategories = json_decode($cat->assigned_categories);
+        $categories = CategoryMaster::where('status', 1)->whereIn('id', $assignedCategories)->get();
+        // $catsave = [];
         $i = 0;
-        
-        foreach ($categories as $ck => $cv) {
-            $catsave[$ck]['category'] = $cv;
-            $catsave[$ck]['is_nav'] = 1;
-            $catsave[$ck]['url_key'] = strtolower(str_replace(" ", "-", $cv));
-            $i++;
-            $catsave[$ck]['lft'] = $i;
-            $i++;
-            $catsave[$ck]['rgt'] = $i;
-            $catsave[$ck]['depth'] = 0;
-             $catsave[$ck]['created_at'] =date('Y-m-d H:i:s');
-          
+        if ($categories) {
+            foreach ($categories as $ck => $cv) {
+                $catsave = [];
+                $catsave[$ck]['category_id'] = $cv->id;
+                $catsave[$ck]['is_nav'] = 1;
+                $catsave[$ck]['url_key'] = strtolower(str_replace(" ", "-", $cv->category));
+                $i++;
+                $catsave[$ck]['lft'] = $i;
+                $i++;
+                $catsave[$ck]['rgt'] = $i;
+                $catsave[$ck]['depth'] = 0;
+                // print_r($cv->parent_id);
+                if ($cv->parent_id !== NULL) {
+                    $parentCat = DB::table('store_categories')->where('category_id', $cv->parent_id)->where('store_id', $storeId)->first();
+                    // dd($parentCat);
+                    $parentID = @$parentCat->id;
+                } else {
+                    $parentID = $cv->parent_id;
+                }
+                $catsave[$ck]['parent_id'] = $parentID;
+                $catsave[$ck]['store_id'] = $storeId;
+                $catsave[$ck]['created_at'] = date('Y-m-d H:i:s');
+                $addedcats = DB::table('store_categories')->insert($catsave);
+            }
+            // $addedcats = DB::table('store_categories')->insert($catsave);
         }
-        $addedcats = DB::table($prefix . '_categories')->insert($catsave);
-        //save attr set       
+        //save attr set
         $attrset = json_decode($cat->attribute_sets, true);
         $saveAttrSet = [];
         foreach ($attrset as $attk => $attS) {
@@ -221,9 +239,44 @@ class Helper {
             $saveAttV[$attvk]['option_value'] = $attrv->option_value;
             $saveAttV[$attvk]['is_active'] = 1;
             $saveAttV[$attvk]['sort_order'] = $attvk + 1;
-            $saveAttV[$attvk]['created_at'] =  date('Y-m-d H:i:s');
+            $saveAttV[$attvk]['created_at'] = date('Y-m-d H:i:s');
         }
-        DB::table($prefix . '_attribute_values')->insert($saveAttV);
+        DB::table('attribute_values')->insert($saveAttV);
+        //Update Attribute Set
+        $attrSetId = DB::table('attribute_sets')->where('attr_set', 'Default')->where('store_id', $storeId)->first(['id']);
+        DB::table('products')
+            ->where('store_id', $storeId)
+            ->update(['attr_set' => $attrSetId->id]);
+        //Catalouge images
+        $productId = DB::table('products')->where('store_id', $storeId)->first(['id']);
+
+        //Add General Settings Industriwise
+        $industriQuestions = DB::table('has_industries')->JOIN('general_setting', 'general_setting.id', 'has_industries.general_setting_id')
+            ->where('industry_id', $catid)->where('general_setting.store_id', 0)
+            ->select('general_setting_id', 'url_key')
+            ->get();
+        $saveIndustryQuestion = [];
+        $updateGeneralSetting = [];
+
+        foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
+            $generalSettingId = DB::table('general_setting')->where('url_key', $hasIndVal->url_key)->where('store_id', $storeId)->first();
+            if ($generalSettingId && $generalSettingId != null) {
+                $saveIndustryQuestion[$hasIndKey]['general_setting_id'] = $generalSettingId->id;
+                $saveIndustryQuestion[$hasIndKey]['industry_id'] = $catid;
+                //$saveIndustryQuestion[$hasIndKey]['store_id'] = $storeId;
+            }
+        }
+        DB::table('has_industries')->insert($saveIndustryQuestion);
+
+        if ($storeType == 'distributor') {
+            $distributorDefaultSettingUrlKey = array("email-facility" => 1, "acl" => 1, "invoice" => 1, "additional-charge" => 1, "default-courier" => 0, "cod" => 0, "stock" => 1, "related-products" => 0,"products-with-variants" => 1);
+            foreach ($industriQuestions as $hasIndKey => $hasIndVal) {
+                if (array_key_exists($hasIndVal->url_key, $distributorDefaultSettingUrlKey)) {
+                    $value = $distributorDefaultSettingUrlKey[$hasIndVal->url_key];
+                    DB::table('general_setting')->where(['url_key' => $hasIndVal->url_key, 'store_id' => $storeId])->update(array('is_question' => $value));
+                }
+            } // End foreach
+        }
     }
     
      public static function getUserCashBack($prifix,$phone = null,$userId = null) {
@@ -287,46 +340,46 @@ class Helper {
       </tr>
     </thead>
     <tbody>';
-                    $cartData = json_decode($order->cart, true);
-                    $gettotal = 0;
-                    foreach ($cartData as $cart):
-                        $option = '';
-                   // dd($cart['price']);
-                        $tableContant = $tableContant . '   <tr class="cart_item">
-        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
-                        if ($cart['options']['image'] != '') {
-                            $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . $cart["options"]["image"]) . '" alt="">
-          </a>';
-                        } else {
-                            $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
-                        }
-                        $tableContant = $tableContant . '</td>
-        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
-            <br>
-          <small><a href="#"> ';
-                        if (!empty($cart['options']['options'])) {
+            $cartData = json_decode($order->cart, true);
+            $gettotal = 0;
+            foreach ($cartData as $cart):
+                $option = '';
+                // dd($cart['price']);
+                $tableContant = $tableContant . '   <tr class="cart_item">
+																								        <td class="cart-product-thumbnail" align="left" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">';
+                if ($cart['options']['image'] != '') {
+                    $tableContant = $tableContant . '   <a href="#"><img width="64" height="64" src="' . @asset(Config("constants.productImgPath") . $cart["options"]["image"]) . '" alt="">
+																								          </a>';
+                } else {
+                    $tableContant = $tableContant . '  <img width="64" height="64" src="' . @asset(Config("constants.productImgPath")) . '/default-image.jpg" alt="">';
+                }
+                $tableContant = $tableContant . '</td>
+																								        <td class="cart-product-name" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <a href="#">' . $cart["name"] . '</a>
+																								            <br>
+																								          <small><a href="#"> ';
+                if (!empty($cart['options']['options'])) {
 
-                            foreach ($cart['options']['options'] as $key => $value) {
-                                $option = DB::table($prifix . "_attribute_values")->find($value)->option_name;
-                            }
-                        }
-                        $tableContant = $tableContant . @$option . ' </a></small></td>
-        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
-        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-          <div class=""> ' . $cart["qty"] . '</div>
-        </td>';
-                        $tax_amt = 0;
-                        if ($tax == 1) {
-                            $tableContant = $tableContant . '   <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
-         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
-        </td>';
-                            $tax_amt = $cart['options']["tax_amt"];
-                        }
-                        $tableContant = $tableContant . '<td class="cart-product-subtotal" align="center" style="border: 1px solid #ddd;border-left: 0;border-right:0px;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format((@$cart["subtotal"] * Session::get('currency_val')), 2, '.', '') . '</span> </td>
-      </tr>';
-                        $gettotal += $cart["subtotal"] + $tax_amt;
-                    endforeach;
-                    $tableContant = $tableContant . '  </tbody>
+                    foreach ($cart['options']['options'] as $key => $value) {
+                        $option = DB::table("attribute_values")->find($value)->option_name;
+                    }
+                }
+                $tableContant = $tableContant . @$option . ' </a></small></td>
+																								        <td class="cart-product-price" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format($cart['price'] * Session::get('currency_val'), 2, '.', '') . '</span> </td>
+																								        <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
+																								          <div class=""> ' . $cart["qty"] . '</div>
+																								        </td>';
+                $tax_amt = 0;
+                if ($tax == 1) {
+                    $tableContant = $tableContant . '   <td class="cart-product-quantity" align="center" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;">
+																								         <div class=""> ' . htmlspecialchars_decode($currency_css) . ' ' . $cart['options']["tax_amt"] . '</div>
+																								        </td>';
+                    $tax_amt = $cart['options']["tax_amt"];
+                }
+                $tableContant = $tableContant . '<td class="cart-product-subtotal" align="center" style="border: 1px solid #ddd;border-left: 0;border-right:0px;border-top: 0;padding: 10px;"> <span class="amount"> ' . htmlspecialchars_decode($currency_css) . ' ' . number_format((@$cart["subtotal"] * Session::get('currency_val')), 2, '.', '') . '</span> </td>
+																								      </tr>';
+                $gettotal += $cart["subtotal"] + $tax_amt;
+            endforeach;
+            $tableContant = $tableContant . '  </tbody>
     <tr>
         <td colspan="4" class="text-right" align="right" style="border: 1px solid #ddd;border-left: 0;border-top: 0;padding: 10px;"><b>Sub-Total</b></td>
         <td colspan="2" align="center" style="border: 1px solid #ddd;border-left: 0;border-right:0;border-top: 0;padding: 10px;"> <span>' .$currency_css . '</span> ' . number_format(($gettotal * Session::get('currency_val')), 2, '.', '') . '</td>
@@ -401,59 +454,92 @@ class Helper {
      //   dd($cart);
         return $cart;
     }
-            
-            
-    public static function calAmtWithTax($cart,$taxStatus) {     
+
+    // public static function calAmtWithTax($cart, $taxStatus)
+    // {
+    //     $calTax = 0;
+    //     $tax_amt = 0;
+    //     $orderAmt = 0;
+    //     $all_coupon_amount = 0;
+    //     $total = 0;
+
+    //     foreach ($cart as $k => $c) {
+    //         $getdisc = ($c->options->disc + $c->options->wallet_disc + $c->options->voucher_disc + $c->options->referral_disc + $c->options->user_disc);
+
+    //         $taxeble_amt = $c->subtotal - $getdisc;
+    //         $qty = $c->qty;
+    //         $total += round(($c->subtotal), 2);
+    //         $orderAmt += round(($c->subtotal), 2);
+    //         //            if($c->options->tax_type == 2){
+    //         //                if($c->subtotal > ($c->options->tax_amt+$getdisc)){
+    //         //                  $taxeble_amt=$c->price+$c->options->tax_amt-$getdisc;
+    //         //                  $orderAmt += ($c->subtotal-$c->options->tax_amt);
+    //         //                }
+    //         //            }else{
+    //         //             $orderAmt += $c->subtotal;
+    //         //            }
+    //         $rate = $c->options->taxes / 100;
+    //         if ($taxStatus == 1) {
+
+    //             $tax_amt = round(($taxeble_amt / ($rate + 1)) * $rate, 2);
+    //             // $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
+
+    //             if ($c->options->tax_type == 2) {
+    //                 //$taxeble1 = $taxeble - $getdisc;
+    //                 $taxeble = ($taxeble_amt / ($rate + 1));
+
+    //                 $tax_amt = round($taxeble * $rate * $qty, 2);
+    //                 $calTax = $calTax + $tax_amt;
+    //             }
+    //         }
+
+    //         $all_coupon_amount += $getdisc;
+    //         $c->options->tax_amt = $tax_amt;
+    //     }
+
+    //     $subtotal = $orderAmt;
+    //     $data = [];
+
+    //     // $all_coupon_amount = Session::get('couponUsedAmt') + Session::get('checkbackUsedAmt') + Session::get('voucherAmount') + Session::get('referalCodeAmt') + Session::get('lolyatyDis') + Session::get('discAmt');
+    //     $data['cart'] = $cart;
+    //     $data['sub_total'] = round($subtotal, 2);
+
+    //     $data['total'] = round($total - $all_coupon_amount, 2);
+
+    //     return $data;
+    // }
+
+    public static function calAmtWithTax()
+    {
+        $user = User::where('id', Session::get('authUserId'))->first();
+        $taxStatus = GeneralSetting::where('url_key', 'tax')->where('store_id', $user->store_id)->first()->status;
+        $cart = Cart::instance('shopping')->content();
         $calTax = 0;
         $tax_amt = 0;
         $orderAmt = 0;
-        $all_coupon_amount=0;
-      $total=0;
-       
+
         foreach ($cart as $k => $c) {
             $getdisc = ($c->options->disc + $c->options->wallet_disc + $c->options->voucher_disc + $c->options->referral_disc + $c->options->user_disc);
-            
             $taxeble_amt = $c->subtotal - $getdisc;
-            $qty=$c->qty;
-            $total+=round(($c->subtotal),2);
-             $orderAmt += round(($c->subtotal),2);
-//            if($c->options->tax_type == 2){             
-//                if($c->subtotal > ($c->options->tax_amt+$getdisc)){
-//                  $taxeble_amt=$c->price+$c->options->tax_amt-$getdisc; 
-//                  $orderAmt += ($c->subtotal-$c->options->tax_amt);
-//                }
-//            }else{
-//             $orderAmt += $c->subtotal;
-//            }
-              $rate=$c->options->taxes/100;
+            $orderAmt += $c->subtotal;
             if ($taxStatus == 1) {
-              
-                $tax_amt=round(($taxeble_amt/($rate+1))*$rate, 2);
-               // $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
-
+                $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
                 if ($c->options->tax_type == 2) {
-                    //$taxeble1 = $taxeble - $getdisc;
-                    $taxeble= ($taxeble_amt / ($rate+1));
-                   
-                    $tax_amt = round($taxeble *$rate*$qty,2);
                     $calTax = $calTax + $tax_amt;
                 }
+                Cart::instance('shopping')->update($k, ["options" => ['tax_amt' => $tax_amt]]);
             }
-           
-             $all_coupon_amount+=$getdisc;
-            $c->options->tax_amt= $tax_amt;
         }
 
-        $subtotal = $orderAmt;
+        $cart_total = $orderAmt;
         $data = [];
 
-       // $all_coupon_amount = Session::get('couponUsedAmt') + Session::get('checkbackUsedAmt') + Session::get('voucherAmount') + Session::get('referalCodeAmt') + Session::get('lolyatyDis') + Session::get('discAmt');
+        $all_coupon_amount = Session::get('couponUsedAmt') + Session::get('checkbackUsedAmt') + Session::get('voucherAmount') + Session::get('referalCodeAmt') + Session::get('lolyatyDis') + Session::get('discAmt');
+
+        $subtotal = $calTax + $cart_total;
         $data['cart'] = $cart;
-        $data['sub_total'] = round($subtotal,2);
-        
-        $data['total'] = round($total - $all_coupon_amount,2);
-        
-         
+        $data['sub_total'] = $subtotal;
+        $data['total'] = $subtotal - $all_coupon_amount;
         return $data;
     }
 
@@ -475,10 +561,11 @@ class Helper {
         $sub_total = 0;
         foreach ($cart as $key => $cItm) {
             $getdisc = ($cItm->options->disc + $cItm->options->wallet_disc + $cItm->options->voucher_disc + $cItm->options->referral_disc + $cItm->options->user_disc);
-                          
-                  $sub_total += $cItm->subtotal - $getdisc;
-            
-           
+			if(@$cItm->options->offerId>0){
+				$getdisc += @$cItm->options->offer_disc_amt;
+			}
+            $sub_total += $cItm->subtotal - $getdisc;
+
         }
         return $sub_total;
     }
@@ -509,6 +596,87 @@ class Helper {
         fclose($jsonfile);
       return 1;
     }
+
+    public static function createUniqueIdentityCode($allinput, $lastInsteredId) // for merchnat and distributor
+
+    {
+        $storeName = $allinput['store_name'];
+        $storeName = preg_replace("/[^a-zA-Z]/", "", $storeName);
+        if(array_key_exists('phone_no',$allinput)){
+            $phoneNo = $allinput['phone_no'];
+        }else{
+            $phoneNo = $allinput['phone'];
+        }
+        $randomFourDigit = rand(1000, 9999);
+        $indentityCode = substr($storeName, 0, 3) . substr($phoneNo, -3) . $lastInsteredId . $randomFourDigit;
+        //dd($indentityCode);
+        return $indentityCode;
+
+    } // End createUniqueIdentityCode
+
+    public static function searchExistingCart($prod_id)
+    {
+        $cartContent = Cart::instance("shopping")->content()->toArray();
+        $isExist = 0;
+        foreach ($cartContent as $key => $cartItem) {
+            if (array_key_exists("sub_prod", $cartItem['options'])) {
+                $isExist = ($cartItem['options']['sub_prod'] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"], "offer_qty" => $cartItem['options']['offer_qty']];
+                }
+            } else {
+                $isExist = ($cartItem["id"] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"], "offer_qty" => $cartItem['options']['offer_qty']];
+                }
+            }
+        }
+        return ["isExist" => $isExist];
+    }
+
+    public static function searchExistingSalesCart($prod_id)
+    {
+        $cartContent = Cart::instance("sales_shopping")->content()->toArray();
+        $isExist = 0;
+        foreach ($cartContent as $key => $cartItem) {
+            if (array_key_exists("sub_prod", $cartItem['options'])) {
+                $isExist = ($cartItem['options']['sub_prod'] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                }
+            } else {
+                $isExist = ($cartItem["id"] == $prod_id);
+                if ($isExist) {
+                    return ["isExist" => $isExist, "rowId" => $key, "qty" => $cartItem["qty"]];
+                }
+            }
+        }
+        return ["isExist" => $isExist];
+    }
+
+    public static function checkStock($prod_id, $quantity){
+        $product = DB::table('products')->where('id',$prod_id)->first();
+        $stock = $product->stock;
+        if((int)$stock >= $quantity){
+            return "In Stock";
+        }else{
+            return "Not In Stock";
+        }
+    }
+
+    public static function checkStoreExists($storeId)
+    {
+        $cartContent = Cart::instance("shopping")->content()->toArray();
+        $isExist = 0;
+        foreach ($cartContent as $key => $cartItem) {
+            if ($cartItem['options']['store_id'] != $storeId) {
+                $existingStore = Store::where('id', $cartItem['options']['store_id'])->first(['id', 'store_name']);
+                return ['isExist' => 1, 'existingStore' => $existingStore];
+            }
+        }
+        return ['isExist' => $isExist];
+    }
+
 }
 
 ?>

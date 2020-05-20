@@ -13,7 +13,14 @@
 @section('content')
 <section class="content-header">
     <h1>
-        All Purchase Orders (0)
+        All Purchase Orders  <?php
+        if($ordersCount > 0)
+        {
+        ?>
+            ({{$startIndex}}-{{$endIndex}} of {{$ordersCount }}) </span> </h1> 
+        <?php
+        }
+        ?>
         <small></small>
     </h1>
     <ol class="breadcrumb">
@@ -53,7 +60,6 @@
                     <div class="form-group col-md-4">
                         {!! Form::text('pricemax',Input::get('pricemax'), ["class"=>'form-control ', "placeholder"=>"Maximum Amount"]) !!}
                     </div>
-                    
                    
                     @if($order_status->count())
                     @php echo Input::get('searchStatus[]'); @endphp
@@ -166,7 +172,7 @@
                                     </a>
                                     <a href="{!! route('admin.requisition.edit',['id'=>1]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
 
-                                    </td>
+                                </td>
                             </tr>
                            
                         </tbody>

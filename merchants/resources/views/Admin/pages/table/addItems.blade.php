@@ -92,20 +92,285 @@ body * { visibility: hidden; }
     .panel-title{ font-size: 14px!important; }
     .control-label{ font-size: 14px!important; }
     .error{color:red;}
-    .search{
-        position: relative;
-    }
-    .search .remove-search{position: absolute;top: 5px; right: 12px; font-size: 20px; }
+    .shop-logo img {max-width: 100px;}
+    .item-cat-list {
+            border: 1px solid #e6e6e6;
+            text-align: center;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .item-cat-list a{
+            display:block;
+            width:100%;
+            height:100%;
+            padding: 30px;
+            font-size: 16px;
+            font-weight: 450;
+        }
+        label.fnt-bold {
+            font-weight: 450 !important;
+            font-size: 16px !important;
+        }
+        a.remark-plus {
+            line-height: 36px;
+        }
+        .height-auto{
+            height:auto !important;
+        }
+        .search-item-list input {
+            max-width: 80px;
+            text-align: center;
+        }
+        .kot-order table tr th, .kot-order table tr td {
+            width: 33.33%;
+        }
+        .kot-order .table.no-top-border>tbody>tr>td{
+            border-top:0 !important;
+        }
+        .kot-btn {
+            clear: both;
+            overflow: auto;
+            margin-top: 50px;
+        }
+        .mleft0{
+            margin-left:0px;
+        }
+        .notop-padding{
+            padding-top:0;
+        }
 </style>
 @stop
 @section('content')
+<?php
+$implodedJoinTablesId = '';
+$joinTableIdString = ''; 
+if($order->join_tables != '')
+{
+    $joinTableIdArry = json_decode($order->join_tables);
+    $tableIdArry = [];
+    foreach($joinTableIdArry as $getTableId)
+    {
+        $restaurantTableResult = DB::table('restaurant_tables')
+            ->where('id', $getTableId)
+            //->orderBy('id', 'DESC')
+            ->get();
+            foreach ($restaurantTableResult as $restTble) {
+        
+                $tableNo = $restTble->table_no;
+                array_push($tableIdArry,$tableNo);
+            }
+        
+          
+    
+    }//foreach ends here
+    //echo "<pre>";
+    //print_r($tableIdArry);
+    $implodedJoinTablesId = implode('-', $tableIdArry);
+    $joinTableIdString = '#Table Id ('.$implodedJoinTablesId.')';
+}
 
+?>
 <section class="content-header">
     <h1>
         Add/Edit Items
-        <small> OrderID: #{{ $order->id }} </small>
+        <small>{{ $order->type->otype }} #{{ $order->id }} {{$joinTableIdString}}</small>
     </h1>
 </section>
+
+<!-- <section class="main-content"> -->
+<!-- 
+    <div class="col-md-8 noLeft-padding">
+        <div class="grid-content">
+            <div class="section-main-heading">
+                <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'settings-2.svg'}}"> New KOT</h1>
+                <a href="#" target="_blank" class="btn btn-listing-heading pull-right noAll-margin"> <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'plus.svg'}}"> New KOT </a>
+            </div>
+            <div class="filter-section equal-height-div-1">
+                <div class="filter-left-section">
+                    <div class="form-group col-md-6">
+                        <label class="fnt-bold">Add Items</label>
+                        <div class="input-group">
+                            <span class="input-group-addon lh-bordr-radius"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'search.svg'}}"></span>
+                            <input type="text" class="form-control" placeholder="Search Category/Product Name/SKU/ID" name="Search Category/Product Name/SKU/ID">
+                        </div>                        
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="cat-list">
+                        <div class="form-group col-md-3">
+                            <div class="item-cat-list">
+                            <a href="#">
+                                Cat 1
+                                </a>
+                            </div>                        
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="item-cat-list">
+                            <a href="#">
+                                Cat 2
+                                </a>
+                            </div>                        
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="item-cat-list">
+                            <a href="#">
+                                Cat 3
+                                </a>
+                            </div>                        
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="item-cat-list">
+                            <a href="#">
+                                Cat 4
+                                </a>
+                            </div>                        
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="item-cat-list">
+                            <a href="#">
+                                Cat 5
+                                </a>
+                            </div>                        
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="item-cat-list">
+                            <a href="#">
+                                Cat 6
+                                </a>
+                            </div>                        
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="item-cat-list">
+                            <a href="#">
+                                Cat 7
+                                </a>
+                            </div>                        
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="item-cat-list">
+                                <a href="#">
+                                    Cat 8
+                                </a>
+                            </div>                        
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="search-item-list">
+                        <div class="form-group col-md-6">
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Qty</th>
+                                            <th>&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><a href="#">Dosa</a></td>
+                                            <td><input type="number" value="" class="form-control" placeholder="No."></td>
+                                            <td class="text-center"><a href="#anyRemark" data-toggle="modal" class="remark-plus"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'black-plus.svg'}}"></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#">Idali</a></td>
+                                            <td><input type="number" value="" class="form-control" placeholder="No."></td>
+                                            <td class="text-center"><a href="#anyRemark" data-toggle="modal" class="remark-plus"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'black-plus.svg'}}"></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#">Wada</a></td>
+                                            <td><input type="number" value="" class="form-control" placeholder="No."></td>
+                                            <td class="text-center"><a href="#anyRemark" data-toggle="modal" class="remark-plus"><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'black-plus.svg'}}"></a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>                       
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 noRight-padding">
+        <div class="grid-content">
+            <div class="section-main-heading">
+                <h1><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'transfer-2.svg'}}"> Current Order</h1>
+            </div>
+            <div class="filter-section equal-height-div-2">
+                <div class="filter-right-section notop-padding">
+                    <div class="table-responsive">
+                        <div class="kot-order">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th class="text-center">Remark</th>
+                                        <th class="text-center">Qty</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <table class="table table-condensed no-top-border mb-30">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3"><strong>KOT #3</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Item 1</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-center">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Item 2</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-center">3</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-condensed no-top-border mb-30">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3"><strong>KOT #2</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Item 4</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-center">2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Item 3</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-center">1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-condensed no-top-border mb-30">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3"><strong>KOT #1</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Item 4</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-center">7</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Item 3</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-center">6</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="kot-btn">
+                            <button type="button" class="btn btn-primary pull-left mleft0">Reset</button>
+                            <button type="button" class="btn btn-primary pull-right">Save KOT</button>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+<!-- </section> -->
 <section class="content">
     <div class="row">
         <div class="col-md-9">
@@ -151,20 +416,23 @@ body * { visibility: hidden; }
                 <div class="box-body">
                     <div class="box-group" id="accordion">
                         <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
-                        <div class="panel box box-primary" id="default-view">
+                        <div class="panel box box-primary">
+                           <?php  //echo "<pre>";
+                                //print_r($categories);?>
                             @foreach($categories as $key =>  $cat)
                             <div class="box-header with-border">
                                 <h6 class="box-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#{{ $cat->url_key }}">
-                                        {{ $cat->category }}
+                                       {{ $cat->categoryName->category }}
                                     </a>
                                 </h6>
                             </div>
                             <div id="{{ $cat->url_key }}" class="panel-collapse collapse {{ $key == 0? 'in' : ''}}">
                                 <div class="box-body">
                                     <ul>
-                                        @foreach($cat->products as $prd)
-                                        <li class="prod" data-cat="{{ $cat->url_key }}" data-prdid="{{$prd->id }}" id="prd-{{$prd->id}}"><b>{{ $prd->product }}</b>
+                                          @foreach($cat->products as $prd)
+                                       
+                                        <li class="prod" data-prdid="{{$prd->id }}" id="prd-{{$prd->id}}"><b>{{ $prd->product }}</b>
                                             <a href="#"  class="pull-right" ui-toggle-class="" data-toggle="tooltip" title="Add Item"><i class="fa fa-plus fa-fw addItem"></i></a>
                                             <input value="" type="text" placeholder="Remarks"  name="remarks" class="input-mini pull-right remark">
                                             <input value="1" type="text" placeholder="Qty"  name="qty" class="qty input-mini pull-right">
@@ -307,6 +575,7 @@ body * { visibility: hidden; }
                                 <input type="hidden" name="addressId" value="" class="addressId">
                                 <input type="hidden" name="orderId" value="" class="orderId">
                                 <input type="hidden" name="payamt" value="" class="payamt">
+                                <input type="hidden" name="final_total_amount" id="final_total_amount">
                                 <input type="hidden" name="additionalcharge" value="" class="additionalcharge">
                                 <div class="form-group">
                                     <div class="ui-radio ui-radio-pink">
@@ -360,6 +629,9 @@ body * { visibility: hidden; }
                 </div>
                 <div class="modal-footer">
                     <input class="btn btn-primary" type="submit" value="Submit">
+                    <input type="hidden" id="hdn_single_table_id" name="hdn_single_table_id" value="{{ $order->table_id }}">
+                    <input type="hidden" id="hdn_join_table_id" name="hdn_join_table_id" value="{{ $order->join_tables }}">
+                    <input type="hidden" id="hdn_order_id" name="hdn_order_id" value="{{ $order->id }}">
                     </form>  
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
@@ -368,11 +640,11 @@ body * { visibility: hidden; }
     </div>
     <!-- Model Print Invoice -->
     <div id="printInvoicce" class="modal fade" role="dialog">
-        <div class="modal-dialog"  style="width: 75%;top:40px">
+        <div class="modal-dialog modal-md">
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header bord-bot0">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" onClick="redirectOrderListing()" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title text-center">
 
                     </h4>
@@ -387,7 +659,7 @@ body * { visibility: hidden; }
     </div>
     <!-- Modal -->
     <div id="getAddCustomer" class="modal fade" role="dialog">
-        <div class="modal-dialog" style="width: 75%;top:40px">
+        <div class="modal-dialog modal-md">
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
@@ -439,7 +711,7 @@ body * { visibility: hidden; }
                                 </div>
                                 <div class="tab-pane" id="addressTab">
                                     <div class="post clearfix">
-                                        <div  class="col-md-6 noallMargin noallpadding">
+                                        <div  class="col-md-12 noallMargin noallpadding">
                                             {!! Form::open(['id'=>'custAddForm']) !!}
                                             <div class="row form-group">
                                                 <div class="col-md-6">
@@ -522,6 +794,29 @@ body * { visibility: hidden; }
         </div>
     </div>
 </div>
+
+
+
+<div id="anyRemark" class="modal fade in" role="dialog" aria-hidden="false">
+        <div class="modal-dialog modal-md">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header bord-bot0">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title text-left">
+                        Any Remark
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <textarea class="form-control height-auto" rows="3"></textarea> 
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </section>
 @stop
 @section('myscripts')
@@ -531,6 +826,7 @@ body * { visibility: hidden; }
         $.post("{{ route('admin.getCartAmt') }}", function (response) {
             carttot = response.cartAmt.toFixed(2);
             $(".finalSubTotal").text(carttot);
+            $("#final_total_amount").text(response.cartAmt);
         });
     }
     function getAdd(addid) {
@@ -571,9 +867,12 @@ body * { visibility: hidden; }
         $.post("{{route('admin.order.getOrderKotProds')}}", {orderid: orderid}, function (existingprods) {
            // alert('dfdfd');
             //console.log(existingprods);
-          calAmt();
+          //calAmt();
             $("table.tableVaglignMiddle tbody").html(existingprods);
-            getAdditionalcharge();
+            var getTotalAmount = $("#final_total_amount").val();
+            //alert("total amt::"+getTotalAmount);
+            $(".finalSubTotal").text(getTotalAmount);
+            $(".payAmount").html(getTotalAmount);
         });
     }
 
@@ -584,10 +883,13 @@ body * { visibility: hidden; }
         prodid = $(this).parents('li').attr('data-prdid')
         var prod = $(this).parents('li').find('b').text();
         var remark = $(this).parents('li').find('.remark').val();
+        //alert("remark val::"+remark);
         var qty = $(this).parents('li').find('.qty').val();
         var itemPrice = $(this).parents('li').find('.price').val();
+        //console.log("itemprice::"+itemPrice);
         var totalPrice = itemPrice * qty;
         totalPrice = totalPrice.toFixed(2);
+        //console.log("<br>total price::"+totalPrice);
         trClassName = 'row-' + prodid;
         if ($("table.tableVaglignMiddle").find("tr").hasClass(trClassName)) {
             addQty = $("table.tableVaglignMiddle").find("." + trClassName).find(".qty").val();
@@ -595,6 +897,7 @@ body * { visibility: hidden; }
             addRemark = $("table.tableVaglignMiddle").find("." + trClassName).find(".remark").val();
             remarK = addRemark + " " + remark;
             qtY = parseInt(addQty) + parseInt(qty);
+            //alert("if remark val::"+remark);
             itemp = addPrice;
             totalItemP = qtY * addPrice;
             totalItemP = totalItemP.toFixed(2);
@@ -605,6 +908,7 @@ body * { visibility: hidden; }
                     '</tr>';
             $("table.tableVaglignMiddle").find("." + trClassName).replaceWith(addrow);
         } else {
+            //alert("else remark val::"+remark);
             var row = '<tr class="newRow row-' + prodid + '"><td>' + prod + '</td><td>' + remark + '</td><td>' + qty + '</td>' +
                     '<td>' + parseFloat(itemPrice).toFixed(2) + '<input type="hidden" class="price" name="orderdata[' + prodid + '][price]" value="' + parseFloat(itemPrice).toFixed(2) + '"> </td><td>' + parseFloat(totalPrice).toFixed(2) + '</td>' +
                     '<input type="hidden" class="qty" name="orderdata[' + prodid + '][qty]" value="' + qty + '">' +
@@ -881,7 +1185,7 @@ body * { visibility: hidden; }
                 if (msg.remove == 1) {
                     $('.coupan-amt').html("<label style='color:red'>Invalid Coupon!</label>");
                 } else {
-                    $('.coupan-amt').html("<label>Coupon Value: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> " + msg.disc.toFixed(2) + "</label>");
+                    $('.coupan-amt').html("<label>Coupon Value: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span id='coupon_value'>" + msg.disc.toFixed(2) + "</span></label>");
                 }
                 $(".total-amount").html("<label>Total(After Discount): <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> " + msg.orderAmount.toFixed(2) + "</label>");
                 getAdditionalcharge();
@@ -969,7 +1273,22 @@ body * { visibility: hidden; }
                     });
                     $(".total-charge").html('Taxes/Additional Charges: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="additionalTotal"> ' + total_amt + '</span><i class="fa pull-right fa-angle-down" aria-hidden="true"></i>');
                 }
-                $(".payable-amt").html('<label>Payable Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="payAmount" >' + addi_charge_with_price + '</span></label><input type="hidden" name="payAmount" value="' + total_price + '">');
+
+                var couponVal = $("#coupon_value").text();
+                if(data.total)
+                    $("#final_total_amount").val(data.total);
+                var getTotalAmount = $("#final_total_amount").val();
+                var finalAmt = ''
+                if(couponVal != '')
+                {
+                    finalAmt = (getTotalAmount - couponVal);
+                }
+                else
+                {
+                    finalAmt = getTotalAmount;
+                }
+                $(".payable-amt").html('<label>Payable Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="payAmount" >' + finalAmt + '</span></label><input type="hidden" name="payAmount" value="' + finalAmt + '">');
+                //$(".payable-amt").html('<label>Payable Amount: <?php echo htmlspecialchars_decode(Session::get('currency_symbol')); ?> <span class="payAmount" >' + addi_charge_with_price + '</span></label><input type="hidden" name="payAmount" value="' + total_price + '">');
                 $('input[name="payamt"]').val($('input[name="payAmount"]').val());
                 $('input[name="payamt"]').val($('.payAmount').text());
                 //   alert(parseInt($('.payAmount').text()));
@@ -1057,15 +1376,14 @@ body * { visibility: hidden; }
     }
 
     function placeOrder() {
-        $('.complete-order').text('Completing..');
         var sThisVal=new Array();
         $('input:checkbox.checkboxCheck').each(function () {
             if(this.checked){
-                sThisVal.push($(this).attr("data-id"));
-            }     
+            sThisVal.push($(this).attr("data-id"));
+            }       
         });
-        console.log($("#tableOrderForm").attr('action'));
-        $("input[name='additionalcharge']").val(sThisVal);
+    //console.log("<br>table order firm action::"+$("#tableOrderForm").attr('action'));
+    $("input[name='additionalcharge']").val(sThisVal);  
         $.ajax({
             type: "POST",
             url: $("#tableOrderForm").attr('action'),
@@ -1073,22 +1391,24 @@ body * { visibility: hidden; }
             cache: false,
             success: function (data) {
                //console.log(JSON.stringify(data));
-                var tableId=data.orders.table_id?data.orders.table_id:'#';
-                var subtotal=0;
-                var userDisc=0;
-                //if(data.contact.address1){
-                if(data.address1){
-                    var table = "<div id='DivIdToPrint'><table class='invocieBill-table' style='width: 400px;margin: 0 auto;'>";
-                }else{
-                        var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.orders.address1+" "+data.orders.address2+" "+data.orders.address3+"</span><br><span class='shopnumber'>"+data.orders.phone_no+"</span></td></tr>";
-                        // table + "<tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table 329<br>Server: Krista<br>11:59 AM</td> <td colspan='2' class='text-right'>Party of 1<br>Tickit 4002<br>Server<br>Date 002/26/14</td></tr>";
-                        table+="<tr style='padding-bottom: 10px !important;padding-top: 10px !important;'> <th class='text-left'>Order id</th> <th class='text-center'>Table#</th> <th colspan='2' class='text-right'>Order date</th></tr><tr class='double-dashed-border'><td  class='text-left'>" + data.orders.id + "</td><td  class='text-center'>" + tableId + "</td><td colspan='2' class='text-right'>" + data.orders.created_at + "</td></tr>";
-                }
-                table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><th class='text-left'>Qty </th><th class='text-left pl10'>product </th><th class='text-left'>price</th><th class='text-right'>total</th>";
+        var tableId=data.orders.table_id?data.orders.table_id:'#';
+        var subtotal=0;
+        var userDisc=0;
+        //if(data.contact.address1){
+        if(data.address1){
+            var table = "<div><table id='DivIdToPrint' class='invocieBill-table' style='width: 400px;margin: 0 auto;'>";
+        }else{
+            var table = "<table  id='DivIdToPrint' class='invocieBill-table'  style='width: 400px;margin: 0 auto;'><tr class='double-dashed-border'> <td colspan='4' class='text-center'> <div class='shop-logo'><img src='{{ Config('constants.adminImgangePath') }}/shop-logos/{{'btown-logo.png'}}' alt='shop-logo'/></div> <span class='shopname'>"+data.storeName+"</span><br/><span class='shopaddress'>"+data.orders.address1+" "+data.orders.address2+" "+data.orders.address3+"</span><br><span class='shopnumber'>"+data.orders.phone_no+"</span></td></tr><tr class='double-dashed-border'> <td colspan='2' class='text-left'>Dine In<br>Table No: 329<br>Server: Krista 11:59 AM</td> <td colspan='2' class='text-right'>1 (Packs)<br>Bill No: 4002<br>Date 002/26/14</td></tr>";
+        }               
+                table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><th class='text-left pl10'>Product </th><th class='text-left'>Price</th><th class='text-left'>Qty </th><th class='text-right'>Total</th>";
                 $.each(jQuery.parseJSON(data.orders.cart), function (cartk, cartv) {
+                    //console.log("cartk ::"+JSON.stringify(cartk));
+                    //console.log("<br> cartv ::"+JSON.stringify(cartv));
                     subtotal=subtotal+parseInt(cartv.subtotal);
+                    //alert("sub total::"+subtotal);
                     userDisc=userDisc+parseInt(cartv.options.user_disc);
-                    table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><td>" + cartv.qty + "</td><td class='text-left pl10'>" + cartv.name + "</td><td class='text-left'>" + cartv.price + "</td><td class='text-right'>" + cartv.subtotal + "</td></tr>";
+                    table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'><td class='text-left pl10'>" + cartv.name + "</td><td class='text-left'>" + cartv.price + "</td><td>" + cartv.qty + "</td><td class='text-right'>" + cartv.subtotal + "</td></tr>";
+
                 });
                 table = table + "<tr   style='padding-bottom: 10px !important;padding-top: 10px !important;' class='double-dashed-top-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>Subtotal</td><td class='text-right sbtot'>"+subtotal+"</td></tr>";
                 if(data.orders.coupon_amt_used){
@@ -1100,38 +1420,18 @@ body * { visibility: hidden; }
                 if(userDisc){
                     table = table + " <tr class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>User disc</td><td class='text-right sbtot'>"+userDisc+"</td></tr>";   
                 }
-                if(data.orders.referal_code_amt){
-                    table = table + " <tr  style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>Referal Amt</td><td class='text-right sbtot'>"+data.orders.referal_code_amt+"</td></tr>";   
-                }
-                var additional=jQuery.parseJSON(data.orders.additional_charge);
-                console.log(JSON.stringify(additional));
-                $.each((additional.details), function (chargek, chargev) {
-                    if(chargev.rate){
-                        table = table + " <tr  style='padding-bottom: 10px !important;padding-top: 10px !important;' class=''><td>&nbsp;</td><td>&nbsp;</td><td class='text-left sbtot'>"+chargev.label+"</td><td class='text-right sbtot'>"+chargev.applied+"</td></tr>";
-                    }
-                });
-                table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.pay_amt+"</td></tr><tr class='double-dashed-border'><td colspan='4' class='text-center'>Table</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20' onclick='getprint()'>Print Bill</button>";
-                //console.log('==' + JSON.stringify(table));
+             });
+         table = table + "<tr  style='padding-bottom: 10px !important;padding-top: 10px !important;'r class='double-dashed-border'><td>&nbsp;</td><td>&nbsp;</td><td class='text-left grtot double-dashed-top-border'>Grand Total</td><td class='text-right grtot double-dashed-top-border'>"+data.orders.order_amt+"</td></tr><tr><td colspan='4' class='text-center'>Thank You</td></tr></table> </div><br/><div class='clearfix' style='width: 400px;margin: 0 auto; text-right'><button class='btn btn-primary addCustomer noLeftMargin col-md-12 noAllpadding marginBottom20 pull-right' onclick='getprint()'>Print Bill</button></div>";
+         //console.log('==' + JSON.stringify(table));
                 $("#printInvoicce").modal("show");
                 $(".invoiceData").html(table);
-                $('.complete-order').text('Complete Order');
+                //$('.complete-order').text('Complete Order');
                 changeOccupancyStatus();
             }
             // $("#tableOrderForm").attr("action",route);
         });
     }
     
-    function addCommas(nStr) {
-        nStr += '';
-        x = nStr.split('.');
-        x1 = x[0];
-        x2 = x.length > 1 ? '.' + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1)) {
-            x1 = x1.replace(rgx, '$1' + ',' + '$2');
-        }
-        return x1 + x2;
-    }
     function changeOccupancyStatus() {
         var orderId = $('input[name=order_id]').val();
         $.ajax({
@@ -1144,6 +1444,37 @@ body * { visibility: hidden; }
             }
         });
     }
+    
+     function addCommas(nStr)
+    {
+        nStr += '';
+        x = nStr.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+    }
+
+    function redirectOrderListing()
+    {
+        localStorage.setItem('orderCompleted', 1);
+        window.location.href = "{{ route('admin.tableorder.view')}}"
+    }
+    
+    function getprint(){
+     // window.print();
+      var divToPrint=document.getElementById('DivIdToPrint');
+
+  var newWin=window.open('','Print-Window');
+
+  newWin.document.open();
+
+  newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+
+  newWin.document.close();
 
     function getprint(){
         // window.print();

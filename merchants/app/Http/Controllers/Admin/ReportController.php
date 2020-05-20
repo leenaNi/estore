@@ -6,7 +6,7 @@ use Route;
 use App\Models\MallProducts;
 use Input;
 use App\Http\Controllers\Controller;
-
+use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\HasProducts;
@@ -56,13 +56,14 @@ class ReportController extends Controller {
          
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['product', 'short_desc', 'long_desc'];
-        $prods = DB::connection('mysql2')->table($this->jsonString['prefix'].'_products as p')
-                ->where('is_individual', '=', '1')
-                ->join("has_products as hp", "hp.prod_id", '=', 'p.id')->whereNotIn('hp.order_status',[0,4,6,10])
-                ->join($this->jsonString['prefix']."_has_categories as hc", "hc.prod_id", "=", "p.id")
-                ->join($this->jsonString['prefix']."_categories as c", "c.id", "=", "hc.cat_id")
+        $prods = DB::table('products as p')
+                //->where('is_individual', '=', '1')
+                ->join("has_products as hp", "hp.prod_id", '=', 'p.id','left')->whereNotIn('hp.order_status',[0,4,6,10])
+                ->join("has_categories as hc", "hc.prod_id", "=", "p.id",'left')
+                ->join("store_categories as sc", "sc.id", "=", "hc.cat_id",'left')
+                ->join("categories as c", "c.id", "=", "sc.category_id",'left')
                 ->where("hp.store_id", $this->jsonString['store_id'])
-                ->select('p.id','p.product',DB::raw("SUM(hp.qty) tot_qty"),DB::raw("SUM(hp.pay_amt) sales"), 'c.category')
+                ->select('p.id','p.product','hp.sub_prod_id',DB::raw("SUM(hp.qty) tot_qty"),DB::raw("SUM(hp.pay_amt) sales"), 'c.category')
                 ->orderBy("tot_qty", "desc")
                 ->groupBy('p.id');
         if (!empty(Input::get('product_name'))) {
@@ -75,9 +76,13 @@ class ReportController extends Controller {
             $prods = $prods->where('p.status',1)->paginate(Config('constants.paginateNo'));
             $prodCount=$prods->total();
         }
-         
-        $cat = DB::connection('mysql2')->table($this->jsonString['prefix']."_categories")->select("category","id")->get()->toArray();
-
+        $cat = DB::table("categories")->select("category","id")->get()->toArray();
+        foreach($prods as $prd){
+            if($prd->sub_prod_id!=0 || $prd->sub_prod_id!=""){
+                $prodname = Product::find($prd->sub_prod_id);
+                $prd->product = $prodname->product;
+            }
+        }
         $categrs = [];
         $categrs["0"] = "All" ;
         foreach ($cat as $val) {

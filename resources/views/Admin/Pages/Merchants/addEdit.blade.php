@@ -14,15 +14,13 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="nav-tabs-custom">
-                    <p style="color:red;text-align: center" class="VsMerchantError"></p>
-                    
+                    <p style="color:red;text-align: center" class="VsMerchantError"></p>                    
                     <ul class="nav nav-tabs ">
                         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">General Info</a></li>
                         <li class=""><a href="#doc_2" data-toggle="tab" aria-expanded="false">Documents</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
-
                             <div class="row"> 
                                 <div class="col-md-8 col-xs-12"> 
                                     {{ Form::model($merchant, ['route' => ['admin.merchants.saveUpdate', $merchant->id], 'class'=>'form-horizontal merchantGeneral','id'=>'merchantGeneral','method'=>'post','files'=>true]) }}
@@ -46,17 +44,31 @@
                                             <div class="col-sm-9">
                                                 {{Form::email('email',  null, ['class'=>'form-control exist-merch email' ,'required'=>'true']) }}
                                             </div>
-                                        </div>  
+                                        </div>
                                         <div class="form-group">
-                                            {{ Form::label('Currency', 'Currency ', ['class' => 'col-sm-3 control-label']) }}
+                                            {{ Form::label('store_name', 'Store Name *', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
-                                                <select class="form-control exist-merch" name="currency" required="true">
-                                                    @foreach($curr as $cur)                                                    
-                                                    <option value="{{$cur->id}}" {{ ($cur->id == @$curr_selected) ? "selected='selected'" : ""  }} >{{ $cur->iso_code." -".ucwords(strtolower($cur->name)) }}</option>
-                                                    @endforeach
-                                                </select>
+                                                {{Form::text('company_name', null, ['class'=>'form-control exist-merch' ,'required'=>'true']) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            {{ Form::label('is_individual', 'Is Individual Store? *', ['class' => 'col-sm-3 control-label']) }}
+                                            <div class="col-sm-9">
+                                            <select class="form-control exist-merch" required="true" name="is_individual_store">
+                                                <option value="1" {{ (@$is_individual_store == 1) ? "selected" : ""  }}>Yes</option>
+                                                <option value="0" {{ (@$is_individual_store == 0) ? "selected" : ""  }} >No</option>
+                                            </select>
                                             </div>
                                         </div> 
+                                        <div class="form-group">
+                                            {{ Form::label('suppliers', 'Suppliers? *', ['class' => 'col-sm-3 control-label']) }}
+                                            <div class="col-sm-9">
+                                            <select class="form-control exist-merch" required="true" name="suppliers">
+                                                <option value="1" {{ (@$suppliers == 1) ? "selected" : ""  }}>Yes</option>
+                                                <option value="0" {{ (@$suppliers == 0) ? "selected" : ""  }} >No</option>
+                                            </select>
+                                            </div>
+                                        </div>
                                         <div class="form-group">
                                             {{ Form::label('Password', 'Password *', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
@@ -81,18 +93,19 @@
                                                 {{Form::password('cpassword', $data_cpwd  ) }}
                                             </div>
                                         </div>
-                                        
                                         <div class="form-group">
                                             {{ Form::label('Choose your industry', 'Choose Your Industry *', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
-                                                {{ Form::select('business_type',$cat,@$cat_selected,['class'=>'form-control exist-merch','required'=>'true']) }}
+                                                {{--- Form::select('business_type',$cat, in_array($cat, @$cat_selected),['class'=>'form-control exist-merch', "multiple", 'required'=>'true']) ---}}
+                                                <select class="selectpicker form-control exist-merch" multiple required="true" name="business_type[]">
+                                                    @foreach($cat as $catKey => $catName)
+                                                    <option value="{{$catKey}}" {{ (in_array($catKey, @$cat_selected) ? "selected='selected'" : "") }}  >{{$catName}}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
-                                        
                                         <div class="form-group">
                                             {{ Form::label('Choose your features', 'Choose Your Features *', ['class' => 'col-sm-3 control-label']) }}
-                                            
-                                            
                                             <div class="col-sm-9">
                                                 <select class="selectpicker form-control exist-merch" multiple required="true" name="already_selling[]">
                                                     <option value="Just checking out features" {{ (in_array("Just checking out features",@$already_selling) ? "selected='selected'" : "") }}  >Just checking out features</option>
@@ -101,19 +114,16 @@
                                                     <option value="Selling on facebook" {{ (in_array("Selling on facebook",@$already_selling) ? "selected='selected'" : "") }}>Selling on facebook</option>
                                                 </select>
                                             </div>
-                                        </div>    
-                                        
+                                        </div>                                        
                                         <div class="form-group">
                                             {{ Form::label('Store version', 'Store version', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
                                                 <select class="form-control exist-merch" required="true" name="store_version">
-                                                <option value="1" {{ (@$store_version == 1) ? "selected='selected'" : ""  }}>Starter Version - a simple online store with minimum features activated (FREE)</option>
-                                                <option value="2" {{ (@$store_version == 2) ? "selected='selected'" : ""  }} >Advanced Version - a complex online store with highend features activated (FREE)</option>
+                                                <option value="1" {{ (@$store_version == 1) ? "selected" : ""  }}>Starter Version - a simple online store with minimum features activated (FREE)</option>
+                                                <option value="2" {{ (@$store_version == 2) ? "selected" : ""  }} >Advanced Version - a complex online store with highend features activated (FREE)</option>
                                             </select>
                                             </div>
                                         </div>
-                                                                          
-                                        
                                         <!-- <div class="form-group">
                                             {{ Form::label('Owners PAN #', 'Owner\'s PAN #', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
@@ -219,8 +229,6 @@
 @stop
 @section('myscripts')
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
-
 <script>
  jQuery.validator.addMethod("phone", function (phone_number, element) {
         phone_number = phone_number.replace(/\s+/g, "");
@@ -233,8 +241,6 @@
         //alert(checkANew);
         $("a[href='#doc_2']").removeAttr("data-toggle");
     }
-
-
     var totFile = <?= $totFile; ?>;
     $('.existingImg').on('change', 'input[type="file"]', function (e) {
         //console.log(e.target.files[0]);
@@ -400,39 +406,42 @@
         }
     });
 
-
-
     $(".saveNextMerchantGeneral").on('click', function () {
+        $(this).text('Submitting..');
+        $(this).attr('disabled', true);
         if ($("#merchantGeneral").valid()) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('admin.merchants.saveUpdate') }}",
                 data: $("#merchantGeneral").serialize(),
                 cache: false,
-                success: function (data) {
-                    if (data.id) {
-                        $("input[name='id']").val(data.id);
+                success: function (data) {                    
+                    $(this).text('Save & Next');
+                    $(this).attr('disabled', true);
+                    if (data.status) {
+                        $("input[name='id']").val(data.data.id);
                         $('.nav-tabs a[href="#doc_2"]').tab('show');
                         addParamToCurrentURL('id', data.id);
                     } else {
-                        res = JSON.parse(data);
-
-                        $.each(res, function (k, v) {
-                            // console.log(k);
-                            // console.log(v[0]);
-                            var eltype = $('[name="' + k + '"]').prop('tagName').toLowerCase();
-                            var msg = $('<div style="color:red;" class="serverValid">' + v[0] + '</div>');
-                            // console.log(msg);
-                            $(".merchantGeneral " + eltype + "[name='" + k + "']").parent().find("div.serverValid").remove();
-                            $(".merchantGeneral " + eltype + "[name='" + k + "']").parent().append(msg);
-                            // console.log($(".merchantGeneral" + eltype + "[name='" + k + "']").parent());    
-
-                        });
+                        if(typeof data.msg == 'object') {
+                            res = JSON.parse(data.msg);
+                            $.each(res, function (k, v) {
+                                // console.log(k);
+                                // console.log(v[0]);
+                                var eltype = $('[name="' + k + '"]').prop('tagName').toLowerCase();
+                                var msg = $('<div style="color:red;" class="serverValid">' + v[0] + '</div>');
+                                // console.log(msg);
+                                $(".merchantGeneral " + eltype + "[name='" + k + "']").parent().find("div.serverValid").remove();
+                                $(".merchantGeneral " + eltype + "[name='" + k + "']").parent().append(msg);
+                                // console.log($(".merchantGeneral" + eltype + "[name='" + k + "']").parent());    
+                            });
+                        } else {
+                            alert(data.msg);
+                        }
                     }
                 }
             });
         }
-    });
-    
+    });    
 </script>
 @stop

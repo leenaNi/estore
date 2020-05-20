@@ -113,7 +113,8 @@
             if (typeof (FileReader) != "undefined") {
                 var dvPreview = $("#dvPreview");
                 dvPreview.html("");
-                var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
+                //var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
+                var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.png|.gif)$");
                 $($(this)[0].files).each(function () {
                     var file = $(this);
 

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="155.709" height="155.996" viewBox="0 0 155.709 155.996">
+    <defs>
+        <style>
+            .cls-1{fill:#84dbff}.cls-2{fill:#54c0eb}.cls-3{fill:#4cdbc4}.cls-4{fill:#ff7058}.cls-5{filter:url(#Path_2551)}.cls-6{filter:url(#Path_2550)}.cls-7{filter:url(#Path_2547)}
+        </style>
+        <filter id="Path_2547" width="118.986" height="118.699" x="0" y="0" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur result="blur" stdDeviation="3"/>
+            <feFlood flood-opacity=".051"/>
+            <feComposite in2="blur" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+        <filter id="Path_2550" width="63.616" height="63.616" x="54.51" y="92.38" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur result="blur-2" stdDeviation="3"/>
+            <feFlood flood-opacity=".051"/>
+            <feComposite in2="blur-2" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+        <filter id="Path_2551" width="63.616" height="63.616" x="92.093" y="54.797" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur result="blur-3" stdDeviation="3"/>
+            <feFlood flood-opacity=".051"/>
+            <feComposite in2="blur-3" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <g id="settings" transform="translate(8.478 6)">
+        <g class="cls-7" transform="translate(-8.48 -6)">
+            <path id="Path_2547-2" d="M92.9 38.731a43.207 43.207 0 0 0-4.017-10.041l3.443-8.033L80.278 8.894l-8.033 3.443A38.707 38.707 0 0 0 62.2 8.32L59.335 0H42.409l-3.156 8.32a43.207 43.207 0 0 0-10.041 4.017l-8.034-3.443L9.416 20.656l3.443 8.033a38.706 38.706 0 0 0-4.017 10.042l-8.32 3.155v16.927l8.32 3.156a43.206 43.206 0 0 0 4.017 10.041l-3.443 8.033 12.05 11.763 8.034-3.443a38.707 38.707 0 0 0 10.039 4.017l3.161 8.32h16.64l3.156-8.32a43.207 43.207 0 0 0 10.041-4.017l8.033 3.443 12.05-11.763-3.448-8.033a38.707 38.707 0 0 0 4.017-10.041l8.32-3.156V41.886zM50.729 70.863a20.656 20.656 0 1 1 20.656-20.657 20.571 20.571 0 0 1-20.656 20.657z" class="cls-1" data-name="Path 2547" transform="translate(8.48 6)"/>
+        </g>
+        <g id="Group_814" data-name="Group 814" transform="translate(19.887 19.365)">
+            <path id="Path_2548" d="M140.4 139.88a20.433 20.433 0 0 1-28.976 0l-7.459 7.459a31.038 31.038 0 0 0 43.895-43.895l-7.46 7.456a20.432 20.432 0 0 1 0 28.98z" class="cls-2" data-name="Path 2548" transform="translate(-94.93 -94.408)"/>
+            <path id="Path_2549" d="M80.09 79.568a31.168 31.168 0 0 0 0 43.895L87.549 116a20.489 20.489 0 0 1 28.976-28.976l7.459-7.459a31.169 31.169 0 0 0-43.894.003z" class="cls-2" data-name="Path 2549" transform="translate(-71.053 -70.53)"/>
+        </g>
+        <g class="cls-6" transform="translate(-8.48 -6)">
+            <path id="Path_2550-2" d="M241.8 361.7a13.924 13.924 0 0 0 0-4.877l2.869-2.869-2.869-7.172h-4.017a38.945 38.945 0 0 0-3.443-3.443v-4.017l-7.172-2.869-2.869 2.869a13.924 13.924 0 0 0-4.877 0l-2.869-2.869-7.172 2.869v4.017a38.948 38.948 0 0 0-3.443 3.443h-4.017l-2.869 7.172 2.869 2.869a13.924 13.924 0 0 0 0 4.877l-2.869 2.869 2.869 7.172h4.017a38.949 38.949 0 0 0 3.443 3.443v4.016l7.172 2.869 2.869-2.869a13.924 13.924 0 0 0 4.877 0l2.869 2.869 7.172-2.869v-4.017a38.949 38.949 0 0 0 3.443-3.443h4.017l2.869-7.172zm-22.951 6.025a9.27 9.27 0 1 1 12.05-5.164 9.174 9.174 0 0 1-12.05 5.167z" class="cls-3" data-name="Path 2550" transform="translate(-135.54 -238.08)"/>
+        </g>
+        <g class="cls-5" transform="translate(-8.48 -6)">
+            <path id="Path_2551-2" d="M378.681 224.823a13.924 13.924 0 0 0 0-4.877l2.869-2.869-2.869-7.172h-4.017a38.947 38.947 0 0 0-3.443-3.443v-4.017l-7.172-2.869-2.869 2.869a13.924 13.924 0 0 0-4.877 0l-2.869-2.869-7.172 2.869v4.017a38.945 38.945 0 0 0-3.443 3.443H338.8l-2.869 7.172 2.869 2.869a13.924 13.924 0 0 0 0 4.877l-2.869 2.869 2.869 7.172h4.017a38.951 38.951 0 0 0 3.443 3.443v4.017l7.172 2.869 2.869-2.869a13.924 13.924 0 0 0 4.877 0l2.869 2.869 7.172-2.869v-4.017a38.943 38.943 0 0 0 3.443-3.443h4.017l2.869-7.172zm-23.238 6.311a9.27 9.27 0 1 1 12.05-5.164 8.985 8.985 0 0 1-12.05 5.164z" class="cls-4" data-name="Path 2551" transform="translate(-234.84 -138.78)"/>
+        </g>
+    </g>
+</svg>

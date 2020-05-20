@@ -45,8 +45,7 @@ class Handler extends ExceptionHandler {
         if ($e instanceof ModelNotFoundException) {
            
             $e = new NotFoundHttpException($e->getMessage(), $e);
-         }else if($e->getMessage()=='') {
-       
+        } else if($e instanceof NotFoundHttpException) {
             $statusCode = $e->getStatusCode();
             if($statusCode==403)
             {
@@ -56,23 +55,9 @@ class Handler extends ExceptionHandler {
             return parent::render($request, $e); 
             }
         } else {
-          //  dd('sdsdsd');
             return parent::render($request, $e);
         }
     }
-
-//
-//    public function render($request, Exception $e) {
-//        // dd($request);
-////         $status = $e->getStatusCode();
-////         echo $status;
-//        if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-//            return response()->view('index');
-//        }
-//        // print_r($e);
-//        // dd($request);
-//        return parent::render($request, $e);
-//    }
 
     protected function unauthenticated($request, Exception $e) {
         //dd($request);

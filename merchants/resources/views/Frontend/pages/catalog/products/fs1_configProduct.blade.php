@@ -2,16 +2,88 @@
 @section('title',$product->metaTitle)
 @section('og-title',$product->metaDesc)
 @section('meta-description',$product->metaTitle)
-<?php $imgUrl = $product->prodImage; ?>
+<?php $imgUrl = $product->prodImage;?>
 @section('og:image', $imgUrl)
 @section('content')
+@php
+use App\Models\User;
+use App\Models\CustomerReview;
+@endphp
+<style type="text/css">
+      .rating {
+  /*display: inline-block;*/
+  position: relative;
+  height: 50px;
+  line-height: 50px;
+  font-size: 50px;
+}
+
+.rating label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  cursor: pointer;
+}
+
+.rating label:last-child {
+  position: static;
+}
+
+.rating label:nth-child(1) {
+  z-index: 5;
+}
+
+.rating label:nth-child(2) {
+  z-index: 4;
+}
+
+.rating label:nth-child(3) {
+  z-index: 3;
+}
+
+.rating label:nth-child(4) {
+  z-index: 2;
+}
+
+.rating label:nth-child(5) {
+  z-index: 1;
+}
+
+.rating label input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.rating label .icon {
+  float: left;
+  color: transparent;
+  font-size: medium;
+}
+
+.rating label:last-child .icon {
+  color: #000;
+}
+
+.rating:not(:hover) label input:checked ~ .icon,
+.rating:hover label:hover input ~ .icon {
+  color: #09f;
+}
+
+.rating label input:focus:not(:checked) ~ .icon:last-child {
+  color: #000;
+  text-shadow: 0 0 5px #09f;
+}
+</style>
 <div  ng-controller="configProductController">
     <form id="form[[product.id]]" action="{{ route('addToCart')}}">
     <div class="clearfix"></div>
         <section id="content">
             <input type="hidden" value="{{Request::url()}}" class="fbShareUrl" />
             <input type="hidden" value="[[product.images[0].img]]" class="fbShareImg" />
-           
+
             <input type="hidden" value="[[product.product]]" class="fbShareTitle" />
             <div class="content-wrap">
                 <div class="container clearfix">
@@ -22,14 +94,14 @@
                                 <!-- Product Single - Gallery=========================================== -->
                                 <div class="product-image">
                                     <div class="fslider" data-pagi="false" data-autoplay="false" data-arrows="false" data-thumbs="true">
-                                        <div class="flexslider" ng-if="product.images.length > 0">                                           
-                                            <div class="slider-wrap"  data-lightbox="gallery" style="width:100% !important;">                                               
-                                                <div class="slide" ng-repeat="(key,prdimg) in product.images"   data-thumb="[[prdimg.img]]">                                                    
+                                        <div class="flexslider" ng-if="product.images.length > 0">
+                                            <div class="slider-wrap"  data-lightbox="gallery" style="width:100% !important;">
+                                                <div class="slide" ng-repeat="(key,prdimg) in product.images"   data-thumb="[[prdimg.img]]">
                                                     <a href="[[prdimg.img]]" title="[[product.title]]" data-lightbox="gallery-item"><img src="[[prdimg.img]]" alt="[[product.product]]" class="zoom-me zoom-me1 [[(key==0)?'fimg':'']]" data-zoom-image="[[prdimg.img]]"> </a>
-                                                </div>                                               
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="flexslider" ng-if="product.images.length == 0">                                          
+                                        <div class="flexslider" ng-if="product.images.length == 0">
                                             <div class="slider-wrap"  data-lightbox="gallery" style="width:100% !important;">
                                                 <div class="slide" data-thumb="{{ asset(Config('constants.defaultImgPath').'default-product.jpg')}}" >
                                                     <a href="javascript:void(0);" title="default Img" data-lightbox="gallery-item">
@@ -44,17 +116,20 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="col_last col_half product-desc">
-                                <h1 class="product_title">[[product.product]]</h1>                
+                                <h1 class="product_title">[[product.product]]</h1>
                                 <div class="product-rating" ng-show="product.product_code != ''">
                                     <p>PRODUCT CODE: [[product.product_code]]</p>
-                                </div>   
-                                                       
-                                <div class="product-price prodDetailPrice" ng-show="product.spl_price > 0"> 
-                                    <del><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</del> <span class="currency-sym"></span><ins class="mrp_price"> [[product.spl_price * currencyVal |number :2 ]]</ins>
+                                </div>
+
+                                <div class="product-price prodDetailPrice" ng-show="product.spl_price > 0">
+                                    <del><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</del> <span class="currency-sym"></span>
+                                    <!-- <ins class="mrp_price"> [[product.spl_price * currencyVal |number :2 ]]</ins> -->
+                                    <ins class=""> [[product.spl_price]]</ins>
                                     <input type="hidden" name="price" value="[[product.spl_price]]" class="parent_price">
                                 </div>
-                                <div class="product-price prodDetailPrice" ng-show="product.spl_price == 0"> 
-                                    <ins class="mrp_price"><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</ins>
+                                <div class="product-price prodDetailPrice" ng-show="product.spl_price == 0">
+                                <ins class=""><span class="currency-sym"></span> [[product.price]]</ins>
+                                    <!-- <ins class="mrp_price"><span class="currency-sym"></span> [[product.price  * currencyVal |number :2]]</ins> -->
                                 </div>
                                 @if($isstock==1)
                                 <span class="span2 hide" style="color:red;" ng-show="product.is_stock == 1">STOCK LEFT : [[ product.stock ]]</span>
@@ -78,10 +153,10 @@
                                     <input type="button" value="-" class="minus">
                                     @if($isstock==1)
                                     <input type="number" step="1" name="quantity" id="quantity" value="1"  max="[[(product.is_stock == 1)?product.stock:'1000000000']]" class="qty" min="1" onkeypress="return isNumber(event);" style="text-align: center;" />
-                                    @else 
+                                    @else
                                     <input type="number" step="1" name="quantity" id="quantity" value="1"  max="1000000000" class="qty" min="1" onkeypress="return isNumber(event);" style="text-align: center;" />
-                                    @endif                                  
-                                    <input type="button" value="+" class="plus"> 
+                                    @endif
+                                    <input type="button" value="+" class="plus">
                                 </div>
                                 <input type='hidden' name='prod_id' value='[[product.id]]' data-parentid = "[[product.id]]">
                                 <input type='hidden' name='prod_type' value='[[product.prod_type]]'>
@@ -93,14 +168,74 @@
                                 <div class="clear"></div>
                                 <div class="line"></div>
                                 <!-- Product Single - Short Description  ============================================= -->
-                                <div class="shortDesc" ng-show="product.short_desc!=''">[[product.short_desc | removeHTMLTags]]</div>            
+                                <div class="shortDesc" ng-show="product.short_desc!=''">[[product.short_desc | removeHTMLTags]]</div>
+                                @php
+                            $publishReviews = CustomerReview::where(['product_id'=>$product->id,'publish'=>1])->orderBy('id','desc')->get();
+                             if(count($publishReviews)>0)
+                             {
+                                $ratings = $totalRatings/count($publishReviews);
+                             }
+                             else{
+                                $ratings = $totalRatings;
+                             }
+                            @endphp
+                            <div><h4>Reviews({{count($publishReviews)}} reviews, {{$ratings}} <i class="fa fa-star" aria-hidden="true"></i>)</h4>
+                               @if(count($CustomerReviews)>0)
+                               @foreach($CustomerReviews as $review)
+                               @php
+                               $user = User::find($review->user_id);
+                               @endphp
+
+                               <span>{{$user->firstname}}</span>
+                               <h5 style="margin-bottom: 0px;">{{$review->title}}</h5>
+       <div class="rating" style="    margin-bottom: -35px;line-height: 11px;">
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="1" {{$review->rating==1?'checked':''}} />
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="2" {{$review->rating==2?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="3" {{$review->rating==3?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="4" {{$review->rating==4?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+  <label>
+    <input type="radio" name="stars{{$review->id}}" disabled="" value="5" {{$review->rating==5?'checked':''}} />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+</div>
+                               <span>{{$review->description}}</span><br><br>
+                               @endforeach
+                            @if(count($publishReviews)>2)
+                            <a href="{{ route('home')}}/reviews/{{$review->product_id}}"><u>View All Reviews</u></a>
+                            @endif
+                            @else
+                               No reviews found
+                               @endif
+                            </div><br>
                                 <!-- AddToAny BEGIN -->
                                 <div class="shareSociIconBox">
-                                <strong>Share:</strong> 
+                                <strong>Share:</strong>
                                 <?php
-                                $social['url'] = Request::url();
-                                print_r(App\Library\Helper::socialShareIcon($social));
-                                ?>
+$social['url'] = Request::url();
+print_r(App\Library\Helper::socialShareIcon($social));
+?>
                                 </div>
                                 <!-- AddToAny END -->
                                 <!-- Product Single - Share End -->
@@ -114,17 +249,17 @@
                                     </ul>
                                     <div class="tab-container">
                                         <div class="tab-content tabBox clearfix" id="tabs-1">
-                                            <div ng-bind-html="product.long_desc | toTrust"></div>                                     
+                                            <div ng-bind-html="product.long_desc | toTrust"></div>
                                         </div>
                                         <!-- <div class="tab-content tabBox clearfix" id="tabs-2">
-                                            <div ng-bind-html="product.add_desc | toTrust"></div> 
+                                            <div ng-bind-html="product.add_desc | toTrust"></div>
                                         </div> -->
                                     </div>
                                 </div>
                             </div>
                             @endif
                         </div>
-                    </div>                   
+                    </div>
                     @if($is_rel_prod->status)
                     <div class="clear"></div>
           <div class="line"></div>
@@ -132,7 +267,7 @@
                     <div class="col_full bottommargin" >
                         <h4>Related Products</h4>
                         <div id="oc-product"  class="owl-carousel product-carousel carousel-widget" data-margin="30" data-pagi="false" data-autoplay="5000" data-items-xxs="1" data-items-sm="2" data-items-md="3" data-items-lg="4">
-                            @foreach($product->relatedproducts()->with('catalogimgs')->get() as $relProduct)                       
+                            @foreach($product->relatedproducts()->with('catalogimgs')->get() as $relProduct)
                             <div class="oc-item">
                                 <div class="product clearfix mobwidth100  relatedProduct" >
                                     <div class="product-image">
@@ -143,13 +278,13 @@
                                     <div class="product-desc">
                                         <div class="product-title">
                                             <h3><a href="">{{$relProduct->product}}</a></h3> </div>
-                                        <div class="product-price"> 
+                                        <div class="product-price">
                                             @if($relProduct->spl_price >0 && $relProduct->price > $relProduct->spl_price)
                                             <del><span class="currency-sym"></span>  {{number_format(@$relProduct->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span> {{number_format(@$relProduct->spl_price * Session::get('currency_val'), 2, '.', '')}} </ins>
-                                            @else 
+                                            @else
                                             <ins><span class="currency-sym"></span>  {{number_format(@$relProduct->price * Session::get('currency_val'), 2, '.', '')}}</ins>
                                             @endif
-                                        </div>                                     
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -175,13 +310,13 @@
                                     <div class="product-desc">
                                         <div class="product-title">
                                             <h3><a href="{{route('home').'/'.$upSellProduct->url_key}}">{{$upSellProduct->product}}</a></h3> </div>
-                                        <div class="product-price"> 
+                                        <div class="product-price">
                                             @if($upSellProduct->spl_price >0 && $upSellProduct->price >$upSellProduct->spl_price)
                                             <del><span class="currency-sym"></span>  {{number_format(@$upSellProduct->price * Session::get('currency_val'), 2, '.', '')}}</del> <ins><span class="currency-sym"></span>  {{number_format(@$upSellProduct->price * Session::get('currency_val'), 2, '.', '')}}</ins>
-                                            @else 
+                                            @else
                                             <ins><span class="currency-sym"></span>  {{number_format(@$upSellProduct->price * Session::get('currency_val'), 2, '.', '')}}</ins>
                                             @endif
-                                        </div>                                      
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -192,14 +327,14 @@
                     @endif
                 </div>
         </section>
-    </form>    
+    </form>
 </div>
 @stop
 @section('myscripts')
 <script>
     $(document).ready(function () {
-        $('head').append('<meta property="og:image" content="<?= $product->prodImage ?>" /> ');
-   
+        $('head').append('<meta property="og:image" content="<?=$product->prodImage?>" /> ');
+
    $( "div" ).delegate( "select", "change", function() {
    $(".optError").remove();
 });
@@ -245,7 +380,7 @@
         if (minvalue != currentVal)
             $('#quantity').val(parseInt(currentVal) - 1);
     });
-    
-    
+
+
 </script>
 @stop

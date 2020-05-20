@@ -1,5 +1,5 @@
 <?php
-
+//dd("front route");
 Route::group(['middleware' => ['web'], 'namespace' => 'Auth'], function() {
     Route::get('login/{provider?}/{from?}', ['as' => 'login', 'uses' => 'AuthController@login']);
 });
@@ -13,10 +13,12 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     
     Route::any('/check-user', ['as' => 'checkUser', 'uses' => 'HomeController@checkUser']);
     Route::any('/check-fbuser', ['as' => 'checkFbUser', 'uses' => 'HomeController@checkFbUser']);
-        Route::any('/check-fbuser-login', ['as' => 'checkFbUserLogin', 'uses' => 'HomeController@checkFbUserLogin']);
+    Route::any('/check-fbuser-login', ['as' => 'checkFbUserLogin', 'uses' => 'HomeController@checkFbUserLogin']);
 
+    Route::any('/onboard-distributor', ['as' => 'onboardDistributor', 'uses' => 'HomeController@onboardDistributor']);
     Route::any('/show-themes', ['as' => 'showThemes', 'uses' => 'HomeController@showThemes']);
     Route::any('/select-themes', ['as' => 'selectThemes', 'uses' => 'HomeController@selectThemes']);
+    Route::any('/distributor-signup', ['as' => 'distributorSignup', 'uses' => 'HomeController@distributorSignup']);
     Route::any('/congrats/{data?}', ['as' => 'congrats', 'uses' => 'HomeController@congrats']);
       Route::any('/congratulations', ['as' => 'getcongrats', 'uses' => 'HomeController@getcongrats']);
     
@@ -42,12 +44,12 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('read', ['as' => 'read', 'uses' => 'HomeController@read']);
     Route::any('/veestores-logout', ['as' => 'veestoresLogout', 'uses' => 'HomeController@veestoresLogout']);
     Route::any('/veestore-login', ['as' => 'veestoreLogin', 'uses' => 'HomeController@veestoreLogin']);
-    Route::any('/veestore-myaccount', ['as' => 'veestoreMyaccount', 'uses' => 'HomeController@veestoresMyaccount']);
+    Route::any('/myaccount', ['as' => 'veestoreMyaccount', 'uses' => 'HomeController@veestoresMyaccount']);
     Route::any('/veestore-change-password', ['as' => 'veestoresChangePassword', 'uses' => 'HomeController@veestoresChangePassword']);
     Route::any('/veestore-updateProfile', ['as' => 'veestoresUpdateProfile', 'uses' => 'HomeController@veestoresUpdateProfile']);
     Route::any('/veestore-UpdateChangePassword', ['as' => 'veestoresUpdateChangePassword', 'uses' => 'HomeController@veestoresUpdateChangePassword']);
     Route::any('/veestore-tutorial', ['as' => 'veestoresTutorial', 'uses' => 'HomeController@veestoresTutorial']);
-    Route::any('/features', ['as' => 'pricing', 'uses' => 'HomeController@featureList']);
+    Route::any('/features', ['as' => 'features', 'uses' => 'HomeController@featureList']);
     Route::any('/terms-condition', ['as' => 'terms-condition', 'uses' => 'HomeController@termCondition']);
     Route::any('/privacy-policy', ['as' => 'privacy-policy', 'uses' => 'HomeController@privacyPolicy']);
     Route::any('/about', ['as' => 'about', 'uses' => 'HomeController@aboutUs']);
@@ -55,7 +57,9 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/contact', ['as' => 'contact', 'uses' => 'HomeController@contactUs']);
     Route::any('/contact-send', ['as' => 'contactSend', 'uses' => 'HomeController@contactSend']);
     Route::any('/faqs', ['as' => 'faqs', 'uses' => 'HomeController@faqS']);
-   Route::any('/send-otp', ['as' => 'sendOpt', 'uses' => 'HomeController@sendOtp']);
+    Route::any('/check-storename', ['as' => 'checkStorename', 'uses' => 'HomeController@checkStorename']);
+    Route::any('/check-phone', ['as' => 'checkPhone', 'uses' => 'HomeController@checkPhone']);
+    Route::any('/send-otp', ['as' => 'sendOpt', 'uses' => 'HomeController@sendOtp']);
     Route::any('/check-otp', ['as' => 'checkOtp', 'uses' => 'HomeController@checkOtp']);
     Route::any('/not-found', ['as' => 'not-found', 'uses' => 'HomeController@notFound']);
     

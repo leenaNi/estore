@@ -96,11 +96,32 @@ class CategoryController extends Controller {
     public function changeStatus() {
         $catid = Input::get('catid');
         $catstatus = Input::get('catstatus');
-
         $cat = Category::find($catid);
         $cat->status = ($catstatus == 0) ? 1 : 0;
         $cat->update();
         return $cat->status;
+    }
+
+    public function matsterCategories() {
+        $category = Category::findOrNew(Input::get('id'));
+        $action = route('admin.master.category.update');
+        $data = [];
+        $viewname = Config('constants.AdminPagesMastersCategory') . ".masterCategories";
+        $data['category'] = $category;
+        $data['action'] = $action;
+        return Helper::returnView($viewname, $data);
+    }
+
+    public function updateMasterCategories() {
+        $saveUpdateCat = Category::findOrNew(Input::get('id'));
+        $saveUpdateCat->assigned_categories = json_encode(Input::get('category_id'));
+        $saveUpdateCat->save();
+        if (is_null(Input::get('id')) || empty(Input::get('id'))) {
+            Session::flash("msg", "Categories assigned successfully.");
+            return redirect()->to(Input::get('return_url') . "?id=" . Input::get('id'));
+        } else { 
+            return redirect()->to(Input::get('return_url'));
+        }
     }
 
 }

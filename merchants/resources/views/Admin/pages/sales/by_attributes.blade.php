@@ -3,7 +3,14 @@
 
 <section class="content-header">
     <h1>
-        By Attributes ({{$prodCount }})
+        By Attributes <?php
+        if($prodCount > 0)
+        {
+        ?>
+            ({{$startIndex}}-{{$endIndex}} of {{$prodCount }}) </span> </h1> 
+        <?php
+        }
+        ?>
         <small></small>
     </h1>
     <ol class="breadcrumb">
@@ -27,11 +34,11 @@
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <input type="text" value="{{ !empty(Input::get('search')) ? Input::get('search') : '' }}" name="search" aria-controls="editable-sample" class="form-control medium" placeholder="Product"/>
                         </div>
-                        <div class="form-group col-md-2  col-sm-6 col-xs-12">
-                            <input type="submit" name="submit" class="form-control btn btn-primary noMob-leftmargin" value="Search">
-                        </div>
-                        <div class="form-group col-md-2 col-sm-12 col-xs-12 noBottomMargin">
-                            <a href="{{route('admin.sales.byattribute')}}" class="btn btn-block reset-btn noLeftMargin">Reset</a>
+                        <div class="form-group col-md-4  col-sm-6 col-xs-12">
+                            <div class="search-resetsubmit">
+                                <input type="submit" name="submit" class="form-control btn btn-primary noMob-leftmargin mn-w100 no-leftmargin" value="Search">
+                                <a href="{{route('admin.sales.byattribute')}}" class="btn btn-block reset-btn noLeftMargin mn-w100">Reset</a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -107,7 +114,7 @@
                             </tr>
                             @endforeach
                             @else
-                            <tr><td colspan=6> No Record Found.</td></tr>
+                            <tr><td colspan=6 class="text-center"> No Record Found.</td></tr>
                             @endif
                         </tbody>
                     </table>

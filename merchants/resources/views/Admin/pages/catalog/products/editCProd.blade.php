@@ -3,7 +3,7 @@
 
 <section class="content-header">
     <h1>
-        Products fdsfasf
+        Products
 
     </h1>
     <ol class="breadcrumb">
@@ -13,7 +13,7 @@
     </ol>
 </section>
 <section class='content'>
-    <div class="nav-tabs-custom"> 
+    <div class="nav-tabs-custom">
         {!! view('Admin.includes.productHeader',['id' => $prod->id, 'prod_type' => $prod->prod_type]) !!}
         <div class="tab-content">
             <div class="tab-pan-active" id="activity">
@@ -39,17 +39,17 @@
                                 </div>
                                 @endforeach
                                 <div class="col-md-2">
-                                    {!! Form::label('price', 'Extra Price',['class'=>'control-label']) !!}
+                                    {!! Form::label('price', 'Price',['class'=>'control-label']) !!}
                                     {!! Form::text("price[]",0,["class"=>"form-control priceConvertTextBox"]) !!}
                                 </div>
 
-                                @if(($settingStatus['26'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
-                                
+                                @if(($settingStatus['stock'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
+
                                 <div class="col-md-2">
                                     {!! Form::label('stock', 'Stock',['class'=>'control-label']) !!}
                                     {!! Form::number("stock[]",0,["class"=>"form-control"]) !!}
                                 </div>
-                              
+
                                 @else
                                  {!! Form::hidden("stock[]",0,["class"=>"form-control"]) !!}
                                 @endif
@@ -61,7 +61,7 @@
                                 <div class="col-md-2">
                                     <a href="javascript:void();" class="addNewProd"><span class="label label-success label-mini">Add</span></a>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
                         <div class="line line-dashed b-b line-lg pull-in"></div>
                         <div class="form-group col-sm-12 ">
@@ -89,8 +89,8 @@
                             {!! Form::label('price', 'Extra Price',['class'=>'control-label']) !!}
                             {!! Form::text("price[]",0,["class"=>"form-control priceConvertTextBox"]) !!}
                         </div>
-                        @if(($settingStatus['26'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
-                         
+                        @if(($settingStatus['stock'] == 1 && $prod->prod_type == 3) && $prod->is_stock == 1 )
+
                         <div class="col-md-2">
                             {!! Form::label('stock', 'Stock',['class'=>'control-label']) !!}
                             {!! Form::number("stock[]",null,["class"=>"form-control"]) !!}
@@ -102,12 +102,12 @@
                             {!! Form::label('is_avail', 'Availability',['class'=>'control-label']) !!}
                             {!! Form::select("is_avail[]",['1'=>'Yes','0'=>'No'],null,["class"=>"form-control"]) !!}
                         </div>
-                       
+
                         {!! Form::hidden("id[]",null) !!}
                         <div class="col-md-2">
                             <a href="javascript:void();" class="DelProd"><span class="label label-danger ">Delete</span></a>
                         </div>
-                    </div>  
+                    </div>
                 </div>
                 <div class="bg-light lter b-b wrapper-md">
                     <h1 class="m-n font-thin h3">Product Variants</h1>
@@ -126,10 +126,10 @@
                                 <th>Product</th>
                                 <th>Availability</th>
                                 <th>Price</th>
-                                @if($settingStatus['26'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
-                                
+                                @if($settingStatus['stock'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
+
                                 <th>Stock</th>
-                              
+
                                 @endif
 
                                 <th>Actions</th>
@@ -143,10 +143,10 @@
                                 <td>{{ $prd->product }}</td>
                                 <td>{{ $prd->is_avail == 1 ? "Yes" : "No" }}</td>
                                 <td><span class="priceConvert">{{ $prd->price }}</span></td>
-                                @if($settingStatus['26'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
-                               
+                                @if($settingStatus['stock'] == 1 && $prod->prod_type == 3 && $prod->is_stock == 1)
+
                                 <td>{{ $prd->stock }}</td>
-                               
+
                                 @endif
                                 <td>
                                     <a href="{!! route('admin.products.variant.update',['id'=>$prd->id]) !!}" class="label label-success active" ui-toggle-class="" target="_blank">Edit</a>
@@ -170,7 +170,7 @@
                 </div>
                 <footer class="panel-footer">
                     <div class="row">
-                        <div class="col-sm-4 text-right text-center-xs pull-right">                
+                        <div class="col-sm-4 text-right text-center-xs pull-right">
 
                         </div>
                     </div>
@@ -214,7 +214,7 @@
     </div>
 </section>
 <input type="hidden" id="page_type" value="var"/>
-@stop 
+@stop
 
 @section('myscripts')
 
@@ -354,38 +354,38 @@
     });
 
     $(".saveProdVContine").click(function () {
-      
+
         $(".rtUrl").val("{!!route('admin.products.configurable.attributes',['id'=>$prod->id])!!}");
         $("#ProdV").submit();
 
     });
-    
+
     $(".saveProdVNext").click(function () {
          var prod_type = "{{ $prod->prod_type }}";
          var like_product = "{{ $feature['like-product'] }}";
          var sco = "{{ $feature['sco'] }}";
          var storeversion = "{{ $store_version_id }}";
          var related_prod = "{{ $feature['related-products']}}";
-        var feature = '<?= $feature["market-place"] ?>';
+        var feature = '<?=$feature["market-place"]?>';
          if(feature == 1){
-             $(".rtUrl").val("{!!route('admin.product.vendors',['id'=>$prod->id])!!}");  
-           
+             $(".rtUrl").val("{!!route('admin.product.vendors',['id'=>$prod->id])!!}");
+
             }else if(feature == 0 && related_prod==1 ){
-              $(".rtUrl").val("{!! route('admin.products.upsell.related',['id' => $prod->id]) !!}");  
-                
+              $(".rtUrl").val("{!! route('admin.products.upsell.related',['id' => $prod->id]) !!}");
+
             }else if(feature==0 && like_product==1){
-                $(".rtUrl").val("{!! route('admin.products.upsell.product',['id'=>$prod->id])!!}");  
-               
+                $(".rtUrl").val("{!! route('admin.products.upsell.product',['id'=>$prod->id])!!}");
+
             }else if(feature==0 && sco==1 && storeversion==2){
-               $(".rtUrl").val("{!! route('admin.products.prodSeo',['id'=>$prod->id])!!}");   
+               $(".rtUrl").val("{!! route('admin.products.prodSeo',['id'=>$prod->id])!!}");
             }else{
                  $(".rtUrl").val("{!!route('admin.products.view')!!}");
             }
-            
-       
+
+
           $("#ProdV").submit();
     });
-    
+
     $("body").on("click", ".addNewProd", function () {
         $(".ExistProdVAr").append($(".toAdd").html());
     });

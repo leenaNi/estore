@@ -33,7 +33,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,19 +42,46 @@
                             <tr> 
                                 <td>{{$set->name }}</td>
                                 <td>
-                                    <?php if($set->status == 1){ ?>
-                                    <a href="{!! route('admin.emailSetting.status',['url_key'=>$set->url_key]) !!}" class="" ui-toggle-class=""  data-toggle="tooltip" title="Enabled"  onclick="return confirm('Are you sure you want to disable this email setting?')" >
+                                <?php
+if ($set->status == 1) {
+    $statusLabel = 'Active';
+    $linkLabel = 'Mark as Inactive';
+} else {
+    $statusLabel = 'Inactive';
+    $linkLabel = 'Mark as Active';
+}
+?>
+<span class="alertSuccess">{{$statusLabel}}</span>
+                                    <?php // if($set->status == 1){ ?>
+                                    <!-- <a href="{!! route('admin.emailSetting.status',['url_key'=>$set->url_key]) !!}" class="" ui-toggle-class=""  data-toggle="tooltip" title="Enabled"  onclick="return confirm('Are you sure you want to disable this email setting?')" >
                                     <i class="fa fa-check btn btn-plen" ></i>
-                                    </a>
-                                    <?php } else { ?>
-                                    <a href="{!! route('admin.emailSetting.status',['url_key'=>$set->url_key]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Disabled" onclick="return confirm('Are you sure you want to enable this email setting?')" >
+                                    </a> -->
+                                    <?php // } else { ?>
+                                    <!-- <a href="{!! route('admin.emailSetting.status',['url_key'=>$set->url_key]) !!}" class="" ui-toggle-class="" data-toggle="tooltip" title="Disabled" onclick="return confirm('Are you sure you want to enable this email setting?')" >
                                     <i class="fa fa-times btn btn-plen" ></i>
-                                    </a>
-                                    <?php } ?>
+                                    </a> -->
+                                    <?php // } ?>
                                 </td>
-                                <td>
-                                    
-                                    <a href="{!! route('admin.emailSetting.edit',['url_key'=>$set->url_key]) !!}" data-toggle="tooltip" title="Configure" ui-toggle-class=""><i class="fa fa-cog" aria-hidden="true"></i></a>
+                                <td class="text-center mn-w100">                                    
+                                    <!-- <a href="{!! route('admin.emailSetting.edit',['url_key'=>$set->url_key]) !!}" data-toggle="tooltip" title="Configure" ui-toggle-class=""><i class="fa fa-cog" aria-hidden="true"></i></a> -->
+
+                                    <div class="actionCenter">
+                                    <span>
+                                    <a class="btn-action-default" href="{!! route('admin.emailSetting.edit',['url_key'=>$set->url_key]) !!}" ><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a>
+                                    </span>
+                                    <span class="dropdown">
+                                        <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                            @if($set->status==1)
+                                            <li><a href="{!! route('admin.emailSetting.status',['url_key'=>$set->url_key]) !!}" onclick="return confirm('Are you sure you want to disable this email setting?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                                            @elseif($set->status==0)
+                                            <li><a href="{!! route('admin.emailSetting.status',['url_key'=>$set->url_key]) !!}" onclick="return confirm('Are you sure you want to enable this email setting?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                                            @endif
+                                        </ul>
+                                    </span>
+                                </div>
                                 </td>
                             </tr>
                             @endforeach

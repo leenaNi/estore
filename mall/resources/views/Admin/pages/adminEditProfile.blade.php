@@ -7,7 +7,7 @@
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a></li>
-        <li class="active">Edit Profile</li>
+        <li class="active">Edit Profile/li>
     </ol>
 </section>
 <section class="content">

@@ -10,11 +10,13 @@ $adminConstants = [
     'AdminPluginPath' => 'public/admin/plugins/',
     'AdminUploadPath' => 'public/admin/uploads/',
     'notificationImgPath' => 'public/admin/uploads/notification/',
+    'companyImgPath' => 'public/admin/uploads/company/',
+    'brandImgPath' => 'public/admin/uploads/brand/',
     'AdminPages' => 'Admin.Pages',
     
     'AdminPagesBank' => 'Admin.Pages.Bank',
     'AdminPagesMerchant' => 'Admin.Pages.Merchants',
-    'AdminPagesVendor' => 'Admin.Pages.Vendor',
+    'AdminPagesDistributors' => 'Admin.Pages.Distributors',
     'AdminPagesPaymentettlement' => 'Admin.Pages.paymentSettlement',
     'AdminPagesStores' => 'Admin.Pages.Stores',
     'AdminPagesAnalytic' => 'Admin.Pages.Analytic',
@@ -25,10 +27,15 @@ $adminConstants = [
     
     'AdminPagesReports' => 'Admin.Pages.Reports',
     'AdminStoreLogo' => 'public/admin/uploads/logos/',
+    'adminCategoryMasterView' => 'Admin.Pages.Category',
     'AdminPagesMastersCategory' => 'Admin.Pages.Masters.Category',
     'AdminPagesMastersTheme' => 'Admin.Pages.Masters.Themes',
     'AdminPagesMastersLanguage' => 'Admin.Pages.Masters.Language',
     'AdminPagesMastersTranslation' => 'Admin.Pages.Masters.Translation',
+    "AdminPagesMastersCountry" => 'Admin.Pages.Masters.Country',
+    "AdminPagesMastersCurrency" => 'Admin.Pages.Masters.Currency',
+    "AdminPagesMastersCompany" => 'Admin.Pages.Masters.Company',
+    "AdminPagesMastersBrand" => 'Admin.Pages.Masters.Brand',
     
     'AdminPagesSystemUsersRoles' => 'Admin.Pages.SystemUsers.Roles',
     'AdminPagesSystemUsersUsers' => 'Admin.Pages.SystemUsers.Users',
@@ -38,7 +45,8 @@ $adminConstants = [
     'AdminPagesTemplates' => 'Admin.Pages.Templates',
     'AdminPagesCourier' => 'Admin.Pages.Courier',
     
-     'AdminPaginateNo' => '10'
+     'AdminPaginateNo' => '10',
+     
 ];
 
 
@@ -46,15 +54,18 @@ $frontendConstants = [
     'frontendView' => 'Frontend.pages',
     'frontendPaginateNo' => 10,
     'frontendPublicJsPath' => 'public/Frontend/js/',
+    'frontendPublicEstorifiJsPath' => 'public/Frontend/js-estorifi/',
     'frontendMyAccView' => 'Frontend.pages.myacc',
     'frontendCatlogCategory' => 'Frontend.pages.catalog.category',
     'frontendCatlogProducts' => 'Frontend.pages.catalog.products',
     'frontCartView' => 'Frontend.pages.cart',
     'frontCheckoutView' => 'Frontend.pages.checkout',
     'frontendPublicImgPath' => 'public/Frontend/images/',
+    'frontendPublicEstorifiImgPath' => 'public/Frontend/images-estorifi/',
     'frontviewEmailTemplatesPath' => 'Frontend/emails/',
     'frontendPublicCSSPath' => 'public/Frontend/css/',
-    'domainURL'=> 'https://api.godaddy.com/v1/domains/' . env('APP_URL') . '/records'
+    'frontendPublicEstorifiCSSPath' => 'public/Frontend/css-estorifi/',
+    'domainURL'=> 'https://api.godaddy.com/v1/domains/'
 
 ];
 

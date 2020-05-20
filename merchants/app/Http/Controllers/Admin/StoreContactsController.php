@@ -68,7 +68,31 @@ class StoreContactsController extends Controller {
         
         $viewname = Config('constants.adminStoreContactView') . '.index';
         
-        $data = ['storecontacts' => $storecontacts,'contacts_group'=>$contacts_group,'users'=>$users, 'contactsCount' => $contactsCount];
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $contactsCount)
+            {
+                $endIndex = ($contactsCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $contactsCount)
+            {
+                $endIndex = ($contactsCount);
+            }
+        }
+
+        $data = ['storecontacts' => $storecontacts,'contacts_group'=>$contacts_group,'users'=>$users, 'contactsCount' => $contactsCount, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         return Helper::returnView($viewname, $data);
     }
 
@@ -453,6 +477,7 @@ class StoreContactsController extends Controller {
         }
         
         if (count($invalidRecords) == 0) {
+
             $result = $this->saveContactUpload($col,$groupid);
             if ($result == 0) {
                 array_push($invalidRecords, $col);

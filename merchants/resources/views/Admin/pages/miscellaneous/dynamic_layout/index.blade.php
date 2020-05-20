@@ -40,30 +40,55 @@
                                 <th>Image</th>
                                 <th>Sort Order</th>
                                 <th> Status</th>
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($layout as $lout)
-                            <tr> 
+                            <tr>
 <!--                                <td>{{$lout->id }}</td>-->
                                 <td>{{$lout->name }}</td>
                                   <td>{{$lout->description }}</td>
                                 <td>{{$lout->url }}</td>
                                 <td><img src="{{asset(Config('constants.layoutUploadPath'))}}/{{$lout->image }}" class="admin-profile-picture" /></td>
                                 <td>{{$lout->sort_order }}</td>
-                               
+                                <?php
+if ($lout->status == 1) {
+    $statusLabel = 'Active';
+    $linkLabel = 'Mark as Inactive';
+} else {
+    $statusLabel = 'Inactive';
+    $linkLabel = 'Mark as Active';
+}
+?>
                                 <td>
-                                  @if($lout->status==1)
+                                <span class="alertSuccess">{{$statusLabel}}</span>
+                                  <!-- @if($lout->status==1)
                                 <a href="{!! route('admin.dynamicLayout.changeStatus',['id'=>$lout->id]) !!}" data-toggle="tooltip" title="Enabled" onclick="return confirm('Are you sure you want to disable this layout?')"><i class="fa fa-check btn btn-plen btnNo-margn-padd"></i></a>
                                 @elseif($lout->status==0)
                                 <a href="{!! route('admin.dynamicLayout.changeStatus',['id'=>$lout->id]) !!}" data-toggle="tooltip" title="Disabled"  onclick="return confirm('Are you sure you want to enable this layout?')"><i class="fa fa-times btn btn-plen"></i></a>
-                                @endif
+                                @endif -->
                                 </td>
-                                <td>
-                                   
-                                    <a href="{!! route('admin.dynamicLayout.edit',['id'=>$lout->id]) !!}"  ui-toggle-class="" data-toggle='tooltip' title='Edit'><i class='fa fa-pencil-square-o btn btn-plen btnNo-margn-padd'></i></a>
-                              <a href="{!! route('admin.dynamicLayout.delete',['id'=>$lout->id]) !!}"  ui-toggle-class="" data-toggle='tooltip' title='Delete'><i class='fa fa-trash'></i></a>
+                                <td class="text-center mn-w100">
+                                <div class="actionCenter">
+                                    <span>
+                                        <a class="btn-action-default" href="{!! route('admin.dynamicLayout.edit',['id'=>$lout->id]) !!}" ><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a>
+                                    </span>
+                                    <span class="dropdown">
+                                        <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                            <li><a href="{!! route('admin.dynamicLayout.delete',['id'=>$lout->id]) !!}"><i class='fa fa-trash'></i> Delete</a>
+                                            </li>
+                                            @if($lout->status==1)
+                                            <li><a href="{!! route('admin.dynamicLayout.changeStatus',['id'=>$lout->id]) !!}"  onclick="return confirm('Are you sure you want to disable this layout?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                                            @elseif($lout->status==0)
+                                            <li><a href="{!! route('admin.dynamicLayout.changeStatus',['id'=>$lout->id]) !!}"  onclick="return confirm('Are you sure you want to enable this layout?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                                            @endif
+                                        </ul>
+                                    </span>
+                                </div>
                                 </td>
                             </tr>
                             @endforeach
@@ -71,11 +96,11 @@
                     </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer clearfix">
-                    <?php $layout->render(); ?>
+                    <?php $layout->render();?>
                 </div>
             </div><!-- /.box -->
         </div><!-- /.col -->
-    </div> 
+    </div>
 </section>
 @stop
 
@@ -83,36 +108,36 @@
 <script>
     $(document).ready(function(){
         $(".enableDisable").click(function(){
-            
+
           var id =  $(this).attr('dynamicLay-id');
            var status =  $(this).attr('dynamicLay-status');
             var enableD = $(this);
-            
+
             $.ajax({
                 type:"POST",
                 url:"{!! route('admin.dynamicLayout.changeStatus') !!}",
                 data:{id:id,status:status},
                 cache:false,
                 success:function(data){
-                    
+
                     if(data == 1){
-                       enableD.text("Enable"); 
-                       enableD.attr("dynamicLay-status",1); 
-                       
+                       enableD.text("Enable");
+                       enableD.attr("dynamicLay-status",1);
+
                     }else if(data == 0){
-                         enableD.text("Disable"); 
-                         enableD.attr("dynamicLay-status",2); 
+                         enableD.text("Disable");
+                         enableD.attr("dynamicLay-status",2);
                     }
-                    
-                    
+
+
                 }
-                
+
             });
-      
+
         });
     });
-    
- </script>   
+
+ </script>
 
 
 @stop

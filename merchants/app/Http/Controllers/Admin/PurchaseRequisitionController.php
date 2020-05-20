@@ -51,16 +51,18 @@ class PurchaseRequisitionController extends Controller
 
     public function index() {
         $jsonString = Helper::getSettings();
-
+        
 //      $data=  DB::table('has_industries')->join("general_setting as g",'g.id','=','has_industries.general_setting_id')
 //             ->join("categories",'has_industries1.industry_id','=','categories.id')
 //              ->select('g.id','g.name','g.is_active','g.is_question','g.question_category_id','categories.category')->get();
         $order_status = OrderStatus::where('status', 1)->orderBy('order_status', 'asc')->get();
+        
         $order_options = '';
         foreach ($order_status as $status) {
             $order_options .= '<option  value="' . $status->id . '">' . $status->order_status . '</option>';
         }
-        $orders = Order::sortable()->where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        //$orders = Order::sortable()->where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
+        $orders = Order::where("orders.order_status", "!=", 0)->join("has_products", "has_products.order_id", '=', 'orders.id')->where("has_products.store_id", $jsonString['store_id'])->select('orders.*', 'has_products.order_source', DB::raw('sum(has_products.pay_amt) as hasPayamt'))->groupBy('has_products.order_id')->orderBy('orders.id', 'desc');
         //   dd($orders);
         //  $orders = Order::sortable()->where("orders.order_status", "!=", 0)->where('prefix', $jsonString['prefix'])->where('store_id', $jsonString['store_id'])->with(['orderFlag'])->orderBy("id", "desc");
         $payment_method = PaymentMethod::all();
@@ -124,7 +126,32 @@ class PurchaseRequisitionController extends Controller
         $flags = Flags::all();
 
         $viewname = Config('constants.adminPurcRequisitionView') . '.index';
-        $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options];
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $ordersCount)
+            {
+                $endIndex = ($ordersCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $ordersCount)
+            {
+                $endIndex = ($ordersCount);
+            }
+        }
+
+        $data = ['orders' => $orders, 'flags' => $flags, 'payment_method' => $payment_method, 'payment_stuatus' => $payment_stuatus, 'ordersCount' => $ordersCount, 'order_status' => $order_status, 'order_options' => $order_options, 'startIndex' => $startIndex, 'endIndex' => $endIndex];
         return Helper::returnView($viewname, $data);
     }
 

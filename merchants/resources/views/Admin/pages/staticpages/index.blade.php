@@ -3,7 +3,14 @@
 
 <section class="content-header">
     <h1>
-        Online Pages ({{$staticPageCount }})
+        Online Pages <?php
+        if($staticPageCount > 0)
+        {
+        ?>
+        ({{$startIndex}}-{{$endIndex}} of {{$staticPageCount }})
+        <?php
+        }
+        ?>
         <!--        <small>Add/Edit/Delete</small>-->
     </h1>
     <ol class="breadcrumb">
@@ -47,7 +54,7 @@
                                 <th>Show in Menu</th>
 <!--                                <th>Created At</th>-->
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,21 +67,42 @@
                                 <td>{{$page->is_menu==1?'Yes':'No'}}</td>
 <!--                                <td>{{ date('d-M-Y', strtotime($page->created_at))}}</td>-->
                                 <td>
-                                    @if($page->status==1)
-                                    <a href="{!! route('admin.staticpages.changeStatus',['id'=>$page->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to disable this online page?')" data-toggle="tooltip" title="Enabled"><i class="fa fa-check btn-plen btn"></i></a>
-                                    @elseif($page->status==0)
-                                    <a href="{!! route('admin.staticpages.changeStatus',['id'=>$page->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to enable this online page?')" data-toggle="tooltip" title="Disabled"><i class="fa fa-times btn-plen btn"></i></a>
-                                    @endif
+                                <?php
+if ($page->status == 1) {
+    $statusLabel = 'Active';
+    $linkLabel = 'Mark as Inactive';
+} else {
+    $statusLabel = 'Inactive';
+    $linkLabel = 'Mark as Active';
+}
+?>
+<span class="alertSuccess">{{$statusLabel}}</span>                                    
                                 </td>
-                                <td>
-                                    <a href="{!! route('admin.staticpages.edit',['id'=>$page->id]) !!}"  class="" ui-toggle-class="" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil-square-o fa-fw btnNo-margn-padd"></i></a>
-
-                                   <!--  <a href="{!! route('admin.staticpages.delete',['id'=>$page->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this online page?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i> -->
-                                    </td>
+                                <td class="text-center mn-w100">
+                                    <!--  <a href="{!! route('admin.staticpages.delete',['id'=>$page->id]) !!}" class="" ui-toggle-class="" onclick="return confirm('Are you sure you want to delete this online page?')" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-fw"></i> -->
+                                   <div class="actionCenter">
+                                    <span>
+                                    <a class="btn-action-default" href="{!! route('admin.staticpages.edit',['id'=>$page->id]) !!}" ><img src="{{ Config('constants.adminImgangePath') }}/icons/{{'pencil.svg'}}"></a>
+                                    </span>
+                                    <span class="dropdown">
+                                        <button class="btn-actions dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="{{ Config('constants.adminImgangePath') }}/icons/{{'more.svg'}}">
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                            <!-- <li><a href="{!! route('admin.staticpages.edit',['id'=>$page->id]) !!}"><i class="fa fa-pencil-square-o"></i> Edit</a></li> -->
+                                            @if($page->status==1)
+                                            <li><a href="{!! route('admin.staticpages.changeStatus',['id'=>$page->id]) !!}" onclick="return confirm('Are you sure you want to disable this online page?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                                            @elseif($page->status==0)
+                                            <li><a href="{!! route('admin.staticpages.changeStatus',['id'=>$page->id]) !!}" onclick="return confirm('Are you sure you want to enable this online page?')"><i class="fa fa-check"></i> {{$linkLabel}}</a></li>
+                                            @endif
+                                        </ul>
+                                    </span>
+                                </div>
+                                </td>
                                 </tr>
                                 @endforeach
                                 @else
-                                <tr><td colspan=6>No Record Found.</td></tr>
+                                <tr><td colspan=6 class="text-center">No Record Found.</td></tr>
                                 @endif
                             </tbody>
                         </table>

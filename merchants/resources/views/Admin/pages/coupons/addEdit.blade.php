@@ -110,7 +110,7 @@
                                         ?>            
                                         <div class="form-group">
                                             {!!Form::label('coupon_type','Coupon Type',['class'=>'control-label']) !!}<span class="red-astrik"> *</span>
-                                            {!! Form::select('coupon_type',["1" => "Entire Order", "2" => "Specific Categories", "3" => "Specific Products"],null,["class"=>'form-control validate[required] ']) !!}
+                                            {!! Form::select('coupon_type',["1" => "Entire Order", "2" => "Specific Categories", "3" => "Specific Products"],null,["class"=>'form-control validate[required]']) !!}
                                         </div>
                                         <?php
                                     }
@@ -145,6 +145,13 @@
                                         <div id="no_times_allowed_re_validate" style="color:red;"></div>
                                     </div>
                                 </div>
+                                <div class="col-md-6" id="max_discount_div">
+                                    <div class="form-group">
+                                        {!!Form::label('max_discount_amt','Maximum Discount Amount ',['class'=>'control-label']) !!}
+                                        {!! Form::text('max_discount_amt',null,["class"=>'form-control', 'min'=>1,"placeholder"=>"Maximum Discount Amount"]) !!}
+                                        <div id="max_discount_amt_validate" style="color:red;"></div>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         {!!Form::label('user_specific','User Specific',['class'=>'control-label']) !!}
@@ -177,9 +184,9 @@
                                             ?>
                                             <div id="log" style="height: 42px; overflow: auto; padding: 10px;" class="ui-widget-content">
                                                 <?php
-                                                foreach ($arr as $a) {
-                                                    ?>
-                                                    <div><?php echo $a['email']; ?><input type='hidden' name='uid[]' value='<?php echo trim($a['id']); ?>' ><a href='#' class='pull-right remove-rag'  ><i class='fa fa-trash'></i></a></div>
+foreach ($arr as $a) {
+        ?>
+                                                    <div><?php echo $a->email; ?><input type='hidden' name='uid[]' value='<?php echo trim($a->id); ?>' ><a href='#' class='pull-right remove-rag'  ><i class='fa fa-trash'></i></a></div>
                                                     <?php
                                                 }
                                                 ?>
@@ -222,34 +229,43 @@
 
                                         <div class="allCategories">
                                             <?php
-                                            if (!empty($coupon->categories()->get()->toArray())) {
-                                                $idArr = [];
-                                                $arr = $coupon->categories()->get(['categories.id'])->toArray();
-                                                foreach ($arr as $a) {
-                                                    array_push($idArr, $a['id']);
-                                                }
-                                            } else
-                                                $idArr = [];
+                                            
+if (!empty($coupon->categories()->get()->toArray()))
+ {
+    $idArr = [];
+    $arr = $coupon->categories()->get(['categories.id'])->toArray();
+    foreach ($arr as $a)
+     {
+        array_push($idArr, $a['id']);
+    }
+} else {
+    $idArr = [];
+}
 
-                                            $roots = App\Models\Category::roots()->get();
-                                            echo "<ul id='catTree' class='tree icheck'>";
-                                            foreach ($roots as $root)
-                                                renderNode($root, $idArr);
-                                            echo "</ul>";
+$roots = App\Models\Category::roots()->get();
+echo "<ul id='catTree' class='tree icheck'>";
+foreach ($roots as $root) {
+    renderNode($root,$idArr);
+}
 
-                                            function renderNode($node, $idArr) {
-                                                // print_r($idArr); echo $node->id;
-                                                $classStyle = (in_array($node->id, $idArr) ? 'checkbox-highlight' : '');
-                                                echo "<li class='tree-item fl_left ps_relative_li'>";
-                                                echo '<div class="checkbox">
-                        <label class="i-checks checks-sm ' . $classStyle . '"><input type="checkbox" class="checkCategoryId" name="category_id[]" value="' . $node->id . '" ' . (in_array($node->id, $idArr) ? 'checked' : '') . '  /><i></i>' . $node->category . '</label></div>';
+echo "</ul>";
 
-                                                if ($node->children()->count() > 0) {
-                                                    echo "<ul class='treemap fl_left'>";
-                                                    foreach ($node->children as $child)
-                                                        renderNode($child, $idArr);
-                                                    echo "</ul>";
-                                                }
+function renderNode($node, $idArr)
+{
+    // print_r($idArr); echo $node->id;
+    $classStyle = (in_array($node->id, $idArr) ? 'checkbox-highlight' : '');
+    echo "<li class='tree-item fl_left ps_relative_li'>";
+    echo '<div class="checkbox">
+                        <label class="i-checks checks-sm ' . $classStyle . '"><input type="checkbox" class="checkCategoryId" name="category_id[]" value="' . $node->id . '" ' . (in_array($node->id, $idArr) ? 'checked' : '') . '  /><i></i>' . $node->categoryName->category . '</label></div>';
+
+    if ($node->adminChildren->count() > 0) {
+       echo "<ul class='treemap fl_left'>";
+        foreach ($node->adminChildren as $child) {
+            renderNode($child, $idArr);
+        }
+
+        echo "</ul>";
+    }
 
                                                 echo "</li>";
                                             }
@@ -265,20 +281,34 @@
 
                                     <div class="col-sm-10 allProducts">
                                         <?php
-                                        if (!empty($coupon->products()->get()->toArray())) {
-                                            $pIDArr = [];
-                                            $arr = $coupon->products()->get(['products.id'])->toArray();
-                                            foreach ($arr as $a) {
-                                                array_push($pIDArr, $a['id']);
-                                            }
-                                        } else
-                                            $pIDArr = [];
-
-                                        echo "<ul id='catTree' class='tree icheck'>";
-                                        foreach ($products as $product) {
-                                            echo "<li class='tree-item fl_left ps_relative_li searchProductsList' style='list-style-type:none;'>";
-                                            echo '<div class="checkbox">
-                                <label class="i-checks checks-sm"><input type="checkbox" class="checkProductId" name="product_id[]" value="' . $product->id . '" ' . (in_array($product->id, $pIDArr) ? 'checked' : '') . '  /><i></i>' . $product->product . '</label>
+if (!empty($coupon->products()->get()->toArray())) {
+    $pIDArr = [];
+    $arr = $coupon->products()->get(['products.id'])->toArray();
+    foreach ($arr as $a) {
+        array_push($pIDArr, $a['id']);
+    }
+} else {
+    $pIDArr = [];
+}
+//echo "<pre>";
+//print_r($pIDArr);
+//exit;
+echo "<ul id='catTree' class='tree icheck'>";
+foreach ($products as $product) {
+    $productId = $product->id;
+    if (in_array($productId, $pIDArr))
+    {
+        $checkedValue = "checked=checked";
+        $addClass = "checkbox-highlight";
+    }
+    else {
+        $checkedValue = "";
+        $addClass = "";
+    }
+    //echo "<br> checked val::".$checkedValue;
+    echo "<li class='tree-item fl_left ps_relative_li searchProductsList' style='list-style-type:none;'>";
+    echo '<div class="checkbox">
+                                <label class="i-checks checks-sm '.$addClass.' "><input type="checkbox" class="checkProductId" name="product_id[]" value="' . $product->id . '"  "'.$checkedValue.'"/><i></i>' . $product->product . '</label>
                             </div>';
                                             echo "</li>";
                                         }
@@ -302,68 +332,7 @@
 @stop 
 
 @section('myscripts')
-<script>
-    /*  $("#save_coupon").validate({
-     // Specify the validation rules
-     rules: {
-     coupon_name: "required",
-     coupon_code: "required",
-     coupon_value: {
-     required: true,
-     min: 1,
-     number: true
-     },
-     min_order_amt: {
-     required: true,
-     min: 1,
-     number: true
-     },
-     start_date: {
-     required: true
-     
-     },
-     end_date: {
-     required: true
-     
-     }, no_times_allowed: {
-     required: true,
-     min: 1
-     }
-     },
-     // Specify the validation error messages
-     messages: {
-     coupon_name: "Please enter coupon name",
-     coupon_code: "Please enter coupon code",
-     coupon_value: {
-     required: "Please enter coupon discount value",
-     min: "Number must be greater than 0",
-     number: "Please enter valid number"
-     },
-     min_order_amt: {
-     required: "Please enter min order amount.",
-     min: "Number must be greater than 0",
-     number: "Please enter valid number"
-     },
-     start_date: {
-     required: "Please enter start date"
-     },
-     end_date: {
-     required: "Please enter end date"
-     },
-     no_times_allowed: {
-     required: "Please enter no. of times coupon allowed",
-     min: "Number must be greater than 0",
-     number: "Please enter valid number"
-     }
-     },
-     errorPlacement: function (error, element) {
-     var name = $(element).attr("name");
-     error.appendTo($("#" + name + "_re_validate"));
-     }
-     });
-     */
 
-</script>
 <script>
 
     $(document).on('keyup', '.searchProducts', function () {
@@ -429,18 +398,21 @@
 
     $("#coupon_type").change(function () {
         if ($("#coupon_type").val() == 2) {
+            $("#max_discount_div").hide();
             $("#showProducts").hide();
             $("#showCategories").show();
             $("input[name='ProductIds']").val("");
         }
 
         if ($("#coupon_type").val() == 3) {
+            $("#max_discount_div").hide();
             $("#showCategories").hide();
             $("#showProducts").show();
             $("input[name='CategoryIds']").val("");
         }
 
         if ($("#coupon_type").val() == 1) {
+            $("#max_discount_div").show();
             $("#showCategories").hide();
             $("#showProducts").hide();
             $("input[name='CategoryIds']").val("");

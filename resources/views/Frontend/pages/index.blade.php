@@ -1,6 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
-<section id="slider" class="full-screen force-full-screen ohidden" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'slider/4.jpg') }}') center center no-repeat; background-size: cover">
+<section id="slider" class="full-screen force-full-screen ohidden" style="background: url('{{ asset(Config('constants.frontendPublicEstorifiImgPath').'slider/4.jpg') }}') center center no-repeat; background-size: cover">
 
     <div class="">
 
@@ -31,12 +31,12 @@
                         </div>
                         @else
                         <div class="col_full text-center bottommargin-xs noMobBottomMargin">
-                            <a href="/new-store" class="btn theme-btn nomargin getVeestore">Get Started</a> 
+                            <a href="/new-store" class="btn theme-btn nomargin getVeestore">Get Started</a>
                             <!-- <input class="btn theme-btn nomargin getVeestore"  value="Get Started" type="submit" style="" data-toggle="modal" data-target="#getstartModal"> -->
                         </div>
                         @endif
                         <div class="clearfix"></div>
-                        
+
                         <!--  <div class="col_full topmargin-sm nobottommargin">
                              <button class="btn btn-default btn-block nomargin "  type="button">Get VeeStores free trial for a year today!</button>
                          </div> -->
@@ -49,7 +49,7 @@
             </div>
 
             <!--   <div class="image-wrap">
-                  <img src="{{ asset(Config('constants.frontendPublicImgPath').'/slider/4.jpg') }}" alt="Image">
+                  <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/slider/4.jpg') }}" alt="Image">
               </div> -->
 
         </div>
@@ -74,7 +74,7 @@
                     <!--                     <form action="{{route('newstore')}}" id="getStartedForm" method="post">
                                              <input type="text" class="form-control required not-dark" required="true"  name="store_name" placeholder="Store Name">
                                             <input class="btn theme-btn btn-block nomargin" id="create_store" value="Get Started" type="submit" style="" >
-                                            
+
                                         </form>-->
 
 
@@ -97,8 +97,8 @@
                 <div class="col-lg-7  col-md-7 col-sm-6">
 
                     <div style="position: relative; bottom:-10px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
-                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
-                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fmobile.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="400" alt="iPad">
+                        <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
+                        <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/main-fmobile.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="400" alt="iPad">
                     </div>
 
                 </div>
@@ -118,12 +118,12 @@
                         <div class="fbox-icon">
                             <a href="#"><i class="i-alt noborder icon-shopping-cart"></i></a>
                         </div>
-                     
+
                         <h3>Create an online store <br/>in just 5 minutes<span class="subtitle hidden-mobile">Set Up a business name, buy a domain, and create an online brand for free.</span></h3>
                     </div>
                 </div>
- 
-                 
+
+
 
                 <div class="col_one_third nobottommargin mob-mb-30">
                     <div class="feature-box fbox-center fbox-light fbox-effect nobottomborder">
@@ -166,7 +166,7 @@
                                 <div class="col-lg-6 col-xs-12 sameheight">
 
                                     <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="260" data-height-xxs="260">
-                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme1.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
+                                        <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/theme1.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                                     </div>
 
                                 </div>
@@ -182,7 +182,7 @@
                                 <div class="col-lg-6 col-xs-12 sameheight">
 
                                     <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="260" data-height-xxs="260">
-                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme2.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
+                                        <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/theme2.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                                     </div>
 
                                 </div>
@@ -200,7 +200,7 @@
                 </div>
             </div>
         </div>
-        <div class="section parallax dark topmargin-sm nobottommargin" style="background-image: url('{{ asset(Config('constants.frontendPublicImgPath').'/home-testi-bg.jpg') }}'); padding: 50px 0;" data-stellar-background-ratio="0.4">
+        <div class="section parallax dark topmargin-sm nobottommargin" style="background-image: url('{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/home-testi-bg.jpg') }}'); padding: 50px 0;" data-stellar-background-ratio="0.4">
 
             <div class="heading-block center">
                 <h2>What Merchants Say?</h2>
@@ -242,21 +242,21 @@
 
         </div>
         <!--   <div class="container clearfix">
-  
+
               <div class="row topmargin-sm nobottommargin">
                   <div id="oc-clients" class="owl-carousel image-carousel carousel-widget" data-margin="60" data-loop="true" data-nav="false" data-autoplay="5000" data-pagi="false" data-items-xxs="2" data-items-xs="3" data-items-sm="4" data-items-md="5" data-items-lg="6">
-  
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/1.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/2.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/3.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/4.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/5.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/6.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/7.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/8.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/9.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/10.png') }}" alt="Clients"></a></div>
-  
+
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/1.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/2.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/3.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/4.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/5.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/6.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/7.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/8.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/9.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/10.png') }}" alt="Clients"></a></div>
+
                   </div>
               </div>
           </div> -->
@@ -268,15 +268,15 @@
   <!-- Modal -->
   <div class="modal fade" id="getstartModal" role="dialog">
     <div class="modal-dialog modal-sm">
-    
+
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header regPopheader">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-         
+
           <div class="errorMessage alert-danger"></div>
         </div>
-        <div class="modal-body"> 
+        <div class="modal-body">
         <div class="col-md-12 text-center marginBottom20">
 <!--               <a href="{{ route('login',['provider'=>'facebook']) }}"  class="col-md-12 col-sm-6 col-xs-12" style="margin-bottom:11px;">-->
 <a class="btn btn-block btn-social btn-facebook" onclick="fbLogin()" id="fbLink" class="fb_login_btn">
@@ -285,16 +285,16 @@
        <div class="col-md-12 orDivider-box marginBottom20">
        <div class="orDivider">or</div>
        </div>
-       
+
        <div class="col-md-12 text-center">
-                <a href="{{route('newstore')}}">  <button class="btn btn-success btn-social fullWidthbtn theme-color marginBottom20"><span class="icon-vlogo"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/register-button-logo.png') }}" alt="V"></span> Register with Mobile</button></a>
+                <a href="{{route('newstore')}}">  <button class="btn btn-success btn-social fullWidthbtn theme-color marginBottom20"><span class="icon-vlogo"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/register-button-logo.png') }}" alt="V"></span> Register with Mobile</button></a>
             </div>
             <div class="clearfix"></div>
         </div>
         <div class="clearfix">
         </div>
       </div>
-      
+
     </div>
   </div>
 @stop
@@ -309,10 +309,10 @@
 //}
 //
 //    $(".stName").on("keyup",function(){
-//       $(this).val(toTitleCase($(this).val())); 
-//    });    
+//       $(this).val(toTitleCase($(this).val()));
+//    });
 //
-//        
+//
 //    $(".checkStore").on("keyup", function () {
 //        storename = $("input[name='store_name']").val();
 //

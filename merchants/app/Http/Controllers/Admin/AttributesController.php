@@ -24,7 +24,31 @@ class AttributesController extends Controller {
               $attrs = $attrs->paginate(Config('constants.paginateNo'));
               $attrsCount=$attrs->total();
         }
-        return view(Config('constants.adminAttrView') . '.index', compact('attrs','attrsCount'));
+
+        $startIndex = 1;
+        $getPerPageRecord = Config('constants.paginateNo');
+        $allinput = Input::all();
+        if(!empty($allinput) && !empty(Input::get('page')))
+        {
+            $getPageNumber = $allinput['page'];
+            $startIndex = ( (($getPageNumber) * ($getPerPageRecord)) - $getPerPageRecord) + 1;
+            $endIndex = (($startIndex+$getPerPageRecord) - 1);
+
+            if($endIndex > $attrsCount)
+            {
+                $endIndex = ($attrsCount);
+            }
+        }
+        else
+        {
+            $startIndex = 1;
+            $endIndex = $getPerPageRecord;
+            if($endIndex > $attrsCount)
+            {
+                $endIndex = ($attrsCount);
+            }
+        }
+        return view(Config('constants.adminAttrView') . '.index', compact('attrs','attrsCount','startIndex','endIndex'));
     }
 
     public function add() {

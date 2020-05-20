@@ -5,6 +5,7 @@ class OrderStatus extends Model {
 
 
 	protected $table = 'order_status';
+	protected $fillable = ['id','order_status','status', 'store_id','sort_order', 'color'];
 
 	
 	protected $fillable = ['id','order_status','status'];

@@ -63,28 +63,53 @@ class RolesController extends Controller {
 
         ini_set('max_execution_time', -1);
         $per = $permissions = Permission::pluck('display_name')->toArray();
+        //echo "<pre>";
+        //print_r($per);
         $newRoutes = [];
         $i = 0;
         foreach (Route::getRoutes() as $value) {
             if (strpos($value->getPrefix(), "admin") !== false) {
                 $displayName = ucwords(strtolower(str_replace(".", " ", str_replace("admin.", "", $value->getName()))));
-                //  echo $displayName . "<br/>";
+            
                 if (!in_array($displayName, $per)) {
                     if (!empty($displayName)) {
                         $newRoutes[$i]['dispname'] = $displayName;
                         $newRoutes[$i]['name'] = $value->getName();
+
+                        $arr = explode(' ',trim($displayName));
+                        if($arr[0]){
+                            $section_name =  $arr[0]; // will print first word in displayname
+                        }else{
+                            $section_name = $displayName;
+                        }
+                        if($section_name == 'Campaign' || $section_name == 'Emailcampaign' || $section_name == 'Referralprogram'){
+                            $section_name = 'Marketing';
+                        }
+                        else if($section_name == 'Storecontacts' || $section_name == 'Reviews' || $section_name == 'Custreview' || $section_name == 'Review'){
+                            $section_name = 'Customers';
+                        }else if($section_name == 'Storecontacts' || $section_name == 'Products'){
+                            $section_name = 'Product';
+                        }
+                        
+                        $secID = Section::where("name", "like","%{$section_name}%")->first();
+                        if(!empty($secID)){
+                            $newRoutes[$i]['section_id'] = $secID->id;
+                        }
                     }
                 }
                 $i++;
             }
         }
+        //echo "<pre>";
+        //print_r($newRoutes);
+        //exit;
         if (count($newRoutes) > 0) {
             foreach ($newRoutes as $value) {
                 $permissions = new Permission();
                 $permissions->name = $value['name'];
                 $permissions->display_name = $value['dispname'];
-                $secID = Section::where("name", "like", "%" . $value['name'] . "%")->first();
-                $permissions->section_id = (!empty($value['section_id'])) ? $secID->id : 57;
+                // $secID = Section::where("name", "like","%{$value['section_name']}%")->first();
+                $permissions->section_id = (!empty($value['section_id'])) ? $value['section_id'] : 57;
                 $permissions->save();
             }
         }

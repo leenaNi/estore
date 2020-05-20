@@ -177,8 +177,12 @@ $('#saveSlider').on('click', function (e) {
     {
         var fileUpload = $("#sliderImg")[0];
         //Check whether the file is valid Image.
-        var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
-        if (regex.test(fileUpload.value.toLowerCase())) {
+        var imageExt = fileUpload.value.split('.');
+        var validImageTypes = ["gif", "jpeg", "jpg", "png","bmp","svg"];
+
+       // var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+        //if (regex.test(fileUpload.value.toLowerCase())) {
+        if ($.inArray(imageExt[1], validImageTypes) == true || $.inArray(imageExt[1], validImageTypes) != -1) {    
             //Check whether HTML5 is supported.
             if (typeof (fileUpload.files) != "undefined") {
                 var form = $('#addSlider');

@@ -60,17 +60,19 @@ class HomeController extends Controller {
         $testimonial_status = GeneralSetting::where("url_key", 'testimonial')->first();
 
         $notification_status = GeneralSetting::where("url_key", 'notification')->first();
-//        $saveto= "public/Admin/uploads/slider/default_slider.png";
-//        dd(Helper::saveImage("http://www.techhaking.com/wp-content/uploads/2017/09/default-slider-image-300x150.png",$saveto));
-//        $data1 = [];
-//        Helper::sendMyEmail('Frontend.emails.test_mail', $data1, 'Test mail from inficart.com', 'support@inficart.com', 'inficart.com', 'tapodnya@infiniteit.biz', 'Tapodnya');
-        $categoryA = Category::get(['id', 'category'])->toArray();
+        //        $saveto= "public/Admin/uploads/slider/default_slider.png";
+        //        dd(Helper::saveImage("http://www.techhaking.com/wp-content/uploads/2017/09/default-slider-image-300x150.png",$saveto));
+        //        $data1 = [];
+        //        Helper::sendMyEmail('Frontend.emails.test_mail', $data1, 'Test mail from inficart.com', 'support@inficart.com', 'inficart.com', 'tapodnya@infiniteit.biz', 'Tapodnya');
+        $categoryA = DB::table('store_categories')
+        ->leftJoin('categories', 'categories.id', '=', 'store_categories.category_id')
+        ->get(['store_categories.id', 'categories.category'])->toArray();
         $rootsS = Category::roots()->where("status", 1)->get();
         $category = [];
         $attr_sets = [];
         $prod_types = [];
         foreach ($categoryA as $val) {
-            $category[$val['id']] = $val['category'];
+            $category[$val->id] = $val->category;
         }
 
 
@@ -361,7 +363,7 @@ class HomeController extends Controller {
 //                       // $message->cc(['indranath.sgupta@gmail.com','aloke@asgleather.com']);
 //                    }));
         if ($this->getEmailStatus == 1) {
-            $email_template = EmailTemplate::where('id', 13)->select('content')->get()->toArray()[0]['content'];
+            $email_template = EmailTemplate::where('url_key', 'contact-us')->select('content')->get()->toArray()[0]['content'];
             $replace = ["[userName]", "[userEmail]", "[telephone]", "[message]"];
             $replacewith = [ucfirst($contactform_fname), $contactform_email, $contactform_phone, $contactform_message];
             $subject = "Conatct form Enquiry";

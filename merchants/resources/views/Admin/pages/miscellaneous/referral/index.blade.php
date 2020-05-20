@@ -37,7 +37,7 @@
                                 <th>Name</th>
                                 <th>Status</th>
 
-                                <th>Action</th>
+                                <th class="text-center mn-w100">Action</th>
 
                             </tr>
                         </thead>
@@ -56,7 +56,7 @@
 
                                 
 
-                                <td>
+                                <td class="text-center mn-w100">
                                     <a href="{!! route('admin.referralProgram.editReferral',['id'=>$set->id]) !!}" data-toggle="tooltip" title="Configure" ui-toggle-class=""><i class="fa fa-cog btnNo-margn-padd" aria-hidden="true"></i></a>
                                 </td>
                             </tr>

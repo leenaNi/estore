@@ -30,12 +30,13 @@
                         <div class="form-group col-md-8 col-sm-6 col-xs-12">
                             <input type="text" name="smsSearch"  class="form-control medium pull-right " placeholder="Message Title">
                         </div>
-                        <div class="form-group col-md-2 col-sm-3 col-xs-12">
-                            <button type="submit" class="btn btn-primary form-control" style="margin-left: 0px;"> Search</button>
-                        </div>
-                        <div class="from-group col-md-2 col-sm-3 col-xs-12">
-                            <a href="{{ route('admin.coupons.view')}}" class="form-control btn reset-btn noMob-leftmargin">Reset </a>
-                        </div>
+                        <a href="{{ route('admin.campaign.view')}}">
+                        <button type="button" class="btn reset-btn noMob-leftmargin pull-right" value="reset">Reset
+                        </button>
+                        </a>  
+                        <button type="submit" name="search" class="btn btn-primary noAll-margin pull-right marginRight-lg" value="Search"> Filter
+                        </button>  
+                        
                     </form>
                 </div>
                 <div class="box-header col-md-3 col-sm-12 col-xs-12">

@@ -26,7 +26,7 @@ class ApiCouponController extends Controller {
         $prifix = $merchant->prefix;
         $search = !empty(Input::get("couponSearch")) ? Input::get("couponSearch") : '';
         $search_fields = ['coupon_name', 'coupon_code', 'min_order_amt', 'coupon_value', 'coupon_desc'];
-        $coupons = DB::table($prifix . '_coupons')->whereIn('status', [0, 1])->orderBy("id", "desc");
+        $coupons = DB::table('coupons')->whereIn('status', [0, 1])->orderBy("id", "desc");
         if (!empty(Input::get('couponSearch'))) {
             $coupons = $coupons->where(function($query) use($search_fields, $search) {
                 foreach ($search_fields as $field) {
@@ -46,7 +46,7 @@ class ApiCouponController extends Controller {
         $id = Input::get("id");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $coupons = DB::table($prifix . '_coupons')->where("id", $id)->first();
+        $coupons = DB::table('coupons')->where("id", $id)->first();
         $data = ['coupon' => $coupons];
         $viewname = '';
         return Helper::returnView($viewname, $data);
@@ -56,7 +56,7 @@ class ApiCouponController extends Controller {
         $marchantId = Input::get("merchantId");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $coupons = DB::table($prifix . '_coupons')->get();
+        $coupons = DB::table('coupons')->get();
         $coupon['coupon_name'] = Input::get('coupon_name');
         $coupon['coupon_code'] = Input::get('coupon_code');
         $coupon['discount_type'] = Input::get('discount_type');
@@ -90,7 +90,7 @@ class ApiCouponController extends Controller {
         $prifix = $merchant->prefix;
         $search = !empty(Input::get("search")) ? Input::get("search") : '';
         $search_fields = ['group'];
-        $loyalty = DB::table($prifix . '_loyalty')->orderBy("id", "asc");
+        $loyalty = DB::table('loyalty')->orderBy("id", "asc");
         $loyalty = $loyalty->where(function($query) use($search_fields, $search) {
             foreach ($search_fields as $field) {
                 $query->orWhere($field, "like", "%$search%");
@@ -112,7 +112,7 @@ class ApiCouponController extends Controller {
         $loyalty['max_order_amt'] = Input::get('max_order_amt');
         $loyalty['percent'] = Input::get('percent');
         if (Input::get("id")) {
-            $coupons = DB::table($prifix . '_loyalty')->where("id", Input::get("id"))->update($loyalty);
+            $coupons = DB::table('loyalty')->where("id", Input::get("id"))->update($loyalty);
             $data = ["status" => "1", "msg" => "Loyalty updated successfully"];
         } else {
             $loyalttRange = DB::table($prifix . '_loyalty')->where('min_order_amt', '>=', Input::get('min_order_amt'))->Orwhere('max_order_amt', '>=', Input::get('max_order_amt'))->get();
@@ -131,7 +131,7 @@ class ApiCouponController extends Controller {
         $id = Input::get("id");
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
-        $loyalty = DB::table($prifix . '_loyalty')->where("id", $id)->first();
+        $loyalty = DB::table('loyalty')->where("id", $id)->first();
         $data = ['loyalty' => $loyalty];
         $viewname = '';
         return Helper::returnView($viewname, $data);
@@ -260,7 +260,7 @@ class ApiCouponController extends Controller {
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
         $id = Input::get("id");
-        $coupon = DB::table($prifix . '_coupons')->find($id);
+        $coupon = DB::table('coupons')->find($id);
 
         $getcount = DB::table('orders')->where("coupon_used", "=", $id)->count();
         //dd($getcount);
@@ -287,7 +287,7 @@ class ApiCouponController extends Controller {
         $userId = Input::get("userId");
         $cart = json_decode(Input::get("cart_content"));
         if (isset($userId)) {
-            $cashback = DB::table($prifix . '_users')->find($userId)->cashback;
+            $cashback = DB::table('users')->find($userId)->cashback;
         }
         $cartAmount = Helper::getMrpTotal($cart);
         if ($cartAmount < $cashback) {
@@ -307,7 +307,7 @@ class ApiCouponController extends Controller {
             $amt = Helper::discForProduct($productP, $orderAmtP, $checkbackUsedAmt);
             $c->options->wallet_disc = $amt;
         }
-        $taxStatus = DB::table($merchant->prefix . '_general_setting')->where("url_key", 'tax')->first()->status;
+        $taxStatus = DB::table('general_setting')->where("url_key", 'tax')->first()->status;
         $cartdata = Helper::calAmtWithTax($cart, $taxStatus);
         return $cartdata;
     }
@@ -324,7 +324,7 @@ class ApiCouponController extends Controller {
             $c->options->wallet_disc = 0;
         }
         $option='wallet_disc';
-        $taxStatus = DB::table($merchant->prefix . '_general_setting')->where("url_key", 'tax')->first()->status;
+        $taxStatus = DB::table('general_setting')->where("url_key", 'tax')->first()->status;
        // $cart1= Helper::revertTax($cart,$taxStatus);
         $cartData = Helper::calAmtWithTax($cart, $taxStatus);
         return $cartData;
@@ -335,7 +335,7 @@ class ApiCouponController extends Controller {
         $merchant = Merchant::find(Input::get('merchantId'))->getstores()->first();
         $prifix = $merchant->prefix;
         $cart = json_decode(Input::get("cart_content"));
-        $taxStatus = DB::table($merchant->prefix . '_general_setting')->where("url_key", 'tax')->first()->status;
+        $taxStatus = DB::table('general_setting')->where("url_key", 'tax')->first()->status;
         $discType = Input::get('discType');
         $discVal = Input::get('discValue');
         //  $cartAmount = Helper::getAmt();
@@ -392,7 +392,7 @@ class ApiCouponController extends Controller {
         foreach ($cart as $k => $c) {
             $c->options->user_disc = 0;
         }
-        $taxStatus = DB::table($merchant->prefix . '_general_setting')->where("url_key", 'tax')->first()->status;    
+        $taxStatus = DB::table('general_setting')->where("url_key", 'tax')->first()->status;    
         $cartdata = Helper::calAmtWithTax($cart, $taxStatus);
         return $cartdata;
     }

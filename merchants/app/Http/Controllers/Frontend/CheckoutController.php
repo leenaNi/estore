@@ -2,45 +2,66 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use Route;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Country;
-use App\Models\GeneralSetting;
-use App\Models\Loyalty;
-use App\Models\Address;
-use App\Models\Zone;
-use App\Models\Coupon;
-use App\Models\User;
-use App\Models\HasProducts;
-use App\Models\Order;
-use App\Models\HasCashbackLoyalty;
-use App\Library\Helper;
-use App\Models\EmailTemplate;
-use App\Models\AttributeValue;
-use App\Models\Pincode;
-use App\Models\HasCourier;
-use App\Models\MallProducts;
-use App\Models\ContactStore;
-use Input;
-use App\Http\Controllers\Controller;
-use Cart;
-use Session;
-use HTML;
-use DB;
-use Auth;
-use Hash;
-use Mail;
-use Crypt;
 use App\Classes\Crypt_RC4;
 use App\Classes\MyPayPal;
-use Config;
-use stdClass;
+use App\Http\Controllers\Controller;
+use App\Library\Helper;
 use App\Models\AdditionalCharge;
+use App\Models\Address;
+use App\Models\ContactStore;
+use App\Models\Country;
+use App\Models\Coupon;
+use App\Models\EmailTemplate;
+use App\Models\GeneralSetting;
+use App\Models\HasCashbackLoyalty;
+use App\Models\HasCourier;
+use App\Models\HasProducts;
+use App\Models\Loyalty;
+use App\Models\MallProducts;
+use App\Models\Order;
+use App\Models\Pincode;
+use App\Models\Product;
+use App\Models\User;
+use App\Models\Zone;
+use App\Models\OrderStatus;
+use Auth;
+use Cart;
+use Config;
+use Crypt;
+use Hash;
+use Input;
+use Mail;
+use Route;
+use Session;
+use stdClass;
+use Redirect;
 
-class CheckoutController extends Controller {
+class CheckoutController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
+        
+        $cartvalue = Session::get('cart');
+        $sum = 0;
+        foreach($cartvalue['shopping'] as $value){
+
+            $price = $value->price*$value->qty;
+            $sum = $sum + $price;
+
+        }
+        $totalcart_value =  $sum;
+        $is_mincart = GeneralSetting::where('url_key', 'min-cart-value-rule')->where("status", 1)->first();
+        if($is_mincart){
+        $details = json_decode($is_mincart->details, true);
+        $charges= $details['charges'];
+        if($charges){
+            if ($charges > $totalcart_value) {
+                Session::flash('message', "Minimum cart value should be ".$charges." Rs.");
+                return Redirect::back();
+            } 
+        }
+        }
         $checkGuestCheckoutEnabled = GeneralSetting::where("url_key", "guest-checkout")->where("status", 1)->get();
 
         Session::forget("discAmt");
@@ -53,15 +74,18 @@ class CheckoutController extends Controller {
         Session::forget('referalCodeAmt');
         Session::forget('discAmt');
 
-        $jsonString=Helper::getSettings();
+        $jsonString = Helper::getSettings();
         $data = (object) $jsonString;
-        $country_code = (int)explode("+", $data->country_code)[1]; 
+        //$country_code = (int) explode("+", $data->country_code)[1];
+        $country_code = $data->country_code;
+        //echo "country code::".$country_code;
+        //exit;
         $country = Helper::getCountry($country_code);
 
-        $my_data=[];
-        $json_data=Helper::getSettings();
-
-        $my_data["country_id"]= $country[0]->id ;
+        $my_data = [];
+        $json_data = Helper::getSettings();
+        $countryid = Country::where('country_code', $country_code)->first();
+        $my_data["country_id"] = $countryid->id;
 
         // $my_data["pincode_req"]=isset($json_data["pincode"]) ? (int)$json_data["pincode"] : 0 ;
         $my_data["pincode_req"] = GeneralSetting::where("url_key", "pincode")->select("status")->get()->toArray()[0]["status"];
@@ -80,12 +104,13 @@ class CheckoutController extends Controller {
             // return view('Frontend.pages.checkout.checkout', compact('countries', 'zoneData'));
             $viewname = Config('constants.frontCheckoutView') . '.checkout';
             // dd($countries);
-            $data = ['my_data' => $my_data,'countries' => $countries, 'zoneData' => $zoneData, "checkGuestCheckoutEnabled" => $checkGuestCheckoutEnabled];
+            $data = ['my_data' => $my_data, 'countries' => $countries, 'zoneData' => $zoneData, "checkGuestCheckoutEnabled" => $checkGuestCheckoutEnabled];
             return Helper::returnView($viewname, $data);
         }
     }
 
-    public function get_zone() {
+    public function get_zone()
+    {
         if (!empty(Input::get('country'))) {
             $country_id = Country::where("id", "=", Input::get('country'))->get(['id'])->first();
 
@@ -96,25 +121,26 @@ class CheckoutController extends Controller {
         return $zone;
     }
 
-    public function get_country_zone() {
-        $my_data=[];
+    public function get_country_zone()
+    {
+        $my_data = [];
 
-        $jsonString=Helper::getSettings();
+        $jsonString = Helper::getSettings();
         $temp_data = (object) $jsonString;
-        $country_code = (int)explode("+", $temp_data->country_code)[1]; 
+        //$country_code = (int) explode("+", $temp_data->country_code)[1];
+        $country_code = $temp_data->country_code;
         $cnt = Helper::getCountry($country_code);
-
-        $json_data=Helper::getSettings();
-        $my_data["country_id"]= $cnt[0]->id ;
-        
+        $countryid = Country::where('country_code', $country_code)->first();
+        $json_data = Helper::getSettings();
+        $my_data["country_id"] = $countryid->id;
 
         $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'name'])->toArray();
 
         $zone = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
-       
+
         $userD = User::find(Session::get('loggedin_user_id'));
         $count = 99;
-      //  dd($country);
+        //  dd($country);
         $data['country'] = $country;
         // dd($data);
         $data['countryid'] = $my_data["country_id"]; //"{$count}";
@@ -126,20 +152,21 @@ class CheckoutController extends Controller {
         return $data;
     }
 
-    public function get_exist_user_login_new() {
+    public function get_exist_user_login_new()
+    {
         //$existEmail = Input::get('loginemail');
         $existPassword = Input::get('loginpassword');
         $existEmail = Input::get('loginemail');
         $login_type = filter_var($existEmail, FILTER_VALIDATE_EMAIL) ? 'email' : 'telephone';
         $userdata = array(
             $login_type => Input::get('loginemail'),
-            'password' => Input::get('loginpassword')
+            'password' => Input::get('loginpassword'),
         );
         $userdata = array(
             $login_type => $existEmail,
-            'password' => $existPassword
+            'password' => $existPassword,
         );
-        $user = User::where($login_type, '=', $existEmail)->first();
+        $user = User::where($login_type, '=', $existEmail)->where('user_type', '!=', 1)->orWhere('id', Session::get('loggedin_user_id'))->first();
         if (!empty($user)) {
             if (Auth::attempt($userdata)) {
                 Helper::postLogin($user->id);
@@ -172,15 +199,16 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function new_user_login_new() {
+    public function new_user_login_new()
+    {
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
         $cartContent = Cart::instance('shopping')->content();
-        $chkEmail = User:: where("telephone", "=", Input::get("telephone"))->get()->first();
+        $chkEmail = User::where("telephone", "=", Input::get("telephone"))->get()->first();
         if (empty($chkEmail)) {
             if (Input::get('password') == Input::get('cpassword')) {
 
                 $cust = new ContactStore();
-                $cust->name = ucfirst(Input::get('firstname')).' '.ucfirst(Input::get('lastname'));
+                $cust->name = ucfirst(Input::get('firstname')) . ' ' . ucfirst(Input::get('lastname'));
                 $cust->email = Input::get('email');
                 $cust->email = Input::get('email');
                 $cust->mobileNo = Input::get('telephone');
@@ -236,19 +264,17 @@ class CheckoutController extends Controller {
     public function change_default_status()
     {
         $address = Address::find(Input::get('addid'));
-        if(Input::get('type')==1)
-        {
+        if (Input::get('type') == 1) {
             $address->is_default_billing = 1;
-        }
-        else if(Input::get('type')==2)
-        {
+        } else if (Input::get('type') == 2) {
             $address->is_default_shipping = 1;
         }
         $address->update();
     }
 
-    public function save_address() {
-        if (!empty(Input::get('id') && Input::get('is_shipping')==1)) {
+    public function save_address()
+    {
+        if (!empty(Input::get('id') && Input::get('is_shipping') == 1)) {
             $newAdd = Address::find(Input::get('id'));
             $newAdd->user_id = Session::get('loggedin_user_id');
             $newAdd->firstname = Input::get('firstname');
@@ -271,11 +297,9 @@ class CheckoutController extends Controller {
                 $user->save();
             }
             $addressesCount = User::find(Session::get('loggedin_user_id'))->addresses()->get();
-            if(count($addressesCount)>0)
-            {
+            if (count($addressesCount) > 0) {
                 $is_shipping = 0;
-            }
-            else{
+            } else {
                 $is_shipping = 1;
             }
             $newAdd->user_id = Session::get('loggedin_user_id');
@@ -305,7 +329,8 @@ class CheckoutController extends Controller {
         return $data;
     }
 
-    public function save_billing_address() {
+    public function save_billing_address()
+    {
         //dd(Input::all());
 
         if (!empty(Input::get('id'))) {
@@ -331,11 +356,9 @@ class CheckoutController extends Controller {
                 $user->save();
             }
             $addressesCount = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
-            if(count($addressesCount)>0)
-            {
+            if (count($addressesCount) > 0) {
                 $is_billing = 0;
-            }
-            else{
+            } else {
                 $is_billing = 1;
             }
             $newAdd->user_id = Session::get('loggedin_user_id');
@@ -365,7 +388,8 @@ class CheckoutController extends Controller {
         return $data;
     }
 
-    public function del_address() {
+    public function del_address()
+    {
         Address::find(Input::get('addid'))->delete();
         $addressesData = User::find(Session::get('loggedin_user_id'))->addresses()->get();
         foreach ($addressesData as $address) {
@@ -393,7 +417,8 @@ class CheckoutController extends Controller {
         return $addressesData;
     }
 
-    public function del_bill_address() {
+    public function del_bill_address()
+    {
         Address::find(Input::get('addid'))->delete();
         $addressesData = User::find(Session::get('loggedin_user_id'))->billingaddresses()->get();
         foreach ($addressesData as $address) {
@@ -421,12 +446,14 @@ class CheckoutController extends Controller {
         return $addressesData;
     }
 
-    public function sel_address() {
+    public function sel_address()
+    {
         Session::put("addressSelected", Input::get('addid'));
         echo Session::get("addressSelected");
     }
 
-    public function get_address() {
+    public function get_address()
+    {
         $id = Input::get('addid');
         $addData = [];
         $getAddreses = Address::where("id", "=", $id)->first();
@@ -435,26 +462,26 @@ class CheckoutController extends Controller {
         $getAddreses->statename = $getAddreses->zone['name'];
         $getAddreses->zoneid = "{$getAddreses->zone['id']}";
 
-
-        $jsonString=Helper::getSettings();
+        $jsonString = Helper::getSettings();
         $data = (object) $jsonString;
-        $country_code = (int)explode("+", $data->country_code)[1]; 
+        $country_code = (int) explode("+", $data->country_code)[1];
         $country = Helper::getCountry($country_code);
 
-        $my_data=[];
-        $json_data=Helper::getSettings();
-        $my_data["country_id"]=isset($json_data["countryList"]) ? (int)$json_data["countryList"] : $country[0]->id;
+        $my_data = [];
+        $json_data = Helper::getSettings();
+        $my_data["country_id"] = isset($json_data["countryList"]) ? (int) $json_data["countryList"] : $country[0]->id;
 
         $country = Country::where("id", "=", $my_data["country_id"])->get(['id', 'iso_code_3', 'name']);
         $zone = Zone::where("country_id", "=", $my_data["country_id"])->get(['id', 'name']);
-        
+
         $addData['addData'] = $getAddreses;
         $addData['country'] = $country;
         $addData['zone'] = $zone;
         return $addData;
     }
 
-    public function check_international() {
+    public function check_international()
+    {
         $selAdd = Address::find(Session::get('addressSelected'));
         if (!empty($selAdd) && (!in_array($selAdd->country_id, [99, 18]))) {
             $cart = Cart::instance("shopping")->content();
@@ -472,28 +499,30 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function update_pay() {
+    public function update_pay()
+    {
         Session::put('pay_amt', Input::get('new_amt'));
     }
 
-    public function getBillSummary() {
+    public function getBillSummary()
+    {
         $checkReferral = GeneralSetting::where('url_key', 'referral')->first()->status;
         $voucher = @GeneralSetting::where('url_key', 'gift-voucher')->first()->status;
         $reward_point = GeneralSetting::where('url_key', 'loyalty')->first()->status;
         $selAdd = Address::find(Session::get("addressSelected"));
         if ($checkReferral == 1) {
 //            $chkProdsRefDisc = [];
-//            foreach (Cart::instance("shopping")->content() as $cInfo) {
-//                array_push($chkProdsRefDisc, $cInfo->options->is_ref_disc);
-//            }
-//
-//            if (in_array(0, $chkProdsRefDisc)) {
-//
-//                $refDisc = "invalid";
-//            } else {
-//
-//                $refDisc = "valid";
-//            }
+            //            foreach (Cart::instance("shopping")->content() as $cInfo) {
+            //                array_push($chkProdsRefDisc, $cInfo->options->is_ref_disc);
+            //            }
+            //
+            //            if (in_array(0, $chkProdsRefDisc)) {
+            //
+            //                $refDisc = "invalid";
+            //            } else {
+            //
+            //                $refDisc = "valid";
+            //            }
             $refDisc = "valid";
         } else {
             $refDisc = "invalid";
@@ -501,7 +530,7 @@ class CheckoutController extends Controller {
         $cart_amt = Helper::calAmtWithTax();
         $summary = [];
         $summary['cart'] = Cart::instance("shopping")->content();
-        $summary['cashback'] = (@User::find(Session::get('loggedin_user_id'))->userCashback->cashback > 0 ) ? User::find(Session::get('loggedin_user_id'))->userCashback->cashback : 0; // * Session::get('currency_val')
+        $summary['cashback'] = (@User::find(Session::get('loggedin_user_id'))->userCashback->cashback > 0) ? User::find(Session::get('loggedin_user_id'))->userCashback->cashback : 0; // * Session::get('currency_val')
         $summary['orderCount'] = @Order::where("user_id", Session::get('loggedin_user_id'))->where("order_status", "!=", 0)->count();
         $summary['address'] = $selAdd;
         $summary['chkRefDisc'] = $refDisc;
@@ -519,8 +548,8 @@ class CheckoutController extends Controller {
         return $summary;
     }
 
-    public function toPayment() {
-
+    public function toPayment()
+    {
 
         $toPayment = [];
         $selAdd = Address::find(Session::get("addressSelected"));
@@ -530,7 +559,7 @@ class CheckoutController extends Controller {
         }
         $cartContent = Cart::instance("shopping")->content();
         if (is_null(Session::get('orderId'))) {
-            $order = new Order(); 
+            $order = new Order();
             $order->user_id = Session::get('loggedin_user_id');
             if (Input::get("commentText")) {
                 $order->remark = Input::get("commentText");
@@ -552,7 +581,7 @@ class CheckoutController extends Controller {
                 $order->description = !empty(Input::get('commentText')) ? Input::get('commentText') : ' ';
             }
             $order->save();
-            Session:: put('orderId', $order->id);
+            Session::put('orderId', $order->id);
         } else {
             $order = Order::find(Session::get('orderId'));
             $order->user_id = Session::get('loggedin_user_id');
@@ -577,7 +606,7 @@ class CheckoutController extends Controller {
         $toPayment['address']['countryname'] = ($selAdd) ? $selAdd->country['name'] : '';
         $toPayment['address']['statename'] = ($selAdd) ? $selAdd->zone['name'] : '';
         $toPayment['address']['countryIsoCode'] = ($selAdd) ? $selAdd->country['iso_code_3'] : '';
-        // $toPayment['finalAmt'] = Helper::getAmt() * Session::get('currency_val'); 
+        // $toPayment['finalAmt'] = Helper::getAmt() * Session::get('currency_val');
         $cart_amt = Helper::calAmtWithTax();
         $toPayment['finalAmt'] = $cart_amt['total'] * Session::get('currency_val');
         //Session::get('pay_amt') * Session::get('currency_val');
@@ -593,23 +622,28 @@ class CheckoutController extends Controller {
         $toPayment['commentDesc'] = $order->description;
         $dtails = json_decode(GeneralSetting::where('url_key', 'ebs')->first()->details);
         foreach ($dtails as $detk => $detv) {
-            if ($detk == "mode")
+            if ($detk == "mode") {
                 $mode = $detv;
-            if ($detk == "key")
+            }
+
+            if ($detk == "key") {
                 $ebskey = $detv;
-            if ($detk == "account_id")
+            }
+
+            if ($detk == "account_id") {
                 $account_id = $detv;
+            }
+
         }
         $toPayment['ebsMode'] = @$mode;
         $toPayment['ebsKey'] = @$ebskey;
         $toPayment['ebsAccountId'] = @$account_id;
-        if (Session::get('pay_amt') > 0){
+        if (Session::get('pay_amt') > 0) {
 //            $toPayment['frmAction'] = route('getCityPay');
-               $toPayment['frmAction'] = route('order_cash_on_delivery');
-        }else{
+            $toPayment['frmAction'] = route('order_cash_on_delivery');
+        } else {
             $toPayment['frmAction'] = route('order_cash_on_delivery');
         }
-
 
         $ad_charge = AdditionalCharge::ApplyAdditionalCharge($cart_amt['total']);
         $ad_charge = json_decode($ad_charge, true);
@@ -620,25 +654,26 @@ class CheckoutController extends Controller {
 
         Session::put('pay_amt', $finalAmt);
 
-
         $cod = json_decode(GeneralSetting::where('url_key', 'cod')->first()->details);
         $toPayment['cod_charges'] = @$cod->charges;
         $iscod = "";
         $codmsg = "";
-        $pincodeStatus = Helper::checkCodPincode($selAdd->postcode);
-        if ($pincodeStatus == 1) {
-            $iscod = 1;
-            $codmsg = "COD available for this pincode.";
-        } else if ($pincodeStatus == 2) {
-            $iscod = 0;
-            $codmsg = "COD not available for this pincode.";
-        } else if ($pincodeStatus == 3) {
-            $iscod = 3;
-            $codmsg = "Pincode not available for delivery.";
-        } else if ($pincodeStatus == 5) {
-            $codmsg = "Pincode available for delivery.";
-        } else if ($pincodeStatus == 6) {
-            $iscod = 1;
+        if ($selAdd && $selAdd !== null) {
+            $pincodeStatus = Helper::checkCodPincode($selAdd->postcode);
+            if ($pincodeStatus == 1) {
+                $iscod = 1;
+                $codmsg = "COD available for this pincode.";
+            } else if ($pincodeStatus == 2) {
+                $iscod = 0;
+                $codmsg = "COD not available for this pincode.";
+            } else if ($pincodeStatus == 3) {
+                $iscod = 3;
+                $codmsg = "Pincode not available for delivery.";
+            } else if ($pincodeStatus == 5) {
+                $codmsg = "Pincode available for delivery.";
+            } else if ($pincodeStatus == 6) {
+                $iscod = 1;
+            }
         }
         $toPayment['is_cod'] = $iscod;
         $toPayment['cod_msg'] = $codmsg;
@@ -652,35 +687,36 @@ class CheckoutController extends Controller {
     }
 
 //    function checkPincode() {
-//        $pincodeStatus = GeneralSetting::where('url_key','pincode')->first();
-//        if (Input::get('type') == '0') {
-//            $pin = Input::get('pincode');
-//            echo $count = Pincode::where('pincode', $pin)->count();
-//        } else if (Input::get('type') == '1') {
-//            $pin = Input::get('pintype');
-//            // if picode status disable, means it delivered to all pincode 
-//            if($pincodeStatus->status == 0){
-//                $pin = 1;
-//            }
-//
-//            if ($pin == '0') {
-//                Session::put('cod_yes_no', 0);
-//            } else {
-//                Session::put('cod_yes_no', 1);
-//            }
-//            echo $pin.' -ses'.Session::get('cod_yes_no');
-//        }elseif (Input::get('type') == '2') {
-//            $address_id = Input::get('pintype');
-//            $pin_no = @Address::find($address_id)->postcode;
-//            $avail_pincode = array_column(Pincode::where('status',1)->get()->toArray(), 'pincode');
-//            if (in_array($pin_no, $avail_pincode) || $pincodeStatus->status == 0) {
-//               Session::put('cod_yes_no', 1); 
-//            }
-//        }
-//       
-//    }
+    //        $pincodeStatus = GeneralSetting::where('url_key','pincode')->first();
+    //        if (Input::get('type') == '0') {
+    //            $pin = Input::get('pincode');
+    //            echo $count = Pincode::where('pincode', $pin)->count();
+    //        } else if (Input::get('type') == '1') {
+    //            $pin = Input::get('pintype');
+    //            // if picode status disable, means it delivered to all pincode
+    //            if($pincodeStatus->status == 0){
+    //                $pin = 1;
+    //            }
+    //
+    //            if ($pin == '0') {
+    //                Session::put('cod_yes_no', 0);
+    //            } else {
+    //                Session::put('cod_yes_no', 1);
+    //            }
+    //            echo $pin.' -ses'.Session::get('cod_yes_no');
+    //        }elseif (Input::get('type') == '2') {
+    //            $address_id = Input::get('pintype');
+    //            $pin_no = @Address::find($address_id)->postcode;
+    //            $avail_pincode = array_column(Pincode::where('status',1)->get()->toArray(), 'pincode');
+    //            if (in_array($pin_no, $avail_pincode) || $pincodeStatus->status == 0) {
+    //               Session::put('cod_yes_no', 1);
+    //            }
+    //        }
+    //
+    //    }
 
-    public function get_loggedindata() {
+    public function get_loggedindata()
+    {
 
         if (!empty(Session::get('loggedin_user_id'))) {
             $checkCod = GeneralSetting::where('url_key', 'cod')->first();
@@ -715,7 +751,8 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function get_billingdata() {
+    public function get_billingdata()
+    {
 
         if (!empty(Session::get('loggedin_user_id'))) {
             $checkCod = GeneralSetting::where('url_key', 'cod')->first();
@@ -750,21 +787,24 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function apply_gift_wrap() {
+    public function apply_gift_wrap()
+    {
         $cartAmount = Helper::getAmt('gift');
         $finalAmount = $cartAmount + 25;
         Session::put('GiftingCharges', 25);
         echo $finalAmount;
     }
 
-    public function revert_gift_wrap() {
+    public function revert_gift_wrap()
+    {
         $cartAmount = Helper::getAmt('gift');
         Session::forget('GiftingCharges');
         $finalAmount = $cartAmount;
         echo $finalAmount;
     }
 
-    public function back_to_address() {
+    public function back_to_address()
+    {
         Session::forget("discAmt");
         Session::forget("discType");
         Session::forget('checkbackUsedAmt');
@@ -782,7 +822,8 @@ class CheckoutController extends Controller {
         echo Session::get('pay_amt');
     }
 
-    public function apply_cod_charges() {
+    public function apply_cod_charges()
+    {
         $cod = json_decode(GeneralSetting::where('url_key', 'cod')->first()->details);
         $cart_amt = Helper::calAmtWithTax();
         // to getting additional Charge
@@ -798,14 +839,14 @@ class CheckoutController extends Controller {
         $amt = $amtT + ($cod->charges); //* Session::get('currency_val')
         $toPayment['finalAmt'] = $amt * Session::get('currency_val');
 
-
         Session::put('codCharges', $cod->charges); //* Session::get('currency_val')
         Session::put("pay_amt", $amt);
         // return Helper::getAmt() * Session::get('currency_val');
         return $toPayment;
     }
 
-    public function revert_cod_charges() {
+    public function revert_cod_charges()
+    {
         $cart_amt = Helper::calAmtWithTax();
         // to getting additional Charge
         $prod_amount = $cart_amt['total']; // * Session::get('currency_val');
@@ -823,15 +864,17 @@ class CheckoutController extends Controller {
         return $toPayment;
     }
 
-    public function back_to_bill() {
+    public function back_to_bill()
+    {
         $this->revert_cod_charges();
         //  echo "sdfsdf";
     }
 
-    public function chk_cart_inventory() {
+    public function chk_cart_inventory()
+    {
         $stock_status = GeneralSetting::where('url_key', 'stock')->first()->status;
 //        if ($stock_status == 0)
-//            return "valid";
+        //            return "valid";
 
         $getCart = Cart::instance("shopping")->content();
         $cartStockCheck = [];
@@ -845,14 +888,15 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function check_voucher() {
+    public function check_voucher()
+    {
         $voucherCode = Input::get('voucherCode');
         $cartAmount = Helper::getMrpTotal();
 
         $validVoucher = Coupon::where("coupon_code", "=", $voucherCode)
-                        ->where("coupon_type", "=", 3)
-                        ->where("initial_coupon_val", "!=", 0)
-                        ->get()->toArray();
+            ->where("coupon_type", "=", 3)
+            ->where("initial_coupon_val", "!=", 0)
+            ->get()->toArray();
 
         if (!empty($validVoucher[0]['id'])) {
             if ($validVoucher[0]['id'] != Session::get('voucherUsedAmt')) {
@@ -881,14 +925,16 @@ class CheckoutController extends Controller {
                 $cartAmount = $cart_data['total'];
                 // $finalamt = $cartAmount - Session::get('checkbackUsedAmt')- Session::get('voucherAmount');
                 $finalamt = $cartAmount;
-                if ($finalamt <= 0)
+                if ($finalamt <= 0) {
                     $finalamt = 0;
-                else
+                } else {
                     $finalamt = $finalamt;
+                }
+
                 Session::put('pay_amt', $finalamt);
                 return ['status' => 1, 'msg' => 'Valid Voucher', 'voucherAmount' => (Session::get('voucherAmount') * Session::get('currency_val')), 'finalAmt' => ($finalamt * Session::get('currency_val'))];
                 //echo "Valid Voucher:-" . (Session::get('voucherAmount') * Session::get('currency_val')) . ":-" . ($finalamt * Session::get('currency_val'));
-            }else {
+            } else {
 //                echo "invalid data";
                 Session::forget('voucherUsedAmt');
                 return ['status' => 0, 'msg' => 'invalid data', 'voucherAmount' => 0];
@@ -909,7 +955,8 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function check_user_level_discount() {
+    public function check_user_level_discount()
+    {
         $cart_data = Helper::calAmtWithTax();
         $cartAmount = $cart_data['total'];
         $discType = Input::get('discType');
@@ -964,7 +1011,8 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function revert_user_level_discount() {
+    public function revert_user_level_discount()
+    {
         // $cartAmount = Helper::getAmt('discAmt');
         Session::forget('discAmt');
         Session::forget("discType");
@@ -980,22 +1028,31 @@ class CheckoutController extends Controller {
         return $data = ['status' => 'success', 'finalAmount' => ($finalAmount * Session::get('currency_val'))];
     }
 
-    public function check_referal_code() {
+    public function check_referal_code()
+    {
         $requireReferalCode = Input::get('RefCode');
         //  $cart_amount = Helper::getAmt('referal');
         $cart_amount = Helper::getMrpTotal();
         $checkReferral = GeneralSetting::where('url_key', 'referral')->first();
         $detailsR = json_decode($checkReferral->details);
         foreach ($detailsR as $detRk => $detRv) {
-            if ($detRk == "activate_duration_in_days")
+            if ($detRk == "activate_duration_in_days") {
                 $activate_duration = $detRv;
-            if ($detRk == "bonous_to_referee")
+            }
+
+            if ($detRk == "bonous_to_referee") {
                 $bonousToReferee = $detRv;
-            if ($detRk == "discount_on_order")
+            }
+
+            if ($detRk == "discount_on_order") {
                 $discountOnOrder = $detRv;
+            }
+
         }
-        if (!empty($requireReferalCode))
+        if (!empty($requireReferalCode)) {
             $allRefCode = User::where("id", "!=", Session::get('loggedin_user_id'))->where("referal_code", "=", $requireReferalCode)->get();
+        }
+
         if (count($allRefCode) > 0) {
             $ref_disc = round(($cart_amount * $discountOnOrder) / 100, 2);
             $user_referal_points = round(($cart_amount * $bonousToReferee) / 100, 2);
@@ -1018,10 +1075,11 @@ class CheckoutController extends Controller {
             $cartAmount = $cart_data['total'];
             $finalamt = $cartAmount;
             //  $finalamt = $cart_amount - Session::get('referalCodeAmt');
-            if ($finalamt <= 0)
+            if ($finalamt <= 0) {
                 $finalamt = 0;
-            else
+            } else {
                 $finalamt = $finalamt;
+            }
 
             // dd(Cart::instance('shopping')->content());
             Session::put('pay_amt', $finalamt);
@@ -1043,20 +1101,23 @@ class CheckoutController extends Controller {
             $finalamt = $cart_data['total'];
             Session::put('pay_amt', $finalamt);
 //            echo "Invalid:-" . $referalCodeAmt . ":-" . Session::get('pay_amt');
-            return ['status' => 0, 'msg' => "Invalid", 'referalCodeAmt' => 0.00, "finalAmt" => round(Session::get('pay_amt') * Session::get('currency_val'),2)];
+            return ['status' => 0, 'msg' => "Invalid", 'referalCodeAmt' => 0.00, "finalAmt" => round(Session::get('pay_amt') * Session::get('currency_val'), 2)];
         }
     }
 
-    public function encrypt_value() {
+    public function encrypt_value()
+    {
         echo Crypt::encrypt(Input::get('new_amt'));
     }
 
-    public function decrypt_value() {
+    public function decrypt_value()
+    {
         echo Crypt::decrypt(Input::get('new_amt'));
     }
 
     // For cashback
-    public function require_cashback() {
+    public function require_cashback()
+    {
         $user_id = input::get('userId');
 
         if (isset($user_id)) {
@@ -1109,7 +1170,8 @@ class CheckoutController extends Controller {
         return $data;
     }
 
-    public function revert_cashback() {
+    public function revert_cashback()
+    {
         $finalamt = Session::get('pay_amt') + Session::get('checkbackUsedAmt');
 
         $cart = Cart::instance('shopping')->content();
@@ -1128,7 +1190,8 @@ class CheckoutController extends Controller {
     }
 
     // For cod
-    public function order_cash_on_delivery() {
+    public function order_cash_on_delivery()
+    {
         $selAdd = Address::find(Session::get("addressSelected"));
         //    $userC = Helper::checkCodPincode($selAdd->postcode);
         //  if ($userC == 1 || $userC == 6) {
@@ -1150,16 +1213,19 @@ class CheckoutController extends Controller {
             $transactionStatus = "";
             $suc = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus);
         }
-        if (!empty($suc['email']))
+        if (!empty($suc['email'])) {
             $this->successMail($suc['orderId'], $suc['first_name'], $suc['email']);
+        }
+
         return redirect()->route('orderSuccess');
 
-        // } 
+        // }
     }
 
-    public function getCityPay() {
+    public function getCityPay()
+    {
         define('DS', DIRECTORY_SEPARATOR);
-        include(app_path() . DS . 'Library' . DS . 'Functions.php');
+        include app_path() . DS . 'Library' . DS . 'Functions.php';
         $payAmt = 1; //Helper::getAmt();
         Session::put('theme_id', Input::get("theme_id"));
         $server = $_SERVER['HTTP_HOST'];
@@ -1181,46 +1247,47 @@ class CheckoutController extends Controller {
         </script>
 
         <?php
-    }
+}
 
-    public function getCityCreateOrder() {
+    public function getCityCreateOrder()
+    {
         // dd(Input::all());
-//        if (Input::get('responseType') == 'json') {
-//            $getAddreses = Address::where("id", "=", Input::get('addid'))->first();
-//            $orderS = Order::find(Input::get('Description'));
-//            $orderS->cart = Input::get('cart');
-//
-//            $orderS->first_name = @$getAddreses->firstname;
-//            $orderS->last_name = @$getAddreses->lastname;
-//            $orderS->address1 = @$getAddreses->address1;
-//            $orderS->address2 = @$getAddreses->address2;
-//            $orderS->address3 = @$getAddreses->address3;
-//            $orderS->phone_no = @$getAddreses->phone_no;
-//            $orderS->postal_code = @$getAddreses->postcode;
-//            $orderS->country_id = @$getAddreses->country_id;
-//            $orderS->zone_id = @$getAddreses->zone_id;
-//            $orderS->city = @$getAddreses->city;
-//
-//            $orderS->save();
-//        }
+        //        if (Input::get('responseType') == 'json') {
+        //            $getAddreses = Address::where("id", "=", Input::get('addid'))->first();
+        //            $orderS = Order::find(Input::get('Description'));
+        //            $orderS->cart = Input::get('cart');
+        //
+        //            $orderS->first_name = @$getAddreses->firstname;
+        //            $orderS->last_name = @$getAddreses->lastname;
+        //            $orderS->address1 = @$getAddreses->address1;
+        //            $orderS->address2 = @$getAddreses->address2;
+        //            $orderS->address3 = @$getAddreses->address3;
+        //            $orderS->phone_no = @$getAddreses->phone_no;
+        //            $orderS->postal_code = @$getAddreses->postcode;
+        //            $orderS->country_id = @$getAddreses->country_id;
+        //            $orderS->zone_id = @$getAddreses->zone_id;
+        //            $orderS->city = @$getAddreses->city;
+        //
+        //            $orderS->save();
+        //        }
         // dd(Input::get('Merchant'));
         define('DS', DIRECTORY_SEPARATOR);
-        include(app_path() . DS . 'Library' . DS . 'Functions.php');
+        include app_path() . DS . 'Library' . DS . 'Functions.php';
         $data = '<?xml version="1.0" encoding="UTF-8"?>';
-        $data.="<TKKPG>";
-        $data.="<Request>";
-        $data.="<Operation>CreateOrder</Operation>";
-        $data.="<Language>EN</Language>";
-        $data.="<Order>";
-        $data.="<OrderType>Purchase</OrderType>";
-        $data.="<Merchant>" . Input::get('Merchant') . "</Merchant>";
-        $data.="<Amount>" . Input::get('Amount') * 100 . "</Amount>";
-        $data.="<Currency>" . Input::get('Currency') . "</Currency>";
-        $data.="<Description>" . Input::get('Description') . "</Description>";
-        $data.="<ApproveURL>" . htmlentities(Input::get('ApproveURL')) . "</ApproveURL>";
-        $data.="<CancelURL>" . htmlentities(Input::get('CancelURL')) . "</CancelURL>";
-        $data.="<DeclineURL>" . htmlentities(Input::get('DeclineURL')) . "</DeclineURL>";
-        $data.="</Order></Request></TKKPG>";
+        $data .= "<TKKPG>";
+        $data .= "<Request>";
+        $data .= "<Operation>CreateOrder</Operation>";
+        $data .= "<Language>EN</Language>";
+        $data .= "<Order>";
+        $data .= "<OrderType>Purchase</OrderType>";
+        $data .= "<Merchant>" . Input::get('Merchant') . "</Merchant>";
+        $data .= "<Amount>" . Input::get('Amount') * 100 . "</Amount>";
+        $data .= "<Currency>" . Input::get('Currency') . "</Currency>";
+        $data .= "<Description>" . Input::get('Description') . "</Description>";
+        $data .= "<ApproveURL>" . htmlentities(Input::get('ApproveURL')) . "</ApproveURL>";
+        $data .= "<CancelURL>" . htmlentities(Input::get('CancelURL')) . "</CancelURL>";
+        $data .= "<DeclineURL>" . htmlentities(Input::get('DeclineURL')) . "</DeclineURL>";
+        $data .= "</Order></Request></TKKPG>";
 
         $xml = PostQW($data);
         //  dd($xml);
@@ -1229,19 +1296,17 @@ class CheckoutController extends Controller {
         $URL = $xml->Response->Order->URL;
 
         $data = '<?xml version="1.0" encoding="UTF-8"?>';
-        $data.="<TKKPG>";
-        $data.="<Request>";
-        $data.="<Operation>GetOrderStatus</Operation>";
-        $data.="<Order>";
-        $data.="<Merchant>" . $_POST['Merchant'] . "</Merchant>";
-        $data.="<OrderID>" . $OrderID . "</OrderID>";
-        $data.="</Order>";
-        $data.="<SessionID>" . $SessionID . "</SessionID>";
-        $data.="</Request></TKKPG>";
+        $data .= "<TKKPG>";
+        $data .= "<Request>";
+        $data .= "<Operation>GetOrderStatus</Operation>";
+        $data .= "<Order>";
+        $data .= "<Merchant>" . $_POST['Merchant'] . "</Merchant>";
+        $data .= "<OrderID>" . $OrderID . "</OrderID>";
+        $data .= "</Order>";
+        $data .= "<SessionID>" . $SessionID . "</SessionID>";
+        $data .= "</Request></TKKPG>";
         $xml = PostQW($data);
         $OrderStatus = $xml->Response->Order->OrderStatus;
-
-
 
         if (Input::get('responseType') == 'json') {
             $data = [];
@@ -1255,14 +1320,15 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function getCityApproved() {
+    public function getCityApproved()
+    {
 
         //  dd($_REQUEST['xmlmsg']);
         if (@$_REQUEST['xmlmsg'] != "") {
 
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
-            $array = json_decode($json, TRUE);
+            $array = json_decode($json, true);
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
@@ -1278,12 +1344,13 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function getCityDeclined() {
+    public function getCityDeclined()
+    {
 
         if (@$_REQUEST['xmlmsg'] != "") {
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
-            $array = json_decode($json, TRUE);
+            $array = json_decode($json, true);
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
@@ -1298,12 +1365,13 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function getCityCancelled() {
+    public function getCityCancelled()
+    {
 
         if (@$_REQUEST['xmlmsg'] != "") {
             $xmlResponse = simplexml_load_string($_REQUEST['xmlmsg']);
             $json = json_encode($xmlResponse);
-            $array = json_decode($json, TRUE);
+            $array = json_decode($json, true);
             if (empty(Session::get('orderId'))) {
                 Session::put('orderId', $array['OrderDescription']);
             }
@@ -1319,54 +1387,68 @@ class CheckoutController extends Controller {
     }
 
     // For ebs
-    public function ebs() {
+    public function ebs()
+    {
         // $payAmtE = Helper::getAmt();
         $payAmtE = Session::get('pay_amt');
         $dtails = json_decode(GeneralSetting::where('url_key', 'ebs')->first()->details);
         foreach ($dtails as $detk => $detv) {
-            if ($detk == "mode")
+            if ($detk == "mode") {
                 $mode = $detv;
-            if ($detk == "key")
+            }
+
+            if ($detk == "key") {
                 $ebskey = $detv;
-            if ($detk == "account_id")
+            }
+
+            if ($detk == "account_id") {
                 $account_id = $detv;
+            }
+
         }
         $refNo = Session::get('orderID');
         $retUrl = route('response') . "?DR={DR}";
         //    dd($payAmtD);
         $hash = $ebskey . "|" . $account_id . "|" . $payAmtE . "|" . $refNo . "|" . $retUrl . "|" . $mode;
         $_POST['secure_hash'] = md5($hash);
-        ?> 
+        ?>
         <form action='https://secure.ebs.in/pg/ma/sale/pay' method='post' name='frm'>
             <?php
-            foreach ($_POST as $a => $b) {
-                if (htmlentities($a) == "amount") {
-                    echo "<input type='hidden' name='" . htmlentities($a) . "' value='" . htmlentities($payAmtE) . "'>";
-                } else {
-                    echo "<input type='hidden' name='" . htmlentities($a) . "' value='" . htmlentities($b) . "'>";
-                }
+foreach ($_POST as $a => $b) {
+            if (htmlentities($a) == "amount") {
+                echo "<input type='hidden' name='" . htmlentities($a) . "' value='" . htmlentities($payAmtE) . "'>";
+            } else {
+                echo "<input type='hidden' name='" . htmlentities($a) . "' value='" . htmlentities($b) . "'>";
             }
-            ?>
+        }
+        ?>
         </form>
         <script language="JavaScript">
             document.frm.submit();
         </script>
         <?php
-    }
+}
 
-    public function response() {
+    public function response()
+    {
         $chkReferal = GeneralSetting::where('url_key', 'ebs')->first()->status;
         $chkLoyalty = GeneralSetting::where('url_key', 'loyalty')->first()->status;
         $dtails = json_decode(GeneralSetting::where('url_key', 'ebs')->first()->details);
         foreach ($dtails as $detk => $detv) {
-            if ($detk == "mode")
+            if ($detk == "mode") {
                 $mode = $detv;
-            if ($detk == "key")
+            }
+
+            if ($detk == "key") {
                 $ebskey = $detv;
-            if ($detk == "account_id")
+            }
+
+            if ($detk == "account_id") {
                 $account_id = $detv;
+            }
+
         }
-        $secret_key = $ebskey;  // Your Secret Key
+        $secret_key = $ebskey; // Your Secret Key
         if (isset($_GET['DR'])) {
             $DR = preg_replace("/\s/", "+", $_GET['DR']);
             $rc4new = new Crypt_RC4();
@@ -1407,21 +1489,34 @@ class CheckoutController extends Controller {
     }
 
     // For paypal
-    public function paypal_process() {
+    public function paypal_process()
+    {
         $details = json_decode(GeneralSetting::where('url_key', 'paypal')->first()->details, true);
         foreach ($details as $dtk => $dtv) {
-            if ($dtk == "mode")
+            if ($dtk == "mode") {
                 $mode = $dtv;
-            if ($dtk == "api_username")
+            }
+
+            if ($dtk == "api_username") {
                 $api_username = $dtv;
-            if ($dtk == "api_password")
+            }
+
+            if ($dtk == "api_password") {
                 $api_password = $dtv;
-            if ($dtk == "api_signature")
+            }
+
+            if ($dtk == "api_signature") {
                 $api_signature = $dtv;
-            if ($dtk == "currency_code")
+            }
+
+            if ($dtk == "currency_code") {
                 $api_currency_code = $dtv;
-            if ($dtk == "logo_url")
+            }
+
+            if ($dtk == "logo_url") {
                 $api_logo_url = $dtv;
+            }
+
         }
         $PayPalMode = $mode; // sandbox or live
         $PayPalApiUsername = $api_username; //PayPal API Username
@@ -1436,35 +1531,35 @@ class CheckoutController extends Controller {
         $ItemPrice = number_format($getTotPrice, 2); //Item Price
         $ItemNumber = Session::get('orderId'); //Item Number
         $ItemQty = 1; // Item Quantity
-        $ItemTotalPrice = number_format($getTotPrice, 2); //(Item Price x Quantity = Total) Get total amount of product; 
-        $TotalTaxAmount = 0;  //Sum of tax for all items in this order. 
-        $HandalingCost = 0;  //Handling cost for this order.
-        $InsuranceCost = 0;  //shipping insurance cost for this order.
+        $ItemTotalPrice = number_format($getTotPrice, 2); //(Item Price x Quantity = Total) Get total amount of product;
+        $TotalTaxAmount = 0; //Sum of tax for all items in this order.
+        $HandalingCost = 0; //Handling cost for this order.
+        $InsuranceCost = 0; //shipping insurance cost for this order.
         $ShippinDiscount = 0; //Shipping discount for this order. Specify this as negative number.
         $ShippinCost = 0; //Although you may change the value later, try to pass in a shipping amount that is reasonably accurate.
         $GrandTotal = ($ItemTotalPrice + $TotalTaxAmount + $HandalingCost + $InsuranceCost + $ShippinCost + $ShippinDiscount);
         //Parameters for SetExpressCheckout, which will be sent to PayPal
         $padata = '&METHOD=SetExpressCheckout' .
-                '&RETURNURL=' . urlencode($PayPalReturnURL) .
-                '&CANCELURL=' . urlencode($PayPalCancelURL) .
-                '&PAYMENTREQUEST_0_PAYMENTACTION=' . urlencode("SALE") .
-                '&L_PAYMENTREQUEST_0_NAME0=' . urlencode($ItemName) .
-                '&L_PAYMENTREQUEST_0_NUMBER0=' . urlencode($ItemNumber) .
-                '&L_PAYMENTREQUEST_0_AMT0=' . urlencode($ItemPrice) .
-                '&L_PAYMENTREQUEST_0_QTY0=' . urlencode($ItemQty) .
-                '&NOSHIPPING=0' . //set 1 to hide buyer's shipping address, in-case products that does not require shipping
-                '&PAYMENTREQUEST_0_ITEMAMT=' . urlencode($ItemTotalPrice) .
-                '&PAYMENTREQUEST_0_TAXAMT=' . urlencode($TotalTaxAmount) .
-                '&PAYMENTREQUEST_0_SHIPPINGAMT=' . urlencode($ShippinCost) .
-                '&PAYMENTREQUEST_0_HANDLINGAMT=' . urlencode($HandalingCost) .
-                '&PAYMENTREQUEST_0_SHIPDISCAMT=' . urlencode($ShippinDiscount) .
-                '&PAYMENTREQUEST_0_INSURANCEAMT=' . urlencode($InsuranceCost) .
-                '&PAYMENTREQUEST_0_AMT=' . urlencode($GrandTotal) .
-                '&PAYMENTREQUEST_0_CURRENCYCODE=' . urlencode($PayPalCurrencyCode) .
-                '&LOCALECODE=GB' . //PayPal pages to match the language on your website.
-                '&LOGOIMG=' . $api_logo_url . //site logo
-                '&CARTBORDERCOLOR=FFFFFF' . //border color of cart
-                '&ALLOWNOTE=1';
+        '&RETURNURL=' . urlencode($PayPalReturnURL) .
+        '&CANCELURL=' . urlencode($PayPalCancelURL) .
+        '&PAYMENTREQUEST_0_PAYMENTACTION=' . urlencode("SALE") .
+        '&L_PAYMENTREQUEST_0_NAME0=' . urlencode($ItemName) .
+        '&L_PAYMENTREQUEST_0_NUMBER0=' . urlencode($ItemNumber) .
+        '&L_PAYMENTREQUEST_0_AMT0=' . urlencode($ItemPrice) .
+        '&L_PAYMENTREQUEST_0_QTY0=' . urlencode($ItemQty) .
+        '&NOSHIPPING=0' . //set 1 to hide buyer's shipping address, in-case products that does not require shipping
+        '&PAYMENTREQUEST_0_ITEMAMT=' . urlencode($ItemTotalPrice) .
+        '&PAYMENTREQUEST_0_TAXAMT=' . urlencode($TotalTaxAmount) .
+        '&PAYMENTREQUEST_0_SHIPPINGAMT=' . urlencode($ShippinCost) .
+        '&PAYMENTREQUEST_0_HANDLINGAMT=' . urlencode($HandalingCost) .
+        '&PAYMENTREQUEST_0_SHIPDISCAMT=' . urlencode($ShippinDiscount) .
+        '&PAYMENTREQUEST_0_INSURANCEAMT=' . urlencode($InsuranceCost) .
+        '&PAYMENTREQUEST_0_AMT=' . urlencode($GrandTotal) .
+        '&PAYMENTREQUEST_0_CURRENCYCODE=' . urlencode($PayPalCurrencyCode) .
+        '&LOCALECODE=GB' . //PayPal pages to match the language on your website.
+        '&LOGOIMG=' . $api_logo_url . //site logo
+        '&CARTBORDERCOLOR=FFFFFF' . //border color of cart
+        '&ALLOWNOTE=1';
         Session::put('ItemName', $ItemName);
         Session::put('ItemPrice', $ItemPrice);
         Session::put('ItemNumber', $ItemNumber);
@@ -1491,7 +1586,8 @@ class CheckoutController extends Controller {
         }
     }
 
-    function convertCurrency($amount, $from, $to) {
+    public function convertCurrency($amount, $from, $to)
+    {
         $url = "https://www.google.com/finance/converter?a=$amount&from=$from&to=$to";
         $data = file_get_contents($url);
         preg_match("/<span class=bld>(.*)<\/span>/", $data, $converted);
@@ -1499,21 +1595,34 @@ class CheckoutController extends Controller {
         return round($converted, 3);
     }
 
-    public function paypal_success() {
+    public function paypal_success()
+    {
         $details = json_decode(GeneralSetting::where('url_key', 'paypal')->first()->details, true);
         foreach ($details as $dtk => $dtv) {
-            if ($dtk == "mode")
+            if ($dtk == "mode") {
                 $mode = $dtv;
-            if ($dtk == "api_username")
+            }
+
+            if ($dtk == "api_username") {
                 $api_username = $dtv;
-            if ($dtk == "api_password")
+            }
+
+            if ($dtk == "api_password") {
                 $api_password = $dtv;
-            if ($dtk == "api_signature")
+            }
+
+            if ($dtk == "api_signature") {
                 $api_signature = $dtv;
-            if ($dtk == "currency_code")
+            }
+
+            if ($dtk == "currency_code") {
                 $api_currency_code = $dtv;
-            if ($dtk == "logo_url")
+            }
+
+            if ($dtk == "logo_url") {
                 $api_logo_url = $dtv;
+            }
+
         }
         $PayPalMode = $mode; // sandbox or live
         $PayPalApiUsername = $api_username; //PayPal API Username
@@ -1529,28 +1638,28 @@ class CheckoutController extends Controller {
             $ItemPrice = Session::get('ItemPrice'); //Item Price
             $ItemNumber = Session::get('ItemNumber'); //Item Number
             $ItemQty = Session::get('ItemQty'); // Item Quantity
-            $ItemTotalPrice = Session::get('ItemTotalPrice'); //(Item Price x Quantity = Total) Get total amount of product; 
-            $TotalTaxAmount = Session::get('TotalTaxAmount');  //Sum of tax for all items in this order. 
-            $HandalingCost = Session::get('HandalingCost');  //Handling cost for this order.
-            $InsuranceCost = Session::get('InsuranceCost');  //shipping insurance cost for this order.
+            $ItemTotalPrice = Session::get('ItemTotalPrice'); //(Item Price x Quantity = Total) Get total amount of product;
+            $TotalTaxAmount = Session::get('TotalTaxAmount'); //Sum of tax for all items in this order.
+            $HandalingCost = Session::get('HandalingCost'); //Handling cost for this order.
+            $InsuranceCost = Session::get('InsuranceCost'); //shipping insurance cost for this order.
             $ShippinDiscount = Session::get('ShippinDiscount'); //Shipping discount for this order. Specify this as negative number.
             $ShippinCost = Session::get('ShippinCost'); //Although you may change the value later, try to pass in a shipping amount that is reasonably accurate.
             $GrandTotal = Session::get('GrandTotal');
             $padata = '&TOKEN=' . urlencode($token) .
-                    '&PAYERID=' . urlencode($payer_id) .
-                    '&PAYMENTREQUEST_0_PAYMENTACTION=' . urlencode("SALE") .
-                    '&L_PAYMENTREQUEST_0_NAME0=' . urlencode($ItemName) .
-                    '&L_PAYMENTREQUEST_0_NUMBER0=' . urlencode($ItemNumber) .
-                    '&L_PAYMENTREQUEST_0_AMT0=' . urlencode($ItemPrice) .
-                    '&L_PAYMENTREQUEST_0_QTY0=' . urlencode($ItemQty) .
-                    '&PAYMENTREQUEST_0_ITEMAMT=' . urlencode($ItemTotalPrice) .
-                    '&PAYMENTREQUEST_0_TAXAMT=' . urlencode($TotalTaxAmount) .
-                    '&PAYMENTREQUEST_0_SHIPPINGAMT=' . urlencode($ShippinCost) .
-                    '&PAYMENTREQUEST_0_HANDLINGAMT=' . urlencode($HandalingCost) .
-                    '&PAYMENTREQUEST_0_SHIPDISCAMT=' . urlencode($ShippinDiscount) .
-                    '&PAYMENTREQUEST_0_INSURANCEAMT=' . urlencode($InsuranceCost) .
-                    '&PAYMENTREQUEST_0_AMT=' . urlencode($GrandTotal) .
-                    '&PAYMENTREQUEST_0_CURRENCYCODE=' . urlencode($PayPalCurrencyCode);
+            '&PAYERID=' . urlencode($payer_id) .
+            '&PAYMENTREQUEST_0_PAYMENTACTION=' . urlencode("SALE") .
+            '&L_PAYMENTREQUEST_0_NAME0=' . urlencode($ItemName) .
+            '&L_PAYMENTREQUEST_0_NUMBER0=' . urlencode($ItemNumber) .
+            '&L_PAYMENTREQUEST_0_AMT0=' . urlencode($ItemPrice) .
+            '&L_PAYMENTREQUEST_0_QTY0=' . urlencode($ItemQty) .
+            '&PAYMENTREQUEST_0_ITEMAMT=' . urlencode($ItemTotalPrice) .
+            '&PAYMENTREQUEST_0_TAXAMT=' . urlencode($TotalTaxAmount) .
+            '&PAYMENTREQUEST_0_SHIPPINGAMT=' . urlencode($ShippinCost) .
+            '&PAYMENTREQUEST_0_HANDLINGAMT=' . urlencode($HandalingCost) .
+            '&PAYMENTREQUEST_0_SHIPDISCAMT=' . urlencode($ShippinDiscount) .
+            '&PAYMENTREQUEST_0_INSURANCEAMT=' . urlencode($InsuranceCost) .
+            '&PAYMENTREQUEST_0_AMT=' . urlencode($GrandTotal) .
+            '&PAYMENTREQUEST_0_CURRENCYCODE=' . urlencode($PayPalCurrencyCode);
             $paypal = new MyPayPal();
             $httpParsedResponseAr = $paypal->PPHttpPost('DoExpressCheckoutPayment', $padata, $PayPalApiUsername, $PayPalApiPassword, $PayPalApiSignature, $PayPalMode);
             if ("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
@@ -1560,7 +1669,7 @@ class CheckoutController extends Controller {
                     $msg3 = '<div style="color:green">Payment Received! Your product will be sent to you very soon!</div>';
                 } elseif ('Pending' == $httpParsedResponseAr["PAYMENTINFO_0_PAYMENTSTATUS"]) {
                     $msg3 = '<div style="color:red">Transaction Complete, but payment is still pending! ' .
-                            'You need to manually authorize this payment in your <a target="_new" href="http://www.paypal.com">Paypal Account</a></div>';
+                        'You need to manually authorize this payment in your <a target="_new" href="http://www.paypal.com">Paypal Account</a></div>';
                 }
                 $padata = '&TOKEN=' . urlencode($token);
                 $paypal = new MyPayPal();
@@ -1596,7 +1705,7 @@ class CheckoutController extends Controller {
                     $loyaltyPercent = $user->loyalty['percent'];
                     $order->cashback_earned = is_null($loyaltyPercent) ? 0 : number_format(($loyaltyPercent * $order->pay_amt) / 100, 2);
                     $order->cashback_credited = is_null($loyaltyPercent) ? 0 : number_format(($loyaltyPercent * $order->pay_amt) / 100, 2);
-                    $user->userCashback->cashback = $user->userCashback->cashback - @Session::get('checkbackUsedAmt');
+                    $user->userCashback->cashback = $user->userCashback->cashback-@Session::get('checkbackUsedAmt');
                     $user->userCashback->save();
                     if (!empty(Session::get('voucherUsedAmt'))) {
                         $voucherUpdate = Coupon::find(Session::get('voucherUsedAmt'));
@@ -1684,21 +1793,34 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function paypal_cancel() {
+    public function paypal_cancel()
+    {
         $details = json_decode(GeneralSetting::where('url_key', 'paypal')->first()->details, true);
         foreach ($details as $dtk => $dtv) {
-            if ($dtk == "mode")
+            if ($dtk == "mode") {
                 $mode = $dtv;
-            if ($dtk == "api_username")
+            }
+
+            if ($dtk == "api_username") {
                 $api_username = $dtv;
-            if ($dtk == "api_password")
+            }
+
+            if ($dtk == "api_password") {
                 $api_password = $dtv;
-            if ($dtk == "api_signature")
+            }
+
+            if ($dtk == "api_signature") {
                 $api_signature = $dtv;
-            if ($dtk == "currency_code")
+            }
+
+            if ($dtk == "currency_code") {
                 $api_currency_code = $dtv;
-            if ($dtk == "logo_url")
+            }
+
+            if ($dtk == "logo_url") {
                 $api_logo_url = $dtv;
+            }
+
         }
         $PayPalMode = $mode; // sandbox or live
         $PayPalApiUsername = $api_username; //PayPal API Username
@@ -1711,15 +1833,20 @@ class CheckoutController extends Controller {
     }
 
     // For payU
-    public function getPayu() {
+    public function getPayu()
+    {
         define('DS', DIRECTORY_SEPARATOR);
-        include(app_path() . DS . 'Classes' . DS . 'payu.php');
+        include app_path() . DS . 'Classes' . DS . 'payu.php';
         $details = json_decode(GeneralSetting::where('url_key', 'pay-u-money')->first()->details);
         foreach ($details as $detk => $detv) {
-            if ($detk == "merchant_id")
+            if ($detk == "merchant_id") {
                 $merchantid = $detv;
-            if ($detk == "salt")
+            }
+
+            if ($detk == "salt") {
                 $salt = $detv;
+            }
+
         }
         // $finalamt = Helper::getAmt();
         $finalamt = Session::get('pay_amt');
@@ -1736,7 +1863,8 @@ class CheckoutController extends Controller {
         pay_page($arr, $salt);
     }
 
-    public function payuSuccess() {
+    public function payuSuccess()
+    {
         //  dd(Input::get('data'));
         $data = json_decode(Input::get('data'));
         // $finalAmt = Helper::getAmt();
@@ -1761,40 +1889,47 @@ class CheckoutController extends Controller {
         return redirect()->to('/order-success');
     }
 
-    public function payuFailure() {
+    public function payuFailure()
+    {
         $paymentMethod = "5";
         $paymentStatus = "1";
         $payAmt = Session::get("pay_amt");
         $trasactionId = "";
         $transactionStatus = "Failure";
 
-
         $this->saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus);
         return redirect()->route('orderFailure');
     }
 
     // For razorpay
-    public function getRazorpay() {
+    public function getRazorpay()
+    {
         $details = json_decode(GeneralSetting::where('url_key', 'razorpay')->first()->details);
         foreach ($details as $detk => $detv) {
-            if ($detk == "merchant_name")
+            if ($detk == "merchant_name") {
                 $merchantname = $detv;
-            if ($detk == "key")
+            }
+
+            if ($detk == "key") {
                 $key = $detv;
-            if ($detk == "logo")
+            }
+
+            if ($detk == "logo") {
                 $logo = $detv;
+            }
+
         }
         ?>
         <form action="http://localhost/inficart/get-razorpay-response" method="POST" id="razForm">
             <!-- Note that the amount is in paise = 50 INR -->
             <script
                 src="https://checkout.razorpay.com/v1/checkout.js"
-                data-key="<?= $key; ?>"
-                data-amount="<?= (Session::get('pay_amt') * 100); ?>"
+                data-key="<?=$key;?>"
+                data-amount="<?=(Session::get('pay_amt') * 100);?>"
                 data-buttontext="Razorpay"
-                data-name="<?= $merchantname; ?>"
+                data-name="<?=$merchantname;?>"
                 data-description="Purchase Description"
-                data-image="<?= $logo ?>"
+                data-image="<?=$logo?>"
                 data-prefill.name="Cartini"
                 data-prefill.email="support@infiniteit.biz"
                 data-theme.color="#F37254"
@@ -1807,9 +1942,10 @@ class CheckoutController extends Controller {
             // document.getElementsByClassName("razorpay-payment-button").style.display='none';
         </script>
         <?php
-    }
+}
 
-    public function getRazorpayResponse() {
+    public function getRazorpayResponse()
+    {
         if (!empty(Input::get('razorpay_payment_id'))) {
             $paymentMethod = "7";
             $paymentStatus = "4";
@@ -1830,15 +1966,22 @@ class CheckoutController extends Controller {
     }
 
     // For citrus
-    public function getCitrus() {
+    public function getCitrus()
+    {
         $details = json_decode(GeneralSetting::where('url_key', 'citrus')->first()->details);
         foreach ($details as $detk => $detv) {
-            if ($detk == "post_url")
+            if ($detk == "post_url") {
                 $postUrl = $detv;
-            if ($detk == "secret_key")
+            }
+
+            if ($detk == "secret_key") {
                 $secretKey = $detv;
-            if ($detk == "vanity_url")
+            }
+
+            if ($detk == "vanity_url") {
                 $vanityUrl = $detv;
+            }
+
         }
         $formPostUrl = $postUrl;
         $secret_key = $secretKey;
@@ -1858,11 +2001,11 @@ class CheckoutController extends Controller {
             <body>
                 <form align="center" method="post" action="<?php echo $formPostUrl ?>" name="citrusForm">
                     <input type="hidden" id="merchantTxnId" name="merchantTxnId" value="<?php echo $merchantTxnId ?>" />
-                    <input type="hidden" id="orderAmount" name="orderAmount" value="<?= $orderAmount ?>" />
-                    <input type="hidden" id="currency" name="currency" value="<?= $currency ?>" />
-                    <input type="hidden" name="returnUrl" value="<?= $returnUrl ?>" />
-                    <input type="hidden" id="notifyUrl" name="notifyUrl" value="<?= @$notifyUrl ?>" />
-                    <input type="hidden" id="secSignature" name="secSignature" value="<?= $securitySignature ?>" />
+                    <input type="hidden" id="orderAmount" name="orderAmount" value="<?=$orderAmount?>" />
+                    <input type="hidden" id="currency" name="currency" value="<?=$currency?>" />
+                    <input type="hidden" name="returnUrl" value="<?=$returnUrl?>" />
+                    <input type="hidden" id="notifyUrl" name="notifyUrl" value="<?=@$notifyUrl?>" />
+                    <input type="hidden" id="secSignature" name="secSignature" value="<?=$securitySignature?>" />
                     <input type="Submit" value="Pay Now" id="citrusSubmit"/>
                 </form>
             </body>
@@ -1874,9 +2017,10 @@ class CheckoutController extends Controller {
             document.citrusForm.submit();
         </script>
         <?php
-    }
+}
 
-    public function getCitrusResponse() {
+    public function getCitrusResponse()
+    {
         if (Input::get('TxStatus') == "SUCCESS") {
             $paymentMethod = "6";
             $paymentStatus = "4";
@@ -1896,7 +2040,8 @@ class CheckoutController extends Controller {
         return redirect()->route('orderSuccess');
     }
 
-    public function getCitrusFailure() {
+    public function getCitrusFailure()
+    {
         $paymentMethod = "6";
         $paymentStatus = "1";
         $payAmt = Helper::getAmt();
@@ -1907,7 +2052,8 @@ class CheckoutController extends Controller {
 
     // For order success function
 
-    public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $des = null, $transactioninfo = null) {
+    public function saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $des = null, $transactioninfo = null)
+    {
         // if (Session::get('individualDiscountPercent')) {
         //     $coupDisc = json_decode(Session::get('individualDiscountPercent'), true);
         //     foreach ($coupDisc as $discK => $discV) {
@@ -1927,15 +2073,15 @@ class CheckoutController extends Controller {
         }
         if ($courier_status == 1) {
             $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
-            $order->courier = $courier->courier_id;
+            $order->courier = @$courier->courier_id;
         }
         if ($this->courierService == 1 && $this->pincodeStatus == 1) {
-//            if ($courier_status == 1) {
-//                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
-//                $order->courier = $courier->courier_id;
-//                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
-//                // $courierServe = Helper::assignCourier($order->postal_code, $iscod);
-//            }
+            //            if ($courier_status == 1) {
+            //                $courier = HasCourier::where('status', 1)->where('store_id', $this->jsonString['store_id'])->orderBy("preference", "asc")->first();
+            //                $order->courier = $courier->courier_id;
+            //                // $courier = Courier::where('status', 1)->whereIn('id', $courierId)->get()->toArray();
+            //                // $courierServe = Helper::assignCourier($order->postal_code, $iscod);
+            //            }
         }
         $cart_data = Helper::calAmtWithTax();
         $order->user_id = $user->id;
@@ -1946,17 +2092,21 @@ class CheckoutController extends Controller {
         // apply additional charge to payAmount
         $additional_charge_json = AdditionalCharge::ApplyAdditionalCharge($cartAmount);
         $order->additional_charge = $additional_charge_json;
+        //$orderstatus = OrderStatus::where(['sort_order'=>1,'store_id'=>Session::get('store_id')])->first();
+        $orderstatus = OrderStatus::where(['is_default'=>1,'store_id'=>Session::get('store_id')])->first();
         // $order->order_amt = Cart::instance('shopping')->total() * Session::get("currency_val");
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
         $order->transaction_id = $trasactionId;
         $order->transaction_status = $transactionStatus;
-        if ($des)
+        if ($des) {
             $order->description = $des;
+        }
+
         $order->currency_id = Session::get("currency_id");
         $order->currency_value = Session::get("currency_val");
         $order->cart = json_encode(Cart::instance('shopping')->content());
-        $order->order_status = 1;
+        $order->order_status = $orderstatus->id;
         $order->cod_charges = @Session::get('codCharges');
         $order->discount_type = (Session::get('discType')) ? Session::get('discType') : 0;
         $order->discount_amt = (Session::get('discAmt')) ? Session::get('discAmt') : 0;
@@ -2020,7 +2170,7 @@ class CheckoutController extends Controller {
         if ($order->Update()) {
             $this->coupon_count();
             $this->forget_session_coupon();
-            //if ($stock_status == 1) { // commented by bhavana.... 
+            //if ($stock_status == 1) { // commented by bhavana....
             $this->updateStock($order->id);
             //}
             if ($user->telephone) {
@@ -2040,7 +2190,8 @@ class CheckoutController extends Controller {
 
     // For order Failure function
 
-    public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $des = null) {
+    public function saveOrderFailure($paymentMethod, $paymentStatus, $payAmt, $transactionStatus, $des = null)
+    {
         $failorder = Order::find(Session::get('orderId'));
         $failorder->pay_amt = $payAmt;
         $failorder->payment_method = $paymentMethod;
@@ -2060,12 +2211,13 @@ class CheckoutController extends Controller {
     }
 
     // For order Update stock
-    public function updateStock($orderId) {
+    public function updateStock($orderId)
+    {
 
         $jsonString = Helper::getSettings();
         // $is_stockable = GeneralSetting::where('id', 26)->first();
         $stock_limit = GeneralSetting::where('url_key', 'stock')->first();
-        $stockLimit = json_decode($stock_limit->details, TRUE);
+        $stockLimit = json_decode($stock_limit->details, true);
         $cartContent = Cart::instance("shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
@@ -2085,6 +2237,15 @@ class CheckoutController extends Controller {
                     $total_tax[] = $prod_tax;
                 }
             }
+            
+            if(count($total_tax) > 0)
+            {
+                $taxval = json_encode($total_tax);
+            }
+            else
+            {
+                $taxval = count($total_tax);
+            }
             $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
             if ($cart->options->tax_type == 2) {
                 $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
@@ -2096,45 +2257,62 @@ class CheckoutController extends Controller {
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->id] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
+            $cart_ids[$cart->rowid] = ["qty" => $cart->qty, "sub_prod_id" => "", "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => $taxval,
                 'pay_amt' => $payamt, 'store_id' => $jsonString['store_id'], 'prefix' => $jsonString['prefix']];
-//            $market_place = Helper::generalSetting(35);
-//            if (isset($market_place) && $market_place->status == 1) {
-//                $prior_vendor = $product->vendorPriority()->first();
-//                $vendor['order_status'] = 1;
-//                $vendor['tracking_id'] = 1;
-//                $vendor['vendor_id'] = is_null($prior_vendor) ? null : $prior_vendor->id;
-//                $cart_ids[$cart->id] = array_merge($cart_ids[$cart->id], $vendor);
-//            }
+            //            $market_place = Helper::generalSetting(35);
+            //            if (isset($market_place) && $market_place->status == 1) {
+            //                $prior_vendor = $product->vendorPriority()->first();
+            //                $vendor['order_status'] = 1;
+            //                $vendor['tracking_id'] = 1;
+            //                $vendor['vendor_id'] = is_null($prior_vendor) ? null : $prior_vendor->id;
+            //                $cart_ids[$cart->rowid] = array_merge($cart_ids[$cart->rowid], $vendor);
+            //            }
             if ($cart->options->has('sub_prod')) {
-                $cart_ids[$cart->id]["sub_prod_id"] = $cart->options->sub_prod;
+                if(($cart->options->sub_prod != '') || ($cart->options->sub_prod > 0))
+                {
+                    $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
+                }
+                
                 $proddetails = [];
                 $prddataS = Product::find($cart->options->sub_prod);
-                $proddetails['id'] = $prddataS->id;
-                $proddetails['name'] = $prddataS->product;
-                $proddetails['image'] = $cart->options->image;
-                $proddetails['price'] = $cart->price;
-                $proddetails['qty'] = $cart->qty;
-                $proddetails['subtotal'] = $subtotal;
-                $proddetails['is_cod'] = $prddataS->is_cod;
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetails);
-                $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
-
-                if ($prddataS->is_stock == 1) {
-                    $prddataS->stock = $prddataS->stock - $cart->qty;
-                    if ($prddataS->is_share_on_mall == 1) {
-                        $mallProduct = MallProducts::where("store_prod_id", $cart->options->sub_prod)->first();
-                        $mallProduct->stock = $prddataS->stock;
-                        $mallProduct->update();
+                   
+                if(!empty($prddataS))
+                {
+                    $proddetails['id'] = $prddataS->id;
+                    $proddetails['name'] = $prddataS->product;
+                    $proddetails['image'] = $cart->options->image;
+                    $proddetails['price'] = $cart->price;
+                    $proddetails['qty'] = $cart->qty;
+                    $proddetails['subtotal'] = $subtotal;
+                    $proddetails['is_cod'] = $prddataS->is_cod;
+                    
+                    $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetails);
+                    $date = $cart->options->eNoOfDaysAllowed;
+                    $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                    $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
+    
+                    if ($prddataS->is_stock == 1) {
+                        $prddataS->stock = $prddataS->stock - $cart->qty;
+                        if ($prddataS->is_share_on_mall == 1) {
+                            $mallProduct = MallProducts::where("store_prod_id", $cart->options->sub_prod)->first();
+                            $mallProduct->stock = $prddataS->stock;
+                            $mallProduct->update();
+                        }
+                        $prddataS->update();
                     }
-                    $prddataS->update();
+    
+                    if ($prddataS->stock <= $stockLimit['stocklimit'] && $prddataS->is_stock == 1) {
+                        $this->AdminStockAlert($prddataS->id);
+                    }
                 }
-
-                if ($prddataS->stock <= $stockLimit['stocklimit'] && $prddataS->is_stock == 1) {
-                    $this->AdminStockAlert($prddataS->id);
+                else
+                {
+                    $cart_ids[$cart->rowid]["product_details"] = '';
+                    $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d');
+                    $cart_ids[$cart->rowid]["prod_type"] = 0;
+    
                 }
+               
             } else if ($cart->options->has('combos')) {
                 $sub_prd_ids = [];
                 foreach ($cart->options->combos as $key => $val) {
@@ -2146,7 +2324,6 @@ class CheckoutController extends Controller {
                             $prd->update();
                         };
 
-
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             $this->AdminStockAlert($prd->id);
                         }
@@ -2157,13 +2334,23 @@ class CheckoutController extends Controller {
                             $prd->update();
                         }
 
-
                         if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                             $this->AdminStockAlert($prd->id);
                         }
                     }
                 }
-                $cart_ids[$cart->id]["sub_prod_id"] = json_encode($sub_prd_ids);
+                if(count($sub_prd_ids) > 0)
+                {
+                    $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                } else {
+                    $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                }
+                $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ ".$cart->options->eNoOfDaysAllowed." days"));
+                $cart_ids[$cart->rowid]["product_details"] = '';
+                
+                
             } else {
                 $proddetailsp = [];
                 $prddataSp = Product::find($cart->id);
@@ -2175,37 +2362,38 @@ class CheckoutController extends Controller {
                 $proddetailsp['subtotal'] = $subtotal * Session::get('currency_val');
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
 
-                $cart_ids[$cart->id]["product_details"] = json_encode($proddetailsp);
-                //$cart_ids[$cart->id]["eCount"] = $cart->options->eCount;
+                $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetailsp);
+                //$cart_ids[$cart->rowid]["eCount"] = $cart->options->eCount;
                 $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->id]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->id]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
                 $prd = Product::find($cart->id);
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
                     $prd->update();
                 }
 
-
                 if ($prd->stock <= $stockLimit['stocklimit'] && $prd->is_stock == 1) {
                     $this->AdminStockAlert($prd->id);
                 }
             }
-            // $order->products()->attach($cart_ids); 
+            // $order->products()->attach($cart_ids);
             //  HasProducts::on('mysql2');
-            $cart_ids[$cart->id]["order_id"] = $orderId;
-            $cart_ids[$cart->id]["prod_id"] = $cart->id;
-            $cart_ids[$cart->id]["order_status"] = 1;
-            $cart_ids[$cart->id]["order_source"] = 2;
+            $cart_ids[$cart->rowid]["order_id"] = $orderId;
+            $cart_ids[$cart->rowid]["prod_id"] = $cart->id;
+            $cart_ids[$cart->rowid]["order_status"] = 1;
+            $cart_ids[$cart->rowid]["order_source"] = 2;
 
             // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
             //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
+        
         HasProducts::insert($cart_ids);
         //  $this->orderSuccess();
     }
 
-    public function AdminStockAlert($product) {
+    public function AdminStockAlert($product)
+    {
         $prod = Product::find($product);
         $messagearray = new stdClass();
 
@@ -2228,27 +2416,27 @@ class CheckoutController extends Controller {
         $fname = "Admin";
         $email = "support@infiniteit.biz";
 
-        if (Mail::send(Config('constants.frontviewEmailTemplatesPath') . '.stockAlert', $data_email, function($message) use ($contactEmail, $contactName, $email, $fname, $data_email) {
-                    $message->from($contactEmail, $contactName);
-                    $message->to($email, $fname)->subject("Cartini - Stock Alert");
-                }))
-            ;
+        if (Mail::send(Config('constants.frontviewEmailTemplatesPath') . '.stockAlert', $data_email, function ($message) use ($contactEmail, $contactName, $email, $fname, $data_email) {
+            $message->from($contactEmail, $contactName);
+            $message->to($email, $fname)->subject("Cartini - Stock Alert");
+        }))
+        ;
     }
 
-    public function pushNotification($notification) {
+    public function pushNotification($notification)
+    {
         $userMobile = User::where("user_type", 1)->where("device_id", '!=', '')->pluck("device_id");
         $gcmRegIds = $userMobile;
 
         $fields = array(
             'registration_ids' => $gcmRegIds,
-            'data' => $notification
+            'data' => $notification,
         );
         //building headers for the request
         $headers = array(
             'Authorization: key=' . 'AAAAZeeZoaQ:APA91bHR9lt8JdJDhAzH1dUh9oUOUs3F6GM4BdMzK1uVqQLcMv1NUVc-twlw7hklrRHOvj8Ada-UhiggbrxXiUldSH1KuxG0kcroiah_4bLylwt9LSBcjihdxweKtvEhrUrHLtUbuYOj',
-            'Content-Type: application/json'
+            'Content-Type: application/json',
         );
-
 
         $ch = curl_init();
 
@@ -2258,32 +2446,32 @@ class CheckoutController extends Controller {
         //setting the method as post
         curl_setopt($ch, CURLOPT_POST, true);
 
-        //adding headers 
+        //adding headers
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         //disabling ssl support
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        //adding the fields in json format 
+        //adding the fields in json format
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 
-        //finally executing the curl request 
+        //finally executing the curl request
         $result = curl_exec($ch);
-        if ($result === FALSE) {
+        if ($result === false) {
             die('Curl failed: ' . curl_error($ch));
         } else {
-//           // echo $result;
-//            $resultData = json_decode($result);
-//            if($resultData){
-//            $pushNotification = new Pushnotification();
-//            $pushNotification->success = $resultData->success;
-//            $pushNotification->failure = $resultData->failure;
-//            $pushNotification->title = $notification->title;
-//            $pushNotification->message = $notification->message;
-//           $pushNotification->image = $fileName;
-//           // $pushNotification->user_type = $userType;
-//            $pushNotification->save();
+            //           // echo $result;
+            //            $resultData = json_decode($result);
+            //            if($resultData){
+            //            $pushNotification = new Pushnotification();
+            //            $pushNotification->success = $resultData->success;
+            //            $pushNotification->failure = $resultData->failure;
+            //            $pushNotification->title = $notification->title;
+            //            $pushNotification->message = $notification->message;
+            //           $pushNotification->image = $fileName;
+            //           // $pushNotification->user_type = $userType;
+            //            $pushNotification->save();
         }
 
         curl_close($ch);
@@ -2291,7 +2479,8 @@ class CheckoutController extends Controller {
     }
 
     // For order pages
-    public function orderSuccess() {
+    public function orderSuccess()
+    {
 
         if (Session::get('orderId')) {
             $order = Order::find(Session::get('orderId'));
@@ -2317,16 +2506,19 @@ class CheckoutController extends Controller {
         //  return view(Config('constants.frontCheckoutView') . '.success');
     }
 
-    public function orderFailure() {
+    public function orderFailure()
+    {
         return view(Config('constants.frontCheckoutView') . '.failure');
     }
 
-    public function orderCancel() {
+    public function orderCancel()
+    {
         return view(Config('constants.frontCheckoutView') . '.cancel');
     }
 
-    public function guestCheckout() {
-        $chkEmail = User:: where("email", "=", Input::get("guestemail"))->get()->first();
+    public function guestCheckout()
+    {
+        $chkEmail = User::where("email", "=", Input::get("guestemail"))->get()->first();
         if (empty($chkEmail)) {
             $user = new User();
             $user->email = Input::get('guestemail');
@@ -2357,7 +2549,8 @@ class CheckoutController extends Controller {
         }
     }
 
-    function coupon_count() {
+    public function coupon_count()
+    {
         /* by tej -> Code add for coupon counter -> start */
         // $addCoupon = Coupon::where("id", "=", session::get('usedCouponId'))->select("no_times_used")->get()->toArray();
         $couponadd = Coupon::find(session::get('usedCouponId'));
@@ -2371,7 +2564,8 @@ class CheckoutController extends Controller {
         /* by tej -> Code add for coupon counter -> end */
     }
 
-    function forget_session_coupon() {
+    public function forget_session_coupon()
+    {
         Session::forget('product_ids');
         Session::forget('minOrderAmount');
         Session::put('couponUsedAmt', 0);
@@ -2381,8 +2575,9 @@ class CheckoutController extends Controller {
         Session::forget('usedCouponCode');
     }
 
-    function successMail($orderId, $firstName, $toEmail) {
-        $toEmails = 'bhavana@infiniteit.biz';
+    public function successMail($orderId, $firstName, $toEmail)
+    {
+        $toEmails = 'anita@infiniteit.biz';
         $tableContant = Helper::getEmailInvoice($orderId);
         $order = Order::find($orderId);
         $emailStatus = GeneralSetting::where('url_key', 'email-facility')->first()->status;
@@ -2393,40 +2588,41 @@ class CheckoutController extends Controller {
         $settings = Helper::getSettings();
         $webUrl = $_SERVER['SERVER_NAME'];
         if ($emailStatus == 1) {
-            $emailContent = EmailTemplate::where('id', 2)->select('content', 'subject')->get()->toArray();
+            $emailContent = EmailTemplate::where(['store_id' => Session::get('store_id'), 'url_key' => 'order-success'])->select('content', 'subject')->get()->toArray();
+            print_r($emailContent);
             $email_template = $emailContent[0]['content'];
             $subject = $emailContent[0]['subject'];
 
             $replace = array("[orderId]", "[firstName]", "[invoice]", "[logoPath]", "[web_url]", "[primary_color]", "[secondary_color]", "[storeName]", "[ordetId]", "[created_at]");
-            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $order->id,  date('d-M-Y',strtotime($order->created_at)));
+            $replacewith = array($orderId, $firstName, $tableContant, $logoPath, $webUrl, $settings['primary_color'], $settings['secondary_color'], $settings['storeName'], $order->id, date('d-M-Y', strtotime($order->created_at)));
             $email_templates = str_replace($replace, $replacewith, $email_template);
             $data_email = ['email_template' => $email_templates];
-            if($toEmail){
-            Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
-            return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
+            if ($toEmail) {
+                Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email, $subject, Config::get('mail.from.address'), Config::get('mail.from.name'), $toEmail, $firstName);
+                return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
             }
         }
     }
 
-    function testMail($orderId, $firstName) {
-        $email_template = EmailTemplate::where('id', 1)->select('content')->get()->toArray()[0]['content'];
+    public function testMail($orderId, $firstName)
+    {
+        $email_template = EmailTemplate::where('url_key', 'registration')->select('content')->get()->toArray()[0]['content'];
         $replace = ["[first_name]", "[last_name]"];
         $replacewith = [ucfirst(Input::get('first_name')), ucfirst(Input::get('last_name'))];
         $email_templates = str_replace($replace, $replacewith, $email_template);
         $data1 = ['email_template' => $email_template];
         Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'registerEmail', $data1, 'Successfully registered with Cartini.co', Config::get('mail.from.address'), Config::get('mail.from.name'), Input::get('email'), Input::get('first_name') . " " . Input::get('last_name'));
 
-
-
 //        $replace = array("[orderId]", "[firstName]");
-//        $replacewith = array($orderId, $firstName);
-//        $email_templates = str_replace($replace, $replacewith, $email_template);
-//        $data_email = ['email_template' => $email_templates];
-//        Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email, 'Order Successfully placed with Cartini.co', 'support@infiniteit.biz', 'Cartini', 'tej@infiniteit.biz', $firstName);
+        //        $replacewith = array($orderId, $firstName);
+        //        $email_templates = str_replace($replace, $replacewith, $email_template);
+        //        $data_email = ['email_template' => $email_templates];
+        //        Helper::sendMyEmail(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email, 'Order Successfully placed with Cartini.co', 'support@infiniteit.biz', 'Cartini', 'tej@infiniteit.biz', $firstName);
         //  return view(Config('constants.frontviewEmailTemplatesPath') . 'orderSuccess', $data_email);
     }
 
-    function checkStockCheckout() {
+    public function checkStockCheckout()
+    {
         $cart = json_decode(Cart::instance('shopping')->content());
         //dd($cart);
         $flag = 0;
@@ -2452,14 +2648,16 @@ class CheckoutController extends Controller {
         return $productStock;
     }
 
-    function orderWithoutProduct() {
+    public function orderWithoutProduct()
+    {
 
         $viewname = Config('constants.frontendView') . '.orderwithoutproduct';
         $data = [];
         return Helper::returnView($viewname, $data);
     }
 
-    function saveOrderwithproduct() {
+    public function saveOrderwithproduct()
+    {
         $order = new Order();
         $order->phone_no = Input::get("mobile");
         $order->order_comment = Input::get("note");
@@ -2506,11 +2704,13 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function checkLoyalty() {
+    public function checkLoyalty()
+    {
         return Helper::getUserCashBack(Input::get('phone'));
     }
 
-    public function getLoyaltyGroup() {
+    public function getLoyaltyGroup()
+    {
         return Loyalty::all();
     }
 

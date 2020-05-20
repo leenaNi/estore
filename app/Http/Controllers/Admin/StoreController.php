@@ -28,6 +28,7 @@ use Illuminate\Http\Request;
 class StoreController extends Controller {
 
     public function index(Request $request) {
+        
         $stores = Store::orderBy('id', 'desc');
         $categories = Category::where('status', 1)->get();
         $selCats = ['' => 'Select Category'];
@@ -97,6 +98,7 @@ class StoreController extends Controller {
         $data['selCats'] = $selCats;
         $data['selBanks'] = $selBanks;
         //$data['storeList'] = $getAllStores;
+    
         return Helper::returnView($viewname, $data);
     }
 
