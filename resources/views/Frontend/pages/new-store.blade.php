@@ -334,7 +334,7 @@ $("#registerAndSubmit").on("click", function () {
                 url: "{{route('checkOtp')}}",
                 data: {inputotp: otp},
                 success: function (response) {
-                    if (response==otp || otp=='1234') {
+                    if (response==otp) {
 						//alert('succe');
                         $("#createStore").submit();
                     } else  {
