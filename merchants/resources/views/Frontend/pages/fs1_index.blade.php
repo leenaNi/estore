@@ -2,10 +2,10 @@
 @section('content')
 <style>
 #slider {
-   max-height: calc(100vh - 50px) !important;
+   max-height: calc(100vh - 100px) !important;
 }
 #slider .fslider {
-   height: calc(100vh - 50px) !important;
+   height: calc(100vh - 100px) !important;
 }
 #slider .fslider .flexslider {
    height: 100% !important;
