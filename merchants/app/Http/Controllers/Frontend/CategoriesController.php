@@ -161,9 +161,9 @@ class CategoriesController extends Controller {
                     ->orWhere('meta_title', 'like', "%$search%")
                     ->orWhere('meta_desc', 'like', "%$search%")
                     ->orWhere('meta_keys', 'like', "%$search%")
-                    ->orWhereHas('categories', function($query) use ($search) {
-                        return $query->where('category', 'like', "%$search%");
-                    })
+                    // ->orWhereHas('categories', function($query) use ($search) {
+                    //     return $query->where('category', 'like', "%$search%");
+                    // })
                     ->orWhere(function($query) use ($search) {
                         return $query->withAnyTag("$search");
                     });
