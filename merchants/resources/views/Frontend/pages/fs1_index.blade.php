@@ -1,9 +1,7 @@
 @extends('Frontend.layouts.default')
 @section('content')
 <style>
-    @media only screen 
-and (device-width : 768px) 
-and (device-height : 1024px)  {
+    @media (min-width: 768px) and (max-width: 1024px) {
     #slider {
     height: 330px !important;
     }
