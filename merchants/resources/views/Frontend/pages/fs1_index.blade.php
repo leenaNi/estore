@@ -1,5 +1,19 @@
 @extends('Frontend.layouts.default') 
 @section('content')
+<style>
+#slider {
+   max-height: calc(100vh - 50px);
+}
+#slider .fslider {
+   height: calc(100vh - 50px) !important;
+}
+#slider .fslider .flexslider {
+   height: 100%;
+}
+.flex-prev, .flex-next {
+   margin-top: 0;
+}
+</style>
 <section id="slider" class="full-screen clearfix">
     <div class="">
         <div class="fslider" data-arrows="true" data-pagi="false">
@@ -16,7 +30,7 @@
                         <div class="updateHomeBanner">
                             <a href="#" class="button button-rounded" data-toggle="modal" data-target="#manageSlider">
                                 <span>
-                                    <i class="fa fa-pencil"></i>Manage Slider
+                                    <i class="fa fa-pencil"></i>Manage Slider fgfg
                                 </span>
                             </a>
                         </div>

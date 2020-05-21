@@ -67,7 +67,7 @@
                                     @if(!empty($allinput['provider_id']))
                                     <input type="hidden" name="provider_id" value="{{$allinput['provider_id']}}">
                                     @endif
-                                    <input type="hidden" name="business_type" value="{{$allinput['business_type'][0]}}">
+                                    <input type="hidden" name="business_type[]" value="{{$allinput['business_type'][0]}}">
                                    
                                     <input type="hidden" name="theme_id" value="{{$theme->id}}">
                                     <input type="hidden" name="cat_id" value="{{$c->id}}">

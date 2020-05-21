@@ -26,7 +26,12 @@ class CategoriesController extends Controller {
         //echo "slug" . $slug;
         $data['cat_name'] = "";
         if ($slug != null) {
-            $cat = Category::where('url_key', $slug)->first();
+            //$cat = Category::where('url_key', $slug)->first();
+            $cat = DB::table('categories as c')
+            ->join('store_categories as sc', 'sc.category_id', '=', 'c.id')
+            ->where(['c.url_key'=> $slug])
+            ->select('c.*')
+            ->first();
             $data['metaTitle'] = @$cat->meta_title == "" ? @$cat->category . " | eStorifi " : @$cat->meta_title;
             $data['metaDesc'] = @$cat->meta_desc == "" ? @$cat->category : @$cat->meta_desc;
             $data['metaKeys'] = @$cat->meta_keys == "" ? @$cat->category : @$cat->meta_keys;
@@ -48,6 +53,7 @@ class CategoriesController extends Controller {
             $data['metaDesc'] = "";
             $data['metaKeys'] = "";
             if (!empty(Input::get('searchTerm'))) {
+              
                 $search = Input::get('searchTerm');
                 //  $url_key= str_replace(" ","-",$search);
                 // $cat = Category::where('url_key','like',"%$url_key%")->first();
@@ -70,9 +76,9 @@ class CategoriesController extends Controller {
                     ->orWhere('meta_title', 'like', "%$search%")
                     ->orWhere('meta_desc', 'like', "%$search%")
                     ->orWhere('meta_keys', 'like', "%$search%")
-                    ->orWhereHas('categories', function($query) use ($search) {
-                        return $query->where('category', 'like', "%$search%");
-                    })
+                    // ->orWhereHas('categories', function($query) use ($search) {
+                    //     return $query->join('categories as c', 'c.id', '=', 'store_categories.categiry_id')->where('c.category', 'like', "%$search%");
+                    // })
                     ->orWhere(function($query) use ($search) {
                         return $query->withAnyTag("$search");
                     });
