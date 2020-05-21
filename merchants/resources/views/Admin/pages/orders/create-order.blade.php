@@ -1,5 +1,51 @@
 @extends('Admin.layouts.default')
 @section('mystyles')
+<script>
+         //function that display value
+         function dis(val)
+         {
+             document.getElementById("result").value+=val
+         }
+
+         //function that evaluates the digit and return result
+         function solve()
+         {
+             let x = document.getElementById("result").value
+             let y = eval(x)
+             document.getElementById("result").value = y
+         }
+
+         //function that clear the display
+         function clr()
+         {
+             document.getElementById("result").value = ""
+         }
+      </script>
+      <!-- for styling -->
+      <style>
+         .caltitle{
+         margin-bottom: 10px;
+         text-align:center;
+         width: 210px;
+         color:green;
+         border: solid black 2px;
+         }
+
+         input[type="button"].calbtn
+         {
+         background-color:#359bdb;
+         color: #fff;
+         border: solid white 2px;
+         width:100%
+         }
+
+         input[type="text"].calresult
+         {
+         background-color:white;
+         border: solid white 2px;
+         width:100%
+         }
+      </style>
 <style>
     .error{
         color:red;
@@ -32,7 +78,7 @@ $data = session()->all();
 echo "all session::".print_r($data);
 echo "logged in admin id::".Session::get('loggedinAdminId');
 exit;*/
- ?>
+?>
 @stop
 @section('content')
 <section class="content-header">
@@ -54,7 +100,7 @@ exit;*/
                     <li class="active"><a href="#product-details" data-toggle="tab" aria-expanded="true">Product Details</a></li>
                     <li class=""><a href="#customer-details" data-toggle="tab" aria-expanded="true">Customer Details</a></li>
                     <li class=""><a href="#shipping-address" data-toggle="tab" aria-expanded="true">Shipping Address</a></li>
-                    
+
                 </ul>
                 <div  class="tab-content" >
                     <div class="tab-pane" id="customer-details">
@@ -94,7 +140,7 @@ exit;*/
                             <div class="row">
                             <div class="col-md-12">
                                 <div class="">
-                                    <h4><b>Customer Credit<small>(Till Date)</small>: </b> 
+                                    <h4><b>Customer Credit<small>(Till Date)</small>: </b>
                                         <span class="currency-sym"></span><span class="customer-credit"></span>
                                     </h4>
                                 </div>
@@ -231,11 +277,11 @@ exit;*/
                                 <div class="custdata pull-right">
                                 <button class="btn btn-black custBack mobileSpecialfullBTN">Back</button>
                                 {!! Form::button('Next<i class="fa fa-spinner"></i>',["class" => "btn btn-primary custDetailsNext"]) !!}
-                                    
+
                                 <!-- <button class="btn btn-black cancelBtn pull-right">Cancel</button> -->
                                 {!! Form::button('Place Order <i class="fa fa-spinner placeorderSpinner" aria-hidden="true"></i>',["class" => "btn btn-primary custplaceOrder mobileSpecialfullBTN"]) !!}
                                 </div>
-                                
+
                             </div>
                             {{ Form::close() }}
                         </div>
@@ -317,13 +363,14 @@ exit;*/
                         </div>
                     </div>
                     <div class="tab-pane active" id="product-details">
-                        <address class="pull-left col-md-6" class="shippedAdd">
-
-                        </address>
-                        
+                        <address class="pull-left col-md-6" class="shippedAdd"></address>
                         <div class="pull-right">
                             <button  class="btn sbtn btn-primary margin addCourse ">Add New Product</button>
                         </div>
+                        <div class="pull-right">
+                            <button  class="btn sbtn btn-primary margin openCal" >Show Calculator</button>
+                            <!-- <a  class="btn sbtn btn-primary margin" href="#addcalculator" data-toggle="modal">Open Calculator</a> -->
+                        </div>                        
                         <div class="panel-body">
                             {{ Form::open(['method'=>'post','route'=>'admin.orders.saveCartData','id'=>'prodDetailsForm']) }}
                             {{ Form::hidden('addressid',null) }}
@@ -398,7 +445,7 @@ exit;*/
                                     <td><span class="store-credit hide"><input type="text" onblur="updateRemainigAmount()" name='pay_amt' class='form-control validate_decimal' max="1" value="0" />
                                     </span></td>
                                     <td><span class="store-credit hide"><b>Remaining Amount:</b> <span class="" id="remaining-amt">0</span></span></td>
-                                    
+
                                     <td>&nbsp;</td>
                                     <td colspan="2"> Subtotal: <b><span class="subtotal"><span class="currency-sym"></span> 0</span></b></td>
                                     <td>&nbsp;</td>
@@ -422,13 +469,47 @@ exit;*/
                                     <td colspan="6"></td>
                                 </tr>
                             </table>
-                            
+                            <!------CAlculator -------->
+                            <div class="row hide" id="calculator">
+                                <div class="col-md-6">
+                                    <table class="" style="padding: 5px;" border="1">
+                                        <tr>
+                                            <td style="padding: 5px;" colspan="3"><input class="calresult" type="text" id="result"/></td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="c" onclick="clr()"/> </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="1" onclick="dis('1')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="2" onclick="dis('2')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="3" onclick="dis('3')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="/" onclick="dis('/')"/> </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="4" onclick="dis('4')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="5" onclick="dis('5')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="6" onclick="dis('6')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="-" onclick="dis('-')"/> </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="7" onclick="dis('7')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="8" onclick="dis('8')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="9" onclick="dis('9')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="+" onclick="dis('+')"/> </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="." onclick="dis('.')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="0" onclick="dis('0')"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="=" onclick="solve()"/> </td>
+                                            <td style="padding: 5px;"><input class="calbtn" type="button" value="*" onclick="dis('*')"/> </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <!------End CAlculator-------->
                             <div class="form-group text-right col-sm-12 noallMargin noAllpadding">
                                 <div class="custdata pull-right">
                                     {!! Form::button('Next<i class="fa fa-spinner"></i>',["class" => "btn btn-primary prodNext"]) !!}
                                 </div>
-                                
-                                <button class="btn btn-black cancelBtn mobileSpecialfullBTN">Cancel</button> 
+                                <button class="btn btn-black cancelBtn mobileSpecialfullBTN">Cancel</button>
                             </div>
                             {{ Form::close() }}
                         </div>
@@ -470,7 +551,7 @@ exit;*/
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table>                        
                         <!-- <div class="error">
                             <p>Note: Already purchased courses of customer will not be shown. </p>
                         </div> -->
@@ -479,20 +560,73 @@ exit;*/
             </div>
         </div>
     </div>
+     <!-- <div id="addcalculator" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Calculate</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table border="1">
+                            <tr>
+                                <td colspan="3"><input class="calresult" type="text" id="result"/></td>
+                                <td><input class="calbtn" type="button" value="c" onclick="clr()"/> </td>
+                            </tr>
+                            <tr>
+                                <td><input class="calbtn" type="button" value="1" onclick="dis('1')"/> </td>
+                                <td><input class="calbtn" type="button" value="2" onclick="dis('2')"/> </td>
+                                <td><input class="calbtn" type="button" value="3" onclick="dis('3')"/> </td>
+                                <td><input class="calbtn" type="button" value="/" onclick="dis('/')"/> </td>
+                            </tr>
+                            <tr>
+                                <td><input class="calbtn" type="button" value="4" onclick="dis('4')"/> </td>
+                                <td><input class="calbtn" type="button" value="5" onclick="dis('5')"/> </td>
+                                <td><input class="calbtn" type="button" value="6" onclick="dis('6')"/> </td>
+                                <td><input class="calbtn" type="button" value="-" onclick="dis('-')"/> </td>
+                            </tr>
+                            <tr>
+                                <td><input class="calbtn" type="button" value="7" onclick="dis('7')"/> </td>
+                                <td><input class="calbtn" type="button" value="8" onclick="dis('8')"/> </td>
+                                <td><input class="calbtn" type="button" value="9" onclick="dis('9')"/> </td>
+                                <td><input class="calbtn" type="button" value="+" onclick="dis('+')"/> </td>
+                            </tr>
+                            <tr>
+                                <td><input class="calbtn" type="button" value="." onclick="dis('.')"/> </td>
+                                <td><input class="calbtn" type="button" value="0" onclick="dis('0')"/> </td>
+                               <td><input class="calbtn" type="button" value="=" onclick="solve()"/> </td>
+                                <td><input class="calbtn" type="button" value="*" onclick="dis('*')"/> </td>
+                            </tr>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
 </section>
 @stop
 @section('myscripts')
 
 <script>
+$('button.openCal').click(function (){
+    $('#calculator').toggleClass('hide');
+    if($('#calculator').hasClass('hide')){
+        $(this).text('Show Calculator');
+    } else {
+        $(this).text('Hide Calculator');
+    }
+});
 var onSelectCustomer = 0;
 var loggedInUserType = 0;
 <?php
-if(!empty(Session::get("login_user_type")))
-{?>
+if (!empty(Session::get("login_user_type"))) {?>
     loggedInUserType =  <?php echo Session::get("login_user_type") ?>;
 <?php
 }
- ?>
+?>
 
 var prodoffer = 0;
     jQuery.validator.addMethod("phonevalidate", function (telephone, element) {
@@ -557,7 +691,7 @@ var prodoffer = 0;
         jQuery.each(rows, function (i, item) {
             subprodid = parseInt($(this).find('.subprodid').val());
             if (subprodid != "" && subprodid != null && subprodid != 'NaN') {
-                
+
                 if(subprodid == 'NaN')
                 {
                     subprodid = 0;
@@ -567,7 +701,7 @@ var prodoffer = 0;
                 {
                     selected_prod.push(subprodid);
                 }
-                
+
             }
         });
         prodid = prodid;
@@ -598,11 +732,11 @@ var prodoffer = 0;
                     prodSel.parent().parent().find('.prodUnitPrice').text(price.unitPrice);
                     prodSel.parent().parent().find('.prodDiscount').text(price.offer);
                     prodSel.parent().parent().find('.prodPrice').text(price.price);
-                    
+
                     if(typeof price.offerName === 'undefined')
                     {
                         prodSel.parent().parent().find('.offer_name').text('-');
-                        
+
                     }
                     else
                     {
@@ -612,12 +746,12 @@ var prodoffer = 0;
                     if(typeof price.offerQty === 'undefined')
                     {
                         prodSel.parent().parent().find('.qty').text('-');
-                        
+
                     }
                     else
                     {
                         prodSel.parent().parent().find('.qty').text(price.offerQty);
-                    }                    
+                    }
                     $(".subtotal").text(price.price);
                     $(".finalAmt").text(price.price);
                     $("#amountallSubtotal").text(price.price);
@@ -661,7 +795,7 @@ var prodoffer = 0;
     $(".customerEmail").on("keyup", function () {
         //console.log("texbox click");
         //console.log("inselect sutomer val flag::"+onSelectCustomer);
-        
+
         //console.log("logged in user type::"+loggedInUserType);
         if((parseInt(loggedInUserType) == 3) && (parseInt(onSelectCustomer) == 0))//if logged inusertype is distributor(3)
         {
@@ -675,7 +809,7 @@ var prodoffer = 0;
             //alert("else");
             $(".custdata").show();
         }
-        
+
     });
     $(".customerEmail").on("change", function () {
 
@@ -689,7 +823,7 @@ var prodoffer = 0;
         {
             $(".custdata").show();
         }
-        
+
         term = $(this).val();
         thisEle = $(this);
         thisEle.css("border-color", "");
@@ -789,7 +923,7 @@ var prodoffer = 0;
             return false;
         }
         $(".product-empty").remove();
-       
+
         if (rowCount.length <= 0) {
             $(".prodTable tbody.newRow").append('<tr class="product-empty" style="color:red"><th colspan="4">Please select at least one product </th></tr>');
             return false;
@@ -802,7 +936,7 @@ var prodoffer = 0;
                 $(this).parent().parent().removeClass("trError");
             }
         });
-        
+
         $('.nav-tabs a[href="#customer-details"]').tab('show');
         $('.nav-tabs a[href="#shipping-address"]').removeAttr('data-toggle')
         $('.nav-tabs a[href="#product-details"]').removeAttr('data-toggle');
@@ -879,19 +1013,19 @@ var prodoffer = 0;
 
         parentprodid = subp.parent().parent().find('.prodSearch').attr('data-prdid');
         parentprodtype = subp.parent().parent().find('.prodSearch').attr('data-prdtype');
-        prodoffer = subp.parent().parent().find('.prodSearch').attr('data-prdoffer'); 
+        prodoffer = subp.parent().parent().find('.prodSearch').attr('data-prdoffer');
 
         removeError(subp);
         $(this).attr("name", "cartData[" + parentprodid + "][subprodid]");
         qty = subp.parent().parent().find('.qty').val();
         subp.parent().parent().find('.qty').attr('subprod-id', subprdid);
-        
+
         var that = $(this);
         if(parentprodtype != 2)
             var params = {subprdid: subprdid, qty: qty, pprd: 0,offerid:prodoffer};
-        else 
+        else
             var params = {qty: qty, parentprdid: parentprodid, pprd: 1, offerid:prodoffer};
-            
+
         //$.post("{{route('admin.orders.getProdPrice')}}", {subprdid: subprdid, qty: qty, pprd: 0}, function (data) {
         $.post("{{route('admin.orders.getProdPrice')}}", params, function (data) {
             //subp.parent().parent().find('.prodPrice').text((data.price).toFixed(2));
@@ -901,7 +1035,7 @@ var prodoffer = 0;
             //that.closest('td').next('td').next('td').next('td').next('td').find('.prodPrice').text(data.price);
             $('.subtotal').text(data.price);
             $(".finalAmt").text(data.price);
-            
+
 
             <?php if ($feature['tax'] == 1) {?>
                 subp.parent().parent().find('.taxAmt').text((data.tax).toFixed(2));
@@ -931,7 +1065,7 @@ var prodoffer = 0;
     });
 
     $(".placeOrder").on("click", function () {
-        
+
         chk = 0;
         $.each($(".prodTable tr"), function () {
             if ($(this).hasClass('trError')) {
@@ -1001,14 +1135,14 @@ var prodoffer = 0;
                     $("input[name='cashback_hidden']").val(data.cashback);
                     address = data.addresses;
                     addDiv = "";
-                    
+
                 }
             });
         } else {
             $("#custInfo").validationEngine();
         }
         //end
-       
+
         chk = 0;
         $.each($(".prodTable tr"), function () {
             if ($(this).hasClass('trError')) {
@@ -1097,7 +1231,7 @@ var prodoffer = 0;
 
         //qtty.parent().parent().find('.prodPrice').attr('data-prdid', subprdid);
 
-        
+
         $.ajax({
             type: "POST",
             url: "{{ route('admin.orders.getProdPrice') }}",
@@ -1117,7 +1251,7 @@ var prodoffer = 0;
                 }else{
                     prodSel.parent().parent().find('.prdStock').text('');
                 }
-                
+
                 <?php if ($feature['tax'] == 1) {?>
                 qtty.parents("td").next().next().find('.taxAmt').text((price.tax));
                 <?php }?>
@@ -1489,7 +1623,7 @@ var prodoffer = 0;
         }else{
             var totalPayAmt = parseInt($(".finalAmt").text());
         }
-        
+
         var currentPayingAmt = parseInt($('input[name="pay_amt"]').val());
         var remainingPayAmt = totalPayAmt - currentPayingAmt;
         console.log("Remaining Amt", remainingPayAmt, totalPayAmt, currentPayingAmt);
