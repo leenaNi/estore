@@ -1,17 +1,21 @@
 @extends('Frontend.layouts.default')
 @section('content')
 <style>
-#slider {
-   height: 350px !important;
-}
-#slider .fslider {
-   height: 350px !important;
-}
-#slider .fslider .flexslider {
-   height: 100% !important;
-}
-.flex-prev, .flex-next {
-   margin-top: 0 !important;
+    @media only screen 
+and (device-width : 768px) 
+and (device-height : 1024px)  {
+    #slider {
+    height: 330px !important;
+    }
+    #slider .fslider {
+    height: 330px !important;
+    }
+    #slider .fslider .flexslider {
+    height: 100% !important;
+    }
+    .flex-prev, .flex-next {
+    margin-top: 0 !important;
+    }
 }
 </style>
 <section id="slider" class="full-screen clearfix">
@@ -19,7 +23,6 @@
         <div class="fslider" data-arrows="true" data-pagi="false">
             <div class="flexslider">
                 <div class="slider-wrap">
-
                     @if(count($home_page_slider) > 0) @foreach($home_page_slider as $homeS)
                     <div class="slide">
                         <a href="{{ !empty($homeS->link)?$homeS->link:'javascript:void();'}}" target="_blank"> <img src="{{Config('constants.layoutImgPath').'/'.$homeS->image}}" alt="{{$homeS->alt}}">
