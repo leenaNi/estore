@@ -1,5 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
+@if($industry_id == '17')
 <style>
     @media (min-width: 768px) {
     #slider {
@@ -16,6 +17,7 @@
     }
 }
 </style>
+@endif
 <section id="slider" class="full-screen clearfix">
     <div class="">
         <div class="fslider" data-arrows="true" data-pagi="false">
