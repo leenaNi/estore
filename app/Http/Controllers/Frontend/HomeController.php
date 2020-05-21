@@ -118,7 +118,7 @@ class HomeController extends Controller
     }
 
     public function selectThemes()
-    {   
+    {
         $themeIds = MerchantOrder::where("merchant_id", Session::get('merchantid'))->where("order_status", 1)->where("payment_status", 4)->pluck("merchant_id")->toArray();
        // dd(Session::get('merchantid'));
        if (empty(Input::get('store_name')) && empty(Session::get('merchantid'))) {
@@ -129,7 +129,7 @@ class HomeController extends Controller
         }
         if (empty(Session::get('merchantid'))) {
             $allinput = Input::all();
-            $cats = Category::where("status", 1)->where('id',$allinput['business_type'])->get();
+            $cats = Category::where("status", 1)->whereIn('id',$allinput['business_type'])->get();
             $allinput['is_individual_store'] = 0;
             $storeType = $allinput['roleType'];
             $sendmsg = "Registred successfully.";
@@ -148,12 +148,12 @@ class HomeController extends Controller
             }
             Session::put('merchantid', $lastInsteredId);
             Session::put('storename', $allinput['store_name']);
-            Session::put('industry_type', $allinput['business_type']);
+            Session::put('industry_type', $allinput['business_type'][0]);
             Session::put('merchantstorecount', 0);
 
         } else {
             $allinput = json_decode(Merchant::find(Session::get('merchantid'))->register_details, true);
-            $cats = Category::where("status", 1)->where('id',$allinput['business_type'])->get();
+            $cats = Category::where("status", 1)->whereIn('id',$allinput['business_type'])->get();
             $checkStote = Merchant::find(Session::get('merchantid'))->getstores()->count();
             Session::put('merchantstorecount', $checkStote);
         }
@@ -192,7 +192,7 @@ class HomeController extends Controller
             Session::put('merchantid', $lastInsteredId);
             Session::put('storename', $allinput['store_name']);
             Session::put('merchantstorecount', 0);
-            Session::put('industry_type', $allinput['business_type']);
+            Session::put('industry_type', $allinput['business_type'][0]);
 
         } else {
             $allinput = json_decode(Vendor::find(Session::get('merchantid'))->register_details, true);
@@ -321,7 +321,7 @@ class HomeController extends Controller
             $phoneNo = $getMerchat->phone;
             $store->template_id = $themeInput->theme_id;
             //$store->category_id = 17;
-            $store->category_id = $decoded['business_type'];
+            $store->category_id = $decoded['business_type'][0];
             $storeName = $themeInput->storename;
         } else {
             $phoneNo = $getMerchat->phone_no;
@@ -330,7 +330,7 @@ class HomeController extends Controller
             $storeName = $themeInput->store_name;
             $themeInput->theme_id = 0;
             $store->template_id = 0;
-            $store->category_id = $decoded['business_type'];
+            $store->category_id = $decoded['business_type'][0];
         }
         $store->store_domain = $actualDomain;
         $store->percent_to_charge = 1.00;

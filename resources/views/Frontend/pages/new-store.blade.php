@@ -43,7 +43,7 @@
 										<div class="form-group clearfix">
 											<label for="">Industry</label>
 											 <div class="input-group">
-						                        {{ Form::select('business_type',$cat,null,['class'=>'form-control','required'=>'true','id'=>'select_indusrty']) }}
+						                        {{ Form::select('business_type[]',$cat,null,['class'=>'form-control','required'=>'true','id'=>'select_indusrty']) }}
 
 
 						                        <span>
