@@ -616,7 +616,7 @@ class HomeController extends Controller
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
 
                     if ($phone) {
-                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Store Admin Link: https://" . $domainname . "." . $domain . "/admin Download eStorifi Merchant Android app to manage your Online Store. Download Now https://goo.gl/kUSKro";
+                        $msgOrderSucc = "Congrats! Your new Online Store is ready. Store Admin Link: https://" . $domainname . "." . $domain . "/admin.\n\nOnline Store Link: https://" . $domainname . '.' . $domain; // Download eStorifi Merchant Android app to manage your Online Store."; // Download Now https://goo.gl/kUSKro";
                         Helper::sendsms($phone, $msgOrderSucc, $country_code);
                         $idcodeMsg = "Your unique identification code is " . $identityCode;
                         Helper::sendsms($phone, $idcodeMsg, $country_code);
@@ -624,6 +624,7 @@ class HomeController extends Controller
                     if (!empty($merchantEamil)) {
                         Helper::withoutViewSendMail($merchantEamil, $sub, $mailcontent);
                     }
+                    Helper::withoutViewSendMail('gautam@infiniteit.biz', $sub, $mailcontent);
                     Session::flush();
                     return "Extracted Successfully to $path";
                 } else {
