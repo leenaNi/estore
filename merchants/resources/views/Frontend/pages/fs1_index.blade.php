@@ -2,10 +2,10 @@
 @section('content')
 <style>
 #slider {
-   height: 300px !important;
+   height: 350px !important;
 }
 #slider .fslider {
-   height: 300px !important;
+   height: 350px !important;
 }
 #slider .fslider .flexslider {
    height: 100% !important;
