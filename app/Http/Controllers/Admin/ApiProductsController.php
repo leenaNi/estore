@@ -32,8 +32,10 @@ use Config;
 class ApiProductsController extends Controller
 {
     public function index() {
+       // dd(123);
         $marchantId = Session::get("merchantId");
         $merchant = Merchant::find($marchantId)->getstores()->first();
+         $prifix = $merchant->prefix;
         $store = DB::table('stores')->where('merchant_id',$marchantId)->first();
 
         $varient = DB::table('general_setting')->where('store_id',$store->id)->where('url_key', 'products-with-variants')->first()->status;
