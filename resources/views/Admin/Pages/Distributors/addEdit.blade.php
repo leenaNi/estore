@@ -50,17 +50,16 @@
                                                 {{Form::text('company_name', null, ['class'=>'form-control exist-merch' ,'required'=>'true']) }}
                                             </div>
                                         </div> 
-                             
                                         <div class="form-group">
                                             {{ Form::label('is_individual', 'Is Individual Store? *', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
-                                            <select class="form-control exist-merch" required="true" name="is_individual_store">
-                                               <!--  <option value="1" {{ (@$is_individual_store == 1) ? "selected" : ""  }}>Yes</option> -->
+                                            <select class="form-control exist-merch" required="true" name="is_individual_store" disabled>
+                                                <option value="1" {{ (@$is_individual_store == 1) ? "selected" : ""  }}>Yes</option>
                                                 <option value="0" {{ (@$is_individual_store == 0) ? "selected" : ""  }} >No</option>
                                             </select>
                                             </div>
                                         </div>
-                                  <!--       <div class="form-group">
+                                        <div class="form-group">
                                             {{ Form::label('Password', 'Password *', ['class' => 'col-sm-3 control-label']) }}
                                             <div class="col-sm-9">
                                                 <?php
@@ -83,7 +82,7 @@
                                                 ?>
                                                 {{Form::password('cpassword', $data_cpwd  ) }}
                                             </div>
-                                        </div> -->
+                                        </div>
                                         
                                         <div class="form-group">
                                             {{ Form::label('Choose your industry', 'Choose Your Industry *', ['class' => 'col-sm-3 control-label']) }}
@@ -190,10 +189,9 @@
                 email: true,
                
             },           
-            // cpassword: {
-            //     equalTo: ".password"
-            // },
-             business_type: {
+            cpassword: {
+                equalTo: ".password"
+            }, business_type: {
                 required: true
             }, 'already_selling[]': {
                 required: true
@@ -207,19 +205,17 @@
                 required: "Mobile is required.",
                 remote:"Mobile already in use."
 
-            }, 
-            // password: {
-            //     required: "Password is required."
-            // },
+            }, password: {
+                required: "Password is required."
+            },
             email: {
                 required: "Email is required.",
                 email:"Email should be valid.",
                 remote: "Email already in use."
             },
-            // cpassword: {
-            //     required: "Confirm password is required."
-            // }, 
-            business_type: {
+            cpassword: {
+                required: "Confirm password is required."
+            }, business_type: {
                 required: "Industry is required."
             }, 'already_selling[]': {
                 required: "Industry is required."

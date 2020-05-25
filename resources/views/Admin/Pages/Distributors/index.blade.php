@@ -103,7 +103,7 @@ echo "<pre>";
                                 <td>{{ $distributorData->email }}</td>
                                 <td>{{ $distributorData->phone_no }}</td>
                                 <td>
-                                    {{@$decodedBusiness['store_name']}}
+                                    {{ $decodedBusiness['store_name']}}
                                     <!--<a onmouseover="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').show();" onmouseout="$('#moreBusinessNameDisplayDiv_{{$distributorData->id}}').hide();">{{ $countDisplay }}</a>
                                     <div id="moreBusinessNameDisplayDiv_{{$distributorData->id}}" style="display: none;">
                                         @foreach($businessNameArray as $businessNameId => $businessName)
