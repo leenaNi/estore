@@ -214,7 +214,7 @@ $(document).keypress(function (e) {
                         zoom: -0.1,
                         built: function () {
                            // $toCrop.cropper("setCropBoxData", {width: "170", height: "100"});
-                            $toCrop.cropper("setCropBoxData", {width: "340", height: "200"});
+                            $toCrop.cropper("setCropBoxData", {width: "510", height: "300"});
                         }
                     });
                 }
@@ -248,7 +248,7 @@ $(document).keypress(function (e) {
                     }
                     var ImageURL = cropper.getCroppedCanvas({
                         //width: 170 // input value
-                        width: 340 // input value
+                        width: 510 // input value
                     }).toDataURL();
                     formdata.append("logo_img_url", ImageURL);
                     $.ajax({

@@ -372,7 +372,7 @@ $(document).ready(function () {
 
                     var ImageURL = cropper.getCroppedCanvas({
                         //width: 170 // input value
-                        width: 340 // input value
+                        width: 510 // input value
                     }).toDataURL();
                     formdata.append("logo_img_url", ImageURL);
                     console.log(ImageURL);
