@@ -15,7 +15,7 @@
                       <p class="mb-30">Your Online Store is ready to use.</p>
                     <div class="setup-onlinestore-box">
                         <div class="setup-box">
-                            <a href="{{$storedata->store_domain}}">
+                            <a href="{{$storedata->store_domain}}/admin" target="_blank">
                                 <div class="img-holder">
                                     <img src="{{ asset('public/Frontend/images/setup.png')}}" alt=""> 
                                 </div>
@@ -30,7 +30,7 @@
 
                         </div>
                         <div class="online-box">
-                            <a href="{{$storedata->store_domain}}">
+                            <a href="{{$storedata->store_domain}}"  target="_blank">
                                 <div class="img-holder">
                                     <img src="{{ asset('public/Frontend/images/shopping-online.png')}}" alt=""> 
                                 </div>
