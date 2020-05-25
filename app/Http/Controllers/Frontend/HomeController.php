@@ -612,6 +612,7 @@ class HomeController extends Controller
                     if ($storeType == 'merchant') {
                         $mailcontent .= "Online Store Link: https://" . $domainname . '.' . $domain . "\n\n";
                     }
+                    $mailcontent .= "Login with your registered mobile number (" . $phone . ")." . "\n";
                     $mailcontent .= "Unique Code is: " . $identityCode . " " . "\n";
                     $mailcontent .= "For any further assistance/support, contact http://eStorifi.com/contact" . "\n";
 
