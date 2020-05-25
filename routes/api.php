@@ -35,6 +35,7 @@ Route::group(['namespace' => 'Admin'], function () {
             });
             //sales order routes
             Route::group(['prefix' => 'order'], function () {
+                Route::get('/', array('as' => 'admin.sales.allorder', 'uses' => 'API\Sales\ApiOrderController@index'));
                 Route::post('/place-order', array('as' => 'admin.sales.placeorder', 'uses' => 'API\Sales\ApiOrderController@placeOrder'));
             });
         });

@@ -22,6 +22,17 @@ use stdClass;
 
 class ApiOrderController extends Controller
 {
+    public function index(){
+        $MerchantId = Session::get('merchantId');
+        $store = DB::table('stores')->where(['store_type'=>'merchant','merchant_id'=>$MerchantId])->first();
+        $orders = DB::table('orders')->where('store_id',$store->id)->orderBy('id','desc')->get();
+        if(count($orders) > 0){
+            return ['status' => 1, 'msg' => 'All Orders', 'data' => $orders]; 
+        }else{
+            return ['status' => 0, 'msg' => 'No Order Found', 'data' => $orders]; 
+        }
+    }
+
     public function placeOrder()
     {
         $MerchantId = Session::get('merchantId');
@@ -85,7 +96,7 @@ class ApiOrderController extends Controller
                     // $paymentHistory->save();
                 }
                 $succ = $this->saveOrderSuccess($paymentMethod, $paymentStatus, $payAmt, $trasactionId, $transactionStatus, $userid, $orderS->id, $MerchantId);
-                Cart::instance("shopping")->destroy();
+                Cart::instance("sales_shopping")->destroy();
 
             }
 
@@ -110,6 +121,109 @@ class ApiOrderController extends Controller
 
         } else {
             return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
+    }
+
+    public function getProduct($prod_id){
+        $productResult = DB::table('products as p')
+                            ->leftJoin('brand as b', 'p.brand_id', '=', 'b.id')
+                            ->where('p.id', $prod_id)
+                            ->where(['p.status' => 1, 'p.is_del' => 0])
+                            //->where('p.parent_prod_id',0)
+                            ->orderBy('p.store_id', 'ASC')
+                            ->get(['p.id', 'p.store_id', 'b.id as brand_id', 'b.name as brand_name', 'p.product', 'p.images', 'p.product_code', 'p.is_featured', 'p.prod_type', 'p.is_stock', 'p.is_avail', 'p.is_listing', 'p.status', 'p.stock', 'p.max_price', 'p.min_price', 'p.purchase_price', 'p.price', 'p.spl_price', 'p.selling_price', 'p.is_cod', 'p.is_tax', 'p.is_trending', 'p.min_order_quantity', 'p.is_share_on_mall', 'p.store_id','p.short_desc']);
+        if(count($productResult) > 0)
+        {
+            $storeIdWithDistributorId = [];
+            foreach ($productResult as $getProductData) {
+                
+                $storeId = $getProductData->store_id;
+                $productId = $getProductData->id;
+
+                //Get Product image
+                $productResult = DB::table('catalog_images')
+                    ->select(DB::raw('filename'))
+                    ->where(['catalog_id' => $productId])
+                    ->get();
+                $productImage = '';
+                $strore_name = DB::table('stores')->where('id',$storeId)->first();
+                if (count($productResult) > 0) {
+                    $productImage = "http://" . $strore_name->url_key . "." . $_SERVER['HTTP_HOST'] . "/uploads/catalog/products/" . $productResult[0]->filename;
+                }
+                
+                $storeIdWithDistributorId['product_id'] = $getProductData->id;
+                $storeIdWithDistributorId['brand_name'] = $getProductData->brand_name;
+                $storeIdWithDistributorId['product'] = $getProductData->product;
+                $storeIdWithDistributorId['images'] = $productImage;
+                $storeIdWithDistributorId['product_code'] = $getProductData->product_code;
+                $storeIdWithDistributorId['short_desc'] = $getProductData->short_desc;
+                $storeIdWithDistributorId['is_featured'] = $getProductData->is_featured;
+                $storeIdWithDistributorId['prod_type'] = $getProductData->prod_type;
+                $storeIdWithDistributorId['is_stock'] = $getProductData->is_stock;
+                $storeIdWithDistributorId['is_avail'] = $getProductData->is_avail;
+                $storeIdWithDistributorId['is_listing'] = $getProductData->is_listing;
+                $storeIdWithDistributorId['status'] = $getProductData->status;
+                $storeIdWithDistributorId['stock'] = $getProductData->stock;
+                $storeIdWithDistributorId['max_price'] = $getProductData->max_price;
+                $storeIdWithDistributorId['min_price'] = $getProductData->min_price;
+                $storeIdWithDistributorId['purchase_price'] = $getProductData->purchase_price;
+                $storeIdWithDistributorId['price'] = $getProductData->price;
+                $storeIdWithDistributorId['spl_price'] = $getProductData->spl_price;
+                $storeIdWithDistributorId['selling_price'] = $getProductData->selling_price;
+                $storeIdWithDistributorId['is_cod'] = $getProductData->is_cod;
+                $storeIdWithDistributorId['is_tax'] = $getProductData->is_tax;
+                $storeIdWithDistributorId['is_trending'] = $getProductData->is_trending;
+                $storeIdWithDistributorId['min_order_quantity'] = $getProductData->min_order_quantity;
+                $storeIdWithDistributorId['is_share_on_mall'] = $getProductData->is_share_on_mall;
+
+                //DB::enableQueryLog(); // Enable query log
+                $offersIdCountResult = DB::table('offers')
+                    ->join('offers_products', 'offers.id', '=', 'offers_products.offer_id')
+                    ->select('offers.*')
+                    ->where('offers.status',1)
+                    ->where('offers_products.prod_id', $productId)
+                    ->where('offers_products.type', 1)
+                    ->get();
+                //dd(DB::getQueryLog()); // Show results of log
+
+                $offerCount = 0;
+                $storeIdWithDistributorId['offers_count'] = $offerCount;
+                if (count($offersIdCountResult) > 0) {
+                    //$offerCount = $offersIdCountResult[0]->offer_count;
+                    $storeIdWithDistributorId['offers_count'] = count($offersIdCountResult);
+                    $j =0;
+                    foreach($offersIdCountResult as $offer){
+                        $storeIdWithDistributorId['offers'][$j]['offer_id'] = $offer->id;
+                        $storeIdWithDistributorId['offers'][$j]['offer_name'] = $offer->offer_name;
+                        $j++;
+                    }
+                    
+                    //$totalOfferOfAllProduct = $totalOfferOfAllProduct + $offerCount;
+                }
+                //product variants
+                $prod = Product::find($getProductData->id);
+                if($prod != null && $prod->prod_type == 3){
+                    if($prod->is_stock==1 && $this->feature["stock"]==1) {
+                        $subprods = $prod->getsubproducts()->get();
+                    } else {
+                        $subprods = $prod->subproducts()->get();
+                    }        
+                    foreach ($subprods as $subP) {
+                        $hasOpt = $subP->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->where("status",1)->orderBy("att_sort_order", "asc")->get();
+                        foreach ($hasOpt as $prdOpt) {
+                            $selAttrs[$prdOpt->pivot->attr_id]['placeholder'] = Attribute::find($prdOpt->pivot->attr_id)->placeholder;
+                            $selAttrs[$prdOpt->pivot->attr_id]['name'] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                            $selAttrs[$prdOpt->pivot->attr_id][Attribute::find($prdOpt->pivot->attr_id)->slug] = Attribute::find($prdOpt->pivot->attr_id)->attr;
+                            $selAttrs[$prdOpt->pivot->attr_id]['options'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value] = AttributeValue::find($prdOpt->pivot->attr_val)->option_name;
+                            $selAttrs[$prdOpt->pivot->attr_id]['attrs'][AttributeValue::find($prdOpt->pivot->attr_val)->option_value]['prods'][] = $prdOpt->pivot->prod_id;
+                            $selAttrs[$prdOpt->pivot->attr_id]['prods'][] = $prdOpt->pivot->prod_id;
+                        }
+                    }
+                    $storeIdWithDistributorId['variants'] = $selAttrs;
+                }
+            }
+            return $storeIdWithDistributorId;
+            
         }
     }
 
@@ -179,7 +293,7 @@ class ApiOrderController extends Controller
         $toPayment = [];
         $selAdd = DB::table('has_addresses')->where('id', $shippingAddressId)->first();
 
-        $cartContent = Cart::instance("shopping")->content();
+        $cartContent = Cart::instance("sales_shopping")->content();
         //if (is_null(Session::get('orderId'))) {
         $order = new Order();
         $order->user_id = $userid;
@@ -212,21 +326,11 @@ class ApiOrderController extends Controller
             $zone = 1476;
         }
 
-        // $toPayment['address'] = $selAdd;
-        // $toPayment['address']['countryname'] = ($countryname) ? $countryname : '';
-        // $toPayment['address']['statename'] = ($zone) ? $zone : '';
-        // $toPayment['address']['countryIsoCode'] = ($countryIsoCode) ? $countryIsoCode : '';
         $cart_amt = Helper::calAmtWithTax();
         $toPayment['finalAmt'] = $cart_amt['total']; //Session::get('currency_val')
         $toPayment['payamt'] = $cart_amt['total']; //Session::get('currency_val')
         $toPayment['orderId'] = $order->id;
-        // $toPayment['email'] = User::find($userid)->email;
-        // $toPayment['retUrl'] = route('response') . "?DR={DR}";
-        // $toPayment['ebsStatus'] = DB::table('general_setting')->where('url_key', 'ebs')->first()->status;
-        // $toPayment['payUmoneyStatus'] = DB::table('general_setting')->where('url_key', 'pay-u-money')->first()->status;
-        // $toPayment['citrusPayStatus'] = DB::table('general_setting')->where('url_key', 'citrus')->first()->status;
-
-        // $toPayment['commentDesc'] = $order->description;
+      
         $dtails = json_decode(DB::table('general_setting')->where('url_key', 'ebs')->first()->details);
         foreach ($dtails as $detk => $detv) {
             if ($detk == "mode") {
@@ -242,15 +346,7 @@ class ApiOrderController extends Controller
             }
 
         }
-        // $toPayment['ebsMode'] = @$mode;
-        // $toPayment['ebsKey'] = @$ebskey;
-        // $toPayment['ebsAccountId'] = @$account_id;
-        // if (Session::get('pay_amt') > 0) {
-        //     $toPayment['frmAction'] = route('order_cash_on_delivery');
-        // } else {
-        //     $toPayment['frmAction'] = route('order_cash_on_delivery');
-        // }
-
+     
         $ad_charge = $this->ApplyAdditionalCharge($cart_amt['total']);
         $ad_charge = json_decode($ad_charge, true);
         $toPayment['additional_charge'] = $ad_charge;
@@ -386,7 +482,7 @@ class ApiOrderController extends Controller
         if ($order->Update()) {
             //$this->forget_session_coupon();
             //if ($stock_status == 1) { // commented by bhavana....
-            $this->updateStock($order->id);
+            $this->updateStock($order->id,$StoreData->id);
             //}
             $storedata = DB::table('stores')->where('id', $StoreData->id)->first();
             if ($user->telephone) {
@@ -403,18 +499,21 @@ class ApiOrderController extends Controller
         }
     }
     // For order Update stock
-    public function updateStock($orderId)
+    public function updateStock($orderId,$storeId)
     {
         $jsonString = Helper::getSettings();
-        // $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        $stock_limit = DB::table('general_setting')->where('url_key', 'stock')->first();
+        $stock_limit = DB::table('general_setting')->where('url_key', 'stock')->where('store_id',$storeId)->first();
         $stockLimit = json_decode($stock_limit->details, true);
-        $cartContent = Cart::instance("shopping")->content();
+        $cartContent = Cart::instance("sales_shopping")->content();
         $order = Order::find($orderId);
         $cart_ids = [];
 
         DB::table('has_products')->where("order_id", $orderId)->delete();
         foreach ($cartContent as $key => $cart) {
+            $rowId = $cart->rowId;
+            if($cart->rowId==null){
+                $rowId = $cart->rowid;
+            }
             $product = DB::table('products')->where('id', $cart->id)->first();
             $sum = 0;
             $prod_tax = array();
@@ -439,11 +538,11 @@ class ApiOrderController extends Controller
                 $subtotal = $cart->subtotal;
                 $payamt = $subtotal - $getdisc;
             }
-            $cart_ids[$cart->rowId] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
+            $cart_ids[$rowId] = ["qty" => $cart->qty, "price" => $subtotal, "created_at" => date('Y-m-d H:i:s'), "amt_after_discount" => $cart->options->discountedAmount, "disc" => $cart->options->disc, 'wallet_disc' => $cart->options->wallet_disc, 'voucher_disc' => $cart->options->voucher_disc, 'referral_disc' => $cart->options->referral_disc, 'user_disc' => $cart->options->user_disc, 'tax' => json_encode($total_tax),
                 'pay_amt' => $payamt, 'store_id' => $order->store_id, 'prefix' => $order->prefix];
 
             if ($cart->options->has('sub_prod') && $cart->options->sub_prod != null) {
-                $cart_ids[$cart->rowId]["sub_prod_id"] = $cart->options->sub_prod;
+                $cart_ids[$rowId]["sub_prod_id"] = $cart->options->sub_prod;
                 $proddetails = [];
                 $prddataS = DB::table('products')->where('id', $cart->options->sub_prod)->first();
                 $proddetails['id'] = @$prddataS->id;
@@ -453,10 +552,10 @@ class ApiOrderController extends Controller
                 $proddetails['qty'] = $cart->qty;
                 $proddetails['subtotal'] = $subtotal;
                 $proddetails['is_cod'] = @$prddataS->is_cod;
-                $cart_ids[$cart->rowId]["product_details"] = json_encode($proddetails);
+                $cart_ids[$rowId]["product_details"] = json_encode($proddetails);
                 $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->rowId]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->rowId]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$rowId]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$rowId]["prod_type"] = $cart->options->prod_type;
 
                 if (@$prddataS->is_stock == 1) {
                     @$prddataS->stock = @$prddataS->stock - $cart->qty;
@@ -497,7 +596,7 @@ class ApiOrderController extends Controller
                         }
                     }
                 }
-                $cart_ids[$cart->rowId]["sub_prod_id"] = json_encode($sub_prd_ids);
+                $cart_ids[$rowId]["sub_prod_id"] = json_encode($sub_prd_ids);
             } else {
                 $proddetailsp = [];
                 $prddataSp = DB::table('products')->where('id', $cart->id)->first();
@@ -508,13 +607,13 @@ class ApiOrderController extends Controller
                 $proddetailsp['qty'] = $cart->qty;
                 $proddetailsp['subtotal'] = $subtotal; //* Session::get('currency_val')
                 $proddetailsp['is_cod'] = $prddataSp->is_cod;
-                $cart_ids[$cart->rowId]["sub_prod_id"] = 0;
+                $cart_ids[$rowId]["sub_prod_id"] = 0;
 
-                $cart_ids[$cart->rowId]["product_details"] = json_encode($proddetailsp);
+                $cart_ids[$rowId]["product_details"] = json_encode($proddetailsp);
 
                 $date = $cart->options->eNoOfDaysAllowed;
-                $cart_ids[$cart->rowId]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
-                $cart_ids[$cart->rowId]["prod_type"] = $cart->options->prod_type;
+                $cart_ids[$rowId]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
+                $cart_ids[$rowId]["prod_type"] = $cart->options->prod_type;
                 $prd = DB::table('products')->where('id', $cart->id)->first();
                 $prd->stock = $prd->stock - $cart->qty;
                 if ($prd->is_stock == 1) {
@@ -527,18 +626,14 @@ class ApiOrderController extends Controller
             }
             // $order->products()->attach($cart_ids);
             //  HasProducts::on('mysql2');
-            $cart_ids[$cart->rowId]["order_id"] = $orderId;
-            $cart_ids[$cart->rowId]["prod_id"] = $cart->id;
-            $cart_ids[$cart->rowId]["order_status"] = 1;
-            $cart_ids[$cart->rowId]["order_source"] = 2;
+            $cart_ids[$rowId]["order_id"] = $orderId;
+            $cart_ids[$rowId]["prod_id"] = $cart->id;
+            $cart_ids[$rowId]["order_status"] = 1;
+            $cart_ids[$rowId]["order_source"] = 2;
 
             // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
             //  $order->products()->attach($cart->rowid, $cart_ids[$cart->rowid]);
         }
         DB::table('has_products')->insert($cart_ids);
-        // print_r($cart_ids);
-        // dd(Cart::instance('shopping')->content());
-        // dd($cart_ids);
-        //  $this->orderSuccess();
     }
 }

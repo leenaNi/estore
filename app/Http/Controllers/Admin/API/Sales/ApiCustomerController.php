@@ -16,7 +16,7 @@ class ApiCustomerController extends Controller
 {
     public function index(){
         $store_id = DB::table('users')->where('id',Session::get('authUserId'))->pluck('store_id');
-        $customers = DB::table('users')->where(['user_type'=>2,'store_id'=>$store_id[0]])->get(['id','firstname','lastname','email']);
+        $customers = DB::table('users')->where(['user_type'=>2,'store_id'=>$store_id[0]])->orderBy('id','desc')->get(['id','firstname','lastname','email']);
         if(count($customers) > 0){
             foreach($customers as $cust){
                 $custAddress = DB::table('has_addresses')->where('user_id',$cust->id)->get();
@@ -71,20 +71,6 @@ class ApiCustomerController extends Controller
             }
         }
         
-    }
-
-    public function getStates(){
-        $marchantId = Session::get("merchantId");
-        $merchant = DB::table("merchants")->where('id',$marchantId)->first();
-        $country_code = $merchant->country_code;
-        $country = DB::table("countries")->where('country_code',$country_code)->first();
-        $zones = DB::table("zones")->where('country_id',$country->id)->get();
-        if(count($zones)>0){
-            $data = ["status" => 1, 'msg' => 'All States','data'=>$zones];
-        }else{
-            $data = ["status" => 0, 'msg' => 'No States Found.'];
-        }
-        return response()->json($data);
     }
 
     public function addEditShippingAddress(){

@@ -1,14 +1,31 @@
-@extends('Frontend.layouts.default') 
+@extends('Frontend.layouts.default')
 @section('content')
+@if($industry_id == '17')
+<style>
+    @media (min-width: 768px) {
+    #slider {
+    height: 330px !important;
+    }
+    #slider .fslider {
+    height: 330px !important;
+    }
+    #slider .fslider .flexslider {
+    height: 100% !important;
+    }
+    .flex-prev, .flex-next {
+    margin-top: 0 !important;
+    }
+}
+</style>
+@endif
 <section id="slider" class="full-screen clearfix">
     <div class="">
         <div class="fslider" data-arrows="true" data-pagi="false">
             <div class="flexslider">
                 <div class="slider-wrap">
-                   
                     @if(count($home_page_slider) > 0) @foreach($home_page_slider as $homeS)
                     <div class="slide">
-                        <a href="{{ !empty($homeS->link)?$homeS->link:'javascript:void();'}}" target="_blank"> <img src="{{Config('constants.layoutImgPath').'/'.$homeS->image}}" alt="{{$homeS->alt}}"> 
+                        <a href="{{ !empty($homeS->link)?$homeS->link:'javascript:void();'}}" target="_blank"> <img src="{{Config('constants.layoutImgPath').'/'.$homeS->image}}" alt="{{$homeS->alt}}">
                             <div class="flex-caption">
                                 <h2>{{@$homeS->name}}</h2>
                             </div>
@@ -16,7 +33,7 @@
                         <div class="updateHomeBanner">
                             <a href="#" class="button button-rounded" data-toggle="modal" data-target="#manageSlider">
                                 <span>
-                                    <i class="fa fa-pencil"></i>Manage Slider
+                                    <i class="fa fa-pencil"></i>Manage Slider fgfg
                                 </span>
                             </a>
                         </div>
@@ -38,7 +55,7 @@
                                 </span>
                             </a>
                         </div>
-                      
+
                         @endif
                     </div>
                     @endif
@@ -61,7 +78,7 @@
                     <i class="fa fa-pencil  fa-lg"></i>
                 </a> @endif
                 <a href="{{!empty($dynl->link)?$dynl->link:'javascript:void(0)'}}" target="_blank">
-                    <img class="full-width" src="{{Config('constants.layoutImgPath').'/'.@$dynl->image}}" alt="feature1">                    
+                    <img class="full-width" src="{{Config('constants.layoutImgPath').'/'.@$dynl->image}}" alt="feature1">
                 <div class="overlayContentBox">
                     <div>
                         <h3 class="nobottommargin text-center">{{@$dynl->name}}</h3>
@@ -70,19 +87,19 @@
                 </a> @if(Session::get('login_user_type') == 1)
                       <div class="switchBox">
                 	<label class="switch text-center">
-                            <input data-id='{{$dynl->id}}' class="switch-input 3BoxStatus" name="status"  value="{{$dynl->is_active}}" type="checkbox"  <?php echo ($dynl->is_active == 1)? 'checked="&quot;checked&quot;"':'' ?> >
-                                    <span class="switch-label" data-on="Enabled" data-off="Disabled"></span> 
-                                    <span class="switch-handle"></span> 
+                            <input data-id='{{$dynl->id}}' class="switch-input 3BoxStatus" name="status"  value="{{$dynl->is_active}}" type="checkbox"  <?php echo ($dynl->is_active == 1) ? 'checked="&quot;checked&quot;"' : '' ?> >
+                                    <span class="switch-label" data-on="Enabled" data-off="Disabled"></span>
+                                    <span class="switch-handle"></span>
                          </label>
                </div>
-                
+
                 <div class="{{($dynl->is_active == 0 )?'overlayFBox':''}}  overL_{{$dynl->id}}"></div>
                 @endif
             </div>
             @endforeach @endif
         </div>
         @if(Session::get('login_user_type') == 1)
-        <?php $cat = count($rootsS) > 0 ? '' : "Cat"; ?>
+        <?php $cat = count($rootsS) > 0 ? '' : "Cat";?>
         <div class="text-center bottommargin-sm">
             <a style="z-index: 99;" class="btn btn-default button button-rounded" type="button" data-toggle="modal" data-target="#addProduct{{$cat}}">Add New Product</a>
         </div>
@@ -134,7 +151,7 @@
 <!--                        <div class="quantity-box-full" ng-if="quickproduct.prod_type==1">
                             <input type='hidden' name='prod_id' value='[[quickproduct.id]]' data-parentid="[[quickproduct.id]]">
                             <input type='hidden' name='prod_type' value='[[quickproduct.prod_type]]'>
-                            <input type="button" value="-" class="minus" field="quantity"> 
+                            <input type="button" value="-" class="minus" field="quantity">
                             @if($isstock==1)
                             <input type="text" id="quantity" step="1" min="1" name="quantity" value="1" title="Qty" max="[[(quickproduct.is_stock == 1)?quickproduct.stock:'1000000000']]" class="qty quantity[[quickproduct.id]]" size="4" onkeypress="return isNumber(event);" style="text-align: center;"
                             /> @else
@@ -230,7 +247,7 @@
 </div>
 </section>
 
-@stop 
+@stop
 @section('myscripts')
 
 <script>

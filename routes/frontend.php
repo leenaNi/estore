@@ -49,7 +49,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Frontend'], function() {
     Route::any('/veestore-updateProfile', ['as' => 'veestoresUpdateProfile', 'uses' => 'HomeController@veestoresUpdateProfile']);
     Route::any('/veestore-UpdateChangePassword', ['as' => 'veestoresUpdateChangePassword', 'uses' => 'HomeController@veestoresUpdateChangePassword']);
     Route::any('/veestore-tutorial', ['as' => 'veestoresTutorial', 'uses' => 'HomeController@veestoresTutorial']);
-    Route::any('/features', ['as' => 'pricing', 'uses' => 'HomeController@featureList']);
+    Route::any('/features', ['as' => 'features', 'uses' => 'HomeController@featureList']);
     Route::any('/terms-condition', ['as' => 'terms-condition', 'uses' => 'HomeController@termCondition']);
     Route::any('/privacy-policy', ['as' => 'privacy-policy', 'uses' => 'HomeController@privacyPolicy']);
     Route::any('/about', ['as' => 'about', 'uses' => 'HomeController@aboutUs']);

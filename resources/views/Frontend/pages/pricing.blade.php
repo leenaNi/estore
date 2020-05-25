@@ -1,6 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
-<section id="page-title" class="page-title-parallax page-title-center" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'/static.jpg') }}') 0px; padding: 103px 0;">
+<section id="page-title" class="page-title-parallax page-title-center pricing-bg-title" style="background: url('{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/pricing-bg.jpg') }}') 0px; padding: 103px 0;">
 
 	<div class="container clearfix">
 				<h2 class="white-text bottommargin-xs" data-animate="fadeInUp">Pricing that puts you first</h2>
@@ -15,7 +15,7 @@
 				<div class="container clearfix">
 				<div class="table-responsive">
 
-						<table class="table table-hover table-bordered table-comparison nobottommargin">
+						<table class="table table-hover table-bordered table-comparison nobottommargin pricing-comp-table">
 						  <thead>
 							<tr>
 							  <th>&nbsp;</th>
@@ -41,7 +41,7 @@
 							</tr>
 							<tr>
 							  <td>Customize Store Admin Colors</td>
-							  <td><i class="icon-remove"></i></td>
+							  <td><i class="icon-ok"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
@@ -66,12 +66,7 @@
 							</tr>
 							<tr>
 							  <td>Order Flagging</td>
-							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
-							</tr>
-							<tr>
-							  <td>Barcode System / System Generated Barcode Mechanism</td>
-							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
@@ -80,13 +75,18 @@
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
-							  <td>Testimonials</td>
+							  <td>Newsletter</td>
+							  <td><i class="icon-ok"></i></td>
+							  <td><i class="icon-ok"></i></td>
+							</tr>
+							<tr>
+							  <td>Barcode System / System Generated Barcode Mechanism</td>
 							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
-							  <td>Newsletter</td>
-							  <td><i class="icon-ok"></i></td>
+							  <td>Testimonials</td>
+							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
@@ -96,17 +96,17 @@
 							</tr>
 							<tr>
 							  <td>Save customer as contacts from Mobile App</td>
-							  <td><i class="icon-ok"></i></td>
+							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
 							  <td>Help Store Assistant</td>
-							  <td><i class="icon-ok"></i></td>
+							  <td><i class="icon-remove"></i></td>
 							  <td><i class="icon-ok"></i></td>
 							</tr>
 							<tr>
 							  <td><h4 class="nobottommargin">Price</h4></td>
-							  <td><h4 class="nobottommargin"><a href="/contact">Contact Us</a></h4></td>
+							  <td><h4 class="nobottommargin"><span>Free</span></h4></td>
 							  <td><h4 class="nobottommargin"><a href="/contact">Contact Us</a></h4></td>
 							</tr>
 						  </tbody>

@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://www.veestores.com/themes/css/style_fs2.css" type="text/css" />
+<link rel="stylesheet" href="https://www.estorifi.com/themes/css/style_fs2.css" type="text/css" />
 <!-- Header
 ============================================= -->
 <header id="header">

@@ -1,8 +1,9 @@
 @extends('Frontend.layouts.default')
 @section('content')
+<!-- <link rel="stylesheet" href="{{Config('constants.frontendPublicCSSPath').'/style-select-theme.css' }}"> -->
 <!-- Page Title
                        ============================================= -->
-<section id="page-title" class=" page-title-center" style=" padding: 50px 0;" data-stellar-background-ratio="0.3">
+<section id="page-title" class="page-title-center {{((!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0))? 'p50':''}}" data-stellar-background-ratio="0.3">
     @if(!empty(Session::get('merchantid')) && Session::get('merchantstorecount') <= 0)
     <div class="container clearfix">
         <h1 class="">Welcome to the Estorifi family</h1>
@@ -66,7 +67,7 @@
                                     @if(!empty($allinput['provider_id']))
                                     <input type="hidden" name="provider_id" value="{{$allinput['provider_id']}}">
                                     @endif
-                                    <input type="hidden" name="business_type" value="{{$allinput['business_type'][0]}}">
+                                    <input type="hidden" name="business_type[]" value="{{$allinput['business_type'][0]}}">
                                    
                                     <input type="hidden" name="theme_id" value="{{$theme->id}}">
                                     <input type="hidden" name="cat_id" value="{{$c->id}}">
@@ -89,3 +90,13 @@
     </div>
 </section>
 @stop
+ <script>
+      $(window).scroll(function() {
+        if ($(this).scrollTop() > 1){  
+            ($('header'))? $('header').addClass("sticky-header"): '';
+        }
+        else{
+            ($('header'))? $('header').removeClass("sticky-header"): '';
+        }
+        });
+</script> 

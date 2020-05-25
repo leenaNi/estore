@@ -54,14 +54,17 @@ $frontendConstants = [
     'frontendView' => 'Frontend.pages',
     'frontendPaginateNo' => 10,
     'frontendPublicJsPath' => 'public/Frontend/js/',
+    'frontendPublicEstorifiJsPath' => 'public/Frontend/js-estorifi/',
     'frontendMyAccView' => 'Frontend.pages.myacc',
     'frontendCatlogCategory' => 'Frontend.pages.catalog.category',
     'frontendCatlogProducts' => 'Frontend.pages.catalog.products',
     'frontCartView' => 'Frontend.pages.cart',
     'frontCheckoutView' => 'Frontend.pages.checkout',
     'frontendPublicImgPath' => 'public/Frontend/images/',
+    'frontendPublicEstorifiImgPath' => 'public/Frontend/images-estorifi/',
     'frontviewEmailTemplatesPath' => 'Frontend/emails/',
     'frontendPublicCSSPath' => 'public/Frontend/css/',
+    'frontendPublicEstorifiCSSPath' => 'public/Frontend/css-estorifi/',
     'domainURL'=> 'https://api.godaddy.com/v1/domains/'
 
 ];

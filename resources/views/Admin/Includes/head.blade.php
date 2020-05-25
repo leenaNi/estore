@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="{{ asset(Config('constants.AdminPluginPath').'bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
 <link rel="stylesheet" href="{{ asset(Config('constants.AdminDistCssPath').'custom.css') }}">
 <link rel="stylesheet" href="{{ asset(Config('constants.AdminDistCssPath').'validationEngine.jquery.css') }}">
-<link rel="icon" type="image/png" href="{{ asset(Config('constants.frontendPublicImgPath').'/favicon.png') }}">
+<link rel="icon" type="image/png" href="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/favicon.png') }}">
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
