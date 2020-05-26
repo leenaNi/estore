@@ -52,43 +52,12 @@ class ApiProductsController extends Controller
             ->orderBy("c.id", "asc")
             ->select('store_categories.id','c.category')
             ->get();
-        // foreach ($category as $val) {
-        //     $val->catImage = "http://" . $merchant->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/category/' . @DB::table($merchant->prefix . '_catalog_images')->where("image_type", 2)->where('catalog_id', $val->id)->latest()->first()->filename;
-        //     $val->productCout = DB::table($merchant->prefix . '_has_categories')->where("cat_id", $val->id)->count();
-        // }
 
-        $userA = DB::table('users')->select('id', 'firstname', 'lastname')->where('store_id',$store->id)->get();
-        $user = [];
-        foreach ($userA as $val) {
-            $user[$val->id] = $val->firstname . ' ' . $val->lastname;
-        }
+     
         if (!empty(Input::get('product_name'))) {
             $products = $products->where('product', 'like', "%" . Input::get('product_name') . "%");
         }
-        // if (!empty(Input::get('pricemin'))) {
-        //     $products = $products->where('price', '>=', Input::get('pricemin'));
-        // }
-        // if (!empty(Input::get('pricemax'))) {
-        //     $products = $products->where('price', '<=', Input::get('pricemax'));
-        // }
-        // if (Input::get('status') == '0' || Input::get('status') == '1') {
-        //     $products = $products->where('status', Input::get('status'));
-        // }
-        // if (Input::get('availability') == '0' || Input::get('availability') == '1') {
-        //     $products = $products->where('is_avail', Input::get('availability'));
-        // }
-        // if (!empty(Input::get('updated_by'))) {
-        //     $products = $products->where('updated_by', Input::get('updated_by'));
-        // }
-        // if (!empty(Input::get('datefrom'))) {
-        //     $date = date("Y-m-d", strtotime(Input::get('datefrom')));
-        //     $products = $products->where('created_at', '>=', $date);
-        // }
-        // if (!empty(Input::get('dateto'))) {
-        //     $date = date("Y-m-d", strtotime(Input::get('dateto')));
-        //     $products = $products->where('created_at', '<=', $date);
-        // }
-
+       
 
          if (!empty(Input::get('searchTerm'))) {
 
@@ -133,7 +102,7 @@ class ApiProductsController extends Controller
             $prd->prodImage = "http://" . $merchant->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/products/' . @DB::table('catalog_images')->where("image_mode", 1)->where('catalog_id', $prd->id)->first()->filename;
         }
 
-        return response()->json(['status'=>1, 'products'=>$products,'category'=>$category,'user'=>$user,'productscount'=>$productscount,'tax'=>$tax]);
+        return response()->json(['status'=>1, 'products'=>$products,'productscount'=>$productscount,'tax'=>$tax]);
     }
 
     public function calTax($product) {

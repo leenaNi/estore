@@ -21,7 +21,7 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::group(['middleware' => ['jwt-auth', 'sessions']], function () {
         Route::group(['prefix' => 'Sales'], function () {
             
-            Route::get('/getproductbybarcode', array('as' => 'admin.sales.getproduct', 'uses' => 'API\Sales\ApiCartController@getProductByBarcode'));
+            Route::get('/getproductbybarcode', array('as' => 'admin.sales.getproduct', 'uses' => 'API\Sales\ApiProductController@getProductByBarcode'));
             Route::group(['prefix' => 'cart'], function () {
                 Route::get('/', array('as' => 'admin.sales.viewcart', 'uses' => 'API\Sales\ApiCartController@index'));
                 Route::post('/add', array('as' => 'admin.sales.addtocart', 'uses' => 'API\Sales\ApiCartController@add'));
