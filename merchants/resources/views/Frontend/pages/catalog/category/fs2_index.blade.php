@@ -101,9 +101,9 @@
                             <!-- <ins><span class="currency-sym"></span>[[ prd.getPrice *currencyVal | number : 2 ]]</ins> -->
                             </div>
                         </div>
-                            <div>
+                            <!-- <div>
                                 [[prd.reviews]] reviews , [[prd.ratings]]<i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
+                            </div> -->
                             <div>
                                 <form id="form[[prd.id]]" action="{{ route('addToCart') }}">
                                 <input type="hidden" name='prod_id' value='[[prd.id]]'>

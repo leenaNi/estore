@@ -39,12 +39,12 @@
                                                                      <div class="col_half">
 									<address class="nobottommargin">
 										<abb><strong>Address:</strong></abbr><br>
-										C/504, Neelkanth Business Park, Near Vidyavihar Station, Vidyavihar West, Mumbai 400086. <br>
+										C/501, Chocolate Building , Vanila Street Mumbai 400123. <br>
 									</address>
 								</div>
 								<div class="col_half col_last">
-									<abbr><strong>Phone:</strong></abbr> (022) 6697 3260<br>
-                                                                        <abbr><strong>Email:</strong></abbr> <a href="mailto:jigar.shah@infiniteit.biz">jigar.shah@infiniteit.biz</a>
+									<abbr><strong>Phone:</strong></abbr> 09000012345<br>
+                                                                        <abbr><strong>Email:</strong></abbr> <a href="mailto:jigar.shah@infiniteit.biz">abc@gmail.com</a>
 								</div>
                                                                      
                                                                 @endif

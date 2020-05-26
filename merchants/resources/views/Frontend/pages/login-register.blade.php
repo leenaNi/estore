@@ -56,12 +56,12 @@
                                     <?php //{{route('home')}}.'/login/facebook/'.{{Crypt::encrypt(Request::url())}} ?>
                                     <!--<a href="#"  class="col-md-12 col-sm-6 col-xs-12" style="margin-bottom:11px;">-->
                                     <a  id="fbLink" class="col-sm-6 col-xs-12 fb_login_btn"   style="margin-bottom:11px;">
-                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/fb_login.jpg')}}" onclick="fbLogin()"  class="fb_login_btn"></img>
+                                        <!-- <img src="{{ asset(Config('constants.frontendPublicImgPath').'/fb_login.jpg')}}" onclick="fbLogin()"  class="fb_login_btn"></img> -->
                                     </a>
                                     <?php //route('home')}}/login/google/{{Crypt::encrypt(Request::url())?>
                                     <a  href="{{ route('login',['provider'=>'google']) }}" class="col-sm-6 col-xs-12">
                                         <!--<a  href="{{ route('login',['provider'=>'google']) }}"   class="col-md-12 col-sm-6 col-xs-12">-->
-                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/g_login.jpg')}}" class="g_login_btn"></img>
+                                        <!-- <img src="{{ asset(Config('constants.frontendPublicImgPath').'/g_login.jpg')}}" class="g_login_btn"></img> -->
                                     </a>
                             <!--<a href="#" class="col-md-6 col-sm-6 col-xs-12"> <img src="images/fb_login.jpg" class="fb_login_btn"> </a>-->
                             <!--<a href="#" class="col-md-6 col-sm-6 col-xs-12"> <img src="images/g_login.jpg" class="g_login_btn"> </a>-->
