@@ -44,16 +44,7 @@ class ApiProductsController extends Controller
         if ($varient == 0) {
             $products = $products->where("prod_type", 1);
         }
-        //$category = DB::table('categories')->where("status", 1)->get();
-        $category = DB::table('store_categories')
-            ->join('categories as c','c.id','=','store_categories.category_id')
-            ->where("c.status", '1')
-            ->where("store_categories.store_id",$store->id)
-            ->orderBy("c.id", "asc")
-            ->select('store_categories.id','c.category')
-            ->get();
-
-     
+        
         if (!empty(Input::get('product_name'))) {
             $products = $products->where('product', 'like', "%" . Input::get('product_name') . "%");
         }
@@ -78,9 +69,6 @@ class ApiProductsController extends Controller
 
             }
         }
-
-
-
 
         $products = $products->paginate(10);
         $productscount = $products->total();
