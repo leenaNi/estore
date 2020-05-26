@@ -244,40 +244,17 @@
                           </button>
                           <ul id="bulk_action" class="dropdown-menu bulk-action-dropdown-menu product-bulk-menu" aria-labelledby="dropdownMenu1">
                             <li role="presentation" class="dropdown-header">Select Bulk Action</li>
-                            <li><input type="radio" id="export" name="Bulk Action" value="export">
+                            <li id="export"><input type="radio" id="export" name="Bulk Action" value="export">
                                 <label for="export">Export</label> 
                             </li>
-                            <li><input type="radio" id="remove" name="Bulk Action" value="remove">
+                            <li id="remove"><input type="radio" id="remove" name="Bulk Action" value="remove">
                                 <label for="remove">Delete</label> 
                             </li> 
                           </ul>
                         </span>
                       </div>
                     </div>
-                    
-                    <!-- <div class="custom-checkbox-box">
-                      <label class="custom-checkbox">
-                        <input type="checkbox" id="masterCheck" value="00"/>
-                        <span class="checkmark"></span>
-                      </label>
-
-                      <div class="drp-arrow"> 
-                      <span class="dropdown">
-                          <button class="checkbox-dropdown dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                            <i class="fa fa-chevron-down"></i>
-                          </button>
-                          <ul id="bulk_action" class="dropdown-menu bulk-action-dropdown-menu" aria-labelledby="dropdownMenu1">
-                            <li role="presentation" class="dropdown-header">Select Bulk Action</li>
-                            <li><input type="radio" id="export" name="Bulk Action" value="export">
-                                <label for="export">Export</label> 
-                            </li>
-                            <li><input type="radio" id="remove" name="Bulk Action" value="remove">
-                                <label for="remove">Delete</label> 
-                            </li> 
-                          </ul>
-                        </span>
-                      </div>
-                    </div> -->
+                   
                   </th>  
                 @endif
                 <th width="35%" class="text-left">@sortablelink ('product', 'Product')</th>
@@ -1093,9 +1070,11 @@
     $("#masterCheck").attr("checked", $(".singleCheck:checked").length == $(".singleCheck").length);
   }
                           );
-  $("#bulk_action").change(function () {
+  
+  $("#bulk_action li").click(function() {
+  //$("#bulk_action").change(function () {
     var $this = $(this);
-    if ($this.val() == 'print_barcode') {
+    if (this.id == 'print_barcode') {
       $("#myModalbarcode").modal("show");
       $("#myModalbarcode").css("display", "block");
       var ids = jQuery.map($(':checkbox[name=singleCheck\\[\\]]:checked'), function (n, i) {
@@ -1148,7 +1127,7 @@
                           );
       get_update_form(prod_list, 'modalBulkUpdate', $this.find("option:selected").text(), $this.val());
     }
-    else if ($this.val() == 'export') {
+    else if (this.id == 'export') {
       var prod_list = [];
       var ids = jQuery.map($(':checkbox[name=singleCheck\\[\\]]:checked'), function (n, i) {
         console.log(JSON.stringify(n));
@@ -1178,7 +1157,7 @@
                           );
       get_update_form(prod_list, 'modalBulkUpdate', $this.find("option:selected").text(), $this.val());
     }
-    else if ($this.val() == 'remove') {
+    else if (this.id == 'remove') {
       var confirm = window.confirm("Are you sure to remove selected products?");
       if (confirm == true) {
         txt = "You pressed OK!";
@@ -1188,12 +1167,13 @@
           prod_list.push(n.value);
         }
                             );
+        console.log(prod_list);
         var str = '<form method="post" action="<?=route('admin.products.bulkUpdate')?>" id="removeForm">';
         str += '<input type="hidden" name="productId" value="' + prod_list + '"/>';
         str += '<input type="hidden" name="type" value="' + $this.val() + '"/>';
         str += '</form>';
         $('body').append(str);
-        $('#removeForm').submit();
+        //$('#removeForm').submit();
       }
     }
   }
