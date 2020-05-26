@@ -32,8 +32,10 @@ use Config;
 class ApiProductsController extends Controller
 {
     public function index() {
+       // dd(123);
         $marchantId = Session::get("merchantId");
         $merchant = Merchant::find($marchantId)->getstores()->first();
+         $prifix = $merchant->prefix;
         $store = DB::table('stores')->where('merchant_id',$marchantId)->first();
 
         $varient = DB::table('general_setting')->where('store_id',$store->id)->where('url_key', 'products-with-variants')->first()->status;
@@ -86,6 +88,31 @@ class ApiProductsController extends Controller
         //     $date = date("Y-m-d", strtotime(Input::get('dateto')));
         //     $products = $products->where('created_at', '<=', $date);
         // }
+
+
+         if (!empty(Input::get('searchTerm'))) {
+
+            $data['cat_name'] = "Search results for " . Input::get('searchTerm');
+            $data['metaTitle'] = "";
+            $data['metaDesc'] = "";
+            $data['metaKeys'] = "";
+            if (!empty(Input::get('searchTerm'))) {
+              
+                $search = Input::get('searchTerm');
+
+                 $products = $products->where('product', 'like', $search)
+                    ->orWhere('short_desc', 'like', $search)
+                    ->orWhere('long_desc', 'like', $search)
+                    ->orWhere('meta_title', 'like', $search)
+                    ->orWhere('meta_desc', 'like', $search)
+                    ->orWhere('meta_keys', 'like', $search);
+
+            }
+        }
+
+
+
+
         $products = $products->paginate(10);
         $productscount = $products->total();
         // dd($products);

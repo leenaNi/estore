@@ -47,7 +47,7 @@ Session::put('storelogo', $data->logo);
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Choose Logo (170px W X 100px H)</h4>
+                <h4 class="modal-title">Choose Logo (510px W X 300px H)</h4>
             </div>
             <div class="modal-body">
                 <form role="form" id="store_save"  enctype="multipart/form-data" class="cls_logo">
