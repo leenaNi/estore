@@ -105,10 +105,10 @@ use App\Models\CustomerReview;
                                 <ins> <span class="currency-sym"></span> <span class="amount priceConvert">[[ prd.getPrice  * currencyVal | number : 2 ]]</span></ins>
                                 <!-- <ins> <span class="currency-sym"></span> <span class="">[[ prd.getPrice ]]</span></ins> -->
                             </div>
-                            <div>
+                            <!-- <div>
                                 
                                 [[prd.reviews]] reviews , [[prd.ratings]]<i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
+                            </div> -->
                             <div>
                                 <form id="form[[prd.id]]" action="{{ route('addToCart') }}">
                                 <input type="hidden" name='prod_id' value='[[prd.id]]'>
