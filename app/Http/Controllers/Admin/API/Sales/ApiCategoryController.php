@@ -38,16 +38,22 @@ class ApiCategoryController extends Controller
             $attrS = DB::table('attribute_sets')->where('id', '!=', 1)->where('status', 1)->where("store_id",$store->id)->get(['id', 'attr_set']);
             $stockStatus = DB::table('general_setting')->where("url_key", 'stock')->first()->status;
            
-            $data = ['categories' => $categories, 'prod_type' => $prod_type];
-            return response()->json(["status" => 1, 'data' => $data]);
+            $data = ['categories' => $categories];
+            return response()->json(["status" => 1, 'data' => $categories]);
         }else{
             return response()->json(["status" => 0, 'msg' => 'Session Expired.']);
         }
     }
 
+    public function mainCategories(){
+        $countries = DB::table('categories')->orderBy("id", "desc")->get();
+
+    }
+
     public function subCategory(){
         $cat_id = Input::get('categoryId');
-        $marchantId = Session::get("merchantId");
+        if($cat_id){
+            $marchantId = Session::get("merchantId");
         $merchant = Merchant::find($marchantId)->getstores()->first();
             $store = DB::table('stores')->where('merchant_id',$marchantId)->first();
             
@@ -67,7 +73,10 @@ class ApiCategoryController extends Controller
                 }
             }
             $data = ['categories' => $categories];
-            return response()->json(["status" => 1, 'data' => $data]);
+            return response()->json(["status" => 1, 'data' => $categories]);
+        }else{
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
     }
 
     public function requestNewCategory(){
