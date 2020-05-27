@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\API\Sales;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
+use App\Models\CategoryMaster;
+use App\Models\CategoryRequested;
 use Config;
 use DB;
 use Input;
@@ -38,23 +40,54 @@ class ApiCategoryController extends Controller
             $attrS = DB::table('attribute_sets')->where('id', '!=', 1)->where('status', 1)->where("store_id",$store->id)->get(['id', 'attr_set']);
             $stockStatus = DB::table('general_setting')->where("url_key", 'stock')->first()->status;
            
-            $data = ['categories' => $categories];
             return response()->json(["status" => 1, 'data' => $categories]);
         }else{
             return response()->json(["status" => 0, 'msg' => 'Session Expired.']);
         }
     }
 
-    public function mainCategories(){
-        $countries = DB::table('categories')->orderBy("id", "desc")->get();
+    public function masterCategories(){
+        $categories = CategoryMaster::whereIn("status", [1, 0])->where('parent_id',NULL)->select('id','category')->orderBy("id", "asc")->get();
+        if(count($categories)>0){
+            foreach($categories as $cat){
+                $subcat = DB::table('categories')->where('parent_id',$cat->id)->get();
+                $cat->has_sub_category = 0;
+                if(count($subcat)>0){
+                    $cat->has_sub_category = 1;
+                }
+            }
+            return response()->json(["status" => 1, 'data' => $categories]);
+        }else{
+            return response()->json(["status" => 0, 'msg' => 'No Categories Found']);
+        }
+        
+        //$categories = $categories->paginate(Config('constants.paginateNo'));
+        //$roots = CategoryMaster::roots()->get();
+        
+    }
 
+    public function masterSubCategory(){
+        $cat_id = Input::get('categoryId');
+        if($cat_id){
+            $categories = CategoryMaster::whereIn("status", [1, 0])->where('parent_id',$cat_id)->select('id','category')->orderBy("id", "asc")->get();
+            foreach($categories as $cat){
+                $subcat = DB::table('categories')->where('parent_id',$cat->id)->get();
+                $cat->has_sub_category = 0;
+                if(count($subcat)>0){
+                    $cat->has_sub_category = 1;
+                }
+            }
+            return response()->json(["status" => 1, 'data' => $categories]);
+        }else{
+            return response()->json(["status" => 0, 'msg' => 'No Categories Found']);
+        }
     }
 
     public function subCategory(){
         $cat_id = Input::get('categoryId');
         if($cat_id){
             $marchantId = Session::get("merchantId");
-        $merchant = Merchant::find($marchantId)->getstores()->first();
+            $merchant = Merchant::find($marchantId)->getstores()->first();
             $store = DB::table('stores')->where('merchant_id',$marchantId)->first();
             
             $categories = DB::table('store_categories')
@@ -72,7 +105,6 @@ class ApiCategoryController extends Controller
                     $cat->has_sub_category = 1;
                 }
             }
-            $data = ['categories' => $categories];
             return response()->json(["status" => 1, 'data' => $categories]);
         }else{
             return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);

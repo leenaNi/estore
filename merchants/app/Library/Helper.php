@@ -159,7 +159,7 @@ class Helper
         echo "<li>";
         echo "<a href=" . route('category', ['slug' => $node->url_key]) . ">{$node->categoryName->category}</a>";
         if ($node->children()->count() > 0) {
-            echo "<ul class='submenu-item' style='max-height: 300px; overflow-y: auto'>";
+            echo "<ul class='submenu-item'>";
             foreach ($node->children as $child) {
                 Helper::getmenu($child);
             }

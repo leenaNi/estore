@@ -23,15 +23,17 @@ Route::group(['namespace' => 'Admin'], function () {
 
             Route::group(['prefix' => 'category'], function () {
                 Route::get('/', ['as' => 'admin.categories.view', 'uses' => 'API\Sales\ApiCategoryController@index']);
-                Route::get('/subcategory', ['as' => 'admin.categories.view', 'uses' => 'API\Sales\ApiCategoryController@subCategory']);
+                Route::get('/subcategory', ['as' => 'admin.categories.subcat', 'uses' => 'API\Sales\ApiCategoryController@subCategory']);
+                Route::get('/mastercategory', ['as' => 'admin.categories.masterCategories', 'uses' => 'API\Sales\ApiCategoryController@masterCategories']);
+                Route::get('/mastersubcategory', ['as' => 'admin.categories.masterSubCategory', 'uses' => 'API\Sales\ApiCategoryController@masterSubCategory']);
                 Route::post('/requestnewcat', ['as' => 'admin.categories.reqcat', 'uses' => 'API\Sales\ApiCategoryController@requestNewCategory']);
             });
             
-            Route::get('/getproductbybarcode', array('as' => 'admin.sales.getproduct', 'uses' => 'API\Sales\ApiProductController@getProductByBarcode'));
             Route::group(['prefix' => 'products'], function () {
                 //new APIs routes
                 Route::get('/productlist', ['as' => 'admin.apiprod.list', 'uses' => 'API\Sales\ApiProductController@index']);
                 Route::post('/addproduct', ['as' => 'admin.apiprod.add', 'uses' => 'API\Sales\ApiProductController@addProduct']);
+                Route::get('/getproductbybarcode', array('as' => 'admin.sales.getproduct', 'uses' => 'API\Sales\ApiProductController@getProductByBarcode'));
                 //end
                 Route::get('/getsubproduct', array('as' => 'admin.sales.getsubproduct', 'uses' => 'API\Sales\ApiProductController@getSubProducts'));
             });
