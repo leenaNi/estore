@@ -20,9 +20,19 @@ Route::group(['namespace' => 'Admin'], function () {
     //API->Sales route
     Route::group(['middleware' => ['jwt-auth', 'sessions']], function () {
         Route::group(['prefix' => 'Sales'], function () {
+
+            Route::group(['prefix' => 'category'], function () {
+                Route::get('/', ['as' => 'admin.categories.view', 'uses' => 'API\Sales\ApiCategoryController@index']);
+                Route::get('/subcategory', ['as' => 'admin.categories.view', 'uses' => 'API\Sales\ApiCategoryController@subCategory']);
+                Route::post('/requestnewcat', ['as' => 'admin.categories.reqcat', 'uses' => 'API\Sales\ApiCategoryController@requestNewCategory']);
+            });
             
             Route::get('/getproductbybarcode', array('as' => 'admin.sales.getproduct', 'uses' => 'API\Sales\ApiProductController@getProductByBarcode'));
             Route::group(['prefix' => 'products'], function () {
+                //new APIs routes
+                Route::get('/productlist', ['as' => 'admin.apiprod.list', 'uses' => 'API\Sales\ApiProductController@index']);
+                Route::post('/addproduct', ['as' => 'admin.apiprod.add', 'uses' => 'API\Sales\ApiProductController@addProduct']);
+                //end
                 Route::get('/getsubproduct', array('as' => 'admin.sales.getsubproduct', 'uses' => 'API\Sales\ApiProductController@getSubProducts'));
             });
             Route::group(['prefix' => 'cart'], function () {
@@ -119,11 +129,6 @@ Route::group(['namespace' => 'Admin'], function () {
         });
 
         Route::group(['prefix' => 'products'], function () {
-
-            //new APIs routes
-            Route::get('/productlist', ['as' => 'admin.apiprod.list', 'uses' => 'ApiProductsController@index']);
-            Route::post('/addproduct', ['as' => 'admin.apiprod.add', 'uses' => 'ApiProductsController@addProduct']);
-            //end
 
             Route::get('/', ['as' => 'admin.apiprod.view', 'uses' => 'ApiProductController@index']);
             Route::get('/categoryListing', ['as' => 'admin.apiprod.add', 'uses' => 'ApiProductController@categoryListing']);
