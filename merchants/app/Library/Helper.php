@@ -1045,15 +1045,15 @@ class Helper
     }
 
     public static function socialShareIcon($data)
-    {
+    {//<a class="a2a_button_pinterest"></a>
+    //<a class="a2a_button_email"></a>
         $urls = '
-<div class="a2a_kit a2a_kit_size_32 a2a_default_style" data-a2a-url=' . $data['url'] . ' data-a2a-title="{{$prdimg->short_desc}}">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style" data-a2a-url=' . $data['url'] . ' data-a2a-title="">
 <a class="socialShareFb"><span class="a2a_svg a2a_s__default a2a_s_facebook" style="background-color: rgb(59, 89, 152);"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path fill="#FFF" d="M17.78 27.5V17.008h3.522l.527-4.09h-4.05v-2.61c0-1.182.33-1.99 2.023-1.99h2.166V4.66c-.375-.05-1.66-.16-3.155-.16-3.123 0-5.26 1.905-5.26 5.405v3.016h-3.53v4.09h3.53V27.5h4.223z"></path></svg></span></a>
 <a class="a2a_button_twitter"></a>
 <a class="a2a_button_google_plus"></a>
 <a class="a2a_button_linkedin"></a>
-<a class="a2a_button_pinterest"></a>
-<a class="a2a_button_email"></a>
+
 </div>';
         return $urls;
     }

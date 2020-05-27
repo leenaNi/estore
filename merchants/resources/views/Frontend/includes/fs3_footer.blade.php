@@ -97,12 +97,11 @@
 										@else
 										<address class="nobottommargin">
 											<abbr><strong>Address:</strong></abbr><br>
-											C/504,Neelkanth Business Park, Near Vidyavihar Station, Vidyavihar West, Mumbai 400086
-											. <br>
+											C/501, Chocolate Building , Vanila Street Mumbai 400123. <br>
 										</address>
 										<br>
-										<abbr><strong>Phone: 89989825658</strong></abbr> <br>
-										<abbr><strong>Email: <a href="mailto:support@inficart.com">support@inficart.com</a></strong></abbr>
+										<abbr><strong>Phone: 09000012345</strong></abbr> <br>
+										<abbr><strong>Email: <a href="mailto:support@inficart.com">abc@gmail.com</a></strong></abbr>
 										@endif
 										<!--<p>Neelkanth Business Park, Near Vidyavihar Station, Vidyavihar West, Mumbai 400086</p>-->
 										<div class="si-share clearfix">
