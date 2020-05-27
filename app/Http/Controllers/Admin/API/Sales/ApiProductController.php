@@ -310,7 +310,7 @@ class ApiProductController extends Controller
             ->select('store_categories.id','c.category')
             ->get();
 
-            $textAmt = app('App\Http\Controllers\Admin\ApiProductsController')->calTax($product, $prifix);
+            $textAmt = $this->calTax($product, $prifix);
             $product->taxAmt = $textAmt['tax_amt'] ? $textAmt['tax_amt'] : 0;
             $product->taxRate = $textAmt['rate'] ? $textAmt['rate'] : 0;
             if ($product->is_tax == 2) {
@@ -355,7 +355,7 @@ class ApiProductController extends Controller
                         $prd = $prd->where("prod_type", 1);
                     }
 
-                    $textAmt = app('App\Http\Controllers\Admin\ApiProductsController')->calTax($prd, $prifix);
+                    $textAmt = $this->calTax($prd, $prifix);
                     $prd->taxAmt = $textAmt['tax_amt'] ? $textAmt['tax_amt'] : 0;
                     $prd->taxRate = $textAmt['rate'] ? $textAmt['rate'] : 0;
                     if ($prd->is_tax == 2) {
