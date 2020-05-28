@@ -83,6 +83,67 @@ class ApiCategoryController extends Controller
         }
     }
 
+    public function addMasterCategory(){
+        $cat_id = Input::get('categoryId');
+        if($cat_id){
+            $category = DB::table('categories')->where('id',$cat_id)->first();
+            $url_key = $category->url_key;
+            $parent_id = $category->parent_id;
+
+            $marchantId = Session::get("merchantId");
+            //$merchant = Merchant::find($marchantId)->getstores()->first();
+            $storeId = DB::table('stores')->where('merchant_id',$marchantId)->pluck('id');
+
+            $cat_exists = DB::table('store_categories')->where(['store_id'=>$storeId[0],'category_id'=>$cat_id])->first();
+            
+            if($cat_exists != null){
+                return response()->json(["status" => 0, 'msg' => 'Category Already Added']);
+            }else{
+                if($parent_id == null){
+                    $parentCat = DB::table('categories')->where('id',$cat_id)->first();
+                    $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
+                    $lft = $store_Cat->rgt + 1;
+                    $rgt = $lft + 1;
+                    $ParentCatId = DB::table('store_categories')->insertGetId(
+                        ['category_id' => $parentCat->id, 'is_nav' => 1,'url_key'=>$url_key,'parent_id'=>null,'lft'=>$lft,'rgt'=>$rgt,'depth'=>0,'status'=>0,'store_id'=>$storeId[0]]
+                    );
+                    $allcategory = DB::table('categories')->where('parent_id',$cat_id)->get();
+                    foreach($allcategory as $cat){
+                        $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
+                        $lft = $store_Cat->rgt + 1;
+                        $rgt = $lft + 1;
+                        $newcategory = DB::table('store_categories')->insert(
+                            ['category_id' => $cat->id, 'is_nav' => 1,'url_key'=>$cat->url_key,'parent_id'=>$ParentCatId,'lft'=>$lft,'rgt'=>$rgt,'depth'=>1,'status'=>0,'store_id'=>$storeId[0]]
+                        );
+                    }
+                }else{
+                    $parent_exists = DB::table('store_categories')->where(['store_id'=>$storeId[0],'category_id'=>$parent_id])->first();
+                    if($parent_exists == null){
+                        $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
+                        $lft = $store_Cat->rgt + 1;
+                        $rgt = $lft + 1;
+                        $ParentCatId = DB::table('store_categories')->insertGetId(
+                            ['category_id' => $parent_id, 'is_nav' => 1,'url_key'=>$url_key,'parent_id'=>null,'lft'=>$lft,'rgt'=>$rgt,'depth'=>0,'status'=>0,'store_id'=>$storeId[0]]
+                        );
+                    }else{
+                        $ParentCatId = $parent_exists->id;
+                    }
+                        $store_Cat = DB::table('store_categories')->where('store_id',$storeId[0])->orderBy('id','desc')->first();
+                        $lft = $store_Cat->rgt + 1;
+                        $rgt = $lft + 1;
+                        $newcategory = DB::table('store_categories')->insert(
+                            ['category_id' => $cat_id, 'is_nav' => 1,'url_key'=>$url_key,'parent_id'=>$ParentCatId,'lft'=>$lft,'rgt'=>$rgt,'depth'=>1,'status'=>0,'store_id'=>$storeId[0]]
+                        );
+                        
+                }
+                return response()->json(["status" => 1, 'msg' => 'Category Added from master categories']);
+            }
+        }else{
+            return response()->json(["status" => 0, 'msg' => 'Invalid Category']);
+        }
+        
+    }
+
     public function subCategory(){
         $cat_id = Input::get('categoryId');
         if($cat_id){
