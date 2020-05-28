@@ -1064,8 +1064,9 @@ class Helper
 
         $codFeature = GeneralSetting::where('url_key', 'cod')->first()->status;
         $dbPincodes = Pincode::where("pincode", $postcode)->where('status', 1)->first();
+        dd($dbPincodes);
         if ($pincodeFeature == 1 && $codFeature == 1) {
-            if (is_array($dbPincodes) && count($dbPincodes) > 0) {
+            if ($dbPincodes != null) {
                 if ($dbPincodes->cod_status == 1) {
                     return 1; //cod vailable
                 } else {
@@ -1075,7 +1076,7 @@ class Helper
                 return 3; //pincode not available
             }
         } else if ($pincodeFeature == 1 && $codFeature == 0) {
-            if (count($dbPincodes) > 0) {
+            if ($dbPincodes != null) {
                 return 5; //pincode available
             } else {
                 return 3; //pincode not available
