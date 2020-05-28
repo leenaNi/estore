@@ -88,6 +88,7 @@ class LoginController extends Controller
         //echo "<pre> user details::";
         //print_r($userDetails);
         if (!empty($userDetails)) {
+            Auth::login($userDetails);
             //if (Auth::login($userData, true)) {
 
             $user = User::with('roles')->find($userDetails->id);
