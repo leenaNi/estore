@@ -235,6 +235,18 @@ class ApiProductController extends Controller
  
          $selectdCat = DB::table('has_categories')->where("prod_id", $products->id)->get();
          $products->categories = $selectdCat;
+         
+         $textAmt = $this->calTax($products, $prifix);
+         $products->taxAmt = $textAmt['tax_amt'] ? $textAmt['tax_amt'] : 0;
+         $products->taxRate = $textAmt['rate'] ? $textAmt['rate'] : 0;
+         if ($products->is_tax == 2) {
+             $products->subtotal = $products->taxAmt + $products->selling_price;
+         } else {
+             $products->subtotal = $products->selling_price;
+         }
+         $products->categories = DB::table('has_categories')->where("prod_id", $products->id)->select("cat_id")->get()->toArray();
+         $products->prodImage = "http://" . $merchant->url_key . '.' . $_SERVER['HTTP_HOST'] . '/uploads/catalog/products/' . @DB::table('catalog_images')->where("image_mode", 1)->where('catalog_id', $products->id)->first()->filename;
+
          if ($products->prod_type == 1) {
              $data = ["status" => 1, "msg" => "Product Added successfully.", 'data' => $products];
              //$url = "admin.apiprod.view";
@@ -250,8 +262,6 @@ class ApiProductController extends Controller
          }
  
          return response()->json($data);
-         // $viewname = Config('constants.adminApiProductView') . '.index';
-         // return Helper::returnView($viewname, $data, $url);
      }
  
      public function configProdAttrs($prodId) {
