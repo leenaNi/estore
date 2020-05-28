@@ -27,6 +27,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 Route::get('/mastercategory', ['as' => 'admin.categories.masterCategories', 'uses' => 'API\Sales\ApiCategoryController@masterCategories']);
                 Route::get('/mastersubcategory', ['as' => 'admin.categories.masterSubCategory', 'uses' => 'API\Sales\ApiCategoryController@masterSubCategory']);
                 Route::post('/requestnewcat', ['as' => 'admin.categories.reqcat', 'uses' => 'API\Sales\ApiCategoryController@requestNewCategory']);
+                Route::post('/addmastercat', ['as' => 'admin.categories.addMasterCategory', 'uses' => 'API\Sales\ApiCategoryController@addMasterCategory']);
             });
             
             Route::group(['prefix' => 'products'], function () {

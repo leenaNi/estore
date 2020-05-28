@@ -489,7 +489,7 @@ class ProductController extends Controller {
               
                 $prods = Product::where('is_trending', 1)->where('status', 1);
                 if ($this->feature['products-with-variants'] == 0) {
-                    $prods = $prods->where('prod_type', 1)->where('stock' > 0)->get();
+                    $prods = $prods->where('prod_type', 1)->where('stock','>', 0)->get();
                 } else {
                     $prods = $prods->get();
                 }
