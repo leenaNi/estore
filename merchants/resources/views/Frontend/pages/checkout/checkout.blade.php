@@ -720,7 +720,7 @@
       
         if($("#same_as_billing").prop('checked') == true)
         {
-            $(".newAddFormDiv").show();
+            //$(".newAddFormDiv").show();
             $("#sfirstname").val(fname);
             $("#slastname").val(lname);
             $("#saddress1").val(address1);
