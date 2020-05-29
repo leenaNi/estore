@@ -709,9 +709,6 @@
 
     $(".bill_add_btn").click(function(){
     
-    // function copyDate()
-    // {
-        alert('ffiii');
        var fname=$("#bfirstname").val();
        var lname=$("#blastname").val();
        var address1=$("#baddress1").val();
