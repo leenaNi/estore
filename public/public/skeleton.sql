@@ -1,4 +1,5 @@
 INSERT INTO `additional_charges` (`id`, `name`, `label`, `type`, `rate`, `status`, `min_order_amt`, `store_id`) VALUES
+INSERT INTO `additional_charges` (`id`, `name`, `label`, `type`, `rate`, `status`, `min_order_amt`, `store_id`) VALUES
 (NULL, 'Service Charges', 'Service Charges', 2, 10, 0, 1000, tblprfx_),
 (NULL, 'Transportation Charges', 'Transportation Charges', 1, 100, 0, 500, tblprfx_);
 INSERT INTO `cities` (`id`, `state_id`, `city_name`, `delivary_status`, `cod_status`, `status`, `store_id`) VALUES
@@ -70,6 +71,7 @@ INSERT INTO `general_setting` (`id`, `name`, `status`, `details`, `url_key`, `ty
 (NULL, 'Do you want to set debug option true?', 0, '', 'debug-option', 0, 70, 0, 0, 1,'', tblprfx_),
 (NULL, 'Would you want to add discount manually while placing order on the app?', 0, '', 'manual-discount', 1, 32, 1, 1, 2,'This feature allows the users and store owner to add manual discount while placing the order on the checkout page.', tblprfx_),
 (NULL, 'Would you like to use the Return Order facility?', 0, '', 'return-product', 1, 34, 1, 1, 2,'This feature allows the customer to return their delivered order by mentioning the reason why they wish to return the order. They can only return if this feature is marked Yes', tblprfx_),
+(NULL, 'Would you like to use the Subscription Feature?', 0, '', 'subscription', 1, 34, 1, 1, 2,'This feature allows the customer to specific item where customer will get notification (After selected period) to purchase the same item. If this feature is marked Yes', tblprfx_),
 (NULL, 'Do you want to use Courier Service to deliver products to the customers?', 0, 'courier services like fedex deliveru blue dart', 'courier-services', 1, NULL, 0, 0, 2,'Mark this features ‘Yes’ if you wish to use the courier service synced with the platform. Mark it ‘No’ if you wish to courier goods by yourself.', tblprfx_),
 (NULL, 'question_category_id', 1, '', 'question_category_id', 1, 21, 1, 0, 0,'', tblprfx_),
 (NULL, 'Would you like to use "Additional Charges" feature?', 0, '', 'additional-charge', 0, 95, 1, 0, 2,'The Additional Charges feature allows you to create your own custom charges which will be applied against every order. For example: Transport Charges, Handling Charges etc. These charges can be fixed or in percentage. Additional Charges feature is under Orders in the left menu.', tblprfx_),

@@ -19,11 +19,11 @@ use App\Models\HasProducts;
 use App\Models\Loyalty;
 use App\Models\MallProducts;
 use App\Models\Order;
+use App\Models\OrderStatus;
 use App\Models\Pincode;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Zone;
-use App\Models\OrderStatus;
 use Auth;
 use Cart;
 use Config;
@@ -31,36 +31,36 @@ use Crypt;
 use Hash;
 use Input;
 use Mail;
+use Redirect;
 use Route;
 use Session;
 use stdClass;
-use Redirect;
 
 class CheckoutController extends Controller
 {
 
     public function index()
     {
-        
+
         $cartvalue = Session::get('cart');
         $sum = 0;
-        foreach($cartvalue['shopping'] as $value){
+        foreach ($cartvalue['shopping'] as $value) {
 
-            $price = $value->price*$value->qty;
+            $price = $value->price * $value->qty;
             $sum = $sum + $price;
 
         }
-        $totalcart_value =  $sum;
+        $totalcart_value = $sum;
         $is_mincart = GeneralSetting::where('url_key', 'min-cart-value-rule')->where("status", 1)->first();
-        if($is_mincart){
-        $details = json_decode($is_mincart->details, true);
-        $charges= $details['charges'];
-        if($charges){
-            if ($charges > $totalcart_value) {
-                Session::flash('message', "Minimum cart value should be ".$charges." Rs.");
-                return Redirect::back();
-            } 
-        }
+        if ($is_mincart) {
+            $details = json_decode($is_mincart->details, true);
+            $charges = $details['charges'];
+            if ($charges) {
+                if ($charges > $totalcart_value) {
+                    Session::flash('message', "Minimum cart value should be " . $charges . " Rs.");
+                    return Redirect::back();
+                }
+            }
         }
         $checkGuestCheckoutEnabled = GeneralSetting::where("url_key", "guest-checkout")->where("status", 1)->get();
 
@@ -639,7 +639,7 @@ class CheckoutController extends Controller
         $toPayment['ebsKey'] = @$ebskey;
         $toPayment['ebsAccountId'] = @$account_id;
         if (Session::get('pay_amt') > 0) {
-//            $toPayment['frmAction'] = route('getCityPay');
+        // $toPayment['frmAction'] = route('getCityPay');
             $toPayment['frmAction'] = route('order_cash_on_delivery');
         } else {
             $toPayment['frmAction'] = route('order_cash_on_delivery');
@@ -873,8 +873,9 @@ class CheckoutController extends Controller
     public function chk_cart_inventory()
     {
         $stock_status = GeneralSetting::where('url_key', 'stock')->first()->status;
-//        if ($stock_status == 0)
-        //            return "valid";
+        if ($stock_status == 0) {
+            return "valid";
+        }
 
         $getCart = Cart::instance("shopping")->content();
         $cartStockCheck = [];
@@ -2093,7 +2094,7 @@ foreach ($_POST as $a => $b) {
         $additional_charge_json = AdditionalCharge::ApplyAdditionalCharge($cartAmount);
         $order->additional_charge = $additional_charge_json;
         //$orderstatus = OrderStatus::where(['sort_order'=>1,'store_id'=>Session::get('store_id')])->first();
-        $orderstatus = OrderStatus::where(['is_default'=>1,'store_id'=>Session::get('store_id')])->first();
+        $orderstatus = OrderStatus::where(['is_default' => 1, 'store_id' => Session::get('store_id')])->first();
         // $order->order_amt = Cart::instance('shopping')->total() * Session::get("currency_val");
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
@@ -2102,8 +2103,12 @@ foreach ($_POST as $a => $b) {
         if ($des) {
             $order->description = $des;
         }
-
+        // ALTER TABLE `orders` ADD `is_subscribed` TINYINT NOT NULL COMMENT '1 for subscribed, default 0' AFTER `thana`;
         $order->currency_id = Session::get("currency_id");
+        if($feature['subscription']) {
+            $order->is_subscribed = (Session::get("subscription_period")) ? 1 : 0;
+            $order->subscription_period = Session::get("subscription_period");
+        }
         $order->currency_value = Session::get("currency_val");
         $order->cart = json_encode(Cart::instance('shopping')->content());
         $order->order_status = $orderstatus->id;
@@ -2237,13 +2242,10 @@ foreach ($_POST as $a => $b) {
                     $total_tax[] = $prod_tax;
                 }
             }
-            
-            if(count($total_tax) > 0)
-            {
+
+            if (count($total_tax) > 0) {
                 $taxval = json_encode($total_tax);
-            }
-            else
-            {
+            } else {
                 $taxval = count($total_tax);
             }
             $getdisc = ($cart->options->disc + $cart->options->wallet_disc + $cart->options->voucher_disc + $cart->options->referral_disc + $cart->options->user_disc);
@@ -2268,16 +2270,14 @@ foreach ($_POST as $a => $b) {
             //                $cart_ids[$cart->rowid] = array_merge($cart_ids[$cart->rowid], $vendor);
             //            }
             if ($cart->options->has('sub_prod')) {
-                if(($cart->options->sub_prod != '') || ($cart->options->sub_prod > 0))
-                {
+                if (($cart->options->sub_prod != '') || ($cart->options->sub_prod > 0)) {
                     $cart_ids[$cart->rowid]["sub_prod_id"] = $cart->options->sub_prod;
                 }
-                
+
                 $proddetails = [];
                 $prddataS = Product::find($cart->options->sub_prod);
-                   
-                if(!empty($prddataS))
-                {
+
+                if (!empty($prddataS)) {
                     $proddetails['id'] = $prddataS->id;
                     $proddetails['name'] = $prddataS->product;
                     $proddetails['image'] = $cart->options->image;
@@ -2285,12 +2285,12 @@ foreach ($_POST as $a => $b) {
                     $proddetails['qty'] = $cart->qty;
                     $proddetails['subtotal'] = $subtotal;
                     $proddetails['is_cod'] = $prddataS->is_cod;
-                    
+
                     $cart_ids[$cart->rowid]["product_details"] = json_encode($proddetails);
                     $date = $cart->options->eNoOfDaysAllowed;
                     $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ $date days"));
                     $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
-    
+
                     if ($prddataS->is_stock == 1) {
                         $prddataS->stock = $prddataS->stock - $cart->qty;
                         if ($prddataS->is_share_on_mall == 1) {
@@ -2300,19 +2300,17 @@ foreach ($_POST as $a => $b) {
                         }
                         $prddataS->update();
                     }
-    
+
                     if ($prddataS->stock <= $stockLimit['stocklimit'] && $prddataS->is_stock == 1) {
                         $this->AdminStockAlert($prddataS->id);
                     }
-                }
-                else
-                {
+                } else {
                     $cart_ids[$cart->rowid]["product_details"] = '';
                     $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d');
                     $cart_ids[$cart->rowid]["prod_type"] = 0;
-    
+
                 }
-               
+
             } else if ($cart->options->has('combos')) {
                 $sub_prd_ids = [];
                 foreach ($cart->options->combos as $key => $val) {
@@ -2339,18 +2337,16 @@ foreach ($_POST as $a => $b) {
                         }
                     }
                 }
-                if(count($sub_prd_ids) > 0)
-                {
+                if (count($sub_prd_ids) > 0) {
                     $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
                 } else {
                     $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
                 }
                 $cart_ids[$cart->rowid]["sub_prod_id"] = json_encode($sub_prd_ids);
                 $cart_ids[$cart->rowid]["prod_type"] = $cart->options->prod_type;
-                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ ".$cart->options->eNoOfDaysAllowed." days"));
+                $cart_ids[$cart->rowid]["eTillDownload"] = date('Y-m-d', strtotime("+ " . $cart->options->eNoOfDaysAllowed . " days"));
                 $cart_ids[$cart->rowid]["product_details"] = '';
-                
-                
+
             } else {
                 $proddetailsp = [];
                 $prddataSp = Product::find($cart->id);
@@ -2387,7 +2383,7 @@ foreach ($_POST as $a => $b) {
             // DB::table('has_products')->connection('mysql2')->insert($cart_ids);
             //  $order->products()->attach($cart->id, $cart_ids[$cart->id]);
         }
-        
+
         HasProducts::insert($cart_ids);
         //  $this->orderSuccess();
     }
@@ -2481,7 +2477,6 @@ foreach ($_POST as $a => $b) {
     // For order pages
     public function orderSuccess()
     {
-
         if (Session::get('orderId')) {
             $order = Order::find(Session::get('orderId'));
             $coupon = Coupon::find($order->coupon_used);
@@ -2497,6 +2492,7 @@ foreach ($_POST as $a => $b) {
             Session::forget('CatTypeId');
             Session::forget('codCharges');
             Session::forget('individualDiscountPercent');
+            Session::forget("subscription_period")
             Cart::instance("shopping")->destroy();
             return view(Config('constants.frontCheckoutView') . '.success', compact('order', 'coupon'));
             // return view('Frontend.pages.checkout.success', compact('order', 'coupon'));

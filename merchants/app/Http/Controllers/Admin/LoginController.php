@@ -73,7 +73,7 @@ class LoginController extends Controller
     }
 
     public function chk_admin_user()
-    {   
+    {
         //echo "inside fun";
         // DB::enableQueryLog(); // Enable query log
         $input = Input::get("phone");
@@ -89,7 +89,7 @@ class LoginController extends Controller
         //print_r($userDetails);
         if (!empty($userDetails)) {
             //if (Auth::login($userData, true)) {
-           
+
             $user = User::with('roles')->find($userDetails->id);
             //echo "<pre> users::";
             //print_r($user);
@@ -102,7 +102,7 @@ class LoginController extends Controller
             $roles = $user->roles()->first();
             $r = Role::find($roles->id);
             $per = $r->perms()->get()->toArray();
-            
+
             $approvalId = Session::get('approval_id');
             //echo "approval id::".$approvalId;
             if ($approvalId > 0) {
@@ -113,7 +113,7 @@ class LoginController extends Controller
                     $curRoute = @$per[0]['name'];
                     return redirect()->route($curRoute);
                 } else {
-                    if(env('IS_INDIVIDUAL_STORE')) {
+                    if (env('IS_INDIVIDUAL_STORE')) {
                         return redirect()->route('admin.dashboard');
                     } else {
                         //return redirect()->route('admin.home.view');

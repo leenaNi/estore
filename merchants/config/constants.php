@@ -103,6 +103,7 @@ if (env('PROJECT_TYPE') == 'cartini') {
         'adminDistCssTempPath' => 'https://d2102t1lty3x1n.cloudfront.net/Admin/css',
         // 'adminDistCssTempPath' => asset('css'),
         'adminDistributorView' => 'Admin.pages.add_distributor',
+        'adminMiscellaneousSubscriptionView' => 'Admin.pages.miscellaneous.subscription',
     ];
 } else {
     $adminConstants = [
@@ -211,6 +212,7 @@ if (env('PROJECT_TYPE') == 'cartini') {
         // 'adminDistCssTempPath' => asset('css'),
         'adminDistCssTempPath' => 'https://d2102t1lty3x1n.cloudfront.net/Admin/css',
         'adminDistributorView' => 'Admin.pages.add_distributor',
+        'adminMiscellaneousSubscriptionView' => 'Admin.pages.miscellaneous.subscription',
     ];
 }
 
@@ -258,5 +260,5 @@ if (env('PROJECT_TYPE') == 'cartini') {
     ];
 
 }
-return array_merge($frontendConstants, $adminConstants); 
-// return  ['adminStorePath' => storage_path() . '/'];
+return array_merge($frontendConstants, $adminConstants);
+// return ['adminStorePath' => storage_path() . '/'];

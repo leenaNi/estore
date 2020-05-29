@@ -595,6 +595,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['web
                     Route::any('/editReferral', ['as' => 'admin.referralProgram.editReferral', 'uses' => 'MiscellaneousController@editReferral']);
                     Route::any('/saveReferral', ['as' => 'admin.referralProgram.saveReferral', 'uses' => 'MiscellaneousController@saveReferral']);
                 });
+                Route::group(['prefix' => 'subscriptionProgram', 'middlewareGroups' => ['web']], function () {
+                    Route::any('/', ['as' => 'admin.subscriptionProgram.view', 'uses' => 'MiscellaneousController@subscriptionProgram']);
+                    Route::any('/editSubscription', ['as' => 'admin.subscriptionProgram.editSubscription', 'uses' => 'MiscellaneousController@editSubscription']);
+                    Route::any('/saveSubscription', ['as' => 'admin.subscriptionProgram.saveSubscription', 'uses' => 'MiscellaneousController@saveSubscription']);
+                });
                 Route::group(['prefix' => 'EmailSetting', 'middlewareGroups' => ['web']], function () {
                     Route::get('/', ['as' => 'admin.emailSetting.view', 'uses' => 'MiscellaneousController@emailSetting']);
                     Route::get('/add', ['as' => 'admin.emailSetting.add', 'uses' => 'MiscellaneousController@emailSettingAdd']);
