@@ -46,10 +46,10 @@ return [
 //    'redirect' => 'https://veeblock.com/',
 //],
 //    
-                'facebook' => [
-    'client_id' => '644176742612237',
-    'client_secret' => '1c7ae970ab45ff8d2d000aecf497bef5',
-    'redirect' => 'veeblock.com',
+'facebook' => [
+    'client_id' => env('FACEBOOK_CLIENT_ID'),
+    'client_secret' =>  env('FACEBOOK_CLIENT_SECRET'),
+    'redirect' => env('FACEBOOK_CALLBACK_URL'),
 ],
     
   'twitter' => [

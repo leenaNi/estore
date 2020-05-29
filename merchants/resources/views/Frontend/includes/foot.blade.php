@@ -781,7 +781,7 @@ save.addEventListener('click', function (e) {
         var img = $(".fbShareImg").val();
         var desc = $(".fbShareDesc").html();
         var title = $(".fbShareTitle").val();
-        FB.init({appId: '644176742612237', status: true, cookie: true});
+        FB.init({appId: env('FACEBOOK_CLIENT_ID'), status: true, cookie: true});
         FB.ui({
             method: 'share_open_graph',
             action_type: 'og.shares',
