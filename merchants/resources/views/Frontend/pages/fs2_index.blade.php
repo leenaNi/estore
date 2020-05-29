@@ -104,10 +104,6 @@
 
                             <a ng-if="quickproduct.prodImage == ''" href="javascript:void"><img src="{{ asset(Config('constants.defaultImgPath').'default-product.jpg')}}" alt="default image"></a> 
 
-                            <div class="product-overlay2">
-                                <a href="{{ route('home')}}/[[quickproduct.url_key]]" class="center-icon"><i class="icon-line-plus"></i></a>
-
-                            </div>
                         </div>
                         <div class="product-desc product-desc-transparent">
                             <div class="product-title"><h3><a href="{{ route('home')}}/[[quickproduct.url_key]]">[[quickproduct.product]]</a></h3></div>
