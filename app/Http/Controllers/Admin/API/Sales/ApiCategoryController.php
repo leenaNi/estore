@@ -176,9 +176,14 @@ class ApiCategoryController extends Controller
         $marchantId = Session::get("merchantId");
         $categoryName = Input::get('categoryName');
         $categoryId = filter_var(Input::get('categoryId'), FILTER_SANITIZE_STRING);
+        
         if($categoryName != null && $categoryId != null){
-            $cat = DB::table('store_categories')->find($categoryId);
-            $parentId = $cat->category_id;
+            if($categoryId == "0"){
+                $parentId = 0;
+            }else{
+                $cat = DB::table('store_categories')->find($categoryId);
+                $parentId = $cat->category_id;
+            }
             $newCategory = DB::table('temp_categories')->insert([
                 "name" => $categoryName,
                 "parent_id" => $parentId, 
