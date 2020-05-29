@@ -80,7 +80,7 @@
                                                 {!! Form::label('Brand', 'Brand',['class'=>'pull-left']) !!}
                                                  <span class="red-astrik pull-left ml-2">*</span>
                                                 {{-- {!! Form::select('brand_id',$brandList,null, ["class"=>'form-control' ,"placeholder"=>'Select Brand']) !!} --}}
-                                                <select class="form-control" name="brand_id" id="brand_id" required>
+                                                <select class="form-control select2" name="brand_id" id="brand_id" required>
                                                      @foreach($brandList as $brandId=> $brandName)
                                                         @if($brandId == $prod->brand_id)
                                                             <option value="{{$brandId}}" selected>{{$brandName}}</option>
@@ -432,9 +432,6 @@
 <script src="{{ Config('constants.adminDistJsPath').'/tag-it.min.js' }}"></script>
 
 <script>
-
-
-
   CKEDITOR.replace( 'editor1' );
   @if($is_desc->status)
   CKEDITOR.replace( 'editor2' );
