@@ -73,18 +73,12 @@
                                                 {!! Form::text('product',null, ["class"=>'form-control validate[required]' ,"placeholder"=>'Enter Product Name']) !!}
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">                       
-                                                {!! Form::label('product Code', 'Product Code ',['class'=>'pull-left']) !!}
-
-                                                {!! Form::text('product_code',null, ["class"=>'form-control ProdC' ,"placeholder"=>'Enter Product Code']) !!}
-                                                <p style="color: red;" class="errorPrdCode"></p>
-                                            </div>
-                                        </div>
+                                       
                                         <div class="clearfix"></div>
                                         <div class="col-md-3">
                                             <div class="form-group">                       
-                                                {!! Form::label('Brand *', 'Brand *',['class'=>'pull-left']) !!}
+                                                {!! Form::label('Brand', 'Brand',['class'=>'pull-left']) !!}
+                                                 <span class="red-astrik pull-left ml-2">*</span>
                                                 {{-- {!! Form::select('brand_id',$brandList,null, ["class"=>'form-control' ,"placeholder"=>'Select Brand']) !!} --}}
                                                 <select class="form-control" name="brand_id" id="brand_id" required>
                                                      @foreach($brandList as $brandId=> $brandName)
@@ -96,6 +90,14 @@
                                                     @endforeach 
                                                 </select>
                                                 <p style="color: red;" class="errorBrandId"></p>
+                                            </div>
+                                        </div>
+                                         <div class="col-md-3">
+                                            <div class="form-group">                       
+                                                {!! Form::label('product Code', 'Product Code ',['class'=>'pull-left']) !!}
+
+                                                {!! Form::text('product_code',null, ["class"=>'form-control ProdC' ,"placeholder"=>'Enter Product Code']) !!}
+                                                <p style="color: red;" class="errorPrdCode"></p>
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>
