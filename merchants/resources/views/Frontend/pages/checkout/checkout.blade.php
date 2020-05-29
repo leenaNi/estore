@@ -141,25 +141,7 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-md-1 col-sm-1 col-xs-12 hidden-xs">
-                                    <div class="or-vertical"></div>
-                                    <div class="or-text-vertical text-center">OR</div>
-                                </div>
-                                <div class="or_horizantal"></div>
-                                <div class="col-md-5 col-sm-3 col-xs-12">
-                                    <span class="oricon hidden-sm hidden-xs"></span>
-                                    <div class="social_media_login">
-                                        <?php // route('home')}}/login/facebook/{{Crypt::encrypt(Request::url())?>
-                                        <a id="fbLink"  class="col-md-12 col-sm-6 col-xs-12 fb_login_btn"  onclick="fbLogin()">
-                                            <img src="{{ Config('constants.frontendPublicImgPath').'/fb_login.jpg'}}" class="fb_login_btn"></img>
-                                        </a>
-                                        <?php //route('home')}}/login/google/{{Crypt::encrypt(Request::url())?>
-                                        <a  href="{{route('home')}}/login/google/{{Crypt::encrypt(Request::url())}}"   class="col-md-12 col-sm-6 col-xs-12">
-                                            <img src="{{Config('constants.frontendPublicImgPath').'/g_login.jpg'}}" class="g_login_btn"></img>
-                                        </a>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>
