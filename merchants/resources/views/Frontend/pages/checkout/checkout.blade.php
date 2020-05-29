@@ -141,25 +141,7 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-md-1 col-sm-1 col-xs-12 hidden-xs">
-                                    <div class="or-vertical"></div>
-                                    <div class="or-text-vertical text-center">OR</div>
-                                </div>
-                                <div class="or_horizantal"></div>
-                                <div class="col-md-5 col-sm-3 col-xs-12">
-                                    <span class="oricon hidden-sm hidden-xs"></span>
-                                    <div class="social_media_login">
-                                        <?php // route('home')}}/login/facebook/{{Crypt::encrypt(Request::url())?>
-                                        <a id="fbLink"  class="col-md-12 col-sm-6 col-xs-12 fb_login_btn"  onclick="fbLogin()">
-                                            <img src="{{ Config('constants.frontendPublicImgPath').'/fb_login.jpg'}}" class="fb_login_btn"></img>
-                                        </a>
-                                        <?php //route('home')}}/login/google/{{Crypt::encrypt(Request::url())?>
-                                        <a  href="{{route('home')}}/login/google/{{Crypt::encrypt(Request::url())}}"   class="col-md-12 col-sm-6 col-xs-12">
-                                            <img src="{{Config('constants.frontendPublicImgPath').'/g_login.jpg'}}" class="g_login_btn"></img>
-                                        </a>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>
@@ -285,7 +267,7 @@
                                     </div>
                                     <div class="hidden-lg hidden-md" style="float:left; width:100%;"><br></div>
                                     <div class="col-md-12 form-group continue-cancel-btnbox mobPadd0-15">     
-                                        <input type="submit" ng-click="billAddressContinue()" class="button new_user_btn toBillSummary continueStep" data-continue="shippingPanel" value="CONTINUE">
+                                        <input type="submit" ng-click="billAddressContinue()" class="button bill_add_btn  continueStep" data-continue="shippingPanel" value="CONTINUE">
                                         <a href="{{ route('cart')}}" class="button new_user_btn pull-right">BACK</a>    
 
                                     </div>
@@ -307,7 +289,8 @@
                         <div class="panel-body">
                             <div class="shpng_addrs_col">
 <div ng-if="addressData && !addressData.length">
-                                <input type="checkbox" onclick="copyDate()" id="same_as_billing" name="same_address">
+                                <input type="checkbox" id="same_as_billing" name="same_address" checked>
+                                <!-- <input type="checkbox" onclick="copyDate()" id="same_as_billing" name="same_address"> -->
                                 <label>Same as billing address</label>
                             </div>
                                 <h5>SELECT ADDRESS</h5>
@@ -706,10 +689,8 @@
         $("#internationallyProdPopUp").modal("hide");
     }
 
-   
-    function copyDate()
-    {
-        //alert('ffiii');
+    $(".bill_add_btn").click(function(){
+    
        var fname=$("#bfirstname").val();
        var lname=$("#blastname").val();
        var address1=$("#baddress1").val();
@@ -721,7 +702,7 @@
       
         if($("#same_as_billing").prop('checked') == true)
         {
-            $(".newAddFormDiv").show();
+            //$(".newAddFormDiv").show();
             $("#sfirstname").val(fname);
             $("#slastname").val(lname);
             $("#saddress1").val(address1);
@@ -735,7 +716,7 @@
             $(".newAddFormDiv").hide();
        }
          
-    }
+    });
 
     $(document).ready(function () {
 

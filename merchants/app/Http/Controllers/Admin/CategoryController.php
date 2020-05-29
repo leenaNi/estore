@@ -122,7 +122,7 @@ class CategoryController extends Controller
 
     public function save()
     {
-        // dd(Input::all());
+         //dd(Input::all());
         if (env('IS_INDIVIDUAL_STORE')) {
             if(Input::get('id') == null){
                 DB::table('categories')->INSERT([

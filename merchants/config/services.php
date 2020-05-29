@@ -46,10 +46,13 @@ return [
 //    'redirect' => 'https://veeblock.com/',
 //],
 //    
-                'facebook' => [
-    'client_id' => '644176742612237',
-    'client_secret' => '1c7ae970ab45ff8d2d000aecf497bef5',
-    'redirect' => 'veeblock.com',
+'facebook' => [
+    // 'client_id' => env('FACEBOOK_CLIENT_ID'),
+    // 'client_secret' =>  env('FACEBOOK_CLIENT_SECRET'),
+    // 'redirect' => env('FACEBOOK_CALLBACK_URL'), 
+    'client_id' => '1384415988395394',
+    'client_secret' =>  '4d5fea9dca337b210e232aebaf9abe2b',
+    'redirect' => 'https://estorifi.com/',
 ],
     
   'twitter' => [

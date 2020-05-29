@@ -213,7 +213,8 @@ $(document).keypress(function (e) {
                         cropBoxResizable: true,
                         zoom: -0.1,
                         built: function () {
-                            $toCrop.cropper("setCropBoxData", {width: "170", height: "100"});
+                           // $toCrop.cropper("setCropBoxData", {width: "170", height: "100"});
+                            $toCrop.cropper("setCropBoxData", {width: "510", height: "300"});
                         }
                     });
                 }
@@ -246,7 +247,8 @@ $(document).keypress(function (e) {
                         formdata = new FormData(form[0]);
                     }
                     var ImageURL = cropper.getCroppedCanvas({
-                        width: 170 // input value
+                        //width: 170 // input value
+                        width: 510 // input value
                     }).toDataURL();
                     formdata.append("logo_img_url", ImageURL);
                     $.ajax({

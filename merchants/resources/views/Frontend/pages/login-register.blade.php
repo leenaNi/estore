@@ -23,8 +23,8 @@
         <div class="container clearfix">
             <div class="tabs divcenter tabs-justify nobottommargin clearfix" id="tab-login-register" style="max-width: 500px;">
                 <div class='alert alert-danger login-error' style="display:none;"></div>
-                <h3 class="nomargin center">One Account. All of eStorifi</h3>
-                <h5 class="center">Login with your eStorifi Account</h5>
+                <!-- <h3 class="nomargin center">One Account. All of eStorifi</h3>
+                <h5 class="center">Login with your eStorifi Account</h5> -->
                 <ul class="tab-nav tab-nav2 loginTab center clearfix">
                     <li class="inline-block " aria-selected="true" aria-expanded="true"><a class="tabClass" href="#tab-login">Login</a>
                     </li>
@@ -46,22 +46,22 @@
                                         <button class="button button-black nomargin" type="submit" value="login">Login</button>
                                     </div>
                                     <div class="col_full nobottommargin for-pass text-center topmargin-sm"> <a href="{{ Route('forgotPassword') }}" class="">Forgot Password?</a> </div>
-                                    <div class="col-md-12 topmargin-sm orDivider-box clearfix">
+                                    <!-- <div class="col-md-12 topmargin-sm orDivider-box clearfix">
                                         <div class="orDivider">or</div>
                                     </div>
-                                    <div class="clearfix"></div>
+                                    <div class="clearfix"></div> -->
 
                                 </form>
                                 <div class="social_media text-center topmargin-sm">
                                     <?php //{{route('home')}}.'/login/facebook/'.{{Crypt::encrypt(Request::url())}} ?>
                                     <!--<a href="#"  class="col-md-12 col-sm-6 col-xs-12" style="margin-bottom:11px;">-->
                                     <a  id="fbLink" class="col-sm-6 col-xs-12 fb_login_btn"   style="margin-bottom:11px;">
-                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/fb_login.jpg')}}" onclick="fbLogin()"  class="fb_login_btn"></img>
+                                        <!-- <img src="{{ asset(Config('constants.frontendPublicImgPath').'/fb_login.jpg')}}" onclick="fbLogin()"  class="fb_login_btn"></img> -->
                                     </a>
                                     <?php //route('home')}}/login/google/{{Crypt::encrypt(Request::url())?>
-                                    <a  href="#" class="col-sm-6 col-xs-12">
+                                    <a  href="{{ route('login',['provider'=>'google']) }}" class="col-sm-6 col-xs-12">
                                         <!--<a  href="{{ route('login',['provider'=>'google']) }}"   class="col-md-12 col-sm-6 col-xs-12">-->
-                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/g_login.jpg')}}" class="g_login_btn"></img>
+                                        <!-- <img src="{{ asset(Config('constants.frontendPublicImgPath').'/g_login.jpg')}}" class="g_login_btn"></img> -->
                                     </a>
                             <!--<a href="#" class="col-md-6 col-sm-6 col-xs-12"> <img src="images/fb_login.jpg" class="fb_login_btn"> </a>-->
                             <!--<a href="#" class="col-md-6 col-sm-6 col-xs-12"> <img src="images/g_login.jpg" class="g_login_btn"> </a>-->
@@ -336,7 +336,7 @@
             window.fbAsyncInit = function() {
             // FB JavaScript SDK configuration and setup
             FB.init({
-            appId      : '644176742612237', // FB App ID
+                    appId      : '1384415988395394', // FB App ID
                     cookie     : true, // enable cookies to allow the server to access the session
                     xfbml      : true, // parse social plugins on this page
                     version    : 'v3.0' // use graph api version 2.8

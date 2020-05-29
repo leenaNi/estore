@@ -51,7 +51,7 @@ class LoginController extends Controller
             Session::put('otp', $otp);
             if ($mobile) {
                 $msgOrderSucc = "Your one time password is. " . $otp . " Team eStorifi";
-                // Helper::sendsms($mobile, $msgOrderSucc, $country);
+                Helper::sendsms($mobile, $msgOrderSucc, $country);
             }
             $data = ["otp" => $otp, "status" => "success", "msg" => "OTP Successfully send on your mobileNumber"];
             return $data;
@@ -88,6 +88,7 @@ class LoginController extends Controller
         //echo "<pre> user details::";
         //print_r($userDetails);
         if (!empty($userDetails)) {
+            Auth::login($userDetails);
             //if (Auth::login($userData, true)) {
 
             $user = User::with('roles')->find($userDetails->id);

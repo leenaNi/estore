@@ -2,7 +2,7 @@
     <div class="container clearfix">
         @if( is_array($contactDetails) && count($contactDetails) >0)
         <div class="col_half nobottommargin mobText-center mobFullWidthCol">
-            <?php $contact = json_decode($contactDetails->contact_details); ?>
+            <?php $contact = json_decode($contactDetails->contact_details);?>
             <p class="nobottommargin"><strong>Call:</strong> {{$contact->mobile}} | <strong>Email:</strong> {{$contact->email}} </p>
 
         </div>
@@ -12,7 +12,7 @@
 
             <!-- Top Links
             ============================================= -->
-            <div class="top-links">
+            <div class="top-links pull-right">
                 <ul>
                     @if(is_array($socialMedia) && count($socialMedia) >0)
                     <li class="socialDisplay">
@@ -32,12 +32,12 @@
                         <a href="{{ route('myProfile')  }}">My Account</a>  <a href="{{ route('logout')  }}">Logout</a>
 
                         @else
-                        <a href="{{ route('loginUser') }}">Login / Register</a>  
+                        <a href="{{ route('loginUser') }}">Login / Register</a>
                         @endif</li>
                     <li>
-                    <li class="">
+                    <!-- <li class="">
                         <a href="#" class="label label-success tracking nobg mobilealignmenu" style="cursor:pointor;">Track Your Order</a>
-                    </li>
+                    </li> -->
                     <!-- Top Cart
         ============================================= -->
                     <div id="top-bar-cart">
@@ -78,14 +78,14 @@
             ============================================= -->
             <nav id="primary-menu" class="dark">
 
-                <ul>                  
+                <ul>
                     <li class="current"><a href="{{route('home')}}"><div>Home</div></a></li>
                     @foreach($menu as $getm)
                     {{ App\Library\Helper::getmenu($getm) }}
                     @endforeach
-            
+
                     @if(count($staticManuPage) >0)
-                    @foreach($staticManuPage as $menuPage) 
+                    @foreach($staticManuPage as $menuPage)
                     <li><a href="{{route($menuPage->url_key)}}"><div>{{$menuPage->page_name}}</div></a></li>
                     @endforeach
                     @endif
@@ -99,18 +99,18 @@
                     @if(Session::get('login_user_type') == 1)
                     <li class="mobMenuAlign">
                         <?php
-                        $redirectUrl = '';
-                        if ($_SERVER['REQUEST_URI'] == "/") {
-                            $redirectUrl = route('adminLogin');
-                        } else {
-                            $getUrl = explode("/", $_SERVER['REQUEST_URI']);
-                            $redirectUrl = $getUrl[0] . "/admin";
-                        }
-                        ?>
+$redirectUrl = '';
+if ($_SERVER['REQUEST_URI'] == "/") {
+    $redirectUrl = route('adminLogin');
+} else {
+    $getUrl = explode("/", $_SERVER['REQUEST_URI']);
+    $redirectUrl = $getUrl[0] . "/admin";
+}
+?>
                         <a href="{{ $redirectUrl }}" class="label" target="_blank" style="cursor:pointor;" data-toggle="tooltip" data-placement="bottom" title="Go to Store Admin">  <img src="{{Config('constants.frontendPublicImgPath').'/store-admin-icon-black.png'}}"> <span class="mobDisplay">Go to Store Admin</span></a>
                     </li>
                     @endif
-                
+
                 </ul>
 
 

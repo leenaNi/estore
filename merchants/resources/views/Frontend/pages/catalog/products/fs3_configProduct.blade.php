@@ -179,7 +179,7 @@ use App\Models\CustomerReview;
                                 $ratings = $totalRatings;
                              }
                             @endphp
-                            <div><h4>Reviews({{count($publishReviews)}} reviews, {{$ratings}} <i class="fa fa-star" aria-hidden="true"></i>)</h4>
+                            <div><h4>Reviews ({{count($publishReviews)}})</h4>
                                @if(count($CustomerReviews)>0)
                                @foreach($CustomerReviews as $review)
                                @php 
@@ -226,7 +226,7 @@ use App\Models\CustomerReview;
                             <a href="{{ route('home')}}/reviews/{{$review->product_id}}"><u>View All Reviews</u></a>
                             @endif
                             @else
-                               No reviews found
+                            You can write a review once you buy a product.
                                @endif
                             </div><br>
                                 <div class="shareSociIconBox">

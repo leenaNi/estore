@@ -263,15 +263,15 @@ class PagesController extends Controller
 
             $topProducts = HasProducts::where('prefix', 'LIKE', "{$this->jsonString['prefix']}")->whereDate('created_at', $date)->limit(1)->groupBy('prefix', 'prod_id')->orderBy('quantity', 'desc')->get(['prod_id', 'sub_prod_id', DB::raw('count(prod_id) as top'), DB::raw('sum(qty) as quantity')]);
             if (count($topProducts) > 0) {
-                if ($topProducts[0]->sub_prod_id != '') {
+                if ($topProducts[0]->sub_prod_id != '' && $topProducts[0]->sub_prod_id != '0') {
                     $prodId = $topProducts[0]->sub_prod_id;
                     $prodtype = 'sub_prod_id';
                 } else {
                     $prodId = $topProducts[0]->prod_id;
                     $prodtype = 'prod_id';
                 }
-                $product = DB::table("products")->where('id',$prodId)->first();
-                $product_name = $product->product;
+                $product1 = DB::table("products")->where('id',$prodId)->first();
+                $product_name = $product1->product;
                 $ProdSaleschart = HasProducts::whereDate('created_at',$date)
                 ->where($prodtype, $prodId)->where('store_id', $this->jsonString['store_id'])->get([DB::raw('sum(qty) as quantity'),DB::raw('sum(pay_amt) as amount')]);
                 $qty[] = ($ProdSaleschart[0]->quantity) ? $ProdSaleschart[0]->quantity : 0;

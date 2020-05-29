@@ -89,10 +89,10 @@
                         <div class="product-image product-image-listing">
                             <a href="{{ route('home')}}/[[prd.url_key]]"><img src="[[prd.mainImage]]" alt="[[prd.alt_text]]"> </a>
                             <a href="{{ route('home')}}/[[prd.url_key]]"><img  src="[[prd.mainImage]]" alt="[[prd.alt_text]]"> </a>
-                            <div class="product-overlay2">
+                            <!-- <div class="product-overlay2">
                                 <a  href="{{ route('home')}}/[[prd.url_key]]" class="center-icon" data-toggle="tooltip" data-placement="top" title="View Detail"><i class="icon-line-plus"></i></a>
 
-                            </div>
+                            </div> -->
                         </div>
                         <div class="product-desc product-desc-transparent" style="margin-bottom: -20px;">
                             <div class="product-title"><h3><a href="{{ route('home')}}/[[prd.url_key]]">[[prd.product]]</a></h3></div>
@@ -101,9 +101,9 @@
                             <!-- <ins><span class="currency-sym"></span>[[ prd.getPrice *currencyVal | number : 2 ]]</ins> -->
                             </div>
                         </div>
-                            <div>
+                            <!-- <div>
                                 [[prd.reviews]] reviews , [[prd.ratings]]<i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
+                            </div> -->
                             <div>
                                 <form id="form[[prd.id]]" action="{{ route('addToCart') }}">
                                 <input type="hidden" name='prod_id' value='[[prd.id]]'>

@@ -12,7 +12,7 @@
 						<div class="col-md-12 description">
 							<div class="description-content">
 								<div class="logo">
-									<img src="{{ asset('public/Frontend/images/logo.svg')}}">
+									<img src="{{ asset('public/Frontend/images/eStorifi.svg')}}">
 								</div>
 								<div class="title">
 									<h3>Create Account</h3>
@@ -43,7 +43,7 @@
 										<div class="form-group clearfix">
 											<label for="">Industry</label>
 											 <div class="input-group">
-						                        {{ Form::select('business_type',$cat,null,['class'=>'form-control','required'=>'true','id'=>'select_indusrty']) }}
+						                        {{ Form::select('business_type[]',$cat,null,['class'=>'form-control','required'=>'true','id'=>'select_indusrty']) }}
 
 
 						                        <span>
@@ -120,7 +120,7 @@
 						<div class="col-md-12 description otp-description">
 							<div class="description-content">
 								<div class="logo">
-									<img src="{{ asset('public/Frontend/images/logo.svg')}}">
+									<img src="{{ asset('public/Frontend/images/eStorifi.svg')}}">
 								</div>
 								<div class="title">
 									<h3>Verify OTP</h3>
@@ -334,7 +334,7 @@ $("#registerAndSubmit").on("click", function () {
                 url: "{{route('checkOtp')}}",
                 data: {inputotp: otp},
                 success: function (response) {
-                    if (response==otp || otp=='1234') {
+                    if (response==otp) {
 						//alert('succe');
                         $("#createStore").submit();
                     } else  {

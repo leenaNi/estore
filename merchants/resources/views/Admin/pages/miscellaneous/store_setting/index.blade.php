@@ -371,7 +371,8 @@ $(document).ready(function () {
                 if (typeof (fileUpload.files) != "undefined") {
 
                     var ImageURL = cropper.getCroppedCanvas({
-                        width: 170 // input value
+                        //width: 170 // input value
+                        width: 510 // input value
                     }).toDataURL();
                     formdata.append("logo_img_url", ImageURL);
                     console.log(ImageURL);

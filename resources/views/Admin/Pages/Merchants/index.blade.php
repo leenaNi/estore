@@ -68,6 +68,7 @@
                             <th>Created Date</th>
                             <th>Actions</th>
                         </tr>
+                        @if(count($merchants) > 0)
                         @foreach($merchants as $merchant)
                         <tr>
 <!--                            <td>{{ $merchant->id }}</td>-->
@@ -104,6 +105,7 @@
                             </td>
                         </tr>
                         @endforeach
+                        @endif
                     </table>
                     <?php
                     $arguments = [];

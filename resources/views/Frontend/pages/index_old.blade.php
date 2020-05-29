@@ -1,6 +1,6 @@
 @extends('Frontend.layouts.default')
 @section('content')
-<section id="slider" class="full-screen force-full-screen ohidden" style="background: url('{{ asset(Config('constants.frontendPublicImgPath').'slider/4.jpg') }}') center center no-repeat; background-size: cover">
+<section id="slider" class="full-screen force-full-screen ohidden" style="background: url('{{ asset(Config('constants.frontendPublicEstorifiImgPath').'slider/4.jpg') }}') center center no-repeat; background-size: cover">
 
     <div class="">
 
@@ -42,7 +42,7 @@
             </div>
 
             <!--   <div class="image-wrap">
-                  <img src="{{ asset(Config('constants.frontendPublicImgPath').'/slider/4.jpg') }}" alt="Image">
+                  <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/slider/4.jpg') }}" alt="Image">
              </div> -->
         </div>
     </div>
@@ -82,8 +82,8 @@
                 <div class="col-lg-7  col-md-7 col-sm-6">
 
                     <div style="position: relative;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="470" data-height-xs="287" data-height-xxs="183">
-                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
-                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/main-fmobile.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="400" alt="iPad">
+                        <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/main-fbrowser.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
+                        <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/main-fmobile.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="400" alt="iPad">
                     </div>
                 </div>
             </div>
@@ -138,7 +138,7 @@
 
                                 <div class="col-lg-6 col-xs-12 sameheight">
                                     <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="370" data-height-xxs="370">
-                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme1.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
+                                        <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/theme1.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-xs-12 sameheight">
@@ -151,7 +151,7 @@
                             <div class="slide">
                                 <div class="col-lg-6 col-xs-12 sameheight">
                                     <div style="position: relative; margin-bottom: -60px;" class="ohidden" data-height-lg="426" data-height-md="567" data-height-sm="567" data-height-xs="370" data-height-xxs="370">
-                                        <img src="{{ asset(Config('constants.frontendPublicImgPath').'/theme2.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
+                                        <img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/theme2.png') }}" style="position: absolute; top: 0; left: 0;" data-animate="fadeInUp" data-delay="100" alt="Chrome">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-xs-12 sameheight">
@@ -166,7 +166,7 @@
                 </div>
             </div>
         </div>
-        <div class="section parallax dark topmargin-sm nobottommargin" style="background-image: url('{{ asset(Config('constants.frontendPublicImgPath').'/home-testi-bg.jpg') }}'); padding: 100px 0;" data-stellar-background-ratio="0.4">
+        <div class="section parallax dark topmargin-sm nobottommargin" style="background-image: url('{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/home-testi-bg.jpg') }}'); padding: 100px 0;" data-stellar-background-ratio="0.4">
 
             <div class="heading-block center">
                 <h2>What Merchants Say?</h2>
@@ -212,16 +212,16 @@
               <div class="row topmargin-sm nobottommargin">
                   <div id="oc-clients" class="owl-carousel image-carousel carousel-widget" data-margin="60" data-loop="true" data-nav="false" data-autoplay="5000" data-pagi="false" data-items-xxs="2" data-items-xs="3" data-items-sm="4" data-items-md="5" data-items-lg="6">
   
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/1.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/2.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/3.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/4.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/5.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/6.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/7.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/8.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/9.png') }}" alt="Clients"></a></div>
-                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicImgPath').'/clients/10.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/1.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/2.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/3.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/4.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/5.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/6.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/7.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/8.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/9.png') }}" alt="Clients"></a></div>
+                      <div class="oc-item"><a href="#"><img src="{{ asset(Config('constants.frontendPublicEstorifiImgPath').'/clients/10.png') }}" alt="Clients"></a></div>
   
                   </div>
               </div>

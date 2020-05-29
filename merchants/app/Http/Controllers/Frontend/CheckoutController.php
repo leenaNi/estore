@@ -464,7 +464,7 @@ class CheckoutController extends Controller
 
         $jsonString = Helper::getSettings();
         $data = (object) $jsonString;
-        $country_code = (int) explode("+", $data->country_code)[1];
+        $country_code = $data->country_code;
         $country = Helper::getCountry($country_code);
 
         $my_data = [];
