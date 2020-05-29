@@ -29,7 +29,7 @@
                     <input type='hidden' name='prod_id' value='[[product.id]]' data-parentid = "[[product.id]]">
                     <input type='hidden' name='prod_type' value='[[product.prod_type]]'>
                     <input type='hidden' name='sub_prod' value='' class="subPRod">
-                    <p class="stockL" style="display: none;">Stock Left <b class="stockChk"></b></p>
+                    <p class="stockL" style="display: none;">Stock Left<b class="stockChk"></b></p>
                     <input type="number" name="quantity" id="quantity" value="1"  max="[[product.stock]]" class="qty" min="1" onkeypress="return isNumber(event);" style="text-align: center;" />
                     <input type='button' form-id='[[product.id]]' value='Add To Cart' class='addToCartB addToCart'>
                 </div>        
