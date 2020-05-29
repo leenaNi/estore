@@ -285,7 +285,7 @@
                                     </div>
                                     <div class="hidden-lg hidden-md" style="float:left; width:100%;"><br></div>
                                     <div class="col-md-12 form-group continue-cancel-btnbox mobPadd0-15">     
-                                        <input type="submit" ng-click="billAddressContinue()" class="button new_user_btn toBillSummary continueStep" data-continue="shippingPanel" value="CONTINUE">
+                                        <input type="submit" ng-click="billAddressContinue()" class="button bill_add_btn  continueStep" data-continue="shippingPanel" value="CONTINUE">
                                         <a href="{{ route('cart')}}" class="button new_user_btn pull-right">BACK</a>    
 
                                     </div>
@@ -307,7 +307,8 @@
                         <div class="panel-body">
                             <div class="shpng_addrs_col">
 <div ng-if="addressData && !addressData.length">
-                                <input type="checkbox" onclick="copyDate()" id="same_as_billing" name="same_address">
+                                <input type="checkbox" id="same_as_billing" name="same_address" checked>
+                                <!-- <input type="checkbox" onclick="copyDate()" id="same_as_billing" name="same_address"> -->
                                 <label>Same as billing address</label>
                             </div>
                                 <h5>SELECT ADDRESS</h5>
@@ -706,10 +707,8 @@
         $("#internationallyProdPopUp").modal("hide");
     }
 
-   
-    function copyDate()
-    {
-        //alert('ffiii');
+    $(".bill_add_btn").click(function(){
+    
        var fname=$("#bfirstname").val();
        var lname=$("#blastname").val();
        var address1=$("#baddress1").val();
@@ -721,7 +720,7 @@
       
         if($("#same_as_billing").prop('checked') == true)
         {
-            $(".newAddFormDiv").show();
+            //$(".newAddFormDiv").show();
             $("#sfirstname").val(fname);
             $("#slastname").val(lname);
             $("#saddress1").val(address1);
@@ -735,7 +734,7 @@
             $(".newAddFormDiv").hide();
        }
          
-    }
+    });
 
     $(document).ready(function () {
 
