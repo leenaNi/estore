@@ -1,6 +1,5 @@
 @extends('Frontend.layouts.default')
 @section('content')
-
 <div class="container clearfix topmargin-sm">
     <div class="col_three_fourth nobottommargin">
 

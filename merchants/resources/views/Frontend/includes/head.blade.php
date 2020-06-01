@@ -11,10 +11,10 @@ $image = isset($data->image) ? $data->image : '';
 $url = isset($data->url) ? $data->url : '';
 $other_meta = isset($data->other_meta) ? $data->other_meta : '';
 ?>
-@section('title',$meta_title)
-@section('og-title',$meta_title)
-@section('meta-description',$meta_desc)
-@section('meta-keyword',$meta_keys)
+@section('title',@$meta_title)
+@section('og-title',@$meta_title)
+@section('meta-description',@$meta_desc)
+@section('meta-keyword',@$meta_keys)
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="author" content="Veestores" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />

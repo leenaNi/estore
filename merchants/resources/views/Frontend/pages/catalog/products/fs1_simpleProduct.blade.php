@@ -2,6 +2,9 @@
 
 @section('title',$product->metaTitle)
 @section('og-title',$product->metaDesc)
+@section('url',Request::url())
+<?php $imgUrl = $product->prodImage; ?>
+@section('og:image', $imgUrl)
 @section('meta-description',$product->metaTitle)
 @section('content')
 @php 
