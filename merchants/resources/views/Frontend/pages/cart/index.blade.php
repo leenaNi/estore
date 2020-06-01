@@ -199,7 +199,7 @@ if ($isstock == 1) {
 
                 <div class="cart-actions clearfix">
                     <form action="#">
-                        <a class="button bold default" href="{{route('checkout')}}">PROCEED TO CHECKOUT</a>
+                        <a class="button bold default proceed" data-go="{{route('checkout')}}">PROCEED TO CHECKOUT</a>
                         <a class="button bold default" href="{{ route('home') }}">Continue Shopping</a>
                     </form>
                 </div><!-- .cart-actions -->
@@ -214,9 +214,103 @@ if ($isstock == 1) {
         @endif
     </div><!-- .container -->
 </div><!-- .site-content -->
+@if($feature['subscription'])
+<!---- Subscription Popup --------->
+<div id="subscription" class="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-body">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title center">Do you want to subscribe for these items</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <?php 
+                            if($subscriptionDetails && @$subscriptionDetails->details && !empty(@$subscriptionDetails->details))
+                            {
+                                $details = json_decode($subscriptionDetails->details);
+                            }
+                        ?>
+                        <p></p>
+                        <form class="form-horizontal" action="{{route('subscribeCart')}}" id="frm-subscription">
+                        <div class="col-md-12 col-sm-12 center">
+                            <div class="form-group">
+                                <label class="control-label">Select subscription Period</label>
+                            </div>
+                        </div>
+                        @foreach($details->period as $periodKey => $periodVal)
+                        <div class="col-md-12 col-sm-12 center">
+                            <div class="form-group">
+                                <div class="form-check-inline">
+                                    <input required name="sub-period" class="form-check-input" value="{{$periodVal->period_key}}" type="radio">
+                                    <label class="form-check-label" >{{$periodVal->period_val}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                        <div class="col-md-12 col-sm-12 center">
+                            <div class="suberror"></div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 center">
+                            <button type="button" id="subscribe-btn" class="btn btn-primary ">Subscribe</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!------ END Subscription Popup -------->
+@endif
 @stop
 @section("myscripts")
 <script>
+    $('a.proceed').click(function () {
+        @if($feature['subscription'])
+            $('.suberror').html('');
+            $('#subscription').modal('show');
+        @else
+            var proceedLink = $(this).attr('data-go');
+            var a = document.createElement('a');
+            a.setAttribute('href', proceedLink);
+            document.body.appendChild(a);
+            a.click();
+        @endif
+    });
+    //SUBSCRIPTION
+    $('button#subscribe-btn').click(function() {
+        console.log('Atleast on', $('input[name=sub-period]').is(':checked'));
+        if($('input[name=sub-period]').is(':checked')) {
+            $('.suberror').html('');
+            $.ajax({
+                type: "POST",
+                url: $('form#frm-subscription').attr('action'),
+                data: $('form#frm-subscription').serialize(),
+                cache: false,
+                success: function (response) {
+                    console.log(response);
+                    $('.suberror').html('');
+                    if(response.status) {
+                        var proceedLink = $('a.proceed').attr('data-go');
+                        var a = document.createElement('a');
+                        a.setAttribute('href', proceedLink);
+                        document.body.appendChild(a);
+                        a.click();
+                    }  else {
+                        $('.suberror').html('<label class="error">Please select subscription period.</label>');
+                    }
+                }, 
+                error: function (error) {
+                    console.log(error.responseText);
+                }
+            });
+        } else {
+            $('.suberror').html('<label class="error">Please select subscription period.</label>');
+        }
+    });
+
     function calc(thisQty) {
         var qty = thisQty.val();
         var maxvalue = parseInt(thisQty.attr('max'));
@@ -276,7 +370,7 @@ if ($isstock == 1) {
         //  $(this).parent().find('input[name=' + fieldName + ']').val();
         thisQty.val(parseInt(thisQty.val()) + 1);
         calc(thisQty);
-//                $(this).parent().find('input[name=' + fieldName + ']').val(currentVal + 1);
+        //  $(this).parent().find('input[name=' + fieldName + ']').val(currentVal + 1);
     });
 
     $(document).on("click", '.minus', function () {
@@ -293,28 +387,27 @@ if ($isstock == 1) {
             thisQty.val(parseInt(1));
             calc(thisQty);
         }
-
-//                $(this).parent().find('input[name=' + fieldName + ']').val(currentVal + 1);
+        // $(this).parent().find('input[name=' + fieldName + ']').val(currentVal + 1);
     });
     $(document).ready(function () {
-//        $(".qty").bind('keyup mouseup', function () {
-//            var thisQty = $(this);
-//            calc(thisQty);
-//        });
+        //        $(".qty").bind('keyup mouseup', function () {
+        //            var thisQty = $(this);
+        //            calc(thisQty);
+        //        });
 
-//        $(".minus").click(function () {
-//            var thisQty = $('#quantity');
-//             thisQty.val(parseInt(thisQty.val()-1));
-//           // alert(thisQty.val());
-//            calc(thisQty);
-//
-//        });
-//         $(".plus").click(function () {
-//            var thisQty = $('#quantity');
-//              thisQty.val(parseInt(thisQty.val())+1);
-//           // alert(thisQty.val());
-//            calc(thisQty);
-//        });
+        //        $(".minus").click(function () {
+        //            var thisQty = $('#quantity');
+        //             thisQty.val(parseInt(thisQty.val()-1));
+        //           // alert(thisQty.val());
+        //            calc(thisQty);
+        //
+        //        });
+        //         $(".plus").click(function () {
+        //            var thisQty = $('#quantity');
+        //              thisQty.val(parseInt(thisQty.val())+1);
+        //           // alert(thisQty.val());
+        //            calc(thisQty);
+        //        });
 
         $(".removeCartItem").click(function () {
             var getRowid = $(this).attr("data-rowid");
@@ -346,12 +439,12 @@ if ($isstock == 1) {
                 }
             });
         });
-//        $('.plus').click(function () {
-//            // Stop acting like a button
-//            // Get the field name
-//            var thisQty = $(this).parent().find(".qty");
-//            calc(thisQty);
-//        });
+            //        $('.plus').click(function () {
+            //            // Stop acting like a button
+            //            // Get the field name
+            //            var thisQty = $(this).parent().find(".qty");
+            //            calc(thisQty);
+            //        });
     });
 
     $("#couponApply").click(function () {
@@ -373,7 +466,7 @@ if ($isstock == 1) {
                             console.log("TAX VAL " + JSON.stringify(val.options));
                             if (val.tax_amt) {
                                 console.log("TAX PRESENT");
-//                        $(".tax_" + i).text((parseFloat(val.tax_amt) * parseFloat()).toFixed(2));
+                                //  $(".tax_" + i).text((parseFloat(val.tax_amt) * parseFloat()).toFixed(2));
                                 $(".tax_" + i).text(parseFloat(val.tax_amt * <?php echo Session::get('currency_val'); ?>).toFixed(2));
                                 if (val.tax_type == 2) {
                                     sub_total = (sub_total + val.tax_amt);

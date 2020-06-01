@@ -669,7 +669,7 @@ class MiscellaneousController extends Controller
             return $data;
         } else {
             $charge = StoreCharge::where('store_type', $version)->first()->charge;
-//           if($version ==1){
+            //           if($version ==1){
             //             $charge=360;
             //
             //         }else if($version ==2){
@@ -678,6 +678,42 @@ class MiscellaneousController extends Controller
             //         }
             return $charge;
         }
+    }
+
+    public function subscriptionProgram()
+    {
+        $settings = GeneralSetting::where('url_key', 'subscription')->get();
+        return view(Config('constants.adminMiscellaneousSubscriptionView') . '.index', compact('settings'));
+    }
+
+    public function editSubscription()
+    {
+        $id = Input::get("id");
+        $settings = GeneralSetting::find($id);
+        $action = route("admin.subscriptionProgram.saveSubscription");
+        return view(Config('constants.adminMiscellaneousSubscriptionView') . '.addEdit', compact('settings', 'action'));
+    }
+
+    public function saveSubscription()
+    {
+        // print_r(Input::all());
+        $save = GeneralSetting::where('url_key', Input::get('url_key'))->first();
+        $periods = [];
+        if(!is_null(Input::get('period_val'))) {
+            foreach(Input::get('period_val') as $key => $val){
+                array_push($periods, (object) ([
+                    "period_key" => Input::get('period_key')[$key],
+                    "period_val" => "$val"
+                ]));
+            }
+        }
+        $details = (object) (["period" => $periods]);
+        // dd($details);
+        $save->details = json_encode($details);
+        $save->save();
+        Session::flash("aletC", '1');
+        Session::flash("message", "Subscription program updated successfully.");
+        return Redirect::back();
     }
 
 }

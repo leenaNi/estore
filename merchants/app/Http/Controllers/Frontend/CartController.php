@@ -2,30 +2,28 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use Route;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\DistributorProduct;
-use App\Models\Coupon;
-use App\Models\Order;
-use App\Models\Gift;
-use App\Models\AttributeValue;
-use App\Models\HasCategories;
-use App\Library\Helper;
-use App\Models\GeneralSetting;
-use App\Models\Loyalty;
-use Input;
 use App\Http\Controllers\Controller;
+use App\Library\Helper;
+use App\Models\AttributeValue;
+use App\Models\Coupon;
+use App\Models\DistributorProduct;
+use App\Models\GeneralSetting;
+use App\Models\Gift;
+use App\Models\Order;
+use App\Models\Product;
+use Auth;
 use Carbon\Carbon;
 use Cart;
-use Session;
-use HTML;
 use DB;
-use Auth;
+use Input;
+use Route;
+use Session;
 
-class CartController extends Controller {
+class CartController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
 //        Cart::instance('shopping')->destroy();
         Session::forget("discAmt");
         Session::forget('voucherUsedAmt');
@@ -39,6 +37,7 @@ class CartController extends Controller {
         Session::forget("codCharges");
         Session::forget('shippingCost');
         $cart = Cart::instance('shopping')->content();
+        $subscriptionDetails = DB::table('general_setting')->where('url_key', 'subscription')->first();
         foreach ($cart as $k => $c) {
             Cart::instance('shopping')->update($k, ["options" => ['wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0]]);
         }
@@ -46,24 +45,25 @@ class CartController extends Controller {
 //        dd($cart);
         $cart_amt = Helper::calAmtWithTax();
         // dd($cart_amt['total']);
-//        dd($cart);
+        //        dd($cart);
         if (Cart::instance("shopping")->count() != 0) {
             $chkC = GeneralSetting::where('url_key', 'coupon')->first()->status;
             $cart = Cart::instance('shopping')->content();
             Session::put('pay_amt', $cart_amt['total']);
             $viewname = Config('constants.frontCartView') . '.index';
-            $data = ['cart' => $cart, 'chkC' => $chkC, 'cart_amt' => $cart_amt];
+            $data = ['cart' => $cart, 'chkC' => $chkC, 'cart_amt' => $cart_amt, 'subscriptionDetails' => $subscriptionDetails];
             return Helper::returnView($viewname, $data);
         } else {
             $this->forgetCouponSession();
             $viewname = Config('constants.frontCartView') . '.index';
-            $data = ['cart' => $cart, 'chkC' => [], 'cart_amt' => 0];
+            $data = ['cart' => $cart, 'chkC' => [], 'cart_amt' => 0, 'subscriptionDetails' => $subscriptionDetails];
             return Helper::returnView($viewname, $data);
 //            return redirect()->route('home');
         }
     }
 
-    public function add() {
+    public function add()
+    {
         $prod_type = Input::get("prod_type");
         $prod_id = Input::get("prod_id");
         $sub_prod = Input::get("sub_prod");
@@ -80,9 +80,9 @@ class CartController extends Controller {
                 break;
             case 5:
                 $msg = $this->downloadProduct($prod_id, $quantity);
-                ;
+
                 break;
-            default :
+            default:
         }
         Helper::calAmtWithTax();
         //if (preg_match("/Specified/", $msg)) {
@@ -94,7 +94,8 @@ class CartController extends Controller {
         }
     }
 
-    public function getCartCount() {
+    public function getCartCount()
+    {
 
         if (Cart::instance("shopping")->count() != 0) {
             $cartCount = 0;
@@ -106,7 +107,8 @@ class CartController extends Controller {
         }
     }
 
-    public function addCartData($prod_type, $prod_id, $sub_prod, $quantity) {
+    public function addCartData($prod_type, $prod_id, $sub_prod, $quantity)
+    {
 
         switch ($prod_type) {
             case ($prod_type == 1 || $prod_type == 7):
@@ -120,9 +122,9 @@ class CartController extends Controller {
                 break;
             case 5:
                 $msg = $this->downloadProduct($prod_id, $quantity);
-                ;
+
                 break;
-            default :
+            default:
         }
         Helper::calAmtWithTax();
         //if (preg_match("/Specified/", $msg)) {
@@ -134,8 +136,8 @@ class CartController extends Controller {
         // }
     }
 
-    public function edit() {
-
+    public function edit()
+    {
         $cart = Cart::instance('shopping')->update(Input::get("rowid"), ['qty' => Input::get("qty")]);
         $amt = Helper::calAmtWithTax();
 
@@ -164,7 +166,8 @@ class CartController extends Controller {
         return $data;
     }
 
-    public function delete() {
+    public function delete()
+    {
         Cart::instance('shopping')->remove(Input::get("rowid"));
 
         $cart = Helper::getnewCart();
@@ -181,9 +184,10 @@ class CartController extends Controller {
         return $data;
     }
 
-    public function simpleProduct($prod_id, $quantity) {
+    public function simpleProduct($prod_id, $quantity)
+    {
         $jsonString = Helper::getSettings();
-        if(Session::get('distributor_store_id')){
+        if (Session::get('distributor_store_id')) {
             $product = DistributorProduct::find($prod_id);
             $store_id = Session::get('distributor_store_id');
             $prefix = Session::get('distributor_store_prefix');
@@ -198,9 +202,9 @@ class CartController extends Controller {
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
         }
-        if((($product->spl_price) > 0) && ($product->spl_price < $product->price)){
-             $price = $product->selling_price;
-        }else{
+        if ((($product->spl_price) > 0) && ($product->spl_price < $product->price)) {
+            $price = $product->selling_price;
+        } else {
             $price = $product->price; //$product->price;
         }
         //$price = $product->selling_price; //$product->price;
@@ -219,7 +223,7 @@ class CartController extends Controller {
             $tax = $product->selling_price * $quantity * $sum / 100;
             $tax_amt = round($tax, 2);
         }
-        if(Session::get('distributor_store_id')){
+        if (Session::get('distributor_store_id')) {
             $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
         } else {
             $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
@@ -243,9 +247,10 @@ class CartController extends Controller {
         }
     }
 
-    public function downloadProduct($prod_id, $quantity) {
+    public function downloadProduct($prod_id, $quantity)
+    {
         $jsonString = Helper::getSettings();
-        if(Session::get('distributor_store_id')){
+        if (Session::get('distributor_store_id')) {
             $product = DistributorProduct::find($prod_id);
             $store_id = Session::get('distributor_store_id');
             $prefix = Session::get('distributor_store_prefix');
@@ -275,7 +280,7 @@ class CartController extends Controller {
             $tax = $product->selling_price * $quantity * $sum / 100;
             $tax_amt = round($tax, 2);
         }
-        if(Session::get('distributor_store_id')){
+        if (Session::get('distributor_store_id')) {
             $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
         } else {
             $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
@@ -291,10 +296,11 @@ class CartController extends Controller {
         }
     }
 
-    public function comboProduct($prod_id, $quantity, $sub_prod) {
+    public function comboProduct($prod_id, $quantity, $sub_prod)
+    {
         $jsonString = Helper::getSettings();
         // echo $prod_id.'======='.Session::get('distributor_store_id');
-        if(Session::get('distributor_store_id')){
+        if (Session::get('distributor_store_id')) {
             $product = DistributorProduct::find($prod_id);
             $store_id = Session::get('distributor_store_id');
             $prefix = Session::get('distributor_store_prefix');
@@ -302,7 +308,7 @@ class CartController extends Controller {
             $product = Product::find($prod_id);
             $store_id = $jsonString['store_id'];
             $prefix = $jsonString['prefix'];
-        } 
+        }
         $cats = [];
         foreach ($product->categories as $cat) {
             array_push($cats, $cat->id);
@@ -330,7 +336,7 @@ class CartController extends Controller {
         foreach ($product->comboproducts as $cmb) {
             //print_r($cmb);
             $prod["name"] = $cmb->product;
-            if(Session::get('distributor_store_id')){
+            if (Session::get('distributor_store_id')) {
                 $prod["img"] = DistributorProduct::find($cmb->id)->catalogimgs()->first()->filename;
             } else {
                 $prod["img"] = Product::find($cmb->id)->catalogimgs()->first()->filename;
@@ -353,7 +359,7 @@ class CartController extends Controller {
             // }
             $combos[$cmb->id]["sub_prod"] = $sub_prod;
         }
-        if(Session::get('distributor_store_id')){
+        if (Session::get('distributor_store_id')) {
             $is_stockable = DB::table('general_setting')->where('store_id', Session::get('distributor_store_id'))->where('url_key', 'stock')->first();
         } else {
             $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
@@ -370,12 +376,13 @@ class CartController extends Controller {
         }
     }
 
-    public function configProduct($prod_id, $quantity, $sub_prod) {
+    public function configProduct($prod_id, $quantity, $sub_prod)
+    {
         //echo "product id::".$prod_id;
 
         $jsonString = Helper::getSettings();
         // $is_stockable = GeneralSetting::where('url_key', 'stock')->first();
-        if(Session::get('distributor_store_id')){
+        if (Session::get('distributor_store_id')) {
             $product = DistributorProduct::find($prod_id);
             $store_id = Session::get('distributor_store_id');
             $prefix = Session::get('distributor_store_prefix');
@@ -395,14 +402,14 @@ class CartController extends Controller {
         $prod_type = $product->prod_type;
         $images = @$product->catalogimgs()->where("image_type", "=", 1)->get()->first()->filename;
         $imagPath = Config("constants.productImgPath") . '/' . $images;
-        if(Session::get('distributor_store_id')){
+        if (Session::get('distributor_store_id')) {
             $subProd = DistributorProduct::where("id", "=", $sub_prod)->first();
         } else {
             $subProd = Product::where("id", "=", $sub_prod)->first();
         }
-          if(($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)){
-             $price = $product->price;
-        }else{
+        if (($product->spl_price) > 0 && ($product->spl_price < $product->spl_price)) {
+            $price = $product->price;
+        } else {
             $price = $product->selling_price; //$product->price;
         }
 
@@ -410,11 +417,10 @@ class CartController extends Controller {
         $option_name = [];
         $subProductStock = '';
         $subProductId = '';
-        if($subProd != '')
-        {
+        if ($subProd != '') {
             $price = $subProd->price + $price;
             $hasOptn = $subProd->attributes()->withPivot('attr_id', 'prod_id', 'attr_val')->orderBy("att_sort_order", "asc")->get();
-        
+
             foreach ($hasOptn as $optn) {
                 $options[$optn->pivot->attr_id] = $optn->pivot->attr_val;
                 $option_name[] = AttributeValue::find($optn->pivot->attr_id)->option_name;
@@ -423,9 +429,7 @@ class CartController extends Controller {
             $subProductId = $subProd->id;
             $subProductStock = $subProd->stock;
         }
-        
-        
-        
+
         $image = isset($images) ? $images : "default.jpg";
         $option_name = json_encode($option_name);
         $type = $product->is_tax;
@@ -458,29 +462,30 @@ class CartController extends Controller {
                 "options" => ["image" => $image, "image_with_path" => $imagPath, "selected_attrs_labels" => $option_name, "sub_prod" => $subProductId,
                     "options" => $options, "is_cod" => $product->is_cod, "min_order_qty" => $product->min_order_quantity,
                     'cats' => $cats, 'stock' => $subProductId, 'url' => $product->url_key, 'store_id' => $store_id, 'prefix' => $prefix, 'is_stock' => $product->is_stock, "discountedAmount" => $price, "disc" => 0, 'wallet_disc' => 0, 'voucher_disc' => 0, 'referral_disc' => 0, 'user_disc' => 0, "tax_type" => $type, "taxes" => $sum, "tax_amt" => $tax_amt, 'prod_type' => $prod_type]]);
-                
+
         }
     }
 
-    public function cart() {
+    public function cart()
+    {
         Session::put("pay_amt", Cart::instance("shopping")->total());
         $cart = '';
         $cart .= '<div class="shop-cart">';
         $cart .= '<a href="#" class="cart-control"><img src="' . asset(Config("constants.frontendPublicImgPath") . "assets/icons/cart-black.png") . '" alt="">';
         $cart .= '<span class="cart-number number">' . Cart::instance("shopping")->count() . '</span>';
-        $cart .='</a>';
+        $cart .= '</a>';
         if (Cart::instance("shopping")->count() != 0) {
-            $cart .='<div class="shop-item">';
-            $cart .='<div class="widget_shopping_cart_content">';
-            $cart .='<ul class="cart_list">';
+            $cart .= '<div class="shop-item">';
+            $cart .= '<div class="widget_shopping_cart_content">';
+            $cart .= '<ul class="cart_list">';
             foreach (Cart::instance("shopping")->content() as $c) {
-                $cart .='<li class="clearfix">';
-                $cart .='<a class="p-thumb" href="#" style="height: 50px;width: 50px;">';
-                $cart .='<img src="' . asset(Config("constants.productImgPath") . $c->options->image) . '" alt="" >';
-                $cart .='</a>';
-                $cart .='<div class="p-info">';
-                $cart .='<a class="p-title" href="#">' . $c->name . ' </a>';
-                $cart .='<span class="price">';
+                $cart .= '<li class="clearfix">';
+                $cart .= '<a class="p-thumb" href="#" style="height: 50px;width: 50px;">';
+                $cart .= '<img src="' . asset(Config("constants.productImgPath") . $c->options->image) . '" alt="" >';
+                $cart .= '</a>';
+                $cart .= '<div class="p-info">';
+                $cart .= '<a class="p-title" href="#">' . $c->name . ' </a>';
+                $cart .= '<span class="price">';
                 if ($c->options->tax_type == 2) {
                     $taxeble_amt = $c->subtotal - $c->options->disc;
                     $tax_amt = round($taxeble_amt * $c->options->taxes / 100, 2);
@@ -488,43 +493,48 @@ class CartController extends Controller {
                 } else {
                     $selling_price = $c->subtotal * Session::get('currency_val');
                 }
-                $cart .='<ins><span class="amount"><i class="fa fa-' . strtolower(Session::get('currency_code')) . '"></i> ' . number_format($selling_price, 2) . ' </span></ins>';
-                $cart .='</span>';
-                $cart .='<span class="p-qty">QTY: ' . $c->qty . ' </span>';
-                $cart .='<a data-rowid="' . $c->rowid . '" class="removeShoppingCartProd remove" href="#"><i class="fa fa-times-circle"></i></a>';
-                $cart .='</div>';
-                $cart .='</li>';
+                $cart .= '<ins><span class="amount"><i class="fa fa-' . strtolower(Session::get('currency_code')) . '"></i> ' . number_format($selling_price, 2) . ' </span></ins>';
+                $cart .= '</span>';
+                $cart .= '<span class="p-qty">QTY: ' . $c->qty . ' </span>';
+                $cart .= '<a data-rowid="' . $c->rowid . '" class="removeShoppingCartProd remove" href="#"><i class="fa fa-times-circle"></i></a>';
+                $cart .= '</div>';
+                $cart .= '</li>';
             }
             $cart_data = Helper::calAmtWithTax();
             $cart_total = $cart_data['total'] * Session::get("currency_val");
             //  $cart_total = Cart::instance("shopping")->total() * Session::get('currency_val');
-            $cart .='</ul>';
-            $cart .='<p class="total"><strong>Subtotal:</strong> <span class="amount"><i class="fa fa-' . strtolower(Session::get('currency_code')) . '"></i> ' . number_format($cart_total, 2) . ' </span></p>';
-            $cart .='<p class="buttons">';
-            $cart .='<a class="button cart-button" href="' . route("cart") . ' ">View Cart</a>';
-            $cart .='<a class="button yellow wc-forward" href="' . route("checkout") . '">Checkout</a>';
-            $cart .='</p></div> </div></div>';
+            $cart .= '</ul>';
+            $cart .= '<p class="total"><strong>Subtotal:</strong> <span class="amount"><i class="fa fa-' . strtolower(Session::get('currency_code')) . '"></i> ' . number_format($cart_total, 2) . ' </span></p>';
+            $cart .= '<p class="buttons">';
+            $cart .= '<a class="button cart-button" href="' . route("cart") . ' ">View Cart</a>';
+            $cart .= '<a class="button yellow wc-forward" href="' . route("checkout") . '">Checkout</a>';
+            $cart .= '</p></div> </div></div>';
         } else {
             $cart .= '<li><h6>Cart is Empty</h6>  </li>';
         }
-        $cart .='</ul></li></ul></div>';
+        $cart .= '</ul></li></ul></div>';
         return ($cart . "||||||" . Cart::instance("shopping")->count() . "|||||| <i class='fa fa-" . strtolower(Session::get('currency_code')) . " '></i> " . ($cart_total));
     }
 
-    public function update_pay_amt() {
-        if (!empty(Input::get('new_amt')))
+    public function update_pay_amt()
+    {
+        if (!empty(Input::get('new_amt'))) {
             Session::put("pay_amt", Input::get('new_amt'));
+        }
+
         echo Session::get("pay_amt");
     }
 
-    function updatecartramt() {
+    public function updatecartramt()
+    {
         $amt_Aftdiscount = Input::get('d');
         foreach ($amt_Aftdiscount as $amt) {
             Cart::update($amt['sid'], ['options' => ['discountedAmount' => $amt['rc']]]);
         }
     }
 
-    public function check_coupon() {
+    public function check_coupon()
+    {
         Session::get('currency_val');
         $couponCode = Input::get('couponCode');
         $cartContent = Cart::instance('shopping')->content()->toArray();
@@ -533,15 +543,15 @@ class CartController extends Controller {
         //print_r($orderAmount);
         // die;
 
-        $couponID = Coupon::where("coupon_code", "=", $couponCode)->where("status",1)->first();
+        $couponID = Coupon::where("coupon_code", "=", $couponCode)->where("status", 1)->first();
 //        print_r($couponID);
-//        echo "<br/>=========================================<br/>";
+        //        echo "<br/>=========================================<br/>";
         @$usedCouponCountOrders = @Order::where('coupon_used', '=', $couponID->id)->where("order_status", "=", 1)->count();
         if (isset($couponID)) {
             if ($couponID->user_specific === 1) {
 
                 if (!empty(Session::get('loggedin_user_id'))) {
-                    $chkUserSp = DB::table("coupons_users")->where("c_id",$couponID->id)->get(['user_id']);
+                    $chkUserSp = DB::table("coupons_users")->where("c_id", $couponID->id)->get(['user_id']);
                     // dd($chkUserSp);
                     $cuserids = [];
                     if (count($chkUserSp) > 0) {
@@ -579,14 +589,14 @@ class CartController extends Controller {
 //                 echo "@@@ ".$usedCouponCountOrders;
                 $validCoupon = DB::select(DB::raw("Select * from " . DB::getTablePrefix() . "coupons where  status =1 and coupon_code = '$couponCode'  and no_times_allowed > $usedCouponCountOrders and min_order_amt <= " . $orderAmount . " and (now() between start_date and end_date)"));
 //                $msg = "Not user specific";
-//                 $msg = 'Invalid Coupon Code.';
+                //                 $msg = 'Invalid Coupon Code.';
             }
         } else {
             $msg = 'coupon code is not valid.';
         }
-//         echo $msg; 
+//         echo $msg;
         // die;
-//         print_r($validCoupon); die;
+        //         print_r($validCoupon); die;
         if (isset($validCoupon) && !empty($validCoupon)) {
             $disc = 0;
             if ($validCoupon[0]->coupon_type == 2) {
@@ -679,15 +689,15 @@ class CartController extends Controller {
                     $indvDisc = 0;
                     if ($validCoupon[0]->discount_type == 1) {
                         // echo "1234";
-//                        echo "total " . $prdAllC['subtotal'] . "<br/>";
-//                        echo "Fixed " . $validCoupon[0]->coupon_value . " Disc ";
+                        //                        echo "total " . $prdAllC['subtotal'] . "<br/>";
+                        //                        echo "Fixed " . $validCoupon[0]->coupon_value . " Disc ";
                         $indvDisc = ($validCoupon[0]->coupon_value * $prdAllC['subtotal']) / 100; //(int) ((int) $validCoupon[0]->coupon_value * (int) $prdAllC['subtotal']) / 100;
                         $disc += $indvDisc;
                         $individualSubtotal[$prdAllC['rowid']] = $indvDisc;
 //                        echo "<br/> disc " . $disc . "<br/>";
                     } else {
                         //echo "5678";
-//                        echo $validCoupon[0]->discount_type . " eeeeee";
+                        //                        echo $validCoupon[0]->discount_type . " eeeeee";
                         if ($validCoupon[0]->discount_type == 2) {
 //                            echo "Percentage";
                             $orderAmt += $prdAllC['subtotal'];
@@ -701,7 +711,7 @@ class CartController extends Controller {
 //                echo "@@@@ " . $disc;
                 $discountCartProds = $this->calculateFixedDiscount($individualSubtotal, $disc);
 //                print_r($discountCartProds);
-//                die;
+                //                die;
             }
         }
         //@$disc = number_format(@$disc, 2);
@@ -744,11 +754,11 @@ class CartController extends Controller {
             Session::forget('usedCouponId');
             Session::forget('usedCouponCode');
 //            if (Session::get('individualDiscountPercent')) {
-//                $coupDisc = json_decode(Session::get('individualDiscountPercent'), true);
-//                    foreach ($coupDisc as $discK => $discV) {
-//                        @Cart::instance('shopping')->update(@$discK, ["options" => ['disc' => 0]]);
-//                }
-//            }
+            //                $coupDisc = json_decode(Session::get('individualDiscountPercent'), true);
+            //                    foreach ($coupDisc as $discK => $discV) {
+            //                        @Cart::instance('shopping')->update(@$discK, ["options" => ['disc' => 0]]);
+            //                }
+            //            }
 
             $cart_amt = Helper::calAmtWithTax();
             $data['cmsg'] = @$msg;
@@ -760,7 +770,8 @@ class CartController extends Controller {
         }
     }
 
-    public function calculateFixedDiscount($individualSubtotal, $disc) {
+    public function calculateFixedDiscount($individualSubtotal, $disc)
+    {
         $arraySumPercent = array_sum($individualSubtotal) / 100;
         $individualDiscountPercent = [];
         foreach ($individualSubtotal as $key => $subtotal) {
@@ -771,7 +782,8 @@ class CartController extends Controller {
         return $individualDiscountPercent;
     }
 
-    public function forgetCouponSession() {
+    public function forgetCouponSession()
+    {
         Session::forget('pay_amt');
         Session::forget('couponUsedAmt');
         Session::forget('usedCouponId');
@@ -786,7 +798,8 @@ class CartController extends Controller {
         Session::forget("referalCodeAmt");
     }
 
-    function coupon_cal($cartContent, $allowedProds, $validCoupon, $type) {
+    public function coupon_cal($cartContent, $allowedProds, $validCoupon, $type)
+    {
         $orderAmt = $disc = 0;
         if (!empty($cartContent)) {
             $item = count($cartContent);
@@ -904,8 +917,8 @@ class CartController extends Controller {
     //         }
     //     }
     // }
-//         }
-// }
+    //         }
+    // }
     // @$disc = round(@$disc);
     // if (!empty($validCoupon) && $disc > 0) {
     //     $newAmnt = ($orderAmount - $disc);
@@ -924,7 +937,8 @@ class CartController extends Controller {
     // }
     //  }
 
-    public function verifygiftcoupon() {
+    public function verifygiftcoupon()
+    {
         $coupon_code = Input::get('couponcode');
         $cost = Input::get('cost');
         //dd(Auth::check());
@@ -958,11 +972,22 @@ class CartController extends Controller {
         return $coupon;
     }
 
-    public function erasegiftcoupon() {
+    public function erasegiftcoupon()
+    {
         Session::forget('amount');
         Session::forget('code');
         //print_r(Session::get('amount'));
         return 1;
+    }
+
+    public function subscribeCart()
+    {
+        if(Input::get('sub-period')) {
+            Session::put('subscription_period', Input::get('sub-period'));
+            return ['msg' => 'success', 'status' => 1];
+        } else {
+            return ['msg' => 'error', 'status' => 0];      
+        }
     }
 
 }

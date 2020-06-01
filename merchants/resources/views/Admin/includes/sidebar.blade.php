@@ -1,6 +1,7 @@
 <?php
 $productReturnStatus = App\Models\GeneralSetting::where('url_key', 'return-product')->where('status', 1)->get();
 $referralid = App\Models\GeneralSetting::where('url_key', 'referral')->first();
+$subscriptionId = App\Models\GeneralSetting::where('url_key', 'subscription')->first();
 ?>
 
 <aside class="main-sidebar">
@@ -215,7 +216,7 @@ $settingsdata = App\Library\Helper::getSettings();
                 </ul>
             </li> -->
             @endif
-            <li class="treeview {{ preg_match("/admin.campaign|admin.coupons|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.emailcampaign.viewemails|admin.emailcampaign.addemail|admin.emailcampaign.editemail|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
+            <li class="treeview {{ preg_match("/admin.campaign|admin.coupons|admin.subscriptionProgram|admin.loyalty|admin.advanceSetting|admin.referralProgram|admin.home.newsletter|admin.marketing.emails|admin.emailcampaign.viewemails|admin.emailcampaign.addemail|admin.emailcampaign.editemail|admin.marketing.emailTemplates/",Route::currentRouteName())? 'active' : ''}}">
                 <a href="#">
                     <i class="fa fa-bullhorn"></i><span>Marketing</span>
                     <i class="fa fa-angle-down pull-right"></i>
@@ -228,6 +229,9 @@ $settingsdata = App\Library\Helper::getSettings();
                     @endif
                     @if($feature['loyalty']==1)
                     <li class="{{ preg_match("/admin.loyalty/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.loyalty.view') }}"><i class="fa fa-angle-right"></i>Loyalty Program</a></li>
+                    @endif
+                    @if($feature['subscription']==1)
+                    <li class="{{ preg_match("/admin.subscriptionProgram/",Route::currentRouteName()) ? 'active' : '' }}"><a  href="{{ route('admin.subscriptionProgram.editSubscription',['id'=>$subscriptionId->id]) }}"><i class="fa fa-angle-right"></i>Subscription Program</a></li>
                     @endif
 
 

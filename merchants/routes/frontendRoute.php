@@ -39,7 +39,6 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
     Route::get('/contact_us', array('as' => 'contactUs1', 'uses' => 'HomeController@contactUs1'));
     Route::any('/home-edit', ['as' => 'updateHomeSettings', 'uses' => 'HomeEditController@updateStoreSettings']);
     Route::any('/home-banner-add', ['as' => 'addHomeBanner', 'uses' => 'HomeEditController@addHomeBanner']);
-
     Route::any('/home-banner-edit', ['as' => 'updateHomeBanner', 'uses' => 'HomeEditController@updateHomeBanner']); 
 
     // Route::any('/home-banner-edit', ['as' => 'updateHomeBanner', 'uses' => 'HomeEditController@updateHomeBanner']);  
@@ -73,6 +72,7 @@ Route::group(['middleware' => ['web', 'SetTheme'], 'namespace' => 'Frontend'], f
         Route::any('/edit-cart/', array('as' => 'editCart', 'uses' => 'CartController@edit'));
         Route::any('/get-cart-count/', array('as' => 'getCartCount', 'uses' => 'CartController@getCartCount'));
         Route::any('/delete-cart/', array('as' => 'deleteCart', 'uses' => 'CartController@delete'));
+        Route::post('/subscribe-cart/', array('as' => 'subscribeCart', 'uses' => 'CartController@subscribeCart'));
     });
     Route::post('/update-cart-ramt', ['as' => 'UpdateCartRamt', 'uses' => 'CartController@updatecartramt']);
     Route::post('/verifygiftcoupon', ['as' => 'verifygiftcoupon', 'uses' => 'CartController@verifygiftcoupon']);
