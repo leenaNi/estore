@@ -108,15 +108,21 @@ class CategoryMasterController extends Controller
         $category = CategoryMaster::findOrNew(Input::get('id'));
         //dd($category);
         $category->category = Input::get('category');
-        $category->is_home = 0; //Input::get('is_home');
         $category->is_nav = Input::get('is_nav');
         $category->sort_order = Input::get('sort_order');
         $category->url_key = strtolower(str_replace(" ", "-", Input::get('category')));
         $category->status = Input::get('status');
         $category->short_desc = Input::get('short_desc');
         $category->store_id = 0;
-        //$category->store_id = $getStoreId;
-        $category->parent_id = Input::get('parent_id');
+        //Adding new master category
+        if(Input::get('parent_id') == 0){
+            $category->parent_id = NULL;
+            $category->is_home = 1; //Input::get('is_home');
+        }else{
+            $category->parent_id = Input::get('parent_id');
+            $category->is_home = 0; //Input::get('is_home');
+        }
+        
         //$category->long_desc = Input::get('long_desc');
 
         $catImgs = [];
@@ -169,17 +175,19 @@ class CategoryMasterController extends Controller
                 }
             }
         }
-        if (Session::get('requested_cat')) {
-            $reqCat = CategoryRequested::find(Session::get('requested_cat'));
-            $category->parent_id = $reqCat->parent_id;
-            $category->update();
-            $returnValue = $this->updateNewCategoryRequest($category->id);
-        }
+        $returnValue = $this->updateNewCategoryRequest($category->id);
+        if(Input::get('parent_id') != 0){
+            if (Session::get('requested_cat')) {
+                $reqCat = CategoryRequested::find(Session::get('requested_cat'));
+                $category->parent_id = $reqCat->parent_id;
+                $category->update();
+                
+            }
 
-        if (!empty(Input::get("parent_id"))) {
-            $category->makeChildOf(Input::get("parent_id"));
+            if (!empty(Input::get("parent_id"))) {
+                $category->makeChildOf(Input::get("parent_id"));
+            }
         }
-
         Session::flash("msg", "CategoryMaster updated successfully.");
 
         if (is_null(Input::get('id')) || empty(Input::get('id'))) {
@@ -673,31 +681,36 @@ class CategoryMasterController extends Controller
             //Add New category to store_categories
             $newCat = CategoryMaster::find($newCatId);
 
-            //check if parent category present
-            //$checkParentCat = DB::table('store_categories')->where('category_id', $newCat->parent_id)->where('store_id', $reqCategory->requestedBy->store_id)->first(['id']);
-            $checkParentCat = DB::table('store_categories')->where('category_id', $newCat->parent_id)->where('store_id', $getStoreId)->first(['id']);
-            if ($checkParentCat == null) {
-                //Add New category to store_categories
-                $newParentCat = CategoryMaster::find($newCat->parent_id);
-                DB::table('store_categories')->insert([
-                    "category_id" => $newParentCat->id,
-                    "is_nav" => $newParentCat->is_nav,
-                    "url_key" => strtolower(str_replace(" ", "-", $newParentCat->category)),
-                    "lft" => $newParentCat->lft,
-                    "rgt" => $newParentCat->rgt,
-                    "depth" => 0,
-                    //"store_id" => $reqCategory->requestedBy->store_id,
-                    "store_id" => $getStoreId,
-                    "created_at" => date('Y-m-d H:i:s'),
-                ]);
+            if($newCat->parent_id == NULL){
+                $parentId = NULL;
+            }else{
+                //check if parent category present
+                $checkParentCat = DB::table('store_categories')->where('category_id', $newCat->parent_id)->where('store_id', $getStoreId)->first(['id']);
+                if ($checkParentCat == null) {
+                    //Add New category to store_categories
+                    $newParentCat = CategoryMaster::find($newCat->parent_id);
+                    DB::table('store_categories')->insert([
+                        "category_id" => $newParentCat->id,
+                        "is_nav" => $newParentCat->is_nav,
+                        "url_key" => strtolower(str_replace(" ", "-", $newParentCat->category)),
+                        "lft" => $newParentCat->lft,
+                        "rgt" => $newParentCat->rgt,
+                        "depth" => 0,
+                        //"store_id" => $reqCategory->requestedBy->store_id,
+                        "store_id" => $getStoreId,
+                        "created_at" => date('Y-m-d H:i:s'),
+                    ]);
+                    $parentId = $checkParentCat->id;
+                }
             }
+            
             $catsave['category_id'] = $newCat->id;
             $catsave['is_nav'] = 1;
             $catsave['url_key'] = strtolower(str_replace(" ", "-", $newCat->category));
             $catsave['lft'] = $newCat->lft;
             $catsave['rgt'] = $newCat->rgt;
             $catsave['depth'] = 0;
-            $catsave['parent_id'] = $checkParentCat->id;
+            $catsave['parent_id'] = $parentId;
             //$catsave['store_id'] = $reqCategory->requestedBy->store_id;
             $catsave['store_id'] = $getStoreId;
             $catsave['created_at'] = date('Y-m-d H:i:s');

@@ -20,13 +20,13 @@ class ApiCategoryController extends Controller
             $merchant = Merchant::find($marchantId)->getstores()->first();
             $store = DB::table('stores')->where('merchant_id',$marchantId)->first();
             
-            $categories = DB::table('store_categories')
-            ->join('categories as c','c.id','=','store_categories.category_id')
+            $categories = DB::table('store_categories as sc')
+            ->join('categories as c','c.id','=','sc.category_id')
             ->where("c.status", '1')
-            ->where("store_categories.store_id",$store->id)
-            ->where("store_categories.parent_id", NULL)
+            ->where("sc.store_id",$store->id)
+            ->where("sc.parent_id", NULL)
             ->orderBy("c.id", "asc")
-            ->select('store_categories.id','c.category')
+            ->select('sc.id','c.category','sc.is_nav','sc.sort_order','sc.status')
             ->get();
             foreach($categories as $cat){
                 $subcat = DB::table('store_categories')->where('parent_id',$cat->id)->get();
@@ -47,7 +47,7 @@ class ApiCategoryController extends Controller
     }
 
     public function masterCategories(){
-        $categories = CategoryMaster::whereIn("status", [1, 0])->where('parent_id',NULL)->select('id','category')->orderBy("id", "asc")->get();
+        $categories = CategoryMaster::whereIn("status", [1, 0])->where('parent_id',NULL)->select('id','category','is_nav','sort_order','status')->orderBy("id", "asc")->get();
         if(count($categories)>0){
             foreach($categories as $cat){
                 $subcat = DB::table('categories')->where('parent_id',$cat->id)->get();
@@ -69,7 +69,7 @@ class ApiCategoryController extends Controller
     public function masterSubCategory(){
         $cat_id = Input::get('categoryId');
         if($cat_id){
-            $categories = CategoryMaster::whereIn("status", [1, 0])->where('parent_id',$cat_id)->select('id','category')->orderBy("id", "asc")->get();
+            $categories = CategoryMaster::whereIn("status", [1, 0])->where('parent_id',$cat_id)->select('id','category','is_nav','sort_order','status')->orderBy("id", "asc")->get();
             foreach($categories as $cat){
                 $subcat = DB::table('categories')->where('parent_id',$cat->id)->get();
                 $cat->has_sub_category = 0;
@@ -151,13 +151,13 @@ class ApiCategoryController extends Controller
             $merchant = Merchant::find($marchantId)->getstores()->first();
             $store = DB::table('stores')->where('merchant_id',$marchantId)->first();
             
-            $categories = DB::table('store_categories')
-            ->join('categories as c','c.id','=','store_categories.category_id')
+            $categories = DB::table('store_categories as sc')
+            ->join('categories as c','c.id','=','sc.category_id')
             ->where("c.status", '1')
-            ->where("store_categories.store_id",$store->id)
-            ->where("store_categories.parent_id", $cat_id)
+            ->where("sc.store_id",$store->id)
+            ->where("sc.parent_id", $cat_id)
             ->orderBy("c.id", "asc")
-            ->select('store_categories.id','c.category')
+            ->select('sc.id','c.category','sc.is_nav','sc.sort_order','sc.status')
             ->get();
             foreach($categories as $cat){
                 $subcat = DB::table('store_categories')->where('parent_id',$cat->id)->get();
@@ -198,5 +198,37 @@ class ApiCategoryController extends Controller
             return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
         }
         
+    }
+
+    public function editCategory(){
+        $categoryId = filter_var(Input::get('categoryId'), FILTER_SANITIZE_STRING);
+        $is_nav = filter_var(Input::get('is_nav'), FILTER_SANITIZE_STRING);
+        $sort_order = filter_var(Input::get('sort_order'), FILTER_SANITIZE_STRING);
+        $status = filter_var(Input::get('status'), FILTER_SANITIZE_STRING);
+        if($categoryId != null){
+            $exists = DB::table('store_categories')->where('id',$categoryId)->first();
+            if($exists != null){
+                DB::table('store_categories')->where('id',$categoryId)->update(['is_nav'=>$is_nav,'sort_order'=>$sort_order,'status'=>$status]);
+                $categories = DB::table('store_categories as sc')
+                ->join('categories as c','c.id','=','sc.category_id')
+                ->where("sc.id",$categoryId)
+                ->orderBy("c.id", "asc")
+                ->select('sc.id','c.category','sc.is_nav','sc.sort_order','sc.status')
+                ->get();
+                foreach($categories as $cat){
+                    $subcat = DB::table('store_categories')->where('parent_id',$cat->id)->get();
+                    $cat->has_sub_category = 0;
+                    
+                    if(count($subcat)>0){
+                        $cat->has_sub_category = 1;
+                    }
+                }
+                return response()->json(["status" => 1, 'data'=>$categories]);
+            }else{
+                return response()->json(["status" => 0, 'msg' => 'Category does not exists.']);
+            }
+        }else{
+            return response()->json(["status" => 0, 'msg' => 'Mandatory fields are missing.']);
+        }
     }
 }
